@@ -9,6 +9,9 @@
 namespace CustomerManagementFramework;
 
 use CustomerManagementFramework\ActivityManager\DefaultActivityManager;
+use CustomerManagementFramework\ActivityManager\IActivityManager;
+use CustomerManagementFramework\Service\ElasticSearch;
+use CustomerManagementFramework\Service\MariaDb;
 
 class Factory {
 
@@ -44,5 +47,33 @@ class Factory {
         }
 
         return $this->activityManager;
+    }
+
+    /**
+     * @return ElasticSearch
+     */
+    private $elasticSearchService;
+    public function getElasticSearchService()
+    {
+        if(is_null($this->elasticSearchService))
+        {
+            $this->elasticSearchService = new ElasticSearch();
+        }
+
+        return $this->elasticSearchService;
+    }
+
+    /**
+     * @return MariaDb
+     */
+    private $mariaDbService;
+    public function getMariaDbService()
+    {
+        if(is_null($this->mariaDbService))
+        {
+            $this->mariaDbService = new MariaDb();
+        }
+
+        return $this->mariaDbService;
     }
 }

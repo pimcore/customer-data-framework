@@ -37,6 +37,10 @@ abstract class AbstractActivity extends \Pimcore\Model\Object\Concrete implement
             $result[$fieldName] = $fd->getForWebserviceExport($this);
         }
 
+        if($customer = $this->getCustomer()) {
+            $result['customer'] = $customer->cmfToArray();
+        }
+
         $result['o_id']  = $this->getId();
         $result['o_key'] = $this->getKey();
 

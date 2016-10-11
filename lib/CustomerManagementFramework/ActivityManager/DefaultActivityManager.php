@@ -8,12 +8,13 @@
 
 namespace  CustomerManagementFramework\ActivityManager;
 
+use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\IActivity;
 use Pimcore\Db;
+use Sabre\DAVACL\IACL;
 
 class DefaultActivityManager implements IActivityManager
 {
-    const ACTIVITIES_TABLE = 'plugin_cmf_activities';
 
     /**
      * @param IActivity $activity
@@ -22,21 +23,21 @@ class DefaultActivityManager implements IActivityManager
      */
     
     public function trackActivity(IActivity $activity) {
-
-        $db = Db::get();
-
-        $db->insert(self::ACTIVITIES_TABLE, [
-            'customerId' => $activity->getCustomer()->getId(),
-            'attributes' => $activity->cmfToArray(),
-            'type' => $activity->cmfGetType(),
-            'activityDate' => $activity->cmfGetActivityDate()->getTimestamp(),
-            'creationDate' => time(),
-            'modificationDate' => time(),
-        ]);
-
-        $id = $db->lastInsertId();
-
-        $activity->addCmfActivityId($id);
-        $activity->save();
+        //$this->instertIntoLocalDb();
+        $this->insertIntoExperienceCloud($activity);
     }
+
+    protected function insertIntoExperienceCloud(IActivity $activity) {
+        $esService = Factory::getInstance()->getElasticSearchService();
+        $esClient = $esService->getElasticSearchClient();
+
+       // $esService->createIndex();
+        //$esService->insertActivityIntoExperienceCloud($activity);
+
+        $mariadbService = Factory::getInstance()->getMariaDbService();
+        $mariadbService->insertActivityIntoDb($activity);
+
+    }
+
+
 }

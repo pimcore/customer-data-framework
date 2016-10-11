@@ -53,4 +53,9 @@ interface ICustomer {
      * @return string
      */
     public function getPhone();
+
+    /**
+     * @return array
+     */
+    public function cmfToArray();
 }
