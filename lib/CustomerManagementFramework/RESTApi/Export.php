@@ -1,0 +1,80 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: mmoser
+ * Date: 24.10.2016
+ * Time: 17:14
+ */
+
+namespace CustomerManagementFramework\RESTApi;
+
+use CustomerManagementFramework\Factory;
+use CustomerManagementFramework\Filter\ExportActivitiesFilterParams;
+use CustomerManagementFramework\Filter\ExportCustomersFilterParams;
+
+class Export implements IExport {
+
+
+    public function customers($pageSize, $page = 1, ExportCustomersFilterParams $params) {
+
+        $customers = new \Pimcore\Model\Object\Customer\Listing;
+        $customers->setOrderKey('o_id');
+        $customers->setOrder('asc');
+        $customers->setUnpublished(false);
+
+        $paginator = new \Zend_Paginator($customers);
+        $paginator->setItemCountPerPage($pageSize);
+        $paginator->setCurrentPageNumber($page);
+
+        $timestamp = time();
+
+        $result = [];
+        foreach($paginator as $customer) {
+            $c = $customer->cmfToArray();
+
+            if($params->getIncludeActivities()) {
+                $c['activities'] = Factory::getInstance()->getActivityStore()->getActivityDataForCustomer($customer);
+            }
+
+            $result[] = $c;
+        }
+
+        return [
+            'page' => $page,
+            'totalPages' => $paginator->getPages()->pageCount,
+            'timestamp' => $timestamp,
+            'data' => $result
+        ];
+    }
+
+    public function activities($pageSize, $page = 1, ExportActivitiesFilterParams $params)
+    {
+
+        $result = Factory::getInstance()->getActivityStore()->getActivitiesData($pageSize, $page, $params);
+        $result['success'] = true;
+
+        return $result;
+    }
+
+    public function deletions($type, $deletionsSinceTimestamp) {
+
+        if(!$type) {
+            return [
+                'success' => false,
+                'msg' => 'parameter type is required'
+            ];
+        }
+
+        if(!in_array($type, ['activities', 'customers'])) {
+            return [
+                'success' => false,
+                'msg' => 'type must be activities or customers'
+            ];
+        }
+
+        $result = Factory::getInstance()->getActivityStore()->getDeletionsData($type, $deletionsSinceTimestamp);
+        $result['success'] = true;
+
+        return $result;
+    }
+}

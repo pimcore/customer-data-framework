@@ -8,10 +8,9 @@
 
 namespace CustomerManagementFramework;
 
-use CustomerManagementFramework\ActivityManager\DefaultActivityManager;
 use CustomerManagementFramework\ActivityManager\IActivityManager;
-use CustomerManagementFramework\Service\ElasticSearch;
-use CustomerManagementFramework\Service\MariaDb;
+use CustomerManagementFramework\ActivityStore\IActivityStore;
+use CustomerManagementFramework\RESTApi\IExport;
 
 class Factory {
 
@@ -34,46 +33,46 @@ class Factory {
         return self::$instance;
     }
 
-
+    private $activityManager;
     /**
      * @return IActivityManager
      */
-    private $activityManager;
     public function getActivityManager()
     {
         if(is_null($this->activityManager))
         {
-            $this->activityManager = new DefaultActivityManager();
+            $this->activityManager = \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActivityManager');
         }
 
         return $this->activityManager;
     }
 
+
+    private $activityStore;
     /**
-     * @return ElasticSearch
+     * @return IActivityStore
      */
-    private $elasticSearchService;
-    public function getElasticSearchService()
+    public function getActivityStore()
     {
-        if(is_null($this->elasticSearchService))
+        if(is_null($this->activityStore))
         {
-            $this->elasticSearchService = new ElasticSearch();
+            $this->activityStore = \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActivityStore');
         }
 
-        return $this->elasticSearchService;
+        return $this->activityStore;
     }
 
+
+    private $RESTApiExport;
     /**
-     * @return MariaDb
+     * @return IExport
      */
-    private $mariaDbService;
-    public function getMariaDbService()
-    {
-        if(is_null($this->mariaDbService))
+    public function getRESTApiExport() {
+        if(is_null($this->RESTApiExport))
         {
-            $this->mariaDbService = new MariaDb();
+            $this->RESTApiExport = \Pimcore::getDiContainer()->get('CustomerManagementFramework\RESTApi\Export');
         }
 
-        return $this->mariaDbService;
+        return $this->RESTApiExport;
     }
 }

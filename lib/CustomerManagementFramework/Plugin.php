@@ -6,25 +6,17 @@ use Pimcore\API\Plugin as PluginLib;
 
 class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterface
 {
+
     public function init()
     {
         parent::init();
 
-        // register your events here
+        $config = self::getConfig();
 
-        // using anonymous function
-        \Pimcore::getEventManager()->attach("document.postAdd", function ($event) {
-            // do something
-            $document = $event->getTarget();
-        });
+        \Pimcore::getDiContainer()->set('CustomerManagementFramework\ActivityManager', \DI\object((string)$config->di->ActivityManager ? : 'CustomerManagementFramework\ActivityManager\DefaultActivityManager'));
+        \Pimcore::getDiContainer()->set('CustomerManagementFramework\ActivityStore', \DI\object((string)$config->di->ActivityStore ? : 'CustomerManagementFramework\ActivityStore\MariaDb'));
+        \Pimcore::getDiContainer()->set('CustomerManagementFramework\RESTApi\Export', \DI\object((string)$config->di->RESTApi->Export ? : 'CustomerManagementFramework\RESTApi\Export'));
 
-        // using methods
-        \Pimcore::getEventManager()->attach("document.postUpdate", [$this, "handleDocument"]);
-
-        // for more information regarding events, please visit:
-        // http://www.pimcore.org/wiki/display/PIMCORE/Event+API+%28EventManager%29+since+2.1.1
-        // http://framework.zend.com/manual/1.12/de/zend.event-manager.event-manager.html
-        // http://www.pimcore.org/wiki/pages/viewpage.action?pageId=12124202
     }
 
     public function handleDocument($event)
@@ -49,5 +41,26 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
     {
         // implement your own logic here
         return true;
+    }
+
+    private static function getConfigFile() {
+        return \Pimcore\Config::locateConfigFile("plugins/CustomerManagementFramework/config.php");
+    }
+
+    protected static $config = null;
+    public static function getConfig() {
+        if(is_null(self::$config)) {
+            $file = self::getConfigFile();
+
+            if(file_exists($file)) {
+                self::$config = new \Zend_Config(include($file));;
+
+            } else {
+                throw new \Exception($file . " doesn't exist");
+            }
+        }
+
+
+        return self::$config;
     }
 }

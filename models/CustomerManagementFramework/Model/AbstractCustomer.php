@@ -22,8 +22,9 @@ abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implement
             $result[$fieldName] = $fd->getForWebserviceExport($this);
         }
 
-        $result['o_id']  = $this->getId();
-        $result['o_key'] = $this->getKey();
+        $result['id']  = $this->getId();
+        $result['modificationDate'] = $this->getModificationDate();
+        $result['creationDate'] = $this->getCreationDate();
 
         return $result;
     }

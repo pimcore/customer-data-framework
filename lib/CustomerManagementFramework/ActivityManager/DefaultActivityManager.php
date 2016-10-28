@@ -10,8 +10,8 @@ namespace  CustomerManagementFramework\ActivityManager;
 
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\IActivity;
+use CustomerManagementFramework\Model\ICustomer;
 use Pimcore\Db;
-use Sabre\DAVACL\IACL;
 
 class DefaultActivityManager implements IActivityManager
 {
@@ -23,19 +23,14 @@ class DefaultActivityManager implements IActivityManager
      */
     
     public function trackActivity(IActivity $activity) {
-        //$this->instertIntoLocalDb();
-        $this->insertIntoExperienceCloud($activity);
-    }
 
-    protected function insertIntoExperienceCloud(IActivity $activity) {
-        $esService = Factory::getInstance()->getElasticSearchService();
-        $esClient = $esService->getElasticSearchClient();
+        $store = Factory::getInstance()->getActivityStore();
 
-       // $esService->createIndex();
-        //$esService->insertActivityIntoExperienceCloud($activity);
-
-        $mariadbService = Factory::getInstance()->getMariaDbService();
-        $mariadbService->insertActivityIntoDb($activity);
+        if($entry = $store->getEntryForActivity($activity)) {
+            $store->updateActivityInStore($activity, $entry);
+        } else {
+            $store->insertActivityIntoStore($activity);
+        }
 
     }
 

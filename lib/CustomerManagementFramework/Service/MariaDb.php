@@ -8,40 +8,88 @@
 
 namespace CustomerManagementFramework\Service;
 
-use CustomerManagementFramework\Model\IActivity;
-use CustomerManagementFramework\Model\ICustomer;
 use Pimcore\Db;
 
 class MariaDb {
 
+    private function __construct()
+    {
 
-    const ACTIVITIES_TABLE = 'plugin_cmf_activities';
+    }
 
-    public function insertActivityIntoDb(IActivity $activity) {
+    /**
+     * @return static
+     */
+    private static $instance;
+    public static function getInstance()
+    {
+        if(is_null(self::$instance)) {
+            self::$instance = new self;
+        }
+
+        return self::$instance;
+    }
+
+
+    public function createDynamicColumnInsert(array $data) {
 
         $db = Db::get();
 
-        /* $db->insert(self::ACTIVITIES_TABLE, [
-             'customerId' => $activity->getCustomer()->getId(),
-             'attributes' => "COLUMN_CREATE('productClass',".$activity->getProductClass().")",
-             'type' => $activity->cmfGetType(),
-             'activityDate' => $activity->cmfGetActivityDate()->getTimestamp(),
-             'creationDate' => time(),
-             'modificationDate' => time(),
-         ]);*/
+        $insert = '';
+        $i=0;
+        foreach($data as $key => $value) {
+            $i++;
+            if(!is_array($value)) {
+                $insert .= "'" . $key . "'" . ','. $db->quote($value);
+            } else {
+                $insert .= "'" . $key . "'" . ','.$this->createDynamicColumnInsert($value);
+            }
 
-        /*$data = [
-            $activity->cmfGetActivityDate()->getTimestamp(),
-            $activity->cmfToArray()
-        ];*/
+            if($i < sizeof($data)) {
+                $insert .= ',';
+            }
+        }
 
+        return "COLUMN_CREATE(" . $insert .  ")";
+    }
 
-        $time = time();
-        $sql = "INSERT INTO " . self::ACTIVITIES_TABLE . " (customerId, attributes, `type`, activityDate, creationDate, modificationDate) values 
-        ({$activity->getCustomer()->getId()}, COLUMN_CREATE('productClass','" . $activity->getProductClass()
-            . "'), '{$activity->cmfGetType()}', " . $activity->cmfGetActivityDate()->getTimestamp() . ", {$time}, {$time})";
+    public function insert($tableName, array $data) {
 
+        $db = Db::get();
+
+        foreach($data as $key => $value) {
+            if(is_null($value)) {
+                unset($data[$key]);
+            }
+        }
+
+        $sql = sprintf("INSERT INTO %s (%s) VALUES (%s)",
+            $tableName,
+            implode(',', array_keys($data)),
+            implode(',', array_values($data)));
 
         $db->query($sql);
     }
+
+    public function update($tableName, $data, $where) {
+        $db = Db::get();
+
+        $sql = "UPDATE " . $tableName . " SET ";
+
+        $set = [];
+        foreach($data as $key => $value) {
+            if(is_null($value)) {
+                $set[] = $key . ' = NULL';
+            } else {
+                $set[] = $key . ' = ' . $value;
+            }
+
+        }
+
+        $sql .= implode(', ', $set);
+        $sql .= " WHERE " . $where;
+
+        $db->query($sql);
+    }
+
 }
