@@ -32,10 +32,10 @@ class CustomerManagementFramework_Rest_ExportController extends \Pimcore\Control
                 break;
             case "deletions":
 
-                $type = $this->getParam('type');
+                $entityType = $this->getParam('entityType');
                 $deletionsSinceTimestamp = $this->getParam('deletionsSinceTimestamp');
 
-                $result = $export->deletions($type, $deletionsSinceTimestamp);
+                $result = $export->deletions($entityType, $deletionsSinceTimestamp);
                 break;
 
         }

@@ -13,7 +13,30 @@ use CustomerManagementFramework\Filter\ExportCustomersFilterParams;
 
 interface IExport {
 
+    /**
+     * @param                             $pageSize
+     * @param int                         $page
+     * @param ExportCustomersFilterParams $params
+     *
+     * @return array
+     */
     public function customers($pageSize, $page = 1, ExportCustomersFilterParams $params);
+
+    /**
+     * @param                             $pageSize
+     * @param int                         $page
+     * @param ExportCustomersFilterParams $params
+     *
+     * @return array
+     */
     public function activities($pageSize, $page = 1, ExportActivitiesFilterParams $params);
+
+    /**
+     * @param                             $pageSize
+     * @param int                         $page
+     * @param ExportCustomersFilterParams $params
+     *
+     * @return array
+     */
     public function deletions($type, $deletionsSinceTimestamp);
 }

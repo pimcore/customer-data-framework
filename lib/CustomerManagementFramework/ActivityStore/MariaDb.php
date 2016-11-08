@@ -133,10 +133,10 @@ class MariaDb implements IActivityStore{
         ];
     }
 
-    public function getDeletionsData($type, $deletionsSinceTimestamp) {
+    public function getDeletionsData($entityType, $deletionsSinceTimestamp) {
         $db = Db::get();
 
-        $sql = "select * from " . self::DELETIONS_TABLE . " where type = " . $db->quote($type) . " and creationDate >= " . $db->quote($deletionsSinceTimestamp);
+        $sql = "select * from " . self::DELETIONS_TABLE . " where entityType = " . $db->quote($entityType) . " and creationDate >= " . $db->quote($deletionsSinceTimestamp);
 
         return [
             'data' => $db->fetchAll($sql)

@@ -56,24 +56,27 @@ class Export implements IExport {
         return $result;
     }
 
-    public function deletions($type, $deletionsSinceTimestamp) {
+    public function deletions($entityType, $deletionsSinceTimestamp) {
 
-        if(!$type) {
+        $timestamp = time();
+
+        if(!$entityType) {
             return [
                 'success' => false,
-                'msg' => 'parameter type is required'
+                'msg' => 'parameter entityType is required'
             ];
         }
 
-        if(!in_array($type, ['activities', 'customers'])) {
+        if(!in_array($entityType, ['activities', 'customers'])) {
             return [
                 'success' => false,
-                'msg' => 'type must be activities or customers'
+                'msg' => 'entityType must be activities or customers'
             ];
         }
 
-        $result = Factory::getInstance()->getActivityStore()->getDeletionsData($type, $deletionsSinceTimestamp);
+        $result = Factory::getInstance()->getActivityStore()->getDeletionsData($entityType, $deletionsSinceTimestamp);
         $result['success'] = true;
+        $result['timestamp'] = $timestamp;
 
         return $result;
     }
