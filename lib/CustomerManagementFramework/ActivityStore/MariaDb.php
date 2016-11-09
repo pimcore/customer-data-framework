@@ -10,21 +10,21 @@ namespace CustomerManagementFramework\ActivityStore;
 
 use CustomerManagementFramework\ActivityList\DefaultMariaDbActivityList;
 use CustomerManagementFramework\ActivityStoreEntry\DefaultActivityStoreEntry;
-use CustomerManagementFramework\ActivityStoreEntry\IActivityStoreEntry;
+use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFramework\Filter\ExportActivitiesFilterParams;
-use CustomerManagementFramework\Model\IActivity;
-use CustomerManagementFramework\Model\ICustomer;
+use CustomerManagementFramework\Model\ActivityInterface;
+use CustomerManagementFramework\Model\CustomerInterface;
 use Import\Customer;
 use Pimcore\Db;
 use Pimcore\Model\Object\Concrete;
 
-class MariaDb implements IActivityStore{
+class MariaDb implements ActivityStoreInterface{
 
 
     const ACTIVITIES_TABLE = 'plugin_cmf_activities2';
     const DELETIONS_TABLE = 'plugin_cmf_deletions';
 
-    public function insertActivityIntoStore(IActivity $activity) {
+    public function insertActivityIntoStore(ActivityInterface $activity) {
 
         $data = self::createDbRowData($activity);
         $data['creationDate'] = time();
@@ -32,14 +32,14 @@ class MariaDb implements IActivityStore{
         \CustomerManagementFramework\Service\MariaDb::getInstance()->insert(self::ACTIVITIES_TABLE, $data);
     }
 
-    public function updateActivityInStore(IActivity $activity, IActivityStoreEntry $entry) {
+    public function updateActivityInStore(ActivityInterface $activity, ActivityStoreEntryInterface $entry) {
 
         $data = self::createDbRowData($activity);
 
         \CustomerManagementFramework\Service\MariaDb::getInstance()->update(self::ACTIVITIES_TABLE, $data, "id = " . $entry->getId());
     }
 
-    public function getEntryForActivity(IActivity $activity)
+    public function getEntryForActivity(ActivityInterface $activity)
     {
         $db = Db::get();
 
@@ -70,7 +70,7 @@ class MariaDb implements IActivityStore{
         return $entry;
     }
 
-    public function getActivityDataForCustomer(ICustomer $customer) {
+    public function getActivityDataForCustomer(CustomerInterface $customer) {
         $db = Db::get();
 
         $result = $db->fetchAll("select id,activityDate,type,o_id,a_id,md5,creationDate,modificationDate,COLUMN_JSON(attributes) as attributes from " . self::ACTIVITIES_TABLE . " where customerId = ? order by activityDate asc", [$customer->getId()]);
@@ -148,7 +148,7 @@ class MariaDb implements IActivityStore{
         ];
     }
 
-    public function deleteActivity(IActivity $activity) {
+    public function deleteActivity(ActivityInterface $activity) {
 
         $db = Db::get();
         $row = false;
@@ -181,11 +181,11 @@ class MariaDb implements IActivityStore{
         }
     }
 
-    public function deleteCustomer(ICustomer $customer) {
+    public function deleteCustomer(CustomerInterface $customer) {
 
     }
 
-    protected function createDbRowData(IActivity $activity) {
+    protected function createDbRowData(ActivityInterface $activity) {
 
         $db = Db::get();
 

@@ -2,7 +2,7 @@
 
 namespace CustomerManagementFramework;
 
-use CustomerManagementFramework\Model\IActivity;
+use CustomerManagementFramework\Model\ActivityInterface;
 use Pimcore\API\Plugin as PluginLib;
 
 class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterface
@@ -23,14 +23,14 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         \Pimcore::getEventManager()->attach(["object.postAdd","object.postUpdate"], function (\Zend_EventManager_Event $e) {
             $object = $e->getTarget();
 
-            if($object instanceof IActivity) {
+            if($object instanceof ActivityInterface) {
                 Factory::getInstance()->getActivityManager()->trackActivity($object);
             }
         });
 
         \Pimcore::getEventManager()->attach("object.postDelete", function (\Zend_EventManager_Event $e) {
             $object = $e->getTarget();
-            if($object instanceof IActivity) {
+            if($object instanceof ActivityInterface) {
                 Factory::getInstance()->getActivityManager()->deleteActivity($object);
             }
         });

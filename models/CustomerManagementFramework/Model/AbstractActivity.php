@@ -10,10 +10,10 @@ namespace CustomerManagementFramework\Model;
 
 use Carbon\Carbon;
 
-abstract class AbstractActivity extends \Pimcore\Model\Object\Concrete implements IActivity {
+abstract class AbstractActivity extends \Pimcore\Model\Object\Concrete implements ActivityInterface {
 
     public function cmfIsActive() {
-        return $this->getPublished() && ($this->getCustomer() instanceof ICustomer);
+        return $this->getPublished() && ($this->getCustomer() instanceof CustomerInterface);
     }
 
     public function cmfGetActivityDate()

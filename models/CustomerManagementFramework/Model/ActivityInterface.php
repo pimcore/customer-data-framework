@@ -4,7 +4,7 @@ namespace CustomerManagementFramework\Model;
 
 use Carbon\Carbon;
 
-interface IActivity {
+interface ActivityInterface {
 
     /**
      * @return bool
@@ -42,7 +42,7 @@ interface IActivity {
 
 
     /**
-     * @return ICustomer
+     * @return CustomerInterface
      */
     public function getCustomer();
 
@@ -52,7 +52,7 @@ interface IActivity {
     public function save();
 
     /**
-     * @param ICustomer $customer
+     * @param CustomerInterface $customer
      *
      * @return void
      */

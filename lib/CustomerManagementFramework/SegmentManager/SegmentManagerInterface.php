@@ -8,10 +8,10 @@
 
 namespace CustomerManagementFramework\SegmentManager;
 
-use CustomerManagementFramework\Model\ICustomer;
+use CustomerManagementFramework\Model\CustomerInterface;
 use Pimcore\Model\Object\CustomerSegment;
 
-interface ISegmentManager {
+interface SegmentManagerInterface {
 
     const CONDITION_AND = 'and';
     const CONDITION_OR = 'or';

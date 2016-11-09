@@ -8,10 +8,10 @@
 
 namespace CustomerManagementFramework;
 
-use CustomerManagementFramework\ActivityManager\IActivityManager;
-use CustomerManagementFramework\ActivityStore\IActivityStore;
-use CustomerManagementFramework\RESTApi\IExport;
-use CustomerManagementFramework\SegmentManager\ISegmentManager;
+use CustomerManagementFramework\ActivityManager\ActivityManagerInterface;
+use CustomerManagementFramework\ActivityStore\ActivityStoreInterface;
+use CustomerManagementFramework\RESTApi\ExportInterface;
+use CustomerManagementFramework\SegmentManager\SegmentManagerInterface;
 
 class Factory {
 
@@ -36,7 +36,7 @@ class Factory {
 
     private $activityManager;
     /**
-     * @return IActivityManager
+     * @return ActivityManagerInterface
      */
     public function getActivityManager()
     {
@@ -51,7 +51,7 @@ class Factory {
 
     private $activityStore;
     /**
-     * @return IActivityStore
+     * @return ActivityStoreInterface
      */
     public function getActivityStore()
     {
@@ -65,7 +65,7 @@ class Factory {
 
     private $segmentManager;
     /**
-     * @return ISegmentManager
+     * @return SegmentManagerInterface
      */
     public function getSegmentManager()
     {
@@ -79,7 +79,7 @@ class Factory {
 
     private $RESTApiExport;
     /**
-     * @return IExport
+     * @return ExportInterface
      */
     public function getRESTApiExport() {
         if(is_null($this->RESTApiExport))

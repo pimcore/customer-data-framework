@@ -14,7 +14,7 @@ use CustomerManagementFramework\Filter\ExportCustomersFilterParams;
 use CustomerManagementFramework\Service\ObjectToArray;
 use Pimcore\Placeholder\Object;
 
-class Export implements IExport {
+class Export implements ExportInterface {
 
 
     public function customers($pageSize, $page = 1, ExportCustomersFilterParams $params) {

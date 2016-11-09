@@ -12,7 +12,7 @@ namespace CustomerManagementFramework\SegmentManager;
 use Pimcore\Model\Object\CustomerSegment;
 use Pimcore\Model\Object\Customer;
 
-class DefaultSegmentManager implements ISegmentManager {
+class DefaultSegmentManager implements SegmentManagerInterface {
     public function getCustomersBySegmentIds(array $segmentIds, $conditionMode = self::CONDITION_AND)
     {
         $list = new \Pimcore\Model\Object\Customer\Listing;

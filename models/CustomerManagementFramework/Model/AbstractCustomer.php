@@ -11,7 +11,7 @@ namespace CustomerManagementFramework\Model;
 use CustomerManagementFramework\Service\ObjectToArray;
 use Pimcore\Model\Object\CustomerSegment;
 
-abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implements ICustomer{
+abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implements CustomerInterface{
 
     public function cmfToArray()
     {

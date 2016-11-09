@@ -11,7 +11,7 @@ namespace CustomerManagementFramework\RESTApi;
 use CustomerManagementFramework\Filter\ExportActivitiesFilterParams;
 use CustomerManagementFramework\Filter\ExportCustomersFilterParams;
 
-interface IExport {
+interface ExportInterface {
 
     /**
      * @param                             $pageSize

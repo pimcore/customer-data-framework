@@ -8,11 +8,11 @@
 
 namespace CustomerManagementFramework\ActivityList;
 
-use CustomerManagementFramework\Model\IActivity;
+use CustomerManagementFramework\Model\ActivityInterface;
 use Import\Booking;
 use Zend_Paginator_Adapter_Interface;
 
-class DefaultMariaDbActivityList implements IActivityList {
+class DefaultMariaDbActivityList implements ActivityListInterface {
 
     /**
      * @var integer
@@ -30,7 +30,7 @@ class DefaultMariaDbActivityList implements IActivityList {
     protected $totalCount = null;
 
     /**
-     * @var null|IActivity[]
+     * @var null|ActivityInterface[]
      */
     protected $activities = null;
 

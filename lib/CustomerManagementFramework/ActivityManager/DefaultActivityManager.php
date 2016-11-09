@@ -9,24 +9,24 @@
 namespace  CustomerManagementFramework\ActivityManager;
 
 use CustomerManagementFramework\Factory;
-use CustomerManagementFramework\Model\IActivity;
-use CustomerManagementFramework\Model\ICustomer;
+use CustomerManagementFramework\Model\ActivityInterface;
+use CustomerManagementFramework\Model\CustomerInterface;
 use Pimcore\Db;
 
-class DefaultActivityManager implements IActivityManager
+class DefaultActivityManager implements ActivityManagerInterface
 {
 
     /**
-     * @param IActivity $activity
+     * @param ActivityInterface $activity
      *
      * @return void
      */
     
-    public function trackActivity(IActivity $activity) {
+    public function trackActivity(ActivityInterface $activity) {
 
         $store = Factory::getInstance()->getActivityStore();
 
-        if(!$activity->getCustomer() instanceof ICustomer) {
+        if(!$activity->getCustomer() instanceof CustomerInterface) {
             $store->deleteActivity($activity);
             return;
         }
@@ -45,12 +45,12 @@ class DefaultActivityManager implements IActivityManager
     }
 
     /**
-     * @param IActivity $activity
+     * @param ActivityInterface $activity
      *
      * @return void
      */
 
-    public function deleteActivity(IActivity $activity) {
+    public function deleteActivity(ActivityInterface $activity) {
 
         $store = Factory::getInstance()->getActivityStore();
 

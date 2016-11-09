@@ -4,7 +4,7 @@ namespace CustomerManagementFramework\Model;
 
 use Pimcore\Model\Object\CustomerSegment;
 
-interface ICustomer {
+interface CustomerInterface {
 
     /**
      * @return int

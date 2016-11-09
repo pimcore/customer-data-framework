@@ -8,10 +8,11 @@
 
 namespace CustomerManagementFramework\ActivityStoreEntry;
 
-use CustomerManagementFramework\Model\IActivity;
-use CustomerManagementFramework\Model\ICustomer;
+use CustomerManagementFramework\Model\ActivityInterface;
+use CustomerManagementFramework\Model\CustomerInterface;
 
-class DefaultActivityStoreEntry implements IActivityStoreEntry {
+class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
+
 
     /**
      * @var int;
@@ -19,7 +20,7 @@ class DefaultActivityStoreEntry implements IActivityStoreEntry {
     private $id;
 
     /**
-     * @var ICustomer
+     * @var CustomerInterface
      */
     private $customer;
 
@@ -34,7 +35,7 @@ class DefaultActivityStoreEntry implements IActivityStoreEntry {
     private $type;
 
     /**
-     * @var IActivity
+     * @var ActivityInterface
      */
     private $relatedItem;
 
@@ -54,6 +55,41 @@ class DefaultActivityStoreEntry implements IActivityStoreEntry {
     private $md5;
 
     /**
+     * @var int|null
+     */
+    private $o_id;
+
+    /**
+     * @var int|null
+     */
+    private $a_id;
+
+    /**
+     * @var string
+     */
+    private $implementationClass;
+
+
+    /**
+     * @var $attributes
+     */
+    private $attributes;
+
+    public function __construct($data) {
+
+        $this->id = $data['id'];
+        $this->activityDate = $data['activityDate'];
+        $this->type = $data['type'];
+        $this->implementationClass = $data['implementationClass'];
+        $this->attributes = is_array($data['attributes']) ? $data['attributes'] : \Zend_Json::decode($data['attributes']);
+        $this->md5 = $data['md5'];
+        $this->creationDate = $data['creationDate'];
+        $this->modificationDate = $data['modificationDate'];
+        $this->o_id = $data['o_id'];
+        $this->a_id = $data['a_id'];
+    }
+
+    /**
      * @return int
      */
     public function getId()
@@ -70,7 +106,7 @@ class DefaultActivityStoreEntry implements IActivityStoreEntry {
     }
 
     /**
-     * @return ICustomer
+     * @return CustomerInterface
      */
     public function getCustomer()
     {
@@ -78,9 +114,9 @@ class DefaultActivityStoreEntry implements IActivityStoreEntry {
     }
 
     /**
-     * @param ICustomer $customer
+     * @param CustomerInterface $customer
      */
-    public function setCustomer(ICustomer $customer)
+    public function setCustomer(CustomerInterface $customer)
     {
         $this->customer = $customer;
     }
@@ -118,7 +154,7 @@ class DefaultActivityStoreEntry implements IActivityStoreEntry {
     }
 
     /**
-     * @return IActivity
+     * @return ActivityInterface
      */
     public function getRelatedItem()
     {
@@ -126,9 +162,9 @@ class DefaultActivityStoreEntry implements IActivityStoreEntry {
     }
 
     /**
-     * @param IActivity $relatedItem
+     * @param ActivityInterface $relatedItem
      */
-    public function setRelatedItem(IActivity $relatedItem)
+    public function setRelatedItem(ActivityInterface $relatedItem)
     {
         $this->relatedItem = $relatedItem;
     }
@@ -181,6 +217,38 @@ class DefaultActivityStoreEntry implements IActivityStoreEntry {
         $this->md5 = $md5;
     }
 
-    
+    /**
+     * @return string
+     */
+    public function getImplementationClass()
+    {
+        return $this->implementationClass;
+    }
 
+    /**
+     * @param string $implementationClass
+     */
+    public function setImplementationClass($implementationClass)
+    {
+        $this->implementationClass = $implementationClass;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @param array $attributes
+     */
+    public function setAttributes(array $attributes)
+    {
+        $this->attributes = $attributes;
+    }
+
+    
+    
 }
