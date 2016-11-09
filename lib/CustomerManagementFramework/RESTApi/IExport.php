@@ -39,4 +39,9 @@ interface IExport {
      * @return array
      */
     public function deletions($type, $deletionsSinceTimestamp);
+
+    /**
+     * @return array
+     */
+    public function segments(array $params);
 }

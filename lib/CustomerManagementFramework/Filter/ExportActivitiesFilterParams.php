@@ -21,6 +21,11 @@ class ExportActivitiesFilterParams {
     private $modifiedSinceTimestamp;
 
     /**
+     * @var array
+     */
+    private $allParams;
+
+    /**
      * @return string|boolean
      */
     public function getType()
@@ -52,6 +57,21 @@ class ExportActivitiesFilterParams {
         $this->modifiedSinceTimestamp = $modifiedSinceTimestamp;
     }
 
+    /**
+     * @return array
+     */
+    public function getAllParams()
+    {
+        return $this->allParams;
+    }
+
+    /**
+     * @param array $allParams
+     */
+    public function setAllParams($allParams)
+    {
+        $this->allParams = $allParams;
+    }
 
 
 }

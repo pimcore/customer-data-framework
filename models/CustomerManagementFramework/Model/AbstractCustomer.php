@@ -8,24 +8,32 @@
 
 namespace CustomerManagementFramework\Model;
 
+use CustomerManagementFramework\Service\ObjectToArray;
+use Pimcore\Model\Object\CustomerSegment;
+
 abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implements ICustomer{
 
     public function cmfToArray()
     {
-        $fieldDefintions = $this->getClass()->getFieldDefinitions();
+        $result = ObjectToArray::getInstance()->toArray($this);
 
-        $result = [];
-
-        foreach($fieldDefintions as $fd)
-        {
-            $fieldName = $fd->getName();
-            $result[$fieldName] = $fd->getForWebserviceExport($this);
+        $segmentIds = [];
+        foreach($this->getAllSegments() as $segment) {
+            $segmentIds[] = $segment->getId();
         }
+        $result['segments'] = $segmentIds;
 
-        $result['id']  = $this->getId();
-        $result['modificationDate'] = $this->getModificationDate();
-        $result['creationDate'] = $this->getCreationDate();
+        unset($result['manualSegments']);
+        unset($result['calculatedSegments']);
 
         return $result;
+    }
+
+    /**
+     * @return CustomerSegment[]
+     */
+    public function getAllSegments()
+    {
+        return array_merge((array)$this->getCalculatedSegments(), (array)$this->getManualSegments());
     }
 }

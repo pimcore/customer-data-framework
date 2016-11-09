@@ -11,6 +11,7 @@ namespace CustomerManagementFramework;
 use CustomerManagementFramework\ActivityManager\IActivityManager;
 use CustomerManagementFramework\ActivityStore\IActivityStore;
 use CustomerManagementFramework\RESTApi\IExport;
+use CustomerManagementFramework\SegmentManager\ISegmentManager;
 
 class Factory {
 
@@ -62,6 +63,19 @@ class Factory {
         return $this->activityStore;
     }
 
+    private $segmentManager;
+    /**
+     * @return ISegmentManager
+     */
+    public function getSegmentManager()
+    {
+        if(is_null($this->segmentManager))
+        {
+            $this->segmentManager = \Pimcore::getDiContainer()->get('CustomerManagementFramework\SegmentManager');
+        }
+
+        return $this->segmentManager;
+    }
 
     private $RESTApiExport;
     /**

@@ -8,6 +8,7 @@
 
 namespace CustomerManagementFramework\ActivityStore;
 
+use CustomerManagementFramework\ActivityList\DefaultMariaDbActivityList;
 use CustomerManagementFramework\ActivityStoreEntry\DefaultActivityStoreEntry;
 use CustomerManagementFramework\ActivityStoreEntry\IActivityStoreEntry;
 use CustomerManagementFramework\Filter\ExportActivitiesFilterParams;
@@ -81,6 +82,10 @@ class MariaDb implements IActivityStore{
         }
 
         return $result;
+    }
+
+    public function getActivityList() {
+        return new DefaultMariaDbActivityList();
     }
 
     public function getActivitiesData($pageSize, $page = 1, ExportActivitiesFilterParams $params)

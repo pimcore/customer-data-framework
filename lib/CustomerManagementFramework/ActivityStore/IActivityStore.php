@@ -39,6 +39,8 @@ interface IActivityStore {
 
     public function getActivityDataForCustomer(ICustomer $customer);
 
+    public function getActivityList();
+
     public function deleteActivity(IActivity $activity);
 
     public function deleteCustomer(ICustomer $customer);

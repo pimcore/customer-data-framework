@@ -11,13 +11,20 @@ namespace CustomerManagementFramework\RESTApi;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Filter\ExportActivitiesFilterParams;
 use CustomerManagementFramework\Filter\ExportCustomersFilterParams;
+use CustomerManagementFramework\Service\ObjectToArray;
+use Pimcore\Placeholder\Object;
 
 class Export implements IExport {
 
 
     public function customers($pageSize, $page = 1, ExportCustomersFilterParams $params) {
 
-        $customers = new \Pimcore\Model\Object\Customer\Listing;
+        if($params->getSegments()) {
+            $customers = Factory::getInstance()->getSegmentManager()->getCustomersBySegmentIds($params->getSegments());
+        } else {
+            $customers = new \Pimcore\Model\Object\Customer\Listing;
+        }
+
         $customers->setOrderKey('o_id');
         $customers->setOrder('asc');
         $customers->setUnpublished(false);
@@ -77,6 +84,24 @@ class Export implements IExport {
         $result = Factory::getInstance()->getActivityStore()->getDeletionsData($entityType, $deletionsSinceTimestamp);
         $result['success'] = true;
         $result['timestamp'] = $timestamp;
+
+        return $result;
+    }
+
+    public function segments(array $params) {
+
+        $timestamp = time();
+
+        $result['success'] = true;
+        $result['timestamp'] = $timestamp;
+
+        $data = [];
+        foreach(Factory::getInstance()->getSegmentManager()->getSegments($params) as $segment) {
+            $data[] = ObjectToArray::getInstance()->toArray($segment);
+        }
+
+        
+        $result['data'] = $data;
 
         return $result;
     }

@@ -2,6 +2,8 @@
 
 namespace CustomerManagementFramework\Model;
 
+use Pimcore\Model\Object\CustomerSegment;
+
 interface ICustomer {
 
     /**
@@ -53,6 +55,21 @@ interface ICustomer {
      * @return string
      */
     public function getPhone();
+
+    /**
+     * @return CustomerSegment[]
+     */
+    public function getManualSegments();
+
+    /**
+     * @return CustomerSegment[]
+     */
+    public function getCalculatedSegments();
+
+    /**
+     * @return CustomerSegment[]
+     */
+    public function getAllSegments();
 
     /**
      * @return array

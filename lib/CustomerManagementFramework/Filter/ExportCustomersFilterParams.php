@@ -17,6 +17,16 @@ class ExportCustomersFilterParams {
     private $includeActivities;
 
     /**
+     * @var array
+     */
+    private $allParams;
+
+    /**
+     * @var int[]
+     */
+    private $segments;
+
+    /**
      * @return boolean
      */
     public function getIncludeActivities()
@@ -32,5 +42,43 @@ class ExportCustomersFilterParams {
         $this->includeActivities = $includeActivities;
     }
 
+    /**
+     * @return array
+     */
+    public function getAllParams()
+    {
+        return $this->allParams;
+    }
+
+    /**
+     * @param array $allParams
+     */
+    public function setAllParams($allParams)
+    {
+        $this->allParams = $allParams;
+    }
+
+    /**
+     * @return int|\int[]
+     */
+    public function getSegments()
+    {
+        return $this->segments;
+    }
+
+    /**
+     * @param int|\int[] $segments
+     */
+    public function setSegments($segments)
+    {
+        if(is_array($segments)) {
+            $this->segments = $segments;
+        } elseif($segments) {
+            $this->segments = [$segments];
+        } else {
+            $this->segments = [];
+        }
+
+    }
 
 }

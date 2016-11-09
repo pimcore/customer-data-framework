@@ -17,6 +17,8 @@ class CustomerManagementFramework_Rest_ExportController extends \Pimcore\Control
 
                 $params = new \CustomerManagementFramework\Filter\ExportCustomersFilterParams;
                 $params->setIncludeActivities($this->getParam('includeActivities') ? true : false);
+                $params->setSegments($this->getParam('segments'));
+                $params->setAllParams($this->getAllParams());
 
                 $result = $export->customers($limit,$offset,$params);
                 break;
@@ -27,6 +29,7 @@ class CustomerManagementFramework_Rest_ExportController extends \Pimcore\Control
                 $params = new \CustomerManagementFramework\Filter\ExportActivitiesFilterParams();
                 $params->setType($this->getParam('type', false));
                 $params->setModifiedSinceTimestamp($this->getParam('modifiedSinceTimestamp'));
+                $params->setAllParams($this->getAllParams());
 
                 $result = $export->activities($pageSize, $page, $params);
                 break;
@@ -37,6 +40,11 @@ class CustomerManagementFramework_Rest_ExportController extends \Pimcore\Control
 
                 $result = $export->deletions($entityType, $deletionsSinceTimestamp);
                 break;
+            case "segments":
+
+                $result = $export->segments($this->getAllParams());
+                break;
+
 
         }
 
