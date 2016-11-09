@@ -26,6 +26,16 @@ class DefaultActivityManager implements IActivityManager
 
         $store = Factory::getInstance()->getActivityStore();
 
+        if(!$activity->getCustomer() instanceof ICustomer) {
+            $store->deleteActivity($activity);
+            return;
+        }
+
+        if(!$activity->cmfIsActive()) {
+            $store->deleteActivity($activity);
+            return;
+        }
+
         if($entry = $store->getEntryForActivity($activity)) {
             $store->updateActivityInStore($activity, $entry);
         } else {
@@ -34,5 +44,16 @@ class DefaultActivityManager implements IActivityManager
 
     }
 
+    /**
+     * @param IActivity $activity
+     *
+     * @return void
+     */
 
+    public function deleteActivity(IActivity $activity) {
+
+        $store = Factory::getInstance()->getActivityStore();
+
+        $store->deleteActivity($activity);
+    }
 }

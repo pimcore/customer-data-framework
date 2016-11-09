@@ -12,6 +12,10 @@ use Carbon\Carbon;
 
 abstract class AbstractActivity extends \Pimcore\Model\Object\Concrete implements IActivity {
 
+    public function cmfIsActive() {
+        return $this->getPublished() && ($this->getCustomer() instanceof ICustomer);
+    }
+
     public function cmfGetActivityDate()
     {
         return Carbon::createFromTimestamp($this->getCreationDate());

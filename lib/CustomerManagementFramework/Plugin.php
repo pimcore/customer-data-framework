@@ -2,6 +2,7 @@
 
 namespace CustomerManagementFramework;
 
+use CustomerManagementFramework\Model\IActivity;
 use Pimcore\API\Plugin as PluginLib;
 
 class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterface
@@ -16,6 +17,22 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         \Pimcore::getDiContainer()->set('CustomerManagementFramework\ActivityManager', \DI\object((string)$config->di->ActivityManager ? : 'CustomerManagementFramework\ActivityManager\DefaultActivityManager'));
         \Pimcore::getDiContainer()->set('CustomerManagementFramework\ActivityStore', \DI\object((string)$config->di->ActivityStore ? : 'CustomerManagementFramework\ActivityStore\MariaDb'));
         \Pimcore::getDiContainer()->set('CustomerManagementFramework\RESTApi\Export', \DI\object((string)$config->di->RESTApi->Export ? : 'CustomerManagementFramework\RESTApi\Export'));
+
+
+        \Pimcore::getEventManager()->attach(["object.postAdd","object.postUpdate"], function (\Zend_EventManager_Event $e) {
+            $object = $e->getTarget();
+
+            if($object instanceof IActivity) {
+                Factory::getInstance()->getActivityManager()->trackActivity($object);
+            }
+        });
+
+        \Pimcore::getEventManager()->attach("object.postDelete", function (\Zend_EventManager_Event $e) {
+            $object = $e->getTarget();
+            if($object instanceof IActivity) {
+                Factory::getInstance()->getActivityManager()->deleteActivity($object);
+            }
+        });
 
     }
 

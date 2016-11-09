@@ -153,19 +153,17 @@ class MariaDb implements IActivityStore{
             $row = $db->fetchRow("select * from " . self::ACTIVITIES_TABLE . " where a_id = ? ", $activity->getId());
         }
 
-        var_dump($row);
-
         if($row) {
             $db->beginTransaction();
 
             try {
                 $db->query("delete from " . self::ACTIVITIES_TABLE . " where id = " . intval($row['id']));
-                print "delete from " . self::ACTIVITIES_TABLE . " where id = " . intval($row['id']);
 
                 $db->insertOrUpdate(self::DELETIONS_TABLE, [
                     'id' => $row['id'],
                     'creationDate' => time(),
-                    'type' => 'activities'
+                    'entityType' => 'activities',
+                    'type' => $activity->cmfGetType()
                 ]);
 
                 $db->commit();

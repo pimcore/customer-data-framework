@@ -7,6 +7,11 @@ use Carbon\Carbon;
 interface IActivity {
 
     /**
+     * @return bool
+     */
+    public function cmfIsActive();
+
+    /**
      * @return string
      */
     public function cmfGetType();

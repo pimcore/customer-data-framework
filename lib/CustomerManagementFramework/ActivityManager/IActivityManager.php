@@ -20,4 +20,12 @@ interface IActivityManager
      */
 
     public function trackActivity(IActivity $activity);
+
+    /**
+     * @param IActivity $activity
+     *
+     * @return void
+     */
+
+    public function deleteActivity(IActivity $activity);
 }
