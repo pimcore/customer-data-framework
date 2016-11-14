@@ -50,5 +50,7 @@ interface ActivityStoreInterface {
 
     public function getDeletionsData($type, $deletionsSinceTimestamp);
 
+    public function getEntryById($id);
+
 
 }

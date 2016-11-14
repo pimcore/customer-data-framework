@@ -45,9 +45,9 @@ class MariaDb implements ActivityStoreInterface{
 
         $row = false;
         if($activity instanceof Concrete) {
-            $row = $db->fetchRow("select * from " . self::ACTIVITIES_TABLE . " where o_id = ? order by id desc LIMIT 1 ", $activity->getId());
+            $row = $db->fetchRow("select *, column_json(attributes) as attributes from " . self::ACTIVITIES_TABLE . " where o_id = ? order by id desc LIMIT 1 ", $activity->getId());
         } elseif(method_exists($activity, 'getId')) {
-            $row = $db->fetchRow("select * from " . self::ACTIVITIES_TABLE . " where a_id = ? order by id desc LIMIT 1 ", $activity->getId());
+            $row = $db->fetchRow("select *, column_json(attributes) as attributes from " . self::ACTIVITIES_TABLE . " where a_id = ? order by id desc LIMIT 1 ", $activity->getId());
         }
 
         if(!is_array($row)) {
@@ -55,17 +55,7 @@ class MariaDb implements ActivityStoreInterface{
         }
 
 
-        $entry = new DefaultActivityStoreEntry();
-        $entry->setId($row['id']);
-        if($customer = Customer::getById($row['customerId'])) {
-            $entry->setCustomer($customer);
-        }
-        $entry->setActivityDate($row['activityDate']);
-        $entry->setType($row['type']);
-        $entry->setRelatedItem($activity);
-        $entry->setMd5($row['md5']);
-        $entry->setCreationDate($row['creationDate']);
-        $entry->setModificationDate($row['modificationDate']);
+        $entry = new DefaultActivityStoreEntry($row);
 
         return $entry;
     }
@@ -110,7 +100,7 @@ class MariaDb implements ActivityStoreInterface{
                     'attributes' => 'COLUMN_JSON(attributes)'
                 ]
                 )
-            ->order("id asc")
+            ->order("activityDate asc")
         ;
 
         if($ts = $params->getModifiedSinceTimestamp()) {
@@ -209,4 +199,12 @@ class MariaDb implements ActivityStoreInterface{
         return $data;
     }
 
+    public function getEntryById($id) {
+
+        $db = Db::get();
+
+        if($row = $db->fetchRow(sprintf("select *, column_json(attributes) as attributes from %s where id = ?", self::ACTIVITIES_TABLE), $id)) {
+            return new DefaultActivityStoreEntry($row);
+        }
+    }
 }

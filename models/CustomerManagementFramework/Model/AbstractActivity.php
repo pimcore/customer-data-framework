@@ -9,6 +9,11 @@
 namespace CustomerManagementFramework\Model;
 
 use Carbon\Carbon;
+use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
+use CustomerManagementFramework\Factory;
+use Pimcore\Model\Object\Booking;
+use Pimcore\Model\Object\ClassDefinition;
+use Pimcore\Translate\Admin;
 
 abstract class AbstractActivity extends \Pimcore\Model\Object\Concrete implements ActivityInterface {
 
@@ -59,12 +64,16 @@ abstract class AbstractActivity extends \Pimcore\Model\Object\Concrete implement
         // TODO: Implement cmfCreate() method.
     }
 
-
-    public function addCmfActivityId($cmfActivityId)
+    public static function cmfGetOverviewData(ActivityStoreEntryInterface $entry)
     {
-        $ids = $this->getCmfActivityIds() . ',' . $cmfActivityId;
-        $this->setCmfActivityIds($ids);
+        return false;
     }
 
+    public static function cmfGetDetailviewData(ActivityStoreEntryInterface $entry)
+    {
+        $attributes = $entry->getAttributes();
+
+        return Factory::getInstance()->getActivityView()->formatAttributes($entry->getImplementationClass(), $attributes);
+    }
 
 }

@@ -1,0 +1,14 @@
+.mb15 {
+    margin-bottom: 15px !important;
+}
+
+.overview-data-table td, .overview-data-table th {
+    padding: 0 30px 0 0;
+}
+.overview-data-table td:last-of-type, .overview-data-table th:last-of-type {
+    padding-right: 0;
+}
+.overview-data-table th {
+    color: #999;
+    font-size:12px;
+}

@@ -8,11 +8,14 @@
 
 namespace CustomerManagementFramework\ActivityList;
 
+use CustomerManagementFramework\ActivityList\DefaultMariaDbActivityList\Dao;
+use CustomerManagementFramework\ActivityStoreEntry\DefaultActivityStoreEntry;
 use CustomerManagementFramework\Model\ActivityInterface;
 use Import\Booking;
+use Pimcore\Model\Listing\AbstractListing;
 use Zend_Paginator_Adapter_Interface;
 
-class DefaultMariaDbActivityList implements ActivityListInterface {
+class DefaultMariaDbActivityList extends AbstractListing implements ActivityListInterface {
 
     /**
      * @var integer
@@ -45,15 +48,15 @@ class DefaultMariaDbActivityList implements ActivityListInterface {
 
     public function getActivities() {
         if ($this->activities === null) {
-            // $this->load();
-            $this->activities = [Booking::getById(5950159),Booking::getById(5950160),Booking::getById(5950161)];
+             $this->load();
+            //$this->activities = [Booking::getById(5950159),Booking::getById(5950160),Booking::getById(5950161)];
         }
         return $this->activities;
     }
 
     public function setLimit($limit) {
         if($this->limit != $limit) {
-            $this->products = null;
+            $this->activities = null;
         }
         $this->limit = $limit;
     }
@@ -64,7 +67,7 @@ class DefaultMariaDbActivityList implements ActivityListInterface {
 
     public function setOffset($offset) {
         if($this->offset != $offset) {
-            $this->products = null;
+            $this->activities = null;
         }
         $this->offset = $offset;
     }
@@ -100,7 +103,7 @@ class DefaultMariaDbActivityList implements ActivityListInterface {
     public function count()
     {
         if($this->totalCount === null) {
-            $this->totalCount = 6;//@TODO $this->resource->getCount($this->buildQueryFromConditions());
+            $this->totalCount = $this->dao->getCount();
         }
         return $this->totalCount;
     }
@@ -180,5 +183,21 @@ class DefaultMariaDbActivityList implements ActivityListInterface {
         reset($this->activities);
     }
 
+    protected function load() {
+        $raw = $this->dao->load();
 
+        $this->totalCount = $this->dao->getCount();
+
+        $activities = [];
+        foreach($raw as $row) {
+            $activities[] = new DefaultActivityStoreEntry($row);
+        }
+
+        $this->activities = $activities;
+    }
+
+    public function isValidOrderKey($key)
+    {
+        return true;
+    }
 }

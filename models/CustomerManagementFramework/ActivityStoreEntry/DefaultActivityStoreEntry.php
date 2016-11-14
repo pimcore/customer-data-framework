@@ -8,6 +8,8 @@
 
 namespace CustomerManagementFramework\ActivityStoreEntry;
 
+use Carbon\Carbon;
+use CustomerManagementFramework\Helper\Json;
 use CustomerManagementFramework\Model\ActivityInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
 
@@ -77,14 +79,14 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
 
     public function __construct($data) {
 
-        $this->id = $data['id'];
-        $this->activityDate = $data['activityDate'];
-        $this->type = $data['type'];
-        $this->implementationClass = $data['implementationClass'];
-        $this->attributes = is_array($data['attributes']) ? $data['attributes'] : \Zend_Json::decode($data['attributes']);
-        $this->md5 = $data['md5'];
-        $this->creationDate = $data['creationDate'];
-        $this->modificationDate = $data['modificationDate'];
+        $this->setId($data['id']);
+        $this->setActivityDate($data['activityDate']);
+        $this->setType($data['type']);
+        $this->setImplementationClass($data['implementationClass']);
+        $this->setAttributes(is_array($data['attributes']) ? $data['attributes'] : \Zend_Json::decode(Json::cleanUpJson($data['attributes'])));
+        $this->setMd5($data['md5']);
+        $this->setCreationDate($data['creationDate']);
+        $this->setModificationDate($data['modificationDate']);
         $this->o_id = $data['o_id'];
         $this->a_id = $data['a_id'];
     }
@@ -134,7 +136,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
      */
     public function setActivityDate($activityDate)
     {
-        $this->activityDate = $activityDate;
+        $this->activityDate = Carbon::createFromTimestamp($activityDate);
     }
 
     /**

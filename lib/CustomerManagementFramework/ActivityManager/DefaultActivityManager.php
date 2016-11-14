@@ -36,10 +36,15 @@ class DefaultActivityManager implements ActivityManagerInterface
             return;
         }
 
-        if($entry = $store->getEntryForActivity($activity)) {
-            $store->updateActivityInStore($activity, $entry);
-        } else {
-            $store->insertActivityIntoStore($activity);
+        try {
+
+            if($entry = $store->getEntryForActivity($activity)) {
+                $store->updateActivityInStore($activity, $entry);
+            } else {
+                $store->insertActivityIntoStore($activity);
+            }
+        } catch(\Exception $e) {
+            print $e->getMessage();
         }
 
     }

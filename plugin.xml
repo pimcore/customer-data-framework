@@ -35,9 +35,5 @@
                 <path>/plugins/CustomerManagementFramework/static/js/startup.js</path>
 			</pluginJsPaths>
 
-			<!-- css files with path relative to plugin-directory -->
-			<pluginCssPaths>
-                <path>/plugins/CustomerManagementFramework/static/css/example.css</path>
-			</pluginCssPaths>
 		</plugin>
 </zend-config>

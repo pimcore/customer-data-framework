@@ -16,6 +16,7 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
 
         \Pimcore::getDiContainer()->set('CustomerManagementFramework\ActivityManager', \DI\object((string)$config->di->ActivityManager ? : 'CustomerManagementFramework\ActivityManager\DefaultActivityManager'));
         \Pimcore::getDiContainer()->set('CustomerManagementFramework\ActivityStore', \DI\object((string)$config->di->ActivityStore ? : 'CustomerManagementFramework\ActivityStore\MariaDb'));
+        \Pimcore::getDiContainer()->set('CustomerManagementFramework\ActivityView', \DI\object((string)$config->di->ActivityView ? : 'CustomerManagementFramework\ActivityView\DefaultActivityView'));
         \Pimcore::getDiContainer()->set('CustomerManagementFramework\SegmentManager', \DI\object((string)$config->di->SegmentManager ? : 'CustomerManagementFramework\ActivityManager\DefaultSegmentManager'));
         \Pimcore::getDiContainer()->set('CustomerManagementFramework\RESTApi\Export', \DI\object((string)$config->di->RESTApi->Export ? : 'CustomerManagementFramework\RESTApi\Export'));
 

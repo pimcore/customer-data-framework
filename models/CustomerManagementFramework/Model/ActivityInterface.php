@@ -3,6 +3,7 @@
 namespace CustomerManagementFramework\Model;
 
 use Carbon\Carbon;
+use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
 
 interface ActivityInterface {
 
@@ -46,15 +47,13 @@ interface ActivityInterface {
      */
     public function getCustomer();
 
-    public function getCmfActivityIds();
-    public function addCmfActivityId($cmfActivityId);
-    public function setCmfActivityIds($cmfActivityIds);
-    public function save();
-
     /**
      * @param CustomerInterface $customer
      *
      * @return void
      */
     public function setCustomer($customer);
+
+    public static function cmfGetOverviewData(ActivityStoreEntryInterface $entry);
+    public static function cmfGetDetailviewData(ActivityStoreEntryInterface $entry);
 }

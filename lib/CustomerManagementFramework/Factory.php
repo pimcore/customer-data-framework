@@ -10,6 +10,7 @@ namespace CustomerManagementFramework;
 
 use CustomerManagementFramework\ActivityManager\ActivityManagerInterface;
 use CustomerManagementFramework\ActivityStore\ActivityStoreInterface;
+use CustomerManagementFramework\ActivityView\ActivityViewInterface;
 use CustomerManagementFramework\RESTApi\ExportInterface;
 use CustomerManagementFramework\SegmentManager\SegmentManagerInterface;
 
@@ -75,6 +76,20 @@ class Factory {
         }
 
         return $this->segmentManager;
+    }
+
+    private $activityView;
+    /**
+     * @return ActivityViewInterface
+     */
+    public function getActivityView()
+    {
+        if(is_null($this->activityView))
+        {
+            $this->activityView = \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActivityView');
+        }
+
+        return $this->activityView;
     }
 
     private $RESTApiExport;
