@@ -33,7 +33,12 @@
 			<!-- js files with path relative to plugin-directory -->
 			<pluginJsPaths>
                 <path>/plugins/CustomerManagementFramework/static/js/startup.js</path>
+                <path>/plugins/CustomerManagementFramework/static/js/ActivityView.js</path>
 			</pluginJsPaths>
+
+			<pluginCssPaths>
+				<path>/plugins/CustomerManagementFramework/static/css/pimcore.css</path>
+			</pluginCssPaths>
 
 		</plugin>
 </zend-config>

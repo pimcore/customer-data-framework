@@ -41,6 +41,19 @@ class DefaultActivityView implements ActivityViewInterface {
         return false;
     }
 
+    public function getDetailviewTemplate(ActivityStoreEntryInterface $activityEntry)
+    {
+        $implementationClass = $activityEntry->getImplementationClass();
+        if(class_exists($implementationClass)) {
+            if(method_exists($implementationClass, 'cmfGetDetailviewTemplate')) {
+                return $implementationClass::cmfGetDetailviewTemplate($activityEntry);
+            }
+        }
+
+        return false;
+    }
+
+
     public function formatValueByFieldDefinition(Data $fd, $value) {
 
         if($fd instanceof Data\Checkbox) {
@@ -56,10 +69,11 @@ class DefaultActivityView implements ActivityViewInterface {
 
     public function getLabelByFieldDefinition(Data $fd) {
 
-        $ta = new Admin(\Zend_Registry::get("Zend_Locale"));
-        return $ta->translate($fd->getTitle());
+        return $this->translate($fd->getTitle());
     }
 
+    
+    
     public function formatAttributes($implementationClass, array $attributes, array $visibleKeys = []) {
 
         $class = false;
@@ -69,13 +83,7 @@ class DefaultActivityView implements ActivityViewInterface {
             }
         }
 
-        if(sizeof($visibleKeys)) {
-            $visibleAttributes = [];
-            foreach($visibleKeys as $column) {
-                $visibleAttributes[$column] = $attributes[$column];
-            }
-            $attributes = $visibleAttributes;
-        }
+        $attributes = $this->extractVisibleAttributes($attributes, $visibleKeys);
 
         $result = [];
 
@@ -94,6 +102,31 @@ class DefaultActivityView implements ActivityViewInterface {
         }
 
         return $result;
+    }
+
+    private $translate = [];
+    public function translate($value)
+    {
+        $locale = (string)\Zend_Registry::get("Zend_Locale");
+        if(!$ta = $this->translate[$locale]) {
+            $ta = new Admin(\Zend_Registry::get("Zend_Locale"));
+            $this->translate[$locale] = $ta;
+        }
+
+        return $ta->translate($value);
+    }
+
+
+    private function extractVisibleAttributes(array $attributes, array $visibleKeys) {
+        if(sizeof($visibleKeys)) {
+            $visibleAttributes = [];
+            foreach($visibleKeys as $column) {
+                $visibleAttributes[$column] = $attributes[$column];
+            }
+            return $visibleAttributes;
+        }
+
+        return $attributes;
     }
 
     protected function formatCheckboxValue($value) {

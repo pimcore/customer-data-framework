@@ -28,6 +28,13 @@ interface ActivityViewInterface {
     public function getDetailviewData(ActivityStoreEntryInterface $activityEntry);
 
     /**
+     * @param ActivityStoreEntryInterface $activityEntry
+     *
+     * @return string|int
+     */
+    public function getDetailviewTemplate(ActivityStoreEntryInterface $activityEntry);
+
+    /**
      * @param Data $fd
      * @param $value
      *
@@ -49,4 +56,11 @@ interface ActivityViewInterface {
      * @return mixed
      */
     public function getLabelByFieldDefinition(Data $fd);
+
+    /**
+     * @param string $value
+     *
+     * @return string
+     */
+    public function translate($value);
 }

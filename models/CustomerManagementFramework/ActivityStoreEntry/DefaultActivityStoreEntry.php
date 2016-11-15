@@ -124,7 +124,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
     }
 
     /**
-     * @return int
+     * @return Carbon
      */
     public function getActivityDate()
     {

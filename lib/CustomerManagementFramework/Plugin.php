@@ -46,8 +46,9 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
 
     public static function install()
     {
-        // implement your own logic here
-        return true;
+        $installer = new Installer();
+
+        return $installer->install();
     }
     
     public static function uninstall()

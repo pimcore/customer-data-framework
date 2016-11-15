@@ -54,6 +54,24 @@ interface ActivityInterface {
      */
     public function setCustomer($customer);
 
+    /**
+     * @param ActivityStoreEntryInterface $entry
+     *
+     * @return array
+     */
     public static function cmfGetOverviewData(ActivityStoreEntryInterface $entry);
+
+    /**
+     * @param ActivityStoreEntryInterface $entry
+     *
+     * @return array
+     */
     public static function cmfGetDetailviewData(ActivityStoreEntryInterface $entry);
+
+    /**
+     * @param ActivityStoreEntryInterface $entry
+     *
+     * @return string|bool
+     */
+    public static function cmfGetDetailviewTemplate(ActivityStoreEntryInterface $entry);
 }

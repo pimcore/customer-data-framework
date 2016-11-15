@@ -19,6 +19,8 @@ class Dao {
      */
     private $model;
 
+    private $query;
+
     public function __construct(DefaultMariaDbActivityList $model) {
         $this->model = $model;
     }
@@ -29,47 +31,59 @@ class Dao {
      * @return \Zend_Db_Select
      * @throws \Exception
      */
-    public function getQuery()
+    public function getQuery( $clone = true )
     {
-        // init
-        $select = Db::get()->select();
+        if(is_null($this->query)) {
+            // init
+            $select = Db::get()->select();
 
-        // create base
-        $select->from(
-            MariaDb::ACTIVITIES_TABLE,
-            [
-                'id',
-                'customerId',
-                'activityDate',
-                'type',
-                'implementationClass',
-                'o_id',
-                'a_id',
-                'attributes' => 'COLUMN_JSON(attributes)',
-                'md5',
-                'creationDate',
-                'modificationDate'
-            ]
-        );
-
-
-        // add joins
-      //  $this->addJoins($select);
-
-        // add condition
-        $this->addConditions($select);
-
-        // group by
-    //    $this->addGroupBy($select);
-
-        // order
-    //    $this->addOrder($select);
-
-        // limit
-        $this->addLimit($select);
+            // create base
+            $select->from(
+                MariaDb::ACTIVITIES_TABLE,
+                [
+                    'id',
+                    'customerId',
+                    'activityDate',
+                    'type',
+                    'implementationClass',
+                    'o_id',
+                    'a_id',
+                    'attributes' => 'COLUMN_JSON(attributes)',
+                    'md5',
+                    'creationDate',
+                    'modificationDate'
+                ]
+            );
 
 
-        return $select;
+            // add joins
+            //  $this->addJoins($select);
+
+            // add condition
+            $this->addConditions($select);
+
+            // group by
+            //    $this->addGroupBy($select);
+
+            // order
+                $this->addOrder($select);
+
+            // limit
+            $this->addLimit($select);
+
+
+            $this->query = $select;
+        }
+
+        if($clone) {
+            return clone($this->query);
+        }
+
+        return $this->query;
+    }
+
+    public function setQuery(\Zend_Db_Select $query) {
+        $this->query = $query;
     }
 
     private function addLimit(\Zend_Db_Select $select) {
@@ -112,6 +126,17 @@ class Dao {
 
         if ($condition) {
             $select->where($condition, $this->model->getConditionVariables());
+        }
+
+        return $this;
+    }
+
+    protected function addOrder(\Zend_DB_Select $select)
+    {
+        $orderKey = $this->model->getOrderKey();
+
+        if ($orderKey) {
+            $select->order($orderKey . " " . $this->model->getOrder());
         }
 
         return $this;
