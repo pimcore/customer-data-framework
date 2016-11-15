@@ -36,6 +36,16 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
             }
         });
 
+        \Pimcore::getEventManager()->attach('system.console.init', function(\Zend_EventManager_Event $e) {
+            /** @var \Pimcore\Console\Application $application */
+            $application = $e->getTarget();
+
+            // add a namespace to autoload commands from
+            $application->addAutoloadNamespace('CustomerManagementFramework\\Console', PIMCORE_DOCUMENT_ROOT . '/plugins/CustomerManagementFramework/lib/CustomerManagementFramework/Console');
+
+
+});
+
     }
 
     public function handleDocument($event)
