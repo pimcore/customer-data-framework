@@ -9,6 +9,7 @@
 namespace CustomerManagementFramework\SegmentManager;
 
 
+use CustomerManagementFramework\Helper\Objects;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Plugin;
 use CustomerManagementFramework\SegmentBuilder\SegmentBuilderInterface;
@@ -129,31 +130,13 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $currentSegments = (array)$customer->getCalculatedSegments();
 
         $saveNeeded = false;
-        foreach ($addSegments as $segment) {
-            $found = false;
-            foreach ($currentSegments as $seg) {
-                if ($segment->getId() == $seg->getId()) {
-                    $found = true;
-                    break;
-                }
-            }
-
-            if(!$found) {
-                $saveNeeded = true;
-                $currentSegments[] = $segment;
-            }
+        if(Objects::addObjectsToArray($currentSegments, $addSegments)) {
+            $saveNeeded = true;
         }
 
-        foreach($currentSegments as $key => $segment)
-        {
-            foreach($deleteSegments as $deleteSegment) {
-                if($segment->getId() == $deleteSegment->getId()) {
-                    unset($currentSegments[$key]);
-                    $saveNeeded = true;
-                }
-            }
+        if(Objects::removeObjectsFromArray($currentSegments, $deleteSegments)) {
+            $saveNeeded = true;
         }
-
 
         if($saveNeeded) {
             $backup = \Pimcore\Model\Version::$disabled;
@@ -167,69 +150,71 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
     }
 
-    /**
-     * @TODO
-     */
+
     public function createCalculatedSegment($segmentReference, $segmentGroup, $segmentName = null)
     {
         $segmentGroup = self::createSegmentGroup($segmentGroup, $segmentGroup, true);
 
         $list = new \Pimcore\Model\Object\CustomerSegment\Listing;
 
-        $list->setCondition("reference = ?", $segmentReference);
+        $list->setCondition("reference = ? and group__id = ? and calculated = 1", [$segmentReference, $segmentGroup->getId()]);
         $list->setUnpublished(true);
         $list->setLimit(1);
         $list = $list->load();
 
-        if($segment = $list[0]) {
-            return $segment;
+        if(!empty($list)) {
+            return $list[0];
         }
 
         $segment = new CustomerSegment();
-
         $segment->setParent($segmentGroup);
-        $segment->setKey(\Pimcore\Model\Element\Service::getValidKey($segmentReference, 'object'));
+        $segment->setKey($segmentReference);
         $segment->setName($segmentName ? : $segmentReference);
         $segment->setReference($segmentReference);
         $segment->setPublished(true);
         $segment->setCalculated(true);
         $segment->setGroup($segmentGroup);
+        Objects::checkObjectKey($segment);
         $segment->save();
+
+
         return $segment;
     }
 
     public function createSegmentGroup($segmentGroupName, $segmentGroupReference = null, $calculated = false)
     {
+        if($segmentGroup = $this->getSegmentGroupByReference($segmentGroupReference, $calculated)) {
+            return $segmentGroup;
+        }
+
+        $segmentFolder = Service::createFolderByPath($calculated ? $this->config->segmentsFolder->calculated : $this->config->segmentsFolder->manual);
+
+        $segmentGroup = new CustomerSegmentGroup();
+        $segmentGroup->setParent($segmentFolder);
+        $segmentGroup->setPublished(true);
+        $segmentGroup->setKey($segmentGroupReference ? : $segmentGroupName);
+        $segmentGroup->setCalculated($calculated);
+        $segmentGroup->setName($segmentGroupName);
+        $segmentGroup->setReference($segmentGroupReference);
+        Objects::checkObjectKey($segmentGroup);
+        $segmentGroup->save();
+
+        return $segmentGroup;
+    }
+
+    private function getSegmentGroupByReference($segmentGroupReference, $calculated)
+    {
         if(!is_null($segmentGroupReference)) {
 
             $list = new \Pimcore\Model\Object\CustomerSegmentGroup\Listing;
             $list->setUnpublished(true);
-
-            $calculatedWhere = "(calculated is null or calculated = 0)";
-            if($calculated) {
-                $calculatedWhere = "(calculated = 1)";
-            }
-
-            $list->setCondition("reference = ? and ".$calculatedWhere, $segmentGroupReference);
+            $list->setCondition("reference = ? and ". ($calculated ? '(calculated = 1)' : '(calculated is null or calculated = 0)' ), $segmentGroupReference);
             $list->setUnpublished(true);
             $list->setLimit(1);
             $list = $list->load();
 
-            if($list[0]) {
-                return $list[0];
-            }
+            return $list[0];
         }
-
-        $segmentGroup = new CustomerSegmentGroup();
-        $segmentGroup->setParent(Service::createFolderByPath('/calculated-segments'));
-        $segmentGroup->setPublished(true);
-        $segmentGroup->setKey(\Pimcore\Model\Element\Service::getValidKey($segmentGroupReference ? : $segmentGroupName, 'object'));
-        $segmentGroup->setCalculated($calculated);
-        $segmentGroup->setName($segmentGroupName);
-        $segmentGroup->setReference($segmentGroupReference);
-        $segmentGroup->save();
-
-        return $segmentGroup;
     }
 
     public function getSegmentsFromSegmentGroup(CustomerSegmentGroup $segmentGroup, array $ignoreSegments = [])
