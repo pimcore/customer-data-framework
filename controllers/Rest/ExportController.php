@@ -44,6 +44,10 @@ class CustomerManagementFramework_Rest_ExportController extends \Pimcore\Control
 
                 $result = $export->segments($this->getAllParams());
                 break;
+            case "segment-groups":
+
+                $result = $export->segmentGroups($this->getAllParams());
+                break;
 
 
         }

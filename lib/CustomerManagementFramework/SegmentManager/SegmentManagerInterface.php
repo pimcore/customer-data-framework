@@ -43,6 +43,13 @@ interface SegmentManagerInterface {
     public function getSegments(array $params);
 
     /**
+     * @param array $params
+     *
+     * @return CustomerSegment[]
+     */
+    public function getSegmentGroups(array $params);
+
+    /**
      * @return void
      */
     public function buildCalculatedSegments($changesQueueOnly = true);

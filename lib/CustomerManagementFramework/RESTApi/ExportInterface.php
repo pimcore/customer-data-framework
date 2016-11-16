@@ -44,4 +44,11 @@ interface ExportInterface {
      * @return array
      */
     public function segments(array $params);
+
+    /**
+     * @param array $params
+     *
+     * @return mixed
+     */
+    public function segmentGroups(array $params);
 }

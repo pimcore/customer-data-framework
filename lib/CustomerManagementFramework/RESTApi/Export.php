@@ -97,7 +97,11 @@ class Export implements ExportInterface {
 
         $data = [];
         foreach(Factory::getInstance()->getSegmentManager()->getSegments($params) as $segment) {
-            $data[] = ObjectToArray::getInstance()->toArray($segment);
+            $segment = ObjectToArray::getInstance()->toArray($segment);
+            if($segment['group']) {
+                $segment['group'] = $segment['group']['id'];
+            }
+            $data[] = $segment;
         }
 
         
@@ -105,4 +109,23 @@ class Export implements ExportInterface {
 
         return $result;
     }
+
+    public function segmentGroups(array $params) {
+
+    $timestamp = time();
+
+    $result['success'] = true;
+    $result['timestamp'] = $timestamp;
+
+    $data = [];
+    foreach(Factory::getInstance()->getSegmentManager()->getSegmentGroups($params) as $segment) {
+
+        $data[] = ObjectToArray::getInstance()->toArray($segment);
+    }
+
+
+    $result['data'] = $data;
+
+    return $result;
+}
 }
