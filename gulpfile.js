@@ -91,39 +91,31 @@ var config = {
  Registers a clean, watch, build and build-clean task for every profile (e.g. backend). Exposes every type (e.g. scripts
  and every result file (e.g. scripts:b2b.js) as extra task which is called from aggregating tasks. Example structure:
 
- ├── b2b:clean
- ├── b2b:scripts:b2b.js
- ├─┬ b2b:scripts
- │ └── b2b:scripts:b2b.js
- ├── b2b:styles:b2b.css
- ├─┬ b2b:styles
- │ └── b2b:styles:b2b.css
- ├── b2b:watch
- ├── b2b:build
- ├─┬ b2b:build-clean
- │ └── b2b:clean
- ├── backend:clean
- ├── backend:scripts:lib.js
- ├── backend:scripts:backend.js
- ├─┬ backend:scripts
- │ ├── backend:scripts:lib.js
- │ └── backend:scripts:backend.js
- ├── backend:styles:lib.css
- ├── backend:styles:backend.css
- ├─┬ backend:styles
- │ ├── backend:styles:lib.css
- │ └── backend:styles:backend.css
- ├── backend:assets:fonts
- ├─┬ backend:assets
- │ └── backend:assets:fonts
- ├── backend:watch
- ├── backend:build
- ├─┬ backend:build-clean
- │ └── backend:clean
- ├── watch
- ├── build
- ├── build-clean
- └── default
+├── frontend:clean
+├── frontend:scripts:lib.js
+├── frontend:scripts:script.js
+├─┬ frontend:scripts
+│ ├── frontend:scripts:lib.js
+│ └── frontend:scripts:script.js
+├── frontend:styles:lib.css
+├── frontend:styles:style.css
+├─┬ frontend:styles
+│ ├── frontend:styles:lib.css
+│ └── frontend:styles:style.css
+├── frontend:assets:fonts
+├── frontend:assets:iCheck
+├─┬ frontend:assets
+│ ├── frontend:assets:fonts
+│ └── frontend:assets:iCheck
+├── frontend:watch
+├── frontend:build
+├─┬ frontend:build-clean
+│ └── frontend:clean
+├── watch
+├── clean
+├── build
+├── build-clean
+└── default
  */
 Object.keys(config).forEach(function (profile) {
     var distPath = config[profile].path;
