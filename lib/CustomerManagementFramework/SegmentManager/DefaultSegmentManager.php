@@ -24,9 +24,12 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
     protected $logger;
 
+    private $config;
+
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
+        $this->config = $config = Plugin::getConfig()->SegmentManager;
     }
 
 
@@ -71,19 +74,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $logger = $this->logger;
         $logger->notice("start segment building");
 
-        $config = Plugin::getConfig()->segmentBuilders;
-
-        if(is_null($config)) {
-            $logger->alert("no segmentBuilders section found in plugin config file");
-            return;
-        }
-
-        if(!sizeof($config)) {
-            $logger->alert("no segment builders defined in plugin config file");
-            return;
-        }
-
-        $segmentBuilders = self::createSegmentBuilders($config);
+        $segmentBuilders = self::createSegmentBuilders();
         self::prepareSegmentBuilders($segmentBuilders);
 
         $customerList = new \Pimcore\Model\Object\Customer\Listing;
@@ -97,9 +88,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
             foreach($paginator as $customer) {
                 foreach($segmentBuilders as $segmentBuilder) {
-                    $logger->info(sprintf("apply segment builder %s to customer %s", $segmentBuilder->getName(), (string)$customer));
-
-                    $segmentBuilder->calculateSegments($customer, $this);
+                    $this->applySegmentBuilderToCustomer($customer, $segmentBuilder);
                 }
                 exit;
             }
@@ -108,7 +97,23 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
     public function buildCalculatedSegmentsOnCustomerSave(CustomerInterface $customer)
     {
+        $segmentBuilders = self::createSegmentBuilders();
+        self::prepareSegmentBuilders($segmentBuilders);
 
+        foreach($segmentBuilders as $segmentBuilder) {
+
+            if(!$segmentBuilder->executeOnCustomerSave()) {
+                continue;
+            }
+
+            $this->applySegmentBuilderToCustomer($customer, $segmentBuilder);
+        }
+    }
+
+    protected function applySegmentBuilderToCustomer(CustomerInterface $customer, SegmentBuilderInterface $segmentBuilder)
+    {
+        $this->logger->info(sprintf("apply segment builder %s to customer %s", $segmentBuilder->getName(), (string)$customer));
+        $segmentBuilder->calculateSegments($customer, $this);
     }
 
     public function mergeCalculatedSegments(CustomerInterface $customer, array $addSegments, array $deleteSegments = [])
@@ -278,7 +283,24 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         return false;
     }
 
-    protected function createSegmentBuilders($config) {
+    /**
+     * @return SegmentBuilderInterface[]|void
+     */
+    protected function createSegmentBuilders() {
+
+
+        $config = $this->config->segmentBuilders;
+
+        if(is_null($config)) {
+            $this->logger->alert("no segmentBuilders section found in plugin config file");
+            return;
+        }
+
+        if(!sizeof($config)) {
+            $this->logger->alert("no segment builders defined in plugin config file");
+            return;
+        }
+
         $segmentBuilders = [];
         foreach($config as $segmentBuilderConfig) {
             if($segmentBuilder = self::createSegmentBuilder($segmentBuilderConfig)) {

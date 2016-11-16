@@ -3,6 +3,7 @@
 namespace CustomerManagementFramework;
 
 use CustomerManagementFramework\Model\ActivityInterface;
+use CustomerManagementFramework\Model\CustomerInterface;
 use Pimcore\API\Plugin as PluginLib;
 
 class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterface
@@ -28,6 +29,10 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
 
             if($object instanceof ActivityInterface) {
                 Factory::getInstance()->getActivityManager()->trackActivity($object);
+            }
+
+            if($object instanceof CustomerInterface) {
+                Factory::getInstance()->getSegmentManager()->buildCalculatedSegmentsOnCustomerSave($object);
             }
         });
 
