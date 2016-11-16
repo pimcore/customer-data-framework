@@ -6,6 +6,7 @@ use CustomerManagementFramework\Listing\Filter\Equals;
 use CustomerManagementFramework\Listing\Filter\Search;
 use CustomerManagementFramework\Listing\Listing;
 use Pimcore\Model\Object\Customer;
+use Pimcore\Model\Object\CustomerSegment;
 
 class CustomerManagementFramework_CustomersController extends Admin
 {
@@ -15,11 +16,34 @@ class CustomerManagementFramework_CustomersController extends Admin
     {
         $this->enableLayout();
 
+        $this->loadSegmentGroup('gender');
+
         $filters   = $this->fetchListFilters();
         $listing   = $this->buildListing($filters);
         $paginator = $this->buildPaginator($listing->getListing());
 
         $this->view->paginator = $paginator;
+    }
+
+    protected function loadSegmentGroup($groupName)
+    {
+        /** @var \Pimcore\Model\Object\CustomerSegmentGroup $group */
+        $group = \Pimcore\Model\Object\CustomerSegmentGroup::getByName($groupName, 1);
+        if (!$group) {
+            throw new InvalidArgumentException(sprintf('Segment group %s was not found', $groupName));
+        }
+
+        $segments = new CustomerSegment\Listing();
+        $segments->addConditionParam('group__id IS NOT NULL AND group__id = ?', $group->getId());
+
+        if (!isset($this->view->segments)) {
+            $this->view->segments = [];
+        }
+
+        $this->view->segments[$group->getName()] = [];
+        foreach ($segments as $segment) {
+            $this->view->segments[$group->getName()][] = $segment;
+        }
     }
 
     /**

@@ -32,6 +32,37 @@
             </div>
         </fieldset>
     </div>
+
+    <div class="col-md-4">
+        <fieldset>
+            <legend>
+                Segments
+            </legend>
+
+            <?php
+            /** @var \Pimcore\Model\Object\CustomerSegment[] $segments */
+            foreach ($this->segments as $groupName => $segments): ?>
+
+                <div class="form-group">
+                    <label for="form-filter-<?= $groupName ?>"><?= $groupName ?></label>
+                    <select id="form-filter-<?= $groupName ?>" name="filter[<?= $groupName ?>][]" class="form-control plugin-select2" multiple="multiple" data-placeholder="<?= $groupName ?>">
+
+                        <?php foreach ($segments as $segment): ?>
+
+                            <option value="<?= $segment->getId() ?>" <?= $this->formFilterSelectedState($groupName, $segment->getId(), true) ?>>
+                                <?= $segment->getName() ?>
+                            </option>
+
+                        <?php endforeach; ?>
+
+                    </select>
+                </div>
+
+            <?php endforeach; ?>
+
+        </fieldset>
+
+    </div>
 </div>
 
 <?= $this->template('partials/filter/box/footer.php') ?>
