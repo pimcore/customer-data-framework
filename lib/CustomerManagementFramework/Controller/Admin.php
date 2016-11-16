@@ -30,10 +30,46 @@ class Admin extends \Pimcore\Controller\Action\Admin
      */
     protected function initJsConfig()
     {
+        $jsConfig = $this->getJsConfigHelper();
+        $jsConfig->add('debug', \Pimcore::inDebugMode());
+
+        foreach ($this->getJsConfigFeatures() as $feature) {
+            $jsConfig->add($feature, true);
+        }
+    }
+
+    /**
+     * @return JsConfig
+     */
+    protected function getJsConfigHelper()
+    {
         /** @var JsConfig $jsConfig */
         $jsConfig = $this->view->getHelper('JsConfig');
 
-        $jsConfig->add('debug', \Pimcore::inDebugMode());
-        $jsConfig->add('_init', true);
+        return $jsConfig;
+    }
+
+    /**
+     * Features to enable
+     *
+     * @return array
+     */
+    protected function getJsConfigFeatures()
+    {
+        return [
+            '_init',
+            'formAutoSubmit',
+            'select2',
+            'iCheck',
+            'tooltip',
+            'searchFilter',
+            'collapsibleStateBox',
+            'paginationFooterCount',
+            'tableCollapse',
+            'urlSelect',
+            'modal',
+            'pimcoreLink',
+            'toggleGroup'
+        ];
     }
 }
