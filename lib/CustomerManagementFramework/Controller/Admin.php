@@ -2,6 +2,8 @@
 
 namespace CustomerManagementFramework\Controller;
 
+use CustomerManagementFramework\View\Helper\JsConfig;
+
 class Admin extends \Pimcore\Controller\Action\Admin
 {
     public function init()
@@ -9,6 +11,7 @@ class Admin extends \Pimcore\Controller\Action\Admin
         parent::init();
 
         $this->initViewHelpers();
+        $this->initJsConfig();
     }
 
     /**
@@ -20,5 +23,17 @@ class Admin extends \Pimcore\Controller\Action\Admin
         $view = $this->view;
 
         $view->addHelperPath(__DIR__ . '/../View/Helper', 'CustomerManagementFramework\\View\\Helper\\');
+    }
+
+    /**
+     * Init JS config
+     */
+    protected function initJsConfig()
+    {
+        /** @var JsConfig $jsConfig */
+        $jsConfig = $this->view->getHelper('JsConfig');
+
+        $jsConfig->add('debug', \Pimcore::inDebugMode());
+        $jsConfig->add('_init', true);
     }
 }
