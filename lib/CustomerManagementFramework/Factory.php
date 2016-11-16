@@ -35,73 +35,41 @@ class Factory {
         return self::$instance;
     }
 
-    private $activityManager;
     /**
      * @return ActivityManagerInterface
      */
     public function getActivityManager()
     {
-        if(is_null($this->activityManager))
-        {
-            $this->activityManager = \Pimcore::getDiContainer()->make('CustomerManagementFramework\ActivityManager');
-        }
-
-        return $this->activityManager;
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActivityManager');
     }
 
 
-    private $activityStore;
     /**
      * @return ActivityStoreInterface
      */
     public function getActivityStore()
     {
-        if(is_null($this->activityStore))
-        {
-            $this->activityStore = \Pimcore::getDiContainer()->make('CustomerManagementFramework\ActivityStore');
-        }
-
-        return $this->activityStore;
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActivityStore');
     }
 
-    private $segmentManager;
+
     /**
      * @return SegmentManagerInterface
      */
     public function getSegmentManager()
     {
-        if(is_null($this->segmentManager))
-        {
-            $this->segmentManager = \Pimcore::getDiContainer()->make('CustomerManagementFramework\SegmentManager');
-        }
-
-        return $this->segmentManager;
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\SegmentManager');
     }
 
-    private $activityView;
-    /**
-     * @return ActivityViewInterface
-     */
     public function getActivityView()
     {
-        if(is_null($this->activityView))
-        {
-            $this->activityView = \Pimcore::getDiContainer()->make('CustomerManagementFramework\ActivityView');
-        }
-
-        return $this->activityView;
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActivityView');
     }
-
-    private $RESTApiExport;
+    
     /**
      * @return ExportInterface
      */
     public function getRESTApiExport() {
-        if(is_null($this->RESTApiExport))
-        {
-            $this->RESTApiExport = \Pimcore::getDiContainer()->make('CustomerManagementFramework\RESTApi\Export');
-        }
-
-        return $this->RESTApiExport;
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\RESTApi\Export');
     }
 }
