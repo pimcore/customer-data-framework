@@ -9,7 +9,7 @@ var cls = {
 };
 
 var app = {
-    debug: false,
+    debug: _cfg.debug || false,
     timeoutHandler: [],
     TWITTER: false,
     FACEBOOK: false,

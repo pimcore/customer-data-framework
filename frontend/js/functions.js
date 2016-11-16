@@ -5,7 +5,7 @@
 
         //-> initialize function
         _init : function(){
-            cls.log('-> _init');
+            app.Logger.log('-> _init');
 
             //set Device for AjaxInclude
             if( matchMedia('(max-width:767px)').matches ){
