@@ -1,0 +1,9 @@
+{
+  "name": "customerdataframework",
+  "dependencies": {
+    "jquery": "^2",
+    "admin-lte": "admin-lte#^2.3",
+    "font-awesome": "^4.7",
+    "ionicons": "ionicons#^2.0.1"
+  }
+}
