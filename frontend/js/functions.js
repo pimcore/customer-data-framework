@@ -1,22 +1,25 @@
-;(function( $ ){
+;(function ($) {
     'use strict';
 
     window.app = $.extend(window.app, {
-
-        //-> initialize function
-        _init : function(){
+        /**
+         * Initialize function
+         */
+        _init: function ($scope) {
             app.Logger.log('-> _init');
 
             //set Device for AjaxInclude
-            if( matchMedia('(max-width:767px)').matches ){
+            if (matchMedia('(max-width:767px)').matches) {
                 app.DEVICE = 'mobile';
             }
+        },
 
-
-        }, // end init()
-
-        formAutoSubmit: function(){
-            $('.js-form-auto-submit').on('change', function(){
+        /**
+         * Auto submit forms on change
+         * @param $scope
+         */
+        formAutoSubmit: function ($scope) {
+            $scope.find('.js-form-auto-submit').on('change', function () {
                 $(this).closest('form').submit();
             });
         },
@@ -87,7 +90,7 @@
          * @param $scope
          */
         collapsibleStateBox: function ($scope) {
-            $scope.find('.box-collapsible-state').each(function() {
+            $scope.find('.box-collapsible-state').each(function () {
                 var $container = $(this);
                 if ($container.data('identifier')) {
                     app.Util.getOrCreateInstance(
@@ -118,7 +121,7 @@
          * @param $scope
          */
         tableCollapse: function ($scope) {
-            $scope.find('.table-collapsible').each(function() {
+            $scope.find('.table-collapsible').each(function () {
                 var $table = $(this);
                 var $caption = $table.find('caption');
 
