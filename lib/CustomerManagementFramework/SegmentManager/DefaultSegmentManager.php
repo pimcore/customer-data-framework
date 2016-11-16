@@ -74,11 +74,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
 
         $segmentBuilders = self::createSegmentBuilders($logger, $config);
-
-        foreach($segmentBuilders as $segmentBuilder) {
-            $logger->notice(sprintf("prepate segment builder %s", $segmentBuilder->getName()));
-            $segmentBuilder->prepare($this);
-        }
+        self::prepareSegmentBuilders($segmentBuilders, $logger);
 
         $customerList = new \Pimcore\Model\Object\Customer\Listing;
         $paginator = new \Zend_Paginator($customerList);
@@ -100,6 +96,10 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
     }
 
+    public function buildCalculatedSegmentsOnCustomerSave(CustomerInterface $customer)
+    {
+
+    }
 
     public function mergeCalculatedSegments(CustomerInterface $customer, array $addSegments, array $deleteSegments = [])
     {
@@ -226,6 +226,14 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $list->setCondition("group__id = ?" . $ignoreCondition, $segmentGroup->getId());
 
         return $list->load();
+    }
+
+    protected function prepareSegmentBuilders(array $segmentBuilders, LoggerInterface $logger)
+    {
+        foreach($segmentBuilders as $segmentBuilder) {
+            $logger->notice(sprintf("prepate segment builder %s", $segmentBuilder->getName()));
+            $segmentBuilder->prepare($this);
+        }
     }
 
     /**

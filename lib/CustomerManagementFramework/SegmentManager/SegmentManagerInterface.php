@@ -61,6 +61,12 @@ interface SegmentManagerInterface {
      */
     public function createCalculatedSegment($segmentReference, $segmentGroup, $segmentName = null);
 
+    /**
+     * @param CustomerInterface $customer
+     *
+     * @return mixed
+     */
+    public function buildCalculatedSegmentsOnCustomerSave(CustomerInterface $customer);
 
     /**
      * @param CustomerSegmentGroup $segmentGroup
