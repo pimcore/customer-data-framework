@@ -43,7 +43,7 @@ class Factory {
     {
         if(is_null($this->activityManager))
         {
-            $this->activityManager = \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActivityManager');
+            $this->activityManager = \Pimcore::getDiContainer()->make('CustomerManagementFramework\ActivityManager');
         }
 
         return $this->activityManager;
@@ -58,7 +58,7 @@ class Factory {
     {
         if(is_null($this->activityStore))
         {
-            $this->activityStore = \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActivityStore');
+            $this->activityStore = \Pimcore::getDiContainer()->make('CustomerManagementFramework\ActivityStore');
         }
 
         return $this->activityStore;
@@ -72,7 +72,7 @@ class Factory {
     {
         if(is_null($this->segmentManager))
         {
-            $this->segmentManager = \Pimcore::getDiContainer()->get('CustomerManagementFramework\SegmentManager');
+            $this->segmentManager = \Pimcore::getDiContainer()->make('CustomerManagementFramework\SegmentManager');
         }
 
         return $this->segmentManager;
@@ -86,7 +86,7 @@ class Factory {
     {
         if(is_null($this->activityView))
         {
-            $this->activityView = \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActivityView');
+            $this->activityView = \Pimcore::getDiContainer()->make('CustomerManagementFramework\ActivityView');
         }
 
         return $this->activityView;
@@ -99,7 +99,7 @@ class Factory {
     public function getRESTApiExport() {
         if(is_null($this->RESTApiExport))
         {
-            $this->RESTApiExport = \Pimcore::getDiContainer()->get('CustomerManagementFramework\RESTApi\Export');
+            $this->RESTApiExport = \Pimcore::getDiContainer()->make('CustomerManagementFramework\RESTApi\Export');
         }
 
         return $this->RESTApiExport;
