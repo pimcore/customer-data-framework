@@ -10,15 +10,14 @@ namespace CustomerManagementFramework\SegmentManager;
 
 
 use CustomerManagementFramework\Model\CustomerInterface;
-use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use CustomerManagementFramework\Plugin;
 use CustomerManagementFramework\SegmentBuilder\SegmentBuilderInterface;
 use Pimcore\File;
 use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\CustomerSegment;
 use Pimcore\Model\Object\Customer;
+use Pimcore\Model\Object\CustomerSegmentGroup;
 use Pimcore\Model\Object\Service;
-use Pimcore\Version;
 use Psr\Log\LoggerInterface;
 
 class DefaultSegmentManager implements SegmentManagerInterface {
@@ -74,42 +73,33 @@ class DefaultSegmentManager implements SegmentManagerInterface {
             return;
         }
 
-        foreach($config as $segmentBuilderConfig) {
+        $segmentBuilders = self::createSegmentBuilders($logger, $config);
 
-            if($segmentBuilder = self::createSegmentBuilder($logger, $segmentBuilderConfig)) {
-
-                $logger->notice(sprintf("start segment builder %s",$segmentBuilderConfig->segmentBuilder));
-                $customerList = $segmentBuilder->prepare();
-
-                if(!$customerList instanceof \Pimcore\Model\Object\Customer\Listing) {
-                    $logger->error(sprintf("segment builder %s prepare() method needs to return a customer list",$segmentBuilderConfig->segmentBuilder));
-                    continue;
-                }
-
-                $this->buildSegments($logger, $customerList, $segmentBuilder);
-            }
+        foreach($segmentBuilders as $segmentBuilder) {
+            $logger->notice(sprintf("prepate segment builder %s", $segmentBuilder->getName()));
+            $segmentBuilder->prepare($this);
         }
-    }
 
-    protected function buildSegments(LoggerInterface $logger, \Pimcore\Model\Object\Customer\Listing $customerList, SegmentBuilderInterface $segmentBuilder) {
-
+        $customerList = new \Pimcore\Model\Object\Customer\Listing;
         $paginator = new \Zend_Paginator($customerList);
         $paginator->setItemCountPerPage(100);
 
         $totalPages = $paginator->getPages()->pageCount;
         for ($pageNumber = 1; $pageNumber <= $totalPages; $pageNumber++) {
-            $logger->notice(sprintf("build segments page %s of %s (%s)", $pageNumber, $totalPages, $segmentBuilder->getName()));
+            $logger->notice(sprintf("build customer segments page %s of %s", $pageNumber, $totalPages));
             $paginator->setCurrentPageNumber($pageNumber);
-            
+
             foreach($paginator as $customer) {
-                $logger->info(sprintf("apply segment builder %s to customer %s", $segmentBuilder->getName(), (string)$customer));
+                foreach($segmentBuilders as $segmentBuilder) {
+                    $logger->info(sprintf("apply segment builder %s to customer %s", $segmentBuilder->getName(), (string)$customer));
 
-                $segmentBuilder->calculateSegments($customer, $this);
+                    $segmentBuilder->calculateSegments($customer, $this);
+                }
                 exit;
-
             }
         }
     }
+
 
     public function mergeCalculatedSegments(CustomerInterface $customer, array $addSegments, array $deleteSegments = [])
     {
@@ -131,6 +121,16 @@ class DefaultSegmentManager implements SegmentManagerInterface {
             }
         }
 
+        foreach($currentSegments as $key => $segment)
+        {
+            foreach($deleteSegments as $deleteSegment) {
+                if($segment->getId() == $deleteSegment->getId()) {
+                    unset($currentSegments[$key]);
+                    $saveNeeded = true;
+                }
+            }
+        }
+
 
         if($saveNeeded) {
             $backup = \Pimcore\Model\Version::$disabled;
@@ -147,8 +147,10 @@ class DefaultSegmentManager implements SegmentManagerInterface {
     /**
      * @TODO
      */
-    public function createCalculatedSegment($segmentReference, $segmentGroup = null, $segmentName = null)
+    public function createCalculatedSegment($segmentReference, $segmentGroup, $segmentName = null)
     {
+        $segmentGroup = self::createSegmentGroup($segmentGroup, $segmentGroup, true);
+
         $list = new \Pimcore\Model\Object\CustomerSegment\Listing;
 
         $list->setCondition("reference = ?", $segmentReference);
@@ -162,20 +164,69 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
         $segment = new CustomerSegment();
 
-        $folderName = '/calculated-segments';
-        if(!is_null($segmentGroup)) {
-            $folderName .= '/' . \Pimcore\Model\Element\Service::getValidKey($segmentGroup, 'object');
-        }
-
-        $segment->setParent(\Pimcore\Model\Object\Service::createFolderByPath($folderName));
+        $segment->setParent($segmentGroup);
         $segment->setKey(\Pimcore\Model\Element\Service::getValidKey($segmentReference, 'object'));
         $segment->setName($segmentName ? : $segmentReference);
         $segment->setReference($segmentReference);
         $segment->setPublished(true);
+        $segment->setCalculated(true);
+        $segment->setGroup($segmentGroup);
         $segment->save();
         return $segment;
     }
 
+    public function createSegmentGroup($segmentGroupName, $segmentGroupReference = null, $calculated = false)
+    {
+        if(!is_null($segmentGroupReference)) {
+
+            $list = new \Pimcore\Model\Object\CustomerSegmentGroup\Listing;
+            $list->setUnpublished(true);
+
+            $calculatedWhere = "(calculated is null or calculated = 0)";
+            if($calculated) {
+                $calculatedWhere = "(calculated = 1)";
+            }
+
+            $list->setCondition("reference = ? and ".$calculatedWhere, $segmentGroupReference);
+            $list->setUnpublished(true);
+            $list->setLimit(1);
+            $list = $list->load();
+
+            if($list[0]) {
+                return $list[0];
+            }
+        }
+
+        $segmentGroup = new CustomerSegmentGroup();
+        $segmentGroup->setParent(Service::createFolderByPath('/calculated-segments'));
+        $segmentGroup->setPublished(true);
+        $segmentGroup->setKey(\Pimcore\Model\Element\Service::getValidKey($segmentGroupReference ? : $segmentGroupName, 'object'));
+        $segmentGroup->setCalculated($calculated);
+        $segmentGroup->setName($segmentGroupName);
+        $segmentGroup->setReference($segmentGroupReference);
+        $segmentGroup->save();
+
+        return $segmentGroup;
+    }
+
+    public function getSegmentsFromSegmentGroup(CustomerSegmentGroup $segmentGroup, array $ignoreSegments = [])
+    {
+        $ignoreIds = [];
+        foreach($ignoreSegments as $ignoreSegment) {
+            $ignoreIds[] = $ignoreSegment->getId();
+        }
+
+        $ignoreCondition = '';
+        if(sizeof($ignoreIds)) {
+            $ignoreCondition = " and o_id not in(" . implode($ignoreIds) . ")";
+        }
+
+        $list = new CustomerSegment\Listing;
+        $list->setUnpublished(true);
+        $list->setCondition("group__id = ?" . $ignoreCondition, $segmentGroup->getId());
+
+        return $list->load();
+    }
 
     /**
      * @param LoggerInterface $logger
@@ -206,5 +257,16 @@ class DefaultSegmentManager implements SegmentManagerInterface {
             $logger->warning(sprintf("segment builder not found: %s", $segmentBuilderClass));
         }
         return false;
+    }
+
+    protected function createSegmentBuilders(LoggerInterface $logger, $config) {
+        $segmentBuilders = [];
+        foreach($config as $segmentBuilderConfig) {
+            if($segmentBuilder = self::createSegmentBuilder($logger, $segmentBuilderConfig)) {
+                $segmentBuilders[] = $segmentBuilder;
+            }
+        }
+
+        return $segmentBuilders;
     }
 }

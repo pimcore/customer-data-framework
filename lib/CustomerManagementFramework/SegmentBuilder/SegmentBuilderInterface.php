@@ -20,11 +20,10 @@ interface SegmentBuilderInterface {
 
     /**
      * - prepares data and configurations which could be reused for all buildSegment(CustomerInterface $customer) calls
-     * - return list of all customers where the segment builder should be applied to
      *
-     * @return \Pimcore\Model\Object\Customer\Listing
+     * @return void
      */
-    public function prepare();
+    public function prepare(SegmentManagerInterface $segmentManager);
 
     /**
      * update calculated segment(s) for given customer
@@ -41,4 +40,11 @@ interface SegmentBuilderInterface {
      * @return string
      */
     public function getName();
+
+    /**
+     * should this segment builder be executed on customer object save hook?
+     *
+     * @return mixed
+     */
+    public function executeOnCustomerSave();
 }

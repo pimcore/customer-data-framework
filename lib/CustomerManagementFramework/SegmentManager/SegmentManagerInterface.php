@@ -11,6 +11,7 @@ namespace CustomerManagementFramework\SegmentManager;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use Pimcore\Model\Object\CustomerSegment;
+use Pimcore\Model\Object\CustomerSegmentGroup;
 use Psr\Log\LoggerInterface;
 
 interface SegmentManagerInterface {
@@ -58,5 +59,16 @@ interface SegmentManagerInterface {
      *
      * @return CustomerSegmentInterface
      */
-    public function createCalculatedSegment($segmentReference, $segmentGroup = null, $segmentName = null);
+    public function createCalculatedSegment($segmentReference, $segmentGroup, $segmentName = null);
+
+
+    /**
+     * @param CustomerSegmentGroup $segmentGroup
+     * @param array                $ignoreSegments
+     *
+     * @return mixed
+     */
+    public function getSegmentsFromSegmentGroup(CustomerSegmentGroup $segmentGroup, array $ignoreSegments = []);
+
+
 }
