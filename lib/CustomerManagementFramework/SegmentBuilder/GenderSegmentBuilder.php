@@ -18,6 +18,7 @@ class GenderSegmentBuilder implements SegmentBuilderInterface {
 
     const MALE = 'male';
     const FEMALE = 'female';
+    const NOT_SET = 'not-set';
 
     private $config;
     private $logger;
@@ -40,9 +41,11 @@ class GenderSegmentBuilder implements SegmentBuilderInterface {
      */
     public function prepare(SegmentManagerInterface $segmentManager)
     {
-        $this->maleSegment = $segmentManager->createCalculatedSegment('male','gender');
-        $this->femaleSegment = $segmentManager->createCalculatedSegment('female','gender');
-        $this->notsetSegment = $segmentManager->createCalculatedSegment('not-set','gender');
+        $segmentGroupName = $this->config->segmentGroup ? : 'gender';
+
+        $this->maleSegment = $segmentManager->createCalculatedSegment(self::MALE, $segmentGroupName);
+        $this->femaleSegment = $segmentManager->createCalculatedSegment(self::FEMALE, $segmentGroupName);
+        $this->notsetSegment = $segmentManager->createCalculatedSegment(self::NOT_SET, $segmentGroupName);
 
         $this->segmentGroup = $this->maleSegment->getGroup();
     }
@@ -56,10 +59,12 @@ class GenderSegmentBuilder implements SegmentBuilderInterface {
      */
     public function calculateSegments(CustomerInterface $customer, SegmentManagerInterface $segmentManager)
     {
+        $valueMapping = $this->config->valueMapping->toArray();
+        $gender = $valueMapping[$customer->getGender()] ? : self::NOT_SET;
 
-        if($customer->getGender() == self::MALE) {
+        if($gender == self::MALE) {
             $segment = $this->maleSegment;
-        }elseif($customer->getGender() == self::FEMALE) {
+        }elseif($gender == self::FEMALE) {
             $segment = $this->femaleSegment;
         } else {
             $segment = $this->notsetSegment;
