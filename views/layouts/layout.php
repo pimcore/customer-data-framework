@@ -14,9 +14,14 @@
 
     <?= $this->headLink(); ?>
 </head>
-<body>
+<body class="sidebar-collapse">
 
-<?= $this->layout()->content ?>
+<div class="wrapper">
+    <div class="content-wrapper">
+        <?= $this->layout()->content ?>
+    </div>
+</div>
+
 <?= $this->jsConfig() ?>
 
 <?php
