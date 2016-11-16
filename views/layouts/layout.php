@@ -8,7 +8,8 @@
     <title>Customer Management</title>
 
     <?php
-    $this->headLink()->appendStylesheet('/plugins/CustomerManagementFramework/static/dist/css/style.css');
+    $this->headLink()->appendStylesheet($this->minifiedAssetUrl('/plugins/CustomerManagementFramework/static/dist/css/lib.css'));
+    $this->headLink()->appendStylesheet($this->minifiedAssetUrl('/plugins/CustomerManagementFramework/static/dist/css/style.css'));
     ?>
 
     <?= $this->headLink(); ?>
@@ -19,8 +20,8 @@
 <?= $this->jsConfig() ?>
 
 <?php
-$this->headScript()->appendFile('/plugins/CustomerManagementFramework/static/dist/js/lib.js');
-$this->headScript()->appendFile('/plugins/CustomerManagementFramework/static/dist/js/script.js');
+$this->headScript()->appendFile($this->minifiedAssetUrl('/plugins/CustomerManagementFramework/static/dist/js/lib.js'));
+$this->headScript()->appendFile($this->minifiedAssetUrl('/plugins/CustomerManagementFramework/static/dist/js/script.js'));
 ?>
 
 <?= $this->headScript() ?>

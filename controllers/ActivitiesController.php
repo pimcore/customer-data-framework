@@ -6,15 +6,10 @@
  * Time: 13:19
  */
 
-class CustomerManagementFramework_ActivitiesController extends \Pimcore\Controller\Action\Admin {
+use CustomerManagementFramework\Controller\Admin;
 
-    public function init() {
-        parent::init();
-
-       // setlocale(LC_TIME, 'de');
-        $this->view->registerHelper(new \CustomerManagementFramework\View\Helper\JsConfig(), "JsConfig");
-    }
-
+class CustomerManagementFramework_ActivitiesController extends Admin
+{
     public function listAction() {
 
         $this->enableLayout();
