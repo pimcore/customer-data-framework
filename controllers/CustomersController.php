@@ -14,11 +14,8 @@ class CustomerManagementFramework_CustomersController extends Admin
         $this->enableLayout();
 
         $filters   = $this->fetchListFilters();
-
-        // $listing   = $this->buildListing($filters);
-        // $paginator = $this->buildPaginator($listing->getListing());
-
-        $paginator = $this->buildPaginator([]);
+        $listing   = $this->buildListing($filters);
+        $paginator = $this->buildPaginator($listing->getListing());
 
         $this->view->paginator = $paginator;
     }
@@ -29,10 +26,12 @@ class CustomerManagementFramework_CustomersController extends Admin
      */
     protected function buildListing(array $filters = [])
     {
-        $listing = new Listing(Customer::getList([
-            'orderKey' => 'o_id',
-            'order'    => 'ASC'
-        ]));
+        $coreListing = new Customer\Listing();
+        $coreListing
+            ->setOrderKey('o_id')
+            ->setOrder('ASC');
+
+        $listing = new Listing($coreListing);
 
         $this->addListingFilters($listing, $filters);
 
