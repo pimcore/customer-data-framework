@@ -18,6 +18,7 @@ class BuildSegmentsCommand extends AbstractCommand {
     {
         $this->setName("cmf:build-segments")
             ->setDescription("Build automatically calculated segments")
+            ->addOption("force", "f", null, "force all customers (otherwise only entries from the changes queue will be processed)")
         ;
     }
 
@@ -25,7 +26,7 @@ class BuildSegmentsCommand extends AbstractCommand {
     {
         \Pimcore::getDiContainer()->set("CustomerManagementFramework\\Logger", $this->getLogger());
 
-        Factory::getInstance()->getSegmentManager()->buildCalculatedSegments($this->getLogger());
+        Factory::getInstance()->getSegmentManager()->buildCalculatedSegments(!$input->getOption("force"));
     }
 
 }

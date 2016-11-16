@@ -31,20 +31,17 @@ class DefaultActivityManager implements ActivityManagerInterface
             return;
         }
 
+        Factory::getInstance()->getSegmentManager()->addCustomerToChangesQueue($activity->getCustomer());
+
         if(!$activity->cmfIsActive()) {
             $store->deleteActivity($activity);
             return;
         }
 
-        try {
-
-            if($entry = $store->getEntryForActivity($activity)) {
-                $store->updateActivityInStore($activity, $entry);
-            } else {
-                $store->insertActivityIntoStore($activity);
-            }
-        } catch(\Exception $e) {
-            print $e->getMessage();
+        if($entry = $store->getEntryForActivity($activity)) {
+            $store->updateActivityInStore($activity, $entry);
+        } else {
+            $store->insertActivityIntoStore($activity);
         }
 
     }

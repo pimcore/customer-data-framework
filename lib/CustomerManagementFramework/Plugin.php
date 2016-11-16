@@ -33,6 +33,7 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
 
             if($object instanceof CustomerInterface) {
                 Factory::getInstance()->getSegmentManager()->buildCalculatedSegmentsOnCustomerSave($object);
+                Factory::getInstance()->getSegmentManager()->addCustomerToChangesQueue($object);
             }
         });
 

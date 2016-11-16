@@ -45,7 +45,7 @@ interface SegmentManagerInterface {
     /**
      * @return void
      */
-    public function buildCalculatedSegments();
+    public function buildCalculatedSegments($changesQueueOnly = true);
 
     /**
      * @param CustomerInterface          $customer
@@ -66,7 +66,7 @@ interface SegmentManagerInterface {
     /**
      * @param CustomerInterface $customer
      *
-     * @return mixed
+     * @return void
      */
     public function buildCalculatedSegmentsOnCustomerSave(CustomerInterface $customer);
 
@@ -74,9 +74,16 @@ interface SegmentManagerInterface {
      * @param CustomerSegmentGroup $segmentGroup
      * @param array                $ignoreSegments
      *
-     * @return mixed
+     * @return array
      */
     public function getSegmentsFromSegmentGroup(CustomerSegmentGroup $segmentGroup, array $ignoreSegments = []);
+
+    /**
+     * @param CustomerInterface $customer
+     *
+     * @return void
+     */
+    public function addCustomerToChangesQueue(CustomerInterface $customer);
 
 
 }

@@ -12,6 +12,7 @@ namespace CustomerManagementFramework\SegmentManager;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Plugin;
 use CustomerManagementFramework\SegmentBuilder\SegmentBuilderInterface;
+use Pimcore\Db;
 use Pimcore\File;
 use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\CustomerSegment;
@@ -21,6 +22,8 @@ use Pimcore\Model\Object\Service;
 use Psr\Log\LoggerInterface;
 
 class DefaultSegmentManager implements SegmentManagerInterface {
+
+    CONST CHANGES_QUEUE_TABLE = 'plugin_cmf_segmentbuilder_changes_queue';
 
     protected $logger;
 
@@ -69,7 +72,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
      *
      * @return void
      */
-    public function buildCalculatedSegments()
+    public function buildCalculatedSegments($changesQueueOnly = true)
     {
         $logger = $this->logger;
         $logger->notice("start segment building");
@@ -78,6 +81,11 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         self::prepareSegmentBuilders($segmentBuilders);
 
         $customerList = new \Pimcore\Model\Object\Customer\Listing;
+
+        if($changesQueueOnly) {
+            $customerList->setCondition(sprintf("o_id in (select customerId from %s)", self::CHANGES_QUEUE_TABLE));
+        }
+
         $paginator = new \Zend_Paginator($customerList);
         $paginator->setItemCountPerPage(100);
 
@@ -90,7 +98,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
                 foreach($segmentBuilders as $segmentBuilder) {
                     $this->applySegmentBuilderToCustomer($customer, $segmentBuilder);
                 }
-                exit;
+                Db::get()->query(sprintf("delete from %s where customerId = ?", self::CHANGES_QUEUE_TABLE), $customer->getId());
             }
         }
     }
@@ -243,10 +251,15 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         return $list->load();
     }
 
+    public function addCustomerToChangesQueue(CustomerInterface $customer)
+    {
+        Db::get()->query(sprintf("insert ignore into %s set customerId=?", self::CHANGES_QUEUE_TABLE), $customer->getId());
+    }
+
     protected function prepareSegmentBuilders(array $segmentBuilders)
     {
         foreach($segmentBuilders as $segmentBuilder) {
-            $this->logger->notice(sprintf("prepate segment builder %s", $segmentBuilder->getName()));
+            $this->logger->notice(sprintf("prepare segment builder %s", $segmentBuilder->getName()));
             $segmentBuilder->prepare($this);
         }
     }
