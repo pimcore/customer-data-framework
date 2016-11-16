@@ -21,6 +21,15 @@ use Pimcore\Model\Object\Service;
 use Psr\Log\LoggerInterface;
 
 class DefaultSegmentManager implements SegmentManagerInterface {
+
+    protected $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+
     public function getCustomersBySegmentIds(array $segmentIds, $conditionMode = self::CONDITION_AND)
     {
         $list = new \Pimcore\Model\Object\Customer\Listing;
@@ -57,8 +66,9 @@ class DefaultSegmentManager implements SegmentManagerInterface {
      *
      * @return void
      */
-    public function buildCalculatedSegments(LoggerInterface $logger)
+    public function buildCalculatedSegments()
     {
+        $logger = $this->logger;
         $logger->notice("start segment building");
 
         $config = Plugin::getConfig()->segmentBuilders;
@@ -73,8 +83,8 @@ class DefaultSegmentManager implements SegmentManagerInterface {
             return;
         }
 
-        $segmentBuilders = self::createSegmentBuilders($logger, $config);
-        self::prepareSegmentBuilders($segmentBuilders, $logger);
+        $segmentBuilders = self::createSegmentBuilders($config);
+        self::prepareSegmentBuilders($segmentBuilders);
 
         $customerList = new \Pimcore\Model\Object\Customer\Listing;
         $paginator = new \Zend_Paginator($customerList);
@@ -228,10 +238,10 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         return $list->load();
     }
 
-    protected function prepareSegmentBuilders(array $segmentBuilders, LoggerInterface $logger)
+    protected function prepareSegmentBuilders(array $segmentBuilders)
     {
         foreach($segmentBuilders as $segmentBuilder) {
-            $logger->notice(sprintf("prepate segment builder %s", $segmentBuilder->getName()));
+            $this->logger->notice(sprintf("prepate segment builder %s", $segmentBuilder->getName()));
             $segmentBuilder->prepare($this);
         }
     }
@@ -242,8 +252,9 @@ class DefaultSegmentManager implements SegmentManagerInterface {
      *
      * @return SegmentBuilderInterface|bool
      */
-    protected function createSegmentBuilder(LoggerInterface $logger, $segmentBuilderConfig)
+    protected function createSegmentBuilder($segmentBuilderConfig)
     {
+        $logger = $this->logger;
 
         $segmentBuilderClass = (string)$segmentBuilderConfig->segmentBuilder;
         if(class_exists($segmentBuilderConfig->segmentBuilder)) {
@@ -267,10 +278,10 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         return false;
     }
 
-    protected function createSegmentBuilders(LoggerInterface $logger, $config) {
+    protected function createSegmentBuilders($config) {
         $segmentBuilders = [];
         foreach($config as $segmentBuilderConfig) {
-            if($segmentBuilder = self::createSegmentBuilder($logger, $segmentBuilderConfig)) {
+            if($segmentBuilder = self::createSegmentBuilder($segmentBuilderConfig)) {
                 $segmentBuilders[] = $segmentBuilder;
             }
         }

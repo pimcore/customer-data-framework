@@ -19,6 +19,8 @@ interface SegmentManagerInterface {
     const CONDITION_AND = 'and';
     const CONDITION_OR = 'or';
 
+    public function __construct(LoggerInterface $logger);
+
     /**
      * @param int[] $segmentIds
      *
@@ -43,7 +45,7 @@ interface SegmentManagerInterface {
     /**
      * @return void
      */
-    public function buildCalculatedSegments(LoggerInterface $logger);
+    public function buildCalculatedSegments();
 
     /**
      * @param CustomerInterface          $customer

@@ -23,6 +23,8 @@ class BuildSegmentsCommand extends AbstractCommand {
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        \Pimcore::getDiContainer()->set("CustomerManagementFramework\\Logger", $this->getLogger());
+
         Factory::getInstance()->getSegmentManager()->buildCalculatedSegments($this->getLogger());
     }
 
