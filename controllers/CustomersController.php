@@ -2,6 +2,8 @@
 
 use CustomerManagementFramework\Controller\Admin;
 use CustomerManagementFramework\Controller\Traits\PaginatorController;
+use CustomerManagementFramework\Listing\Filter\Equals;
+use CustomerManagementFramework\Listing\Filter\Search;
 use CustomerManagementFramework\Listing\Listing;
 use Pimcore\Model\Object\Customer;
 
@@ -44,6 +46,26 @@ class CustomerManagementFramework_CustomersController extends Admin
      */
     protected function addListingFilters(Listing $listing, array $filters = [])
     {
+        $equalsProperties = [
+            'id'     => 'o_id',
+            'active' => 'active',
+        ];
+
+        $searchProperties = [
+            'email' => 'email',
+        ];
+
+        foreach ($equalsProperties as $property => $databaseField) {
+            if (array_key_exists($property, $filters)) {
+                $listing->addFilter(new Equals($databaseField, $filters[$property]));
+            }
+        }
+
+        foreach ($searchProperties as $property => $databaseField) {
+            if (array_key_exists($property, $filters)) {
+                $listing->addFilter(new Search($databaseField, $filters[$property]));
+            }
+        }
     }
 
     /**
