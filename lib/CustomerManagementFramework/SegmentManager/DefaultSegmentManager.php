@@ -12,11 +12,13 @@ namespace CustomerManagementFramework\SegmentManager;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Helper\Objects;
 use CustomerManagementFramework\Model\CustomerInterface;
+use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use CustomerManagementFramework\Plugin;
 use CustomerManagementFramework\SegmentBuilder\SegmentBuilderInterface;
 use Pimcore\Db;
 use Pimcore\File;
 use Pimcore\Model\Object\AbstractObject;
+use Pimcore\Model\Object\Concrete;
 use Pimcore\Model\Object\CustomerSegment;
 use Pimcore\Model\Object\Customer;
 use Pimcore\Model\Object\CustomerSegmentGroup;
@@ -253,6 +255,31 @@ class DefaultSegmentManager implements SegmentManagerInterface {
     public function addCustomerToChangesQueue(CustomerInterface $customer)
     {
         Db::get()->query(sprintf("insert ignore into %s set customerId=?", self::CHANGES_QUEUE_TABLE), $customer->getId());
+    }
+
+
+    public function preSegmentUpdate(CustomerSegmentInterface $segment)
+    {
+        if($segment instanceof Concrete) {
+
+            $parent = $segment;
+
+            $group = null;
+            while($parent) {
+                $parent = $parent->getParent();
+
+                if($parent instanceof CustomerSegmentGroup) {
+                    $group = $parent;
+                    break;
+                }
+            }
+
+            if($group) {
+                $segment->setGroup($parent);
+            } else {
+                $segment->setGroup(null);
+            }
+        }
     }
 
     protected function prepareSegmentBuilders(array $segmentBuilders)

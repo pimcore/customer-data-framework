@@ -92,5 +92,7 @@ interface SegmentManagerInterface {
      */
     public function addCustomerToChangesQueue(CustomerInterface $customer);
 
+    public function preSegmentUpdate(CustomerSegmentInterface $segment);
+
 
 }

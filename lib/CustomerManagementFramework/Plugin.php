@@ -4,6 +4,7 @@ namespace CustomerManagementFramework;
 
 use CustomerManagementFramework\Model\ActivityInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
+use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use Pimcore\API\Plugin as PluginLib;
 
 class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterface
@@ -29,6 +30,10 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
 
             if($object instanceof CustomerInterface) {
                 Factory::getInstance()->getCustomerSaveManager()->preUpdate($object);
+            }
+
+            if($object instanceof CustomerSegmentInterface) {
+                Factory::getInstance()->getSegmentManager()->preSegmentUpdate($object);
             }
         });
 
