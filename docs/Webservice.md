@@ -1,6 +1,6 @@
 # Webservice
 
-The CMF plugin has a built in REST webservice. The access to it via API-Keys is handled the same way as in the Pimcore core:
+The CMF plugin has a built in REST webservice. Access is handled via API-Keys and works the same way as in the Pimcore core:
 [Pimcore core REST Webservice API](https://www.pimcore.org/docs/latest/Web_Services/index.html)
 
 ## Export Api
