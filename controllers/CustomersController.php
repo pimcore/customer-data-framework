@@ -24,25 +24,24 @@ class CustomerManagementFramework_CustomersController extends Admin
         $this->view->paginator = $paginator;
     }
 
-    protected function loadSegmentGroup($groupName)
+    /**
+     * Load a segment group and set it on the view
+     *
+     * @param $name
+     */
+    protected function loadSegmentGroup($name)
     {
         /** @var \Pimcore\Model\Object\CustomerSegmentGroup $group */
-        $group = \Pimcore\Model\Object\CustomerSegmentGroup::getByName($groupName, 1);
-        if (!$group) {
-            throw new InvalidArgumentException(sprintf('Segment group %s was not found', $groupName));
+        $segmentGroup = \Pimcore\Model\Object\CustomerSegmentGroup::getByName($name, 1);
+        if (!$segmentGroup) {
+            throw new InvalidArgumentException(sprintf('Segment group %s was not found', $name));
         }
 
-        $segments = new CustomerSegment\Listing();
-        $segments->addConditionParam('group__id IS NOT NULL AND group__id = ?', $group->getId());
-
-        if (!isset($this->view->segments)) {
-            $this->view->segments = [];
+        if (!isset($this->view->segmentGroups)) {
+            $this->view->segmentGroups = [];
         }
 
-        $this->view->segments[$group->getName()] = [];
-        foreach ($segments as $segment) {
-            $this->view->segments[$group->getName()][] = $segment;
-        }
+        $this->view->segmentGroups[] = $segmentGroup;
     }
 
     /**
@@ -59,8 +58,6 @@ class CustomerManagementFramework_CustomersController extends Admin
         $listing = new Listing($coreListing);
 
         $this->addListingFilters($listing, $filters);
-
-        // dump($listing->getListing()->getQuery()->__toString());
 
         return $listing;
     }
@@ -98,24 +95,28 @@ class CustomerManagementFramework_CustomersController extends Admin
             }
         }
 
-        if (array_key_exists('gender', $filters)) {
-            /** @var \Pimcore\Model\Object\CustomerSegmentGroup $segmentGroup */
-            $segmentGroup = \Pimcore\Model\Object\CustomerSegmentGroup::getByName('gender', 1);
+        if (array_key_exists('segments', $filters)) {
+            foreach ($filters['segments'] as $groupId => $segmentIds) {
+                /** @var \Pimcore\Model\Object\CustomerSegmentGroup $segmentGroup */
+                $segmentGroup = \Pimcore\Model\Object\CustomerSegmentGroup::getById($groupId);
+                if (!$segmentGroup) {
+                    throw new InvalidArgumentException(sprintf('Segment group %d was not found', $groupId));
+                }
 
-            $segments = [];
-            foreach ($filters['gender'] as $genderId) {
-                $segments[] = CustomerSegment::getById($genderId);
+
+                $segments = [];
+                foreach ($segmentIds as $segmentId) {
+                    $segment = CustomerSegment::getById($segmentId);
+
+                    if (!$segment) {
+                        throw new InvalidArgumentException(sprintf('Segment %d was not found', $segmentId));
+                    }
+
+                    $segments[] = $segment;
+                }
+
+                $listing->addFilter(new Filter\CustomerSegment($segmentGroup, $segments));
             }
-
-            /*
-            dump($segmentGroup->getName());
-            dump(array_map(function (CustomerSegment $segment) {
-                return $segment->getName();
-            }, $segments));
-            */
-
-            $segmentFilter = new Filter\CustomerSegment($segmentGroup, $segments);
-            $listing->addFilter($segmentFilter);
         }
     }
 

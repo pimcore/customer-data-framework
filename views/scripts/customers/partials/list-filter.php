@@ -40,33 +40,44 @@
     </div>
 
     <div class="col-md-4">
-        <fieldset>
-            <legend>
-                Segments
-            </legend>
 
-            <?php
-            /** @var \Pimcore\Model\Object\CustomerSegment[] $segments */
-            foreach ($this->segments as $groupName => $segments): ?>
+        <?php if (isset($this->segmentGroups)): ?>
+            <fieldset>
+                <legend>
+                    Segments
+                </legend>
 
-                <div class="form-group">
-                    <label for="form-filter-<?= $groupName ?>"><?= $groupName ?></label>
-                    <select id="form-filter-<?= $groupName ?>" name="filter[segments][<?= $groupName ?>][]" class="form-control plugin-select2" multiple="multiple" data-placeholder="<?= $groupName ?>">
+                <?php
+                /** @var \Pimcore\Model\Object\CustomerSegmentGroup $segmentGroup */
+                foreach ($this->segmentGroups as $segmentGroup): ?>
 
-                        <?php foreach ($segments as $segment): ?>
+                    <?php
+                    $segments = \CustomerManagementFramework\Factory::getInstance()
+                        ->getSegmentManager()
+                        ->getSegmentsFromSegmentGroup($segmentGroup);
+                    ?>
 
-                            <option value="<?= $segment->getId() ?>" <?= $this->formFilterSelectedState($groupName, $segment->getId(), true, ['filters', 'segments']) ?>>
-                                <?= $segment->getName() ?>
-                            </option>
+                    <div class="form-group">
+                        <label for="form-filter-segment-<?= $segmentGroup->getId() ?>"><?= $segmentGroup->getName() ?></label>
+                        <select id="form-filter-segment-<?= $segmentGroup->getId() ?>" name="filter[segments][<?= $segmentGroup->getId() ?>][]" class="form-control plugin-select2" multiple="multiple" data-placeholder="<?= $segmentGroup->getName() ?>">
 
-                        <?php endforeach; ?>
+                            <?php
+                            /** @var \CustomerManagementFramework\Model\CustomerSegmentInterface|\Pimcore\Model\Element\ElementInterface $segment */
+                            foreach ($segments as $segment): ?>
 
-                    </select>
-                </div>
+                                <option value="<?= $segment->getId() ?>" <?= $this->formFilterSelectedState($segmentGroup->getId(), $segment->getId(), true, ['filters', 'segments']) ?>>
+                                    <?= $segment->getName() ?>
+                                </option>
 
-            <?php endforeach; ?>
+                            <?php endforeach; ?>
 
-        </fieldset>
+                        </select>
+                    </div>
+
+                <?php endforeach; ?>
+
+            </fieldset>
+        <?php endif; ?>
 
     </div>
 </div>

@@ -79,9 +79,9 @@ interface SegmentManagerInterface {
 
     /**
      * @param CustomerSegmentGroup $segmentGroup
-     * @param array                $ignoreSegments
+     * @param CustomerSegmentInterface[] $ignoreSegments
      *
-     * @return array
+     * @return CustomerSegmentInterface[]
      */
     public function getSegmentsFromSegmentGroup(CustomerSegmentGroup $segmentGroup, array $ignoreSegments = []);
 
