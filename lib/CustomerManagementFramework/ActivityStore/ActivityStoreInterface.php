@@ -46,7 +46,7 @@ interface ActivityStoreInterface {
 
     public function deleteCustomer(CustomerInterface $customer);
 
-    public function getActivitiesData($pageSize, $page = 1, ExportActivitiesFilterParams $params);
+    public function getActivitiesDataForWebservice($pageSize, $page = 1, ExportActivitiesFilterParams $params);
 
     public function getDeletionsData($type, $deletionsSinceTimestamp);
 

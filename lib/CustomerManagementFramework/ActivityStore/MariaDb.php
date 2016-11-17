@@ -78,7 +78,7 @@ class MariaDb implements ActivityStoreInterface{
         return new DefaultMariaDbActivityList();
     }
 
-    public function getActivitiesData($pageSize, $page = 1, ExportActivitiesFilterParams $params)
+    public function getActivitiesDataForWebservice($pageSize, $page = 1, ExportActivitiesFilterParams $params)
     {
         $db = Db::get();
 

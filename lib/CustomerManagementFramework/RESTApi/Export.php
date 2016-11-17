@@ -57,7 +57,7 @@ class Export implements ExportInterface {
     public function activities($pageSize, $page = 1, ExportActivitiesFilterParams $params)
     {
 
-        $result = Factory::getInstance()->getActivityStore()->getActivitiesData($pageSize, $page, $params);
+        $result = Factory::getInstance()->getActivityStore()->getActivitiesDataForWebservice($pageSize, $page, $params);
         $result['success'] = true;
 
         return $result;
