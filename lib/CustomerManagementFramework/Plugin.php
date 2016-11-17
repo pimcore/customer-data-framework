@@ -24,6 +24,14 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
 
         parent::init();
 
+        \Pimcore::getEventManager()->attach(["object.preAdd","object.preUpdate"], function (\Zend_EventManager_Event $e) {
+            $object = $e->getTarget();
+
+            if($object instanceof CustomerInterface) {
+                Factory::getInstance()->getCustomerSaveManager()->preUpdate($object);
+            }
+        });
+
         \Pimcore::getEventManager()->attach(["object.postAdd","object.postUpdate"], function (\Zend_EventManager_Event $e) {
             $object = $e->getTarget();
 
@@ -32,8 +40,7 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
             }
 
             if($object instanceof CustomerInterface) {
-                Factory::getInstance()->getSegmentManager()->buildCalculatedSegmentsOnCustomerSave($object);
-                Factory::getInstance()->getSegmentManager()->addCustomerToChangesQueue($object);
+                Factory::getInstance()->getCustomerSaveManager()->postUpdate($object);
             }
         });
 
