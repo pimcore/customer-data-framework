@@ -2,9 +2,11 @@
 
 namespace CustomerManagementFramework\View\Helper;
 
-abstract class AbstractFormState extends \Zend_View_Helper_Abstract
+abstract class AbstractFormState extends AbstractFormValue
 {
     /**
+     * Resolve form field state from property
+     *
      * @param $name
      * @param $value
      * @param bool $multiple
@@ -15,17 +17,13 @@ abstract class AbstractFormState extends \Zend_View_Helper_Abstract
     {
         $state = false;
 
-        $base = $this->view;
-        if (null !== $property) {
-            if (!isset($this->view->{$property})) {
-                return $state;
-            }
-
-            $base = $this->view->{$property};
+        $base = $this->getPropertyBase($property);
+        if (null === $base) {
+            return $state;
         }
 
-        if (array_key_exists($name, $base)) {
-            $filterValue = ($base instanceof \Zend_View) ? $base->{$name} : $base[$name];
+        if ($this->valueExists($name, $property, $base)) {
+            $filterValue = $this->getValue($name, $base);
 
             if ($multiple) {
                 if (is_array($filterValue)) {

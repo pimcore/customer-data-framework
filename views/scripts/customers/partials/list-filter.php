@@ -51,11 +51,11 @@
 
                 <div class="form-group">
                     <label for="form-filter-<?= $groupName ?>"><?= $groupName ?></label>
-                    <select id="form-filter-<?= $groupName ?>" name="filter[<?= $groupName ?>][]" class="form-control plugin-select2" multiple="multiple" data-placeholder="<?= $groupName ?>">
+                    <select id="form-filter-<?= $groupName ?>" name="filter[segments][<?= $groupName ?>][]" class="form-control plugin-select2" multiple="multiple" data-placeholder="<?= $groupName ?>">
 
                         <?php foreach ($segments as $segment): ?>
 
-                            <option value="<?= $segment->getId() ?>" <?= $this->formFilterSelectedState($groupName, $segment->getId(), true) ?>>
+                            <option value="<?= $segment->getId() ?>" <?= $this->formFilterSelectedState($groupName, $segment->getId(), true, ['filters', 'segments']) ?>>
                                 <?= $segment->getName() ?>
                             </option>
 
