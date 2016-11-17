@@ -77,6 +77,12 @@ class CustomerManagementFramework_CustomersController extends Admin
 
         $searchProperties = [
             'email' => 'email',
+            'name'  => [
+                'name',
+                'firstname',
+                'surname',
+                'userName'
+            ]
         ];
 
         foreach ($equalsProperties as $property => $databaseField) {
