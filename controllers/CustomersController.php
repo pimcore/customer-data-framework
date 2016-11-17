@@ -2,8 +2,7 @@
 
 use CustomerManagementFramework\Controller\Admin;
 use CustomerManagementFramework\Controller\Traits\PaginatorController;
-use CustomerManagementFramework\Listing\Filter\Equals;
-use CustomerManagementFramework\Listing\Filter\Search;
+use CustomerManagementFramework\Listing\Filter;
 use CustomerManagementFramework\Listing\Listing;
 use Pimcore\Model\Object\Customer;
 use Pimcore\Model\Object\CustomerSegment;
@@ -61,6 +60,8 @@ class CustomerManagementFramework_CustomersController extends Admin
 
         $this->addListingFilters($listing, $filters);
 
+        // dump($listing->getListing()->getQuery()->__toString());
+
         return $listing;
     }
 
@@ -87,14 +88,34 @@ class CustomerManagementFramework_CustomersController extends Admin
 
         foreach ($equalsProperties as $property => $databaseField) {
             if (array_key_exists($property, $filters)) {
-                $listing->addFilter(new Equals($databaseField, $filters[$property]));
+                $listing->addFilter(new Filter\Equals($databaseField, $filters[$property]));
             }
         }
 
         foreach ($searchProperties as $property => $databaseField) {
             if (array_key_exists($property, $filters)) {
-                $listing->addFilter(new Search($databaseField, $filters[$property]));
+                $listing->addFilter(new Filter\Search($databaseField, $filters[$property]));
             }
+        }
+
+        if (array_key_exists('gender', $filters)) {
+            /** @var \Pimcore\Model\Object\CustomerSegmentGroup $segmentGroup */
+            $segmentGroup = \Pimcore\Model\Object\CustomerSegmentGroup::getByName('gender', 1);
+
+            $segments = [];
+            foreach ($filters['gender'] as $genderId) {
+                $segments[] = CustomerSegment::getById($genderId);
+            }
+
+            /*
+            dump($segmentGroup->getName());
+            dump(array_map(function (CustomerSegment $segment) {
+                return $segment->getName();
+            }, $segments));
+            */
+
+            $segmentFilter = new Filter\CustomerSegment($segmentGroup, $segments);
+            $listing->addFilter($segmentFilter);
         }
     }
 

@@ -75,7 +75,7 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
             $this->applyFieldCondition($this->fields[0], $value, $tableName, $query);
         } else {
             // build a sub-query to assemble where condition
-            $subQuery = Db::getConnection()->select();
+            $subQuery = Db::get()->select();
             $operator = $this->getBooleanFieldOperator();
 
             foreach ($this->fields as $field) {
