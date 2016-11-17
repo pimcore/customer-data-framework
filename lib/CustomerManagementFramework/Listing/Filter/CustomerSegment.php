@@ -89,7 +89,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
     protected function buildIdentifier(Object\CustomerSegmentGroup $segmentGroup)
     {
         return sprintf(
-            'filter_segment_%d_%d',
+            'fltr_seg_%d_%d',
             $segmentGroup->getId(),
             static::$index++
         );
@@ -144,7 +144,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
         $joinName = sprintf(
             '%s_%s',
             $this->identifier,
-            strtolower($this->type)
+            strtolower($this->type)[0]
         );
 
         $this->addJoin($listing, $query, $joinName, $segmentIds);
@@ -158,12 +158,13 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      */
     protected function applyAndQuery(CoreListing\Concrete $listing, \Zend_Db_Select $query)
     {
+        $index = 0;
         foreach ($this->segments as $segment) {
             $joinName = sprintf(
                 '%s_%s_%d',
                 $this->identifier,
-                strtolower($this->type),
-                $segment->getId()
+                strtolower($this->type)[0],
+                $index++
             );
 
             $this->addJoin($listing, $query, $joinName, $segment->getId());
