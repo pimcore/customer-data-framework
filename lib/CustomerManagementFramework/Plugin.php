@@ -90,7 +90,7 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
     public static function isInstalled()
     {
         // implement your own logic here
-        return true;
+        return false;
     }
 
     private static function getConfigFile() {

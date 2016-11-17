@@ -34,6 +34,7 @@
 			<pluginJsPaths>
                 <path>/plugins/CustomerManagementFramework/static/js/startup.js</path>
                 <path>/plugins/CustomerManagementFramework/static/js/ActivityView.js</path>
+                <path>/plugins/CustomerManagementFramework/static/js/CustomerView.js</path>
 			</pluginJsPaths>
 
 			<pluginCssPaths>
