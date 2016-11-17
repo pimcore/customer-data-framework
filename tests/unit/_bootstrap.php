@@ -3,3 +3,5 @@
 
 // load pimcore environment
 require_once __DIR__ . '/../../../../pimcore/cli/startup.php';
+
+Pimcore::initPlugins();
