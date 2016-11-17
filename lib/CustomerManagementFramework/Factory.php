@@ -54,16 +54,19 @@ class Factory {
 
 
     /**
+     * @return ActivityViewInterface
+     */
+    public function getActivityView()
+    {
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActivityView');
+    }
+
+    /**
      * @return SegmentManagerInterface
      */
     public function getSegmentManager()
     {
         return \Pimcore::getDiContainer()->get('CustomerManagementFramework\SegmentManager');
-    }
-
-    public function getActivityView()
-    {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActivityView');
     }
     
     /**
