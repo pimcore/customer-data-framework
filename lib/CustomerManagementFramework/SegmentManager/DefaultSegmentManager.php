@@ -9,6 +9,7 @@
 namespace CustomerManagementFramework\SegmentManager;
 
 
+use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Helper\Objects;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Plugin;
@@ -86,6 +87,9 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $logger = $this->logger;
         $logger->notice("start segment building");
 
+        $backup = Factory::getInstance()->getCustomerSaveManager()->getSegmentBuildingHookEnabled();
+        Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled(false);
+
         $segmentBuilders = self::createSegmentBuilders();
         self::prepareSegmentBuilders($segmentBuilders);
 
@@ -110,6 +114,8 @@ class DefaultSegmentManager implements SegmentManagerInterface {
                 Db::get()->query(sprintf("delete from %s where customerId = ?", self::CHANGES_QUEUE_TABLE), $customer->getId());
             }
         }
+
+        Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled($backup);
     }
 
     public function buildCalculatedSegmentsOnCustomerSave(CustomerInterface $customer)

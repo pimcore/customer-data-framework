@@ -14,6 +14,7 @@ use Psr\Log\LoggerInterface;
 
 class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 {
+    private $segmentBuildingHookEnabled = true;
 
     public function __construct(LoggerInterface $logger)
     {
@@ -29,7 +30,10 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     {
         $this->applyDataTransformers($customer);
 
-        Factory::getInstance()->getSegmentManager()->buildCalculatedSegmentsOnCustomerSave($customer);
+        if($this->segmentBuildingHookEnabled) {
+            Factory::getInstance()->getSegmentManager()->buildCalculatedSegmentsOnCustomerSave($customer);
+        }
+
         Factory::getInstance()->getSegmentManager()->addCustomerToChangesQueue($customer);
     }
 
@@ -37,5 +41,24 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     {
 
     }
+
+    /**
+     * @return boolean
+     */
+    public function getSegmentBuildingHookEnabled()
+    {
+        return $this->segmentBuildingHookEnabled;
+    }
+
+    /**
+     * @param boolean $segmentBuildingHookEnabled
+     */
+    public function setSegmentBuildingHookEnabled($segmentBuildingHookEnabled)
+    {
+        $this->segmentBuildingHookEnabled = $segmentBuildingHookEnabled;
+    }
+
+
+
 
 }
