@@ -6,15 +6,28 @@ use CustomerManagementFramework\Listing\OnCreateQueryFilterInterface;
 use Pimcore\Db;
 use Pimcore\Model\Object\Listing as CoreListing;
 
-abstract class AbstractFieldBetween extends AbstractField implements OnCreateQueryFilterInterface
+abstract class AbstractFieldBetween extends AbstractFilter implements OnCreateQueryFilterInterface
 {
     const TYPE_FROM = 'from';
     const TYPE_TO = 'to';
 
     /**
+     * @var string
+     */
+    protected $field;
+
+    /**
      * @var bool
      */
     protected $inclusive = true;
+
+    /**
+     * @param string $field
+     */
+    public function __construct($field)
+    {
+        $this->field = $field;
+    }
 
     /**
      * @param bool $inclusive
