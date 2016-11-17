@@ -94,20 +94,26 @@ class Factory {
      *
      * @return mixed
      */
-    public function createObject($className, $needsToBeSubclassOf = null, $constructorParam = null)
+    public function createObject($className, $needsToBeSubclassOf = null, array $constructorParams = null)
     {
-        if(!class_exists($className)) {
-            throw new \Exception(sprintf("class %s does not exist", $className));
+        
+        if(!\Pimcore::getDiContainer()->has($className)) {
+            $definition = \DI\object($className);
+            if($constructorParams) {
+                foreach($constructorParams as $key => $param) {
+                    $definition->constructorParameter($key, $param);
+                }
+            }
+
+            \Pimcore::getDiContainer()->set($className, $definition);
         }
 
-        if($needsToBeSubclassOf && !is_subclass_of($className, $needsToBeSubclassOf)) {
+        $object = \Pimcore::getDiContainer()->make($className);
+
+        if(!is_subclass_of($object, $needsToBeSubclassOf)) {
             throw new \Exception(sprintf("%s needs to extend/implement %s", $className, $needsToBeSubclassOf));
         }
 
-        if(is_null($constructorParam)) {
-            return new $className();
-        }
-
-        return new $className($constructorParam);
+        return $object;
     }
 }

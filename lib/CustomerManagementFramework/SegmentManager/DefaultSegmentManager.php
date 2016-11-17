@@ -263,37 +263,6 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
     }
 
-    /**
-     * @param LoggerInterface $logger
-     * @param                 $segmentBuilderConfig
-     *
-     * @return SegmentBuilderInterface|bool
-     */
-    protected function createSegmentBuilder($segmentBuilderConfig)
-    {
-        $logger = $this->logger;
-
-        $segmentBuilderClass = (string)$segmentBuilderConfig->segmentBuilder;
-        if(class_exists($segmentBuilderConfig->segmentBuilder)) {
-
-            if(!is_subclass_of($segmentBuilderClass, '\CustomerManagementFramework\SegmentBuilder\SegmentBuilderInterface')) {
-                $logger->warning(sprintf("segment builder needs to implement SegmentBuilderInterface: %s", $segmentBuilderClass));
-                return false;
-            }
-
-            try {
-                $segmentBuilder = new $segmentBuilderClass($segmentBuilderConfig, $logger);
-
-                return $segmentBuilder;
-            } catch(\Exception $e) {
-                $logger->warning(sprintf("segment builder could not be instanced: %s (%s)", $segmentBuilderClass, $e->getMessage()));
-            }
-
-        } else {
-            $logger->warning(sprintf("segment builder not found: %s", $segmentBuilderClass));
-        }
-        return false;
-    }
 
     /**
      * @return SegmentBuilderInterface[]|void
@@ -315,9 +284,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
         $segmentBuilders = [];
         foreach($config as $segmentBuilderConfig) {
-            if($segmentBuilder = self::createSegmentBuilder($segmentBuilderConfig)) {
-                $segmentBuilders[] = $segmentBuilder;
-            }
+            $segmentBuilders[] = Factory::getInstance()->createObject((string)$segmentBuilderConfig->segmentBuilder, SegmentBuilderInterface::class, [$segmentBuilderConfig, $this->logger]);
         }
 
         return $segmentBuilders;

@@ -67,7 +67,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
             $class = (string)$dataTransformerConfig->dataTransformer;
 
-            $dataTransformers[] = Factory::getInstance()->createObject($class, CustomerDataTransformerInterface::class, $dataTransformerConfig);
+            $dataTransformers[] = Factory::getInstance()->createObject($class, CustomerDataTransformerInterface::class, [$dataTransformerConfig]);
         }
 
         return $dataTransformers;
