@@ -5,7 +5,7 @@
         "pimcore/installer-plugin": ">=1"
     },
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "codeception/codeception": "^2.2"
     },
     "autoload": {
         "psr-4": {
