@@ -2,7 +2,7 @@
 
 namespace CustomerManagementFramework\Listing\Filter;
 
-use Pimcore\Model\Object\Listing as CoreListing;
+use CustomerManagementFramework\Listing\FilterInterface;
 
 abstract class AbstractFilter
 {

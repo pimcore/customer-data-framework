@@ -2,8 +2,6 @@
 
 namespace CustomerManagementFramework\Listing\Filter;
 
-use Pimcore\Model\Object\Listing as CoreListing;
-
 class DateBetween extends AbstractFieldBetween
 {
     /**
@@ -17,6 +15,7 @@ class DateBetween extends AbstractFieldBetween
     protected $to;
 
     /**
+     * @param string $field
      * @param \DateTime|null $from
      * @param \DateTime|null $to
      */

@@ -15,6 +15,7 @@ class FloatBetween extends AbstractFieldBetween
     protected $to;
 
     /**
+     * @param string $field
      * @param float|null $from
      * @param float|null $to
      */

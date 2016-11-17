@@ -2,8 +2,6 @@
 
 namespace CustomerManagementFramework\Listing\Filter;
 
-use Pimcore\Model\Object\Listing as CoreListing;
-
 class Equals extends AbstractFieldValue
 {
     /**

@@ -2,10 +2,10 @@
 
 namespace CustomerManagementFramework\Listing\Filter;
 
-use CustomerManagementFramework\Listing\ListingFilterInterface;
+use CustomerManagementFramework\Listing\OnCreateQueryFilterInterface;
 use Pimcore\Model\Object\Listing as CoreListing;
 
-abstract class AbstractFieldValue extends AbstractField implements ListingFilterInterface
+abstract class AbstractFieldValue extends AbstractField implements OnCreateQueryFilterInterface
 {
     /**
      * @var string
@@ -40,25 +40,24 @@ abstract class AbstractFieldValue extends AbstractField implements ListingFilter
     }
 
     /**
-     * Apply filter to listing
+     * Apply filter directly to query
      *
      * @param CoreListing\Concrete|CoreListing\Dao $listing
+     * @param \Zend_Db_Select $query
      */
-    public function applyToListing(CoreListing\Concrete $listing)
+    public function applyOnCreateQuery(CoreListing\Concrete $listing, \Zend_Db_Select $query)
     {
         if (empty($this->value)) {
             return;
         }
 
-        $value     = $this->processValue($this->value);
-        $condition = sprintf(
+        $value = $this->processValue($this->value);
+        $query->where(sprintf(
             '`%s`.`%s` %s ?',
             $this->getTableName($listing->getClassId()),
             $this->field,
             $this->getComparisonOperator()
-        );
-
-        $listing->addConditionParam($condition, $value);
+        ), $value);
     }
 
     /**

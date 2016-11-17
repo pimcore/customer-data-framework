@@ -5,7 +5,7 @@ namespace CustomerManagementFramework\Listing;
 use Pimcore\Model\Object\Listing as CoreListing;
 
 /**
- * Generic listing, similar to ecommerce framework order list, but not limited to orders.
+ * Generic wrapper for object listings with support for reusable filter classes
  */
 class Listing
 {
@@ -76,7 +76,7 @@ class Listing
         $this->listing->onCreateQuery(function(\Zend_Db_Select $query) {
             foreach ($this->filters as $filter) {
                 if ($filter instanceof OnCreateQueryFilterInterface) {
-                    $filter->applyOnCreateQuery($query, $this->listing->getClassId());
+                    $filter->applyOnCreateQuery($this->listing, $query);
                 }
             }
         });

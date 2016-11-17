@@ -70,12 +70,12 @@ abstract class AbstractFieldBetween extends AbstractField implements OnCreateQue
     abstract protected function getToValue();
 
     /**
-     * Apply filter to query
+     * Apply filter directly to query
      *
+     * @param CoreListing\Concrete|CoreListing\Dao $listing
      * @param \Zend_Db_Select $query
-     * @param int $classId
      */
-    public function applyOnCreateQuery(\Zend_Db_Select $query, $classId)
+    public function applyOnCreateQuery(CoreListing\Concrete $listing, \Zend_Db_Select $query)
     {
         $from = $this->getFromValue();
         $to   = $this->getToValue();
@@ -84,7 +84,7 @@ abstract class AbstractFieldBetween extends AbstractField implements OnCreateQue
             return;
         }
 
-        $tableName = $this->getTableName($classId);
+        $tableName = $this->getTableName($listing->getClassId());
         $subSelect = Db::getConnection()->select();
 
         if (null !== $from) {
