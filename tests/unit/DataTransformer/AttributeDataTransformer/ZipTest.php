@@ -108,6 +108,25 @@ class ZipTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testCorrectTransformationsCh()
+    {
+        $transfomer = new \CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\Ch();
+
+        $tests = [
+            '1234 Test' => '1234',
+            'CH-1234' => '1234',
+            '12345' => '12345',
+            '1234 Test 1' => '1234',
+        ];
+
+        foreach($tests as $from => $to) {
+
+            $result = $transfomer->transform($from);
+
+            $this->assertEquals($to, $result);
+        }
+    }
+
     public function testCorrectTransformationsRu()
     {
         $transfomer = new \CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\Ru();
@@ -117,6 +136,45 @@ class ZipTest extends \PHPUnit_Framework_TestCase
             'RU-123456' => '123456',
             '1234567' => '1234567',
             '123456 Test 1' => '123456',
+        ];
+
+        foreach($tests as $from => $to) {
+
+            $result = $transfomer->transform($from);
+
+            $this->assertEquals($to, $result);
+        }
+    }
+
+    public function testCorrectTransformationsSe()
+    {
+        $transfomer = new \CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\Se();
+
+        $tests = [
+            '12345' => '123 45',
+            '123456' => '123456',
+            'SE 12345' => '123 45',
+            'SE-123 45' => '123 45',
+        ];
+
+        foreach($tests as $from => $to) {
+
+            $result = $transfomer->transform($from);
+
+            $this->assertEquals($to, $result);
+        }
+    }
+
+    public function testCorrectTransformationsGb()
+    {
+        $transfomer = new \CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\Gb();
+
+        $tests = [
+            'RM11AA' => 'RM1 1AA',
+            'rm11AA' => 'RM1 1AA',
+            'rm11AA london' => 'RM1 1AA',
+            'london rm11AA' => 'RM1 1AA',
+            'rm11AA london' => 'RM1 1AA',
         ];
 
         foreach($tests as $from => $to) {

@@ -12,6 +12,8 @@ use CustomerManagementFramework\Model\CustomerInterface;
 
 interface CustomerDataTransformerInterface
 {
+    public function __construct($config);
+
     /**
      * @param CustomerInterface $customer
      *

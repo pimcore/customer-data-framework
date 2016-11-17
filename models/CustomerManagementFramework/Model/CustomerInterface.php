@@ -17,9 +17,23 @@ interface CustomerInterface {
     public function getGender();
 
     /**
+     * @param $gender
+     *
+     * @return void
+     */
+    public function setGender($gender);
+
+    /**
      * @return string
      */
     public function getFirstname();
+
+    /**
+     * @param $firstname
+     *
+     * @return void
+     */
+    public function setFirstname($firstname);
 
     /**
      * @return string
@@ -27,9 +41,23 @@ interface CustomerInterface {
     public function getLastname();
 
     /**
+     * @param $lastname
+     *
+     * @return void
+     */
+    public function setLastname($lastname);
+
+    /**
      * @return string
      */
     public function getStreet();
+
+    /**
+     * @param $street
+     *
+     * @return void
+     */
+    public function setStreet($street);
 
     /**
      * @return string
@@ -37,9 +65,24 @@ interface CustomerInterface {
     public function getZip();
 
     /**
+     * @param $zip
+     *
+     * @return void
+     */
+    public function setZip($zip);
+
+    /**
      * @return string
      */
     public function getCity();
+
+    /**
+     * @param $city
+     *
+     * @return void
+     */
+    public function setCity($city);
+
 
     /**
      * @return string
@@ -47,9 +90,24 @@ interface CustomerInterface {
     public function getCountryCode();
 
     /**
+     * @param $countryCode
+     *
+     * @return void
+     */
+    public function setCountryCode($countryCode);
+
+
+    /**
      * @return string
      */
     public function getEmail();
+
+    /**
+     * @param $email
+     *
+     * @return void
+     */
+    public function setEmail($email);
 
     /**
      * @return string
@@ -57,14 +115,35 @@ interface CustomerInterface {
     public function getPhone();
 
     /**
+     * @param $phone
+     *
+     * @return void
+     */
+    public function setPhone($phone);
+
+    /**
      * @return CustomerSegment[]
      */
     public function getManualSegments();
 
     /**
+     * @param array $segments
+     *
+     * @return void
+     */
+    public function setManualSegments($segments);
+
+    /**
      * @return CustomerSegment[]
      */
     public function getCalculatedSegments();
+
+    /**
+     * @param array $segments
+     *
+     * @return void
+     */
+    public function setCalculatedSegments($segments);
 
     /**
      * @return CustomerSegment[]

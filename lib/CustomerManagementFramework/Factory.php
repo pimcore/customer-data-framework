@@ -14,6 +14,7 @@ use CustomerManagementFramework\ActivityView\ActivityViewInterface;
 use CustomerManagementFramework\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFramework\RESTApi\ExportInterface;
 use CustomerManagementFramework\SegmentManager\SegmentManagerInterface;
+use Psr\Log\LoggerInterface;
 
 class Factory {
 
@@ -83,5 +84,30 @@ class Factory {
      */
     public function getRESTApiExport() {
         return \Pimcore::getDiContainer()->get('CustomerManagementFramework\RESTApi\Export');
+    }
+
+
+    /**
+     * @param                 $className
+     * @param LoggerInterface $logger
+     * @param null            $needsToBeSubclassOf
+     *
+     * @return mixed
+     */
+    public function createObject($className, $needsToBeSubclassOf = null, $constructorParam = null)
+    {
+        if(!class_exists($className)) {
+            throw new \Exception(sprintf("class %s does not exist", $className));
+        }
+
+        if($needsToBeSubclassOf && !is_subclass_of($className, $needsToBeSubclassOf)) {
+            throw new \Exception(sprintf("%s needs to extend/implement %s", $className, $needsToBeSubclassOf));
+        }
+
+        if(is_null($constructorParam)) {
+            return new $className();
+        }
+
+        return new $className($constructorParam);
     }
 }

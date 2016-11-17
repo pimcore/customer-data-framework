@@ -8,17 +8,29 @@
 
 namespace CustomerManagementFramework\CustomerSaveManager;
 
+use CustomerManagementFramework\DataTransformer\CustomerDataTransformer\CustomerDataTransformerInterface;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
+use CustomerManagementFramework\Plugin;
 use Psr\Log\LoggerInterface;
 
 class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 {
     private $segmentBuildingHookEnabled = true;
 
+    protected $config;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
     public function __construct(LoggerInterface $logger)
     {
 
+        $config = Plugin::getConfig();
+        $this->config = $config->CustomerSaveManager;
+        $this->logger = $logger;
     }
 
     public function preUpdate(CustomerInterface $customer)
@@ -39,7 +51,26 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     public function applyDataTransformers(CustomerInterface $customer)
     {
+        foreach($this->createDataTransformers() as $dataTransformer) {
+            $this->logger->info(sprintf("apply data transformer %s to customer %s", get_class($dataTransformer), (string)$customer));
+            $dataTransformer->transform($customer);
+        }
+    }
 
+    /**
+     * @return CustomerDataTransformerInterface[]
+     */
+    protected function createDataTransformers()
+    {
+        $dataTransformers = [];
+        foreach($this->config->dataTransformers as $dataTransformerConfig) {
+
+            $class = (string)$dataTransformerConfig->dataTransformer;
+
+            $dataTransformers[] = Factory::getInstance()->createObject($class, CustomerDataTransformerInterface::class, $dataTransformerConfig);
+        }
+
+        return $dataTransformers;
     }
 
     /**
