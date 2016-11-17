@@ -9,10 +9,11 @@
 namespace CustomerManagementFramework\DataTransformer\CustomerDataTransformer;
 
 use CustomerManagementFramework\Model\CustomerInterface;
+use Psr\Log\LoggerInterface;
 
 interface CustomerDataTransformerInterface
 {
-    public function __construct($config);
+    public function __construct($config, LoggerInterface $logger);
 
     /**
      * @param CustomerInterface $customer
