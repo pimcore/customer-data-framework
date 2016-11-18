@@ -3,8 +3,7 @@
         <!-- /.box-body -->
 
         <div class="box-footer text-right">
-
-            <a href="<?= $this->selfUrl($this->request, true, $this->addPerPageParam($this->request)) ?>"
+            <a href="<?= $this->selfUrl($this->request, true, $this->addPerPageParam($this->request, $this->clearUrlParams ?: [])) ?>"
                class="btn btn-default">
                 <i class="fa fa-ban"></i>
                 Clear Filters

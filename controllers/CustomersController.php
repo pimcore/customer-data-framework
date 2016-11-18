@@ -145,6 +145,12 @@ class CustomerManagementFramework_CustomersController extends Admin
                 throw new InvalidArgumentException(sprintf('Segment %d was not found', $segmentId));
             }
 
+            $clearUrlParams = $this->view->clearUrlParams ?: [];
+            $clearUrlParams['segmentId'] = $segment->getId();
+
+            $this->view->prefilteredSegment = $segment;
+            $this->view->clearUrlParams     = $clearUrlParams;
+
             return $segment;
         }
     }
