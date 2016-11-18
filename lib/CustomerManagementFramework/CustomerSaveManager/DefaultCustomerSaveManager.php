@@ -8,10 +8,11 @@
 
 namespace CustomerManagementFramework\CustomerSaveManager;
 
-use CustomerManagementFramework\DataTransformer\CustomerDataTransformer\CustomerDataTransformerInterface;
+use CustomerManagementFramework\CustomerSaveHandler\CustomerSaveHandlerInterface;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Plugin;
+use Pimcore\Model\Element\ValidationException;
 use Psr\Log\LoggerInterface;
 
 class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
@@ -35,12 +36,17 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     public function preUpdate(CustomerInterface $customer)
     {
-        $this->applyDataTransformers($customer);
+        $this->applySaveHandlers($customer);
+
+        /*$ex = new ValidationException('...');
+        $ex->setSubItems(["test"=>"tester"]);*/
+
+       // throw $ex;
     }
 
     public function postUpdate(CustomerInterface $customer)
     {
-        $this->applyDataTransformers($customer);
+      // $this->applyDataTransformers($customer);
 
         if($this->segmentBuildingHookEnabled) {
             Factory::getInstance()->getSegmentManager()->buildCalculatedSegmentsOnCustomerSave($customer);
@@ -49,28 +55,28 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         Factory::getInstance()->getSegmentManager()->addCustomerToChangesQueue($customer);
     }
 
-    public function applyDataTransformers(CustomerInterface $customer)
+    public function applySaveHandlers(CustomerInterface $customer)
     {
-        foreach($this->createDataTransformers() as $dataTransformer) {
-            $this->logger->info(sprintf("apply data transformer %s to customer %s", get_class($dataTransformer), (string)$customer));
-            $dataTransformer->transform($customer);
+        foreach($this->createSaveHandlers() as $handler) {
+            $this->logger->info(sprintf("apply save handler %s to customer %s", get_class($handler), (string)$customer));
+            $handler->process($customer);
         }
     }
 
     /**
-     * @return CustomerDataTransformerInterface[]
+     * @return CustomerSaveHandlerInterface[]
      */
-    protected function createDataTransformers()
+    protected function createSaveHandlers()
     {
-        $dataTransformers = [];
-        foreach($this->config->dataTransformers as $dataTransformerConfig) {
+        $saveHandlers = [];
+        foreach($this->config->saveHandlers as $saveHandlerConfig) {
 
-            $class = (string)$dataTransformerConfig->dataTransformer;
+            $class = (string)$saveHandlerConfig->saveHandler;
 
-            $dataTransformers[] = Factory::getInstance()->createObject($class, CustomerDataTransformerInterface::class, [$dataTransformerConfig, $this->logger]);
+            $saveHandlers[] = Factory::getInstance()->createObject($class, CustomerSaveHandlerInterface::class, [$saveHandlerConfig, $this->logger]);
         }
 
-        return $dataTransformers;
+        return $saveHandlers;
     }
 
     /**
