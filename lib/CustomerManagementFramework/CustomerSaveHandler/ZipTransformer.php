@@ -6,14 +6,14 @@
  * Time: 11:35
  */
 
-namespace CustomerManagementFramework\DataTransformer\CustomerDataTransformer;
+namespace CustomerManagementFramework\CustomerSaveHandler;
 
-use CustomerManagementFramework\DataTransformer\AttributeDataTransformer\AttributeDataTransformerInterface;
+use CustomerManagementFramework\DataTransformer\DataTransformerInterface;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 
-class ZipTransformer implements CustomerDataTransformerInterface
+class ZipTransformer implements CustomerSaveHandlerInterface
 {
     private $config;
 
@@ -49,13 +49,13 @@ class ZipTransformer implements CustomerDataTransformerInterface
      *
      * @return void
      */
-    public function transform(CustomerInterface $customer)
+    public function process(CustomerInterface $customer)
     {
 
         $countryCode = $customer->getCountryCode();
 
         if(!empty($this->countryTransformers[$countryCode])) {
-            $transformer = Factory::getInstance()->createObject($this->countryTransformers[$countryCode], AttributeDataTransformerInterface::class);
+            $transformer = Factory::getInstance()->createObject($this->countryTransformers[$countryCode], DataTransformerInterface::class);
 
             $customer->setZip($transformer->transform($customer->getZip()));
         } else {

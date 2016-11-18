@@ -6,11 +6,11 @@
  * Time: 11:46
  */
 
-namespace CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip;
+namespace CustomerManagementFramework\DataTransformer\Zip;
 
-use CustomerManagementFramework\DataTransformer\AttributeDataTransformer\AttributeDataTransformerInterface;
+use CustomerManagementFramework\DataTransformer\DataTransformerInterface;
 
-class Gb implements AttributeDataTransformerInterface
+class Gb implements DataTransformerInterface
 {
     public function transform($data)
     {

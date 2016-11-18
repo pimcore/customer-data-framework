@@ -6,12 +6,12 @@
  * Time: 11:35
  */
 
-namespace CustomerManagementFramework\DataTransformer\CustomerDataTransformer;
+namespace CustomerManagementFramework\CustomerSaveHandler;
 
 use CustomerManagementFramework\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 
-interface CustomerDataTransformerInterface
+interface CustomerSaveHandlerInterface
 {
     public function __construct($config, LoggerInterface $logger);
 
@@ -20,5 +20,5 @@ interface CustomerDataTransformerInterface
      *
      * @return void
      */
-    public function transform(CustomerInterface $customer);
+    public function process(CustomerInterface $customer);
 }

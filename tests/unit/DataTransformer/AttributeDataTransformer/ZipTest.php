@@ -13,7 +13,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsDe()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\De();
+        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip\De();
 
         $tests = [
             '6125' => '06125',
@@ -34,7 +34,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsNl()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\Nl();
+        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip\Nl();
 
         $tests = [
             '1234ta' => '1234 TA',
@@ -53,7 +53,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsAt()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\At();
+        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip\At();
 
         $tests = [
             '5733 Bramberg' => '5733',
@@ -72,7 +72,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsDk()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\Dk();
+        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip\Dk();
 
         $tests = [
             '1234 Test' => '1234',
@@ -91,7 +91,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsBe()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\Be();
+        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip\Be();
 
         $tests = [
             '1234 Test' => '1234',
@@ -110,7 +110,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsCh()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\Ch();
+        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip\Ch();
 
         $tests = [
             '1234 Test' => '1234',
@@ -129,7 +129,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsRu()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\Ru();
+        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip\Ru();
 
         $tests = [
             '123456 Test' => '123456',
@@ -148,7 +148,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsSe()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\Se();
+        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip\Se();
 
         $tests = [
             '12345' => '123 45',
@@ -167,7 +167,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsGb()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\Gb();
+        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip\Gb();
 
         $tests = [
             'RM11AA' => 'RM1 1AA',

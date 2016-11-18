@@ -24,5 +24,5 @@ interface CustomerSaveManagerInterface
 
     public function getSegmentBuildingHookEnabled();
 
-    public function applyDataTransformers(CustomerInterface $customer);
+    public function applySaveHandlers(CustomerInterface $customer);
 }

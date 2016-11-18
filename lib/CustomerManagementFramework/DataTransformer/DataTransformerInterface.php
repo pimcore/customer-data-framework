@@ -6,10 +6,10 @@
  * Time: 11:35
  */
 
-namespace CustomerManagementFramework\DataTransformer\AttributeDataTransformer;
+namespace CustomerManagementFramework\DataTransformer;
 
 
-interface AttributeDataTransformerInterface
+interface DataTransformerInterface
 {
     /**
      * @param mixed $data
