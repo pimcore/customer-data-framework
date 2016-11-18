@@ -1,3 +1,7 @@
 .pimcore_icon_activities {
     background: url(/pimcore/static6/img/flat-color-icons/sports_mode.svg) center center no-repeat !important;
 }
+
+.pimcore_icon_customers {
+    background: url(/plugins/CustomerManagementFramework/static/icons/customer.svg) center center no-repeat !important;
+}

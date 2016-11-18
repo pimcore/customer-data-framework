@@ -20,6 +20,13 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
             object.tab.items.items[1].insert(1, panel);
             panel.updateLayout();
        }
+
+        if(type == "object" && object.data.general.o_className == "CustomerSegment" && pimcore.globalmanager.get("user").isAllowed(CustomerView.config.PERMISSION)) {
+            var panel = new CustomerView.CustomerTab(object, type).getPanel();
+
+            object.tab.items.items[1].insert(1, panel);
+            panel.updateLayout();
+        }
     }
 });
 
