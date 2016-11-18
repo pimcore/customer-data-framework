@@ -42,6 +42,11 @@
     <div class="col-md-4">
 
         <?php if (isset($this->segmentGroups)): ?>
+            <?php
+            /** @var \CustomerManagementFramework\Model\CustomerSegmentInterface $prefilteredSegment */
+            $prefilteredSegment = $this->prefilteredSegment;
+            ?>
+
             <fieldset>
                 <legend>
                     Segments
@@ -52,25 +57,39 @@
                 foreach ($this->segmentGroups as $segmentGroup): ?>
 
                     <?php
-                    $segments = \CustomerManagementFramework\Factory::getInstance()
-                        ->getSegmentManager()
-                        ->getSegmentsFromSegmentGroup($segmentGroup);
+                    $readonly = false;
+                    if (null !== $prefilteredSegment && $prefilteredSegment->getGroup()->getId() === $segmentGroup->getId()) {
+                        $readonly = true;
+                    }
                     ?>
 
                     <div class="form-group">
                         <label for="form-filter-segment-<?= $segmentGroup->getId() ?>"><?= $segmentGroup->getName() ?></label>
-                        <select id="form-filter-segment-<?= $segmentGroup->getId() ?>" name="filter[segments][<?= $segmentGroup->getId() ?>][]" class="form-control plugin-select2" multiple="multiple" data-placeholder="<?= $segmentGroup->getName() ?>">
+                        <select id="form-filter-segment-<?= $segmentGroup->getId() ?>" name="filter[segments][<?= $segmentGroup->getId() ?>][]" class="form-control plugin-select2" multiple="multiple" <?= $readonly ? 'readonly disabled' : '' ?> data-placeholder="<?= $segmentGroup->getName() ?>">
 
-                            <?php
-                            /** @var \CustomerManagementFramework\Model\CustomerSegmentInterface|\Pimcore\Model\Element\ElementInterface $segment */
-                            foreach ($segments as $segment): ?>
+                            <?php if (null !== $prefilteredSegment): ?>
 
-                                <option value="<?= $segment->getId() ?>" <?= $this->formFilterSelectedState($segmentGroup->getId(), $segment->getId(), true, ['filters', 'segments']) ?>>
-                                    <?= $segment->getName() ?>
+                                <option value="<?= $prefilteredSegment->getId() ?>" selected>
+                                    <?= $prefilteredSegment->getName() ?>
                                 </option>
 
-                            <?php endforeach; ?>
+                            <?php else: ?>
 
+                                <?php
+                                $segments = \CustomerManagementFramework\Factory::getInstance()
+                                    ->getSegmentManager()
+                                    ->getSegmentsFromSegmentGroup($segmentGroup);
+
+                                /** @var \CustomerManagementFramework\Model\CustomerSegmentInterface|\Pimcore\Model\Element\ElementInterface $segment */
+                                foreach ($segments as $segment): ?>
+
+                                    <option value="<?= $segment->getId() ?>" <?= $this->formFilterSelectedState($segmentGroup->getId(), $segment->getId(), true, ['filters', 'segments']) ?>>
+                                        <?= $segment->getName() ?>
+                                    </option>
+
+                                <?php endforeach; ?>
+
+                            <?php endif; ?>
                         </select>
                     </div>
 

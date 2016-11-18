@@ -4,6 +4,7 @@ use CustomerManagementFramework\Controller\Admin;
 use CustomerManagementFramework\Controller\Traits\PaginatorController;
 use CustomerManagementFramework\Listing\Filter;
 use CustomerManagementFramework\Listing\Listing;
+use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use Pimcore\Model\Object\Customer;
 use Pimcore\Model\Object\CustomerSegment;
 
@@ -95,8 +96,19 @@ class CustomerManagementFramework_CustomersController extends Admin
             }
         }
 
+        $prefilteredSegment = $this->fetchPrefilteredSegment();
+        if (null !== $prefilteredSegment) {
+            $listing->addFilter(new Filter\CustomerSegment($prefilteredSegment->getGroup(), [$prefilteredSegment]));
+
+            $this->view->prefilteredSegment = $prefilteredSegment;
+        }
+
         if (array_key_exists('segments', $filters)) {
             foreach ($filters['segments'] as $groupId => $segmentIds) {
+                if (null !== $prefilteredSegment && $prefilteredSegment->getGroup()->getId() === $groupId) {
+                    continue;
+                }
+
                 /** @var \Pimcore\Model\Object\CustomerSegmentGroup $segmentGroup */
                 $segmentGroup = \Pimcore\Model\Object\CustomerSegmentGroup::getById($groupId);
                 if (!$segmentGroup) {
@@ -105,11 +117,11 @@ class CustomerManagementFramework_CustomersController extends Admin
 
 
                 $segments = [];
-                foreach ($segmentIds as $segmentId) {
-                    $segment = CustomerSegment::getById($segmentId);
+                foreach ($segmentIds as $prefilteredSegmentId) {
+                    $segment = CustomerSegment::getById($prefilteredSegmentId);
 
                     if (!$segment) {
-                        throw new InvalidArgumentException(sprintf('Segment %d was not found', $segmentId));
+                        throw new InvalidArgumentException(sprintf('Segment %d was not found', $prefilteredSegmentId));
                     }
 
                     $segments[] = $segment;
@@ -117,6 +129,23 @@ class CustomerManagementFramework_CustomersController extends Admin
 
                 $listing->addFilter(new Filter\CustomerSegment($segmentGroup, $segments));
             }
+        }
+    }
+
+    /**
+     * @return CustomerSegmentInterface|null
+     */
+    protected function fetchPrefilteredSegment()
+    {
+        $segmentId = $this->getParam('segmentId');
+
+        if ($segmentId) {
+            $segment = CustomerSegment::getById($segmentId);
+            if (!$segment) {
+                throw new InvalidArgumentException(sprintf('Segment %d was not found', $segmentId));
+            }
+
+            return $segment;
         }
     }
 
