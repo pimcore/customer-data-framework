@@ -11,6 +11,7 @@ namespace CustomerManagementFramework\CustomerDuplicatesService;
 use Carbon\Carbon;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Plugin;
+use Pimcore\Db;
 use Pimcore\Model\Object\ClassDefinition;
 use \Pimcore\Model\Object\Customer;
 
@@ -61,10 +62,9 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
             if(is_null($value)) {
                 $conditions[] = $field . " is null";
             } else {
-                $conditions[] = $this->normalizeMysqlFieldname($field) . " = " . $list->quote($this->normalizeMysqlCompareValue($field, $value));
+                $conditions[] = $this->createNormalizedMysqlCompareCondition($field, $value);
             }
         }
-
         $conditions = '(' . implode(' and ', $conditions) . ')';
 
         $list->setCondition($conditions);
@@ -73,34 +73,20 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
         return $list ? : [];
     }
 
-    protected function normalizeMysqlFieldname($fieldName) {
-
+    protected function createNormalizedMysqlCompareCondition($field, $value) {
+        $db = Db::get();
         $class = ClassDefinition::getByName(Plugin::getConfig()->General->CustomerPimcoreClass);
-        $fd = $class->getFieldDefinition($fieldName);
+        $fd = $class->getFieldDefinition($field);
 
         // string fields
         if(strpos($fd->getColumnType(), 'char') ==! false) {
-            return sprintf("TRIM(LCASE(%s))", $fieldName);
+            return sprintf("TRIM(LCASE(%s)) = %s", $field, $db->quote(trim(strtolower($value))));
         }
 
-        return $fieldName;
-    }
-
-    protected function normalizeMysqlCompareValue($fieldName, $value) {
-
-        $class = ClassDefinition::getByName(Plugin::getConfig()->General->CustomerPimcoreClass);
-        $fd = $class->getFieldDefinition($fieldName);
-
-        //string fields
-        if(strpos($fd->getColumnType(), 'char') ==! false) {
-            return trim(strtolower($value));
-        }
-
-        //date / date+time fields
         if($value instanceof Carbon) {
-            return $value->getTimestamp();
+            return sprintf("%s = %s", $field, $value->getTimestamp());
         }
 
-        return $value;
+        return sprintf("%s = %s", $field, $db->quote(trim(strtolower($value))));
     }
 }
