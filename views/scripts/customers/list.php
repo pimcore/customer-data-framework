@@ -26,7 +26,7 @@ $paginator = $this->paginator;
             <!-- /.box-header -->
 
             <div class="box-body no-padding table-responsive">
-                <table class="table table-bordered table-striped">
+                <table class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
                         <th class="reference-id-column table-id-column">#</th>

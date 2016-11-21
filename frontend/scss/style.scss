@@ -8,6 +8,13 @@
 .no-mb {
     margin-bottom: 0;
 }
+.mt15 {
+    margin-top: 15px !important;
+}
+.mb15 {
+    margin-bottom: 15px !important;
+}
+
 .no-p {
     padding: 0;
 }
@@ -98,6 +105,15 @@
     text-align: right;
 }
 
+/* boxes */
+.box {
+    .box-header {
+        &.with-form {
+            padding-bottom: 15px;
+        }
+    }
+}
+
 /* tables */
 table {
     .reference-id-column {
@@ -184,5 +200,22 @@ table {
 .box-footer {
     table {
         margin: 0;
+    }
+}
+
+
+.overview-data-table {
+    td,
+    th {
+        padding: 0 30px 0 0;
+
+        &:last-of-type {
+            padding-right: 0;
+        }
+    }
+
+    th {
+        color: #999;
+        font-size: 12px;
     }
 }
