@@ -2,6 +2,7 @@
 
 namespace CustomerManagementFramework\Controller;
 
+use BackendToolkit;
 use CustomerManagementFramework\View\Helper\JsConfig;
 
 class Admin extends \Pimcore\Controller\Action\Admin
@@ -12,6 +13,10 @@ class Admin extends \Pimcore\Controller\Action\Admin
 
         $this->initViewHelpers();
         $this->initJsConfig();
+
+        // init backend toolkit view helpers and paths
+        BackendToolkit\Plugin::registerViewHelpers($this->view);
+        BackendToolkit\Plugin::registerViewPaths($this->view);
     }
 
     /**
@@ -23,7 +28,6 @@ class Admin extends \Pimcore\Controller\Action\Admin
         $view = $this->view;
 
         $view->addHelperPath(__DIR__ . '/../View/Helper', 'CustomerManagementFramework\\View\\Helper\\');
-        $view->addHelperPath(PIMCORE_PLUGINS_PATH . '/BackendToolkit/lib/BackendToolkit/View/Helper', 'BackendToolkit\\View\\Helper\\');
     }
 
     /**
