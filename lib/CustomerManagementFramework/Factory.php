@@ -67,7 +67,7 @@ class Factory {
     /**
      * @return CustomerDuplicatesServiceInterface
      */
-    public function getCustomerDuplicateService()
+    public function getCustomerDuplicatesService()
     {
         return \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerDuplicatesService');
     }
