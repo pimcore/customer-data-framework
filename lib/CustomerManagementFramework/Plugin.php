@@ -103,6 +103,15 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         return \Pimcore\Config::locateConfigFile("plugins/CustomerManagementFramework/config.php");
     }
 
+    /**
+     * @param string $language
+     * @return null|string
+     */
+    public static function getTranslationFile($language)
+    {
+        return sprintf('/CustomerManagementFramework/texts/%s.csv', $language);
+    }
+
     protected static $config = null;
     public static function getConfig() {
         if(is_null(self::$config)) {
