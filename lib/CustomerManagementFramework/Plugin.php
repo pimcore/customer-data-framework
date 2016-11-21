@@ -16,6 +16,12 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         \Pimcore::getEventManager()->attach("system.di.init", function (\Zend_EventManager_Event $e) {
             $builder = $e->getTarget();
 
+
+            $customFile = PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/config/di.php';
+            if (file_exists($customFile)) {
+                $builder->addDefinitions($customFile);
+            }
+
             $customFile = \Pimcore\Config::locateConfigFile("plugins/CustomerManagementFramework/di.php");
             if (file_exists($customFile)) {
                 $builder->addDefinitions($customFile);
