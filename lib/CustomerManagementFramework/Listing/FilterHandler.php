@@ -5,12 +5,10 @@ namespace CustomerManagementFramework\Listing;
 use Pimcore\Model\Object\Listing as CoreListing;
 
 /**
- * Generic wrapper for object listings with support for reusable filter classes
+ * Adds support for reusable filter classes which can be applied on a listing through this handler
  */
-class Listing
+class FilterHandler
 {
-    const DEFAULT_PAGE_SIZE = 25;
-
     /**
      * @var CoreListing\Concrete|CoreListing\Dao
      */

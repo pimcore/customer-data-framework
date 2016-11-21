@@ -2,10 +2,9 @@
 
 use CustomerManagementFramework\Controller\Admin;
 use CustomerManagementFramework\Controller\Traits\PaginatorController;
-use CustomerManagementFramework\CustomerList\Exporter\Csv;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Listing\Filter;
-use CustomerManagementFramework\Listing\Listing;
+use CustomerManagementFramework\Listing\FilterHandler;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use CustomerManagementFramework\Plugin;
 use Pimcore\Model\Object\Customer;
@@ -23,7 +22,7 @@ class CustomerManagementFramework_CustomersController extends Admin
 
         $filters   = $this->fetchListFilters();
         $listing   = $this->buildListing($filters);
-        $paginator = $this->buildPaginator($listing->getListing());
+        $paginator = $this->buildPaginator($listing);
 
         $this->view->paginator = $paginator;
     }
@@ -42,7 +41,7 @@ class CustomerManagementFramework_CustomersController extends Admin
 
         $filters  = $this->fetchListFilters();
         $listing  = $this->buildListing($filters);
-        $exporter = $exporterManager->buildExporter($exporterName, $listing->getListing());
+        $exporter = $exporterManager->buildExporter($exporterName, $listing);
 
         $filename = sprintf(
             '%s-%s-segment-export.csv',
@@ -81,16 +80,14 @@ class CustomerManagementFramework_CustomersController extends Admin
 
     /**
      * @param array $filters
-     * @return Listing
+     * @return Customer\Listing
      */
     protected function buildListing(array $filters = [])
     {
-        $coreListing = new Customer\Listing();
-        $coreListing
+        $listing = new Customer\Listing();
+        $listing
             ->setOrderKey('o_id')
             ->setOrder('ASC');
-
-        $listing = new Listing($coreListing);
 
         $this->addListingFilters($listing, $filters);
 
@@ -98,11 +95,13 @@ class CustomerManagementFramework_CustomersController extends Admin
     }
 
     /**
-     * @param Listing $listing
+     * @param Customer\Listing $listing
      * @param array $filters
      */
-    protected function addListingFilters(Listing $listing, array $filters = [])
+    protected function addListingFilters(Customer\Listing $listing, array $filters = [])
     {
+        $handler = new FilterHandler($listing);
+
         $filterProperties = Plugin::getConfig()->CustomerList->filterProperties;
 
         $equalsProperties = isset($filterProperties->equals) ? $filterProperties->equals->toArray() : [];
@@ -110,19 +109,19 @@ class CustomerManagementFramework_CustomersController extends Admin
 
         foreach ($equalsProperties as $property => $databaseField) {
             if (array_key_exists($property, $filters)) {
-                $listing->addFilter(new Filter\Equals($databaseField, $filters[$property]));
+                $handler->addFilter(new Filter\Equals($databaseField, $filters[$property]));
             }
         }
 
         foreach ($searchProperties as $property => $databaseField) {
             if (array_key_exists($property, $filters)) {
-                $listing->addFilter(new Filter\Search($databaseField, $filters[$property]));
+                $handler->addFilter(new Filter\Search($databaseField, $filters[$property]));
             }
         }
 
         $prefilteredSegment = $this->fetchPrefilteredSegment();
         if (null !== $prefilteredSegment) {
-            $listing->addFilter(new Filter\CustomerSegment($prefilteredSegment->getGroup(), [$prefilteredSegment]));
+            $handler->addFilter(new Filter\CustomerSegment($prefilteredSegment->getGroup(), [$prefilteredSegment]));
 
             $this->view->prefilteredSegment = $prefilteredSegment;
         }
@@ -151,7 +150,7 @@ class CustomerManagementFramework_CustomersController extends Admin
                     $segments[] = $segment;
                 }
 
-                $listing->addFilter(new Filter\CustomerSegment($segmentGroup, $segments));
+                $handler->addFilter(new Filter\CustomerSegment($segmentGroup, $segments));
             }
         }
     }
@@ -169,6 +168,7 @@ class CustomerManagementFramework_CustomersController extends Admin
                 throw new InvalidArgumentException(sprintf('Segment %d was not found', $segmentId));
             }
 
+            // params still needed when clearing all filters
             $clearUrlParams = $this->view->clearUrlParams ?: [];
             $clearUrlParams['segmentId'] = $segment->getId();
 
