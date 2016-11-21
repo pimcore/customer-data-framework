@@ -9,19 +9,24 @@
 namespace CustomerManagementFramework\CustomerSaveValidator;
 
 use CustomerManagementFramework\Model\CustomerInterface;
+use CustomerManagementFramework\Plugin;
 use Pimcore\Model\Element\ValidationException;
 
 class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface{
 
     private $config;
+
+    /**
+     * @var array
+     */
     private $requiredFields;
 
     public function __construct()
     {
-        $this->requiredFields = [
-            ['email', 'firstname', 'lastname'],
-            ['firstname', 'lastname', 'zip', 'birthday']
-        ];
+        $config = Plugin::getConfig();
+        $this->config = $config->CustomerSaveValidator;
+
+        $this->requiredFields = $config->requiredFields ? $config->requiredFields->toArray() : [];
     }
 
     public function validate(CustomerInterface $customer) {
