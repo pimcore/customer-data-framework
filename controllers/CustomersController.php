@@ -1,10 +1,11 @@
 <?php
 
+use BackendToolkit\Controller\Traits\PaginatorController;
+use BackendToolkit\Listing\Filter;
+use BackendToolkit\Listing\FilterHandler;
 use CustomerManagementFramework\Controller\Admin;
-use CustomerManagementFramework\Controller\Traits\PaginatorController;
 use CustomerManagementFramework\Factory;
-use CustomerManagementFramework\Listing\Filter;
-use CustomerManagementFramework\Listing\FilterHandler;
+use CustomerManagementFramework\CustomerList\Filter\CustomerSegment as CustomerSegmentFilter;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use CustomerManagementFramework\Plugin;
 use Pimcore\Model\Object\Customer;
@@ -124,7 +125,7 @@ class CustomerManagementFramework_CustomersController extends Admin
 
         $prefilteredSegment = $this->fetchPrefilteredSegment();
         if (null !== $prefilteredSegment) {
-            $handler->addFilter(new Filter\CustomerSegment($prefilteredSegment->getGroup(), [$prefilteredSegment]));
+            $handler->addFilter(new CustomerSegmentFilter($prefilteredSegment->getGroup(), [$prefilteredSegment]));
 
             $this->view->prefilteredSegment = $prefilteredSegment;
         }
@@ -153,7 +154,7 @@ class CustomerManagementFramework_CustomersController extends Admin
                     $segments[] = $segment;
                 }
 
-                $handler->addFilter(new Filter\CustomerSegment($segmentGroup, $segments));
+                $handler->addFilter(new CustomerSegmentFilter($segmentGroup, $segments));
             }
         }
     }

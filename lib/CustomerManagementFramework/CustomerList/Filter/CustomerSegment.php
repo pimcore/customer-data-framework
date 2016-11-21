@@ -1,8 +1,9 @@
 <?php
 
-namespace CustomerManagementFramework\Listing\Filter;
+namespace CustomerManagementFramework\CustomerList\Filter;
 
-use CustomerManagementFramework\Listing\OnCreateQueryFilterInterface;
+use BackendToolkit\Listing\Filter\AbstractFilter;
+use BackendToolkit\Listing\OnCreateQueryFilterInterface;
 use Pimcore\Db;
 use Pimcore\Model\Object;
 use Pimcore\Model\Object\Listing as CoreListing;

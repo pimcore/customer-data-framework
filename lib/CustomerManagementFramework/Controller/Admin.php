@@ -23,6 +23,7 @@ class Admin extends \Pimcore\Controller\Action\Admin
         $view = $this->view;
 
         $view->addHelperPath(__DIR__ . '/../View/Helper', 'CustomerManagementFramework\\View\\Helper\\');
+        $view->addHelperPath(PIMCORE_PLUGINS_PATH . '/BackendToolkit/lib/BackendToolkit/View/Helper', 'BackendToolkit\\View\\Helper\\');
     }
 
     /**
