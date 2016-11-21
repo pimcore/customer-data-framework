@@ -2,19 +2,17 @@ if ('undefined' === typeof app.SearchFilter) {
     app.SearchFilter = {};
 }
 
-app.SearchFilter.Box = (function () {
+app.SearchFilter.Form = (function () {
     'use strict';
 
-    var Box = function ($container) {
-        this.$container = $container;
-
-        this.$form = $container.find('form');
+    var Form = function ($form) {
+        this.$form = $form;
 
         this.setupFormSubmitHandler();
         this.setupDateRangePickers();
     };
 
-    Box.prototype.setupFormSubmitHandler = function () {
+    Form.prototype.setupFormSubmitHandler = function () {
         var that = this;
 
         // do not submit empty filter values (only submits filters which have values)
@@ -32,7 +30,7 @@ app.SearchFilter.Box = (function () {
     /**
      * Setup date range pickers and add hidden inputs with start/end values on change
      */
-    Box.prototype.setupDateRangePickers = function () {
+    Form.prototype.setupDateRangePickers = function () {
         var that = this;
         this.dateRangePickers = [];
 
@@ -80,7 +78,7 @@ app.SearchFilter.Box = (function () {
      * @param name
      * @param value
      */
-    Box.prototype.updateHiddenField = function (name, value) {
+    Form.prototype.updateHiddenField = function (name, value) {
         var field = this.$form.find(':input[type="hidden"][name="' + name + '"]');
         value = $.trim(value);
 
@@ -103,7 +101,7 @@ app.SearchFilter.Box = (function () {
     /**
      * Disable empty form fields before submitting form
      */
-    Box.prototype.prepareFormSubmit = function () {
+    Form.prototype.prepareFormSubmit = function () {
         var disableInput = function (input) {
             input.data('before-form-prepare-state', input.prop('disabled'));
             input.prop('disabled', true);
@@ -120,7 +118,7 @@ app.SearchFilter.Box = (function () {
     /**
      * Restore form field state after submitting form
      */
-    Box.prototype.restoreFormFieldStates = function () {
+    Form.prototype.restoreFormFieldStates = function () {
         this.$form.find(':input').each(function () {
             var $input = $(this);
 
@@ -131,5 +129,5 @@ app.SearchFilter.Box = (function () {
         });
     };
 
-    return Box;
+    return Form;
 }());

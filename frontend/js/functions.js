@@ -77,9 +77,9 @@
                 var $container = $(this);
 
                 app.Util.getOrCreateInstance(
-                    $container, 'SearchFilter.Box',
+                    $container, 'SearchFilter.Form',
                     function ($el) {
-                        return new app.SearchFilter.Box($el);
+                        return new app.SearchFilter.Form($el);
                     }
                 );
             });

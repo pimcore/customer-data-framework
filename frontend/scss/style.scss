@@ -47,13 +47,13 @@
 }
 
 .search-filters {
-    &.search-filters--standalone {
+    .search-filters-box--standalone {
         .form-group {
             margin: 0;
         }
     }
 
-    form fieldset legend {
+    fieldset legend {
         font-size: 18px;
         margin-bottom: 10px;
     }

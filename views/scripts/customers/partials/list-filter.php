@@ -1,6 +1,6 @@
-<form role="form" action="<?= $this->filterFormAction($this->paginator) ?>">
+<form class="search-filters" role="form" action="<?= $this->filterFormAction($this->paginator) ?>">
 
-    <div class="box box-default box-collapsible-state search-filters search-filters--standalone" data-identifier="customer-search-bar">
+    <div class="box box-default box-collapsible-state search-filters-box search-filters-box--standalone" data-identifier="customer-search-bar">
         <div class="box-body">
             <div class="row">
                 <div class="col-xs-12">
