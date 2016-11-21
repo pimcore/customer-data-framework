@@ -75,18 +75,29 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
 
     protected function createNormalizedMysqlCompareCondition($field, $value) {
         $db = Db::get();
+
         $class = ClassDefinition::getByName(Plugin::getConfig()->General->CustomerPimcoreClass);
         $fd = $class->getFieldDefinition($field);
 
-        // string fields
         if(strpos($fd->getColumnType(), 'char') ==! false) {
-            return sprintf("TRIM(LCASE(%s)) = %s", $field, $db->quote(trim(strtolower($value))));
+            return $this->createNormalizedMysqlCompareConditionForStringFields($field, $value);
         }
 
         if($value instanceof Carbon) {
-            return sprintf("%s = %s", $field, $value->getTimestamp());
+            return $this->createNormalizedMysqlCompareConditionDateFields($field, $value);
         }
 
         return sprintf("%s = %s", $field, $db->quote(trim(strtolower($value))));
+    }
+
+    protected function createNormalizedMysqlCompareConditionForStringFields($field, $value) {
+        $db = Db::get();
+
+        return sprintf("TRIM(LCASE(%s)) = %s", $field, $db->quote(trim(strtolower($value))));
+    }
+
+    protected function createNormalizedMysqlCompareConditionDateFields($field, Carbon $value) {
+
+        return sprintf("%s = %s", $field, $value->getTimestamp());
     }
 }
