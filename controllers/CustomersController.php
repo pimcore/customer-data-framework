@@ -69,6 +69,7 @@ class CustomerManagementFramework_CustomersController extends Admin
      */
     protected function addListingFilters(Listing $listing, array $filters = [])
     {
+        // TODO make properties configurable
         $equalsProperties = [
             'id'     => 'o_id',
             'active' => 'active',
@@ -81,6 +82,14 @@ class CustomerManagementFramework_CustomersController extends Admin
                 'firstname',
                 'surname',
                 'userName'
+            ],
+            'search' => [
+                'o_id',
+                'name',
+                'firstname',
+                'surname',
+                'userName',
+                'email'
             ]
         ];
 
