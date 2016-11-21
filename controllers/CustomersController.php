@@ -5,6 +5,7 @@ use CustomerManagementFramework\Controller\Traits\PaginatorController;
 use CustomerManagementFramework\Listing\Filter;
 use CustomerManagementFramework\Listing\Listing;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
+use CustomerManagementFramework\Plugin;
 use Pimcore\Model\Object\Customer;
 use Pimcore\Model\Object\CustomerSegment;
 
@@ -69,29 +70,10 @@ class CustomerManagementFramework_CustomersController extends Admin
      */
     protected function addListingFilters(Listing $listing, array $filters = [])
     {
-        // TODO make properties configurable
-        $equalsProperties = [
-            'id'     => 'o_id',
-            'active' => 'active',
-        ];
+        $filterProperties = Plugin::getConfig()->CustomerList->filterProperties;
 
-        $searchProperties = [
-            'email' => 'email',
-            'name'  => [
-                'name',
-                'firstname',
-                'surname',
-                'userName'
-            ],
-            'search' => [
-                'o_id',
-                'name',
-                'firstname',
-                'surname',
-                'userName',
-                'email'
-            ]
-        ];
+        $equalsProperties = isset($filterProperties->equals) ? $filterProperties->equals->toArray() : [];
+        $searchProperties = isset($filterProperties->search) ? $filterProperties->search->toArray() : [];
 
         foreach ($equalsProperties as $property => $databaseField) {
             if (array_key_exists($property, $filters)) {
@@ -114,6 +96,7 @@ class CustomerManagementFramework_CustomersController extends Admin
 
         if (array_key_exists('segments', $filters)) {
             foreach ($filters['segments'] as $groupId => $segmentIds) {
+                // prefiltered segment can't be overwritten
                 if (null !== $prefilteredSegment && $prefilteredSegment->getGroup()->getId() === $groupId) {
                     continue;
                 }
@@ -123,7 +106,6 @@ class CustomerManagementFramework_CustomersController extends Admin
                 if (!$segmentGroup) {
                     throw new InvalidArgumentException(sprintf('Segment group %d was not found', $groupId));
                 }
-
 
                 $segments = [];
                 foreach ($segmentIds as $prefilteredSegmentId) {
