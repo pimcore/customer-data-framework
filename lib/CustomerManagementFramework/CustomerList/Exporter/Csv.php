@@ -40,7 +40,7 @@ class Csv extends AbstractExporter
     /**
      * Get export data
      *
-     * @return mixed
+     * @return string
      */
     public function getExportData()
     {
@@ -71,10 +71,12 @@ class Csv extends AbstractExporter
     {
         $titles = [];
         foreach ($this->properties as $property) {
-            // $definition = $this->getPropertyDefinition($property);
-            // $titles[]   = $definition->getTitle();
-
-            $titles[] = $property;
+            $definition = $this->getPropertyDefinition($property);
+            if ($definition) {
+                $titles[] = $definition->getTitle();
+            } else {
+                $titles[] = $property;
+            }
         }
 
         fputcsv($this->stream, $titles);
@@ -90,8 +92,6 @@ class Csv extends AbstractExporter
     {
         $row = [];
         foreach ($this->properties as $property) {
-            // $definition = $this->getPropertyDefinition($property);
-
             $getter = 'get' . ucfirst($property);
             $value  = $customer->$getter();
 

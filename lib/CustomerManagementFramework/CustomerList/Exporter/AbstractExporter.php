@@ -127,12 +127,7 @@ abstract class AbstractExporter implements ExporterInterface
     protected function getPropertyDefinition($property)
     {
         $classDefinition = ClassDefinition::getById($this->listing->getClassId());
-        $fieldDefintion  = $classDefinition->getFieldDefinition($property);
 
-        if (!$fieldDefintion) {
-            throw new \RuntimeException(sprintf('Failed to find field definition for field %s', $property));
-        }
-
-        return $fieldDefintion;
+        return $classDefinition->getFieldDefinition($property);
     }
 }
