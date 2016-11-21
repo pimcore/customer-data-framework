@@ -19,7 +19,7 @@ if (count($exporterConfig) === 0) {
                         'controller' => 'customers',
                         'action'     => 'export',
                         'exporter'   => $exporter,
-                    ], $this->clearUrlParams);
+                    ], $this->clearUrlParams ?: []);
 
                     $exportUrl = $this->formQueryString($this->request, $this->url($exportParams));
                     ?>
