@@ -8,9 +8,9 @@
             </a>
         </h3>
         <div class="box-tools pull-right">
-            <button class="btn btn-box-tool" data-widget="collapse">
+            <a class="btn btn-box-tool" data-widget="collapse">
                 <i class="fa fa-minus"></i>
-            </button>
+            </a>
         </div>
     </div>
     <!-- /.box-header -->
