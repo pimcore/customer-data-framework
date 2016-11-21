@@ -16,6 +16,8 @@ return [
 
     'CustomerManagementFramework\RESTApi\Export' => DI\object('CustomerManagementFramework\RESTApi\Export'),
 
+    'CustomerManagementFramework\CustomerDuplicatesService' => DI\object('CustomerManagementFramework\CustomerDuplicatesService\DefaultCustomerDuplicatesService'),
+
     'CustomerManagementFramework\CustomerSaveManager' => DI\object('CustomerManagementFramework\CustomerSaveManager\DefaultCustomerSaveManager')
                                                          ->constructor(DI\get('CustomerManagementFramework\Logger')),
 

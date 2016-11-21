@@ -11,6 +11,7 @@ namespace CustomerManagementFramework;
 use CustomerManagementFramework\ActivityManager\ActivityManagerInterface;
 use CustomerManagementFramework\ActivityStore\ActivityStoreInterface;
 use CustomerManagementFramework\ActivityView\ActivityViewInterface;
+use CustomerManagementFramework\CustomerDuplicatesService\CustomerDuplicatesServiceInterface;
 use CustomerManagementFramework\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFramework\RESTApi\ExportInterface;
 use CustomerManagementFramework\SegmentManager\SegmentManagerInterface;
@@ -62,6 +63,15 @@ class Factory {
     {
         return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActivityView');
     }
+
+    /**
+     * @return CustomerDuplicatesServiceInterface
+     */
+    public function getCustomerDuplicateService()
+    {
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerDuplicatesService');
+    }
+
 
     /**
      * @return CustomerSaveManagerInterface
