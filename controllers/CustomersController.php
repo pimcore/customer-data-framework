@@ -2,6 +2,7 @@
 
 use CustomerManagementFramework\Controller\Admin;
 use CustomerManagementFramework\Controller\Traits\PaginatorController;
+use CustomerManagementFramework\CustomerList\Exporter\Csv;
 use CustomerManagementFramework\Listing\Filter;
 use CustomerManagementFramework\Listing\Listing;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
@@ -24,6 +25,37 @@ class CustomerManagementFramework_CustomersController extends Admin
         $paginator = $this->buildPaginator($listing->getListing());
 
         $this->view->paginator = $paginator;
+    }
+
+    public function exportAction()
+    {
+        $this->disableLayout();
+        $this->disableViewAutoRender();
+
+        $filters = $this->fetchListFilters();
+        $listing = $this->buildListing($filters);
+
+        $exporter = new Csv($listing->getListing(), [
+            'id',
+            'email',
+            'name',
+            'firstname',
+            'surname'
+        ]);
+
+
+        $filename = sprintf(
+            '%s-segment-export.csv',
+            \Carbon\Carbon::now()->format('YmdHis')
+        );
+
+        /** @var Zend_Controller_Response_Http $response */
+        $response = $this->getResponse();
+        $response
+            ->setHeader('Content-Type', $exporter->getMimeType())
+            ->setHeader('Content-Length', $exporter->getFilesize())
+            ->setHeader('Content-Disposition', sprintf('attachment; filename="%s"', $filename))
+            ->setBody($exporter->getExportData());
     }
 
     /**
