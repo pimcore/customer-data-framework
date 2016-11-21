@@ -26,7 +26,7 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface{
         $config = Plugin::getConfig();
         $this->config = $config->CustomerSaveValidator;
 
-        $this->requiredFields = $config->requiredFields ? $config->requiredFields->toArray() : [];
+        $this->requiredFields = $this->config->requiredFields ? $this->config->requiredFields->toArray() : [];
     }
 
     public function validate(CustomerInterface $customer) {
