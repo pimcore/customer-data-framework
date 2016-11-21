@@ -31,7 +31,7 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
 
         parent::init();
 
-        \Pimcore::getEventManager()->attach(["object.preAdd","object.preUpdate"], function (\Zend_EventManager_Event $e) {
+        \Pimcore::getEventManager()->attach(["object.preUpdate"], function (\Zend_EventManager_Event $e) {
             $object = $e->getTarget();
 
             if($object instanceof CustomerInterface) {
@@ -43,7 +43,7 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
             }
         });
 
-        \Pimcore::getEventManager()->attach(["object.postAdd","object.postUpdate"], function (\Zend_EventManager_Event $e) {
+        \Pimcore::getEventManager()->attach(["object.postUpdate"], function (\Zend_EventManager_Event $e) {
             $object = $e->getTarget();
 
             if($object instanceof ActivityInterface) {
