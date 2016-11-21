@@ -9,9 +9,9 @@ class Csv extends AbstractExporter
     const MIME_TYPE = 'text/csv';
 
     /**
-     * @var \SplTempFileObject
+     * @var resource
      */
-    protected $file;
+    protected $stream;
 
     /**
      * Get file MIME type
@@ -30,7 +30,11 @@ class Csv extends AbstractExporter
      */
     public function getFilesize()
     {
-        return $this->export()->file->getSize();
+        $this->export();
+
+        $stat = fstat($this->stream);
+
+        return $stat['size'];
     }
 
     /**
@@ -42,7 +46,7 @@ class Csv extends AbstractExporter
     {
         $this->export();
 
-        return $this->file->fread($this->file->getSize());
+        return stream_get_contents($this->stream, -1, 0);
     }
 
     /**
@@ -50,7 +54,7 @@ class Csv extends AbstractExporter
      */
     protected function render()
     {
-        $this->file = new \SplTempFileObject(0);
+        $this->stream = fopen('php://temp', 'w+');
 
         $this->renderHeader();
         foreach ($this->listing as $customer) {
@@ -73,7 +77,7 @@ class Csv extends AbstractExporter
             $titles[] = $property;
         }
 
-        $this->file->fputcsv($titles);
+        fputcsv($this->stream, $titles);
 
         return $this;
     }
@@ -85,17 +89,16 @@ class Csv extends AbstractExporter
     protected function renderRow(Customer $customer)
     {
         $row = [];
-
         foreach ($this->properties as $property) {
             // $definition = $this->getPropertyDefinition($property);
 
             $getter = 'get' . ucfirst($property);
-            $value  = $customer->$getter;
+            $value  = $customer->$getter();
 
             $row[] = $value;
         }
 
-        $this->file->fputcsv($row);
+        fputcsv($this->stream, $row);
 
         return $this;
     }
