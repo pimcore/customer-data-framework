@@ -3,6 +3,7 @@
 use CustomerManagementFramework\Controller\Admin;
 use CustomerManagementFramework\Controller\Traits\PaginatorController;
 use CustomerManagementFramework\CustomerList\Exporter\Csv;
+use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Listing\Filter;
 use CustomerManagementFramework\Listing\Listing;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
@@ -32,17 +33,16 @@ class CustomerManagementFramework_CustomersController extends Admin
         $this->disableLayout();
         $this->disableViewAutoRender();
 
-        $filters = $this->fetchListFilters();
-        $listing = $this->buildListing($filters);
+        $exporterName    = $this->getParam('exporter', 'csv');
+        $exporterManager = Factory::getInstance()->getCustomerListExporterManager();
 
-        $exporter = new Csv($listing->getListing(), [
-            'id',
-            'email',
-            'name',
-            'firstname',
-            'surname'
-        ]);
+        if (!$exporterManager->hasExporter($exporterName)) {
+            throw new InvalidArgumentException('Exporter does not exist');
+        }
 
+        $filters  = $this->fetchListFilters();
+        $listing  = $this->buildListing($filters);
+        $exporter = $exporterManager->buildExporter($exporterName, $listing->getListing());
 
         $filename = sprintf(
             '%s-segment-export.csv',

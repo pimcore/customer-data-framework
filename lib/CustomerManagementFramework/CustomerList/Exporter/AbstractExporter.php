@@ -8,6 +8,11 @@ use Pimcore\Model\Object\Customer;
 abstract class AbstractExporter implements ExporterInterface
 {
     /**
+     * @var string
+     */
+    protected $name;
+
+    /**
      * @var Customer\Listing
      */
     protected $listing;
@@ -19,23 +24,50 @@ abstract class AbstractExporter implements ExporterInterface
     protected $properties;
 
     /**
-     * Path to result file
-     * @var string
-     */
-    protected $outputFile;
-
-    /**
      * @var bool
      */
     protected $rendered = false;
 
     /**
-     * @param Customer\Listing $listing
+     * @param $name
      * @param array $properties
      */
-    public function __construct(Customer\Listing $listing, array $properties)
+    public function __construct($name, array $properties)
     {
-        $this->listing    = $listing;
+        $this->setName($name);
+        $this->setProperties($properties);
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return array
+     */
+    public function getProperties()
+    {
+        return $this->properties;
+    }
+
+    /**
+     * @param array $properties
+     */
+    public function setProperties(array $properties)
+    {
+        $this->reset();
         $this->properties = $properties;
     }
 
@@ -48,11 +80,12 @@ abstract class AbstractExporter implements ExporterInterface
     }
 
     /**
-     * @return array
+     * @param Customer\Listing $listing
      */
-    public function getProperties()
+    public function setListing(Customer\Listing $listing)
     {
-        return $this->properties;
+        $this->reset();
+        $this->listing = $listing;
     }
 
     /**
@@ -60,10 +93,24 @@ abstract class AbstractExporter implements ExporterInterface
      */
     public function export()
     {
+        if (null === $this->listing) {
+            throw new \RuntimeException('Listing is not set');
+        }
+
         if (!$this->rendered) {
             $this->render();
             $this->rendered = true;
         }
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function reset()
+    {
+        $this->rendered = false;
 
         return $this;
     }

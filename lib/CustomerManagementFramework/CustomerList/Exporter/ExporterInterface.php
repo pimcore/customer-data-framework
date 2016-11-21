@@ -6,9 +6,14 @@ use Pimcore\Model\Object\Customer;
 interface ExporterInterface
 {
     /**
-     * @return Customer\Listing
+     * @return string
      */
-    public function getListing();
+    public function getName();
+
+    /**
+     * @param string $name
+     */
+    public function setName($name);
 
     /**
      * @return array
@@ -16,9 +21,19 @@ interface ExporterInterface
     public function getProperties();
 
     /**
-     * Run the export
+     * @param array $properties
      */
-    public function export();
+    public function setProperties(array $properties);
+
+    /**
+     * @return Customer\Listing
+     */
+    public function getListing();
+
+    /**
+     * @param Customer\Listing $listing
+     */
+    public function setListing(Customer\Listing $listing);
 
     /**
      * Get file MIME type

@@ -86,6 +86,13 @@ class Factory {
         return \Pimcore::getDiContainer()->get('CustomerManagementFramework\RESTApi\Export');
     }
 
+    /**
+     * @return CustomerList\ExporterManagerInterface
+     */
+    public function getCustomerListExporterManager()
+    {
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerList\ExporterManager');
+    }
 
     /**
      * @param                 $className
