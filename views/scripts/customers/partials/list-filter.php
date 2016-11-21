@@ -53,7 +53,7 @@
                 </fieldset>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-8">
 
                 <?= $this->template('customers/partials/list-filter/segments.php') ?>
 

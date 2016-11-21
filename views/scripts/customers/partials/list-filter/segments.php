@@ -9,48 +9,53 @@
             Segments
         </legend>
 
-        <?php
-        /** @var \Pimcore\Model\Object\CustomerSegmentGroup $segmentGroup */
-        foreach ($this->segmentGroups as $segmentGroup): ?>
+        <div class="row">
 
             <?php
-            $readonly = false;
-            if (null !== $prefilteredSegment && $prefilteredSegment->getGroup()->getId() === $segmentGroup->getId()) {
-                $readonly = true;
-            }
-            ?>
+            /** @var \Pimcore\Model\Object\CustomerSegmentGroup $segmentGroup */
+            foreach ($this->segmentGroups as $segmentGroup): ?>
 
-            <div class="form-group">
-                <label for="form-filter-segment-<?= $segmentGroup->getId() ?>"><?= $segmentGroup->getName() ?></label>
-                <select id="form-filter-segment-<?= $segmentGroup->getId() ?>" name="filter[segments][<?= $segmentGroup->getId() ?>][]" class="form-control plugin-select2" multiple="multiple" <?= $readonly ? 'readonly disabled' : '' ?> data-placeholder="<?= $segmentGroup->getName() ?>">
+                <?php
+                $readonly = false;
+                if (null !== $prefilteredSegment && $prefilteredSegment->getGroup()->getId() === $segmentGroup->getId()) {
+                    $readonly = true;
+                }
+                ?>
 
-                    <?php if (null !== $prefilteredSegment): ?>
+                <div class="col-md-6 col-xs-12">
+                    <div class="form-group">
+                        <label for="form-filter-segment-<?= $segmentGroup->getId() ?>"><?= $segmentGroup->getName() ?></label>
+                        <select id="form-filter-segment-<?= $segmentGroup->getId() ?>" name="filter[segments][<?= $segmentGroup->getId() ?>][]" class="form-control plugin-select2" multiple="multiple" <?= $readonly ? 'readonly disabled' : '' ?> data-placeholder="<?= $segmentGroup->getName() ?>">
 
-                        <option value="<?= $prefilteredSegment->getId() ?>" selected>
-                            <?= $prefilteredSegment->getName() ?>
-                        </option>
+                            <?php if (null !== $prefilteredSegment): ?>
 
-                    <?php else: ?>
+                                <option value="<?= $prefilteredSegment->getId() ?>" selected>
+                                    <?= $prefilteredSegment->getName() ?>
+                                </option>
 
-                        <?php
-                        $segments = \CustomerManagementFramework\Factory::getInstance()
-                            ->getSegmentManager()
-                            ->getSegmentsFromSegmentGroup($segmentGroup);
+                            <?php else: ?>
 
-                        /** @var \CustomerManagementFramework\Model\CustomerSegmentInterface|\Pimcore\Model\Element\ElementInterface $segment */
-                        foreach ($segments as $segment): ?>
+                                <?php
+                                $segments = \CustomerManagementFramework\Factory::getInstance()
+                                    ->getSegmentManager()
+                                    ->getSegmentsFromSegmentGroup($segmentGroup);
 
-                            <option value="<?= $segment->getId() ?>" <?= $this->formFilterSelectedState($segmentGroup->getId(), $segment->getId(), true, ['filters', 'segments']) ?>>
-                                <?= $segment->getName() ?>
-                            </option>
+                                /** @var \CustomerManagementFramework\Model\CustomerSegmentInterface|\Pimcore\Model\Element\ElementInterface $segment */
+                                foreach ($segments as $segment): ?>
 
-                        <?php endforeach; ?>
+                                    <option value="<?= $segment->getId() ?>" <?= $this->formFilterSelectedState($segmentGroup->getId(), $segment->getId(), true, ['filters', 'segments']) ?>>
+                                        <?= $segment->getName() ?>
+                                    </option>
 
-                    <?php endif; ?>
-                </select>
-            </div>
+                                <?php endforeach; ?>
 
-        <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                    </div>
+                </div>
 
+            <?php endforeach; ?>
+
+        </div>
     </fieldset>
 <?php endif; ?>
