@@ -24,7 +24,7 @@ class CustomerManagementFramework_CustomersController extends Admin
     {
         $this->enableLayout();
 
-        $this->loadSegmentGroup('gender');
+        $this->loadSegmentGroups();
 
         $filters   = $this->fetchListFilters();
         $listing   = $this->buildListing($filters);
@@ -65,23 +65,20 @@ class CustomerManagementFramework_CustomersController extends Admin
     }
 
     /**
-     * Load a segment group and set it on the view
-     *
-     * @param $name
+     * Load all segment groups
      */
-    protected function loadSegmentGroup($name)
+    protected function loadSegmentGroups()
     {
-        /** @var \Pimcore\Model\Object\CustomerSegmentGroup $group */
-        $segmentGroup = \Pimcore\Model\Object\CustomerSegmentGroup::getByName($name, 1);
-        if (!$segmentGroup) {
-            throw new InvalidArgumentException(sprintf('Segment group %s was not found', $name));
-        }
+        // TODO apply showAsFilter condition directly on segment manager
+        $segmentGroups = Factory::getInstance()->getSegmentManager()->getSegmentGroups([]);
+        $this->view->segmentGroups = [];
 
-        if (!isset($this->view->segmentGroups)) {
-            $this->view->segmentGroups = [];
+        /** @var \Pimcore\Model\Object\CustomerSegmentGroup $segmentGroup */
+        foreach ($segmentGroups as $segmentGroup) {
+            if ($segmentGroup->getShowAsFilter()) {
+                $this->view->segmentGroups[] = $segmentGroup;
+            }
         }
-
-        $this->view->segmentGroups[] = $segmentGroup;
     }
 
     /**
