@@ -6,8 +6,6 @@
          * Initialize function
          */
         _init: function ($scope) {
-            app.Logger.log('-> _init');
-
             //set Device for AjaxInclude
             if (matchMedia('(max-width:767px)').matches) {
                 app.DEVICE = 'mobile';
@@ -117,7 +115,7 @@
         },
 
         /**
-         * Collapse tables when .collapse-trigger caption is clicked (sales list group headings)
+         * Collapse tables when .collapse-trigger caption is clicked
          * @param $scope
          */
         tableCollapse: function ($scope) {
