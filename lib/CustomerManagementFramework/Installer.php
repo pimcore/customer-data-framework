@@ -23,7 +23,10 @@ class Installer {
 
     private function installPermissions() {
 
-        $permissions = ["plugin_customermanagementframework_activityview"];
+        $permissions = [
+            "plugin_customermanagementframework_activityview",
+            "plugin_customermanagementframework_customerview"
+        ];
 
         foreach($permissions as $key) {
             $permission = new \Pimcore\Model\User\Permission\Definition();

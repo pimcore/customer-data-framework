@@ -14,6 +14,12 @@ class CustomerManagementFramework_CustomersController extends Admin
 {
     use PaginatorController;
 
+    public function init()
+    {
+        parent::init();
+        $this->checkPermission('plugin_customermanagementframework_customerview');
+    }
+
     public function listAction()
     {
         $this->enableLayout();

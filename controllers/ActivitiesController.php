@@ -10,6 +10,12 @@ use CustomerManagementFramework\Controller\Admin;
 
 class CustomerManagementFramework_ActivitiesController extends Admin
 {
+    public function init()
+    {
+        parent::init();
+        $this->checkPermission('plugin_customermanagementframework_activityview');
+    }
+
     public function listAction() {
 
         $this->enableLayout();
