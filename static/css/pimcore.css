@@ -1,3 +1,7 @@
+#pimcore_menu_cmf {
+    background-image: url(/pimcore/static6/img/flat-color-icons/contacts.svg) !important;
+}
+
 .pimcore_icon_activities {
     background: url(/pimcore/static6/img/flat-color-icons/sports_mode.svg) center center no-repeat !important;
 }

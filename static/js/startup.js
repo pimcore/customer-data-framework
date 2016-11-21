@@ -11,6 +11,65 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
  
     pimcoreReady: function (params,broker){
         // alert("CustomerManagementFramework Plugin Ready!");
+
+        this.initToolbar();
+    },
+
+    initToolbar: function () {
+        var toolbar = pimcore.globalmanager.get('layout_toolbar');
+        var user = pimcore.globalmanager.get('user');
+
+        var menuItems = toolbar.cmfMenu;
+        if (!menuItems) {
+            menuItems = new Ext.menu.Menu({cls: 'pimcore_navigation_flyout'});
+            toolbar.cmfMenu = menuItems;
+        }
+
+        // customer view
+        if (user.isAllowed('plugin_customermanagementframework_customerview')) {
+            var customerViewPanelId = 'plugin_cmf_customerview';
+            var item = {
+                text: t('plugin_cmf_customerview'),
+                iconCls: 'pimcore_icon_customers',
+                handler: function () {
+                    try {
+                        pimcore.globalmanager.get(customerViewPanelId).activate();
+                    }
+                    catch (e) {
+                        pimcore.globalmanager.add(
+                            customerViewPanelId,
+                            new pimcore.tool.genericiframewindow(
+                                customerViewPanelId,
+                                '/plugin/CustomerManagementFramework/customers/list',
+                                'pimcore_icon_customers',
+                                t('plugin_cmf_customerview')
+                            )
+                        );
+                    }
+                }
+            };
+
+            // add to menu
+            menuItems.add(item);
+        }
+
+        // add main menu
+        if (menuItems.items.length > 0) {
+            var insertPoint = Ext.get('pimcore_menu_settings');
+            if (!insertPoint) {
+                var dom = Ext.dom.Query.select('#pimcore_navigation ul li:last');
+                insertPoint = Ext.get(dom[0]);
+            }
+
+            this.navEl = Ext.get(
+                insertPoint.insertHtml(
+                    'afterEnd',
+                    '<li id="pimcore_menu_cmf" class="pimcore_menu_item">' + t('plugin_cmf_mainmenu') + '</li>'
+                )
+            );
+
+            this.navEl.on('mousedown', toolbar.showSubMenu.bind(menuItems));
+        }
     },
 
     postOpenObject: function(object, type) {
