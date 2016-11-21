@@ -25,4 +25,6 @@ interface CustomerSaveManagerInterface
     public function getSegmentBuildingHookEnabled();
 
     public function applySaveHandlers(CustomerInterface $customer);
+
+    public function validateOnSave(CustomerInterface $customer);
 }

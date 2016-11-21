@@ -9,10 +9,10 @@
 namespace CustomerManagementFramework\CustomerSaveManager;
 
 use CustomerManagementFramework\CustomerSaveHandler\CustomerSaveHandlerInterface;
+use CustomerManagementFramework\CustomerSaveValidator\CustomerSaveValidatorInterface;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Plugin;
-use Pimcore\Model\Element\ValidationException;
 use Psr\Log\LoggerInterface;
 
 class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
@@ -37,6 +37,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     public function preUpdate(CustomerInterface $customer)
     {
         $this->applySaveHandlers($customer);
+        $this->validateOnSave($customer);
 
         /*$ex = new ValidationException('...');
         $ex->setSubItems(["test"=>"tester"]);*/
@@ -53,6 +54,16 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         }
 
         Factory::getInstance()->getSegmentManager()->addCustomerToChangesQueue($customer);
+    }
+
+    public function validateOnSave(CustomerInterface $customer) {
+
+        /**
+         * @var CustomerSaveValidatorInterface $validator
+         */
+        $validator = \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerSaveValidator');
+
+        $validator->validate($customer);
     }
 
     public function applySaveHandlers(CustomerInterface $customer)
