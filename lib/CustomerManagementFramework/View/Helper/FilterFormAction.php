@@ -2,8 +2,6 @@
 
 namespace CustomerManagementFramework\View\Helper;
 
-use CustomerManagementFramework\Listing\Listing;
-
 class FilterFormAction extends \Zend_View_Helper_Abstract
 {
     /**
@@ -18,7 +16,7 @@ class FilterFormAction extends \Zend_View_Helper_Abstract
             'perPage' => null
         ];
 
-        if (null !== $paginator && $paginator->getItemCountPerPage() !== Listing::DEFAULT_PAGE_SIZE) {
+        if (null !== $paginator && $paginator->getItemCountPerPage() !== $this->view->defaultPageSize()) {
             $formActionParams['perPage'] = $paginator->getItemCountPerPage();
         }
 

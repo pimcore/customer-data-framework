@@ -2,8 +2,6 @@
 
 namespace CustomerManagementFramework\View\Helper;
 
-use CustomerManagementFramework\Listing\Listing;
-
 class AddPerPageParam extends \Zend_View_Helper_Abstract
 {
     /**
@@ -17,7 +15,7 @@ class AddPerPageParam extends \Zend_View_Helper_Abstract
     public function addPerPageParam(\Zend_Controller_Request_Http $request, array $params = [], $defaultPageSize = null)
     {
         if (null === $defaultPageSize) {
-            $this->getDefaultPageSize();
+            $defaultPageSize = $this->view->defaultPageSize();
         } else {
             $defaultPageSize = (int)$defaultPageSize;
         }
@@ -32,13 +30,5 @@ class AddPerPageParam extends \Zend_View_Helper_Abstract
         }
 
         return $params;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDefaultPageSize()
-    {
-        return Listing::DEFAULT_PAGE_SIZE;
     }
 }

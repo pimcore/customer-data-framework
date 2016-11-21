@@ -2,7 +2,7 @@
 
 namespace CustomerManagementFramework\Controller\Traits;
 
-use CustomerManagementFramework\Listing\Listing;
+use CustomerManagementFramework\View\Helper\DefaultPageSize;
 
 trait PaginatorController
 {
@@ -13,7 +13,7 @@ trait PaginatorController
      * @param int $defaultPageSize
      * @return \Zend_Paginator
      */
-    protected function buildPaginator($data, $defaultPageSize = Listing::DEFAULT_PAGE_SIZE)
+    protected function buildPaginator($data, $defaultPageSize = DefaultPageSize::DEFAULT_PAGE_SIZE)
     {
         /** @var \Zend_Controller_Action $this */
         $paginator = \Zend_Paginator::factory($data);

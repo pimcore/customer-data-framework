@@ -1,6 +1,4 @@
 <?php
-use CustomerManagementFramework\Listing\Listing;
-
 /** @var Zend_Paginator $paginator */
 $paginator = $this->paginator;
 
@@ -25,7 +23,7 @@ $showPageSelector = (isset($this->showPageSelector)) ? (bool)$this->showPageSele
                                 ];
 
                                 // only add perPage to URL if it's not the default size
-                                if ($itemCount !== Listing::DEFAULT_PAGE_SIZE) {
+                                if ($itemCount !== $this->defaultPageSize()) {
                                     $countParams['perPage'] = $itemCount;
                                 }
 
