@@ -21,4 +21,6 @@ return [
 
     'CustomerManagementFramework\CustomerSaveValidator' => DI\object('CustomerManagementFramework\CustomerSaveValidator\DefaultCustomerSaveValidator'),
 
+    'CustomerManagementFramework\CustomerList\ExporterManager' => \DI\object('CustomerManagementFramework\CustomerList\ExporterManager'),
+    'CustomerManagementFramework\CustomerList\Exporter\Csv' => \DI\object('CustomerManagementFramework\CustomerList\Exporter\Csv')
 ];
