@@ -19,6 +19,14 @@ class ExporterManager implements ExporterManagerInterface
     }
 
     /**
+     * @return \Zend_Config
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
      * @param $key
      * @return bool
      */

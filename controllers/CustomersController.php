@@ -45,7 +45,8 @@ class CustomerManagementFramework_CustomersController extends Admin
         $exporter = $exporterManager->buildExporter($exporterName, $listing->getListing());
 
         $filename = sprintf(
-            '%s-segment-export.csv',
+            '%s-%s-segment-export.csv',
+            $exporterName,
             \Carbon\Carbon::now()->format('YmdHis')
         );
 

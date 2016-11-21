@@ -78,6 +78,8 @@ $paginator = $this->paginator;
             <!-- /.box-body -->
 
             <?= $this->template('partials/table/pagination-footer.php') ?>
+
+            <?= $this->template('customers/partials/list-export.php'); ?>
         </div>
 
     <?php endif; ?>
