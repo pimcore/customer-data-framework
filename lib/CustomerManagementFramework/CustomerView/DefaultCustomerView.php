@@ -4,6 +4,8 @@ namespace CustomerManagementFramework\CustomerView;
 
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\View\Formatter\ViewFormatterInterface;
+use Pimcore\Model\Element\ElementInterface;
+use Pimcore\Model\Object\Concrete;
 
 class DefaultCustomerView implements CustomerViewInterface
 {
@@ -37,7 +39,7 @@ class DefaultCustomerView implements CustomerViewInterface
      */
     public function hasDetailView(CustomerInterface $customer)
     {
-        return false;
+        return true;
     }
 
     /**
@@ -46,7 +48,26 @@ class DefaultCustomerView implements CustomerViewInterface
      */
     public function getDetailviewTemplate(CustomerInterface $customer)
     {
-        return null;
+        return 'customers/partials/detail.php';
+    }
+
+    /**
+     * @param CustomerInterface|ElementInterface|Concrete $customer
+     * @return array
+     */
+    public function getDetailviewData(CustomerInterface $customer)
+    {
+        $definition = $customer->getClass();
+
+        $result = [];
+        $vf     = $this->viewFormatter;
+
+        foreach ($definition->getFieldDefinitions() as $fd) {
+            $getter = 'get' . ucfirst($fd->getName());
+            $result[$vf->getLabelByFieldDefinition($fd)] = $vf->formatValueByFieldDefinition($fd, $customer->$getter());
+        }
+
+        return $result;
     }
 
     /**

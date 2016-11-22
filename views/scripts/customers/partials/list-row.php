@@ -8,7 +8,7 @@ $customer = $this->customer;
 $userDetailUrl = null;
 if ($customerView->hasDetailView($customer)) {
     $userDetailUrl = $this->url([
-        'module'     => 'CustomerDataFramework',
+        'module'     => 'CustomerManagementFramework',
         'controller' => 'customers',
         'action'     => 'detail',
         'id'         => $customer->getId()

@@ -27,6 +27,12 @@ interface CustomerViewInterface
     public function getDetailviewTemplate(CustomerInterface $customer);
 
     /**
+     * @param CustomerInterface $customer
+     * @return array
+     */
+    public function getDetailviewData(CustomerInterface $customer);
+
+    /**
      * @param string $value
      * @return string
      */

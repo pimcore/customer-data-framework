@@ -67,6 +67,24 @@ class CustomerManagementFramework_CustomersController extends Admin
             ->setBody($exporter->getExportData());
     }
 
+    public function detailAction()
+    {
+        $this->enableLayout();
+
+        $customer = Customer::getById((int)$this->getParam('id'));
+        if ($customer && $customer instanceof CustomerInterface) {
+            $customerView = Factory::getInstance()->getCustomerView();
+            if (!$customerView->hasDetailView($customer)) {
+                throw new RuntimeException(sprintf('Customer %d has no detail view to show', $customer->getId()));
+            }
+
+            $this->view->customer     = $customer;
+            $this->view->customerView = $customerView;
+        } else {
+            throw new InvalidArgumentException('Invalid customer');
+        }
+    }
+
     /**
      * Load all segment groups
      */
