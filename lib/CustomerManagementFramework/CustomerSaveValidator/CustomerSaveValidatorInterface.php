@@ -11,6 +11,13 @@ namespace CustomerManagementFramework\CustomerSaveValidator;
 use CustomerManagementFramework\Model\CustomerInterface;
 use Pimcore\Model\Element\ValidationException;
 
+/**
+ * Interface CustomerSaveValidatorInterface
+ *
+ * checks if a customer is allowed to save based on the entered customer data
+ *
+ * @package CustomerManagementFramework\CustomerSaveValidator
+ */
 interface CustomerSaveValidatorInterface {
 
     /**
