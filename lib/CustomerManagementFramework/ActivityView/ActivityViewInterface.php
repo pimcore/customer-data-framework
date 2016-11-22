@@ -43,21 +43,6 @@ interface ActivityViewInterface {
     public function formatAttributes($implementationClass, array $attributes, array $visibleKeys = []);
 
     /**
-     * @param Data $fd
-     * @param $value
-     *
-     * @return mixed
-     */
-    public function formatValueByFieldDefinition(Data $fd, $value);
-
-    /**
-     * @param Data $fd
-     *
-     * @return mixed
-     */
-    public function getLabelByFieldDefinition(Data $fd);
-
-    /**
      * @param string $value
      *
      * @return string

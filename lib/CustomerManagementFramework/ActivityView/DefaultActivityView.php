@@ -8,14 +8,24 @@
 
 namespace CustomerManagementFramework\ActivityView;
 
-use Carbon\Carbon;
 use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
-use Pimcore\Db;
+use CustomerManagementFramework\View\Formatter\ViewFormatterInterface;
 use Pimcore\Model\Object\ClassDefinition;
-use Pimcore\Model\Object\ClassDefinition\Data;
-use Pimcore\Translate\Admin;
 
 class DefaultActivityView implements ActivityViewInterface {
+
+    /**
+     * @var ViewFormatterInterface
+     */
+    protected $viewFormatter;
+
+    /**
+     * @param ViewFormatterInterface $viewFormatter
+     */
+    public function __construct(ViewFormatterInterface $viewFormatter)
+    {
+        $this->viewFormatter = $viewFormatter;
+    }
 
     public function getOverviewAdditionalData(ActivityStoreEntryInterface $activityEntry) {
 
@@ -53,26 +63,14 @@ class DefaultActivityView implements ActivityViewInterface {
         return false;
     }
 
-
-    public function formatValueByFieldDefinition(Data $fd, $value) {
-
-        if($fd instanceof Data\Checkbox) {
-            return $this->formatCheckboxValue($value);
-        }
-
-        if($fd instanceof Data\Datetime) {
-            return $this->formatDatetimeValue($value);
-        }
-
-        return $value;
+    /**
+     * @param string $value
+     * @return string
+     */
+    public function translate($value)
+    {
+        return $this->viewFormatter->translate($value);
     }
-
-    public function getLabelByFieldDefinition(Data $fd) {
-
-        return $this->translate($fd->getTitle());
-    }
-
-    
     
     public function formatAttributes($implementationClass, array $attributes, array $visibleKeys = []) {
 
@@ -86,6 +84,7 @@ class DefaultActivityView implements ActivityViewInterface {
         $attributes = $this->extractVisibleAttributes($attributes, $visibleKeys);
 
         $result = [];
+        $vf     = $this->viewFormatter;
 
         foreach($attributes as $key => $value) {
             if(!is_scalar($value)) {
@@ -94,7 +93,7 @@ class DefaultActivityView implements ActivityViewInterface {
             }
 
             if($class && $fd = $class->getFieldDefinition($key)) {
-                $result[$this->getLabelByFieldDefinition($fd)] = $this->formatValueByFieldDefinition($fd, $value);
+                $result[$vf->getLabelByFieldDefinition($fd)] = $vf->formatValueByFieldDefinition($fd, $value);
                 continue;
             }
 
@@ -103,19 +102,6 @@ class DefaultActivityView implements ActivityViewInterface {
 
         return $result;
     }
-
-    private $translate = [];
-    public function translate($value)
-    {
-        $locale = (string)\Zend_Registry::get("Zend_Locale");
-        if(!$ta = $this->translate[$locale]) {
-            $ta = new Admin(\Zend_Registry::get("Zend_Locale"));
-            $this->translate[$locale] = $ta;
-        }
-
-        return $ta->translate($value);
-    }
-
 
     private function extractVisibleAttributes(array $attributes, array $visibleKeys) {
         if(sizeof($visibleKeys)) {
@@ -127,19 +113,5 @@ class DefaultActivityView implements ActivityViewInterface {
         }
 
         return $attributes;
-    }
-
-    protected function formatCheckboxValue($value) {
-        if($value) {
-            return '<i class="glyphicon glyphicon-check"></i>';
-        }
-
-        return '<i class="glyphicon glyphicon-uncheck"></i>';
-    }
-
-    protected function formatDatetimeValue($value) {
-        $date = Carbon::parse($value);
-
-        return $date->formatLocalized("%x %X");
     }
 }
