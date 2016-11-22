@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Plugin;
 use Pimcore\Db;
+use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Object\ClassDefinition;
 use \Pimcore\Model\Object\Customer;
 
@@ -79,12 +80,20 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
         $class = ClassDefinition::getByName(Plugin::getConfig()->General->CustomerPimcoreClass);
         $fd = $class->getFieldDefinition($field);
 
+        if($value instanceof ElementInterface) {
+            return $this->createNormalizedMysqlCompareConditionForSingleRelationFields($field, $value);
+        }
+
+        if(is_array($value) && ($value[0] instanceof ElementInterface)) {
+            return $this->createNormalizedMysqlCompareConditionForMultiRelationFields($field, $value);
+        }
+
         if(strpos($fd->getColumnType(), 'char') ==! false) {
             return $this->createNormalizedMysqlCompareConditionForStringFields($field, $value);
         }
 
         if($value instanceof Carbon) {
-            return $this->createNormalizedMysqlCompareConditionDateFields($field, $value);
+            return $this->createNormalizedMysqlCompareConditionForDateFields($field, $value);
         }
 
         return sprintf("%s = %s", $field, $db->quote(trim(strtolower($value))));
@@ -96,8 +105,23 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
         return sprintf("TRIM(LCASE(%s)) = %s", $field, $db->quote(trim(strtolower($value))));
     }
 
-    protected function createNormalizedMysqlCompareConditionDateFields($field, Carbon $value) {
+    protected function createNormalizedMysqlCompareConditionForDateFields($field, Carbon $value) {
 
         return sprintf("%s = %s", $field, $value->getTimestamp());
+    }
+
+    protected function createNormalizedMysqlCompareConditionForSingleRelationFields($field, $value) {
+
+        return sprintf("%s = %s", $field . '__id', $value->getId());
+    }
+
+    protected function createNormalizedMysqlCompareConditionForMultiRelationFields($field, $value) {
+        $db = Db::get();
+
+        $ids = [];
+        foreach($value as $row) {
+            $ids[] = $row->getId();
+        }
+        return sprintf("%s = %s", $field, $db->quote(',' . implode(',', $ids) . ','));
     }
 }
