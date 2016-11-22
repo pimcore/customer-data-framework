@@ -3,9 +3,15 @@
 namespace CustomerManagementFramework\CustomerView;
 
 use CustomerManagementFramework\Model\CustomerInterface;
+use CustomerManagementFramework\View\Formatter\ViewFormatterInterface;
 
 interface CustomerViewInterface
 {
+    /**
+     * @return ViewFormatterInterface
+     */
+    public function getViewFormatter();
+
     /**
      * @param CustomerInterface $customer
      * @return string|null

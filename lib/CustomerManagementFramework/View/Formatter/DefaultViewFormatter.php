@@ -3,6 +3,7 @@
 namespace CustomerManagementFramework\View\Formatter;
 
 use Carbon\Carbon;
+use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use Pimcore\Model\Object\ClassDefinition\Data;
 use Pimcore\Translate\Admin;
 
@@ -52,6 +53,28 @@ class DefaultViewFormatter implements ViewFormatterInterface
             return $this->formatDatetimeValue($value);
         }
 
+        if (is_array($value)) {
+            $result = [];
+            foreach ($value as $val) {
+                $result[] = $this->formatValueByFieldDefinition($fd, $val);
+            }
+
+            return implode("\n", $result);
+        }
+
+        return $this->formatValue($value);
+    }
+
+    /**
+     * @param mixed $value
+     * @return mixed
+     */
+    public function formatValue($value)
+    {
+        if ($value instanceof CustomerSegmentInterface) {
+            return $this->formatSegmentValue($value);
+        }
+
         return $value;
     }
 
@@ -77,5 +100,14 @@ class DefaultViewFormatter implements ViewFormatterInterface
         $date = Carbon::parse($value);
 
         return $date->formatLocalized("%x %X");
+    }
+
+    /**
+     * @param CustomerSegmentInterface $segment
+     * @return string
+     */
+    protected function formatSegmentValue(CustomerSegmentInterface $segment)
+    {
+        return sprintf('<span class="label label-default">%s</span>', $segment->getName());
     }
 }

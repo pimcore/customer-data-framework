@@ -23,6 +23,14 @@ class DefaultCustomerView implements CustomerViewInterface
     }
 
     /**
+     * @return ViewFormatterInterface
+     */
+    public function getViewFormatter()
+    {
+        return $this->viewFormatter;
+    }
+
+    /**
      * @param CustomerInterface $customer
      * @return string|null
      */

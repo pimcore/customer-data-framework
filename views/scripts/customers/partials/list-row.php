@@ -37,4 +37,14 @@ if ($customerView->hasDetailView($customer)) {
     <td>
         <?= $this->escape($customer->getEmail()) ?>
     </td>
+
+    <td>
+        <?= $this->escape($customer->getGender()) ?>
+    </td>
+
+    <td>
+        <?php foreach ($customer->getAllSegments() as $segment): ?>
+            <?= $customerView->getViewFormatter()->formatValue($segment); ?>
+        <?php endforeach; ?>
+    </td>
 </tr>

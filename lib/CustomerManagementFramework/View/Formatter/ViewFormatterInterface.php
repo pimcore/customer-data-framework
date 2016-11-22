@@ -18,6 +18,12 @@ interface ViewFormatterInterface
     public function getLabelByFieldDefinition(Data $fd);
 
     /**
+     * @param mixed $value
+     * @return mixed
+     */
+    public function formatValue($value);
+
+    /**
      * @param Data $fd
      * @param $value
      * @return string

@@ -36,6 +36,8 @@ $customerView = $this->customerView;
                         <th class="icon-column icon-column--center"></th>
                         <th>Name</th>
                         <th>E-Mail</th>
+                        <th>Gender</th>
+                        <th>Segments</th>
                     </tr>
                     </thead>
 
