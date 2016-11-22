@@ -1,6 +1,9 @@
 <?php
-/** @var Zend_Paginator|\Pimcore\Model\Object\Customer[] $paginator */
+/** @var Zend_Paginator|\CustomerManagementFramework\Model\CustomerInterface[] $paginator */
 $paginator = $this->paginator;
+
+/** @var \CustomerManagementFramework\CustomerView\CustomerViewInterface $customerView */
+$customerView = $this->customerView;
 ?>
 
 <section class="content">
@@ -39,38 +42,12 @@ $paginator = $this->paginator;
                     <tbody>
 
                     <?php
-                    foreach ($paginator as $customer): ?>
-
-                        <?php
-                        $userDetailUrl = $this->url([
-                            'module'     => 'CustomerDataFramework',
-                            'controller' => 'customers',
-                            'action'     => 'detail',
-                            'id'         => $customer->getId()
-                        ], null, true);
-                        ?>
-
-                        <tr>
-                            <td class="reference-id-column table-id-column">
-                                <a href="<?= $userDetailUrl ?>"><?= $customer->getId() ?></a>
-                            </td>
-                            <td class="icon-column icon-column--center">
-                                <?= $this->partial('customers/partials/active-state.php', [
-                                    'customer' => $customer,
-                                    'language' => $this->language
-                                ]); ?>
-                            </td>
-                            <td>
-                                <?= $this->escape($customer->getFirstname()) ?>
-                                <?= $this->escape($customer->getName()) ?>
-                                <?= $this->escape($customer->getSurname()) ?>
-                            </td>
-                            <td>
-                                <?= $this->escape($customer->getEmail()) ?>
-                            </td>
-                        </tr>
-
-                    <?php endforeach; ?>
+                    foreach ($paginator as $customer) {
+                        echo $this->template($customerView->getOverviewTemplate($customer), [
+                            'customer' => $customer
+                        ]);
+                    }
+                    ?>
 
                     </tbody>
                 </table>

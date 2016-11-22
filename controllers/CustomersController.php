@@ -6,6 +6,7 @@ use BackendToolkit\Listing\FilterHandler;
 use CustomerManagementFramework\Controller\Admin;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\CustomerList\Filter\CustomerSegment as CustomerSegmentFilter;
+use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use CustomerManagementFramework\Plugin;
 use Pimcore\Model\Object\Customer;
@@ -31,7 +32,8 @@ class CustomerManagementFramework_CustomersController extends Admin
         $listing   = $this->buildListing($filters);
         $paginator = $this->buildPaginator($listing);
 
-        $this->view->paginator = $paginator;
+        $this->view->paginator    = $paginator;
+        $this->view->customerView = Factory::getInstance()->getCustomerView();
     }
 
     public function exportAction()
