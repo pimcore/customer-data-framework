@@ -9,6 +9,8 @@
 namespace CustomerManagementFramework;
 
 use CustomerManagementFramework\ActionTrigger\EventHandler\EventHandlerInterface;
+use CustomerManagementFramework\ActionTrigger\Trigger;
+use CustomerManagementFramework\ActionTrigger\Trigger\TriggerInterface;
 use CustomerManagementFramework\ActivityManager\ActivityManagerInterface;
 use CustomerManagementFramework\ActivityStore\ActivityStoreInterface;
 use CustomerManagementFramework\ActivityView\ActivityViewInterface;
@@ -150,5 +152,15 @@ class Factory {
         }
 
         return $object;
+    }
+
+    public function createActionTriggerObject(array $definitionData)
+    {
+        if(!isset($definitionData['implementationClass']))
+        {
+            $definitionData['implementationClass'] = Trigger::class;
+        }
+
+        return self::createObject($definitionData['implementationClass'], TriggerInterface::class, [$definitionData]);
     }
 }

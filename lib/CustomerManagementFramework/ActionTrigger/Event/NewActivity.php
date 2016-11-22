@@ -8,6 +8,7 @@
 
 namespace CustomerManagementFramework\ActionTrigger\Event;
 
+use CustomerManagementFramework\ActionTrigger\Trigger\TriggerInterface;
 use CustomerManagementFramework\Model\ActivityInterface;
 
 class NewActivity extends AbstractEvent{
@@ -16,6 +17,8 @@ class NewActivity extends AbstractEvent{
      * @var ActivityInterface $activity
      */
     private $activity;
+
+    const OPTION_TYPE = 'type';
 
     /**
      * @return ActivityInterface
@@ -31,6 +34,26 @@ class NewActivity extends AbstractEvent{
     public function setActivity(ActivityInterface $activity)
     {
         $this->activity = $activity;
+    }
+
+    public function getName(){
+        return "plugin.cmf.new-activity";
+    }
+
+    public function appliesToTrigger(TriggerInterface $trigger)
+    {
+        if($trigger->getEventName() != $this->getName()) {
+            return false;
+        }
+
+        $options = $trigger->getOptions();
+        if(!empty($options[self::OPTION_TYPE])) {
+            if($this->activity->cmfGetType() != $options[self::OPTION_TYPE]) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 

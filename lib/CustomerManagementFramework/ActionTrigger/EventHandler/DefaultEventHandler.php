@@ -10,23 +10,65 @@ namespace CustomerManagementFramework\ActionTrigger\EventHandler;
 
 
 use CustomerManagementFramework\ActionTrigger\Event\EventInterface;
+use CustomerManagementFramework\ActionTrigger\Rule;
+use CustomerManagementFramework\Factory;
 
 class DefaultEventHandler implements EventHandlerInterface{
 
-    private $rules;
+    private $rulesGroupedByEvents;
 
     public function __construct()
     {
-        $this->rules = [
+        $rules = new Rule\Listing();
+        $rules = $rules->load();
 
-        ];
+        $rulesGroupedByEvents = [];
+
+        foreach($rules as $rule) {
+            if($triggers = $rule->getTrigger()) {
+                foreach($triggers as $trigger) {
+                    $rulesGroupedByEvents[$trigger->getEventName()][] = $rule;
+                }
+            }
+        }
+
+        $this->rulesGroupedByEvents = $rulesGroupedByEvents;
     }
 
     public function handleEvent(\Zend_EventManager_Event $e, EventInterface $event)
     {
 
-        print "an event occured";
+        $appliedRules = $this->getAppliedRules($event);
+        var_dump($appliedRules);
+    }
 
-        var_dump($e);
+    /**
+     * @param EventInterface $event
+     *
+     * @return Rule[]
+     */
+    private function getAppliedRules(EventInterface $event) {
+
+        $appliedRules = [];
+
+        if(isset($this->rulesGroupedByEvents[$event->getName()]) && sizeof($this->rulesGroupedByEvents[$event->getName()])) {
+
+            $rules = $this->rulesGroupedByEvents[$event->getName()];
+
+            foreach($rules as $rule) {
+                /**
+                 * @var Rule $rule;
+                 */
+
+                foreach($rule->getTrigger() as $trigger) {
+                    if($event->appliesToTrigger($trigger)) {
+                        $appliedRules[] = $rule;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return $appliedRules;
     }
 }
