@@ -18,7 +18,7 @@ use Psr\Log\LoggerInterface;
  *
  * @package CustomerManagementFramework\CustomerSaveHandler
  */
-class ZipNormalizer implements CustomerSaveHandlerInterface
+class NormalizeZip implements CustomerSaveHandlerInterface
 {
     private $config;
 
