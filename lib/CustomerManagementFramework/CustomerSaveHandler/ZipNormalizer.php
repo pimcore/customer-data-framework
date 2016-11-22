@@ -13,7 +13,12 @@ use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 
-class ZipTransformer implements CustomerSaveHandlerInterface
+/**
+ * normalizes the zip field of a given customer according to several country zip formats
+ *
+ * @package CustomerManagementFramework\CustomerSaveHandler
+ */
+class ZipNormalizer implements CustomerSaveHandlerInterface
 {
     private $config;
 
