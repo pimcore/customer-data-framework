@@ -33,7 +33,6 @@ interface ActivityStoreInterface {
     /**
      * @param ActivityInterface $activity
      *
-     * @return array
      * @return ActivityStoreEntryInterface
      */
     public function getEntryForActivity(ActivityInterface $activity);
