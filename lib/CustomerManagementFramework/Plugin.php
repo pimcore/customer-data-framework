@@ -2,6 +2,7 @@
 
 namespace CustomerManagementFramework;
 
+use CustomerManagementFramework\ActionTrigger\Event\EventInterface;
 use CustomerManagementFramework\Model\ActivityInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
@@ -70,7 +71,17 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
             $application->addAutoloadNamespace('CustomerManagementFramework\\Console', PIMCORE_DOCUMENT_ROOT . '/plugins/CustomerManagementFramework/lib/CustomerManagementFramework/Console');
 
 
-});
+        });
+
+        \Pimcore::getEventManager()->attach('*', function(\Zend_EventManager_Event $e) {
+
+            $event = $e->getTarget();
+
+            if($event instanceof EventInterface) {
+                Factory::getInstance()->getActionTriggerEventHandler()->handleEvent($e, $event);
+            }
+
+        });
 
     }
 

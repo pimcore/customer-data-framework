@@ -8,11 +8,13 @@
 
 namespace CustomerManagementFramework;
 
+use CustomerManagementFramework\ActionTrigger\EventHandler\EventHandlerInterface;
 use CustomerManagementFramework\ActivityManager\ActivityManagerInterface;
 use CustomerManagementFramework\ActivityStore\ActivityStoreInterface;
 use CustomerManagementFramework\ActivityView\ActivityViewInterface;
 use CustomerManagementFramework\CustomerDuplicatesService\CustomerDuplicatesServiceInterface;
 use CustomerManagementFramework\CustomerSaveManager\CustomerSaveManagerInterface;
+use CustomerManagementFramework\CustomerView\CustomerViewInterface;
 use CustomerManagementFramework\RESTApi\ExportInterface;
 use CustomerManagementFramework\SegmentManager\SegmentManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -65,6 +67,14 @@ class Factory {
     }
 
     /**
+     * @return CustomerViewInterface
+     */
+    public function getCustomerView()
+    {
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerView');
+    }
+
+    /**
      * @return CustomerDuplicatesServiceInterface
      */
     public function getCustomerDuplicatesService()
@@ -102,6 +112,14 @@ class Factory {
     public function getCustomerListExporterManager()
     {
         return \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerList\ExporterManager');
+    }
+
+    /**
+     * @return EventHandlerInterface
+     */
+    public function getActionTriggerEventHandler()
+    {
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActionTrigger\EventHandler');
     }
 
     /**

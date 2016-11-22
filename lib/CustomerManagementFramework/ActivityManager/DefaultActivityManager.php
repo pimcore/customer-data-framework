@@ -8,6 +8,7 @@
 
 namespace  CustomerManagementFramework\ActivityManager;
 
+use CustomerManagementFramework\Event\NewActivity;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\ActivityInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
@@ -41,8 +42,14 @@ class DefaultActivityManager implements ActivityManagerInterface
         if($entry = $store->getEntryForActivity($activity)) {
             $store->updateActivityInStore($activity, $entry);
         } else {
+
             $store->insertActivityIntoStore($activity);
         }
+
+        $event = new \CustomerManagementFramework\ActionTrigger\Event\NewActivity($activity->getCustomer());
+        $event->setActivity($activity);
+
+        \Pimcore::getEventManager()->trigger("plugin.cmf.new-activity", $event);
 
     }
 
