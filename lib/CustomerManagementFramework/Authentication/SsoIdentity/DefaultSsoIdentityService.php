@@ -34,13 +34,11 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
      */
     public function getCustomerBySsoIdentity($provider, $identifier)
     {
-        return null;
-
         $db    = Db::get();
         $query = $db
             ->select()
+            ->from(sprintf('object_collection_SsoIdentity_%d', $this->customerProvider->getCustomerClassId()))
             ->columns(['o_id'])
-            ->from('object_collection_SsoIdentity_%d', $this->customerProvider->getCustomerClassId())
             ->where('provider = ?', $provider)
             ->where('identifier = ?', $identifier);
 
