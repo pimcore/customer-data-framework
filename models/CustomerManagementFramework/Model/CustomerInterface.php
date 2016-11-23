@@ -151,11 +151,6 @@ interface CustomerInterface {
     public function getAllSegments();
 
     /**
-     * @return SsoIdentityInterface[]
-     */
-    public function getSsoIdentities();
-
-    /**
      * @return array
      */
     public function cmfToArray();
