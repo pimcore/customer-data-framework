@@ -162,14 +162,4 @@ class Factory {
 
         return $object;
     }
-
-    public function createActionTriggerObject(array $definitionData)
-    {
-        if(!isset($definitionData['implementationClass']))
-        {
-            $definitionData['implementationClass'] = Trigger::class;
-        }
-
-        return self::createObject($definitionData['implementationClass'], TriggerInterface::class, [$definitionData]);
-    }
 }

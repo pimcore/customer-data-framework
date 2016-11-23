@@ -2,8 +2,8 @@
 
 namespace CustomerManagementFramework\ActionTrigger\Rule;
 
+use CustomerManagementFramework\ActionTrigger\Trigger;
 use CustomerManagementFramework\ActionTrigger\Trigger\TriggerInterface;
-use CustomerManagementFramework\Factory;
 use Pimcore\Model;
 
 class Dao extends Model\Dao\AbstractDao
@@ -21,7 +21,7 @@ class Dao extends Model\Dao\AbstractDao
             $triggers = [];
             $triggerData = json_decode($raw['trigger'], true);
             foreach($triggerData as $triggerDefinitionData) {
-                $triggers[] = Factory::getInstance()->createActionTriggerObject($triggerDefinitionData);
+                $triggers[] = new Trigger($triggerDefinitionData);
             }
 
             $raw['trigger'] = $triggers;

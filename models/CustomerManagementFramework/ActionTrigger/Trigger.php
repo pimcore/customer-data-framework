@@ -8,7 +8,6 @@
 
 namespace CustomerManagementFramework\ActionTrigger;
 
-use CustomerManagementFramework\ActionTrigger\Event\EventInterface;
 use CustomerManagementFramework\ActionTrigger\Trigger\TriggerInterface;
 
 class Trigger implements TriggerInterface
