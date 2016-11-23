@@ -63,7 +63,9 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
             if(is_null($value)) {
                 $conditions[] = $field . " is null";
             } else {
-                $conditions[] = $this->createNormalizedMysqlCompareCondition($field, $value);
+                if($cond = $this->createNormalizedMysqlCompareCondition($field, $value)) {
+                    $conditions[] = $cond;
+                }
             }
         }
         $conditions = '(' . implode(' and ', $conditions) . ')';
@@ -79,6 +81,10 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
 
         $class = ClassDefinition::getByName(Plugin::getConfig()->General->CustomerPimcoreClass);
         $fd = $class->getFieldDefinition($field);
+
+        if(!$fd) {
+            return false;
+        }
 
         if($value instanceof ElementInterface) {
             return $this->createNormalizedMysqlCompareConditionForSingleRelationFields($field, $value);
