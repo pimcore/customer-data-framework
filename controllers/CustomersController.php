@@ -9,8 +9,8 @@ use CustomerManagementFramework\CustomerList\Filter\CustomerSegment as CustomerS
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use CustomerManagementFramework\Plugin;
-use Pimcore\Model\Object\Customer;
 use Pimcore\Model\Object\CustomerSegment;
+use Pimcore\Model\Object\Listing;
 
 class CustomerManagementFramework_CustomersController extends Admin
 {
@@ -71,7 +71,7 @@ class CustomerManagementFramework_CustomersController extends Admin
     {
         $this->enableLayout();
 
-        $customer = Customer::getById((int)$this->getParam('id'));
+        $customer = Factory::getInstance()->getCustomerProvider()->getById((int)$this->getParam('id'));
         if ($customer && $customer instanceof CustomerInterface) {
             $customerView = Factory::getInstance()->getCustomerView();
             if (!$customerView->hasDetailView($customer)) {
@@ -104,11 +104,11 @@ class CustomerManagementFramework_CustomersController extends Admin
 
     /**
      * @param array $filters
-     * @return Customer\Listing
+     * @return Listing\Concrete
      */
     protected function buildListing(array $filters = [])
     {
-        $listing = new Customer\Listing();
+        $listing = Factory::getInstance()->getCustomerProvider()->getList();
         $listing
             ->setOrderKey('o_id')
             ->setOrder('ASC');
@@ -119,10 +119,10 @@ class CustomerManagementFramework_CustomersController extends Admin
     }
 
     /**
-     * @param Customer\Listing $listing
+     * @param Listing\Concrete $listing
      * @param array $filters
      */
-    protected function addListingFilters(Customer\Listing $listing, array $filters = [])
+    protected function addListingFilters(Listing\Concrete $listing, array $filters = [])
     {
         $handler = new FilterHandler($listing);
 

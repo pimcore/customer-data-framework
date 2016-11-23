@@ -15,6 +15,7 @@ use CustomerManagementFramework\ActivityManager\ActivityManagerInterface;
 use CustomerManagementFramework\ActivityStore\ActivityStoreInterface;
 use CustomerManagementFramework\ActivityView\ActivityViewInterface;
 use CustomerManagementFramework\CustomerDuplicatesService\CustomerDuplicatesServiceInterface;
+use CustomerManagementFramework\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFramework\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFramework\CustomerView\CustomerViewInterface;
 use CustomerManagementFramework\RESTApi\ExportInterface;
@@ -66,6 +67,14 @@ class Factory {
     public function getActivityView()
     {
         return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActivityView');
+    }
+
+    /**
+     * @return CustomerProviderInterface
+     */
+    public function getCustomerProvider()
+    {
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerProvider');
     }
 
     /**
