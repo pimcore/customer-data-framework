@@ -28,5 +28,11 @@ return [
 
     'CustomerManagementFramework\ActionTrigger\EventHandler' => \DI\object('CustomerManagementFramework\ActionTrigger\EventHandler\DefaultEventHandler'),
 
+    'CustomerManagementFramework\ActionTrigger\Queue' => \DI\object('CustomerManagementFramework\ActionTrigger\Queue\DefaultQueue')
+                                                         ->constructor(DI\get('CustomerManagementFramework\Logger')),
+
+    'CustomerManagementFramework\ActionTrigger\ActionManager' => \DI\object('CustomerManagementFramework\ActionTrigger\ActionManager\DefaultActionManager')
+                                                         ->constructor(DI\get('CustomerManagementFramework\Logger')),
+
 
 ];

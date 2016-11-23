@@ -39,7 +39,12 @@ class DefaultEventHandler implements EventHandlerInterface{
     {
 
         $appliedRules = $this->getAppliedRules($event);
-        var_dump($appliedRules);
+
+        foreach($appliedRules as $rule) {
+            if($rule->getActionDelay()) {
+                $this->addToQueue($rule, $event);
+            }
+        }
     }
 
     /**
@@ -70,5 +75,10 @@ class DefaultEventHandler implements EventHandlerInterface{
         }
 
         return $appliedRules;
+    }
+
+    private function addToQueue(Rule $rule, EventInterface $event)
+    {
+        Factory::getInstance()->getActionTriggerQueue()->addToQueue($rule, $event);
     }
 }

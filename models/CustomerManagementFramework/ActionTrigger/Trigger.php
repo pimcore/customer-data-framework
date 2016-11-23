@@ -39,5 +39,4 @@ class Trigger implements TriggerInterface
     {
         return $this->options;
     }
-
 }

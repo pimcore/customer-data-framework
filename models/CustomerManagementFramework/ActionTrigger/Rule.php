@@ -54,6 +54,11 @@ class Rule extends AbstractModel {
      */
     private $action;
 
+    /**
+     * @var int
+     */
+    private $actionDelay;
+
 
     /**
      * @param $id
@@ -136,6 +141,23 @@ class Rule extends AbstractModel {
     }
 
     /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+
+    /**
      * @return boolean
      */
     public function getActive()
@@ -200,19 +222,19 @@ class Rule extends AbstractModel {
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getDescription()
+    public function getActionDelay()
     {
-        return $this->description;
+        return $this->actionDelay;
     }
 
     /**
-     * @param string $description
+     * @param int $actionDelay
      */
-    public function setDescription($description)
+    public function setActionDelay($actionDelay)
     {
-        $this->description = $description;
+        $this->actionDelay = $actionDelay;
     }
 
 

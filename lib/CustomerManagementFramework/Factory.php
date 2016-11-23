@@ -8,7 +8,9 @@
 
 namespace CustomerManagementFramework;
 
+use CustomerManagementFramework\ActionTrigger\ActionManager\ActionManagerInterface;
 use CustomerManagementFramework\ActionTrigger\EventHandler\EventHandlerInterface;
+use CustomerManagementFramework\ActionTrigger\Queue\QueueInterface;
 use CustomerManagementFramework\ActionTrigger\Trigger;
 use CustomerManagementFramework\ActionTrigger\Trigger\TriggerInterface;
 use CustomerManagementFramework\ActivityManager\ActivityManagerInterface;
@@ -131,6 +133,22 @@ class Factory {
     public function getActionTriggerEventHandler()
     {
         return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActionTrigger\EventHandler');
+    }
+
+    /**
+     * @return QueueInterface
+     */
+    public function getActionTriggerQueue()
+    {
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActionTrigger\Queue');
+    }
+
+    /**
+     * @return ActionManagerInterface
+     */
+    public function getActionTriggerActionManager()
+    {
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActionTrigger\ActionManager');
     }
 
     /**
