@@ -6,16 +6,28 @@ class CustomerManagementFramework_AuthController extends \Pimcore\Controller\Act
     {
     }
 
-    public function externalAction()
+    public function hybridauthAction()
     {
         $this->disableLayout();
         $this->disableViewAutoRender();
 
-        $provider = $this->getParam('provider');
-        $adapter  = \Pimcore\Tool\HybridAuth::authenticate($provider);
+        /** @var Zend_Controller_Request_Http $request */
+        $request = $this->getRequest();
 
-        if ($adapter->adapter instanceof Hybrid_Providers_Twitter || $adapter->adapter instanceof Hybrid_Providers_Google) {
-            dump($adapter->getUserProfile());
+        /** @var \CustomerManagementFramework\Authentication\Sso\DefaultHybridAuthHandler $hybridAuthHandler */
+        $hybridAuthHandler = Pimcore::getDiContainer()->get('CustomerManagementFramework\Authentication\Sso\HybridAuthHandler');
+        $hybridAuthHandler->authenticate($request);
+
+        $customer = $hybridAuthHandler->getCustomerFromAuthResponse($request);
+        if ($customer) {
+            dump('FOUND CUSTOMER');
+            dump($customer);
+        } else {
+            $customer = \CustomerManagementFramework\Factory::getInstance()->getCustomerProvider()->create('foobar');
+            $hybridAuthHandler->updateCustomerFromAuthResponse($customer, $request);
+
+            dump('NEW CUSTOMER');
+            dump($customer);
         }
     }
 }

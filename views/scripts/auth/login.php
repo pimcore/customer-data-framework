@@ -6,7 +6,7 @@ foreach ($providers as $provider): ?>
     <?php
     $url = $this->url([
         'controller' => 'auth',
-        'action'     => 'external',
+        'action'     => 'hybridauth',
         'provider'   => $provider
     ]);
     ?>
