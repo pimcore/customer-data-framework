@@ -6,6 +6,16 @@ use CustomerManagementFramework\Model\CustomerInterface;
 interface CustomerProviderInterface
 {
     /**
+     * @return int
+     */
+    public function getCustomerClassId();
+
+    /**
+     * @return string
+     */
+    public function getCustomerClassName();
+
+    /**
      * Get an object listing
      *
      * @return \Pimcore\Model\Object\Listing\Concrete

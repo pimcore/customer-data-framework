@@ -51,6 +51,22 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     }
 
     /**
+     * @return int
+     */
+    public function getCustomerClassId()
+    {
+        return $this->callStatic('classId');
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomerClassName()
+    {
+        return get_class(\Pimcore::getDiContainer()->make($this->getDiClassName()));
+    }
+
+    /**
      * Get an object listing
      *
      * @return \Pimcore\Model\Object\Listing\Concrete
@@ -87,8 +103,18 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     public function getById($id)
     {
+        return $this->callStatic('getById', [$id]);
+    }
+
+    /**
+     * @param string $method
+     * @param array $arguments
+     * @return mixed
+     */
+    protected function callStatic($method, array $arguments = [])
+    {
         $className = $this->getDiClassName();
 
-        return $className::getById($id);
+        return call_user_func_array([$className, $method], $arguments);
     }
 }
