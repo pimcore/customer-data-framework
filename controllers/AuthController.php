@@ -23,11 +23,13 @@ class CustomerManagementFramework_AuthController extends \Pimcore\Controller\Act
             dump('FOUND CUSTOMER');
             dump($customer);
         } else {
-            $customer = \CustomerManagementFramework\Factory::getInstance()->getCustomerProvider()->create('foobar');
+            $customer = \CustomerManagementFramework\Factory::getInstance()->getCustomerProvider()->create(['key' => 'foobar']);
             $hybridAuthHandler->updateCustomerFromAuthResponse($customer, $request);
 
             dump('NEW CUSTOMER');
             dump($customer);
+
+            $customer->save();
         }
     }
 }
