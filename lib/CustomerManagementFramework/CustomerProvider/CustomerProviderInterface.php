@@ -25,11 +25,10 @@ interface CustomerProviderInterface
     /**
      * Create a customer instance
      *
-     * @param string $key
      * @param array $values
      * @return CustomerInterface
      */
-    public function create($key, array $values = []);
+    public function create(array $values = []);
 
     /**
      * Get customer by ID

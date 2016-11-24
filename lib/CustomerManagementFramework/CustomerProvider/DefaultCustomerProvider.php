@@ -6,6 +6,7 @@ use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Plugin;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Object\Concrete;
+use Pimcore\Model\Object\Folder;
 
 class DefaultCustomerProvider implements CustomerProviderInterface
 {
@@ -17,7 +18,12 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     /**
      * @var string
      */
-    protected $savePath;
+    protected $parentPath;
+
+    /**
+     * @var Folder
+     */
+    protected $parentFolder;
 
     public function __construct()
     {
@@ -27,9 +33,9 @@ class DefaultCustomerProvider implements CustomerProviderInterface
         }
 
         $config = Plugin::getConfig()->CustomerProvider;
-        $this->savePath = $config->savePath;
+        $this->parentPath = $config->parentPath;
 
-        if (empty($this->savePath)) {
+        if (empty($this->parentPath)) {
             throw new \RuntimeException('Customer save path is not defined');
         }
     }
@@ -79,17 +85,20 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     /**
      * Create a customer instance
      *
-     * @param string $key
      * @param array $values
      * @return CustomerInterface
      */
-    public function create($key, array $values = [])
+    public function create(array $values = [])
     {
+        $parentFolder = Folder::getByPath($this->parentPath);
+        if (!$parentFolder) {
+            throw new \RuntimeException(sprintf('Parent folder %s could not be loaded', $parentFolder));
+        }
+
         /** @var CustomerInterface|ElementInterface|Concrete $customer */
         $customer = \Pimcore::getDiContainer()->make($this->getDiClassName());
         $customer->setPublished(true);
-        $customer->setKey($key);
-        $customer->setPath($this->savePath);
+        $customer->setParent($parentFolder);
         $customer->setValues($values);
 
         return $customer;
