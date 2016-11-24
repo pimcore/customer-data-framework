@@ -7,6 +7,7 @@ use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\SsoAwareCustomerInterface;
 use CustomerManagementFramework\Model\SsoIdentityInterface;
 use Pimcore\Db;
+use Pimcore\Model\Object\Fieldcollection;
 use Pimcore\Model\Object\Fieldcollection\Data\SsoIdentity;
 
 /**
@@ -34,17 +35,14 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
      */
     public function getCustomerBySsoIdentity($provider, $identifier)
     {
-        $db    = Db::get();
-        $query = $db
+        $select = Db::get()
             ->select()
-            ->from(sprintf('object_collection_SsoIdentity_%d', $this->customerProvider->getCustomerClassId()))
-            ->columns(['o_id'])
+            ->from(sprintf('object_collection_SsoIdentity_%d', $this->customerProvider->getCustomerClassId()), ['o_id'])
             ->where('provider = ?', $provider)
             ->where('identifier = ?', $identifier);
 
-        $result = $db
-            ->prepare($query)
-            ->fetchAll();
+        $stmt   = $select->query();
+        $result = $stmt->fetchAll();
 
         if (count($result) === 1) {
             return $this->customerProvider->getById((int)$result[0]['o_id']);
@@ -95,8 +93,13 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
     {
         $this->checkCustomer($customer);
 
-        $ssoIdentities   = $this->getSsoIdentities($customer);
-        $ssoIdentities[] = $ssoIdentity;
+        /** @var Fieldcollection $ssoIdentities */
+        $ssoIdentities = $customer->getSsoIdentities();
+        if (!$ssoIdentities) {
+            $ssoIdentities = new Fieldcollection();
+        }
+
+        $ssoIdentities->add($ssoIdentity);
 
         $customer->setSsoIdentities($ssoIdentities);
     }
