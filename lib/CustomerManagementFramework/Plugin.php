@@ -73,7 +73,7 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
 
         });
 
-        \Pimcore::getEventManager()->attach('*', function(\Zend_EventManager_Event $e) {
+        \Pimcore::getEventManager()->attach(array_keys(Plugin::getConfig()->Events->toArray()), function(\Zend_EventManager_Event $e) {
 
             $event = $e->getTarget();
 
