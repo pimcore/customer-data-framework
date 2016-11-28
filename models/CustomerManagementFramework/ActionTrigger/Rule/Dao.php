@@ -60,22 +60,34 @@ class Dao extends Model\Dao\AbstractDao
 
 
         if($this->model->getId()) {
+            $this->db->beginTransaction();
             try {
+
+                $this->saveActions();
+
                 $this->db->update(self::TABLE_NAME , $data, $this->db->quoteInto("id = ?", $this->model->getId()));
+                $this->db->commit();
             } catch(\Exception $e) {
 
+                $this->db->rollBack();
                 $this->lastErrorCode = $e->getCode();
                 return false;
             }
         } else {
             $data['creationDate'] = time();
             unset($data['id']);
-
+            $this->db->beginTransaction();
             try {
-                $this->db->insert("plugin_form_forms", $data);
+                $this->db->insert(self::TABLE_NAME, $data);
                 $this->model->setId($this->db->fetchOne("SELECT LAST_INSERT_ID();"));
                 $this->model->setCreationDate($data['creationDate']);
+
+                $this->saveActions();
+                $this->db->commit();
+
             } catch(\Exception $e) {
+                $this->db->rollBack();
+
                 $this->lastErrorCode = $e->getCode();
                 return false;
             }
@@ -85,13 +97,27 @@ class Dao extends Model\Dao\AbstractDao
         return true;
     }
 
+    private function saveActions() {
+
+        $savedActionIds = [-1];
+
+        if($actions = $this->model->getAction()) {
+            foreach($actions as $action) {
+                $action->setRuleId($this->model->getId());
+                $action->save();
+                $savedActionIds[] = $action->getId();
+            }
+        }
+
+        $this->db->delete(\CustomerManagementFramework\ActionTrigger\ActionDefinition\Dao::TABLE_NAME, "ruleId = " . $this->model->getId() . " and id not in(" . implode(',', $savedActionIds) . ")");
+    }
+
     public function delete() {
 
         $this->db->beginTransaction();
         try {
 
-            $this->db->delete("plugin_form_forms", $this->db->quoteInto("id = ?", $this->model->getId()));
-            $this->db->delete("plugin_form_forms", $this->db->quoteInto("idPath LIKE ?", $this->model->getIdPath() . $this->model->getId() . "/%"));
+            $this->db->delete(self::TABLE_NAME, $this->db->quoteInto("id = ?", $this->model->getId()));
 
             $this->db->commit();
         } catch (\Exception $e) {
