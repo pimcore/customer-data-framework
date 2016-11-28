@@ -35,12 +35,12 @@ class DefaultQueue implements QueueInterface
 
         $time = time();
 
-        $actionDateTimestamp = time() + $rule->getActionDelay();
+        $actionDateTimestamp = time();// + $rule->getActionDelay();
 
         $db->insert(self::QUEUE_TABLE, [
             'customerId' => $event->getCustomer()->getId(),
             'actionDate' => $actionDateTimestamp,
-            'ruleId' => $rule->getId(),
+            'actionId' => $rule->getId(),
             'creationDate' => $time,
             'modificationDate' => $time
         ]);

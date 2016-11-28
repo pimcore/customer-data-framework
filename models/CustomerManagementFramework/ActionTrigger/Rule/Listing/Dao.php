@@ -17,7 +17,6 @@ class Dao extends Model\Listing\Dao\AbstractDao
         foreach ($ids as $id) {
             $rules[] = Rule::getById($id);
         }
-
         return $rules;
     }
 

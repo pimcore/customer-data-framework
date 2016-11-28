@@ -8,7 +8,7 @@
 
 namespace CustomerManagementFramework\ActionTrigger\Event;
 
-use CustomerManagementFramework\ActionTrigger\Trigger\TriggerInterface;
+use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use CustomerManagementFramework\Model\ActivityInterface;
 
 class NewActivity extends AbstractEvent{
@@ -40,7 +40,7 @@ class NewActivity extends AbstractEvent{
         return "plugin.cmf.new-activity";
     }
 
-    public function appliesToTrigger(TriggerInterface $trigger)
+    public function appliesToTrigger(TriggerDefinitionInterface $trigger)
     {
         if($trigger->getEventName() != $this->getName()) {
             return false;

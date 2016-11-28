@@ -8,7 +8,7 @@
 
 namespace CustomerManagementFramework\ActionTrigger\Event;
 
-use CustomerManagementFramework\ActionTrigger\Trigger\TriggerInterface;
+use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
 
 interface EventInterface {
@@ -16,5 +16,5 @@ interface EventInterface {
     public function __construct(CustomerInterface $customer);
     public function getCustomer();
     public function getName();
-    public function appliesToTrigger(TriggerInterface $trigger);
+    public function appliesToTrigger(TriggerDefinitionInterface $trigger);
 }

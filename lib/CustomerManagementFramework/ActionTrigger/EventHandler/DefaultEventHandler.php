@@ -41,9 +41,9 @@ class DefaultEventHandler implements EventHandlerInterface{
         $appliedRules = $this->getAppliedRules($event);
 
         foreach($appliedRules as $rule) {
-            if($rule->getActionDelay()) {
+          //  if($rule->getActionDelay()) {
                 $this->addToQueue($rule, $event);
-            }
+          //  }
         }
     }
 

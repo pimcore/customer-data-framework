@@ -2,8 +2,8 @@
 
 namespace CustomerManagementFramework\ActionTrigger\Rule;
 
-use CustomerManagementFramework\ActionTrigger\Trigger;
-use CustomerManagementFramework\ActionTrigger\Trigger\TriggerInterface;
+use CustomerManagementFramework\ActionTrigger\TriggerDefinition;
+use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use Pimcore\Model;
 
 class Dao extends Model\Dao\AbstractDao
@@ -21,7 +21,7 @@ class Dao extends Model\Dao\AbstractDao
             $triggers = [];
             $triggerData = json_decode($raw['trigger'], true);
             foreach($triggerData as $triggerDefinitionData) {
-                $triggers[] = new Trigger($triggerDefinitionData);
+                $triggers[] = new TriggerDefinition($triggerDefinitionData);
             }
 
             $raw['trigger'] = $triggers;
@@ -44,7 +44,7 @@ class Dao extends Model\Dao\AbstractDao
         if($triggers = $this->model->getTrigger()) {
             foreach($triggers as $trigger) {
                 /**
-                 * @var TriggerInterface $trigger
+                 * @var TriggerDefinitionInterface $trigger
                  */
                 $triggerData[] = $trigger->getDefinitionData();
             }

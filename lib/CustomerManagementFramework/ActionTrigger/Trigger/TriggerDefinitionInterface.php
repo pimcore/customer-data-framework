@@ -8,7 +8,7 @@
 
 namespace CustomerManagementFramework\ActionTrigger\Trigger;
 
-interface TriggerInterface
+interface TriggerDefinitionInterface
 {
 
     public function __construct(array $definitionData);

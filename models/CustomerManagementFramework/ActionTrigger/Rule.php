@@ -8,8 +8,9 @@
 
 namespace CustomerManagementFramework\ActionTrigger;
 
-use CustomerManagementFramework\ActionTrigger\Trigger\TriggerInterface;
+use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use Pimcore\Cache\Runtime;
+use Pimcore\Logger;
 use Pimcore\Model\AbstractModel;
 
 class Rule extends AbstractModel {
@@ -80,7 +81,8 @@ class Rule extends AbstractModel {
                 $rule->getDao()->getById($id);
                 Runtime::save($rule, $cacheKey);
             } catch (\Exception $e) {
-                print $e->getMessage();
+
+                Logger::error($e->getMessage());
                 return null;
             }
         }
@@ -170,7 +172,7 @@ class Rule extends AbstractModel {
     }
 
     /**
-     * @return TriggerInterface[]
+     * @return TriggerDefinitionInterface[]
      */
     public function getTrigger()
     {
@@ -178,7 +180,7 @@ class Rule extends AbstractModel {
     }
 
     /**
-     * @param TriggerInterface[] $trigger
+     * @param TriggerDefinitionInterface[] $trigger
      */
     public function setTrigger(array $trigger = null)
     {

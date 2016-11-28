@@ -8,9 +8,9 @@
 
 namespace CustomerManagementFramework\ActionTrigger;
 
-use CustomerManagementFramework\ActionTrigger\Trigger\TriggerInterface;
+use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
 
-class Trigger implements TriggerInterface
+class TriggerDefinition implements TriggerDefinitionInterface
 {
     private $definitionData;
 
