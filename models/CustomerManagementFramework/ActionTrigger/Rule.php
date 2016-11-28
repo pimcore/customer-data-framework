@@ -8,6 +8,7 @@
 
 namespace CustomerManagementFramework\ActionTrigger;
 
+use CustomerManagementFramework\ActionTrigger\Trigger\ActionDefinitionInterface;
 use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use Pimcore\Cache\Runtime;
 use Pimcore\Logger;
@@ -204,7 +205,7 @@ class Rule extends AbstractModel {
     }
 
     /**
-     * @return string
+     * @return ActionDefinitionInterface[]
      */
     public function getAction()
     {

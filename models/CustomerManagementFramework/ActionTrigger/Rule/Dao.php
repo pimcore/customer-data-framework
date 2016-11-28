@@ -2,6 +2,7 @@
 
 namespace CustomerManagementFramework\ActionTrigger\Rule;
 
+use CustomerManagementFramework\ActionTrigger\ActionDefinition;
 use CustomerManagementFramework\ActionTrigger\TriggerDefinition;
 use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use Pimcore\Model;
@@ -31,6 +32,15 @@ class Dao extends Model\Dao\AbstractDao
 
         if ($raw["id"]) {
             $this->assignVariablesToModel($raw);
+
+            $actionIds = $this->db->fetchCol("select id from " . \CustomerManagementFramework\ActionTrigger\ActionDefinition\Dao::TABLE_NAME . " where ruleId = ?", $raw['id']);
+
+            $actions = [];
+            foreach($actionIds as $id) {
+                $actions[] = ActionDefinition::getById($id);
+            }
+
+            $this->model->setAction($actions);
 
         } else {
             throw new \Exception("Action trigger rule with ID " . $id . " doesn't exist");

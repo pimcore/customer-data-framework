@@ -16,6 +16,7 @@ class Dao extends Model\Dao\AbstractDao
         $raw = $this->db->fetchRow("SELECT * FROM " . self::TABLE_NAME . " WHERE id = ?", $id);
 
         if ($raw["id"]) {
+            $raw['options'] = json_decode($raw['options'], true);
             $this->assignVariablesToModel($raw);
 
         } else {
@@ -41,7 +42,7 @@ class Dao extends Model\Dao\AbstractDao
         } else {
             $data['creationDate'] = time();
             unset($data['id']);
-            
+
             $this->db->insert(self::TABLE_NAME, $data);
 
             $this->model->setId($this->db->fetchOne("SELECT LAST_INSERT_ID();"));

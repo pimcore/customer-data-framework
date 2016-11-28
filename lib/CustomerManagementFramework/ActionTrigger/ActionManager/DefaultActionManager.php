@@ -9,6 +9,7 @@
 namespace CustomerManagementFramework\ActionTrigger\ActionManager;
 
 use CustomerManagementFramework\ActionTrigger\Rule;
+use CustomerManagementFramework\ActionTrigger\Trigger\ActionDefinitionInterface;
 use Psr\Log\LoggerInterface;
 
 class DefaultActionManager implements ActionManagerInterface
@@ -23,8 +24,8 @@ class DefaultActionManager implements ActionManagerInterface
         $this->logger = $logger;
     }
     
-    public function processActions(Rule $rule)
+    public function processAction(ActionDefinitionInterface $action)
     {
-        $this->logger->debug(sprintf("process actions for rule ID %s", $rule->getId()));
+        $this->logger->debug(sprintf("process action ID %s", $action->getId()));
     }
 }

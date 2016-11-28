@@ -8,12 +8,12 @@
 
 namespace CustomerManagementFramework\ActionTrigger\ActionManager;
 
-use CustomerManagementFramework\ActionTrigger\Rule;
+use CustomerManagementFramework\ActionTrigger\Trigger\ActionDefinitionInterface;
 use Psr\Log\LoggerInterface;
 
 interface ActionManagerInterface
 {
     public function __construct(LoggerInterface $logger);
 
-    public function processActions(Rule $rule);
+    public function processAction(ActionDefinitionInterface $action);
 }

@@ -11,6 +11,7 @@ namespace CustomerManagementFramework\ActionTrigger\EventHandler;
 
 use CustomerManagementFramework\ActionTrigger\Event\EventInterface;
 use CustomerManagementFramework\ActionTrigger\Rule;
+use CustomerManagementFramework\ActionTrigger\Trigger\ActionDefinitionInterface;
 use CustomerManagementFramework\Factory;
 
 class DefaultEventHandler implements EventHandlerInterface{
@@ -41,9 +42,19 @@ class DefaultEventHandler implements EventHandlerInterface{
         $appliedRules = $this->getAppliedRules($event);
 
         foreach($appliedRules as $rule) {
-          //  if($rule->getActionDelay()) {
-                $this->addToQueue($rule, $event);
-          //  }
+          if($actions = $rule->getAction()) {
+              foreach($actions as $action) {
+                  if($action->getActionDelay()) {
+                      print 'add to queue';
+                      $this->addToQueue($action, $event);
+                  } else {
+
+                      print 'process action';
+
+                      Factory::getInstance()->getActionTriggerActionManager()->processAction($action);
+                  }
+              }
+          }
         }
     }
 
@@ -77,8 +88,8 @@ class DefaultEventHandler implements EventHandlerInterface{
         return $appliedRules;
     }
 
-    private function addToQueue(Rule $rule, EventInterface $event)
+    private function addToQueue(ActionDefinitionInterface $action, EventInterface $event)
     {
-        Factory::getInstance()->getActionTriggerQueue()->addToQueue($rule, $event);
+        Factory::getInstance()->getActionTriggerQueue()->addToQueue($action, $event);
     }
 }
