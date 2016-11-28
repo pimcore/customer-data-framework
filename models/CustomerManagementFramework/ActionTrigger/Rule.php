@@ -54,10 +54,6 @@ class Rule extends AbstractModel {
      */
     private $action;
 
-    /**
-     * @var int
-     */
-    private $actionDelay;
 
 
     /**
@@ -219,22 +215,6 @@ class Rule extends AbstractModel {
     public function setAction($action)
     {
         $this->action = $action;
-    }
-
-    /**
-     * @return int
-     */
-    public function getActionDelay()
-    {
-        return $this->actionDelay;
-    }
-
-    /**
-     * @param int $actionDelay
-     */
-    public function setActionDelay($actionDelay)
-    {
-        $this->actionDelay = $actionDelay;
     }
 
 
