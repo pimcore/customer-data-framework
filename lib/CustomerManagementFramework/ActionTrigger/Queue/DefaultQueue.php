@@ -8,6 +8,7 @@
 
 namespace CustomerManagementFramework\ActionTrigger\Queue;
 
+use CustomerManagementFramework\ActionTrigger\ActionDefinition;
 use CustomerManagementFramework\ActionTrigger\Event\EventInterface;
 use CustomerManagementFramework\ActionTrigger\Rule;
 use CustomerManagementFramework\ActionTrigger\Trigger\ActionDefinitionInterface;
@@ -81,8 +82,10 @@ class DefaultQueue implements QueueInterface
         $logger = $this->logger;
         $logger->notice(sprintf("proccess entry ID %s", $item['id']));
 
-        $rule = Rule::getById($item['ruleId']);
+        $action = ActionDefinition::getById($item['actionId']);
 
-        Factory::getInstance()->getActionTriggerActionManager()->processActions($rule);
+        Factory::getInstance()->getActionTriggerActionManager()->processAction($action);
+        $db = Db::get();
+        $db->delete(self::QUEUE_TABLE, 'id='.intval($item['id']));
     }
 }

@@ -45,12 +45,8 @@ class DefaultEventHandler implements EventHandlerInterface{
           if($actions = $rule->getAction()) {
               foreach($actions as $action) {
                   if($action->getActionDelay()) {
-                      print 'add to queue';
-                      $this->addToQueue($action, $event);
+                      Factory::getInstance()->getActionTriggerQueue()->addToQueue($action, $event);
                   } else {
-
-                      print 'process action';
-
                       Factory::getInstance()->getActionTriggerActionManager()->processAction($action);
                   }
               }
@@ -86,10 +82,5 @@ class DefaultEventHandler implements EventHandlerInterface{
         }
 
         return $appliedRules;
-    }
-
-    private function addToQueue(ActionDefinitionInterface $action, EventInterface $event)
-    {
-        Factory::getInstance()->getActionTriggerQueue()->addToQueue($action, $event);
     }
 }
