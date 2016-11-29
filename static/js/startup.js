@@ -7,12 +7,15 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
 
     initialize: function() {
         pimcore.plugin.broker.registerPlugin(this);
+
     },
  
     pimcoreReady: function (params,broker){
         // alert("CustomerManagementFramework Plugin Ready!");
 
         this.initToolbar();
+
+
     },
 
     initToolbar: function () {
@@ -52,6 +55,22 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
             // add to menu
             menuItems.add(item);
         }
+
+        var customerAutomationRulesPanelId = 'plugin_cmf_customerautomationrules';
+        var item = {
+            text: t('plugin_cmf_customerautomationrules'),
+            iconCls: 'pimcore_icon_customerautomationrules',
+            handler: function () {
+                try {
+                    pimcore.globalmanager.get(customerAutomationRulesPanelId).activate();
+                }
+                catch (e) {
+                    pimcore.globalmanager.add(customerAutomationRulesPanelId, new pimcore.plugin.cmf.config.panel(customerAutomationRulesPanelId));
+                }
+            }
+        };
+
+        menuItems.add(item);
 
         // add main menu
         if (menuItems.items.length > 0) {

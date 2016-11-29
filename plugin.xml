@@ -35,6 +35,12 @@
                 <path>/plugins/CustomerManagementFramework/static/js/startup.js</path>
                 <path>/plugins/CustomerManagementFramework/static/js/ActivityView.js</path>
                 <path>/plugins/CustomerManagementFramework/static/js/CustomerView.js</path>
+
+				<path>/plugins/CustomerManagementFramework/static/js/config/panel.js</path>
+				<path>/plugins/CustomerManagementFramework/static/js/config/rule.js</path>
+				<path>/plugins/CustomerManagementFramework/static/js/config/trigger.js</path>
+				<path>/plugins/CustomerManagementFramework/static/js/config/conditions.js</path>
+				<path>/plugins/CustomerManagementFramework/static/js/config/actions.js</path>
 			</pluginJsPaths>
 
 			<pluginCssPaths>
