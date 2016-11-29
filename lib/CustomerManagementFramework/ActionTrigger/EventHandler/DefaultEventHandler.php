@@ -47,7 +47,7 @@ class DefaultEventHandler implements EventHandlerInterface{
                   if($action->getActionDelay()) {
                       Factory::getInstance()->getActionTriggerQueue()->addToQueue($action, $event);
                   } else {
-                      Factory::getInstance()->getActionTriggerActionManager()->processAction($action);
+                      Factory::getInstance()->getActionTriggerActionManager()->processAction($action, $event->getCustomer());
                   }
               }
           }

@@ -14,6 +14,7 @@ use CustomerManagementFramework\ActionTrigger\Rule;
 use CustomerManagementFramework\ActionTrigger\Trigger\ActionDefinitionInterface;
 use CustomerManagementFramework\Factory;
 use Pimcore\Db;
+use Pimcore\Model\Object\Customer;
 use Psr\Log\LoggerInterface;
 
 class DefaultQueue implements QueueInterface
@@ -83,9 +84,13 @@ class DefaultQueue implements QueueInterface
         $logger->notice(sprintf("proccess entry ID %s", $item['id']));
 
         $action = ActionDefinition::getById($item['actionId']);
+        $customer = Customer::getById($item['customerId']);
 
-        Factory::getInstance()->getActionTriggerActionManager()->processAction($action);
+        if($action && $customer) {
+            Factory::getInstance()->getActionTriggerActionManager()->processAction($action, $customer);
+        }
+
         $db = Db::get();
-        $db->delete(self::QUEUE_TABLE, 'id='.intval($item['id']));
+     //   $db->delete(self::QUEUE_TABLE, 'id='.intval($item['id']));
     }
 }

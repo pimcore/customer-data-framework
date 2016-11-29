@@ -12,9 +12,12 @@ use CustomerManagementFramework\ActionTrigger\Trigger\ActionDefinitionInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 
-interface ActionInterface {
+abstract class AbstractAction implements ActionInterface{
 
-    public function __construct(LoggerInterface $logger);
-
-    public function process(ActionDefinitionInterface $actionDefinition, CustomerInterface $customer);
+    protected $logger;
+    
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 }

@@ -9,11 +9,12 @@
 namespace CustomerManagementFramework\ActionTrigger\ActionManager;
 
 use CustomerManagementFramework\ActionTrigger\Trigger\ActionDefinitionInterface;
+use CustomerManagementFramework\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 
 interface ActionManagerInterface
 {
     public function __construct(LoggerInterface $logger);
 
-    public function processAction(ActionDefinitionInterface $action);
+    public function processAction(ActionDefinitionInterface $action, CustomerInterface $customer);
 }

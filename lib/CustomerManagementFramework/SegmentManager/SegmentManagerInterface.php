@@ -64,6 +64,15 @@ interface SegmentManagerInterface {
     public function mergeCalculatedSegments(CustomerInterface $customer, array $addSegments, array $deleteSegments = []);
 
     /**
+     * @param CustomerInterface          $customer
+     * @param CustomerSegmentInterface[] $addSegments
+     * @param CustomerSegmentInterface[] $deleteSegments
+     *
+     * @return void
+     */
+    public function mergeManualSegments(CustomerInterface $customer, array $addSegments, array $deleteSegments = []);
+
+    /**
      * @param $segmentReference
      *
      * @return CustomerSegmentInterface

@@ -8,8 +8,11 @@
 
 namespace CustomerManagementFramework\ActionTrigger\ActionManager;
 
+use CustomerManagementFramework\ActionTrigger\Action\ActionInterface;
 use CustomerManagementFramework\ActionTrigger\Rule;
 use CustomerManagementFramework\ActionTrigger\Trigger\ActionDefinitionInterface;
+use CustomerManagementFramework\Factory;
+use CustomerManagementFramework\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 
 class DefaultActionManager implements ActionManagerInterface
@@ -24,8 +27,18 @@ class DefaultActionManager implements ActionManagerInterface
         $this->logger = $logger;
     }
     
-    public function processAction(ActionDefinitionInterface $action)
+    public function processAction(ActionDefinitionInterface $action, CustomerInterface $customer)
     {
         $this->logger->debug(sprintf("process action ID %s", $action->getId()));
+
+        if(class_exists($action->getImplementationClass())) {
+
+            $actionImpl = Factory::getInstance()->createObject($action->getImplementationClass(), ActionInterface::class, [$this->logger]);
+
+            $actionImpl->process($action, $customer);
+
+        } else {
+            $this->logger->error(sprintf("action implementation class %s not found", $action->getImplementationClass()));
+        }
     }
 }

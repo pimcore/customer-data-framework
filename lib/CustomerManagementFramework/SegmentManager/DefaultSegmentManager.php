@@ -166,6 +166,31 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
     }
 
+    public function mergeManualSegments(CustomerInterface $customer, array $addSegments, array $deleteSegments = [])
+    {
+        $currentSegments = (array)$customer->getManualSegments();
+
+        $saveNeeded = false;
+        if(Objects::addObjectsToArray($currentSegments, $addSegments)) {
+            $saveNeeded = true;
+        }
+
+        if(Objects::removeObjectsFromArray($currentSegments, $deleteSegments)) {
+            $saveNeeded = true;
+        }
+
+        if($saveNeeded) {
+            $backup = \Pimcore\Model\Version::$disabled;
+            \Pimcore\Model\Version::disable();
+            $customer->setManualSegments($currentSegments);
+            $customer->save();
+
+            if(!$backup) {
+                \Pimcore\Model\Version::enable();
+            }
+        }
+    }
+
 
     public function createCalculatedSegment($segmentReference, $segmentGroup, $segmentName = null)
     {
