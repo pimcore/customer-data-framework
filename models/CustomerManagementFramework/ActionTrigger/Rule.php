@@ -29,11 +29,6 @@ class Rule extends AbstractModel {
     /**
      * @var string
      */
-    private $label;
-
-    /**
-     * @var string
-     */
     private $description;
 
     /**
@@ -123,21 +118,6 @@ class Rule extends AbstractModel {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getLabel()
-    {
-        return $this->label;
-    }
-
-    /**
-     * @param string $label
-     */
-    public function setLabel($label)
-    {
-        $this->label = $label;
-    }
 
     /**
      * @return string

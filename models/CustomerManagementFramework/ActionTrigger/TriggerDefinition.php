@@ -39,4 +39,9 @@ class TriggerDefinition implements TriggerDefinitionInterface
     {
         return $this->options;
     }
+
+    public function toArray()
+    {
+        return $this->getDefinitionData();
+    }
 }

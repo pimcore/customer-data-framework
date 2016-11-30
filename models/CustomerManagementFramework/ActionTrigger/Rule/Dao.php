@@ -62,7 +62,6 @@ class Dao extends Model\Dao\AbstractDao
 
         $data = [
             'name' => $this->model->getName(),
-            'label' => $this->model->getLabel(),
             'description' => $this->model->getDescription(),
             'active' => (int)$this->model->getActive(),
             'trigger' => sizeof($triggerData) ? json_encode($triggerData) : null,

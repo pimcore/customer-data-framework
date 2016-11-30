@@ -28,7 +28,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
             closable: true,
             deferredRender: false,
             forceLayout: true,
-            id: "pimcore_targeting_panel_" + rule.id,
+            id: "plugin_cmf_actiontrigger_rule_panel" + rule.id,
             buttons: [{
                 text: t("save"),
                 iconCls: "pimcore_icon_apply",
@@ -49,7 +49,10 @@ pimcore.plugin.cmf.config.rule = Class.create({
         {
             var rule = this;
             Ext.each(this.rule.trigger, function(trigger){
-                rule.addTrigger("trigger" + ucfirst(trigger.event.replace(/\./g,'_')), trigger);
+
+                rule.addTrigger(ucfirst(trigger.eventName.replace(/plugin\.cmf\./g,'').replace(/-([a-z])/g, function (m, w) {
+                    return w.toUpperCase();
+                })),trigger);
             });
         }
 
@@ -99,7 +102,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
         {
             var rule = this;
             Ext.each(this.rule.actions, function(action){
-                rule.addAction("action" + ucfirst(action.type), action);
+              //  rule.addAction("action" + ucfirst(action.type), action);
             });
         }
 
@@ -124,10 +127,10 @@ pimcore.plugin.cmf.config.rule = Class.create({
             border:false,
             items: [{
                 xtype: "textfield",
-                name: "label",
-                fieldLabel: t("label"),
+                name: "name",
+                fieldLabel: t("name"),
                 width: 350,
-                value: this.rule.label
+                value: this.rule.name
             }, {
                 xtype: "textarea",
                 name: "description",
@@ -177,9 +180,11 @@ pimcore.plugin.cmf.config.rule = Class.create({
                 // add handler to the last menu item
                 if(index == path.length -1)
                 {
+                    console.log("method:" + method);
+
                     // add metadata to the last point
-                    current.text = path[index];
-                    current.iconCls = "plugin_ifttt_config_" + method;
+                    current.text = t('plugin_cmf_actiontriggerrule_trigger' + method);
+                    current.iconCls = "plugin_cmf_icon_actiontriggerrule_" + method;
                     current.handler = rule.addTrigger.bind(rule, method);
                 }
             }
@@ -306,7 +311,24 @@ pimcore.plugin.cmf.config.rule = Class.create({
      */
     addTrigger: function (event, data) {
 
-        var item = pimcore.plugin.cmf.rule.triggers[event](this, data);
+
+        // check params
+        if(typeof data == "undefined") {
+            data = {};
+        }
+
+        var trigger = new pimcore.plugin.cmf.rule.triggers[event](data);
+
+        var myId = Ext.id();
+        var item =  new Ext.form.FormPanel({
+            event: trigger.getEventName(),
+            forceLayout: true,
+            style: "margin: 10px 0 0 0",
+            bodyStyle: "padding: 10px 30px 10px 30px;",
+            id:myId,
+            tbar: trigger.getTopBar(myId, this),
+            items: trigger.getFormItems()
+        });
 
         this.triggerContainer.add(item);
         item.updateLayout();
@@ -396,11 +418,10 @@ pimcore.plugin.cmf.config.rule = Class.create({
         var triggerData = [];
         var triggers = this.triggerContainer.items.getRange();
         for (var i=0; i<triggers.length; i++) {
-            var trigger = {};
-            trigger = triggers[i].getForm().getFieldValues();
-            trigger['event'] = triggers[i].event;
-
-            triggerData.push(trigger);
+            triggerData.push({
+                eventName: triggers[i].event,
+                options: triggers[i].getForm().getFieldValues()
+            });
         }
         saveData["trigger"] = triggerData;
         
@@ -466,7 +487,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
 
         // send data
         Ext.Ajax.request({
-            url: "/plugin/IFTTT/rule/save",
+            url: "/plugin/CustomerManagementFramework/rules/save",
             params: {
                 id: this.rule.id,
                 data: Ext.encode(saveData)

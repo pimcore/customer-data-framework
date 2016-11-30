@@ -45,15 +45,16 @@ class NewActivity extends AbstractEvent{
         if($trigger->getEventName() != $this->getName()) {
             return false;
         }
-
+        
         $options = $trigger->getOptions();
+
         if(!empty($options[self::OPTION_TYPE])) {
-            if($this->activity->cmfGetType() != $options[self::OPTION_TYPE]) {
-                return false;
+            if($this->activity->cmfGetType() == $options[self::OPTION_TYPE]) {
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
 

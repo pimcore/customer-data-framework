@@ -13,3 +13,14 @@
 .pimcore_icon_customerautomationrules {
     background: url(/pimcore/static6/img/flat-color-icons/services.svg) center center no-repeat !important;
 }
+
+.plugin_cmf_icon_actiontriggerrule_NewActivity {
+    background: url(/pimcore/static6/img/flat-color-icons/services.svg) center center no-repeat !important;
+}
+
+.plugin_cmf_icon_rule_enabled {
+    background: url("/pimcore/static6/img/flat-color-icons/publish.svg") no-repeat scroll left center transparent !important;
+}
+.plugin_cmf_icon_rule_disabled {
+    background: url("/pimcore/static6/img/flat-color-icons/cancel.svg") no-repeat scroll left center transparent !important;
+}

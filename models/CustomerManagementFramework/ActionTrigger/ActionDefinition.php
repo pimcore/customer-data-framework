@@ -196,6 +196,17 @@ class ActionDefinition extends AbstractModel implements ActionDefinitionInterfac
         $this->modificationDate = $modificationDate;
     }
 
-
+    public function toArray()
+    {
+        return [
+            'id' => $this->getId(),
+            'ruleId' => $this->getRuleId(),
+            'actionDelay' => $this->getActionDelay(),
+            'implementationClass' => $this->getImplementationClass(),
+            'options' => $this->getOptions(),
+            'creationDate' => $this->getCreationDate(),
+            'modifictaionDate' => $this->getModificationDate()
+        ];
+    }
 
 }

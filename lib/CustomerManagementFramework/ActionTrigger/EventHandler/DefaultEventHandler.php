@@ -40,7 +40,6 @@ class DefaultEventHandler implements EventHandlerInterface{
     {
 
         $appliedRules = $this->getAppliedRules($event);
-
         foreach($appliedRules as $rule) {
           if($actions = $rule->getAction()) {
               foreach($actions as $action) {

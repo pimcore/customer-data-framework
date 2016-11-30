@@ -18,4 +18,6 @@ interface TriggerDefinitionInterface
     public function getDefinitionData();
 
     public function getOptions();
+
+    public function toArray();
 }

@@ -36,10 +36,10 @@ pimcore.plugin.cmf.config.panel = Class.create({
         this.trigger = [];
         for(var trigger in pimcore.plugin.cmf.rule.triggers)
         {
-            if(trigger.substring(0,7) == 'trigger')
-            {
-                this.trigger.push( trigger );
-            }
+           if(trigger != 'AbstractTrigger') {
+               this.trigger.push( trigger );
+           }
+
         }
 
         // add available conditions
@@ -129,7 +129,7 @@ pimcore.plugin.cmf.config.panel = Class.create({
             var store = Ext.create('Ext.data.TreeStore', {
                 proxy: {
                     type: 'ajax',
-                    url: "/plugin/IFTTT/rule/list"
+                    url: "/plugin/CustomerManagementFramework/rules/list"
                 }
             });
 
@@ -170,9 +170,21 @@ pimcore.plugin.cmf.config.panel = Class.create({
                         var tree = node.getOwnerTree();
                         var dockedItems = tree.getDockedItems();
                         var toolbar = dockedItems[0];
-                        var button = toolbar.down('#btnSave');
+                        var button = toolbar.down('#cmfCustomerAutomationRulesbtnSave');
                         button.show();
-                    }.bind(this)
+                    }.bind(this),
+                    'beforeitemappend': function (thisNode, newChildNode, index, eOpts) {
+                        if (newChildNode.data.qtipCfg) {
+                            if (newChildNode.data.qtipCfg.title) {
+                                newChildNode.data.qtitle = newChildNode.data.qtipCfg.title;
+                            }
+                            if (newChildNode.data.qtipCfg.text) {
+                                newChildNode.data.qtip = newChildNode.data.qtipCfg.text;
+                            } else {
+                                newChildNode.data.qtip = t("type") + ": "+ t(newChildNode.data.type);
+                            }
+                        }
+                    }
                 },
                 viewConfig: {
                     plugins: {
@@ -194,7 +206,7 @@ pimcore.plugin.cmf.config.panel = Class.create({
                             xtype: 'tbfill'
                         }, {
                             // save button
-                            id: 'btnSave',
+                            id: 'cmfCustomerAutomationRulesbtnSave',
                             hidden: true,
                             text: t("plugin_ifttt_config_save_order"),
                             iconCls: "pimcore_icon_save",
@@ -311,7 +323,7 @@ pimcore.plugin.cmf.config.panel = Class.create({
             record = record.id;
         }
 
-        var existingPanel = Ext.getCmp("pimcore_targeting_panel_" + record);
+        var existingPanel = Ext.getCmp("plugin_cmf_actiontrigger_rule_panel" + record);
         if (existingPanel) {
             this.panel.setActiveTab(existingPanel);
             return;
@@ -319,7 +331,7 @@ pimcore.plugin.cmf.config.panel = Class.create({
 
         // load defined rules
         Ext.Ajax.request({
-            url: "/plugin/IFTTT/rule/get",
+            url: "/plugin/CustomerManagementFramework/rules/get",
             params: {
                 id: record
             },

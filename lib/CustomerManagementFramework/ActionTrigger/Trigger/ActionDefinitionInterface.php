@@ -101,4 +101,9 @@ interface ActionDefinitionInterface
      * @return int
      */
     public function getModificationDate();
+
+    /**
+     * @return array
+     */
+    public function toArray();
 }
