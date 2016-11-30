@@ -3,9 +3,11 @@
 namespace CustomerManagementFramework\CustomerView;
 
 use CustomerManagementFramework\Model\CustomerInterface;
+use CustomerManagementFramework\View\Formatter\ObjectWrapper;
 use CustomerManagementFramework\View\Formatter\ViewFormatterInterface;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Object\Concrete;
+use Pimcore\Model\Object\Fieldcollection;
 
 class DefaultCustomerView implements CustomerViewInterface
 {
@@ -72,10 +74,27 @@ class DefaultCustomerView implements CustomerViewInterface
 
         foreach ($definition->getFieldDefinitions() as $fd) {
             $getter = 'get' . ucfirst($fd->getName());
-            $result[$vf->getLabelByFieldDefinition($fd)] = $vf->formatValueByFieldDefinition($fd, $customer->$getter());
+            $value  = $vf->formatValueByFieldDefinition($fd, $customer->$getter());
+
+            if (is_object($value)) {
+                $value = $this->wrapObject($value);
+            }
+
+            $result[$vf->getLabelByFieldDefinition($fd)] = $vf->formatValueByFieldDefinition($fd, $value);
         }
 
         return $result;
+    }
+
+    /**
+     * Wrap object in a object implementing a __toString method
+     *
+     * @param $object
+     * @return ObjectWrapper
+     */
+    protected function wrapObject($object)
+    {
+        return new ObjectWrapper($object);
     }
 
     /**
