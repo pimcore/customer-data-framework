@@ -63,9 +63,21 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
      */
     public function authenticate(\Zend_Controller_Request_Http $request)
     {
-        $provider            = $request->getParam('provider');
-        $this->adapter       = HybridAuth::authenticate($provider);
-        $this->userProfile   = $this->adapter->getUserProfile();
+        $provider = $request->getParam('provider');
+        if (empty($provider)) {
+            throw new \InvalidArgumentException('Need a provider to authenticate with');
+        }
+
+        $this->adapter = HybridAuth::authenticate($provider);
+        if (!$this->adapter || !($this->adapter instanceof \Hybrid_Provider_Adapter)) {
+            throw new \RuntimeException(sprintf('Failed to authenticate with adapter for provider "%s"', htmlentities($provider)));
+        }
+
+        $this->userProfile = $this->adapter->getUserProfile();
+        if (!$this->userProfile || !($this->userProfile instanceof \Hybrid_User_Profile)) {
+            throw new \RuntimeException(sprintf('Failed to load user profile for provider "%s"', htmlentities($provider)));
+        }
+
         $this->authenticated = true;
     }
 
