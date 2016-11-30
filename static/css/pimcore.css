@@ -15,7 +15,7 @@
 }
 
 .plugin_cmf_icon_actiontriggerrule_NewActivity {
-    background: url(/pimcore/static6/img/flat-color-icons/services.svg) center center no-repeat !important;
+    background: url(/pimcore/static6/img/flat-color-icons/sports_mode.svg) center center no-repeat !important;
 }
 
 .plugin_cmf_icon_rule_enabled {
@@ -23,4 +23,18 @@
 }
 .plugin_cmf_icon_rule_disabled {
     background: url("/pimcore/static6/img/flat-color-icons/cancel.svg") no-repeat scroll left center transparent !important;
+}
+
+/** Customer Automation Rules Tabs **/
+.plugin_cmf_icon_rule_settings {
+    background: url("/pimcore/static6/img/flat-color-icons/settings.svg") no-repeat scroll left center transparent !important;
+}
+.plugin_cmf_icon_rule_triggers {
+    background: url("/pimcore/static6/img/flat-color-icons/phone.svg") no-repeat scroll left center transparent !important;
+}
+.plugin_cmf_icon_rule_conditions {
+    background: url("/pimcore/static6/img/flat-color-icons/binoculars.svg") no-repeat scroll left center transparent !important;
+}
+.plugin_cmf_icon_rule_actions {
+    background: url("/pimcore/static6/img/flat-color-icons/flash_on.svg") no-repeat scroll left center transparent !important;
 }

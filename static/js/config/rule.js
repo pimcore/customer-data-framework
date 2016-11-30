@@ -120,7 +120,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
      */
     getSettings: function () {
         this.settingsForm = new Ext.form.FormPanel({
-            iconCls: "plugin_ifttt_icon_rule_settings",
+            iconCls: "plugin_cmf_icon_rule_settings",
             title: t("settings"),
             bodyStyle: "padding:10px;",
             autoScroll: true,
@@ -220,7 +220,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
 
 
         this.triggerContainer = new Ext.Panel({
-            iconCls: "plugin_ifttt_icon_rule_triggers",
+            iconCls: "plugin_cmf_icon_rule_triggers",
             title: t("plugin_ifttt_config_rule_trigger"),
             autoScroll: true,
             forceLayout: true,
@@ -254,7 +254,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
 
 
         this.conditionsContainer = new Ext.Panel({
-            iconCls: "plugin_ifttt_icon_rule_conditions",
+            iconCls: "plugin_cmf_icon_rule_conditions",
             title: t("conditions"),
             autoScroll: true,
             forceLayout: true,
@@ -289,7 +289,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
 
 
         this.actionsContainer = new Ext.Panel({
-            iconCls: "plugin_ifttt_icon_rule_actions",
+            iconCls: "plugin_cmf_icon_rule_actions",
             title: t("actions"),
             autoScroll: true,
             forceLayout: true,
