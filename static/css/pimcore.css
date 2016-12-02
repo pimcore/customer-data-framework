@@ -14,10 +14,6 @@
     background: url(/pimcore/static6/img/flat-color-icons/services.svg) center center no-repeat !important;
 }
 
-.plugin_cmf_icon_actiontriggerrule_NewActivity {
-    background: url(/pimcore/static6/img/flat-color-icons/sports_mode.svg) center center no-repeat !important;
-}
-
 .plugin_cmf_icon_rule_enabled {
     background: url("/pimcore/static6/img/flat-color-icons/publish.svg") no-repeat scroll left center transparent !important;
 }
@@ -37,4 +33,14 @@
 }
 .plugin_cmf_icon_rule_actions {
     background: url("/pimcore/static6/img/flat-color-icons/flash_on.svg") no-repeat scroll left center transparent !important;
+}
+
+/** Triggers & Actions **/
+
+.plugin_cmf_icon_actiontriggerrule_NewActivity {
+    background: url(/pimcore/static6/img/flat-color-icons/sports_mode.svg) center center no-repeat !important;
+}
+
+.plugin_cmf_icon_actiontriggerrule_AddSegment {
+    background: url(/plugins/CustomerManagementFramework/static/icons/segment.svg) center center no-repeat !important;
 }

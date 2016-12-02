@@ -56,7 +56,7 @@ pimcore.plugin.cmf.config.panel = Class.create({
         this.action = [];
         for(var action in pimcore.plugin.cmf.rule.actions)
         {
-            if(action.substring(0,6) == 'action')
+            if(action != 'AbstractAction')
             {
                 this.action.push( action );
             }

@@ -2,3 +2,4 @@ plugin_cmf_mainmenu,"Customer Management Framework"
 plugin_cmf_customerview,"Customers"
 plugin_cmf_customerautomationrules,Customer automation rules
 plugin_cmf_actiontriggerrule_triggerNewActivity,New Customer Activity
+plugin_cmf_actiontriggerrule_actionAddSegment,Add Segment

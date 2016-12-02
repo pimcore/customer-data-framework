@@ -8,6 +8,13 @@
 
 class CustomerManagementFramework_RulesController extends \Pimcore\Controller\Action\Admin
 {
+
+    private $actionDelayMultiplier = [
+        'm' => 1,
+        'h' => 60,
+        'd' => 60*24
+    ];
+
     /**
      * get saved action trigger rules
      */
@@ -168,14 +175,20 @@ class CustomerManagementFramework_RulesController extends \Pimcore\Controller\Ac
             $arrActions = array();
             foreach($data->actions as $setting)
             {
-                $action = \IFTTT\Factory::getInstance()->createAction( $setting->type );
-                if($action instanceof \IFTTT\Framework\IJsonConfig)
-                {
-                    $action->fromJSON( json_encode($setting) );
-                }
+
+                $actionDelayMultiplier = isset($this->actionDelayMultiplier[$setting->options->actionDelayGuiType]) ? $this->actionDelayMultiplier[$setting->options->actionDelayGuiType] : 1;
+
+                $action = new \CustomerManagementFramework\ActionTrigger\ActionDefinition();
+                $action->setId($setting->id);
+                $action->setCreationDate($setting->creationDate);
+                $action->setOptions(json_decode(json_encode($setting->options), true));
+                $action->setImplementationClass($setting->implementationClass);
+                $action->setActionDelay($setting->options->actionDelayGuiValue * $actionDelayMultiplier);
+
                 $arrActions[] = $action;
             }
-            //$rule->setAction($arrActions);
+
+            $rule->setAction($arrActions);
 
 
             // save rule

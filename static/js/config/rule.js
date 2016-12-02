@@ -102,7 +102,10 @@ pimcore.plugin.cmf.config.rule = Class.create({
         {
             var rule = this;
             Ext.each(this.rule.actions, function(action){
-              //  rule.addAction("action" + ucfirst(action.type), action);
+                var actionParts = action.implementationClass.split('\\');
+                var actionName = actionParts[actionParts.length - 1];
+                rule.addAction(actionName, action);
+
             });
         }
 
@@ -180,11 +183,11 @@ pimcore.plugin.cmf.config.rule = Class.create({
                 // add handler to the last menu item
                 if(index == path.length -1)
                 {
-                    console.log("method:" + method);
+                    var trigger = new pimcore.plugin.cmf.rule.triggers[method]({});
 
                     // add metadata to the last point
-                    current.text = t('plugin_cmf_actiontriggerrule_trigger' + method);
-                    current.iconCls = "plugin_cmf_icon_actiontriggerrule_" + method;
+                    current.text = trigger.getNiceName();
+                    current.iconCls = trigger.getIcon();
                     current.handler = rule.addTrigger.bind(rule, method);
                 }
             }
@@ -280,10 +283,12 @@ pimcore.plugin.cmf.config.rule = Class.create({
 
         // show only defined actions
         Ext.each(this.parent.action, function (method) {
+            var action = new pimcore.plugin.cmf.rule.actions[method]({});
+
             addMenu.push({
-                iconCls: "plugin_ifttt_config_" + method,
-                text: pimcore.plugin.cmf.rule.actions[method](null, null,true),
-                handler: rule.addAction.bind(rule, method)
+                iconCls: action.getIcon(),
+                text: action.getNiceName(),
+                handler: rule.addAction.bind(rule, method, {})
             });
         });
 
@@ -395,9 +400,61 @@ pimcore.plugin.cmf.config.rule = Class.create({
      * @param type
      * @param data
      */
-    addAction: function (type, data) {
+    addAction: function (actionName, data) {
 
-        var item = pimcore.plugin.cmf.rule.actions[type](this, data);
+        // check params
+        if(typeof data == "undefined") {
+            data = {};
+        }
+
+        console.log('data:');
+        console.log(data);
+
+        var action = new pimcore.plugin.cmf.rule.actions[actionName](data);
+
+        var myId = Ext.id();
+
+        var formItems = action.getFormItems();
+
+        formItems.push({
+            xtype: "fieldcontainer",
+
+            layout: {
+            type: 'table',
+                tdAttrs: {
+                valign: 'center'
+            }
+        },
+            items: [{
+                xtype: "numberfield",
+                name: "actionDelayGuiValue",
+                fieldLabel: t("actionDelay"),
+                width: 250,
+                value: data.options.actionDelayGuiValue ? data.options.actionDelayGuiValue : 0,
+            },{
+                xtype: "combobox",
+                name: "actionDelayGuiType",
+                width: 100,
+                store: Ext.data.ArrayStore({
+                    fields: ['name','label'],
+                    data : [['m',t('minutes')],['h',t('hours')],['d',t('days')]]
+                }),
+                value: data.options.actionDelayGuiType ? data.options.actionDelayGuiType : 'm',
+                displayField: 'label',
+                valueField: 'name'
+            }]
+        });
+
+        var item =  new Ext.form.FormPanel({
+            implementationClass: action.getImplementationClass(),
+            actionData: data,
+            forceLayout: true,
+            style: "margin: 10px 0 0 0",
+            bodyStyle: "padding: 10px 30px 10px 30px;",
+            id:myId,
+            tbar: action.getTopBar(myId, this),
+            items: formItems
+        });
 
         this.actionsContainer.add(item);
         item.updateLayout();
@@ -477,11 +534,18 @@ pimcore.plugin.cmf.config.rule = Class.create({
         var actionData = [];
         var actions = this.actionsContainer.items.getRange();
         for (var i=0; i<actions.length; i++) {
-            var action = {};
-            action = actions[i].getForm().getFieldValues();
-            action['type'] = actions[i].type;
 
-            actionData.push(action);
+            var options = actions[i].getForm().getFieldValues();
+            var actionDelay = options.actionDelay;
+            delete options.actionDelay;
+console.log(actions[i].actionData);
+            actionData.push({
+                implementationClass: actions[i].implementationClass,
+                id: actions[i].actionData.id,
+                creationDate: actions[i].actionData.creationDate,
+                options: options,
+                actionDelay: actionDelay
+            });
         }
         saveData["actions"] = actionData;
 
