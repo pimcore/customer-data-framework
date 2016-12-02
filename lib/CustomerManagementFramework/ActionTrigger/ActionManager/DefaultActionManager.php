@@ -29,7 +29,7 @@ class DefaultActionManager implements ActionManagerInterface
     
     public function processAction(ActionDefinitionInterface $action, CustomerInterface $customer)
     {
-        $this->logger->debug(sprintf("process action ID %s", $action->getId()));
+        $this->logger->info(sprintf("process action ID %s", $action->getId()));
 
         if(class_exists($action->getImplementationClass())) {
 

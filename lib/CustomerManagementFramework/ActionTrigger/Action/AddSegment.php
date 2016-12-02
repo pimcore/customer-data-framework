@@ -29,7 +29,7 @@ class AddSegment extends AbstractAction {
 
         if($segment = CustomerSegment::getById(intval($options[self::OPTION_SEGMENT_ID]))) {
 
-            $this->logger->debug(sprintf("AddSegment action: add segment %s to customer %s", $segment->getId(), $customer->getId()));
+            $this->logger->info(sprintf("AddSegment action: add segment %s (%s) to customer %s (%s)", (string)$segment, $segment->getId(), (string) $customer, $customer->getId()));
 
             if($segment->getCalculated()) {
                 Factory::getInstance()->getSegmentManager()->mergeCalculatedSegments($customer, [$segment]);
@@ -41,4 +41,38 @@ class AddSegment extends AbstractAction {
             $this->logger->error(sprintf("AddSegment action: segment with ID %s not found", $options[self::OPTION_SEGMENT_ID]));
         }
     }
+
+    public static function createActionDefinitionFromEditmode(\stdClass $setting)
+    {
+        $action = parent::createActionDefinitionFromEditmode($setting);
+
+        $options = $action->getOptions();
+
+        if(isset($options['segment'])) {
+            $segment = CustomerSegment::getByPath($options['segment']);
+            $options['segmentId'] = $segment->getId();
+            unset($options['segment']);
+        }
+
+        $action->setOptions($options);
+
+        return $action;
+    }
+
+    public static function getDataForEditmode(ActionDefinitionInterface $actionDefinition)
+    {
+
+        $options = $actionDefinition->getOptions();
+
+        if(isset($options['segmentId'])) {
+            if($segment = CustomerSegment::getById(intval($options['segmentId']))) {
+                $options['segment'] = $segment->getFullPath();
+            }
+        }
+
+        $actionDefinition->setOptions($options);
+
+        return $actionDefinition->toArray();
+    }
+
 }

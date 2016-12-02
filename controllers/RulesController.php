@@ -9,12 +9,6 @@
 class CustomerManagementFramework_RulesController extends \Pimcore\Controller\Action\Admin
 {
 
-    private $actionDelayMultiplier = [
-        'm' => 1,
-        'h' => 60,
-        'd' => 60*24
-    ];
-
     /**
      * get saved action trigger rules
      */
@@ -31,12 +25,12 @@ class CustomerManagementFramework_RulesController extends \Pimcore\Controller\Ac
             if($rule->getActive())
             {
                 $icon = 'plugin_cmf_icon_rule_enabled';
-                $title = 'Aktiviert';
+                $title = 'active';
             }
             else
             {
                 $icon = 'plugin_cmf_icon_rule_disabled';
-                $title = 'Deaktiviert';
+                $title = 'inactive';
             }
 
             $json[] = array(
@@ -86,7 +80,14 @@ class CustomerManagementFramework_RulesController extends \Pimcore\Controller\Ac
 
             foreach($rule->getAction() as $action)
             {
-                $json['actions'][] = $action->toArray();
+
+                if(class_exists($action->getImplementationClass())) {
+                    $actionData = call_user_func([$action->getImplementationClass(), 'getDataForEditmode'], $action);
+                } else {
+                    throw new \Exception(sprintf("class '%s' does not exist", $action->getImplementationClass()));
+                }
+
+                $json['actions'][] = $actionData;
             }
 
             $this->_helper->json( $json );
@@ -176,14 +177,11 @@ class CustomerManagementFramework_RulesController extends \Pimcore\Controller\Ac
             foreach($data->actions as $setting)
             {
 
-                $actionDelayMultiplier = isset($this->actionDelayMultiplier[$setting->options->actionDelayGuiType]) ? $this->actionDelayMultiplier[$setting->options->actionDelayGuiType] : 1;
-
-                $action = new \CustomerManagementFramework\ActionTrigger\ActionDefinition();
-                $action->setId($setting->id);
-                $action->setCreationDate($setting->creationDate);
-                $action->setOptions(json_decode(json_encode($setting->options), true));
-                $action->setImplementationClass($setting->implementationClass);
-                $action->setActionDelay($setting->options->actionDelayGuiValue * $actionDelayMultiplier);
+                if(class_exists($setting->implementationClass)) {
+                    $action = call_user_func([$setting->implementationClass, 'createActionDefinitionFromEditmode'], $setting);
+                } else {
+                    throw new \Exception(sprintf("class '%s' does not exist", $setting->implementationClass));
+                }
 
                 $arrActions[] = $action;
             }
@@ -197,6 +195,66 @@ class CustomerManagementFramework_RulesController extends \Pimcore\Controller\Ac
             // finish
             $return['success'] = true;
             $return['id'] = $rule->getId();
+        }
+        catch(Exception $e)
+        {
+            $return['message'] = $e->getMessage();
+        }
+
+        // send response
+        $this->_helper->json($return);
+    }
+
+    /**
+     * add new rule
+     */
+    public function addAction()
+    {
+        // send json response
+        $return = array(
+            'success' => false,
+            'message' => ''
+        );
+
+        // save rule
+        try
+        {
+            $rule = new \CustomerManagementFramework\ActionTrigger\Rule();
+            $rule->setName( $this->getParam('name') );
+            if($rule->save()) {
+
+                $return['success'] = true;
+                $return['id'] = $rule->getId();
+            }
+
+        }
+        catch(\Exception $e)
+        {
+            $return['message'] = $e->getMessage();
+            $return['success'] = false;
+        }
+
+        // send response
+        $this->_helper->json($return);
+    }
+
+    /**
+     * delete exiting rule
+     */
+    public function deleteAction()
+    {
+        // send json response
+        $return = array(
+            'success' => false,
+            'message' => ''
+        );
+
+        // delete rule
+        try
+        {
+            $rule = \CustomerManagementFramework\ActionTrigger\Rule::getById( (int)$this->getParam('id') );
+            $rule->delete();
+            $return['success'] = true;
         }
         catch(Exception $e)
         {

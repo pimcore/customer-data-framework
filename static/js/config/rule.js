@@ -288,7 +288,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
             addMenu.push({
                 iconCls: action.getIcon(),
                 text: action.getNiceName(),
-                handler: rule.addAction.bind(rule, method, {})
+                handler: rule.addAction.bind(rule, method, {options:{}})
             });
         });
 
@@ -428,8 +428,8 @@ pimcore.plugin.cmf.config.rule = Class.create({
             items: [{
                 xtype: "numberfield",
                 name: "actionDelayGuiValue",
-                fieldLabel: t("actionDelay"),
-                width: 250,
+                fieldLabel: t("plugin_cmf_actiontriggerrule_actionDelay"),
+                width: 200,
                 value: data.options.actionDelayGuiValue ? data.options.actionDelayGuiValue : 0,
             },{
                 xtype: "combobox",
@@ -538,7 +538,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
             var options = actions[i].getForm().getFieldValues();
             var actionDelay = options.actionDelay;
             delete options.actionDelay;
-console.log(actions[i].actionData);
+
             actionData.push({
                 implementationClass: actions[i].implementationClass,
                 id: actions[i].actionData.id,

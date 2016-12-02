@@ -51,7 +51,23 @@ class Rule extends AbstractModel {
      */
     private $action;
 
+    /**
+     * @var int
+     */
+    private $creationDate;
 
+    /**
+     * @var int
+     */
+    private $modificationDate;
+
+
+    public function __construct()
+    {
+        $this->trigger = [];
+        $this->condition = [];
+        $this->action = [];
+    }
 
     /**
      * @param $id
@@ -199,6 +215,39 @@ class Rule extends AbstractModel {
     {
         $this->action = $action;
     }
+
+    /**
+     * @return int
+     */
+    public function getModificationDate()
+    {
+        return $this->modificationDate;
+    }
+
+    /**
+     * @param int $modificationDate
+     */
+    public function setModificationDate($modificationDate)
+    {
+        $this->modificationDate = $modificationDate;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCreationDate()
+    {
+        return $this->creationDate;
+    }
+
+    /**
+     * @param int $creationDate
+     */
+    public function setCreationDate($creationDate)
+    {
+        $this->creationDate = $creationDate;
+    }
+
 
 
 }

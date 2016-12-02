@@ -27,7 +27,7 @@ class Dao extends Model\Dao\AbstractDao
 
             $raw['trigger'] = $triggers;
         } else {
-            $raw['trigger'] = null;
+            $raw['trigger'] = [];
         }
 
         if ($raw["id"]) {
@@ -65,6 +65,7 @@ class Dao extends Model\Dao\AbstractDao
             'description' => $this->model->getDescription(),
             'active' => (int)$this->model->getActive(),
             'trigger' => sizeof($triggerData) ? json_encode($triggerData) : null,
+            'modificationDate' => time(),
         ];
 
 
@@ -90,13 +91,11 @@ class Dao extends Model\Dao\AbstractDao
                 $this->db->insert(self::TABLE_NAME, $data);
                 $this->model->setId($this->db->fetchOne("SELECT LAST_INSERT_ID();"));
                 $this->model->setCreationDate($data['creationDate']);
-
                 $this->saveActions();
                 $this->db->commit();
 
             } catch(\Exception $e) {
                 $this->db->rollBack();
-
                 $this->lastErrorCode = $e->getCode();
                 return false;
             }

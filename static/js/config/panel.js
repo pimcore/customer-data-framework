@@ -264,10 +264,9 @@ pimcore.plugin.cmf.config.panel = Class.create({
      */
     addRuleComplete: function (button, value, object) {
 
-        var regresult = value.match(/[a-zA-Z0-9_\-]+/);
-        if (button == "ok" && value.length > 2 && regresult == value) {
+        if (button == "ok" && value.length > 0) {
             Ext.Ajax.request({
-                url: "/plugin/IFTTT/rule/add",
+                url: "/plugin/CustomerManagementFramework/rules/add",
                 params: {
                     name: value,
                     documentId: (this.page ? this.page.id : null)
@@ -300,7 +299,7 @@ pimcore.plugin.cmf.config.panel = Class.create({
      */
     deleteRule: function (tree, record) {
         Ext.Ajax.request({
-            url: "/plugin/IFTTT/rule/delete",
+            url: "/plugin/CustomerManagementFramework/rules/delete",
             params: {
                 id: record.id
             },
