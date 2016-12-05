@@ -19,7 +19,8 @@
                             name="filter[segments][<?= $segmentGroup->getId() ?>][]"
                             class="form-control plugin-select2"
                             multiple="multiple"
-                            data-placeholder="<?= $segmentGroup->getName() ?>">
+                            data-placeholder="<?= $segmentGroup->getName() ?>"
+                            data-select2-options='<?= json_encode(['allowClear' => false]) ?>'>
 
                             <?php
                             $segments = \CustomerManagementFramework\Factory::getInstance()
