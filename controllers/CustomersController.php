@@ -143,20 +143,8 @@ class CustomerManagementFramework_CustomersController extends Admin
             }
         }
 
-        $prefilteredSegment = $this->fetchPrefilteredSegment();
-        if (null !== $prefilteredSegment) {
-            $handler->addFilter(new CustomerSegmentFilter($prefilteredSegment->getGroup(), [$prefilteredSegment]));
-
-            $this->view->prefilteredSegment = $prefilteredSegment;
-        }
-
         if (array_key_exists('segments', $filters)) {
             foreach ($filters['segments'] as $groupId => $segmentIds) {
-                // prefiltered segment can't be overwritten
-                if (null !== $prefilteredSegment && $prefilteredSegment->getGroup()->getId() === $groupId) {
-                    continue;
-                }
-
                 /** @var \Pimcore\Model\Object\CustomerSegmentGroup $segmentGroup */
                 $segmentGroup = \Pimcore\Model\Object\CustomerSegmentGroup::getById($groupId);
                 if (!$segmentGroup) {
@@ -164,11 +152,11 @@ class CustomerManagementFramework_CustomersController extends Admin
                 }
 
                 $segments = [];
-                foreach ($segmentIds as $prefilteredSegmentId) {
-                    $segment = CustomerSegment::getById($prefilteredSegmentId);
+                foreach ($segmentIds as $segmentId) {
+                    $segment = CustomerSegment::getById($segmentId);
 
                     if (!$segment) {
-                        throw new InvalidArgumentException(sprintf('Segment %d was not found', $prefilteredSegmentId));
+                        throw new InvalidArgumentException(sprintf('Segment %d was not found', $segmentId));
                     }
 
                     $segments[] = $segment;
@@ -177,6 +165,49 @@ class CustomerManagementFramework_CustomersController extends Admin
                 $handler->addFilter(new CustomerSegmentFilter($segmentGroup, $segments));
             }
         }
+    }
+
+    /**
+     * Fetch filters and set them on view
+     *
+     * @return array
+     */
+    protected function fetchListFilters()
+    {
+        /** @var \Zend_Controller_Action $this */
+        $filters = $this->getParam('filter', []);
+        $filters = $this->addPrefilteredSegmentToFilters($filters);
+
+        $this->view->filters = $filters;
+
+        return $filters;
+    }
+
+    /**
+     * @param array $filters
+     * @return array
+     */
+    protected function addPrefilteredSegmentToFilters(array $filters)
+    {
+        $segment = $this->fetchPrefilteredSegment();
+        if ($segment) {
+            if (!isset($filters['segments'])) {
+                $filters['segments'] = [];
+            }
+
+            $groupSegmentIds = [];
+            if (isset($filters['segments'][$segment->getGroup()->getId()])) {
+                $groupSegmentIds = $filters['segments'][$segment->getGroup()->getId()];
+            }
+
+            if (!in_array($segment->getId(), $groupSegmentIds)) {
+                $groupSegmentIds[] = $segment->getId();
+            }
+
+            $filters['segments'][$segment->getGroup()->getId()] = $groupSegmentIds;
+        }
+
+        return $filters;
     }
 
     /**
@@ -196,24 +227,9 @@ class CustomerManagementFramework_CustomersController extends Admin
             $clearUrlParams = $this->view->clearUrlParams ?: [];
             $clearUrlParams['segmentId'] = $segment->getId();
 
-            $this->view->prefilteredSegment = $segment;
-            $this->view->clearUrlParams     = $clearUrlParams;
+            $this->view->clearUrlParams  = $clearUrlParams;
 
             return $segment;
         }
-    }
-
-    /**
-     * Fetch filters and set them on view
-     *
-     * @return array
-     */
-    protected function fetchListFilters()
-    {
-        /** @var \Zend_Controller_Action $this */
-        $filters = $this->getParam('filter', []);
-        $this->view->filters = $filters;
-
-        return $filters;
     }
 }
