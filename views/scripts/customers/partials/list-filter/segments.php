@@ -1,6 +1,6 @@
 <?php if (isset($this->segmentGroups)): ?>
     <?php
-    /** @var \CustomerManagementFramework\Model\CustomerSegmentInterface $prefilteredSegment */
+    /** @var \CustomerManagementFramework\Model\CustomerSegmentInterface|\Pimcore\Model\Element\ElementInterface $prefilteredSegment */
     $prefilteredSegment = $this->prefilteredSegment;
     ?>
 
@@ -27,7 +27,7 @@
                         <label for="form-filter-segment-<?= $segmentGroup->getId() ?>"><?= $segmentGroup->getName() ?></label>
                         <select id="form-filter-segment-<?= $segmentGroup->getId() ?>" name="filter[segments][<?= $segmentGroup->getId() ?>][]" class="form-control plugin-select2" multiple="multiple" <?= $readonly ? 'readonly disabled' : '' ?> data-placeholder="<?= $segmentGroup->getName() ?>">
 
-                            <?php if (null !== $prefilteredSegment): ?>
+                            <?php if (null !== $prefilteredSegment && $readonly): ?>
 
                                 <option value="<?= $prefilteredSegment->getId() ?>" selected>
                                     <?= $prefilteredSegment->getName() ?>
