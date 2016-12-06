@@ -10,7 +10,7 @@ interface SsoAwareCustomerInterface
     public function getSsoIdentities();
 
     /**
-     * @param $ssoIdentities
+     * @param SsoIdentityInterface[] $ssoIdentities
      */
     public function setSsoIdentities($ssoIdentities);
 }

@@ -4,6 +4,7 @@ namespace CustomerManagementFramework\Authentication\Sso;
 
 use CustomerManagementFramework\Authentication\SsoIdentity\SsoIdentityServiceInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
+use CustomerManagementFramework\Model\SsoIdentityInterface;
 use Pimcore\Tool\HybridAuth;
 
 class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
@@ -100,6 +101,7 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
      *
      * @param CustomerInterface $customer
      * @param \Zend_Controller_Request_Http $request
+     * @return SsoIdentityInterface
      */
     public function updateCustomerFromAuthResponse(CustomerInterface $customer, \Zend_Controller_Request_Http $request)
     {
@@ -120,6 +122,7 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
         }
 
         $ssoIdentity = $this->ssoIdentityService->createSsoIdentity(
+            $customer,
             $this->getProviderId(),
             $this->getProfileIdentifier(),
             json_encode($this->userProfile)
@@ -127,6 +130,8 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
 
         $this->ssoIdentityService->addSsoIdentity($customer, $ssoIdentity);
         $this->applyProfileToCustomer($customer);
+
+        return $ssoIdentity;
     }
 
     /**

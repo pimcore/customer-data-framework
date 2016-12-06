@@ -6,15 +6,19 @@ use CustomerManagementFramework\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\SsoAwareCustomerInterface;
 use CustomerManagementFramework\Model\SsoIdentityInterface;
+use CustomerManagementFramework\Traits\LoggerAware;
 use Pimcore\Db;
-use Pimcore\Model\Object\Fieldcollection;
-use Pimcore\Model\Object\Fieldcollection\Data\SsoIdentity;
+use Pimcore\File;
+use Pimcore\Model\Object\Concrete;
+use Pimcore\Model\Object\SsoIdentity;
 
 /**
- * SSO identity service handling SsoIdentities as FieldCollection on the Customer object
+ * SSO identity service handling SsoIdentities as objects on a SsoAwareCustomerInterface
  */
 class DefaultSsoIdentityService implements SsoIdentityServiceInterface
 {
+    use LoggerAware;
+
     /**
      * @var CustomerProviderInterface
      */
@@ -35,17 +39,52 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
      */
     public function getCustomerBySsoIdentity($provider, $identifier)
     {
+        $ssoIdentity = $this->findSsoIdentity($provider, $identifier);
+        if ($ssoIdentity) {
+            return $this->findCustomerBySsoIdentity($ssoIdentity);
+        }
+    }
+
+    /**
+     * @param $provider
+     * @param $identifier
+     * @return SsoIdentityInterface
+     */
+    protected function findSsoIdentity($provider, $identifier)
+    {
+        $list = new SsoIdentity\Listing();
+        $list->addConditionParam('provider = ?', $provider);
+        $list->addConditionParam('identifier = ?', $identifier);
+
+        if ($list->count() === 1) {
+            return $list->current();
+        }
+
+        if ($list->count() > 1) {
+            $exception = new \RuntimeException(sprintf('Ambiguous results: found more than one identity for %s:%s', $provider, $identifier));
+            $this->getLogger()->error($exception->getMessage());
+
+            throw $exception;
+        }
+    }
+
+    /**
+     * @param SsoIdentityInterface $ssoIdentity
+     * @return CustomerInterface|null
+     */
+    protected function findCustomerBySsoIdentity(SsoIdentityInterface $ssoIdentity)
+    {
         $select = Db::get()
             ->select()
-            ->from(sprintf('object_collection_SsoIdentity_%d', $this->customerProvider->getCustomerClassId()), ['o_id'])
-            ->where('provider = ?', $provider)
-            ->where('identifier = ?', $identifier);
+            ->from(sprintf('object_relations_%d', $this->customerProvider->getCustomerClassId()), ['src_id'])
+            ->where('fieldname = ?', 'ssoIdentities')
+            ->where('dest_id = ?', $ssoIdentity->getId());
 
         $stmt   = $select->query();
         $result = $stmt->fetchAll();
 
         if (count($result) === 1) {
-            return $this->customerProvider->getById((int)$result[0]['o_id']);
+            return $this->customerProvider->getById((int)$result[0]['src_id']);
         }
     }
 
@@ -57,16 +96,11 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
     {
         $this->checkCustomer($customer);
 
-        $identities = [];
         if (empty($customer->getSsoIdentities())) {
-            return $identities;
+            return [];
         }
 
-        foreach ($customer->getSsoIdentities() as $ssoIdentity) {
-            $identities[] = $ssoIdentity;
-        }
-
-        return $identities;
+        return $customer->getSsoIdentities();
     }
 
     /**
@@ -93,26 +127,32 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
     {
         $this->checkCustomer($customer);
 
-        /** @var Fieldcollection $ssoIdentities */
-        $ssoIdentities = $customer->getSsoIdentities();
-        if (!$ssoIdentities) {
-            $ssoIdentities = new Fieldcollection();
-        }
+        $ssoIdentities = $this->getSsoIdentities($customer);
+        $ssoIdentities[] = $ssoIdentity;
 
-        $ssoIdentities->add($ssoIdentity);
-
-        $customer->setSsoIdentities($ssoIdentities);
+        $customer->setSsoIdentities(array_unique($ssoIdentities));
     }
 
     /**
+     * @param CustomerInterface|Concrete $customer
      * @param string $provider
      * @param string $identifier
      * @param mixed $profileData
      * @return SsoIdentityInterface
      */
-    public function createSsoIdentity($provider, $identifier, $profileData)
+    public function createSsoIdentity(CustomerInterface $customer, $provider, $identifier, $profileData)
     {
-        $ssoIdentity = new SsoIdentity();
+        $key  = File::getValidFilename(sprintf('%s-%s', $provider, $identifier));
+        $path = sprintf('%s/%s', $customer->getRealFullPath(), $key);
+
+        $ssoIdentity = SsoIdentity::getByPath($path);
+        if (!$ssoIdentity) {
+            $ssoIdentity = new SsoIdentity();
+        }
+
+        $ssoIdentity->setPublished(true);
+        $ssoIdentity->setKey($key);
+        $ssoIdentity->setParent($customer);
         $ssoIdentity->setProvider($provider);
         $ssoIdentity->setIdentifier($identifier);
         $ssoIdentity->setProfileData($profileData);

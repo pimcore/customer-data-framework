@@ -35,10 +35,11 @@ interface SsoIdentityServiceInterface
     public function addSsoIdentity(CustomerInterface $customer, SsoIdentityInterface $ssoIdentity);
 
     /**
+     * @param CustomerInterface $customer
      * @param string $provider
      * @param string $identifier
      * @param mixed $profileData
      * @return SsoIdentityInterface
      */
-    public function createSsoIdentity($provider, $identifier, $profileData);
+    public function createSsoIdentity(CustomerInterface $customer, $provider, $identifier, $profileData);
 }

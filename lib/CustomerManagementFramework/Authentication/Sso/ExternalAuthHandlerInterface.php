@@ -3,6 +3,7 @@
 namespace CustomerManagementFramework\Authentication\Sso;
 
 use CustomerManagementFramework\Model\CustomerInterface;
+use CustomerManagementFramework\Model\SsoIdentityInterface;
 
 interface ExternalAuthHandlerInterface
 {
@@ -26,6 +27,7 @@ interface ExternalAuthHandlerInterface
      *
      * @param CustomerInterface $customer
      * @param \Zend_Controller_Request_Http $request
+     * @return SsoIdentityInterface
      */
     public function updateCustomerFromAuthResponse(CustomerInterface $customer, \Zend_Controller_Request_Http $request);
 }
