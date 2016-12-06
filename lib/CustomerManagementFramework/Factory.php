@@ -16,6 +16,7 @@ use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface
 use CustomerManagementFramework\ActivityManager\ActivityManagerInterface;
 use CustomerManagementFramework\ActivityStore\ActivityStoreInterface;
 use CustomerManagementFramework\ActivityView\ActivityViewInterface;
+use CustomerManagementFramework\Authentication\SsoIdentity\SsoIdentityServiceInterface;
 use CustomerManagementFramework\CustomerDuplicatesService\CustomerDuplicatesServiceInterface;
 use CustomerManagementFramework\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFramework\CustomerSaveManager\CustomerSaveManagerInterface;
@@ -76,7 +77,7 @@ class Factory {
      */
     public function getCustomerProvider()
     {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerProvider');
+        return \Pimcore::getDiContainer()->get(CustomerProviderInterface::class);
     }
 
     /**
@@ -102,6 +103,14 @@ class Factory {
     public function getCustomerSaveManager()
     {
         return \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerSaveManager');
+    }
+
+    /**
+     * @return SsoIdentityServiceInterface
+     */
+    public function getSsoIdentityService()
+    {
+        return \Pimcore::getDiContainer()->get(SsoIdentityServiceInterface::class);
     }
 
     /**
