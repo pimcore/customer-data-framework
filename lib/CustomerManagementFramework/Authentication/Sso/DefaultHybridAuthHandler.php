@@ -5,6 +5,9 @@ namespace CustomerManagementFramework\Authentication\Sso;
 use CustomerManagementFramework\Authentication\SsoIdentity\SsoIdentityServiceInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\SsoIdentityInterface;
+use Pimcore\Model\Object\Objectbrick\Data\OAuth1Token;
+use Pimcore\Model\Object\Objectbrick\Data\OAuth2Token;
+use Pimcore\Model\Object\SsoIdentity;
 use Pimcore\Tool\HybridAuth;
 
 class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
@@ -128,10 +131,49 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
             json_encode($this->userProfile)
         );
 
+        $this->applyCredentialsToSsoIdentity($ssoIdentity);
         $this->ssoIdentityService->addSsoIdentity($customer, $ssoIdentity);
+
         $this->applyProfileToCustomer($customer);
 
         return $ssoIdentity;
+    }
+
+    /**
+     * @param SsoIdentityInterface|SsoIdentity $ssoIdentity
+     */
+    protected function applyCredentialsToSsoIdentity(SsoIdentityInterface $ssoIdentity)
+    {
+        // TODO encrypt access tokens in DB
+        $accessToken    = $this->getAdapter()->getAccessToken();
+        $wrappedAdapter = $this->getAdapter()->adapter;
+
+        $credentials = $ssoIdentity->getCredentials();
+        if ($wrappedAdapter instanceof \Hybrid_Provider_Model_OAuth1) {
+            /** @var OAuth1Token $token */
+            $token = $credentials->getOAuth1Token();
+            if (!$token) {
+                $token = new OAuth1Token($ssoIdentity);
+                $credentials->setOAuth1Token($token);
+            }
+
+            // see https://tools.ietf.org/html/rfc5849#section-2.3
+            $token->setToken($accessToken['access_token']);
+            $token->setTokenSecret($accessToken['access_token_secret']);
+        } else if ($this->getAdapter()->adapter instanceof \Hybrid_Provider_Model_OAuth2) {
+            /** @var OAuth2Token $token */
+            $token = $credentials->getOAuth2Token();
+            if (!$token) {
+                $token = new OAuth2Token($ssoIdentity);
+                $credentials->setOAuth2Token($token);
+            }
+
+            // see https://tools.ietf.org/html/rfc6749#section-5.1
+            // TODO get scope and token_type from response
+            $token->setAccessToken($accessToken['access_token']);
+            $token->setRefreshToken($accessToken['refresh_token']);
+            $token->setExpiresAt($accessToken['expires_at']);
+        }
     }
 
     /**
