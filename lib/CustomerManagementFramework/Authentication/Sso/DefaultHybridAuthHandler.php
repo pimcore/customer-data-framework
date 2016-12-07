@@ -5,6 +5,9 @@ namespace CustomerManagementFramework\Authentication\Sso;
 use CustomerManagementFramework\Authentication\SsoIdentity\SsoIdentityServiceInterface;
 use CustomerManagementFramework\Encryption\EncryptionServiceInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
+use CustomerManagementFramework\Model\OAuth\OAuth1TokenInterface;
+use CustomerManagementFramework\Model\OAuth\OAuth2TokenInterface;
+use CustomerManagementFramework\Model\OAuth\OAuthTokenInterface;
 use CustomerManagementFramework\Model\SsoIdentityInterface;
 use Pimcore\Model\Object\Objectbrick\Data\OAuth1Token;
 use Pimcore\Model\Object\Objectbrick\Data\OAuth2Token;
@@ -152,61 +155,65 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
      */
     protected function applyCredentialsToSsoIdentity(SsoIdentityInterface $ssoIdentity)
     {
-        // TODO encrypt access tokens in DB
-        $accessToken    = $this->getAdapter()->getAccessToken();
         $wrappedAdapter = $this->getAdapter()->adapter;
-
-        $credentials = $ssoIdentity->getCredentials();
         if ($wrappedAdapter instanceof \Hybrid_Provider_Model_OAuth1) {
-            /** @var OAuth1Token $token */
-            $token = $credentials->getOAuth1Token();
-            if (!$token) {
-                $token = new OAuth1Token($ssoIdentity);
-                $credentials->setOAuth1Token($token);
-            }
-
-            // see https://tools.ietf.org/html/rfc5849#section-2.3
-            $this->addTokenData($token, [
-                'access_token'  => [
-                    'property' => 'token',
-                    'secure'   => true
-                ],
-                'access_token_secret' => [
-                    'property' => 'tokenSecret',
-                    'secure'   => true
-                ]
-            ]);
+            $this->applyOAuth1Credentials($ssoIdentity);
         } else if ($this->getAdapter()->adapter instanceof \Hybrid_Provider_Model_OAuth2) {
-            /** @var OAuth2Token $token */
-            $token = $credentials->getOAuth2Token();
-            if (!$token) {
-                $token = new OAuth2Token($ssoIdentity);
-                $credentials->setOAuth2Token($token);
-            }
-
-            // see https://tools.ietf.org/html/rfc6749#section-5.1
-            // TODO get scope and token_type from response
-            $this->addTokenData($token, [
-                'access_token'  => [
-                    'property' => 'accessToken',
-                    'secure'   => true
-                ],
-                'refresh_token' => [
-                    'property' => 'refreshToken',
-                    'secure'   => true
-                ],
-                'expires_at'    => 'expiresAt'
-            ]);
+            $this->applyOAuth2Credentials($ssoIdentity);
         }
+    }
+
+    /**
+     * @param SsoIdentityInterface|SsoIdentity $ssoIdentity
+     */
+    protected function applyOAuth1Credentials(SsoIdentityInterface $ssoIdentity)
+    {
+        $credentials = $ssoIdentity->getCredentials();
+
+        /** @var OAuth1TokenInterface $token */
+        $token = $credentials->getOAuth1Token();
+        if (!$token) {
+            $token = new OAuth1Token($ssoIdentity);
+            $credentials->setOAuth1Token($token);
+        }
+
+        // see https://tools.ietf.org/html/rfc5849#section-2.3
+        $this->addTokenData($token, [
+            'access_token'        => 'token',
+            'access_token_secret' => 'tokenSecret',
+        ]);
+    }
+
+    /**
+     * @param SsoIdentityInterface|SsoIdentity $ssoIdentity
+     */
+    protected function applyOAuth2Credentials(SsoIdentityInterface $ssoIdentity)
+    {
+        $credentials = $ssoIdentity->getCredentials();
+
+        /** @var OAuth2TokenInterface $token */
+        $token = $credentials->getOAuth2Token();
+        if (!$token) {
+            $token = new OAuth2Token($ssoIdentity);
+            $credentials->setOAuth2Token($token);
+        }
+
+        // see https://tools.ietf.org/html/rfc6749#section-5.1
+        // TODO get scope and token_type from response
+        $this->addTokenData($token, [
+            'access_token'  => 'accessToken',
+            'refresh_token' => 'refreshToken',
+            'expires_at'    => 'expiresAt'
+        ]);
     }
 
     /**
      * Add token data from HA access token to token object/objectbrick. Optionally encrypts value if it is defined as secure
      *
-     * @param $token
+     * @param OAuthTokenInterface $token
      * @param array $mapping
      */
-    protected function addTokenData($token, array $mapping)
+    protected function addTokenData(OAuthTokenInterface $token, array $mapping)
     {
         $accessToken = $this->getAdapter()->getAccessToken();
 
@@ -219,22 +226,14 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
                 ));
             }
 
-            $secure = false;
-            if (is_array($property)) {
-                if (!isset($property['property'])) {
-                    throw new \InvalidArgumentException('Property value is an array, but does not contain an entry for \'property\'');
-                }
-
-                if (isset($property['secure']) && $property['secure']) {
-                    $secure = true;
-                }
-
-                $property = $property['property'];
-            }
-
             $setter = 'set' . ucfirst($property);
             if (!method_exists($token, $setter)) {
                 throw new \RuntimeException(sprintf('Can\'t apply property %s on token as method %s does not exist.', $property, $setter));
+            }
+
+            $secure = false;
+            if (in_array($property, $token->getSecureProperties())) {
+                $secure = true;
             }
 
             $value = $accessToken[$field];
