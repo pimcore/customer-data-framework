@@ -3,11 +3,14 @@
 namespace CustomerManagementFramework\Encryption;
 
 use CustomerManagementFramework\Plugin;
+use CustomerManagementFramework\Traits\LoggerAware;
 use Defuse\Crypto\Crypto;
 use Defuse\Crypto\Key;
 
 class DefaultEncryptionService implements EncryptionServiceInterface
 {
+    use LoggerAware;
+
     /**
      * @var Key
      */
@@ -42,6 +45,11 @@ class DefaultEncryptionService implements EncryptionServiceInterface
      */
     public function encrypt($plaintext, Key $key = null, $rawBinary = false)
     {
+        if (empty($plaintext)) {
+            $this->getLogger()->warning('Returning empty encrypt() result as plaintext was empty');
+            return '';
+        }
+
         if (!$key) {
             $key = $this->getDefaultKey();
         }
@@ -59,6 +67,11 @@ class DefaultEncryptionService implements EncryptionServiceInterface
      */
     public function decrypt($ciphertext, Key $key = null, $rawBinary = false)
     {
+        if (empty($ciphertext)) {
+            $this->getLogger()->warning('Returning empty decrypt() result as ciphertext was empty');
+            return '';
+        }
+
         if (!$key) {
             $key = $this->getDefaultKey();
         }

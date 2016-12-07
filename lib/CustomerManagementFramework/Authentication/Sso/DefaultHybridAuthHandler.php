@@ -238,7 +238,7 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
             }
 
             $value = $accessToken[$field];
-            if ($secure && !empty($value)) {
+            if ($secure) {
                 $value = $this->encryptionService->encrypt($value);
             }
 
