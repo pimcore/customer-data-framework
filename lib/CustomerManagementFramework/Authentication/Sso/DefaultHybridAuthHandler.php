@@ -2,6 +2,7 @@
 
 namespace CustomerManagementFramework\Authentication\Sso;
 
+use CustomerManagementFramework\Authentication\AuthenticationException;
 use CustomerManagementFramework\Authentication\SsoIdentity\SsoIdentityServiceInterface;
 use CustomerManagementFramework\Encryption\EncryptionServiceInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
@@ -85,7 +86,7 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
 
         $this->adapter = HybridAuth::authenticate($provider);
         if (!$this->adapter || !($this->adapter instanceof \Hybrid_Provider_Adapter)) {
-            throw new \RuntimeException(sprintf('Failed to authenticate with adapter for provider "%s"', htmlentities($provider)));
+            throw new AuthenticationException(sprintf('Failed to authenticate with adapter for provider "%s"', htmlentities($provider)));
         }
 
         $this->userProfile = $this->adapter->getUserProfile();
