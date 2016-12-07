@@ -3,6 +3,7 @@
 namespace CustomerManagementFramework\Authentication\Sso;
 
 use CustomerManagementFramework\Authentication\SsoIdentity\SsoIdentityServiceInterface;
+use CustomerManagementFramework\Encryption\EncryptionServiceInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\SsoIdentityInterface;
 use Pimcore\Model\Object\Objectbrick\Data\OAuth1Token;
@@ -16,6 +17,11 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
      * @var SsoIdentityServiceInterface
      */
     protected $ssoIdentityService;
+
+    /**
+     * @var EncryptionServiceInterface
+     */
+    protected $encryptionService;
 
     /**
      * @var bool
@@ -34,10 +40,12 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
 
     /**
      * @param SsoIdentityServiceInterface $ssoIdentityService
+     * @param EncryptionServiceInterface $encryptionService
      */
-    public function __construct(SsoIdentityServiceInterface $ssoIdentityService)
+    public function __construct(SsoIdentityServiceInterface $ssoIdentityService, EncryptionServiceInterface $encryptionService)
     {
         $this->ssoIdentityService = $ssoIdentityService;
+        $this->encryptionService  = $encryptionService;
     }
 
     /**
@@ -158,8 +166,16 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
             }
 
             // see https://tools.ietf.org/html/rfc5849#section-2.3
-            $token->setToken($accessToken['access_token']);
-            $token->setTokenSecret($accessToken['access_token_secret']);
+            $this->addTokenData($token, [
+                'access_token'  => [
+                    'property' => 'token',
+                    'secure'   => true
+                ],
+                'access_token_secret' => [
+                    'property' => 'tokenSecret',
+                    'secure'   => true
+                ]
+            ]);
         } else if ($this->getAdapter()->adapter instanceof \Hybrid_Provider_Model_OAuth2) {
             /** @var OAuth2Token $token */
             $token = $credentials->getOAuth2Token();
@@ -170,9 +186,63 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
 
             // see https://tools.ietf.org/html/rfc6749#section-5.1
             // TODO get scope and token_type from response
-            $token->setAccessToken($accessToken['access_token']);
-            $token->setRefreshToken($accessToken['refresh_token']);
-            $token->setExpiresAt($accessToken['expires_at']);
+            $this->addTokenData($token, [
+                'access_token'  => [
+                    'property' => 'accessToken',
+                    'secure'   => true
+                ],
+                'refresh_token' => [
+                    'property' => 'refreshToken',
+                    'secure'   => true
+                ],
+                'expires_at'    => 'expiresAt'
+            ]);
+        }
+    }
+
+    /**
+     * Add token data from HA access token to token object/objectbrick. Optionally encrypts value if it is defined as secure
+     *
+     * @param $token
+     * @param array $mapping
+     */
+    protected function addTokenData($token, array $mapping)
+    {
+        $accessToken = $this->getAdapter()->getAccessToken();
+
+        foreach ($mapping as $field => $property) {
+            if (!isset($accessToken[$field])) {
+                throw new \RuntimeException(sprintf(
+                    'Unable to find field %s on access token data. Existing fields: %s',
+                    $field,
+                    implode(', ', array_keys($accessToken))
+                ));
+            }
+
+            $secure = false;
+            if (is_array($property)) {
+                if (!isset($property['property'])) {
+                    throw new \InvalidArgumentException('Property value is an array, but does not contain an entry for \'property\'');
+                }
+
+                if (isset($property['secure']) && $property['secure']) {
+                    $secure = true;
+                }
+
+                $property = $property['property'];
+            }
+
+            $setter = 'set' . ucfirst($property);
+            if (!method_exists($token, $setter)) {
+                throw new \RuntimeException(sprintf('Can\'t apply property %s on token as method %s does not exist.', $property, $setter));
+            }
+
+            $value = $accessToken[$field];
+            if ($secure && !empty($value)) {
+                $value = $this->encryptionService->encrypt($value);
+            }
+
+            $token->$setter($value);
         }
     }
 
