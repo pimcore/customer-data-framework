@@ -8,7 +8,7 @@
 
 namespace CustomerManagementFramework\ActionTrigger;
 
-use CustomerManagementFramework\ActionTrigger\Trigger\ActionDefinitionInterface;
+use CustomerManagementFramework\ActionTrigger\Action\ActionDefinitionInterface;
 use Pimcore\Cache\Runtime;
 use Pimcore\Logger;
 use Pimcore\Model\AbstractModel;

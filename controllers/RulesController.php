@@ -56,10 +56,6 @@ class CustomerManagementFramework_RulesController extends \Pimcore\Controller\Ac
         $rule = \CustomerManagementFramework\ActionTrigger\Rule::getById( (int)$this->getParam('id') );
         if($rule)
         {
-            // get data
-            $condition = $rule->getCondition();
-
-
             // create json config
             $json = array(
                 'id' => $rule->getId(),
@@ -67,7 +63,7 @@ class CustomerManagementFramework_RulesController extends \Pimcore\Controller\Ac
                 'description' => $rule->getDescription(),
                 'active' => $rule->getActive(),
                 'trigger' => [],
-                'condition' => $condition ? $condition->toArray() : '',
+                'condition' => [],
                 'actions' => []
             );
 
@@ -88,6 +84,11 @@ class CustomerManagementFramework_RulesController extends \Pimcore\Controller\Ac
                 }
 
                 $json['actions'][] = $actionData;
+            }
+
+            foreach($rule->getCondition() as $condition)
+            {
+                $json['condition'][] = $condition->toArray();
             }
 
             $this->_helper->json( $json );
@@ -129,47 +130,19 @@ class CustomerManagementFramework_RulesController extends \Pimcore\Controller\Ac
 
 
 
-            // create root condition
-            $rootContainer = new stdClass();
-            $rootContainer->operator = null;
-            $rootContainer->type = 'Bracket';
-            $rootContainer->conditions = array();
 
 
             // create a tree from the flat structure
-            $currentContainer = $rootContainer;
-            foreach($data->conditions as $settings)
+            $arrCondition = [];
+            foreach($data->conditions as $setting)
             {
-                // handle brackets
-                if($settings->bracketLeft == true)
-                {
-                    $newContainer = new stdClass();
-                    $newContainer->parent = $currentContainer;
-                    $newContainer->type = 'Bracket';
-                    $newContainer->conditions = array();
-                    $currentContainer->conditions[] = $newContainer;
-
-                    $currentContainer = $newContainer;
-                }
-
-                $currentContainer->conditions[] = $settings;
-
-                if( $settings->bracketRight == true )
-                {
-                    $old = $currentContainer;
-                    $currentContainer = $currentContainer->parent;
-                    unset($old->parent);
-                }
+                $setting = json_decode(json_encode($setting), true);
+                $condition = new \CustomerManagementFramework\ActionTrigger\ConditionDefinition($setting);
+                $arrCondition[] = $condition;
             }
 
 
-            // create rule condition
-            $condition = \IFTTT\Factory::getInstance()->createCondition( $rootContainer->type );
-            if($condition instanceof \IFTTT\Framework\IJsonConfig)
-            {
-                $condition->fromJSON( json_encode($rootContainer) );
-                $rule->setCondition( $condition );
-            }
+            $rule->setCondition( $arrCondition );
 
 
             // save action

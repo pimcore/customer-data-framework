@@ -4,3 +4,5 @@ plugin_cmf_customerautomationrules,Customer automation rules
 plugin_cmf_actiontriggerrule_triggerNewActivity,New Customer Activity
 plugin_cmf_actiontriggerrule_actionAddSegment,Add Segment
 plugin_cmf_actiontriggerrule_actionDelay,Action delay
+plugin_cmf_actiontriggerrule_conditionCountActivities,Has min. x activities of type y
+plugin_cmf_actiontriggerrule_min_activities,Min. activities

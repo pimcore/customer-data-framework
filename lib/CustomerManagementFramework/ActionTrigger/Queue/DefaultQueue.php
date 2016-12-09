@@ -11,7 +11,7 @@ namespace CustomerManagementFramework\ActionTrigger\Queue;
 use CustomerManagementFramework\ActionTrigger\ActionDefinition;
 use CustomerManagementFramework\ActionTrigger\Event\EventInterface;
 use CustomerManagementFramework\ActionTrigger\Rule;
-use CustomerManagementFramework\ActionTrigger\Trigger\ActionDefinitionInterface;
+use CustomerManagementFramework\ActionTrigger\Action\ActionDefinitionInterface;
 use CustomerManagementFramework\Factory;
 use Pimcore\Db;
 use Pimcore\Model\Object\Customer;

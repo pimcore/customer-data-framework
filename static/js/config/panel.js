@@ -36,7 +36,8 @@ pimcore.plugin.cmf.config.panel = Class.create({
         this.trigger = [];
         for(var trigger in pimcore.plugin.cmf.rule.triggers)
         {
-           if(trigger != 'AbstractTrigger') {
+           if(trigger != 'AbstractTrigger')
+           {
                this.trigger.push( trigger );
            }
 
@@ -46,7 +47,7 @@ pimcore.plugin.cmf.config.panel = Class.create({
         this.condition = [];
         for(var condition in pimcore.plugin.cmf.rule.conditions)
         {
-            if(condition.substring(0,9) == 'condition')
+            if(condition != 'AbstractCondition')
             {
                 this.condition.push( condition );
             }

@@ -41,6 +41,10 @@
     background: url(/pimcore/static6/img/flat-color-icons/sports_mode.svg) center center no-repeat !important;
 }
 
+.plugin_cmf_icon_actiontriggerrule_CountActivities {
+    background: url(/pimcore/static6/img/flat-color-icons/sports_mode.svg) center center no-repeat !important;
+}
+
 .plugin_cmf_icon_actiontriggerrule_AddSegment {
     background: url(/plugins/CustomerManagementFramework/static/icons/segment.svg) center center no-repeat !important;
 }

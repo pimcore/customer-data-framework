@@ -3,6 +3,8 @@
 namespace CustomerManagementFramework\ActionTrigger\Rule;
 
 use CustomerManagementFramework\ActionTrigger\ActionDefinition;
+use CustomerManagementFramework\ActionTrigger\Condition\ConditionDefinitionInterface;
+use CustomerManagementFramework\ActionTrigger\ConditionDefinition;
 use CustomerManagementFramework\ActionTrigger\TriggerDefinition;
 use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use Pimcore\Model;
@@ -28,6 +30,19 @@ class Dao extends Model\Dao\AbstractDao
             $raw['trigger'] = $triggers;
         } else {
             $raw['trigger'] = [];
+        }
+
+        if($raw['condition']) {
+
+            $conditions = [];
+            $conditionData = json_decode($raw['condition'], true);
+            foreach($conditionData as $conditionDefinitionData) {
+                $conditions[] = new ConditionDefinition($conditionDefinitionData);
+            }
+
+            $raw['condition'] = $conditions;
+        } else {
+            $raw['condition'] = [];
         }
 
         if ($raw["id"]) {
@@ -60,11 +75,22 @@ class Dao extends Model\Dao\AbstractDao
             }
         }
 
+        $conditionData = [];
+        if($conditions = $this->model->getCondition()) {
+            foreach($conditions as $condition) {
+                /**
+                 * @var ConditionDefinitionInterface $condition
+                 */
+                $conditionData[] = $condition->getDefinitionData();
+            }
+        }
+
         $data = [
             'name' => $this->model->getName(),
             'description' => $this->model->getDescription(),
             'active' => (int)$this->model->getActive(),
             'trigger' => sizeof($triggerData) ? json_encode($triggerData) : null,
+            'condition' => sizeof($conditionData) ? json_encode($conditionData) : null,
             'modificationDate' => time(),
         ];
 

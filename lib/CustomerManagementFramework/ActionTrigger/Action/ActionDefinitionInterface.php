@@ -6,7 +6,7 @@
  * Time: 16:33
  */
 
-namespace CustomerManagementFramework\ActionTrigger\Trigger;
+namespace CustomerManagementFramework\ActionTrigger\Action;
 
 interface ActionDefinitionInterface
 {

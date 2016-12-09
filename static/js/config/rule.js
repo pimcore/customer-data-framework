@@ -60,41 +60,13 @@ pimcore.plugin.cmf.config.rule = Class.create({
         if(this.rule.condition)
         {
             var rule = this;
-            var level = 0;
-            var open = 0;
-            var handleCondition = function(condition){
-                if(condition.type == 'Bracket')
-                {
-                    // workaround for brackets
-                    level++;
-                    Ext.each(condition.conditions, function(item, index, allItems){
-                        item.condition.operator = item.operator;
 
-                        if(level > 1)
-                        {
-                            if(index == 0)
-                            {
-                                item.condition.bracketLeft = true;
-                                open++;
-                            }
-                            if(index == allItems.length -1 && open > 0)
-                            {
-                                item.condition.bracketRight = true;
-                                open--;
-                            }
-                        }
+            Ext.each(this.rule.condition, function(condition){
+                var conditionParts = condition.implementationClass.split('\\');
+                var conditionName = conditionParts[conditionParts.length - 1];
+                rule.addCondition(conditionName, condition);
 
-                        handleCondition(item.condition);
-                    });
-                }
-                else
-                {
-                    // normal condition
-                    rule.addCondition("condition" + ucfirst(condition.type), condition);
-                }
-            };
-
-            handleCondition(this.rule.condition);
+            });
         }
 
         // add saved actions
@@ -248,9 +220,12 @@ pimcore.plugin.cmf.config.rule = Class.create({
 
         // add conditions
         Ext.each(this.parent.condition, function (method) {
+
+            var condition = new pimcore.plugin.cmf.rule.conditions[method]({});
+
             addMenu.push({
-                iconCls: "plugin_ifttt_config_" + method,
-                text: pimcore.plugin.cmf.rule.conditions[method](null, null,true),
+                iconCls: condition.getIcon(),
+                text: condition.getNiceName(),
                 handler: rule.addCondition.bind(rule, method)
             });
         });
@@ -346,9 +321,30 @@ pimcore.plugin.cmf.config.rule = Class.create({
      * @param data
      */
     addCondition: function (type, data) {
-
+console.log(type);
         // create condition
-        var item = pimcore.plugin.cmf.rule.conditions[type](this, data);
+        var condition = new pimcore.plugin.cmf.rule.conditions[type](data);
+
+
+        // check params
+        if(typeof data == "undefined") {
+            data = {};
+        }
+
+        // create item
+        var myId = Ext.id();
+        var item =  new Ext.form.FormPanel({
+            implementationClass: condition.getImplementationClass(),
+            conditionData: data,
+            id: myId,
+            type: 'Admin',
+            forceLayout: true,
+            style: "margin: 10px 0 0 0",
+            bodyStyle: "padding: 10px 30px 10px 30px; min-height: 40px;",
+            tbar: condition.getTopBar(myId, this),
+            items: condition.getFormItems()
+        });
+
 
         // add logic for brackets
         var tab = this;
@@ -360,16 +356,16 @@ pimcore.plugin.cmf.config.rule = Class.create({
                                 '<div class="pimcore_targeting_bracket pimcore_targeting_bracket_right">)</div>', true);
 
             if(data["bracketLeft"]){
-                leftBracket.addClass("pimcore_targeting_bracket_active");
+                leftBracket.addCls("pimcore_targeting_bracket_active");
             }
             if(data["bracketRight"]){
-                rightBracket.addClass("pimcore_targeting_bracket_active");
+                rightBracket.addCls("pimcore_targeting_bracket_active");
             }
 
             // open
             leftBracket.on("click", function (ev, el) {
                 var bracket = Ext.get(el);
-                bracket.toggleClass("pimcore_targeting_bracket_active");
+                bracket.toggleCls("pimcore_targeting_bracket_active");
 
                 tab.recalculateBracketIdent(tab.conditionsContainer.items);
             });
@@ -377,7 +373,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
             // close
             rightBracket.on("click", function (ev, el) {
                 var bracket = Ext.get(el);
-                bracket.toggleClass("pimcore_targeting_bracket_active");
+                bracket.toggleCls("pimcore_targeting_bracket_active");
 
                 tab.recalculateBracketIdent(tab.conditionsContainer.items);
             });
@@ -385,7 +381,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
             // make ident
             tab.recalculateBracketIdent(tab.conditionsContainer.items);
         });
-
+console.log(item);
         this.conditionsContainer.add(item);
         item.updateLayout();
         this.conditionsContainer.updateLayout();
@@ -406,9 +402,6 @@ pimcore.plugin.cmf.config.rule = Class.create({
         if(typeof data == "undefined") {
             data = {};
         }
-
-        console.log('data:');
-        console.log(data);
 
         var action = new pimcore.plugin.cmf.rule.actions[actionName](data);
 
@@ -434,7 +427,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
             },{
                 xtype: "combobox",
                 name: "actionDelayGuiType",
-                width: 100,
+                width: 110,
                 store: Ext.data.ArrayStore({
                     fields: ['name','label'],
                     data : [['m',t('minutes')],['h',t('hours')],['d',t('days')]]
@@ -484,33 +477,13 @@ pimcore.plugin.cmf.config.rule = Class.create({
         
 
         // get defined conditions
-        var conditionsData = [];
-        var tb, operator;
         var conditions = this.conditionsContainer.items.getRange();
+        var conditionsData = [];
         for (var i=0; i<conditions.length; i++) {
-            var condition = {};
-
-            // collect condition settings
-            for(var c=0; c<conditions[i].items.length; c++)
-            {
-                var item = conditions[i].items.item(c);
-                try {
-                    // workarround for pimcore.object.tags.objects
-                    if(item.reference)
-                    {
-                        condition[ item.reference.getName() ] = item.reference.getValue();
-                    }
-                    else
-                    {
-                        condition[ item.getName() ] = item.getValue();
-                    }
-                } catch (e){}
-
-            }
-            condition['type'] = conditions[i].type;
+            var options = conditions[i].getForm().getFieldValues();
 
             // get the operator (AND, OR, AND_NOT)
-            tb = conditions[i].getDockedItems()[0];
+            var tb = conditions[i].getDockedItems()[0];
             if (tb.getComponent("toggle_or").pressed) {
                 operator = "or";
             } else if (tb.getComponent("toggle_and_not").pressed) {
@@ -518,15 +491,14 @@ pimcore.plugin.cmf.config.rule = Class.create({
             } else {
                 operator = "and";
             }
-            condition["operator"] = operator;
 
-            // get the brackets
-            condition["bracketLeft"] = Ext.get(conditions[i].getEl().query(".pimcore_targeting_bracket_left")[0])
-                                                                .hasClass("pimcore_targeting_bracket_active");
-            condition["bracketRight"] = Ext.get(conditions[i].getEl().query(".pimcore_targeting_bracket_right")[0])
-                                                                .hasClass("pimcore_targeting_bracket_active");
-
-            conditionsData.push(condition);
+            conditionsData.push({
+                implementationClass: conditions[i].implementationClass,
+                bracketLeft: Ext.get(conditions[i].getEl().query(".pimcore_targeting_bracket_left")[0]).hasCls("pimcore_targeting_bracket_active"),
+                bracketRight: Ext.get(conditions[i].getEl().query(".pimcore_targeting_bracket_right")[0]).hasCls("pimcore_targeting_bracket_active"),
+                operator: operator,
+                options: options
+            });
         }
         saveData["conditions"] = conditionsData;
 
@@ -581,11 +553,11 @@ pimcore.plugin.cmf.config.rule = Class.create({
             if(i==0) {
                 tb.getComponent("toggle_and").hide();
                 tb.getComponent("toggle_or").hide();
-//                tb.getComponent("toggle_and_not").hide();
+                tb.getComponent("toggle_and_not").hide();
             } else {
                 tb.getComponent("toggle_and").show();
                 tb.getComponent("toggle_or").show();
-//                tb.getComponent("toggle_and_not").show();
+                tb.getComponent("toggle_and_not").show();
             }
         }
     },
@@ -596,7 +568,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
      */
     recalculateBracketIdent: function(list) {
         var ident = 0, lastIdent = 0, margin = 20;
-        var colors = ["transparent","#007bff", "#0f9", "#ff006a", "#ff3c00", "#0f4"];
+        var colors = ["transparent","#007bff", "#00ff99", "#e1a6ff", "#ff3c00", "#000000"];
 
         list.each(function (condition) {
 
@@ -619,8 +591,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
             if(ident > 0)
                 item.applyStyles({
                     "border-left": "1px solid " + colors[ident],
-                    "border-right": "1px solid " + colors[ident],
-                    "padding": "0px 1px"
+                    "border-right": "1px solid " + colors[ident]
                 });
             else
                 item.applyStyles({
@@ -637,8 +608,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
             else if(ident == lastIdent)
                 item.applyStyles({
                     "margin-top": "0px",
-                    "margin-bottom": "0px",
-                    "padding": "1px"
+                    "margin-bottom": "0px"
                 });
             else
                 item.applyStyles({
@@ -646,7 +616,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
                 });
 
 
-            // remeber current ident
+            // remember current ident
             lastIdent = ident;
 
 
@@ -662,5 +632,6 @@ pimcore.plugin.cmf.config.rule = Class.create({
                     ident--;
             }
         });
+        this.conditionsContainer.updateLayout();
     }
 });

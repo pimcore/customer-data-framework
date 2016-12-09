@@ -9,10 +9,14 @@
 namespace CustomerManagementFramework\ActionTrigger\EventHandler;
 
 
+use CustomerManagementFramework\ActionTrigger\Condition\Bracket;
+use CustomerManagementFramework\ActionTrigger\Condition\Checker;
+use CustomerManagementFramework\ActionTrigger\ConditionDefinition;
 use CustomerManagementFramework\ActionTrigger\Event\EventInterface;
 use CustomerManagementFramework\ActionTrigger\Rule;
-use CustomerManagementFramework\ActionTrigger\Trigger\ActionDefinitionInterface;
+use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use CustomerManagementFramework\Factory;
+use CustomerManagementFramework\Model\CustomerInterface;
 
 class DefaultEventHandler implements EventHandlerInterface{
 
@@ -73,7 +77,10 @@ class DefaultEventHandler implements EventHandlerInterface{
 
                 foreach($rule->getTrigger() as $trigger) {
                     if($event->appliesToTrigger($trigger)) {
-                        $appliedRules[] = $rule;
+                        if($this->checkConditions($rule, $event)) {
+                            $appliedRules[] = $rule;
+                        }
+
                         break;
                     }
                 }
@@ -81,5 +88,10 @@ class DefaultEventHandler implements EventHandlerInterface{
         }
 
         return $appliedRules;
+    }
+
+    protected function checkConditions(Rule $rule, EventInterface $event) {
+
+        return Checker::checkConditionsForRuleAndEvent($rule, $event);
     }
 }

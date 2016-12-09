@@ -51,5 +51,5 @@ interface ActivityStoreInterface {
 
     public function getEntryById($id);
 
-
+    public function countActivitiesOfCustomer(CustomerInterface $customer, $activityType = null);
 }

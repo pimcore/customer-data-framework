@@ -8,7 +8,6 @@
 
 namespace CustomerManagementFramework\ActionTrigger\Action;
 
-use CustomerManagementFramework\ActionTrigger\Trigger\ActionDefinitionInterface;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
 use Pimcore\Model\Object\CustomerSegment;

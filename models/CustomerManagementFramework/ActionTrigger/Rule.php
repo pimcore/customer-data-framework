@@ -8,7 +8,8 @@
 
 namespace CustomerManagementFramework\ActionTrigger;
 
-use CustomerManagementFramework\ActionTrigger\Trigger\ActionDefinitionInterface;
+use CustomerManagementFramework\ActionTrigger\Action\ActionDefinitionInterface;
+use CustomerManagementFramework\ActionTrigger\Condition\ConditionDefinitionInterface;
 use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use Pimcore\Cache\Runtime;
 use Pimcore\Logger;
@@ -185,7 +186,7 @@ class Rule extends AbstractModel {
     }
 
     /**
-     * @return string
+     * @return ConditionDefinitionInterface[] $condition
      */
     public function getCondition()
     {

@@ -10,7 +10,7 @@ namespace CustomerManagementFramework\ActionTrigger\ActionManager;
 
 use CustomerManagementFramework\ActionTrigger\Action\ActionInterface;
 use CustomerManagementFramework\ActionTrigger\Rule;
-use CustomerManagementFramework\ActionTrigger\Trigger\ActionDefinitionInterface;
+use CustomerManagementFramework\ActionTrigger\Action\ActionDefinitionInterface;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;

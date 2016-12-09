@@ -207,4 +207,16 @@ class MariaDb implements ActivityStoreInterface{
             return new DefaultActivityStoreEntry($row);
         }
     }
+
+    public function countActivitiesOfCustomer(CustomerInterface $customer, $activityType = null)
+    {
+        $db = Db::get();
+
+        $and = '';
+        if($activityType) {
+            $and = ' and type=' . $db->quote($activityType);
+        }
+
+        return $db->fetchOne("select count(id) from " . self::ACTIVITIES_TABLE . " where customerId = ? $and", $customer->getId());
+    }
 }
