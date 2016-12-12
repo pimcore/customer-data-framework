@@ -26,6 +26,11 @@ abstract class AbstractActivity extends \Pimcore\Model\Object\Concrete implement
         return Carbon::createFromTimestamp($this->getCreationDate());
     }
 
+    public function cmfUpdateOnSave()
+    {
+        return true;
+    }
+
     /**
      * @return string
      */

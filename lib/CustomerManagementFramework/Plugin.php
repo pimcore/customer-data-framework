@@ -49,7 +49,17 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
             $object = $e->getTarget();
 
             if($object instanceof ActivityInterface) {
-                Factory::getInstance()->getActivityManager()->trackActivity($object);
+                $trackIt = true;
+                if(!$object->cmfUpdateOnSave()) {
+                    if(Factory::getInstance()->getActivityStore()->getEntryForActivity($object)) {
+                        $trackIt = false;
+                    }
+                }
+
+                if($trackIt) {
+                    Factory::getInstance()->getActivityManager()->trackActivity($object);
+                }
+
             }
 
             if($object instanceof CustomerInterface) {

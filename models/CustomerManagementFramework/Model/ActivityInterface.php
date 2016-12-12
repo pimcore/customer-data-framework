@@ -12,6 +12,8 @@ interface ActivityInterface {
      */
     public function cmfIsActive();
 
+    public function cmfUpdateOnSave();
+
     /**
      * @return string
      */
