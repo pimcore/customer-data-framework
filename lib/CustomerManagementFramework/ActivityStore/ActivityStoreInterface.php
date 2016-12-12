@@ -62,4 +62,9 @@ interface ActivityStoreInterface {
      * @return array
      */
     public function getCustomerIdsMatchingActivitiesCount($operator, $type, $count);
+
+    /**
+     * @return array
+     */
+    public function getAvailableActivityTypes();
 }

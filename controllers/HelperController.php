@@ -39,4 +39,18 @@ class CustomerManagementFramework_HelperController extends \Pimcore\Controller\A
 
         $this->_helper->json($result);
     }
+
+    /**
+     * get list of available activity types
+     */
+    public function activityTypesAction()
+    {
+        $types = \CustomerManagementFramework\Factory::getInstance()->getActivityStore()->getAvailableActivityTypes();
+
+        $result = [];
+        foreach($types as $type) {
+            $result[] = [$type];
+        }
+        $this->_helper->json($result);
+    }
 }

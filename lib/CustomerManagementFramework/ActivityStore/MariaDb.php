@@ -235,4 +235,11 @@ class MariaDb implements ActivityStoreInterface{
 
         return $db->fetchCol($sql);
     }
+
+    public function getAvailableActivityTypes()
+    {
+        $sql = "select distinct type from " . self::ACTIVITIES_TABLE;
+
+        return Db::get()->fetchCol($sql);
+    }
 }

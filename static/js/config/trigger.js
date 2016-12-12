@@ -63,11 +63,29 @@ pimcore.plugin.cmf.rule.triggers.NewActivity = Class.create(pimcore.plugin.cmf.r
     getFormItems: function() {
 
         return [{
-            xtype: "textfield",
+            xtype: "combo",
             name: "type",
             fieldLabel: t("type"),
             width: 350,
-            value: this.options.type
+            value: this.options.type,
+            triggerAction: "all",
+            mode: "local",
+            disableKeyFilter: true,
+            store: new Ext.data.JsonStore({
+                proxy: {
+                    autoDestroy: true,
+                    type: 'ajax',
+                    url: '/plugin/CustomerManagementFramework/helper/activity-types'
+                },
+                fields: ['name']
+            }),
+            valueField: 'name',
+            displayField: 'name',
+            listeners: {
+                afterrender: function (el) {
+                    el.getStore().load();
+                }
+            }
         }];
     }
 });

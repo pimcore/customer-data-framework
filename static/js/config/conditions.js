@@ -148,12 +148,30 @@ pimcore.plugin.cmf.rule.conditions.CountActivities = Class.create(pimcore.plugin
 
         return [
             {
-                xtype: "textfield",
+                xtype: "combo",
                 name: "type",
                 fieldLabel: t("plugin_cmf_actiontriggerrule_countactivities_type"),
                 width: 450,
                 labelWidth: 160,
-                value: this.options.type
+                value: this.options.type,
+                triggerAction: "all",
+                mode: "local",
+                disableKeyFilter: true,
+                store: new Ext.data.JsonStore({
+                    proxy: {
+                        autoDestroy: true,
+                        type: 'ajax',
+                        url: '/plugin/CustomerManagementFramework/helper/activity-types'
+                    },
+                    fields: ['name']
+                }),
+                valueField: 'name',
+                displayField: 'name',
+                listeners: {
+                    afterrender: function (el) {
+                        el.getStore().load();
+                    }
+                }
             },
             {
                 xtype: "fieldcontainer",
