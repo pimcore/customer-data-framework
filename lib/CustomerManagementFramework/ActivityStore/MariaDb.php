@@ -21,7 +21,7 @@ use Pimcore\Model\Object\Concrete;
 class MariaDb implements ActivityStoreInterface{
 
 
-    const ACTIVITIES_TABLE = 'plugin_cmf_activities2';
+    const ACTIVITIES_TABLE = 'plugin_cmf_activities';
     const DELETIONS_TABLE = 'plugin_cmf_deletions';
 
     public function insertActivityIntoStore(ActivityInterface $activity) {

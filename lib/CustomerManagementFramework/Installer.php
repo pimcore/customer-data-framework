@@ -46,22 +46,22 @@ class Installer {
     private function installDatabaseTables() {
         \Pimcore\Db::get()->query(
             "CREATE TABLE `plugin_cmf_activities` (
-                  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-                  `customerId` int(11) unsigned NOT NULL,
-                  `activityDate` bigint(20) unsigned DEFAULT NULL,
-                  `type` varchar(255) NOT NULL,
-                  `implementationClass` varchar(255) NOT NULL,
-                  `o_id` int(11) unsigned DEFAULT NULL,
-                  `a_id` varchar(255) DEFAULT NULL,
-                  `attributes` blob,
-                  `md5` char(32) DEFAULT NULL,
-                  `creationDate` bigint(20) unsigned DEFAULT NULL,
-                  `modificationDate` bigint(20) unsigned DEFAULT NULL,
-                  PRIMARY KEY (`id`),
-                  KEY `customerId` (`customerId`),
-                  KEY `o_id` (`o_id`),
-                  KEY `a_id` (`a_id`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+              `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+              `customerId` int(11) unsigned NOT NULL,
+              `activityDate` bigint(20) unsigned DEFAULT NULL,
+              `type` varchar(255) NOT NULL,
+              `implementationClass` varchar(255) NOT NULL,
+              `o_id` int(11) unsigned DEFAULT NULL,
+              `a_id` varchar(255) DEFAULT NULL,
+              `attributes` blob,
+              `md5` char(32) DEFAULT NULL,
+              `creationDate` bigint(20) unsigned DEFAULT NULL,
+              `modificationDate` bigint(20) unsigned DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              KEY `customerId` (`customerId`),
+              KEY `o_id` (`o_id`),
+              KEY `a_id` (`a_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
         );
 
         \Pimcore\Db::get()->query(
