@@ -11,21 +11,22 @@ namespace CustomerManagementFramework\ActionTrigger\Condition;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
 use Pimcore\Db;
+use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\CustomerSegment;
 
-class Segment extends AbstractCondition
+class Customer extends AbstractCondition
 {
-    const OPTION_SEGMENT_ID = 'segmentId';
-    const OPTION_SEGMENT = 'segment';
+    const OPTION_CUSTOMER_ID = 'customerId';
+    const OPTION_CUSTOMER = 'customer';
     const OPTION_NOT = 'not';
 
     public function check(ConditionDefinitionInterface $conditionDefinition, CustomerInterface $customer) {
 
         $options = $conditionDefinition->getOptions();
 
-        if(isset($options[self::OPTION_SEGMENT_ID])) {
-            if($segment = CustomerSegment::getById(intval($options[self::OPTION_SEGMENT_ID]))) {
-                $check = Factory::getInstance()->getSegmentManager()->customerHasSegment($customer, $segment);
+        if(isset($options[self::OPTION_CUSTOMER_ID])) {
+            if($desiredCustomer = AbstractObject::getById(intval($options[self::OPTION_CUSTOMER_ID]))) {
+                $check = $desiredCustomer->getId() == $customer->getId();
 
                 if($options[self::OPTION_NOT]) {
                     return !$check;
@@ -42,15 +43,15 @@ class Segment extends AbstractCondition
     {
         $options = $conditionDefinition->getOptions();
 
-        if(!$options[self::OPTION_SEGMENT_ID]) {
+        if(!$options[self::OPTION_CUSTOMER_ID]) {
             return '-1';
         }
 
-        $segmentId = intval($options[self::OPTION_SEGMENT_ID]);
+        $customerId = intval($options[self::OPTION_CUSTOMER_ID]);
+
+        $condition = sprintf("o_id = %s", $customerId);
 
         $not = $options[self::OPTION_NOT];
-
-        $condition =  sprintf("FIND_IN_SET(%s, manualSegments) or FIND_IN_SET(%s, calculatedSegments)", $segmentId, $segmentId);
 
         if($not) {
             $condition = '!(' . $condition . ')';
@@ -65,10 +66,10 @@ class Segment extends AbstractCondition
 
         $options = $condition->getOptions();
 
-        if(isset($options[self::OPTION_SEGMENT])) {
-            $segment = CustomerSegment::getByPath($options[self::OPTION_SEGMENT]);
-            $options[self::OPTION_SEGMENT_ID] = $segment->getId();
-            unset($options[self::OPTION_SEGMENT]);
+        if(isset($options[self::OPTION_CUSTOMER])) {
+            $customer = AbstractObject::getByPath($options[self::OPTION_CUSTOMER]);
+            $options[self::OPTION_CUSTOMER_ID] = $customer->getId();
+            unset($options[self::OPTION_CUSTOMER]);
         }
         $condition->setOptions($options);
 
@@ -80,9 +81,9 @@ class Segment extends AbstractCondition
 
         $options = $conditionDefinition->getOptions();
 
-        if(isset($options['segmentId'])) {
-            if($segment = CustomerSegment::getById(intval($options['segmentId']))) {
-                $options['segment'] = $segment->getFullPath();
+        if(isset($options[self::OPTION_CUSTOMER_ID])) {
+            if($segment = AbstractObject::getById(intval($options[self::OPTION_CUSTOMER_ID]))) {
+                $options[self::OPTION_CUSTOMER] = $segment->getFullPath();
             }
         }
 

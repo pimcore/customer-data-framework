@@ -53,6 +53,6 @@
     background: url(/plugins/CustomerManagementFramework/static/icons/segment.svg) center center no-repeat !important;
 }
 
-.plugin_cmf_icon_actiontriggerrule_ChangeFieldValue {
+.plugin_cmf_icon_actiontriggerrule_ChangeFieldValue,.plugin_cmf_icon_actiontriggerrule_Customer {
     background: url(/plugins/CustomerManagementFramework/static/icons/customer.svg) center center no-repeat !important;
 }
