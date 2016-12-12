@@ -2,7 +2,9 @@
     "name": "YourVendorName/CustomerManagementFramework",
     "type": "pimcore-plugin",
     "require": {
-        "pimcore/installer-plugin": ">=1"
+        "pimcore/installer-plugin": ">=1",
+        "yzalis/crontab":"^1.0",
+        "tiben/crontab-manager":"^1.2"
     },
     "require-dev": {
         "codeception/codeception": "^2.2"

@@ -11,7 +11,7 @@ namespace CustomerManagementFramework\ActionTrigger\Event;
 use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use CustomerManagementFramework\Model\ActivityInterface;
 
-class NewActivity extends AbstractEvent{
+class NewActivity extends AbstractSingleCustomerEvent{
 
     /**
      * @var ActivityInterface $activity

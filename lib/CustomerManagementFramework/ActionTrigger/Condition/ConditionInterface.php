@@ -29,6 +29,13 @@ interface ConditionInterface {
     public function check(ConditionDefinitionInterface $conditionDefinition, CustomerInterface $customer);
 
     /**
+     * @param ConditionDefinitionInterface $conditionDefinition
+     *
+     * @return string
+     */
+    public function getDbCondition(ConditionDefinitionInterface $conditionDefinition);
+
+    /**
      * @param $setting
      *
      * @return ConditionDefinitionInterface

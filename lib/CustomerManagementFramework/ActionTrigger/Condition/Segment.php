@@ -10,6 +10,7 @@ namespace CustomerManagementFramework\ActionTrigger\Condition;
 
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
+use Pimcore\Db;
 use Pimcore\Model\Object\CustomerSegment;
 
 class Segment extends AbstractCondition
@@ -35,6 +36,19 @@ class Segment extends AbstractCondition
         }
 
         return false;
+    }
+
+    public function getDbCondition(ConditionDefinitionInterface $conditionDefinition)
+    {
+        $options = $conditionDefinition->getOptions();
+
+        if(!$options[self::OPTION_SEGMENT_ID]) {
+            return '-1';
+        }
+
+        $segmentId = intval($options[self::OPTION_SEGMENT_ID]);
+
+        return sprintf("FIND_IN_SET(%s, manualSegments) or FIND_IN_SET(%s, calculatedSegments)", $segmentId, $segmentId);
     }
 
     public static function createConditionDefinitionFromEditmode($setting)

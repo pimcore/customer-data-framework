@@ -9,10 +9,11 @@
 namespace CustomerManagementFramework\ActionTrigger\Queue;
 
 use CustomerManagementFramework\ActionTrigger\ActionDefinition;
-use CustomerManagementFramework\ActionTrigger\Event\EventInterface;
+use CustomerManagementFramework\ActionTrigger\Event\SingleCustomerEventInterface;
 use CustomerManagementFramework\ActionTrigger\Rule;
 use CustomerManagementFramework\ActionTrigger\Action\ActionDefinitionInterface;
 use CustomerManagementFramework\Factory;
+use CustomerManagementFramework\Model\CustomerInterface;
 use Pimcore\Db;
 use Pimcore\Model\Object\Customer;
 use Psr\Log\LoggerInterface;
@@ -32,18 +33,18 @@ class DefaultQueue implements QueueInterface
         $this->logger = $logger;
     }
 
-    public function addToQueue(ActionDefinitionInterface $action, EventInterface $event)
+    public function addToQueue(ActionDefinitionInterface $action, CustomerInterface $customer)
     {
         $db = Db::get();
 
         $time = time();
 
-        $this->logger->debug(sprintf("add action id %s to queue", $action->getId()));
+        $this->logger->debug(sprintf("add action id %s for customer %s to queue", $action->getId(), $customer->getId()));
 
         $actionDateTimestamp = time() + $action->getActionDelay();
 
         $db->insert(self::QUEUE_TABLE, [
-            'customerId' => $event->getCustomer()->getId(),
+            'customerId' => $customer->getId(),
             'actionDate' => $actionDateTimestamp,
             'actionId' => $action->getId(),
             'creationDate' => $time,

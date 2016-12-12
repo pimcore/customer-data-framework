@@ -11,8 +11,10 @@ namespace CustomerManagementFramework\ActionTrigger\Event;
 use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
 
-interface EventInterface {
-    
-    public function getName();
-    public function appliesToTrigger(TriggerDefinitionInterface $trigger);
+interface SingleCustomerEventInterface extends EventInterface
+{
+
+    public function __construct(CustomerInterface $customer);
+
+    public function getCustomer();
 }

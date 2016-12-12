@@ -219,4 +219,20 @@ class MariaDb implements ActivityStoreInterface{
 
         return $db->fetchOne("select count(id) from " . self::ACTIVITIES_TABLE . " where customerId = ? $and", $customer->getId());
     }
+
+    public function getCustomerIdsMatchingActivitiesCount($operator, $type, $count)
+    {
+        $db = Db::get();
+
+        $where = '';
+        if($type) {
+            $where = ' where type=' . $db->quote($type);
+        }
+
+        $operator = in_array($operator, ['<','>','=']) ? $operator : '=';
+
+        $sql = "select customerId from " . self::ACTIVITIES_TABLE . $where . " group by customerId having count(*) " .  $operator . intval($count);
+
+        return $db->fetchCol($sql);
+    }
 }

@@ -8,16 +8,17 @@
 
 namespace CustomerManagementFramework\ActionTrigger\Queue;
 
-use CustomerManagementFramework\ActionTrigger\Event\EventInterface;
+use CustomerManagementFramework\ActionTrigger\Event\SingleCustomerEventInterface;
 use CustomerManagementFramework\ActionTrigger\Rule;
 use CustomerManagementFramework\ActionTrigger\Action\ActionDefinitionInterface;
+use CustomerManagementFramework\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 
 interface QueueInterface {
 
     public function __construct(LoggerInterface $logger);
 
-    public function addToQueue(ActionDefinitionInterface $action, EventInterface $event);
+    public function addToQueue(ActionDefinitionInterface $action, CustomerInterface $customer);
 
     public function processQueue();
 }

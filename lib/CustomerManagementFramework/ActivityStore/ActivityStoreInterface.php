@@ -52,4 +52,14 @@ interface ActivityStoreInterface {
     public function getEntryById($id);
 
     public function countActivitiesOfCustomer(CustomerInterface $customer, $activityType = null);
+
+    /**
+     *
+     * @param string $operator (>,< or =)
+     * @param string $type
+     * @param int $count
+     *
+     * @return array
+     */
+    public function getCustomerIdsMatchingActivitiesCount($operator, $type, $count);
 }

@@ -9,6 +9,9 @@
 namespace CustomerManagementFramework;
 
 use Pimcore\Logger;
+use TiBeN\CrontabManager\CrontabAdapter;
+use TiBeN\CrontabManager\CrontabJob;
+use TiBeN\CrontabManager\CrontabRepository;
 
 class Installer {
 
@@ -16,7 +19,8 @@ class Installer {
 
        // $this->installPermissions();
        // $this->installDatabaseTables();
-        $this->installClasses();
+       // $this->installClasses();
+        $this->installCrontab();
 
         return true;
     }
@@ -96,5 +100,20 @@ class Installer {
         if(!$success){
             Logger::err("Could not import $classname Class.");
         }
+    }
+
+    private static function installCrontab() {
+        
+
+        $cron = '* * * * * php ' . PIMCORE_DOCUMENT_ROOT . '/pimcore/cli/console.php cmf:handle-cron-triggers -v > ' . PIMCORE_LOG_DIRECTORY . '/cmf-cron-trigger-lastrun.log';
+
+        $crontabJob = CrontabJob::createFromCrontabLine($cron);
+
+        $crontabRepository = new CrontabRepository(new CrontabAdapter());
+
+        $crontabRepository->addJob($crontabJob);
+        $crontabRepository->persist();
+
+
     }
 }

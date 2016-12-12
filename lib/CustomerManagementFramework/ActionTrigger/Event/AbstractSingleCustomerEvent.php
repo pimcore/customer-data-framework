@@ -10,7 +10,7 @@ namespace CustomerManagementFramework\ActionTrigger\Event;
 
 use CustomerManagementFramework\Model\CustomerInterface;
 
-abstract class AbstractEvent implements EventInterface {
+abstract class AbstractSingleCustomerEvent implements SingleCustomerEventInterface {
 
     private $customer;
 

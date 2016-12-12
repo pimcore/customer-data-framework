@@ -46,4 +46,22 @@ class CountActivities extends AbstractCondition
 
         return true;
     }
+
+    public function getDbCondition(ConditionDefinitionInterface $conditionDefinition)
+    {
+
+        $options = $conditionDefinition->getOptions();
+
+        $operator = $options[self::OPTION_OPERATOR];
+        $type = $options[self::OPTION_TYPE];
+        $count = intval($options[self::OPTION_COUNT]);
+
+        $ids = Factory::getInstance()->getActivityStore()->getCustomerIdsMatchingActivitiesCount($operator, $type, $count);
+
+        if(!sizeof($ids)) {
+            return "-1";
+        }
+
+        return "o_id in (" . implode(',', $ids) . ")";
+    }
 }

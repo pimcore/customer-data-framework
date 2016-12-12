@@ -14,7 +14,7 @@ class CustomerManagementFramework_HelperController extends \Pimcore\Controller\A
      */
     public function customerFieldListAction()
     {
-        $class = \Pimcore\Model\Object\ClassDefinition::getByName('Customer');
+        $class = \Pimcore\Model\Object\ClassDefinition::getByName(\CustomerManagementFramework\Plugin::getConfig()->General->CustomerPimcoreClass);
 
         $result = [];
 

@@ -2,7 +2,8 @@
 
 namespace CustomerManagementFramework;
 
-use CustomerManagementFramework\ActionTrigger\Event\EventInterface;
+use CustomerManagementFramework\ActionTrigger\Event\Cron;
+use CustomerManagementFramework\ActionTrigger\Event\SingleCustomerEventInterface;
 use CustomerManagementFramework\Model\ActivityInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
@@ -73,12 +74,18 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
 
         });
 
+        /*\Pimcore::getEventManager()->attach('system.maintenance', function(\Zend_EventManager_Event $e) {
+
+            $event = new Cron();
+            Factory::getInstance()->getActionTriggerEventHandler()->handleCustomerListEvent($e, $event);
+        });*/
+
         \Pimcore::getEventManager()->attach(array_keys(Plugin::getConfig()->Events->toArray()), function(\Zend_EventManager_Event $e) {
 
             $event = $e->getTarget();
 
-            if($event instanceof EventInterface) {
-                Factory::getInstance()->getActionTriggerEventHandler()->handleEvent($e, $event);
+            if($event instanceof SingleCustomerEventInterface) {
+                Factory::getInstance()->getActionTriggerEventHandler()->handleSingleCustomerEvent($e, $event);
             }
 
         });

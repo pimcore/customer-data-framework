@@ -71,3 +71,20 @@ pimcore.plugin.cmf.rule.triggers.NewActivity = Class.create(pimcore.plugin.cmf.r
         }];
     }
 });
+
+pimcore.registerNS("pimcore.plugin.cmf.rule.triggers.CronTrigger");
+pimcore.plugin.cmf.rule.triggers.CronTrigger = Class.create(pimcore.plugin.cmf.rule.triggers.AbstractTrigger,{
+    name: 'Cron',
+    eventName: 'plugin.cmf.cron-trigger',
+    getFormItems: function() {
+
+        return [{
+            xtype: "textfield",
+            name: "definition",
+            fieldLabel: t("plugin_cmf_actiontriggerrule_cron_definition") + ' (<a href="https://crontab.guru/" target="blank">'+t("plugin_cmf_actiontriggerrule_cron_croneditor")+'</a>)',
+            width: 350,
+            labelWidth: 200,
+            value: this.options.definition
+        }];
+    }
+});

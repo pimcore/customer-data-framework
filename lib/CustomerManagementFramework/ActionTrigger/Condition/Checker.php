@@ -9,12 +9,12 @@
 namespace CustomerManagementFramework\ActionTrigger\Condition;
 
 
-use CustomerManagementFramework\ActionTrigger\Event\EventInterface;
+use CustomerManagementFramework\ActionTrigger\Event\SingleCustomerEventInterface;
 use CustomerManagementFramework\ActionTrigger\Rule;
 
 class Checker
 {
-    public static function checkConditionsForRuleAndEvent(Rule $rule, EventInterface $event)
+    public static function checkConditionsForRuleAndEvent(Rule $rule, SingleCustomerEventInterface $event)
     {
 
         $expression = '';
@@ -76,6 +76,67 @@ class Checker
 
 
         return eval('return ('.$expression.');');
+
+    }
+
+    public static function getDbConditionForRule(Rule $rule)
+    {
+
+        $expression = '';
+        $openBrackets = 0;
+        if($conditions = $rule->getCondition()) {
+
+
+            foreach($conditions as $cond) {
+                $res = "false";
+
+                $conditionImplementation = $cond->getImplementationObject();
+
+                if($conditionImplementation) {
+                    $res = $conditionImplementation->getDbCondition($cond);
+
+                    $res = '(' . $res . ')';
+                }
+
+
+
+                if($expression) {
+
+                    $operator = $cond->getOperator();
+
+                    if($operator == 'and') {
+                        $expression .= ' and ';
+                    } elseif($operator == 'or') {
+                        $expression .= ' or ';
+                    } elseif($operator == 'and_not') {
+                        $expression .= ' and not ';
+                    }
+                }
+
+                if($cond->getBracketLeft()) {
+                    $expression .= '(';
+                    $openBrackets++;
+                }
+
+                $expression .= $res;
+
+                if($openBrackets && $cond->getBracketRight()) {
+                    $expression .= ')';
+                    $openBrackets--;
+                }
+            }
+        }
+
+        for($i=0;$i<$openBrackets;$i++) {
+            $expression .= ')';
+        }
+
+        if(!$expression) {
+            return '1';
+        }
+
+
+        return $expression;
 
     }
 }

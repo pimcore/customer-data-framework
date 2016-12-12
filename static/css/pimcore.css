@@ -41,6 +41,10 @@
     background: url(/pimcore/static6/img/flat-color-icons/sports_mode.svg) center center no-repeat !important;
 }
 
+.plugin_cmf_icon_actiontriggerrule_Cron {
+    background: url(/pimcore/static6/img/flat-color-icons/clock.svg) center center no-repeat !important;
+}
+
 .plugin_cmf_icon_actiontriggerrule_CountActivities {
     background: url(/pimcore/static6/img/flat-color-icons/sports_mode.svg) center center no-repeat !important;
 }
