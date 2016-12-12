@@ -118,3 +118,47 @@ pimcore.plugin.cmf.rule.actions.AddSegment = Class.create(pimcore.plugin.cmf.rul
         }];
     }
 });
+
+pimcore.registerNS("pimcore.plugin.cmf.rule.actions.ChangeFieldValue");
+pimcore.plugin.cmf.rule.actions.ChangeFieldValue = Class.create(pimcore.plugin.cmf.rule.actions.AbstractAction,{
+    name: 'ChangeFieldValue',
+    implementationClass: '\\CustomerManagementFramework\\ActionTrigger\\Action\\ChangeFieldValue',
+    getFormItems: function() {
+
+        return [
+            {
+                xtype: "combo",
+                name: "field",
+                fieldLabel: t("plugin_cmf_actiontriggerrule_changefieldvalue_field"),
+                width: 450,
+                value: this.options.field,
+                triggerAction: "all",
+                mode: "local",
+                disableKeyFilter: true,
+                store: new Ext.data.JsonStore({
+                    proxy: {
+                        autoDestroy: true,
+                        type: 'ajax',
+                        url: '/plugin/CustomerManagementFramework/helper/customer-field-list'
+                    },
+                    fields: ['name','label']
+                }),
+                valueField: 'name',
+                displayField: 'label',
+                listeners: {
+                    afterrender: function (el) {
+                        el.getStore().load();
+                    }
+                }
+            },
+            {
+                xtype: "textfield",
+                name: "value",
+                fieldLabel: t("plugin_cmf_actiontriggerrule_changefieldvalue_value"),
+                width: 450,
+                value: this.options.value,
+                triggerAction: "all"
+            }
+        ];
+    }
+});

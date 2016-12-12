@@ -48,3 +48,7 @@
 .plugin_cmf_icon_actiontriggerrule_AddSegment,.plugin_cmf_icon_actiontriggerrule_Segment {
     background: url(/plugins/CustomerManagementFramework/static/icons/segment.svg) center center no-repeat !important;
 }
+
+.plugin_cmf_icon_actiontriggerrule_ChangeFieldValue {
+    background: url(/plugins/CustomerManagementFramework/static/icons/customer.svg) center center no-repeat !important;
+}
