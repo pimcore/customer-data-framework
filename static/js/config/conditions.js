@@ -148,19 +148,46 @@ pimcore.plugin.cmf.rule.conditions.CountActivities = Class.create(pimcore.plugin
 
         return [
             {
-                xtype: "numberfield",
-                name: "count",
-                fieldLabel: t("plugin_cmf_actiontriggerrule_min_activities"),
-                width: 200,
-                value: this.options.count
-            },
-            {
                 xtype: "textfield",
                 name: "type",
-                fieldLabel: t("type"),
-                width: 350,
+                fieldLabel: t("plugin_cmf_actiontriggerrule_countactivities_type"),
+                width: 450,
+                labelWidth: 160,
                 value: this.options.type
+            },
+            {
+                xtype: "fieldcontainer",
+                fieldLabel: t("plugin_cmf_actiontriggerrule_countactivities_must_be"),
+                labelWidth: 160,
+                layout: {
+                    type: 'table',
+                    tdAttrs: {
+                        valign: 'center'
+                    }
+                },
+                items: [
+                    {
+                        xtype: "combobox",
+                        name: "operator",
+                        width: 60,
+                        store: Ext.data.ArrayStore({
+                            fields: ['operator'],
+                            data: [['>'], ['<'], ['=']]
+                        }),
+                        value: this.options.operator ? this.options.operator : '=',
+                        displayField: 'operator',
+                        valueField: 'operator'
+                    },
+                    {
+                        xtype: "numberfield",
+                        name: "count",
+                        width: 90,
+                        value: this.options.count
+                    }
+                ]
             }
+
+
         ];
     }
 });

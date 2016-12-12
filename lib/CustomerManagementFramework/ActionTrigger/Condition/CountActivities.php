@@ -15,6 +15,7 @@ class CountActivities extends AbstractCondition
 {
     const OPTION_TYPE = 'type';
     const OPTION_COUNT = 'count';
+    const OPTION_OPERATOR = 'operator';
 
     public function check(ConditionDefinitionInterface $conditionDefinition, CustomerInterface $customer) {
 
@@ -24,8 +25,19 @@ class CountActivities extends AbstractCondition
 
         $this->logger->debug(sprintf("CountActivities condition: count activities of type '%s' for customer ID %s - result: %s", $options[self::OPTION_TYPE], $customer->getId(), $countActivities));
 
+        $operator = $options[self::OPTION_OPERATOR];
+
         if($count = $options[self::OPTION_COUNT]) {
-            if($count <= $countActivities) {
+
+            if($operator == ">" && ($countActivities > $count)) {
+                return true;
+            }
+
+            if($operator == "<" && ($countActivities < $count)) {
+                return true;
+            }
+
+            if($operator == "=" && ($countActivities == $count)) {
                 return true;
             }
 
