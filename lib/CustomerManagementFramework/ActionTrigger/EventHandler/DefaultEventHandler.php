@@ -35,6 +35,7 @@ class DefaultEventHandler implements EventHandlerInterface{
         $this->logger = $logger;
 
         $rules = new Rule\Listing();
+        $rules->setCondition("active = 1");
         $rules = $rules->load();
 
         $rulesGroupedByEvents = [];
