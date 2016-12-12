@@ -103,5 +103,7 @@ interface SegmentManagerInterface {
 
     public function preSegmentUpdate(CustomerSegmentInterface $segment);
 
+    public function customerHasSegment(CustomerInterface $customer, CustomerSegmentInterface $segment);
+
 
 }

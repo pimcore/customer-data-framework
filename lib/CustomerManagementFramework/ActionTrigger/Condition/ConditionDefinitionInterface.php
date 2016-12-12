@@ -32,6 +32,13 @@ interface ConditionDefinitionInterface {
     public function getOptions();
 
     /**
+     * @param array $options
+     *
+     * @return void
+     */
+    public function setOptions(array $options);
+
+    /**
      * @return bool
      */
     public function getBracketLeft();

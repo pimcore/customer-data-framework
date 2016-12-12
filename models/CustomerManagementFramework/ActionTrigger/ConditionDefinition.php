@@ -70,6 +70,12 @@ class ConditionDefinition implements ConditionDefinitionInterface
         return $this->options;
     }
 
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
+        $this->definitionData['options'] = $options;
+    }
+
     public function toArray()
     {
         return $this->getDefinitionData();

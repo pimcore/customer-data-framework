@@ -307,6 +307,19 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
     }
 
+    public function customerHasSegment(CustomerInterface $customer, CustomerSegmentInterface $segment)
+    {
+        if($segments = $customer->getAllSegments()) {
+            foreach($segments as $s) {
+                if($s->getId() == $segment->getId()) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
     protected function prepareSegmentBuilders(array $segmentBuilders)
     {
         foreach($segmentBuilders as $segmentBuilder) {

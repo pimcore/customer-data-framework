@@ -191,3 +191,81 @@ pimcore.plugin.cmf.rule.conditions.CountActivities = Class.create(pimcore.plugin
         ];
     }
 });
+
+pimcore.registerNS("pimcore.plugin.cmf.rule.conditions.Segment");
+pimcore.plugin.cmf.rule.conditions.Segment = Class.create(pimcore.plugin.cmf.rule.conditions.AbstractCondition,{
+    name: 'Segment',
+    implementationClass: '\\CustomerManagementFramework\\ActionTrigger\\Condition\\Segment',
+    getFormItems: function () {
+
+        return [
+            {
+                name: "segment",
+                fieldLabel: t('segment'),
+                xtype: "textfield",
+                width: 500,
+                cls: "input_drop_target",
+                value: this.options.segment,
+                listeners: {
+                    "render": function (el) {
+                        new Ext.dd.DropZone(el.getEl(), {
+                            reference: this,
+                            ddGroup: "element",
+                            getTargetFromEvent: function (e) {
+                                return this.getEl();
+                            }.bind(el),
+
+                            onNodeOver: function (target, dd, e, data) {
+
+
+                                data = data.records[0].data;
+
+                                if(data.type != 'object') {
+                                    return Ext.dd.DropZone.prototype.dropNotAllowed;
+                                }
+
+
+                                if(data.className != 'CustomerSegment') {
+                                    return Ext.dd.DropZone.prototype.dropNotAllowed;
+                                }
+
+                                return Ext.dd.DropZone.prototype.dropAllowed;
+                            },
+
+                            onNodeDrop: function (target, dd, e, data) {
+
+
+                                data = data.records[0].data;
+
+                                if(data.type != 'object') {
+                                    return false;
+                                }
+
+                                if(data.className != 'CustomerSegment') {
+                                    return false;
+                                }
+
+                                this.setValue(data.path);
+                                return true;
+                            }.bind(el)
+                        });
+                    }
+                }
+            },
+            {
+                xtype: "checkbox",
+                name:'not',
+                value:this.options.not,
+                fieldLabel: t("plugin_cmf_actiontriggerrule_not"),
+                layout: {
+                    type: 'table',
+                    tdAttrs: {
+                        valign: 'center'
+                    }
+                }
+            }
+
+
+        ];
+    }
+});

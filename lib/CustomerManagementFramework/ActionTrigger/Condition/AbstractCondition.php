@@ -20,4 +20,15 @@ abstract class AbstractCondition implements ConditionInterface
     {
         $this->logger = $logger;
     }
+
+    public static function createConditionDefinitionFromEditmode($setting)
+    {
+        $setting = json_decode(json_encode($setting), true);
+        return new \CustomerManagementFramework\ActionTrigger\ConditionDefinition($setting);
+    }
+
+    public static function getDataForEditmode(ConditionDefinitionInterface $conditionDefinition)
+    {
+        return $conditionDefinition->toArray();
+    }
 }

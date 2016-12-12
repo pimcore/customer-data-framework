@@ -88,7 +88,13 @@ class CustomerManagementFramework_RulesController extends \Pimcore\Controller\Ac
 
             foreach($rule->getCondition() as $condition)
             {
-                $json['condition'][] = $condition->toArray();
+                if(class_exists($condition->getImplementationClass())) {
+                    $conditionData = call_user_func([$condition->getImplementationClass(), 'getDataForEditmode'], $condition);
+                } else {
+                    throw new \Exception(sprintf("class '%s' does not exist", $condition->getImplementationClass()));
+                }
+
+                $json['condition'][] = $conditionData;
             }
 
             $this->_helper->json( $json );
@@ -136,8 +142,11 @@ class CustomerManagementFramework_RulesController extends \Pimcore\Controller\Ac
             $arrCondition = [];
             foreach($data->conditions as $setting)
             {
-                $setting = json_decode(json_encode($setting), true);
-                $condition = new \CustomerManagementFramework\ActionTrigger\ConditionDefinition($setting);
+                if(class_exists($setting->implementationClass)) {
+                    $condition = call_user_func([$setting->implementationClass, 'createConditionDefinitionFromEditmode'], $setting);
+                } else {
+                    throw new \Exception(sprintf("class '%s' does not exist", $setting->implementationClass));
+                }
                 $arrCondition[] = $condition;
             }
 
