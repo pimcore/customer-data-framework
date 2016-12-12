@@ -9,10 +9,13 @@
 namespace CustomerManagementFramework\Console;
 
 use CustomerManagementFramework\Factory;
+use Pimcore\Model\Tool\Lock;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ActionTriggerQueueCommand extends AbstractCommand {
+
+    const LOCK_KEY = 'cmf_actiontrigger_queue';
 
     protected function configure()
     {
@@ -25,7 +28,21 @@ class ActionTriggerQueueCommand extends AbstractCommand {
     {
         \Pimcore::getDiContainer()->set("CustomerManagementFramework\\Logger", $this->getLogger());
 
-        Factory::getInstance()->getActionTriggerQueue()->processQueue();
+        if(Lock::isLocked(self::LOCK_KEY)) {
+            die('locked - not starting now');
+
+        }
+
+        Lock::lock(self::LOCK_KEY);
+
+        try {
+            Factory::getInstance()->getActionTriggerQueue()->processQueue();
+        } catch(\Exception $e) {
+            $this->getLogger()->error($e->getMessage());
+        }
+
+        Lock::release(self::LOCK_KEY);
+
     }
 
 }

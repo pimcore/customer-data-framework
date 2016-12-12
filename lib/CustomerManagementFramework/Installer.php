@@ -105,14 +105,24 @@ class Installer {
     private static function installCrontab() {
         
 
-        $cron = '* * * * * php ' . PIMCORE_DOCUMENT_ROOT . '/pimcore/cli/console.php cmf:handle-cron-triggers -v > ' . PIMCORE_LOG_DIRECTORY . '/cmf-cron-trigger-lastrun.log';
+        $crons = [
+            '* * * * * php ' . PIMCORE_DOCUMENT_ROOT . '/pimcore/cli/console.php cmf:handle-cron-triggers -v > ' . PIMCORE_LOG_DIRECTORY . '/cmf-cron-trigger-lastrun.log',
+            '*/5 * * * * php ' . PIMCORE_DOCUMENT_ROOT . '/pimcore/cli/console.php cmf:process-actiontrigger-queue -v > ' . PIMCORE_LOG_DIRECTORY . '/cmf-process-actiontrigger-queue-lastrun.log',
+        ];
 
-        $crontabJob = CrontabJob::createFromCrontabLine($cron);
+        foreach($crons as $cron) {
 
-        $crontabRepository = new CrontabRepository(new CrontabAdapter());
+            try {
 
-        $crontabRepository->addJob($crontabJob);
-        $crontabRepository->persist();
+                $crontabJob = CrontabJob::createFromCrontabLine($cron);
+                $crontabRepository = new CrontabRepository(new CrontabAdapter());
+                $crontabJob->comments = 'installed by CMF plugin';
+                $crontabRepository->addJob($crontabJob);
+                $crontabRepository->persist();
+            } catch(\Exception $e) {
+                Logger::error($e->getMessage());
+            }
+        }
 
 
     }

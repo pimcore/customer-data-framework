@@ -92,6 +92,6 @@ class DefaultQueue implements QueueInterface
         }
 
         $db = Db::get();
-     //   $db->delete(self::QUEUE_TABLE, 'id='.intval($item['id']));
+        $db->delete(self::QUEUE_TABLE, 'id='.intval($item['id']));
     }
 }
