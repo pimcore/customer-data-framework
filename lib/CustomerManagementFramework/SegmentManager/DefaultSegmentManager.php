@@ -123,7 +123,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
     public function buildCalculatedSegmentsOnCustomerSave(CustomerInterface $customer)
     {
         $segmentBuilders = self::createSegmentBuilders();
-        self::prepareSegmentBuilders($segmentBuilders);
+        self::prepareSegmentBuilders($segmentBuilders, true);
 
         foreach($segmentBuilders as $segmentBuilder) {
 
@@ -322,9 +322,18 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         return false;
     }
 
-    protected function prepareSegmentBuilders(array $segmentBuilders)
+    /**
+     * @param SegmentBuilderInterface[] $segmentBuilders
+     * @param bool  $ignoreAsyncSegmentBuilders
+     */
+    protected function prepareSegmentBuilders(array $segmentBuilders, $ignoreAsyncSegmentBuilders = false)
     {
         foreach($segmentBuilders as $segmentBuilder) {
+
+            if($ignoreAsyncSegmentBuilders && !$segmentBuilder->executeOnCustomerSave()) {
+                continue;
+            }
+
             $this->logger->notice(sprintf("prepare segment builder %s", $segmentBuilder->getName()));
             $segmentBuilder->prepare($this);
         }
