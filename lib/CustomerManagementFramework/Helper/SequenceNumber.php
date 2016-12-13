@@ -29,7 +29,9 @@ class SequenceNumber
 
         self::SemaphoreSignal($handle);
 
-        Logger::info("Generated Sequenence Number " . $sequenceName . " " . $number . " (pid : " . getmypid() . ")");
+        $logger = \Pimcore::getDiContainer()->get("CustomerManagementFramework\\Logger");
+
+        $logger->info("Generated Sequenence Number " . $sequenceName . " " . $number . " (pid : " . getmypid() . ")");
 
 
         return $number;
