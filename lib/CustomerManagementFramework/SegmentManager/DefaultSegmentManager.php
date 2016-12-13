@@ -267,14 +267,16 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
         $ignoreCondition = '';
         if(sizeof($ignoreIds)) {
-            $ignoreCondition = " and o_id not in(" . implode($ignoreIds) . ")";
+            $ignoreCondition = " and o_id not in(" . implode(',', $ignoreIds) . ")";
         }
 
         $list = new CustomerSegment\Listing;
         $list->setUnpublished(true);
         $list->setCondition("group__id = ?" . $ignoreCondition, $segmentGroup->getId());
 
-        return $list->load();
+        $result = $list->load();
+
+        return $result ? : [];
     }
 
     public function addCustomerToChangesQueue(CustomerInterface $customer)

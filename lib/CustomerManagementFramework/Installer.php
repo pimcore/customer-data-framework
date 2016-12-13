@@ -107,7 +107,8 @@ class Installer {
 
         $crons = [
             '* * * * * php ' . PIMCORE_DOCUMENT_ROOT . '/pimcore/cli/console.php cmf:handle-cron-triggers -v > ' . PIMCORE_LOG_DIRECTORY . '/cmf-cron-trigger-lastrun.log',
-            '*/5 * * * * php ' . PIMCORE_DOCUMENT_ROOT . '/pimcore/cli/console.php cmf:process-actiontrigger-queue -v > ' . PIMCORE_LOG_DIRECTORY . '/cmf-process-actiontrigger-queue-lastrun.log',
+            '*/7 * * * * php ' . PIMCORE_DOCUMENT_ROOT . '/pimcore/cli/console.php cmf:process-actiontrigger-queue -v > ' . PIMCORE_LOG_DIRECTORY . '/cmf-process-actiontrigger-queue-lastrun.log',
+            '*/5 * * * * php ' . PIMCORE_DOCUMENT_ROOT . '/pimcore/cli/console.php cmf:build-segments -v > ' . PIMCORE_LOG_DIRECTORY . '/cmf-build-segments-queue-lastrun.log',
         ];
 
         foreach($crons as $cron) {
