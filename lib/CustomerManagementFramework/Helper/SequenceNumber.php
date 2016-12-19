@@ -8,11 +8,15 @@
 
 namespace CustomerManagementFramework\Helper;
 
-
-use Pimcore\Logger;
-
 class SequenceNumber
 {
+    public static function getCurrent($sequenceName, $startingNumber = 10000) {
+        $sequenceFile = PIMCORE_SYSTEM_TEMP_DIRECTORY . "/cmf-sequence-number-" . $sequenceName . ".pid";
+        $number = file_get_contents($sequenceFile);
+
+        return intval($number) ? : $startingNumber;
+    }
+
     public static function getNext($sequenceName, $startingNumber = 10000) {
         $sequenceFile = PIMCORE_SYSTEM_TEMP_DIRECTORY . "/cmf-sequence-number-" . $sequenceName . ".pid";
         $handle = self::SemaphoreWait();

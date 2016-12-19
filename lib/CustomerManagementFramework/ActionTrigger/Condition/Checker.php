@@ -75,6 +75,7 @@ class Checker
         }
 
 
+        // don't be afraid of this eval - it's save!
         return eval('return ('.$expression.');');
 
     }
