@@ -1,17 +1,18 @@
 <?php
 
-namespace CustomerManagementFramework\ExportToolkit\ExportService\AttributeClusterInterpreter;
+namespace CustomerManagementFramework\Mailchimp\AttributeClusterInterpreter;
 
+use CustomerManagementFramework\Factory;
+use CustomerManagementFramework\Model\CustomerInterface;
 use ExportToolkit\ExportService\AttributeClusterInterpreter\AbstractAttributeClusterInterpreter;
 use Pimcore\Model\Object\AbstractObject;
 
-class Json extends AbstractAttributeClusterInterpreter
+class Api extends AbstractAttributeClusterInterpreter
 {
     /**
      * This method is executed before the export is launched.
      * For example it can be used to clean up old export files, start a database transaction, etc.
      * If not needed, just leave the method empty.
-     *
      */
     public function setUpExport()
     {
@@ -25,10 +26,21 @@ class Json extends AbstractAttributeClusterInterpreter
      * write the exported entries to a file, etc.
      * If not needed, just leave the method empty.
      *
-     * @param AbstractObject $object
+     * @param AbstractObject|CustomerInterface $object
      */
     public function commitDataRow(AbstractObject $object)
     {
+        $mailchimpExporter = Factory::getInstance()->getMailchimpExportService();
+
+        dump([
+            'wasCreated'  => $mailchimpExporter->wasCreated($object),
+            'needsUpdate' => $mailchimpExporter->needsUpdate($object),
+            'lastExport'  => $mailchimpExporter->getLastExportDateTime($object)
+        ]);
+
+        $note = Factory::getInstance()->getMailchimpExportService()->createExportNote($object);
+        $note->save();
+
         dump($this->data[$object->getId()]);
     }
 
@@ -40,7 +52,7 @@ class Json extends AbstractAttributeClusterInterpreter
      */
     public function commitData()
     {
-        dump($this->data);
+        // dump($this->data);
     }
 
     /**

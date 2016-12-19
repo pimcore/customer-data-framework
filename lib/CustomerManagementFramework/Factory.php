@@ -161,6 +161,14 @@ class Factory {
     }
 
     /**
+     * @return Mailchimp\ExportService
+     */
+    public function getMailchimpExportService()
+    {
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\Mailchimp\ExportService');
+    }
+
+    /**
      * @param                 $className
      * @param LoggerInterface $logger
      * @param null            $needsToBeSubclassOf
