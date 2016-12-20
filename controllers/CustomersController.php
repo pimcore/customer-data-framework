@@ -145,10 +145,13 @@ class CustomerManagementFramework_CustomersController extends Admin
 
         if (array_key_exists('segments', $filters)) {
             foreach ($filters['segments'] as $groupId => $segmentIds) {
-                /** @var \Pimcore\Model\Object\CustomerSegmentGroup $segmentGroup */
-                $segmentGroup = \Pimcore\Model\Object\CustomerSegmentGroup::getById($groupId);
-                if (!$segmentGroup) {
-                    throw new InvalidArgumentException(sprintf('Segment group %d was not found', $groupId));
+                $segmentGroup = null;
+                if ($groupId !== 'default') {
+                    /** @var \Pimcore\Model\Object\CustomerSegmentGroup $segmentGroup */
+                    $segmentGroup = \Pimcore\Model\Object\CustomerSegmentGroup::getById($groupId);
+                    if (!$segmentGroup) {
+                        throw new InvalidArgumentException(sprintf('Segment group %d was not found', $groupId));
+                    }
                 }
 
                 $segments = [];
@@ -162,7 +165,7 @@ class CustomerManagementFramework_CustomersController extends Admin
                     $segments[] = $segment;
                 }
 
-                $handler->addFilter(new CustomerSegmentFilter($segmentGroup, $segments));
+                $handler->addFilter(new CustomerSegmentFilter($segments, $segmentGroup));
             }
         }
     }
@@ -195,16 +198,18 @@ class CustomerManagementFramework_CustomersController extends Admin
                 $filters['segments'] = [];
             }
 
+            $groupId = $segment->getGroup() ? $segment->getGroup()->getId() : 'default';
+
             $groupSegmentIds = [];
-            if (isset($filters['segments'][$segment->getGroup()->getId()])) {
-                $groupSegmentIds = $filters['segments'][$segment->getGroup()->getId()];
+            if (isset($filters['segments'][$groupId])) {
+                $groupSegmentIds = $filters['segments'][$groupId];
             }
 
             if (!in_array($segment->getId(), $groupSegmentIds)) {
                 $groupSegmentIds[] = $segment->getId();
             }
 
-            $filters['segments'][$segment->getGroup()->getId()] = $groupSegmentIds;
+            $filters['segments'][$groupId] = $groupSegmentIds;
         }
 
         return $filters;

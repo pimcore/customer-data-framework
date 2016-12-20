@@ -46,11 +46,11 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
     ];
 
     /**
-     * @param Object\CustomerSegmentGroup $segmentGroup
      * @param Object\CustomerSegment[] $segments
+     * @param Object\CustomerSegmentGroup|null $segmentGroup
      * @param string $type
      */
-    public function __construct(Object\CustomerSegmentGroup $segmentGroup, array $segments, $type = \Zend_Db_Select::SQL_AND)
+    public function __construct(array $segments, Object\CustomerSegmentGroup $segmentGroup = null, $type = \Zend_Db_Select::SQL_AND)
     {
         $this->identifier   = $this->buildIdentifier($segmentGroup);
         $this->segmentGroup = $segmentGroup;
@@ -87,11 +87,11 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      * @param Object\CustomerSegmentGroup $segmentGroup
      * @return string
      */
-    protected function buildIdentifier(Object\CustomerSegmentGroup $segmentGroup)
+    protected function buildIdentifier(Object\CustomerSegmentGroup $segmentGroup = null)
     {
         return sprintf(
             'fltr_seg_%d_%d',
-            $segmentGroup->getId(),
+            $segmentGroup ? $segmentGroup->getId() : 'default',
             static::$index++
         );
     }
@@ -102,8 +102,10 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      */
     protected function addCustomerSegment(Object\CustomerSegment $segment)
     {
-        if ($segment->getGroup()->getId() !== $this->segmentGroup->getId()) {
-            throw new \InvalidArgumentException('Segment does not belong to the defined segment group');
+        if ($segment->getGroup() && null !== $this->segmentGroup) {
+            if ($segment->getGroup()->getId() !== $this->segmentGroup->getId()) {
+                throw new \InvalidArgumentException('Segment does not belong to the defined segment group');
+            }
         }
 
         $this->segments[$segment->getId()] = $segment;
