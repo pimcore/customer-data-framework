@@ -4,6 +4,7 @@ namespace CustomerManagementFramework\Mailchimp;
 
 use Carbon\Carbon;
 use CustomerManagementFramework\Model\CustomerInterface;
+use DrewM\MailChimp\MailChimp;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Element\Note;
 use Pimcore\Model\Object\Concrete;
@@ -13,9 +14,54 @@ class ExportService
     const NOTE_TYPE = 'export.mailchimp';
 
     /**
+     * @var string
+     */
+    protected $apiKey;
+
+    /**
+     * @var string
+     */
+    protected $listId;
+
+    /**
+     * @var MailChimp
+     */
+    protected $apiClient;
+
+    /**
      * @var Note[][]
      */
     protected $notes = [];
+
+    /**
+     * @param string $apiKey
+     * @param string $listId
+     */
+    public function __construct($apiKey, $listId)
+    {
+        $this->apiKey = $apiKey;
+        $this->listId = $listId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getListId()
+    {
+        return $this->listId;
+    }
+
+    /**
+     * @return MailChimp
+     */
+    public function getApiClient()
+    {
+        if (!$this->apiClient) {
+            $this->apiClient = new MailChimp($this->apiKey);
+        }
+
+        return $this->apiClient;
+    }
 
     /**
      * @param CustomerInterface $customer
