@@ -28,12 +28,6 @@ interface SegmentManagerInterface {
      */
     public function getCustomersBySegmentIds(array $segmentIds, $conditionMode = self::CONDITION_AND);
 
-    /**
-     * @param int $segmentId
-     *
-     * @return CustomerSegment
-     */
-    public function getSegmentById($segmentId);
 
     /**
      * @param array $params
@@ -53,6 +47,11 @@ interface SegmentManagerInterface {
      * @return void
      */
     public function buildCalculatedSegments($changesQueueOnly = true);
+
+    /**
+     * @return void
+     */
+    public function executeSegmentBuilderMaintenance();
 
     /**
      * @param CustomerInterface          $customer

@@ -8,10 +8,12 @@
 
 namespace CustomerManagementFramework\SegmentBuilder;
 
-use Carbon\Carbon;
+use CustomerManagementFramework\DataTransformer\Date\TimestampToAge;
+use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use CustomerManagementFramework\SegmentManager\SegmentManagerInterface;
+use Pimcore\Model\Tool\TmpStore;
 use Psr\Log\LoggerInterface;
 
 class AgeSegmentBuilder extends AbstractSegmentBuilder {
@@ -63,11 +65,10 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder {
         if($birthDate = $customer->$getter()) {
             $timestamp = $birthDate->getTimestamp();
 
-            $date = Carbon::createFromTimestamp($timestamp);
-            $today = new Carbon();
-            $age = $today->diffInYears($date);
+            $transformer = new TimestampToAge();
+            $age = $transformer->transform($timestamp);
 
-           // $this->logger->alert("age: $age");
+            $this->logger->debug(sprintf("age of customer ID %s: %s years", $customer->getId(), $age));
 
             foreach($this->ageGroups as $ageGroup) {
                 $from = $ageGroup[0];
@@ -102,5 +103,34 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder {
         return true;
     }
 
+    public function maintenance(SegmentManagerInterface $segmentManager)
+    {
+        $tmpStoreKey = 'plugin_cmf_age_segment_builder';
+
+        if(TmpStore::get($tmpStoreKey)) {
+            return;
+        }
+
+        $this->logger->debug("execute maintenance of AgeSegmentBuilder");
+
+        TmpStore::add($tmpStoreKey, 1, null, (60*60*24)); // only execute it once per day
+
+        $this->prepare($segmentManager);
+
+        $list = Factory::getInstance()->getCustomerProvider()->getList();
+        $list->setCondition("DATE_FORMAT(FROM_UNIXTIME(" . $this->birthDayField ."),'%m-%d') = DATE_FORMAT(NOW(),'%m-%d')");
+
+        $paginator = new \Zend_Paginator($list);
+        $paginator->setItemCountPerPage(100);
+
+        $pageCount = $paginator->getPages()->pageCount;
+        for($i=1; $i<= $pageCount; $i++) {
+            $paginator->setCurrentPageNumber($i);
+
+            foreach($paginator as $customer) {
+                $this->calculateSegments($customer, $segmentManager);
+            }
+        }
+    }
 
 }

@@ -8,6 +8,7 @@
 
 namespace CustomerManagementFramework\SegmentBuilder;
 
+use CustomerManagementFramework\SegmentManager\SegmentManagerInterface;
 use Psr\Log\LoggerInterface;
 
 abstract class AbstractSegmentBuilder implements SegmentBuilderInterface {
@@ -35,7 +36,7 @@ abstract class AbstractSegmentBuilder implements SegmentBuilderInterface {
         return false;
     }
 
-    public function maintenance()
+    public function maintenance(SegmentManagerInterface $segmentManager)
     {
 
     }

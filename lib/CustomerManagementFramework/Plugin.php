@@ -84,11 +84,9 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
 
         });
 
-        /*\Pimcore::getEventManager()->attach('system.maintenance', function(\Zend_EventManager_Event $e) {
-
-            $event = new Cron();
-            Factory::getInstance()->getActionTriggerEventHandler()->handleCustomerListEvent($e, $event);
-        });*/
+        \Pimcore::getEventManager()->attach('system.maintenance', function(\Zend_EventManager_Event $e) {
+            Factory::getInstance()->getSegmentManager()->executeSegmentBuilderMaintenance();
+        });
 
         \Pimcore::getEventManager()->attach(array_keys(Plugin::getConfig()->Events->toArray()), function(\Zend_EventManager_Event $e) {
 

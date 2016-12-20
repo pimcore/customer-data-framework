@@ -53,5 +53,5 @@ interface SegmentBuilderInterface {
      *
      * @return void
      */
-    public function maintenance();
+    public function maintenance(SegmentManagerInterface $segmentManager);
 }

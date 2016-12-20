@@ -58,11 +58,6 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         return $list;
     }
 
-    public function getSegmentById($segmentId)
-    {
-        // TODO: Implement getSegmentById() method.
-    }
-
     public function getSegments(array $params)
     {
         $list = CustomerSegment::getList();
@@ -95,7 +90,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $segmentBuilders = self::createSegmentBuilders();
         self::prepareSegmentBuilders($segmentBuilders);
 
-        $customerList = new \Pimcore\Model\Object\Customer\Listing;
+        $customerList = Factory::getInstance()->getCustomerProvider()->getList();
 
         if($changesQueueOnly) {
             $customerList->setCondition(sprintf("o_id in (select customerId from %s)", self::CHANGES_QUEUE_TABLE));
@@ -135,6 +130,15 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
     }
 
+    public function executeSegmentBuilderMaintenance()
+    {
+        $segmentBuilders = self::createSegmentBuilders();
+
+        foreach($segmentBuilders as $segmentBuilder) {
+            $segmentBuilder->maintenance($this);
+        }
+    }
+
     protected function applySegmentBuilderToCustomer(CustomerInterface $customer, SegmentBuilderInterface $segmentBuilder)
     {
         $this->logger->info(sprintf("apply segment builder %s to customer %s", $segmentBuilder->getName(), (string)$customer));
@@ -158,7 +162,10 @@ class DefaultSegmentManager implements SegmentManagerInterface {
             $backup = \Pimcore\Model\Version::$disabled;
             \Pimcore\Model\Version::disable();
             $customer->setCalculatedSegments($currentSegments);
+            $segmentBuildingHookBackup = Factory::getInstance()->getCustomerSaveManager()->getSegmentBuildingHookEnabled();
+            Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled(false);
             $customer->save();
+            Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled($segmentBuildingHookBackup);
 
             if(!$backup) {
                 \Pimcore\Model\Version::enable();
