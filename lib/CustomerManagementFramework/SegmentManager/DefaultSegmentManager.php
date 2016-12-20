@@ -209,7 +209,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
         $segment = new CustomerSegment();
         $segment->setParent($segmentGroup);
-        $segment->setKey($segmentReference);
+        $segment->setKey(Objects::getValidKey($segmentReference));
         $segment->setName($segmentName ? : $segmentReference);
         $segment->setReference($segmentReference);
         $segment->setPublished(true);

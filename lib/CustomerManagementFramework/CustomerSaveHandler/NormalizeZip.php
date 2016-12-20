@@ -34,15 +34,15 @@ class NormalizeZip implements CustomerSaveHandlerInterface
         $this->config = $config;
 
         $this->countryTransformers = $config->countryTransformers ? $config->countryTransformers->toArray() : [
-            'AT' => 'CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\At',
-            'DE' => 'CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\De',
-            'NL' => 'CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\Nl',
-            'DK' => 'CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\Dk',
-            'BE' => 'CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\Be',
-            'RU' => 'CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\Ru',
-            'CH' => 'CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\Ch',
-            'SE' => 'CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\Se',
-            'GB' => 'CustomerManagementFramework\DataTransformer\AttributeDataTransformer\Zip\Gb',
+            'AT' => 'CustomerManagementFramework\DataTransformer\Zip\At',
+            'DE' => 'CustomerManagementFramework\DataTransformer\Zip\De',
+            'NL' => 'CustomerManagementFramework\DataTransformer\Zip\Nl',
+            'DK' => 'CustomerManagementFramework\DataTransformer\Zip\Dk',
+            'BE' => 'CustomerManagementFramework\DataTransformer\Zip\Be',
+            'RU' => 'CustomerManagementFramework\DataTransformer\Zip\Ru',
+            'CH' => 'CustomerManagementFramework\DataTransformer\Zip\Ch',
+            'SE' => 'CustomerManagementFramework\DataTransformer\Zip\Se',
+            'GB' => 'CustomerManagementFramework\DataTransformer\Zip\Gb',
         ];
 
         $this->logger = $logger;

@@ -6,7 +6,7 @@
  * Time: 11:46
  */
 
-namespace CustomerManagementFramework\Testing\DataTransformer\AttributeDataTransformer;
+namespace CustomerManagementFramework\Testing\DataTransformer;
 
 class ZipTest extends \PHPUnit_Framework_TestCase
 {

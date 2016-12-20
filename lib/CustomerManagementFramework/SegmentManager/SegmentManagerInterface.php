@@ -80,6 +80,15 @@ interface SegmentManagerInterface {
     public function createCalculatedSegment($segmentReference, $segmentGroup, $segmentName = null);
 
     /**
+     * @param      $segmentGroupName
+     * @param null $segmentGroupReference
+     * @param bool $calculated
+     *
+     * @return CustomerSegmentGroup
+     */
+    public function createSegmentGroup($segmentGroupName, $segmentGroupReference = null, $calculated = false);
+
+    /**
      * @param CustomerInterface $customer
      *
      * @return void

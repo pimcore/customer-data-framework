@@ -41,11 +41,11 @@ class GenderSegmentBuilder implements SegmentBuilderInterface {
      */
     public function prepare(SegmentManagerInterface $segmentManager)
     {
-        $segmentGroupName = $this->config->segmentGroup ? : 'gender';
+        $segmentGroupName = $this->config->segmentGroup ? : 'Gender';
 
-        $this->maleSegment = $segmentManager->createCalculatedSegment(self::MALE, $segmentGroupName);
-        $this->femaleSegment = $segmentManager->createCalculatedSegment(self::FEMALE, $segmentGroupName);
-        $this->notsetSegment = $segmentManager->createCalculatedSegment(self::NOT_SET, $segmentGroupName);
+        $this->maleSegment = $segmentManager->createCalculatedSegment((string)$this->config->maleSegmentName ? : self::MALE, $segmentGroupName);
+        $this->femaleSegment = $segmentManager->createCalculatedSegment((string)$this->config->femaleSegmentName ? : self::FEMALE, $segmentGroupName);
+        $this->notsetSegment = $segmentManager->createCalculatedSegment((string)$this->config->notsetSegmentName ? : self::NOT_SET, $segmentGroupName);
 
         $this->segmentGroup = $this->maleSegment->getGroup();
     }

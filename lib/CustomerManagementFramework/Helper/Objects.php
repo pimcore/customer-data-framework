@@ -91,6 +91,11 @@ class Objects {
         foreach($array as $key => $object)
         {
             foreach($removeObjects as $removeObject) {
+
+                if(!method_exists($removeObject, 'getId')) {
+                    continue;
+                }
+
                 if($object->getId() == $removeObject->getId()) {
                     unset($array[$key]);
                     $changed = true;
