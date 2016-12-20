@@ -45,7 +45,7 @@ class Api extends AbstractAttributeClusterInterpreter
     {
         $exportService = $this->getExportService();
 
-        if ($exportService->wasCreated($object) && $exportService->needsUpdate($object)) {
+        if ($exportService->wasCreated($object)) {
             $this->workList['update'][$object->getId()] = $this->transformMergeFields($this->data[$object->getId()]);
         } else {
             $this->workList['create'][$object->getId()] = $this->transformMergeFields($this->data[$object->getId()]);
