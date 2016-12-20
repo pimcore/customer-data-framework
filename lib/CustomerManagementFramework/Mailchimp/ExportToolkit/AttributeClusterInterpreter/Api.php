@@ -46,9 +46,9 @@ class Api extends AbstractAttributeClusterInterpreter
         $exportService = $this->getExportService();
 
         if ($exportService->wasCreated($object) && $exportService->needsUpdate($object)) {
-            $this->workList['update'][] = $this->transformMergeFields($this->data[$object->getId()]);
+            $this->workList['update'][$object->getId()] = $this->transformMergeFields($this->data[$object->getId()]);
         } else {
-            $this->workList['create'][] = $this->transformMergeFields($this->data[$object->getId()]);
+            $this->workList['create'][$object->getId()] = $this->transformMergeFields($this->data[$object->getId()]);
         }
     }
 
@@ -68,14 +68,23 @@ class Api extends AbstractAttributeClusterInterpreter
         }
 
         if ($workCount === 1) {
-            $entry = $this->workList[$type][0];
-            $this->commitSingle($type, $entry);
+            $objectId = array_keys($this->workList[$type])[0];
+            $entry    = $this->workList[$type][$objectId];
+
+            $this->commitSingle($type, $objectId, $entry);
         } else {
             $this->commitBatch();
         }
     }
 
-    protected function commitSingle($type, array $entry)
+    /**
+     * Commit a single entry to the API
+     *
+     * @param $type
+     * @param $objectId
+     * @param array $entry
+     */
+    protected function commitSingle($type, $objectId, array $entry)
     {
         $exportService = $this->getExportService();
         $apiClient     = $exportService->getApiClient();
@@ -88,7 +97,12 @@ class Api extends AbstractAttributeClusterInterpreter
         }
 
         if ($apiClient->success()) {
-            // $exportService->createExportNote()
+            $customer = Factory::getInstance()->getCustomerProvider()->getById($objectId);
+
+            // add note
+            $exportService
+                ->createExportNote($customer)
+                ->save();
         }
     }
 
