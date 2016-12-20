@@ -76,7 +76,7 @@ interface SegmentManagerInterface {
      *
      * @return CustomerSegmentInterface
      */
-    public function createCalculatedSegment($segmentReference, $segmentGroup, $segmentName = null);
+    public function createCalculatedSegment($segmentReference, $segmentGroup, $segmentName = null, $subFolder = null);
 
     /**
      * @param      $segmentGroupName

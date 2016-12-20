@@ -204,7 +204,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
     }
 
 
-    public function createCalculatedSegment($segmentReference, $segmentGroup, $segmentName = null)
+    public function createCalculatedSegment($segmentReference, $segmentGroup, $segmentName = null, $subFolder = null)
     {
         $segmentGroup = self::createSegmentGroup($segmentGroup, $segmentGroup, true);
 
@@ -219,8 +219,25 @@ class DefaultSegmentManager implements SegmentManagerInterface {
             return $list[0];
         }
 
+        $parent = $segmentGroup;
+        if(!is_null($subFolder)) {
+            $subFolder = explode('/', $subFolder);
+            $folder = [];
+            foreach($subFolder as $f) {
+                if($f = Objects::getValidKey($f)) {
+                    $folder[] = $f;
+                }
+            }
+            $subFolder = implode('/', $folder);
+
+            if($subFolder) {
+                $fullPath = str_replace('//', '/', $segmentGroup->getFullPath() . '/' . $subFolder);
+                $parent = Service::createFolderByPath($fullPath);
+            }
+        }
+
         $segment = new CustomerSegment();
-        $segment->setParent($segmentGroup);
+        $segment->setParent($parent);
         $segment->setKey(Objects::getValidKey($segmentReference));
         $segment->setName($segmentName ? : $segmentReference);
         $segment->setReference($segmentReference);

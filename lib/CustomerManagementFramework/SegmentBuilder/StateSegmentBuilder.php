@@ -71,7 +71,7 @@ class StateSegmentBuilder extends AbstractSegmentBuilder {
             $transformer = $this->countryTransformers[$countryCode];
 
             if($state = $transformer->transform($customer->getZip())) {
-                $stateSegment = $segmentManager->createCalculatedSegment($countryCode . " - " . $state, $this->groupName);
+                $stateSegment = $segmentManager->createCalculatedSegment($countryCode . " - " . $state, $this->groupName, $countryCode . " - " . $state, $countryCode);
             }
         }
 
