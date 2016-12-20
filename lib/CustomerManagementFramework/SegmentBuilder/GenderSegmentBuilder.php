@@ -14,7 +14,7 @@ use CustomerManagementFramework\SegmentManager\SegmentManagerInterface;
 use Pimcore\Model\Object\CustomerSegment;
 use Psr\Log\LoggerInterface;
 
-class GenderSegmentBuilder implements SegmentBuilderInterface {
+class GenderSegmentBuilder extends AbstractSegmentBuilder {
 
     const MALE = 'male';
     const FEMALE = 'female';

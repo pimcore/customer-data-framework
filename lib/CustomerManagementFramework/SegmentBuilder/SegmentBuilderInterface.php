@@ -47,4 +47,11 @@ interface SegmentBuilderInterface {
      * @return mixed
      */
     public function executeOnCustomerSave();
+
+    /**
+     * executed in maintenance mode
+     *
+     * @return void
+     */
+    public function maintenance();
 }

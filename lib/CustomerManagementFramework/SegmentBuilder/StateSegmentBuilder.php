@@ -15,7 +15,7 @@ use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use CustomerManagementFramework\SegmentManager\SegmentManagerInterface;
 use Psr\Log\LoggerInterface;
 
-class StateSegmentBuilder implements SegmentBuilderInterface {
+class StateSegmentBuilder extends AbstractSegmentBuilder {
 
     private $config;
     private $logger;
