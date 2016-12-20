@@ -10,6 +10,19 @@ use Pimcore\Model\Object\AbstractObject;
 class Api extends AbstractAttributeClusterInterpreter
 {
     /**
+     * @var array
+     */
+    protected $workList = [];
+
+    /**
+     * @return \CustomerManagementFramework\Mailchimp\ExportService
+     */
+    public function getExportService()
+    {
+        return Factory::getInstance()->getMailchimpExportService();
+    }
+
+    /**
      * This method is executed before the export is launched.
      * For example it can be used to clean up old export files, start a database transaction, etc.
      * If not needed, just leave the method empty.
@@ -30,18 +43,13 @@ class Api extends AbstractAttributeClusterInterpreter
      */
     public function commitDataRow(AbstractObject $object)
     {
-        $mailchimpExporter = Factory::getInstance()->getMailchimpExportService();
+        $exportService = $this->getExportService();
 
-        dump([
-            'wasCreated'  => $mailchimpExporter->wasCreated($object),
-            'needsUpdate' => $mailchimpExporter->needsUpdate($object),
-            'lastExport'  => $mailchimpExporter->getLastExportDateTime($object)
-        ]);
-
-        $note = Factory::getInstance()->getMailchimpExportService()->createExportNote($object);
-        $note->save();
-
-        dump($this->transformMergeFields($this->data[$object->getId()]));
+        if ($exportService->wasCreated($object) && $exportService->needsUpdate($object)) {
+            $this->workList['update'][] = $this->transformMergeFields($this->data[$object->getId()]);
+        } else {
+            $this->workList['create'][] = $this->transformMergeFields($this->data[$object->getId()]);
+        }
     }
 
     /**
@@ -52,7 +60,41 @@ class Api extends AbstractAttributeClusterInterpreter
      */
     public function commitData()
     {
-        // dump($this->data);
+        $workCount = 0;
+
+        $type = '';
+        foreach ($this->workList as $type => $items) {
+            $workCount += count($items);
+        }
+
+        if ($workCount === 1) {
+            $entry = $this->workList[$type][0];
+            $this->commitSingle($type, $entry);
+        } else {
+            $this->commitBatch();
+        }
+    }
+
+    protected function commitSingle($type, array $entry)
+    {
+        $exportService = $this->getExportService();
+        $apiClient     = $exportService->getApiClient();
+
+        $result = null;
+        if ($type === 'create') {
+            $result = $exportService->create($entry);
+        } else if ($type === 'update') {
+            $result = $exportService->update($entry);
+        }
+
+        if ($apiClient->success()) {
+            // $exportService->createExportNote()
+        }
+    }
+
+    protected function commitBatch()
+    {
+        // TODO
     }
 
     /**
@@ -67,6 +109,8 @@ class Api extends AbstractAttributeClusterInterpreter
     }
 
     /**
+     * Transform configured merge fields into merge_fields property
+     *
      * @param array $dataRow
      * @return array
      */

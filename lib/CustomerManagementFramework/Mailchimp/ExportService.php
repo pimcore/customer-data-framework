@@ -55,6 +55,39 @@ class ExportService
     }
 
     /**
+     * @param array $entry
+     * @return array|false
+     */
+    public function create(array $entry)
+    {
+        return $this->apiClient->post(
+            sprintf('lists/%s/members', $this->listId),
+            $entry
+        );
+    }
+
+    /**
+     * @param array $entry
+     * @return array|false
+     */
+    public function update(array $entry)
+    {
+        return $this->apiClient->put(
+            sprintf('lists/%s/members/%s', $this->listId, $this->getSubscriberId($entry['email_address'])),
+            $entry
+        );
+    }
+
+    /**
+     * @param string $email
+     * @return string
+     */
+    public function getSubscriberId($email)
+    {
+        return md5(strtolower($email));
+    }
+
+    /**
      * @param CustomerInterface $customer
      * @return \DateTime|null
      */
