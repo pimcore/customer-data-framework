@@ -106,7 +106,12 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
             foreach($paginator as $customer) {
                 foreach($segmentBuilders as $segmentBuilder) {
-                    $this->applySegmentBuilderToCustomer($customer, $segmentBuilder);
+                    try {
+                        $this->applySegmentBuilderToCustomer($customer, $segmentBuilder);
+                    } catch(\Exception $e) {
+                        $this->logger->error($e);
+                    }
+
                 }
                 Db::get()->query(sprintf("delete from %s where customerId = ?", self::CHANGES_QUEUE_TABLE), $customer->getId());
             }
