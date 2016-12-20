@@ -14,9 +14,9 @@ class ExportService
     const NOTE_TYPE = 'export.mailchimp';
 
     /**
-     * @var string
+     * @var MailChimp
      */
-    protected $apiKey;
+    protected $apiClient;
 
     /**
      * @var string
@@ -24,23 +24,26 @@ class ExportService
     protected $listId;
 
     /**
-     * @var MailChimp
-     */
-    protected $apiClient;
-
-    /**
      * @var Note[][]
      */
     protected $notes = [];
 
     /**
-     * @param string $apiKey
-     * @param string $listId
+     * @param MailChimp $apiClient
+     * @param $listId
      */
-    public function __construct($apiKey, $listId)
+    public function __construct(MailChimp $apiClient, $listId)
     {
-        $this->apiKey = $apiKey;
-        $this->listId = $listId;
+        $this->apiClient = $apiClient;
+        $this->listId    = $listId;
+    }
+
+    /**
+     * @return MailChimp
+     */
+    public function getApiClient()
+    {
+        return $this->apiClient;
     }
 
     /**
@@ -49,18 +52,6 @@ class ExportService
     public function getListId()
     {
         return $this->listId;
-    }
-
-    /**
-     * @return MailChimp
-     */
-    public function getApiClient()
-    {
-        if (!$this->apiClient) {
-            $this->apiClient = new MailChimp($this->apiKey);
-        }
-
-        return $this->apiClient;
     }
 
     /**
