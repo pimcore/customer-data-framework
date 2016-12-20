@@ -1,6 +1,6 @@
 <?php
 
-namespace CustomerManagementFramework\Mailchimp\AttributeClusterInterpreter;
+namespace CustomerManagementFramework\Mailchimp\ExportToolkit\AttributeClusterInterpreter;
 
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
