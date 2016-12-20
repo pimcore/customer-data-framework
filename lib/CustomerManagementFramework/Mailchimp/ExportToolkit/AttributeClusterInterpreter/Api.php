@@ -41,7 +41,7 @@ class Api extends AbstractAttributeClusterInterpreter
         $note = Factory::getInstance()->getMailchimpExportService()->createExportNote($object);
         $note->save();
 
-        dump($this->data[$object->getId()]);
+        dump($this->transformMergeFields($this->data[$object->getId()]));
     }
 
     /**
@@ -64,5 +64,26 @@ class Api extends AbstractAttributeClusterInterpreter
     public function deleteFromExport(AbstractObject $object)
     {
         // noop
+    }
+
+    /**
+     * @param array $dataRow
+     * @return array
+     */
+    protected function transformMergeFields(array $dataRow)
+    {
+        $config      = (array)$this->config;
+        $mergeFields = (isset($config['merge_fields'])) ? (array)$config['merge_fields'] : [];
+
+        $result = [];
+        foreach ($dataRow as $key => $value) {
+            if (isset($mergeFields[$key])) {
+                $result['merge_fields'][$mergeFields[$key]] = $value;
+            } else {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
     }
 }
