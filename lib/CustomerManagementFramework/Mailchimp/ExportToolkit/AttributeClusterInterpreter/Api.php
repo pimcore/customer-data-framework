@@ -142,6 +142,14 @@ class Api extends AbstractAttributeClusterInterpreter
             }
         }
 
+        if ($result['merge_fields']) {
+            foreach ($result['merge_fields'] as $key => $value) {
+                if (null === $value || false === $value) {
+                    $result['merge_fields'][$key] = '';
+                }
+            }
+        }
+
         return $result;
     }
 }
