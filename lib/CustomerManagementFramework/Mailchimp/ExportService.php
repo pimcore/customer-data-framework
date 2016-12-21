@@ -69,27 +69,6 @@ class ExportService
     }
 
     /**
-     * @param array $entry
-     * @return array|false
-     */
-    public function updateMember(array $entry)
-    {
-        return $this->apiClient->put(
-            $this->getListResourceUrl(sprintf('members/%s', $this->getMemberId($entry['email_address']))),
-            $entry
-        );
-    }
-
-    /**
-     * @param string $email
-     * @return string
-     */
-    public function getMemberId($email)
-    {
-        return md5(strtolower($email));
-    }
-
-    /**
      * Get remote mailchimp ID as stored in export notes
      *
      * @param ElementInterface $object

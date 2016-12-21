@@ -61,14 +61,26 @@ class Customer extends AbstractMailchimpInterpreter
     {
         $exportService = $this->getExportService();
         $apiClient     = $exportService->getApiClient();
+        $remoteId      = $apiClient->subscriberHash($entry['email_address']);
 
-        $this->logger->info(sprintf('[MailChimp] Exporting customer %d', $objectId));
+        $this->logger->info(sprintf(
+            '[MailChimp][CUSTOMER %s] Exporting customer with remote ID %s',
+            $objectId,
+            $remoteId
+        ));
 
-        // always call update (PUT), as API handles both create and update on PUT and we don't need to remember a state
-        $result = $exportService->updateMember($entry);
+        // always PUT as API handles both create and update on PUT and we don't need to remember a state
+        $result = $apiClient->put(
+            $exportService->getListResourceUrl(sprintf('members/%s', $remoteId)),
+            $entry
+        );
 
         if ($apiClient->success()) {
-            $this->logger->info(sprintf('[MailChimp] Success for customer %d', $objectId));
+            $this->logger->info(sprintf(
+                '[MailChimp][CUSTOMER %s] Export was successful. Remote ID is %s',
+                $objectId,
+                $remoteId
+            ));
 
             /** @var CustomerInterface|ElementInterface $customer */
             $customer = Factory::getInstance()->getCustomerProvider()->getById($objectId);
@@ -77,11 +89,13 @@ class Customer extends AbstractMailchimpInterpreter
             $exportService
                 ->createExportNote($customer, $result['id'])
                 ->save();
-
-            $this->logger->info(sprintf('[MailChimp] Added export note for customer %d', $objectId));
         } else {
-            $this->logger->error(sprintf('[MailChimp] Failed to export customer %d', $objectId));
-            $this->logger->error(sprintf('[MailChimp] Error: %s %s', json_encode($apiClient->getLastError()), $apiClient->getLastResponse()['body']));
+            $this->logger->error(sprintf(
+                '[MailChimp][CUSTOMER %s] Export failed: %s %s',
+                $objectId,
+                json_encode($apiClient->getLastError()),
+                $apiClient->getLastResponse()['body']
+            ));
         }
     }
 

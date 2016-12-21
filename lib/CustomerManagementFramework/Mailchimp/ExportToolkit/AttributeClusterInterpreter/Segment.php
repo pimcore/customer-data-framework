@@ -153,6 +153,7 @@ class Segment extends AbstractMailchimpInterpreter
                 $remoteGroupId
             ));
 
+            // add note
             $exportService
                 ->createExportNote($group, $remoteGroupId)
                 ->save();
@@ -235,6 +236,7 @@ class Segment extends AbstractMailchimpInterpreter
                 $remoteGroupId
             ));
 
+            // add note
             $exportService
                 ->createExportNote($segment, $remoteSegmentId)
                 ->save();
