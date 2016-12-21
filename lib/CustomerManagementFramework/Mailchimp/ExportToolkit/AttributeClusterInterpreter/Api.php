@@ -10,11 +10,6 @@ use Pimcore\Model\Object\AbstractObject;
 class Api extends AbstractAttributeClusterInterpreter
 {
     /**
-     * @var array
-     */
-    protected $workList = [];
-
-    /**
      * @return \CustomerManagementFramework\Mailchimp\ExportService
      */
     public function getExportService()
@@ -43,10 +38,7 @@ class Api extends AbstractAttributeClusterInterpreter
      */
     public function commitDataRow(AbstractObject $object)
     {
-        $exportService = $this->getExportService();
-
-        // TODO check for needsUpdate (could be problematic in save hook)?
-        $this->workList[$object->getId()] = $this->transformMergeFields($this->data[$object->getId()]);
+        // noop
     }
 
     /**
@@ -57,9 +49,9 @@ class Api extends AbstractAttributeClusterInterpreter
      */
     public function commitData()
     {
-        if (count($this->workList) === 1) {
-            $objectId = array_keys($this->workList)[0];
-            $entry    = $this->workList[$objectId];
+        if (count($this->data) === 1) {
+            $objectId = array_keys($this->data)[0];
+            $entry    = $this->transformMergeFields($this->data[$objectId]);
 
             $this->commitSingle($objectId, $entry);
         } else {
