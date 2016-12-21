@@ -7,7 +7,7 @@ use CustomerManagementFramework\Model\CustomerInterface;
 use ExportToolkit\ExportService\AttributeClusterInterpreter\AbstractAttributeClusterInterpreter;
 use Pimcore\Model\Object\AbstractObject;
 
-class Api extends AbstractAttributeClusterInterpreter
+class Customer extends AbstractAttributeClusterInterpreter
 {
     /**
      * @return \CustomerManagementFramework\Mailchimp\ExportService
