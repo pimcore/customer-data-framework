@@ -45,11 +45,8 @@ class Api extends AbstractAttributeClusterInterpreter
     {
         $exportService = $this->getExportService();
 
-        if ($exportService->wasCreated($object)) {
-            $this->workList['update'][$object->getId()] = $this->transformMergeFields($this->data[$object->getId()]);
-        } else {
-            $this->workList['create'][$object->getId()] = $this->transformMergeFields($this->data[$object->getId()]);
-        }
+        // TODO check for needsUpdate (could be problematic in save hook)?
+        $this->workList[$object->getId()] = $this->transformMergeFields($this->data[$object->getId()]);
     }
 
     /**
@@ -60,18 +57,11 @@ class Api extends AbstractAttributeClusterInterpreter
      */
     public function commitData()
     {
-        $workCount = 0;
+        if (count($this->workList) === 1) {
+            $objectId = array_keys($this->workList)[0];
+            $entry    = $this->workList[$objectId];
 
-        $type = '';
-        foreach ($this->workList as $type => $items) {
-            $workCount += count($items);
-        }
-
-        if ($workCount === 1) {
-            $objectId = array_keys($this->workList[$type])[0];
-            $entry    = $this->workList[$type][$objectId];
-
-            $this->commitSingle($type, $objectId, $entry);
+            $this->commitSingle($objectId, $entry);
         } else {
             $this->commitBatch();
         }
@@ -80,21 +70,16 @@ class Api extends AbstractAttributeClusterInterpreter
     /**
      * Commit a single entry to the API
      *
-     * @param $type
      * @param $objectId
      * @param array $entry
      */
-    protected function commitSingle($type, $objectId, array $entry)
+    protected function commitSingle($objectId, array $entry)
     {
         $exportService = $this->getExportService();
         $apiClient     = $exportService->getApiClient();
 
-        $result = null;
-        if ($type === 'create') {
-            $result = $exportService->create($entry);
-        } else if ($type === 'update') {
-            $result = $exportService->update($entry);
-        }
+        // always call update (PUT), as API handles both create and update on PUT and we don't need to remember a state
+        $result = $exportService->update($entry);
 
         if ($apiClient->success()) {
             $customer = Factory::getInstance()->getCustomerProvider()->getById($objectId);
