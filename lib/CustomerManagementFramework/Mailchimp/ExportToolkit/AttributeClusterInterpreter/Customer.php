@@ -94,7 +94,12 @@ class Customer extends AbstractAttributeClusterInterpreter
 
     protected function commitBatch()
     {
-        // TODO
+        $objectIds = array_keys($this->data);
+
+        // naive implementation exporting every customer as single request - TODO use mailchimp's batches for large exports
+        foreach ($objectIds as $objectId) {
+            $this->commitSingle($objectId, $this->transformMergeFields($this->data[$objectId]));
+        }
     }
 
     /**
