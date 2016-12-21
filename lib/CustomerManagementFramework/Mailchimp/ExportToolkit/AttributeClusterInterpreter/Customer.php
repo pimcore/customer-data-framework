@@ -73,7 +73,7 @@ class Customer extends AbstractAttributeClusterInterpreter
         $this->logger->info(sprintf('[MailChimp] Exporting customer %d', $objectId));
 
         // always call update (PUT), as API handles both create and update on PUT and we don't need to remember a state
-        $result = $exportService->update($entry);
+        $result = $exportService->updateMember($entry);
 
         if ($apiClient->success()) {
             $this->logger->info(sprintf('[MailChimp] Success for customer %d', $objectId));
