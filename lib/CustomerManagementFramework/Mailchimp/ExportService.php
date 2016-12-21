@@ -54,13 +54,28 @@ class ExportService
     }
 
     /**
+     * @param null|string $subResource
+     * @return string
+     */
+    public function getListResourceUrl($subResource = null)
+    {
+        $url = sprintf('lists/%s', $this->listId);
+
+        if ($subResource) {
+            $url = sprintf('%s/%s', $url, $subResource);
+        }
+
+        return $url;
+    }
+
+    /**
      * @param array $entry
      * @return array|false
      */
     public function updateMember(array $entry)
     {
         return $this->apiClient->put(
-            sprintf('lists/%s/members/%s', $this->listId, $this->getMemberId($entry['email_address'])),
+            $this->getListResourceUrl(sprintf('members/%s', $this->getMemberId($entry['email_address']))),
             $entry
         );
     }
@@ -75,12 +90,30 @@ class ExportService
     }
 
     /**
+     * Get remote mailchimp ID as stored in export notes
+     *
+     * @param ElementInterface $object
+     * @return string|null
+     */
+    public function getRemoteId(ElementInterface $object)
+    {
+        if ($this->wasExported($object)) {
+            $note = $this->getLastExportNote($object);
+            $data = $note->getData();
+
+            if (isset($data['mailchimp_id'])) {
+                return $data['mailchimp_id']['data'];
+            }
+        }
+    }
+
+    /**
      * @param ElementInterface $object
      * @return bool
      */
     public function wasExported(ElementInterface $object)
     {
-        return null !== $this->getLastExportDateTime($object);
+        return null !== $this->getLastExportNote($object);
     }
 
     /**
