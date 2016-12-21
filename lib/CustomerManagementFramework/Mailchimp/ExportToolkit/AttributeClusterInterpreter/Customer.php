@@ -4,19 +4,11 @@ namespace CustomerManagementFramework\Mailchimp\ExportToolkit\AttributeClusterIn
 
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
-use ExportToolkit\ExportService\AttributeClusterInterpreter\AbstractAttributeClusterInterpreter;
+use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Object\AbstractObject;
 
-class Customer extends AbstractAttributeClusterInterpreter
+class Customer extends AbstractMailchimpInterpreter
 {
-    /**
-     * @return \CustomerManagementFramework\Mailchimp\ExportService
-     */
-    public function getExportService()
-    {
-        return Factory::getInstance()->getMailchimpExportService();
-    }
-
     /**
      * This method is executed before the export is launched.
      * For example it can be used to clean up old export files, start a database transaction, etc.
@@ -78,11 +70,12 @@ class Customer extends AbstractAttributeClusterInterpreter
         if ($apiClient->success()) {
             $this->logger->info(sprintf('[MailChimp] Success for customer %d', $objectId));
 
+            /** @var CustomerInterface|ElementInterface $customer */
             $customer = Factory::getInstance()->getCustomerProvider()->getById($objectId);
 
             // add note
             $exportService
-                ->createExportNote($customer)
+                ->createExportNote($customer, $result['id'])
                 ->save();
 
             $this->logger->info(sprintf('[MailChimp] Added export note for customer %d', $objectId));

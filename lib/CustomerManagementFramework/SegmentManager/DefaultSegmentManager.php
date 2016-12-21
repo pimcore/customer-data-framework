@@ -39,6 +39,23 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $this->config = $config = Plugin::getConfig()->SegmentManager;
     }
 
+    /**
+     * @param int $id
+     * @return CustomerSegmentInterface
+     */
+    public function getSegmentById($id)
+    {
+        return CustomerSegment::getById($id);
+    }
+
+    /**
+     * @param int $id
+     * @return CustomerSegmentGroup
+     */
+    public function getSegmentGroupById($id)
+    {
+        return CustomerSegmentGroup::getById($id);
+    }
 
     public function getCustomersBySegmentIds(array $segmentIds, $conditionMode = self::CONDITION_AND)
     {

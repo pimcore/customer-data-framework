@@ -28,6 +28,17 @@ interface SegmentManagerInterface {
      */
     public function getCustomersBySegmentIds(array $segmentIds, $conditionMode = self::CONDITION_AND);
 
+    /**
+     * @param int $id
+     * @return CustomerSegmentInterface
+     */
+    public function getSegmentById($id);
+
+    /**
+     * @param int $id
+     * @return CustomerSegmentGroup
+     */
+    public function getSegmentGroupById($id);
 
     /**
      * @param array $params
