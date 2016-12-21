@@ -70,16 +70,25 @@ class Customer extends AbstractAttributeClusterInterpreter
         $exportService = $this->getExportService();
         $apiClient     = $exportService->getApiClient();
 
+        $this->logger->info(sprintf('[MailChimp] Exporting customer %d', $objectId));
+
         // always call update (PUT), as API handles both create and update on PUT and we don't need to remember a state
         $result = $exportService->update($entry);
 
         if ($apiClient->success()) {
+            $this->logger->info(sprintf('[MailChimp] Success for customer %d', $objectId));
+
             $customer = Factory::getInstance()->getCustomerProvider()->getById($objectId);
 
             // add note
             $exportService
                 ->createExportNote($customer)
                 ->save();
+
+            $this->logger->info(sprintf('[MailChimp] Added export note for customer %d', $objectId));
+        } else {
+            $this->logger->error(sprintf('[MailChimp] Failed to export customer %d', $objectId));
+            $this->logger->error(sprintf('[MailChimp] Error: %s %s', json_encode($apiClient->getLastError()), $apiClient->getLastResponse()['body']));
         }
     }
 
