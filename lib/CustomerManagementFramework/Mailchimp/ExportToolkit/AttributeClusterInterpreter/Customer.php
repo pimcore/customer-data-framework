@@ -63,11 +63,27 @@ class Customer extends AbstractMailchimpInterpreter
         $apiClient     = $exportService->getApiClient();
         $remoteId      = $apiClient->subscriberHash($entry['email_address']);
 
+        /** @var CustomerInterface|ElementInterface $customer */
+        $customer = Factory::getInstance()->getCustomerProvider()->getById($objectId);
+
         $this->logger->info(sprintf(
             '[MailChimp][CUSTOMER %s] Exporting customer with remote ID %s',
             $objectId,
             $remoteId
         ));
+
+        if ($exportService->wasExported($customer)) {
+            $this->logger->info(sprintf(
+                '[MailChimp][CUSTOMER %s] Customer already exists remotely with remote ID %s',
+                $objectId,
+                $remoteId
+            ));
+        } else {
+            $this->logger->info(sprintf(
+                '[MailChimp][CUSTOMER %s] Customer was not exported yet',
+                $objectId
+            ));
+        }
 
         // always PUT as API handles both create and update on PUT and we don't need to remember a state
         $result = $apiClient->put(
@@ -81,9 +97,6 @@ class Customer extends AbstractMailchimpInterpreter
                 $objectId,
                 $remoteId
             ));
-
-            /** @var CustomerInterface|ElementInterface $customer */
-            $customer = Factory::getInstance()->getCustomerProvider()->getById($objectId);
 
             // add note
             $exportService
