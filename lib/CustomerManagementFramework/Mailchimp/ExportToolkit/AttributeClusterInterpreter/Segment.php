@@ -96,9 +96,10 @@ class Segment extends AbstractMailchimpInterpreter
      * Export a segment group
      *
      * @param CustomerSegmentGroup $group
+     * @param bool $forceCreate
      * @return null|string
      */
-    protected function exportGroup(CustomerSegmentGroup $group)
+    protected function exportGroup(CustomerSegmentGroup $group, $forceCreate = false)
     {
         $exportService = $this->getExportService();
         $apiClient     = $exportService->getApiClient();
@@ -110,24 +111,17 @@ class Segment extends AbstractMailchimpInterpreter
 
         $remoteGroupId = null;
         $result        = null;
+        $isEdit        = false;
 
-        if ($exportService->wasExported($group)) {
-            $remoteGroupId = $exportService->getRemoteId($group);
-
+        if ($forceCreate) {
             $this->logger->info(sprintf(
-                '[MailChimp][GROUP %s] Updating group %s with remote ID %s',
+                '[MailChimp][GROUP %s] Forcing creation of group %s',
                 $group->getId(),
-                $group->getName(),
-                $remoteGroupId
+                $group->getName()
             ));
+        }
 
-            $result = $apiClient->patch(
-                $exportService->getListResourceUrl(
-                    sprintf('interest-categories/%s', $remoteGroupId)
-                ),
-                $data
-            );
-        } else {
+        if ($forceCreate || !$exportService->wasExported($group)) {
             $this->logger->info(sprintf(
                 '[MailChimp][GROUP %s] Creating group %s',
                 $group->getId(),
@@ -143,6 +137,23 @@ class Segment extends AbstractMailchimpInterpreter
             if ($apiClient->success()) {
                 $remoteGroupId = $result['id'];
             }
+        } else {
+            $isEdit        = true;
+            $remoteGroupId = $exportService->getRemoteId($group);
+
+            $this->logger->info(sprintf(
+                '[MailChimp][GROUP %s] Updating group %s with remote ID %s',
+                $group->getId(),
+                $group->getName(),
+                $remoteGroupId
+            ));
+
+            $result = $apiClient->patch(
+                $exportService->getListResourceUrl(
+                    sprintf('interest-categories/%s', $remoteGroupId)
+                ),
+                $data
+            );
         }
 
         if ($apiClient->success()) {
@@ -165,6 +176,17 @@ class Segment extends AbstractMailchimpInterpreter
                 json_encode($apiClient->getLastError()),
                 $apiClient->getLastResponse()['body']
             ));
+
+            // we tried to edit a resource which doesn't exist (anymore) - fall back to create
+            if ($isEdit && isset($result['status']) && $result['status'] === 404) {
+                $this->logger->warning(sprintf(
+                    '[MailChimp][GROUP %s] Edit request was a 404 - falling back to create group %s',
+                    $group->getId(),
+                    $group->getName()
+                ));
+
+                return $this->exportGroup($group, true);
+            }
 
             return null;
         }
@@ -191,24 +213,17 @@ class Segment extends AbstractMailchimpInterpreter
 
         $remoteSegmentId = null;
         $result          = null;
+        $isEdit          = false;
 
-        if ($exportService->wasExported($segment)) {
-            $remoteSegmentId = $exportService->getRemoteId($segment);
-
+        if ($forceCreate) {
             $this->logger->info(sprintf(
-                '[MailChimp][SEGMENT %s] Updating segment %s with remote ID %s',
+                '[MailChimp][SEGMENT %s] Forcing creation of segment %s',
                 $segment->getId(),
-                $segment->getName(),
-                $remoteSegmentId
+                $segment->getName()
             ));
+        }
 
-            $result = $apiClient->patch(
-                $exportService->getListResourceUrl(
-                    sprintf('interest-categories/%s/interests/%s', $remoteGroupId, $remoteSegmentId)
-                ),
-                $data
-            );
-        } else {
+        if ($forceCreate || !$exportService->wasExported($segment)) {
             $this->logger->info(sprintf(
                 '[MailChimp][SEGMENT %s] Creating segment %s',
                 $segment->getId(),
@@ -226,6 +241,23 @@ class Segment extends AbstractMailchimpInterpreter
             if ($apiClient->success()) {
                 $remoteSegmentId = $result['id'];
             }
+        } else {
+            $isEdit          = true;
+            $remoteSegmentId = $exportService->getRemoteId($segment);
+
+            $this->logger->info(sprintf(
+                '[MailChimp][SEGMENT %s] Updating segment %s with remote ID %s',
+                $segment->getId(),
+                $segment->getName(),
+                $remoteSegmentId
+            ));
+
+            $result = $apiClient->patch(
+                $exportService->getListResourceUrl(
+                    sprintf('interest-categories/%s/interests/%s', $remoteGroupId, $remoteSegmentId)
+                ),
+                $data
+            );
         }
 
         if ($apiClient->success()) {
@@ -248,6 +280,17 @@ class Segment extends AbstractMailchimpInterpreter
                 json_encode($apiClient->getLastError()),
                 $apiClient->getLastResponse()['body']
             ));
+
+            // we tried to edit a resource which doesn't exist (anymore) - fall back to create
+            if ($isEdit && isset($result['status']) && $result['status'] === 404) {
+                $this->logger->error(sprintf(
+                    '[MailChimp][SEGMENT %s] Edit request was a 404 - falling back to create %s',
+                    $segment->getId(),
+                    $segment->getName()
+                ));
+
+                return $this->exportSegment($segment, $remoteGroupId, true);
+            }
 
             return null;
         }
