@@ -4,11 +4,30 @@ namespace CustomerManagementFramework\Mailchimp\ExportToolkit\AttributeClusterIn
 
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
+use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Object\AbstractObject;
+use Pimcore\Model\Object\CustomerSegment;
 
 class Customer extends AbstractMailchimpInterpreter
 {
+    /**
+     * @var CustomerSegmentInterface[]
+     */
+    protected $segments;
+
+    /**
+     * @return CustomerSegmentInterface[]|CustomerSegment[]
+     */
+    protected function getSegments()
+    {
+        if (!$this->segments) {
+            $this->segments = Factory::getInstance()->getSegmentManager()->getSegments([]);
+        }
+
+        return $this->segments;
+    }
+
     /**
      * This method is executed before the export is launched.
      * For example it can be used to clean up old export files, start a database transaction, etc.
@@ -52,7 +71,20 @@ class Customer extends AbstractMailchimpInterpreter
     }
 
     /**
-     * Commit a single entry to the API
+     * Export all customers in data set to mailchimp
+     */
+    protected function commitBatch()
+    {
+        $objectIds = array_keys($this->data);
+
+        // naive implementation exporting every customer as single request - TODO use mailchimp's batches for large exports
+        foreach ($objectIds as $objectId) {
+            $this->commitSingle($objectId, $this->transformMergeFields($this->data[$objectId]));
+        }
+    }
+
+    /**
+     * Export a single entry to mailchimp
      *
      * @param $objectId
      * @param array $entry
@@ -65,6 +97,9 @@ class Customer extends AbstractMailchimpInterpreter
 
         /** @var CustomerInterface|ElementInterface $customer */
         $customer = Factory::getInstance()->getCustomerProvider()->getById($objectId);
+
+        // add customer segments
+        $entry['interests'] = $this->buildCustomerSegmentData($customer);
 
         $this->logger->info(sprintf(
             '[MailChimp][CUSTOMER %s] Exporting customer with remote ID %s',
@@ -112,14 +147,46 @@ class Customer extends AbstractMailchimpInterpreter
         }
     }
 
-    protected function commitBatch()
+    /**
+     * @param CustomerInterface $customer
+     * @return array
+     */
+    protected function buildCustomerSegmentData(CustomerInterface $customer)
     {
-        $objectIds = array_keys($this->data);
+        $data          = [];
+        $exportService = $this->getExportService();
 
-        // naive implementation exporting every customer as single request - TODO use mailchimp's batches for large exports
-        foreach ($objectIds as $objectId) {
-            $this->commitSingle($objectId, $this->transformMergeFields($this->data[$objectId]));
+        $customerSegments = [];
+        foreach ($customer->getAllSegments() as $customerSegment) {
+            $customerSegments[$customerSegment->getId()] = $customerSegment;
         }
+
+        // Mailchimp's API only handles interests which are passed in the request and merges them with existing ones. Therefore
+        // we need to pass ALL segments we know and set segments which are not set on the customer as false. Segments
+        // which are not set on the customer, but were set before (and are set on Mailchimp's member record) will be kept set
+        // if we don't explicitely set them to false.
+        foreach ($this->getSegments() as $segment) {
+            $remoteSegmentId = $exportService->getRemoteId($segment);
+
+            if (!$exportService->wasExported($segment) || !$remoteSegmentId) {
+                $this->logger->error(sprintf(
+                    '[MailChimp][CUSTOMER %s] Can not handle segment %s (%s) as is was not exported yet and we don\'t have a remote ID. Please export segments first.',
+                    $customer->getId(),
+                    $segment->getName(),
+                    $segment->getId()
+                ));
+
+                continue;
+            }
+
+            if (isset($customerSegments[$segment->getId()])) {
+                $data[$remoteSegmentId] = true;
+            } else {
+                $data[$remoteSegmentId] = false;
+            }
+        }
+
+        return $data;
     }
 
     /**
