@@ -12,6 +12,11 @@ use Pimcore\Model\Object\CustomerSegment;
 class Customer extends AbstractMailchimpInterpreter
 {
     /**
+     * @var int
+     */
+    protected $batchThreshold = 10;
+
+    /**
      * @var CustomerSegmentInterface[]
      */
     protected $segments;
@@ -56,16 +61,28 @@ class Customer extends AbstractMailchimpInterpreter
      * This method is executed after all objects are exported.
      * If not cleaned up in the commitDataRow-method, all exported data is stored in the array $this->data.
      * For example it can be used to write all data to a xml file or commit a database transaction, etc.
-     *
      */
     public function commitData()
     {
-        if (count($this->data) === 1) {
-            $objectId = array_keys($this->data)[0];
-            $entry    = $this->transformMergeFields($this->data[$objectId]);
+        $dataCount = count($this->data);
 
-            $this->commitSingle($objectId, $entry);
+        if ($dataCount <= $this->batchThreshold) {
+            $this->logger->info(sprintf(
+                '[MailChimp] Data count (%d) is below batch threshold (%d), sending one request per entry...',
+                $dataCount,
+                $this->batchThreshold
+            ));
+
+            $objectIds = array_keys($this->data);
+
+            for ($i = 0; $i < $dataCount; $i++) {
+                $this->commitSingle($objectIds[$i]);
+            }
         } else {
+            $this->logger->info(sprintf(
+                '[MailChimp] Sending data as batch request'
+            ));
+
             $this->commitBatch();
         }
     }
@@ -79,7 +96,7 @@ class Customer extends AbstractMailchimpInterpreter
 
         // naive implementation exporting every customer as single request - TODO use mailchimp's batches for large exports
         foreach ($objectIds as $objectId) {
-            $this->commitSingle($objectId, $this->transformMergeFields($this->data[$objectId]));
+            $this->commitSingle($objectId);
         }
     }
 
@@ -87,10 +104,12 @@ class Customer extends AbstractMailchimpInterpreter
      * Export a single entry to mailchimp
      *
      * @param $objectId
-     * @param array $entry
      */
-    protected function commitSingle($objectId, array $entry)
+    protected function commitSingle($objectId)
     {
+        // create entry - move merge fields to sub-array
+        $entry = $this->transformMergeFields($this->data[$objectId]);
+
         $exportService = $this->getExportService();
         $apiClient     = $exportService->getApiClient();
         $remoteId      = $apiClient->subscriberHash($entry['email_address']);
