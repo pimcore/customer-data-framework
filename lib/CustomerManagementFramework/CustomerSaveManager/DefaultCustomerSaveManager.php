@@ -18,6 +18,7 @@ use Psr\Log\LoggerInterface;
 class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 {
     private $segmentBuildingHookEnabled = true;
+    private $customerSaveValidatorEnabled = true;
 
     protected $config;
 
@@ -57,6 +58,10 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     }
 
     public function validateOnSave(CustomerInterface $customer) {
+
+        if(!$this->customerSaveValidatorEnabled) {
+            return false;
+        }
 
         /**
          * @var CustomerSaveValidatorInterface $validator
@@ -104,6 +109,22 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     public function setSegmentBuildingHookEnabled($segmentBuildingHookEnabled)
     {
         $this->segmentBuildingHookEnabled = $segmentBuildingHookEnabled;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getCustomerSaveValidatorEnabled()
+    {
+        return $this->customerSaveValidatorEnabled;
+    }
+
+    /**
+     * @param bool $customerSaveValidatorEnabled
+     */
+    public function setCustomerSaveValidatorEnabled($customerSaveValidatorEnabled)
+    {
+        $this->customerSaveValidatorEnabled = $customerSaveValidatorEnabled;
     }
 
 
