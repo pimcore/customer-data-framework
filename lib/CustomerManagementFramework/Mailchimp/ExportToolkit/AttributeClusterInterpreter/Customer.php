@@ -18,6 +18,32 @@ class Customer extends AbstractMailchimpInterpreter
     protected $batchThreshold = 10;
 
     /**
+     * @var int
+     */
+    protected $batchMaxCheckIterations = 3;
+
+    /**
+     * Wait for n ms before trying to get batch status
+     *
+     * @var int
+     */
+    protected $batchInitialSleepInterval = 5000;
+
+    /**
+     * Wait for n ms for each record before trying to get batch status
+     *
+     * @var int
+     */
+    protected $batchSleepIntervalPerRecord = 150;
+
+    /**
+     * Base batch sleep interval (will be increased exponentially on error)
+     *
+     * @var int
+     */
+    protected $batchSleepStepSize = 500;
+
+    /**
      * @var CustomerSegmentInterface[]
      */
     protected $segments;
@@ -105,7 +131,130 @@ class Customer extends AbstractMailchimpInterpreter
             ));
         }
 
-        // TODO check batch results and update export notes on successful objects
+        $recordSleepInterval = count($objectIds) * $this->batchSleepIntervalPerRecord;
+        $totalSleepInterval  = $recordSleepInterval + $this->batchInitialSleepInterval;
+
+        $this->logger->info(sprintf(
+            '[MailChimp][BATCH][CHECK] Sleeping for %dms (initial) + %dms (%dms per record) = %d ms before checking batch results',
+            $this->batchInitialSleepInterval,
+            $recordSleepInterval,
+            $this->batchSleepIntervalPerRecord,
+            $totalSleepInterval
+        ));
+
+        // usleep takes microseconds as input
+        usleep($totalSleepInterval * 1000);
+
+        // get batch status (re-try until batch is done and back-off exponentially)
+        $batchStatus = $this->checkBatchStatus($batch);
+
+        if (!$batchStatus) {
+            $this->logger->error(sprintf(
+                '[MailChimp][BATCH] Failed to check batch status after a maximum of %d iterations',
+                $this->batchMaxCheckIterations
+            ));
+        }
+
+        // update records which were exported successfully with export notes
+        $this->handleBatchStatus($batchStatus);
+    }
+
+    /**
+     * Check batch status and back off exponentially after errors
+     *
+     * @param Batch $batch
+     * @param int $iteration
+     * @return array|bool
+     */
+    protected function checkBatchStatus(Batch $batch, $iteration = 0)
+    {
+        if ($iteration > $this->batchMaxCheckIterations) {
+            $this->logger->error(sprintf(
+                '[MailChimp][BATCH][CHECK %d] Reached max check iterations, aborting',
+                $iteration
+            ));
+
+            return false;
+        }
+
+        if ($iteration > 0) {
+            $sleep = $this->batchSleepStepSize * pow(2, $iteration - 1);
+
+            $this->logger->info(sprintf(
+                '[MailChimp][BATCH][CHECK %d] Sleeping for %d ms before checking batch status',
+                $iteration,
+                $sleep
+            ));
+
+            // usleep takes microseconds as input
+            usleep($sleep * 1000);
+        }
+
+        $this->logger->info(sprintf(
+            '[MailChimp][BATCH][CHECK %d] Checking status',
+            $iteration
+        ));
+
+        $apiClient = $this->getExportService()->getApiClient();
+        $result    = $batch->check_status();
+
+        if ($apiClient->success()) {
+            if ($result['status'] === 'finished') {
+                $this->logger->info(sprintf(
+                    '[MailChimp][BATCH][CHECK %d] Batch is finished',
+                    $iteration,
+                    $result['status']
+                ));
+
+                return $result;
+            } else {
+                $this->logger->info(sprintf(
+                    '[MailChimp][BATCH][CHECK %d] Batch is not finished yet. Status is "%s"',
+                    $iteration,
+                    $result['status']
+                ));
+            }
+        } else {
+            $this->logger->error(sprintf(
+                '[MailChimp][BATCH][CHECK %d] Batch status request failed: %s %s',
+                $iteration,
+                json_encode($apiClient->getLastError()),
+                $apiClient->getLastResponse()['body']
+            ));
+        }
+
+        $this->checkBatchStatus($batch, $iteration + 1);
+    }
+
+    /**
+     * Update exported records from batch request with export notes and handle errored records
+     *
+     * @param array $result
+     */
+    protected function handleBatchStatus(array $result)
+    {
+        $exportService = $this->getExportService();
+        $apiClient     = $exportService->getApiClient();
+
+        if ($result['errored_operations'] === 0) {
+            $this->logger->info(sprintf(
+                '[MailChimp][BATCH] Batch has no errored operations, updating export note for all records (no need to fetch detailed results)'
+            ));
+
+            $objectIds = array_keys($this->data);
+            foreach ($objectIds as $objectId) {
+                /** @var CustomerInterface|ElementInterface $customer */
+                $customer = Factory::getInstance()->getCustomerProvider()->getById($objectId);
+                $remoteId = $apiClient->subscriberHash($this->data[$objectId]['email_address']);
+
+                // add note
+                $exportService
+                    ->createExportNote($customer, $remoteId)
+                    ->save();
+            }
+        } else {
+            // TODO fetch detailed results and handle successful/errored records
+        }
     }
 
     /**
