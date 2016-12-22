@@ -210,7 +210,7 @@ class BatchExporter extends AbstractExporter
             ));
         }
 
-        $this->checkBatchStatus($batch, $iteration + 1);
+        return $this->checkBatchStatus($batch, $iteration + 1);
     }
 
     /**
