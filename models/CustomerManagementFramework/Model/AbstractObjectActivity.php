@@ -15,7 +15,7 @@ use Pimcore\Model\Object\Booking;
 use Pimcore\Model\Object\ClassDefinition;
 use Pimcore\Translate\Admin;
 
-abstract class AbstractActivity extends \Pimcore\Model\Object\Concrete implements ActivityInterface {
+abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete implements ActivityInterface {
 
     public function cmfIsActive() {
         return $this->getPublished() && ($this->getCustomer() instanceof CustomerInterface);
