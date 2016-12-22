@@ -16,8 +16,49 @@ use Pimcore\Placeholder\Object;
 
 class Export implements ExportInterface {
 
+    public function exportAction($action, array $param)
+    {
+        switch($action) {
+            case "customers":
 
-    public function customers($pageSize, $page = 1, ExportCustomersFilterParams $params) {
+                $limit = intval($param['pageSize'] ? : 100);
+                $offset = intval($param['page'] ? : 1);
+
+                $params = new \CustomerManagementFramework\Filter\ExportCustomersFilterParams;
+                $params->setIncludeActivities($param['includeActivities'] ? true : false);
+                $params->setSegments($param['segments']);
+                $params->setAllParams($param);
+
+                return $this->customers($limit,$offset,$params);
+
+            case "activities":
+                $pageSize = intval($param['pageSize'] ? : 100);
+                $page = intval($param['page'] ? : 1);
+
+                $params = new \CustomerManagementFramework\Filter\ExportActivitiesFilterParams();
+                $params->setType($param['type'] ? : false);
+                $params->setModifiedSinceTimestamp($param['modifiedSinceTimestamp']);
+                $params->setAllParams($param);
+
+                return $this->activities($pageSize, $page, $params);
+            case "deletions":
+
+                $entityType = $param['entityType'];
+                $deletionsSinceTimestamp = $param['deletionsSinceTimestamp'];
+
+                return $this->deletions($entityType, $deletionsSinceTimestamp);
+            case "segments":
+
+                return $this->segments($param);
+            case "segment-groups":
+
+                return $this->segmentGroups($param);
+
+        }
+    }
+
+    public function customers($pageSize, $page = 1, ExportCustomersFilterParams $params)
+    {
 
         if($params->getSegments()) {
             $customers = Factory::getInstance()->getSegmentManager()->getCustomersBySegmentIds($params->getSegments());

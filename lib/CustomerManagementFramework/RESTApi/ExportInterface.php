@@ -13,6 +13,8 @@ use CustomerManagementFramework\Filter\ExportCustomersFilterParams;
 
 interface ExportInterface {
 
+    public function exportAction($action, array $param);
+
     /**
      * @param                             $pageSize
      * @param int                         $page
