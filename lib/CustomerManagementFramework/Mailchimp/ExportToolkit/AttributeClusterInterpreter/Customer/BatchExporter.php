@@ -19,7 +19,7 @@ class BatchExporter extends AbstractExporter
      *
      * @var int
      */
-    protected $initialCheckSleepInterval = 5000;
+    protected $initialCheckSleepInterval = 7500;
 
     /**
      * Wait for n ms for each record before trying to get batch status
@@ -191,7 +191,7 @@ class BatchExporter extends AbstractExporter
 
                 return $result;
             } else {
-                $this->logger->info(sprintf(
+                $this->logger->warning(sprintf(
                     '[MailChimp][BATCH][CHECK %d] Batch is not finished yet. Status is "%s"',
                     $iteration,
                     $result['status']
@@ -236,7 +236,8 @@ class BatchExporter extends AbstractExporter
                     ->save();
             }
         } else {
-            // TODO fetch detailed results and handle successful/errored records
+            // TODO in case the batch response contains errored operations - fetch the detailed result from response_body_url
+            // which is a tar.gz containing JSON file(s), parse those results and show which records failed
         }
     }
 }
