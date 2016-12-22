@@ -5,6 +5,7 @@ namespace CustomerManagementFramework\Mailchimp\ExportToolkit\AttributeClusterIn
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
+use DrewM\MailChimp\Batch;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\CustomerSegment;
@@ -31,30 +32,6 @@ class Customer extends AbstractMailchimpInterpreter
         }
 
         return $this->segments;
-    }
-
-    /**
-     * This method is executed before the export is launched.
-     * For example it can be used to clean up old export files, start a database transaction, etc.
-     * If not needed, just leave the method empty.
-     */
-    public function setUpExport()
-    {
-        // noop
-    }
-
-    /**
-     * This method is executed after all defined attributes of an object are exported.
-     * The to-export data is stored in the array $this->data[OBJECT_ID].
-     * For example it can be used to write each exported row to a destination database,
-     * write the exported entries to a file, etc.
-     * If not needed, just leave the method empty.
-     *
-     * @param AbstractObject|CustomerInterface $object
-     */
-    public function commitDataRow(AbstractObject $object)
-    {
-        // noop
     }
 
     /**
@@ -88,16 +65,86 @@ class Customer extends AbstractMailchimpInterpreter
     }
 
     /**
-     * Export all customers in data set to mailchimp
+     * Export all customers in dataset to mailchimp
      */
     protected function commitBatch()
     {
+        $exportService = $this->getExportService();
+        $apiClient     = $exportService->getApiClient();
+        $batch         = $apiClient->new_batch();
+
         $objectIds = array_keys($this->data);
 
-        // naive implementation exporting every customer as single request - TODO use mailchimp's batches for large exports
         foreach ($objectIds as $objectId) {
-            $this->commitSingle($objectId);
+            /** @var CustomerInterface|ElementInterface $customer */
+            $customer = Factory::getInstance()->getCustomerProvider()->getById($objectId);
+
+            // entry to send to API
+            $entry = $this->buildEntry($customer);
+
+            // schedule batch operation
+            $this->createBatchOperation($batch, $customer, $entry);
         }
+
+        $this->logger->info(sprintf(
+            '[MailChimp][BATCH] Executing batch'
+        ));
+
+        $result = $batch->execute();
+
+        if ($apiClient->success()) {
+            $this->logger->info(sprintf(
+                '[MailChimp][BATCH] Executed batch. ID is %s',
+                $result['id']
+            ));
+        } else {
+            $this->logger->error(sprintf(
+                '[MailChimp][BATCH] Batch request failed: %s %s',
+                json_encode($apiClient->getLastError()),
+                $apiClient->getLastResponse()['body']
+            ));
+        }
+
+        // TODO check batch results and update export notes on successful objects
+    }
+
+    /**
+     * @param Batch $batch
+     * @param CustomerInterface|ElementInterface $customer
+     * @param array $entry
+     */
+    protected function createBatchOperation(Batch $batch, CustomerInterface $customer, array $entry)
+    {
+        $exportService = $this->getExportService();
+        $apiClient     = $exportService->getApiClient();
+
+        $objectId  = $customer->getId();
+        $remoteId  = $apiClient->subscriberHash($entry['email_address']);
+
+        $this->logger->info(sprintf(
+            '[MailChimp][CUSTOMER %s][BATCH] Adding customer with remote ID %s',
+            $objectId,
+            $remoteId
+        ));
+
+        if ($exportService->wasExported($customer)) {
+            $this->logger->info(sprintf(
+                '[MailChimp][CUSTOMER %s][BATCH] Customer already exists remotely with remote ID %s',
+                $objectId,
+                $remoteId
+            ));
+        } else {
+            $this->logger->info(sprintf(
+                '[MailChimp][CUSTOMER %s][BATCH] Customer was not exported yet',
+                $objectId
+            ));
+        }
+
+        $batch->put(
+            (string)$customer->getId(),
+            $exportService->getListResourceUrl(sprintf('members/%s', $remoteId)),
+            $entry
+        );
     }
 
     /**
@@ -107,18 +154,15 @@ class Customer extends AbstractMailchimpInterpreter
      */
     protected function commitSingle($objectId)
     {
-        // create entry - move merge fields to sub-array
-        $entry = $this->transformMergeFields($this->data[$objectId]);
-
         $exportService = $this->getExportService();
         $apiClient     = $exportService->getApiClient();
-        $remoteId      = $apiClient->subscriberHash($entry['email_address']);
 
         /** @var CustomerInterface|ElementInterface $customer */
         $customer = Factory::getInstance()->getCustomerProvider()->getById($objectId);
 
-        // add customer segments
-        $entry['interests'] = $this->buildCustomerSegmentData($customer);
+        // entry to send to API
+        $entry    = $this->buildEntry($customer);
+        $remoteId = $apiClient->subscriberHash($entry['email_address']);
 
         $this->logger->info(sprintf(
             '[MailChimp][CUSTOMER %s] Exporting customer with remote ID %s',
@@ -170,6 +214,25 @@ class Customer extends AbstractMailchimpInterpreter
      * @param CustomerInterface $customer
      * @return array
      */
+    protected function buildEntry(CustomerInterface $customer)
+    {
+        if (!isset($this->data[$customer->getId()])) {
+            throw new \RuntimeException(sprintf('Trying to create an entry for customer %d which is not in data set', $customer->getId()));
+        }
+
+        // create entry - move merge fields to sub-array
+        $entry = $this->transformMergeFields($this->data[$customer->getId()]);
+
+        // add customer segments
+        $entry['interests'] = $this->buildCustomerSegmentData($customer);
+
+        return $entry;
+    }
+
+    /**
+     * @param CustomerInterface $customer
+     * @return array
+     */
     protected function buildCustomerSegmentData(CustomerInterface $customer)
     {
         $data          = [];
@@ -209,17 +272,6 @@ class Customer extends AbstractMailchimpInterpreter
     }
 
     /**
-     * This method is executed of an object is not exported (anymore).
-     * For example it can be used to remove the entries from a destination database, etc.
-     *
-     * @param AbstractObject $object
-     */
-    public function deleteFromExport(AbstractObject $object)
-    {
-        // noop
-    }
-
-    /**
      * Transform configured merge fields into merge_fields property
      *
      * @param array $dataRow
@@ -248,5 +300,40 @@ class Customer extends AbstractMailchimpInterpreter
         }
 
         return $result;
+    }
+
+    /**
+     * This method is executed before the export is launched.
+     * For example it can be used to clean up old export files, start a database transaction, etc.
+     * If not needed, just leave the method empty.
+     */
+    public function setUpExport()
+    {
+        // noop
+    }
+
+    /**
+     * This method is executed after all defined attributes of an object are exported.
+     * The to-export data is stored in the array $this->data[OBJECT_ID].
+     * For example it can be used to write each exported row to a destination database,
+     * write the exported entries to a file, etc.
+     * If not needed, just leave the method empty.
+     *
+     * @param AbstractObject|CustomerInterface $object
+     */
+    public function commitDataRow(AbstractObject $object)
+    {
+        // noop
+    }
+
+    /**
+     * This method is executed of an object is not exported (anymore).
+     * For example it can be used to remove the entries from a destination database, etc.
+     *
+     * @param AbstractObject $object
+     */
+    public function deleteFromExport(AbstractObject $object)
+    {
+        // noop
     }
 }
