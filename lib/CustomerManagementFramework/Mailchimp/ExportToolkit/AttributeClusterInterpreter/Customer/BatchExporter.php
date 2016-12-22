@@ -89,11 +89,9 @@ class BatchExporter extends AbstractExporter
         usleep($totalSleepInterval * 1000);
 
         // get batch status (re-try until batch is done and back-off exponentially)
-        $result = $this->checkBatchStatus($batch);
+        $batchStatus = $this->checkBatchStatus($batch);
 
-        dump('BATCH STATUS', $result);
-
-        if (!$result) {
+        if (!$batchStatus) {
             $this->logger->error(sprintf(
                 '[MailChimp][BATCH] Failed to check batch status after a maximum of %d iterations',
                 $this->maxCheckIterations
@@ -103,7 +101,7 @@ class BatchExporter extends AbstractExporter
         }
 
         // update records which were exported successfully with export notes
-        $this->handleBatchStatus($result);
+        $this->handleBatchStatus($batchStatus);
     }
 
     /**
@@ -190,8 +188,6 @@ class BatchExporter extends AbstractExporter
                     '[MailChimp][BATCH][CHECK %d] Batch is finished',
                     $iteration
                 ));
-
-                dump('RETURNING STATUS', $result);
 
                 return $result;
             } else {
