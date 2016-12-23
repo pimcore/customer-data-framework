@@ -90,13 +90,40 @@ interface SegmentManagerInterface {
     public function createCalculatedSegment($segmentReference, $segmentGroup, $segmentName = null, $subFolder = null);
 
     /**
+     * @param      $segmentReference
+     * @param      $segmentGroup
+     * @param null $segmentName
+     * @param bool $calculated
+     * @param null $subFolder
+     *
+     * @return CustomerSegmentInterface
+     */
+    public function createSegment($segmentName, $segmentGroup, $segmentReference = null, $calculated = true, $subFolder = null);
+
+    /**
+     * @param $segmentReference
+     * @param CustomerSegmentGroup $segmentGroup
+     *
+     * @return CustomerSegmentInterface
+     */
+    public function getSegmentByReference($segmentReference, CustomerSegmentGroup $segmentGroup, $calculated = false);
+
+    /**
      * @param      $segmentGroupName
      * @param null $segmentGroupReference
      * @param bool $calculated
      *
      * @return CustomerSegmentGroup
      */
-    public function createSegmentGroup($segmentGroupName, $segmentGroupReference = null, $calculated = false);
+    public function createSegmentGroup($segmentGroupName, $segmentGroupReference = null, $calculated = false, array $values = []);
+
+    /**
+     * @param $segmentGroupReference
+     * @param $calculated
+     *
+     * @return CustomerSegmentGroup
+     */
+    public function getSegmentGroupByReference($segmentGroupReference, $calculated);
 
     /**
      * @param CustomerInterface $customer

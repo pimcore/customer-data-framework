@@ -22,6 +22,9 @@ return [
     'CustomerManagementFramework\RESTApi\Export'
         => DI\object('CustomerManagementFramework\RESTApi\Export'),
 
+    'CustomerManagementFramework\RESTApi\Import'
+        => DI\object('CustomerManagementFramework\RESTApi\Import'),
+
     'CustomerManagementFramework\CustomerDuplicatesService'
         => DI\object('CustomerManagementFramework\CustomerDuplicatesService\DefaultCustomerDuplicatesService'),
 

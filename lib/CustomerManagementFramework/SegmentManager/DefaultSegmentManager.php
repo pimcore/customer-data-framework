@@ -225,20 +225,35 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
     }
 
+    public function getSegmentByReference($segmentReference, CustomerSegmentGroup $segmentGroup, $calculated = null) {
 
-    public function createCalculatedSegment($segmentReference, $segmentGroup, $segmentName = null, $subFolder = null)
-    {
-        $segmentGroup = self::createSegmentGroup($segmentGroup, $segmentGroup, true);
 
         $list = new \Pimcore\Model\Object\CustomerSegment\Listing;
 
-        $list->setCondition("reference = ? and group__id = ? and calculated = 1", [$segmentReference, $segmentGroup->getId()]);
+        $calculatedCondition = '';
+        if(!is_null($calculated)) {
+            $calculatedCondition = "and calculated = 1";
+            if(!$calculated) {
+                $calculatedCondition = "and (calculated is null or calculated = 0)";
+            }
+        }
+
+        $list->setCondition("reference = ? and group__id = ? " . $calculatedCondition, [$segmentReference, $segmentGroup->getId()]);
         $list->setUnpublished(true);
         $list->setLimit(1);
         $list = $list->load();
 
         if(!empty($list)) {
             return $list[0];
+        }
+    }
+
+    public function createSegment($segmentName, $segmentGroup, $segmentReference = null, $calculated = true, $subFolder = null){
+
+        $segmentGroup = self::createSegmentGroup($segmentGroup, $segmentGroup, true);
+
+        if($segment = $this->getSegmentByReference($segmentReference, $segmentGroup)) {
+            return $segment;
         }
 
         $parent = $segmentGroup;
@@ -260,11 +275,11 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
         $segment = new CustomerSegment();
         $segment->setParent($parent);
-        $segment->setKey(Objects::getValidKey($segmentReference));
-        $segment->setName($segmentName ? : $segmentReference);
+        $segment->setKey(Objects::getValidKey($segmentReference ? : $segmentName));
+        $segment->setName($segmentName);
         $segment->setReference($segmentReference);
         $segment->setPublished(true);
-        $segment->setCalculated(true);
+        $segment->setCalculated($calculated);
         $segment->setGroup($segmentGroup);
         Objects::checkObjectKey($segment);
         $segment->save();
@@ -273,8 +288,17 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         return $segment;
     }
 
-    public function createSegmentGroup($segmentGroupName, $segmentGroupReference = null, $calculated = false)
+    public function createCalculatedSegment($segmentReference, $segmentGroup, $segmentName = null, $subFolder = null)
     {
+        return $this->createSegment($segmentName ? : $segmentReference, $segmentGroup, $segmentReference, true, $subFolder);
+    }
+
+    public function createSegmentGroup($segmentGroupName, $segmentGroupReference = null, $calculated = false, array $values = [])
+    {
+        if($segmentGroupName instanceof CustomerSegmentGroup) {
+            return $segmentGroupName;
+        }
+
         if($segmentGroup = $this->getSegmentGroupByReference($segmentGroupReference, $calculated)) {
             return $segmentGroup;
         }
@@ -288,13 +312,16 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $segmentGroup->setCalculated($calculated);
         $segmentGroup->setName($segmentGroupName);
         $segmentGroup->setReference($segmentGroupReference);
+
+        $segmentGroup->setValues($values);
+
         Objects::checkObjectKey($segmentGroup);
         $segmentGroup->save();
 
         return $segmentGroup;
     }
 
-    private function getSegmentGroupByReference($segmentGroupReference, $calculated)
+    public function getSegmentGroupByReference($segmentGroupReference, $calculated)
     {
         if(!is_null($segmentGroupReference)) {
 

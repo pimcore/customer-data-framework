@@ -11,7 +11,7 @@ namespace CustomerManagementFramework\RESTApi;
 class Response {
 
     const RESPONSE_CODE_OK = 200;
-    const RESPONSE_CODE_ERROR = 400;
+    const RESPONSE_CODE_BAD_REQUEST = 400;
     const RESPONSE_CODE_NOT_FOUND = 404;
 
     private $data;

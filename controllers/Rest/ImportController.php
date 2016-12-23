@@ -1,13 +1,13 @@
 <?php
 
 
-class CustomerManagementFramework_Rest_ExportController extends \Pimcore\Controller\Action\Webservice
+class CustomerManagementFramework_Rest_ImportController extends \Pimcore\Controller\Action\Webservice
 {
     public function jsonAction()
     {
-        $export = \CustomerManagementFramework\Factory::getInstance()->getRESTApiExport();
+        $import = \CustomerManagementFramework\Factory::getInstance()->getRESTApiImport();
 
-        $result = $export->exportAction($this->getParam('restAction'), $this->getRequest());
+        $result = $import->importAction($this->getParam('restAction'), $this->getRequest());
 
         if($result instanceof \CustomerManagementFramework\RESTApi\Response) {
 

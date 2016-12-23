@@ -17,4 +17,5 @@ interface CustomerSegmentInterface {
     public function setReference($reference);
     public function getGroup();
     public function setGroup($group);
+    public function getDataForWebserviceExport();
 }

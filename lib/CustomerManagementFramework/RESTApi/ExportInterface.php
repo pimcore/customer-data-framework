@@ -13,7 +13,7 @@ use CustomerManagementFramework\Filter\ExportCustomersFilterParams;
 
 interface ExportInterface {
 
-    public function exportAction($action, array $param);
+    public function exportAction($action, \Zend_Controller_Request_Http $request);
 
     /**
      * @param                             $pageSize
