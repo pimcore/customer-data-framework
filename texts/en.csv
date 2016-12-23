@@ -2,6 +2,7 @@ plugin_cmf_mainmenu,"Customer Management Framework"
 plugin_cmf_customerview,"Customers"
 plugin_cmf_customerautomationrules,Customer automation rules
 plugin_cmf_actiontriggerrule_triggerNewActivity,New Customer activity
+plugin_cmf_actiontriggerrule_triggerExecuteSegmentBuilders,Segment building
 plugin_cmf_actiontriggerrule_triggerCron,Cron
 plugin_cmf_actiontriggerrule_actionAddSegment,Add segment
 plugin_cmf_actiontriggerrule_actionDelay,Action delay

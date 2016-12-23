@@ -130,6 +130,11 @@ class DefaultSegmentManager implements SegmentManagerInterface {
                     }
 
                 }
+
+                $event = new \CustomerManagementFramework\ActionTrigger\Event\ExecuteSegmentBuilders($customer);
+
+                \Pimcore::getEventManager()->trigger($event->getName(), $event);
+
                 Db::get()->query(sprintf("delete from %s where customerId = ?", self::CHANGES_QUEUE_TABLE), $customer->getId());
             }
         }

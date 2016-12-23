@@ -106,3 +106,9 @@ pimcore.plugin.cmf.rule.triggers.CronTrigger = Class.create(pimcore.plugin.cmf.r
         }];
     }
 });
+
+pimcore.registerNS("pimcore.plugin.cmf.rule.triggers.ExecuteSegmentBuilders");
+pimcore.plugin.cmf.rule.triggers.ExecuteSegmentBuilders = Class.create(pimcore.plugin.cmf.rule.triggers.AbstractTrigger,{
+    name: 'ExecuteSegmentBuilders',
+    eventName: 'plugin.cmf.execute-segment-builders'
+});

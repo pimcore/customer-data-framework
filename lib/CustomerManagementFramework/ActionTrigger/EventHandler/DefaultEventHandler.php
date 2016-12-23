@@ -54,6 +54,8 @@ class DefaultEventHandler implements EventHandlerInterface{
     public function handleSingleCustomerEvent(\Zend_EventManager_Event $e, SingleCustomerEventInterface $event)
     {
 
+        $this->logger->debug(sprintf("handle single customer event: %s", $event->getName()));
+
         $appliedRules = $this->getAppliedRules($event);
         foreach($appliedRules as $rule) {
             $this->handleActionsForCustomer($rule, $event->getCustomer());
