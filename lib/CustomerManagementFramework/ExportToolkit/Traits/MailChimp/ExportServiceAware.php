@@ -1,11 +1,11 @@
 <?php
 
-namespace CustomerManagementFramework\ExportToolkit\AttributeClusterInterpreter\MailChimp;
+namespace CustomerManagementFramework\ExportToolkit\Traits\MailChimp;
 
 use CustomerManagementFramework\ExportToolkit\ExportService\MailChimpExportService;
-use ExportToolkit\ExportService\AttributeClusterInterpreter\AbstractAttributeClusterInterpreter;
 
-abstract class AbstractMailChimpInterpreter extends AbstractAttributeClusterInterpreter
+// TODO update ExportToolkit to allow resolving objects via DI, so we can just inject the services we need
+trait ExportServiceAware
 {
     /**
      * @return \CustomerManagementFramework\ExportToolkit\ExportService\MailChimpExportService

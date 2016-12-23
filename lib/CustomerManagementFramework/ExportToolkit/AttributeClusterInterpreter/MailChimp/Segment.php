@@ -2,14 +2,18 @@
 
 namespace CustomerManagementFramework\ExportToolkit\AttributeClusterInterpreter\MailChimp;
 
+use CustomerManagementFramework\ExportToolkit\Traits\MailChimp\ExportServiceAware;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
+use ExportToolkit\ExportService\AttributeClusterInterpreter\AbstractAttributeClusterInterpreter;
 use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\CustomerSegment;
 use Pimcore\Model\Object\CustomerSegmentGroup;
 
-class Segment extends AbstractMailChimpInterpreter
+class Segment extends AbstractAttributeClusterInterpreter
 {
+    use ExportServiceAware;
+
     /**
      * This method is executed before the export is launched.
      * For example it can be used to clean up old export files, start a database transaction, etc.
