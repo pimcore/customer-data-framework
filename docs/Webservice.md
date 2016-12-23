@@ -6,7 +6,7 @@ The CMF plugin has a built in REST webservice. Access is handled via API-Keys an
 ## Export Api
 
 #### customers
-
+___
 /cmf/api/export/customers
 
 ###### available URL parameter options
@@ -19,25 +19,25 @@ ___
 #### activites
 
 /cmf/api/export/activities
-
+___
 #### delitions (of customers and activities)
 
 /cmf/api/export/deletions
-
+___
 #### segments
 
 /cmf/api/export/segments
-
+___
 #### segment groups
 
 /cmf/api/export/segment-groups
-
+___
 ## Import Api
 
 #### segments
 
 /cmf/api/import/segment
-
+___
 #### segment groups
 
 /cmf/api/import/segment-group
