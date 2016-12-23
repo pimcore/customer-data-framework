@@ -120,6 +120,14 @@ class MailChimpExportService
     }
 
     /**
+     * @return string
+     */
+    public function getExportNoteType()
+    {
+        return static::NOTE_TYPE;
+    }
+
+    /**
      * @param ElementInterface $object
      * @param \DateTime|null $date
      * @return Note

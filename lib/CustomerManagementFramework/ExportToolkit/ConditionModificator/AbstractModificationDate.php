@@ -4,9 +4,10 @@ namespace CustomerManagementFramework\ExportToolkit\ConditionModificator;
 
 use ExportToolkit\ExportService\IConditionModificator;
 use ExportToolkit\ExportService\IListModificator;
+use Pimcore\Db;
 use Pimcore\Model\Object\Listing;
 
-class ModificationDate implements IConditionModificator, IListModificator
+abstract class AbstractModificationDate implements IConditionModificator, IListModificator
 {
     public static function modify($configName, $condition)
     {
@@ -23,13 +24,36 @@ class ModificationDate implements IConditionModificator, IListModificator
     public static function modifyList($configName, Listing $list)
     {
         $list->onCreateQuery(function(\Zend_Db_Select $query) {
+            $subQuery = static::buildNoteSubQuery();
+
             $query->joinLeft(
-                ['notes' => new \Zend_Db_Expr('(SELECT n.cid, MAX(n.date) AS date FROM notes n GROUP BY n.cid)')],
+                ['notes' => new \Zend_Db_Expr('(' . $subQuery->__toString() . ')')],
                 'notes.cid = o_id',
                 []
             );
 
             $query->where('(notes.date IS NULL) OR (o_modificationDate IS NULL) OR (o_modificationDate > notes.date)');
+
+            dump($query->__toString());
         });
+    }
+
+    /**
+     * @return \Zend_Db_Select
+     */
+    protected static function buildNoteSubQuery()
+    {
+        $query = Db::get()->select();
+        $query->from(
+            ['n' => 'notes'],
+            [
+                'cid',
+                'date' => new \Zend_Db_Expr('MAX(n.date)')
+            ]
+        );
+
+        $query->group('n.cid');
+
+        return $query;
     }
 }
