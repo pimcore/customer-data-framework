@@ -24,3 +24,13 @@ The CMF plugin has a built in REST webservice. Access is handled via API-Keys an
 #### segment groups
 
 /cmf/api/export/segment-groups
+
+## Import Api
+
+#### segments
+
+/cmf/api/import/segment
+
+#### segment groups
+
+/cmf/api/import/segment-group
