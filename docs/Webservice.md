@@ -11,7 +11,7 @@ ___
 
 ###### available URL parameter options
 | Parameter             |Possible Values                | Description                                                 |
-| --------------------- |:---------------------------:  |:-----------------------------------------------------------:|
+| --------------------- |-----------------------------  |-----------------------------------------------------------  |
 | includeActivities     |true/false                     | include activities of customer into result set              |
 | segments              |comma-separated list of IDs    | filter by segments                                          |
 ___
