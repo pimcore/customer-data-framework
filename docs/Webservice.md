@@ -14,7 +14,7 @@ The CMF plugin has a built in REST webservice. Access is handled via API-Keys an
 | --------------------- |:---------------------------:  |:-----------------------------------------------------------:|
 | includeActivities     |true/false                     | include activities of customer into result set              |
 | segments              |comma-separated list of IDs    | filter by segments                                          |
-
+___
 
 #### activites
 
