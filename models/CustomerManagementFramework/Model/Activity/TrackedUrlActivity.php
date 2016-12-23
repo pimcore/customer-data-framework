@@ -35,7 +35,8 @@ class TrackedUrlActivity extends AbstractActivity
     public function cmfToArray()
     {
         $attributes = [
-            'label' => $this->activityDefinition->getLabel()
+            'label' => $this->activityDefinition->getLabel(),
+            'code' => $this->activityDefinition->getCode()
         ];
 
         if($additionalAttributes = $this->activityDefinition->getAttributes()) {
