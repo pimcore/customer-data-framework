@@ -17,4 +17,5 @@ plugin_cmf_actiontriggerrule_changefieldvalue_value,Wert
 plugin_cmf_actiontriggerrule_actionChangeFieldValue,Wert eines Feldes des Kunden ändern
 plugin_cmf_actiontriggerrule_cron_definition,Definition
 plugin_cmf_actiontriggerrule_cron_croneditor,Online cron Format Generator
+plugin_cmf_actiontriggerrule_addsegment_remove-other-segments-from-group,andere Segmente der gewählten Segmentgruppe entfernen
 plugin_cmf_customer,Kunde

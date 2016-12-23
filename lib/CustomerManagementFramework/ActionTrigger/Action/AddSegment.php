@@ -15,6 +15,7 @@ use Pimcore\Model\Object\CustomerSegment;
 class AddSegment extends AbstractAction {
 
     const OPTION_SEGMENT_ID = 'segmentId';
+    const OPTION_REMOVE_OTHER_SEGMENTS_FROM_SEGMENT_GROUP = 'removeOtherSegmentsFromGroup';
 
     public function process(ActionDefinitionInterface $actionDefinition, CustomerInterface $customer)
     {
@@ -30,10 +31,16 @@ class AddSegment extends AbstractAction {
 
             $this->logger->info(sprintf("AddSegment action: add segment %s (%s) to customer %s (%s)", (string)$segment, $segment->getId(), (string) $customer, $customer->getId()));
 
+            $deleteSegments = [];
+
+            if($options{self::OPTION_REMOVE_OTHER_SEGMENTS_FROM_SEGMENT_GROUP} && ($segmentGroup = $segment->getGroup())) {
+                $deleteSegments =  Factory::getInstance()->getSegmentManager()->getSegmentsFromSegmentGroup($segmentGroup, [$segment]);
+            }
+
             if($segment->getCalculated()) {
-                Factory::getInstance()->getSegmentManager()->mergeCalculatedSegments($customer, [$segment]);
+                Factory::getInstance()->getSegmentManager()->mergeCalculatedSegments($customer, [$segment], $deleteSegments);
             } else {
-                Factory::getInstance()->getSegmentManager()->mergeManualSegments($customer, [$segment]);
+                Factory::getInstance()->getSegmentManager()->mergeManualSegments($customer, [$segment], $deleteSegments);
             }
 
         } else {
