@@ -33,8 +33,6 @@ abstract class AbstractModificationDate implements IConditionModificator, IListM
             );
 
             $query->where('(notes.date IS NULL) OR (o_modificationDate IS NULL) OR (o_modificationDate > notes.date)');
-
-            dump($query->__toString());
         });
     }
 
