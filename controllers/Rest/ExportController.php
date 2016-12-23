@@ -8,6 +8,12 @@ class CustomerManagementFramework_Rest_ExportController extends \Pimcore\Control
         $export = \CustomerManagementFramework\Factory::getInstance()->getRESTApiExport();
 
         $result = $export->exportAction($this->getParam('restAction'), $this->getAllParams());
-        $this->_helper->json($result);
+
+        if($result instanceof \CustomerManagementFramework\RESTApi\Response) {
+
+            $this->getResponse()->setHttpResponseCode($result->getResponseCode());
+            $this->_helper->json($result->getData());
+        }
+
     }
 }

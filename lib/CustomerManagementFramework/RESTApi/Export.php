@@ -55,6 +55,11 @@ class Export implements ExportInterface {
                 return $this->segmentGroups($param);
 
         }
+
+        return new Response([
+            "success" => false,
+            "msg" => sprintf("rest action '%s' not found", $action)
+        ], Response::RESPONSE_CODE_NOT_FOUND);
     }
 
     public function customers($pageSize, $page = 1, ExportCustomersFilterParams $params)
@@ -87,12 +92,12 @@ class Export implements ExportInterface {
             $result[] = $c;
         }
 
-        return [
+        return new Response([
             'page' => $page,
             'totalPages' => $paginator->getPages()->pageCount,
             'timestamp' => $timestamp,
             'data' => $result
-        ];
+        ]);
     }
 
     public function activities($pageSize, $page = 1, ExportActivitiesFilterParams $params)
@@ -101,7 +106,7 @@ class Export implements ExportInterface {
         $result = Factory::getInstance()->getActivityStore()->getActivitiesDataForWebservice($pageSize, $page, $params);
         $result['success'] = true;
 
-        return $result;
+        return new Response($result);
     }
 
     public function deletions($entityType, $deletionsSinceTimestamp) {
@@ -109,24 +114,24 @@ class Export implements ExportInterface {
         $timestamp = time();
 
         if(!$entityType) {
-            return [
+            return new Response([
                 'success' => false,
                 'msg' => 'parameter entityType is required'
-            ];
+            ], Response::RESPONSE_CODE_ERROR);
         }
 
         if(!in_array($entityType, ['activities', 'customers'])) {
-            return [
+            return new Response([
                 'success' => false,
                 'msg' => 'entityType must be activities or customers'
-            ];
+            ], Response::RESPONSE_CODE_ERROR);
         }
 
         $result = Factory::getInstance()->getActivityStore()->getDeletionsData($entityType, $deletionsSinceTimestamp);
         $result['success'] = true;
         $result['timestamp'] = $timestamp;
 
-        return $result;
+        return new Response($result);
     }
 
     public function segments(array $params) {
@@ -148,7 +153,7 @@ class Export implements ExportInterface {
         
         $result['data'] = $data;
 
-        return $result;
+        return new Response($result);
     }
 
     public function segmentGroups(array $params) {
@@ -167,6 +172,6 @@ class Export implements ExportInterface {
 
     $result['data'] = $data;
 
-    return $result;
+    return new Response($result);
 }
 }

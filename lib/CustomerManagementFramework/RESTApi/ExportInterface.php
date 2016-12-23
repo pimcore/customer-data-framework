@@ -20,7 +20,7 @@ interface ExportInterface {
      * @param int                         $page
      * @param ExportCustomersFilterParams $params
      *
-     * @return array
+     * @return Response
      */
     public function customers($pageSize, $page = 1, ExportCustomersFilterParams $params);
 
@@ -29,7 +29,7 @@ interface ExportInterface {
      * @param int                         $page
      * @param ExportCustomersFilterParams $params
      *
-     * @return array
+     * @return Response
      */
     public function activities($pageSize, $page = 1, ExportActivitiesFilterParams $params);
 
@@ -38,19 +38,19 @@ interface ExportInterface {
      * @param int                         $page
      * @param ExportCustomersFilterParams $params
      *
-     * @return array
+     * @return Response
      */
     public function deletions($type, $deletionsSinceTimestamp);
 
     /**
-     * @return array
+     * @return Response
      */
     public function segments(array $params);
 
     /**
      * @param array $params
      *
-     * @return mixed
+     * @return Response
      */
     public function segmentGroups(array $params);
 }
