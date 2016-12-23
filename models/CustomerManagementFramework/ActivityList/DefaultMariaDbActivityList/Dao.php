@@ -66,7 +66,7 @@ class Dao {
             //    $this->addGroupBy($select);
 
             // order
-                $this->addOrder($select);
+            $this->addOrder($select);
 
             // limit
             $this->addLimit($select);
@@ -134,9 +134,16 @@ class Dao {
     protected function addOrder(\Zend_DB_Select $select)
     {
         $orderKey = $this->model->getOrderKey();
+        $order = $this->model->getOrder();
 
-        if ($orderKey) {
-            $select->order($orderKey . " " . $this->model->getOrder());
+        foreach($orderKey as $i => $key) {
+
+            $orderString = str_replace("`","", trim($key));
+            if($order[$i]) {
+                $orderString .= ' ' . $order[$i];
+            }
+
+            $select->order($orderString);
         }
 
         return $this;

@@ -4,10 +4,12 @@ namespace CustomerManagementFramework;
 
 use CustomerManagementFramework\ActionTrigger\Event\Cron;
 use CustomerManagementFramework\ActionTrigger\Event\SingleCustomerEventInterface;
+use CustomerManagementFramework\Controller\Plugin\UrlActivityTracker;
 use CustomerManagementFramework\Model\ActivityInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use Pimcore\API\Plugin as PluginLib;
+use Pimcore\Model\Object\ActivityDefinition;
 
 class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterface
 {
@@ -32,6 +34,14 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         });
 
         parent::init();
+
+        \Pimcore::getEventManager()->attach(["object.preAdd"], function (\Zend_EventManager_Event $e) {
+            $object = $e->getTarget();
+
+            if($object instanceof ActivityDefinition) {
+                $object->setCode(uniqid());
+            }
+        });
 
         \Pimcore::getEventManager()->attach(["object.preUpdate"], function (\Zend_EventManager_Event $e) {
             $object = $e->getTarget();
@@ -97,6 +107,10 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
             }
 
         });
+
+        $front = \Zend_Controller_Front::getInstance();
+
+        $front->registerPlugin(new UrlActivityTracker(), 1666);
 
     }
 

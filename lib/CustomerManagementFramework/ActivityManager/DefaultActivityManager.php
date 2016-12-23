@@ -32,6 +32,7 @@ class DefaultActivityManager implements ActivityManagerInterface
             return;
         }
 
+
         Factory::getInstance()->getSegmentManager()->addCustomerToChangesQueue($activity->getCustomer());
 
         if(!$activity->cmfIsActive()) {

@@ -187,7 +187,7 @@ class MariaDb implements ActivityStoreInterface{
             'customerId' => $activity->getCustomer()->getId(),
             'type' => $db->quote($activity->cmfGetType()),
             'implementationClass' => $db->quote(get_class($activity)),
-            'o_id' => $activity instanceof Concrete ? $activity->getId() : '',
+            'o_id' => $activity instanceof Concrete ? $activity->getId() : null,
             'a_id' => !($activity instanceof Concrete) && method_exists($activity, 'getId') ? $activity->getId() : null,
             'activityDate' => $activity->cmfGetActivityDate()->getTimestamp(),
             'attributes' => \CustomerManagementFramework\Service\MariaDb::getInstance()->createDynamicColumnInsert($attributes),

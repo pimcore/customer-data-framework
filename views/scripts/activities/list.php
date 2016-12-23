@@ -48,11 +48,11 @@ if (sizeof($paginator)) {
                         ?>
 
                         <tr>
-                            <td width="200">
+                            <td width="300">
                                 <?=$av->translate($activity->getType())?>
                                 <a href="<?=$this->url(['controller'=>'activities','action'=>'detail','activityId'=>$activity->getId(),'customerId'=>$this->customer->getId()])?>" class="btn btn-default btn-xs"><?=$av->translate("Details")?></a>
                             </td>
-                            <td width="200"><?=$activity->getActivityDate()->formatLocalized("%x %X")?></td>
+                            <td width="160"><?=$activity->getActivityDate()->formatLocalized("%x %X")?></td>
                             <td>
                                 <?php if($data = $av->getOverviewAdditionalData($activity)) {?>
                                     <table class="overview-data-table">

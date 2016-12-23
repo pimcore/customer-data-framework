@@ -37,6 +37,10 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     public function preUpdate(CustomerInterface $customer)
     {
+        if(!$customer->getIdEncoded()) {
+            $customer->setIdEncoded(md5($customer->getId()));
+        }
+
         $this->applySaveHandlers($customer);
         $this->validateOnSave($customer);
 

@@ -15,6 +15,7 @@ use CustomerManagementFramework\ActionTrigger\TriggerDefinition;
 use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use CustomerManagementFramework\ActivityManager\ActivityManagerInterface;
 use CustomerManagementFramework\ActivityStore\ActivityStoreInterface;
+use CustomerManagementFramework\ActivityUrlTracker\ActivityUrlTrackerInterface;
 use CustomerManagementFramework\ActivityView\ActivityViewInterface;
 use CustomerManagementFramework\Authentication\SsoIdentity\SsoIdentityServiceInterface;
 use CustomerManagementFramework\CustomerDuplicatesService\CustomerDuplicatesServiceInterface;
@@ -159,6 +160,14 @@ class Factory {
     public function getActionTriggerActionManager()
     {
         return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActionTrigger\ActionManager');
+    }
+
+    /**
+     * @return ActivityUrlTrackerInterface
+     */
+    public function getActivityUrlTracker()
+    {
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActivityUrlTracker');
     }
 
     /**

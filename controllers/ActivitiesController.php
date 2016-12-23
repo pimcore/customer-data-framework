@@ -23,6 +23,8 @@ class CustomerManagementFramework_ActivitiesController extends Admin
         if($customer = \Pimcore\Model\Object\Customer::getById($this->getParam('customerId'))) {
 
             $list = \CustomerManagementFramework\Factory::getInstance()->getActivityStore()->getActivityList();
+            $list->setOrderKey('id');
+            $list->setOrder('desc');
 
             $select = $list->getQuery(false);
             $select->where("customerId = ?", $customer->getId());
@@ -40,6 +42,7 @@ class CustomerManagementFramework_ActivitiesController extends Admin
                 $select = $list->getQuery(false);
                 $select->where("type = ?", $type);
             }
+
 
             $paginator = new Zend_Paginator($list);
             $paginator->setItemCountPerPage(25);

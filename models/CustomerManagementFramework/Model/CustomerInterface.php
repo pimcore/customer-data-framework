@@ -151,6 +151,18 @@ interface CustomerInterface {
     public function getAllSegments();
 
     /**
+     * @return string
+     */
+    public function getIdEncoded();
+
+    /**
+     * @param $idEncoded
+     *
+     * @return void
+     */
+    public function setIdEncoded($idEncoded);
+
+    /**
      * @return array
      */
     public function cmfToArray();

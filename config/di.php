@@ -50,5 +50,7 @@ return [
         => \DI\object('CustomerManagementFramework\ActionTrigger\ActionManager\DefaultActionManager')
            ->constructor(DI\get('CustomerManagementFramework\Logger')),
 
-
+    'CustomerManagementFramework\ActivityUrlTracker'
+        => \DI\object('CustomerManagementFramework\ActivityUrlTracker\DefaultActivityUrlTracker')
+            ->constructor(DI\get('CustomerManagementFramework\Logger')),
 ];
