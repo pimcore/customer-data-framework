@@ -1,6 +1,6 @@
 <?php
 
-namespace CustomerManagementFramework\Mailchimp\ExportToolkit\AttributeClusterInterpreter;
+namespace CustomerManagementFramework\ExportToolkit\AttributeClusterInterpreter\MailChimp;
 
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
@@ -8,7 +8,7 @@ use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\CustomerSegment;
 use Pimcore\Model\Object\CustomerSegmentGroup;
 
-class Segment extends AbstractMailchimpInterpreter
+class Segment extends AbstractMailChimpInterpreter
 {
     /**
      * This method is executed before the export is launched.

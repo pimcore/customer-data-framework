@@ -1,8 +1,8 @@
 <?php
 
-namespace CustomerManagementFramework\Mailchimp\ExportToolkit\AttributeClusterInterpreter\Customer;
+namespace CustomerManagementFramework\ExportToolkit\AttributeClusterInterpreter\MailChimp\Customer;
 
-use CustomerManagementFramework\Mailchimp\ExportToolkit\AttributeClusterInterpreter\Customer;
+use CustomerManagementFramework\ExportToolkit\AttributeClusterInterpreter\MailChimp\Customer;
 
 class SingleExporter extends AbstractExporter
 {

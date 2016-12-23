@@ -1,16 +1,16 @@
 <?php
 
-namespace CustomerManagementFramework\Mailchimp\ExportToolkit\AttributeClusterInterpreter;
+namespace CustomerManagementFramework\ExportToolkit\AttributeClusterInterpreter\MailChimp;
 
+use CustomerManagementFramework\ExportToolkit\AttributeClusterInterpreter\MailChimp\Customer\BatchExporter;
+use CustomerManagementFramework\ExportToolkit\AttributeClusterInterpreter\MailChimp\Customer\SingleExporter;
 use CustomerManagementFramework\Factory;
-use CustomerManagementFramework\Mailchimp\ExportToolkit\AttributeClusterInterpreter\Customer\BatchExporter;
-use CustomerManagementFramework\Mailchimp\ExportToolkit\AttributeClusterInterpreter\Customer\SingleExporter;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\CustomerSegment;
 
-class Customer extends AbstractMailchimpInterpreter
+class Customer extends AbstractMailChimpInterpreter
 {
     /**
      * Minimum data amount to switch into batch mode

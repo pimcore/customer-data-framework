@@ -1,6 +1,6 @@
 <?php
 
-namespace CustomerManagementFramework\Mailchimp;
+namespace CustomerManagementFramework\ExportToolkit\ExportService;
 
 use Carbon\Carbon;
 use DrewM\MailChimp\MailChimp;
@@ -8,7 +8,7 @@ use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Element\Note;
 use Pimcore\Model\Object\Concrete;
 
-class ExportService
+class MailChimpExportService
 {
     const NOTE_TYPE = 'export.mailchimp';
 

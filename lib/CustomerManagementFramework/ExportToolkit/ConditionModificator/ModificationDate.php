@@ -1,6 +1,6 @@
 <?php
 
-namespace CustomerManagementFramework\Mailchimp\ExportToolkit\ConditionModificator;
+namespace CustomerManagementFramework\ExportToolkit\ConditionModificator;
 
 use ExportToolkit\ExportService\IConditionModificator;
 use ExportToolkit\ExportService\IListModificator;
@@ -8,7 +8,7 @@ use Pimcore\Model\Object\Listing;
 
 class ModificationDate implements IConditionModificator, IListModificator
 {
-    public static function modify($configName, $condidition)
+    public static function modify($configName, $condition)
     {
         // noop - all done in modifyList
     }

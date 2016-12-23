@@ -1,10 +1,10 @@
 <?php
 
-namespace CustomerManagementFramework\Mailchimp\ExportToolkit\AttributeClusterInterpreter\Customer;
+namespace CustomerManagementFramework\ExportToolkit\AttributeClusterInterpreter\MailChimp\Customer;
 
+use CustomerManagementFramework\ExportToolkit\AttributeClusterInterpreter\MailChimp\Customer;
+use CustomerManagementFramework\ExportToolkit\ExportService\MailChimpExportService;
 use CustomerManagementFramework\Factory;
-use CustomerManagementFramework\Mailchimp\ExportService;
-use CustomerManagementFramework\Mailchimp\ExportToolkit\AttributeClusterInterpreter\Customer;
 use CustomerManagementFramework\Model\CustomerInterface;
 use DrewM\MailChimp\MailChimp;
 use Pimcore\Model\Element\ElementInterface;
@@ -22,7 +22,7 @@ abstract class AbstractExporter
     protected $logger;
 
     /**
-     * @var ExportService
+     * @var MailChimpExportService
      */
     protected $exportService;
 
@@ -44,10 +44,10 @@ abstract class AbstractExporter
     }
 
     /**
-     * @param ExportService $exportService
+     * @param MailChimpExportService $exportService
      * @return $this
      */
-    public function setExportService(ExportService $exportService)
+    public function setExportService(MailChimpExportService $exportService)
     {
         $this->exportService = $exportService;
         $this->apiClient     = $exportService->getApiClient();

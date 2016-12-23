@@ -1,6 +1,6 @@
 <?php
 
-namespace CustomerManagementFramework\Mailchimp\ExportToolkit\Getter;
+namespace CustomerManagementFramework\ExportToolkit\Getter;
 
 use Carbon\Carbon;
 use ExportToolkit\ExportService\IGetter;

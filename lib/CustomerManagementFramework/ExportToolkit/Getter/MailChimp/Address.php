@@ -1,6 +1,6 @@
 <?php
 
-namespace CustomerManagementFramework\Mailchimp\ExportToolkit\Getter;
+namespace CustomerManagementFramework\ExportToolkit\Getter\MailChimp;
 
 use CustomerManagementFramework\Model\CustomerInterface;
 use ExportToolkit\ExportService\IGetter;

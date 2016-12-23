@@ -21,6 +21,7 @@ use CustomerManagementFramework\CustomerDuplicatesService\CustomerDuplicatesServ
 use CustomerManagementFramework\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFramework\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFramework\CustomerView\CustomerViewInterface;
+use CustomerManagementFramework\ExportToolkit\ExportService\MailChimpExportService;
 use CustomerManagementFramework\RESTApi\ExportInterface;
 use CustomerManagementFramework\SegmentManager\SegmentManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -158,14 +159,6 @@ class Factory {
     public function getActionTriggerActionManager()
     {
         return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActionTrigger\ActionManager');
-    }
-
-    /**
-     * @return Mailchimp\ExportService
-     */
-    public function getMailchimpExportService()
-    {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\Mailchimp\ExportService');
     }
 
     /**

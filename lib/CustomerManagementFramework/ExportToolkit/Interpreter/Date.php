@@ -1,6 +1,6 @@
 <?php
 
-namespace CustomerManagementFramework\Mailchimp\ExportToolkit\Interpreter;
+namespace CustomerManagementFramework\ExportToolkit\Interpreter;
 
 use ExportToolkit\ExportService\IInterpreter;
 
