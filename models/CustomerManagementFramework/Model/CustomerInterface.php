@@ -12,6 +12,11 @@ interface CustomerInterface {
     public function getId();
 
     /**
+     * @return boolean
+     */
+    public function getActive();
+
+    /**
      * @return string
      */
     public function getGender();
