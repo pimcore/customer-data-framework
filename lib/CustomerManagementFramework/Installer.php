@@ -81,6 +81,50 @@ class Installer {
               UNIQUE KEY `customerId` (`customerId`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
         );
+
+        \Pimcore\Db::get()->query(
+            "CREATE TABLE IF NOT EXISTS `plugin_cmf_actiontrigger_actions` (
+              `id` int(20) unsigned NOT NULL AUTO_INCREMENT,
+              `ruleId` int(20) unsigned NOT NULL,
+              `actionDelay` int(20) unsigned NOT NULL,
+              `implementationClass` varchar(255) NOT NULL,
+              `options` text,
+              `creationDate` bigint(20) NOT NULL,
+              `modificationDate` bigint(20) NOT NULL,
+              PRIMARY KEY (`id`),
+              KEY `ruleId` (`ruleId`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+        );
+
+        \Pimcore\Db::get()->query(
+            "CREATE TABLE IF NOT EXISTS `plugin_cmf_actiontrigger_rules` (
+              `id` int(20) unsigned NOT NULL AUTO_INCREMENT,
+              `name` varchar(50) DEFAULT NULL,
+              `description` text,
+              `active` tinyint(1) unsigned DEFAULT NULL,
+              `trigger` text COMMENT 'configuration of triggers',
+              `condition` text COMMENT 'configuration of conditions',
+              `creationDate` int(11) NOT NULL,
+              `modificationDate` int(11) NOT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `name` (`name`),
+              KEY `active` (`active`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+        );
+
+        \Pimcore\Db::get()->query(
+            "CREATE TABLE IF NOT EXISTS `plugin_cmf_actiontrigger_queue` (
+              `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+              `customerId` int(11) unsigned NOT NULL,
+              `actionDate` bigint(20) unsigned DEFAULT NULL,
+              `actionId` int(11) unsigned DEFAULT NULL,
+              `creationDate` bigint(20) unsigned DEFAULT NULL,
+              `modificationDate` bigint(20) unsigned DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              KEY `customerId` (`customerId`),
+              KEY `actionId` (`actionId`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+        );
     }
 
     private static function installClasses()
