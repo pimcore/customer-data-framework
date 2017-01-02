@@ -183,7 +183,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
                 else
                 {
                     m.push({
-                        iconCls: 'plugin_ifttt_config_trigger' + path + key,
+                        iconCls: 'plugin_cmf_icon_rule_triggers' + path + key,
                         text: key,
                         menu: getMenu( menu[key], path + key + '_' )
                     })
@@ -196,7 +196,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
 
         this.triggerContainer = new Ext.Panel({
             iconCls: "plugin_cmf_icon_rule_triggers",
-            title: t("plugin_ifttt_config_rule_trigger"),
+            title: t("plugin_cmf_icon_rule_triggers"),
             autoScroll: true,
             forceLayout: true,
             tbar: [{
@@ -542,7 +542,7 @@ console.log(item);
             node: tree.getRootNode()
         });
 
-        pimcore.helpers.showNotification(t("success"), t("plugin_ifttt_config_saved_successfully"), "success");
+        pimcore.helpers.showNotification(t("success"), t("plugin_cmf_actiontrigger_rule_saved_successfully"), "success");
     },
 
     recalculateButtonStatus: function () {

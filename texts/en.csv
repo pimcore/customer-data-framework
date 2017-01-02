@@ -1,6 +1,10 @@
 plugin_cmf_mainmenu,"Customer Management Framework"
 plugin_cmf_customerview,"Customers"
 plugin_cmf_customerautomationrules,Customer automation rules
+plugin_cmf_actiontriggerrule_add_rule,Add rule
+plugin_cmf_icon_rule_triggers,Triggers
+plugin_cmf_actiontrigger_rule_saved_successfully,Rule saved successfully
+plugin_cmf_actiontriggerrule_add_rule_enter_name,Enter the name of the new rule
 plugin_cmf_actiontriggerrule_triggerNewActivity,New Customer activity
 plugin_cmf_actiontriggerrule_triggerExecuteSegmentBuilders,Segment building
 plugin_cmf_actiontriggerrule_triggerCron,Cron

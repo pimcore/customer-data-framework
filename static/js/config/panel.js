@@ -36,10 +36,10 @@ pimcore.plugin.cmf.config.panel = Class.create({
         this.trigger = [];
         for(var trigger in pimcore.plugin.cmf.rule.triggers)
         {
-           if(trigger != 'AbstractTrigger')
-           {
-               this.trigger.push( trigger );
-           }
+            if(trigger != 'AbstractTrigger')
+            {
+                this.trigger.push( trigger );
+            }
 
         }
 
@@ -199,44 +199,12 @@ pimcore.plugin.cmf.config.panel = Class.create({
                     items: [
                         {
                             // add button
-                            text: t("plugin_ifttt_config_add_rule"),
+                            text: t("plugin_cmf_actiontriggerrule_add_rule"),
                             iconCls: "pimcore_icon_add",
                             handler: this.addRule.bind(this)
                         }, {
                             // spacer
                             xtype: 'tbfill'
-                        }, {
-                            // save button
-                            id: 'cmfCustomerAutomationRulesbtnSave',
-                            hidden: true,
-                            text: t("plugin_ifttt_config_save_order"),
-                            iconCls: "pimcore_icon_save",
-                            handler: function() {
-                                // this
-                                var button = this;
-
-                                // get current order
-                                var prio = 0;
-                                var rules = {};
-
-                                this.ownerCt.ownerCt.getRootNode().eachChild(function (rule){
-                                    prio++;
-                                    rules[ rule.id ] = prio;
-                                });
-
-                                // save order
-                                Ext.Ajax.request({
-                                    url: "/plugin/IFTTT/rule/save-order",
-                                    params: {
-                                        rules: Ext.encode(rules)
-                                    },
-                                    method: "post",
-                                    success: function(){
-                                        button.hide();
-                                    }
-                                });
-
-                            }
                         }
                     ]
                 }
@@ -251,8 +219,8 @@ pimcore.plugin.cmf.config.panel = Class.create({
      * add item popup
      */
     addRule: function () {
-        Ext.MessageBox.prompt(t('plugin_ifttt_config_add_rule'), t('plugin_ifttt_config_enter_the_name_of_the_new_rule'),
-                                                this.addRuleComplete.bind(this), null, null, "");
+        Ext.MessageBox.prompt(t('plugin_cmf_actiontriggerrule_add_rule'), t('plugin_cmf_actiontriggerrule_add_rule_enter_name'),
+            this.addRuleComplete.bind(this), null, null, "");
     },
 
 
