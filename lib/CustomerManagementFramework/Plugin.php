@@ -2,7 +2,6 @@
 
 namespace CustomerManagementFramework;
 
-use CustomerManagementFramework\ActionTrigger\Event\Cron;
 use CustomerManagementFramework\ActionTrigger\Event\SingleCustomerEventInterface;
 use CustomerManagementFramework\Controller\Plugin\UrlActivityTracker;
 use CustomerManagementFramework\Model\ActivityInterface;
@@ -126,7 +125,7 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
 
         return $installer->install();
     }
-    
+
     public static function uninstall()
     {
         // implement your own logic here
@@ -136,7 +135,7 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
     public static function isInstalled()
     {
         // implement your own logic here
-        return true;
+        return file_exists(PIMCORE_WEBSITE_PATH . '/config/plugins/CustomerManagementFramework/config.php');
     }
 
     private static function getConfigFile() {

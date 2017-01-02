@@ -17,10 +17,11 @@ class Installer {
 
     public function install() {
 
-       // $this->installPermissions();
-       // $this->installDatabaseTables();
-       // $this->installClasses();
+        $this->installPermissions();
+        $this->installDatabaseTables();
+        $this->installClasses();
         $this->installCrontab();
+        $this->installConfig();
 
         return true;
     }
@@ -45,7 +46,7 @@ class Installer {
 
     private function installDatabaseTables() {
         \Pimcore\Db::get()->query(
-            "CREATE TABLE `plugin_cmf_activities` (
+            "CREATE TABLE IF NOT EXISTS `plugin_cmf_activities` (
               `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
               `customerId` int(11) unsigned NOT NULL,
               `activityDate` bigint(20) unsigned DEFAULT NULL,
@@ -65,7 +66,7 @@ class Installer {
         );
 
         \Pimcore\Db::get()->query(
-            "CREATE TABLE `plugin_cmf_deletions` (
+            "CREATE TABLE IF NOT EXISTS `plugin_cmf_deletions` (
               `id` int(11) unsigned NOT NULL,
               `entityType` char(20) NOT NULL,
               `type` varchar(255) NOT NULL,
@@ -75,7 +76,7 @@ class Installer {
         );
 
         \Pimcore\Db::get()->query(
-            "CREATE TABLE `plugin_cmf_segmentbuilder_changes_queue` (
+            "CREATE TABLE IF NOT EXISTS `plugin_cmf_segmentbuilder_changes_queue` (
               `customerId` int(11) unsigned NOT NULL,
               UNIQUE KEY `customerId` (`customerId`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
@@ -86,6 +87,8 @@ class Installer {
     {
         self::installClass("CustomerSegmentGroup", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_CustomerSegmentGroup_export.json');
         self::installClass("CustomerSegment", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_CustomerSegment_export.json');
+        self::installClass("ActivityDefinition", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_ActivityDefinition_export.json');
+        self::installClass("SsoIdentity", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_SsoIdentity_export.json');
     }
 
     private static function installClass($classname, $filepath) {
@@ -103,7 +106,7 @@ class Installer {
     }
 
     private static function installCrontab() {
-        
+
 
         $crons = [
             '* * * * * php ' . PIMCORE_DOCUMENT_ROOT . '/pimcore/cli/console.php cmf:handle-cron-triggers -v > ' . PIMCORE_LOG_DIRECTORY . '/cmf-cron-trigger-lastrun.log',
@@ -126,5 +129,26 @@ class Installer {
         }
 
 
+    }
+
+    private static function installConfig() {
+
+        $dir = PIMCORE_WEBSITE_PATH . '/config/plugins/CustomerManagementFramework';
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+
+        foreach(["config.php", "di.php"] as $file) {
+
+            $target = PIMCORE_WEBSITE_PATH . '/config/plugins/CustomerManagementFramework/' . $file;
+
+            if (!is_file($target)) {
+
+                copy(
+                    PIMCORE_PLUGINS_PATH . "/CustomerManagementFramework/install/config/" . $file,
+                    $target);
+            }
+        }
     }
 }
