@@ -16,7 +16,7 @@ class Update implements UpdateInterface {
     /**
      * @var LoggerInterface
      */
-    private $logger;
+    protected $logger;
 
     public function __construct(LoggerInterface $logger)
     {

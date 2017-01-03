@@ -20,7 +20,7 @@ class Export implements ExportInterface {
     /**
      * @var LoggerInterface
      */
-    private $logger;
+    protected $logger;
 
     public function __construct(LoggerInterface $logger)
     {
