@@ -245,7 +245,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
             $customer->save();
             Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled($segmentBuildingHookBackup);
 
-            if(sizeof($addedSegments)) {
+            if(is_array($addedSegments) && sizeof($addedSegments)) {
 
                 $description = [];
 
@@ -266,7 +266,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
                 $note->save();
             }
 
-            if(sizeof($removedSegments)) {
+            if(is_array($removedSegments) && sizeof($removedSegments)) {
 
                 $description = [];
 
