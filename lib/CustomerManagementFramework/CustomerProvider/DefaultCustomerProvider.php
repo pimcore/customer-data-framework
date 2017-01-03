@@ -85,10 +85,10 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     /**
      * Create a customer instance
      *
-     * @param array $values
+     * @param array $data
      * @return CustomerInterface
      */
-    public function create(array $values = [])
+    public function create(array $data = [])
     {
         $parentFolder = Folder::getByPath($this->parentPath);
         if (!$parentFolder) {
@@ -99,9 +99,33 @@ class DefaultCustomerProvider implements CustomerProviderInterface
         $customer = \Pimcore::getDiContainer()->make($this->getDiClassName());
         $customer->setPublished(true);
         $customer->setParent($parentFolder);
-        $customer->setValues($values);
+        $customer->setValues($data);
 
         return $customer;
+    }
+
+    /**
+     * @param CustomerInterface|ElementInterface|Concrete $customer
+     * @param array $data
+     * @return CustomerInterface
+     */
+    public function update(CustomerInterface $customer, array $data = [])
+    {
+        // TODO naive version - add validation / settable values
+        $customer->setValues($data);
+
+        return $customer;
+    }
+
+    /**
+     * @param CustomerInterface|ElementInterface|Concrete $customer
+     * @return $this
+     */
+    public function delete(CustomerInterface $customer)
+    {
+        $customer->delete();
+
+        return $this;
     }
 
     /**

@@ -11,6 +11,8 @@ namespace CustomerManagementFramework\RESTApi;
 class Response {
 
     const RESPONSE_CODE_OK = 200;
+    const RESPONSE_CODE_CREATED = 201;
+    const RESPONSE_CODE_NO_CONTENT = 204;
     const RESPONSE_CODE_BAD_REQUEST = 400;
     const RESPONSE_CODE_NOT_FOUND = 404;
 
@@ -34,7 +36,7 @@ class Response {
     /**
      * @param mixed $data
      */
-    public function setData($data)
+    public function setData($data = null)
     {
         $this->data = $data;
     }

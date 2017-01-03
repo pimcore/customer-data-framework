@@ -7,6 +7,7 @@ use CustomerManagementFramework\Filter\ExportCustomersFilterParams;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Traits\LoggerAware;
 use Pimcore\Model\Element\ElementInterface;
+use Pimcore\Model\Object\Concrete;
 use Psr\Log\LoggerInterface;
 
 class CustomersApi implements CrudInterface
@@ -72,7 +73,12 @@ class CustomersApi implements CrudInterface
      */
     public function createRecord(array $data)
     {
-        // TODO: Implement createRecord() method.
+        /** @var CustomerInterface|Concrete $record */
+        $record = $this->customerProvider->create($data);
+        $record->save();
+
+        $response = $this->readRecord($record);
+        $response->setResponseCode(Response::RESPONSE_CODE_CREATED);
     }
 
     /**
@@ -90,21 +96,26 @@ class CustomersApi implements CrudInterface
     }
 
     /**
-     * @param ElementInterface $record
+     * @param ElementInterface|CustomerInterface|Concrete $record
      * @param array $data
      * @return Response
      */
     public function updateRecord(ElementInterface $record, array $data)
     {
-        // TODO: Implement updateRecord() method.
+        $this->customerProvider->update($record, $data);
+        $record->save();
+
+        return $this->readRecord($record);
     }
 
     /**
-     * @param ElementInterface $record
+     * @param ElementInterface|CustomerInterface|Concrete $record
      * @return Response
      */
     public function deleteRecord(ElementInterface $record)
     {
-        // TODO: Implement deleteRecord() method.
+        $this->customerProvider->delete($record);
+
+        return new Response(null, Response::RESPONSE_CODE_NO_CONTENT);
     }
 }
