@@ -70,7 +70,7 @@ class GenderSegmentBuilder extends AbstractSegmentBuilder {
             $segment = $this->notsetSegment;
         }
 
-        $segmentManager->mergeSegments($customer, [$segment], $segmentManager->getSegmentsFromSegmentGroup($this->segmentGroup,[$segment]));
+        $segmentManager->mergeSegments($customer, [$segment], $segmentManager->getSegmentsFromSegmentGroup($this->segmentGroup,[$segment]), "GenderSegmentBuilder");
     }
 
     /**

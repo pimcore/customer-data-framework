@@ -10,6 +10,7 @@ namespace CustomerManagementFramework\SegmentManager;
 
 
 use CustomerManagementFramework\Factory;
+use CustomerManagementFramework\Helper\Notes;
 use CustomerManagementFramework\Helper\Objects;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
@@ -172,7 +173,15 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $segmentBuilder->calculateSegments($customer, $this);
     }
 
-    public function mergeSegments(CustomerInterface $customer, array $addSegments, array $deleteSegments = [])
+    /**
+     * @param CustomerInterface $customer
+     * @param array             $addSegments
+     * @param array             $deleteSegments
+     * @param string|null       $hintForNotes
+     *
+     * @return mixed
+     */
+    public function mergeSegments(CustomerInterface $customer, array $addSegments, array $deleteSegments = [], $hintForNotes = null)
     {
         $addCalculatedSegments = [];
         foreach($addSegments as $segment) {
@@ -188,7 +197,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
 
         if(sizeof($addCalculatedSegments) || sizeof($deleteCalculatedSegments)) {
-            $this->mergeSegmentsHelper($customer, $addCalculatedSegments, $deleteCalculatedSegments, true);
+            $this->mergeSegmentsHelper($customer, $addCalculatedSegments, $deleteCalculatedSegments, true, $hintForNotes);
         }
 
         $addManualSegments = [];
@@ -205,20 +214,20 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
 
         if(sizeof($addManualSegments) || sizeof($deleteManualSegments)) {
-            $this->mergeSegmentsHelper($customer, $addManualSegments, $deleteManualSegments, false);
+            $this->mergeSegmentsHelper($customer, $addManualSegments, $deleteManualSegments, false, $hintForNotes);
         }
     }
 
-    protected function mergeSegmentsHelper(CustomerInterface $customer, array $addSegments, array $deleteSegments = [], $calculated = false)
+    protected function mergeSegmentsHelper(CustomerInterface $customer, array $addSegments, array $deleteSegments = [], $calculated = false, $hintForNotes)
     {
         $currentSegments = $calculated ? (array)$customer->getCalculatedSegments() : (array)$customer->getManualSegments();
 
         $saveNeeded = false;
-        if(Objects::addObjectsToArray($currentSegments, $addSegments)) {
+        if($addedSegments = Objects::addObjectsToArray($currentSegments, $addSegments)) {
             $saveNeeded = true;
         }
 
-        if(Objects::removeObjectsFromArray($currentSegments, $deleteSegments)) {
+        if($removedSegments = Objects::removeObjectsFromArray($currentSegments, $deleteSegments)) {
             $saveNeeded = true;
         }
 
@@ -235,6 +244,48 @@ class DefaultSegmentManager implements SegmentManagerInterface {
             Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled(false);
             $customer->save();
             Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled($segmentBuildingHookBackup);
+
+            if(sizeof($addedSegments)) {
+
+                $description = [];
+
+                $title = 'Segment(s) added to customer';
+                if($hintForNotes) {
+                    $title .= ' (' . $hintForNotes . ')';
+                }
+
+                $note = Notes::createNote($customer, 'cmf.SegmentManager', $title);
+                $i = 0;
+                foreach ($addedSegments as $segment) {
+                    $i++;
+                    $note->addData("segment" . $i, "object", $segment);
+                    $description[] = $segment;
+                }
+                $note->setDescription(implode(', ', $addedSegments));
+
+                $note->save();
+            }
+
+            if(sizeof($removedSegments)) {
+
+                $description = [];
+
+                $title = 'Segment(s) removed from customer';
+                if($hintForNotes) {
+                    $title .= ' (' . $hintForNotes . ')';
+                }
+
+                $note = Notes::createNote($customer, 'cmf.SegmentManager', $title);
+                $i = 0;
+                foreach ($removedSegments as $segment) {
+                    $i++;
+                    $note->addData("segment" . $i, "object", $segment);
+                    $description[] = $segment;
+                }
+                $note->setDescription(implode(', ', $description));
+
+                $note->save();
+            }
 
             if(!$backup) {
                 \Pimcore\Model\Version::enable();

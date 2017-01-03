@@ -80,7 +80,7 @@ class StateSegmentBuilder extends AbstractSegmentBuilder {
             $segments[] = $stateSegment;
         }
 
-        $segmentManager->mergeSegments($customer, $segments, $segmentManager->getSegmentsFromSegmentGroup($this->segmentGroup, $segments));
+        $segmentManager->mergeSegments($customer, $segments, $segmentManager->getSegmentsFromSegmentGroup($this->segmentGroup, $segments), "StateSegmentBuilder");
     }
 
     /**

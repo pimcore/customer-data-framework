@@ -97,7 +97,7 @@ class Update implements UpdateInterface {
             }
         }
 
-        Factory::getInstance()->getSegmentManager()->mergeSegments($customer, $addSegments, $deleteSegments);
+        Factory::getInstance()->getSegmentManager()->mergeSegments($customer, $addSegments, $deleteSegments, "REST update API: segments-of-customer action");
 
 
         return new Response(['success'=>true], Response::RESPONSE_CODE_OK);

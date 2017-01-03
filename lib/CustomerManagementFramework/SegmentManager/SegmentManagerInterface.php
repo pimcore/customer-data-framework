@@ -65,13 +65,14 @@ interface SegmentManagerInterface {
     public function executeSegmentBuilderMaintenance();
 
     /**
-     * @param CustomerInterface          $customer
-     * @param CustomerSegmentInterface[] $addSegments
-     * @param CustomerSegmentInterface[] $deleteSegments
+     * @param CustomerInterface $customer
+     * @param array             $addSegments
+     * @param array             $deleteSegments
+     * @param string|null       $hintForNotes
      *
-     * @return void
+     * @return mixed
      */
-    public function mergeSegments(CustomerInterface $customer, array $addSegments, array $deleteSegments = []);
+    public function mergeSegments(CustomerInterface $customer, array $addSegments, array $deleteSegments = [], $hintForNotes = null);
 
 
     /**

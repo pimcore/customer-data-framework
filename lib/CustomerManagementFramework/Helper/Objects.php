@@ -52,11 +52,11 @@ class Objects {
      * @param array $array
      * @param array $addObjects
      *
-     * @return bool
+     * @return false|array
      */
     public static function addObjectsToArray(array &$array, array $addObjects)
     {
-        $changed = false;
+        $added = [];
         foreach ($addObjects as $addObject) {
             $found = false;
             foreach ($array as $object) {
@@ -67,12 +67,12 @@ class Objects {
             }
 
             if(!$found) {
-                $changed = true;
+                $added[] = $addObject;
                 $array[] = $addObject;
             }
         }
 
-        return $changed;
+        return sizeof($added) ? $added : false;
     }
 
     /**
@@ -82,11 +82,11 @@ class Objects {
      * @param array $array
      * @param array $removeObjects
      *
-     * @return bool
+     * @return false|array
      */
     public static function removeObjectsFromArray(array &$array, array $removeObjects)
     {
-        $changed = false;
+        $removed = [];
 
         foreach($array as $key => $object)
         {
@@ -97,17 +97,18 @@ class Objects {
                 }
 
                 if($object->getId() == $removeObject->getId()) {
+                    $removed[] = $removeObject;
                     unset($array[$key]);
                     $changed = true;
                 }
             }
         }
 
-        if($changed) {
+        if(sizeof($removed)) {
             $array = array_values($array);
         }
 
 
-        return $changed;
+        return sizeof($removed) ? $removed : false;
     }
 }
