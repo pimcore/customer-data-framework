@@ -250,7 +250,14 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
     public function createSegment($segmentName, $segmentGroup, $segmentReference = null, $calculated = true, $subFolder = null){
 
-        $segmentGroup = self::createSegmentGroup($segmentGroup, $segmentGroup, true);
+        if($segmentGroup instanceof CustomerSegmentGroup && $segmentGroup->getCalculated() != $calculated) {
+            throw new \Exception(sprintf("it's not possible to create a %s segment within a %s segment group",
+                $calculated ? 'calculated' : 'manual',
+                $calculated ? 'manual' : 'calculated')
+            );
+        }
+
+        $segmentGroup = self::createSegmentGroup($segmentGroup, $segmentGroup, $calculated);
 
         if($segment = $this->getSegmentByReference($segmentReference, $segmentGroup)) {
             return $segment;

@@ -36,13 +36,21 @@ class Import implements ImportInterface {
         }
 
 
-        switch($action) {
-            case "segment-group":
-                return $this->segmentGroup($data);
-            case "segment":
-                return $this->segment($data);
+        try {
+            switch($action) {
+                case "segment-group":
+                    return $this->segmentGroup($data);
+                case "segment":
+                    return $this->segment($data);
 
+            }
+        } catch(\Exception $e) {
+            return new Response([
+                "success" => false,
+                "msg" => $e->getMessage()
+            ], Response::RESPONSE_CODE_BAD_REQUEST);
         }
+
 
         return new Response([
             "success" => false,
@@ -104,6 +112,8 @@ class Import implements ImportInterface {
                 'msg' => sprintf("duplicate segment - segment with reference '%s' already exists in this group", $data['reference'])
             ], Response::RESPONSE_CODE_BAD_REQUEST);
         }
+
+        $data['calculated'] = isset($data['calculated']) ? $data['calculated'] : $segmentGroup->getCalculated();
 
         $segment = Factory::getInstance()->getSegmentManager()->createSegment($data['name'], $segmentGroup, $data['reference'], (bool)$data['calculated'], $data['subFolder']);
 

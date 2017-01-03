@@ -25,7 +25,7 @@ class Export implements ExportInterface {
                 $offset = intval($request->getParam('page', 1));
 
                 $params = new \CustomerManagementFramework\Filter\ExportCustomersFilterParams;
-                $params->setIncludeActivities($request->getParam('includeActivities') ? true : false);
+                $params->setIncludeActivities($request->getParam('includeActivities') == 'true' ? true : false);
                 $params->setSegments($request->getParam('segments'));
                 $params->setAllParams($request->getParams());
 
