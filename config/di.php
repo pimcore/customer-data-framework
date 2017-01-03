@@ -8,10 +8,30 @@ use CustomerManagementFramework\Encryption\DefaultEncryptionService;
 use CustomerManagementFramework\Encryption\EncryptionServiceInterface;
 use CustomerManagementFramework\ExportToolkit\ExportService\MailChimpExportService;
 use CustomerManagementFramework\RESTApi\CustomersApi;
+use Interop\Container\ContainerInterface;
+use Pimcore\View\Helper\Url;
 
 $config = \CustomerManagementFramework\Plugin::getConfig();
 
 return [
+    // parameters/values
+    'cmf.rest.customers.route'          => 'cmf-rest-customers',
+    'cmf.rest.customers.resource-route' => 'cmf-rest-customers-resource',
+
+    // pimcore URL view helper - TODO move this to core?
+    Url::class => function(ContainerInterface $container) {
+        /** @var \Pimcore\Controller\Action\Helper\ViewRenderer $broker */
+        $broker = \Zend_Controller_Action_HelperBroker::getStaticHelper('ViewRenderer');
+
+        /** @var \Pimcore\View $view */
+        $view = $broker->view;
+
+        if ($view) {
+            return $view->getHelper('url');
+        }
+
+        return null;
+    },
 
     'CustomerManagementFramework\Logger'
         => reset(\Pimcore\Logger::getLogger()),
@@ -45,6 +65,9 @@ return [
     'CustomerManagementFramework\RESTApi\Customers'
         => DI\object(CustomersApi::class)
             ->constructor(DI\get(CustomerProviderInterface::class), DI\get('CustomerManagementFramework\RESTApi\Export'))
+            ->method('setApiRoute', DI\get('cmf.rest.customers.route'))
+            ->method('setApiResourceRoute', DI\get('cmf.rest.customers.resource-route'))
+            ->method('setUrlHelper', DI\get(Url::class))
             ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
 
     CustomerProviderInterface::class
