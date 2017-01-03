@@ -8,15 +8,20 @@
 
 namespace CustomerManagementFramework\RESTApi;
 
-use CustomerManagementFramework\CustomerList\Filter\CustomerSegment;
 use CustomerManagementFramework\Factory;
-use CustomerManagementFramework\Filter\ExportActivitiesFilterParams;
-use CustomerManagementFramework\Filter\ExportCustomersFilterParams;
-use CustomerManagementFramework\Service\ObjectToArray;
-use Pimcore\Model\Object\CustomerSegmentGroup;
-use Pimcore\Placeholder\Object;
+use Psr\Log\LoggerInterface;
 
 class Update implements UpdateInterface {
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
     public function updateAction($action, \Zend_Controller_Request_Http $request)
     {

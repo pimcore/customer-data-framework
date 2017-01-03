@@ -13,8 +13,19 @@ use CustomerManagementFramework\Filter\ExportActivitiesFilterParams;
 use CustomerManagementFramework\Filter\ExportCustomersFilterParams;
 use CustomerManagementFramework\Service\ObjectToArray;
 use Pimcore\Placeholder\Object;
+use Psr\Log\LoggerInterface;
 
 class Export implements ExportInterface {
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
     public function exportAction($action, \Zend_Controller_Request_Http $request)
     {

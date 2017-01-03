@@ -30,13 +30,16 @@ return [
            ->constructor(DI\get('CustomerManagementFramework\Logger')),
 
     'CustomerManagementFramework\RESTApi\Export'
-        => DI\object('CustomerManagementFramework\RESTApi\Export'),
+        => DI\object('CustomerManagementFramework\RESTApi\Export')
+        ->constructor(DI\get('CustomerManagementFramework\Logger')),
 
     'CustomerManagementFramework\RESTApi\Import'
-        => DI\object('CustomerManagementFramework\RESTApi\Import'),
+        => DI\object('CustomerManagementFramework\RESTApi\Import')
+        ->constructor(DI\get('CustomerManagementFramework\Logger')),
 
     'CustomerManagementFramework\RESTApi\Update'
-        => DI\object('CustomerManagementFramework\RESTApi\Update'),
+        => DI\object('CustomerManagementFramework\RESTApi\Update')
+        ->constructor(DI\get('CustomerManagementFramework\Logger')),
 
     CustomerProviderInterface::class
         => DI\object(DefaultCustomerProvider::class),

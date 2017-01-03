@@ -14,8 +14,19 @@ use CustomerManagementFramework\Filter\ExportCustomersFilterParams;
 use CustomerManagementFramework\Service\ObjectToArray;
 use Pimcore\Model\Object\CustomerSegmentGroup;
 use Pimcore\Placeholder\Object;
+use Psr\Log\LoggerInterface;
 
 class Import implements ImportInterface {
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
     public function importAction($action, \Zend_Controller_Request_Http $request)
     {

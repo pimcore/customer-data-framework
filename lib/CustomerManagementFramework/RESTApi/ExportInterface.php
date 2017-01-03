@@ -10,8 +10,11 @@ namespace CustomerManagementFramework\RESTApi;
 
 use CustomerManagementFramework\Filter\ExportActivitiesFilterParams;
 use CustomerManagementFramework\Filter\ExportCustomersFilterParams;
+use Psr\Log\LoggerInterface;
 
 interface ExportInterface {
+
+    public function __construct(LoggerInterface $logger);
 
     public function exportAction($action, \Zend_Controller_Request_Http $request);
 
