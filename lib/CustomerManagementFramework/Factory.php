@@ -25,6 +25,7 @@ use CustomerManagementFramework\CustomerView\CustomerViewInterface;
 use CustomerManagementFramework\ExportToolkit\ExportService\MailChimpExportService;
 use CustomerManagementFramework\RESTApi\ExportInterface;
 use CustomerManagementFramework\RESTApi\ImportInterface;
+use CustomerManagementFramework\RESTApi\UpdateInterface;
 use CustomerManagementFramework\SegmentManager\SegmentManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -136,6 +137,13 @@ class Factory {
      */
     public function getRESTApiImport() {
         return \Pimcore::getDiContainer()->get('CustomerManagementFramework\RESTApi\Import');
+    }
+
+    /**
+     * @return UpdateInterface
+     */
+    public function getRESTApiUpdate() {
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\RESTApi\Update');
     }
 
     /**

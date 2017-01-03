@@ -61,7 +61,7 @@ class Import implements ImportInterface {
     public function segmentGroup(array $data)
     {
 
-        if(!$data['name']) {
+        if(empty($data['name'])) {
             return new Response([
                 'success' => false,
                 'msg' => 'name required'
