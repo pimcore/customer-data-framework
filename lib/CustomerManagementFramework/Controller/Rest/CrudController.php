@@ -26,7 +26,14 @@ abstract class CrudController extends Webservice
         // state of the handler is not always predictable this way
         $handler->setRequest($request);
 
-        $response = $this->handleRequest($request, $handler);
+        try {
+            $response = $this->handleRequest($request, $handler);
+        } catch (\Exception $e) {
+            $response = new Response([
+                'success' => false,
+                'msg'     => $e->getMessage()
+            ], Response::RESPONSE_CODE_BAD_REQUEST);
+        }
 
         if (null === $response) {
             $response = new Response([
