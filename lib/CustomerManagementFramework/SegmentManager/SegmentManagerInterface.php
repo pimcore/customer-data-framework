@@ -119,6 +119,14 @@ interface SegmentManagerInterface {
     public function updateSegmentGroup(CustomerSegmentGroup $segmentGroup, array $values = []);
 
     /**
+     * @param CustomerSegment $segment
+     * @param array           $values
+     *
+     * @return mixed
+     */
+    public function updateSegment(CustomerSegment $segment, array $values = []);
+
+    /**
      * @param $segmentGroupReference
      * @param $calculated
      *

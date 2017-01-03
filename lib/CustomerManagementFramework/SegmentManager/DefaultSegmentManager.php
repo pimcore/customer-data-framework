@@ -17,11 +17,8 @@ use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use CustomerManagementFramework\Plugin;
 use CustomerManagementFramework\SegmentBuilder\SegmentBuilderInterface;
 use Pimcore\Db;
-use Pimcore\File;
-use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\Concrete;
 use Pimcore\Model\Object\CustomerSegment;
-use Pimcore\Model\Object\Customer;
 use Pimcore\Model\Object\CustomerSegmentGroup;
 use Pimcore\Model\Object\Service;
 use Psr\Log\LoggerInterface;
@@ -417,6 +414,33 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
 
         $segmentGroup->save();
+    }
+
+    public function updateSegment(CustomerSegment $segment, array $values = [])
+    {
+
+
+        $segment->setValues($values);
+
+        if(!empty($values['group'])) {
+            if(!$segmentGroup = CustomerSegmentGroup::getById($values['group'])) {
+                throw new \Exception("SegmentGroup with id %s not found", $values['group']);
+            }
+
+            $segment->setGroup($segmentGroup);
+            $segment->setParent($segmentGroup);
+        }
+
+        if(isset($values['calculated']) && $group = $segment->getGroup()) {
+            if($group->getCalculated() != (bool)$values['calculated']) {
+                throw new \Exception("calculated state of segment cannot be different then for it's segment group");
+            }
+        }
+
+        $segment->setKey(Objects::getValidKey($segment->getReference() ? : $segment->getName()));
+        Objects::checkObjectKey($segment);
+
+        $segment->save();
     }
 
     public function getSegmentGroupByReference($segmentGroupReference, $calculated)

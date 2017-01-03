@@ -9,8 +9,8 @@
 namespace CustomerManagementFramework\RESTApi;
 
 use CustomerManagementFramework\Factory;
-use CustomerManagementFramework\Helper\Objects;
 use CustomerManagementFramework\Service\ObjectToArray;
+use Pimcore\Model\Object\CustomerSegment;
 use Pimcore\Model\Object\CustomerSegmentGroup;
 use Psr\Log\LoggerInterface;
 
@@ -50,7 +50,7 @@ class Update implements UpdateInterface {
                 case "segment-group":
                     return $this->segmentGroup($data);
                 case "segment":
-                    //return $this->segment($data);
+                    return $this->segment($data);
                 case "segments-of-customer":
                     return $this->segmentsOfCustomer($data);
 
@@ -88,6 +88,30 @@ class Update implements UpdateInterface {
         Factory::getInstance()->getSegmentManager()->updateSegmentGroup($segmentGroup, $data);
 
         $result = ObjectToArray::getInstance()->toArray($segmentGroup);
+        $result['success'] = true;
+
+        return new Response($result, Response::RESPONSE_CODE_OK);
+    }
+
+    public function segment(array $data)
+    {
+        if(empty($data['id'])) {
+            return new Response([
+                'success' => false,
+                'msg' => 'id required'
+            ], Response::RESPONSE_CODE_BAD_REQUEST);
+        }
+
+        if(!$segment = CustomerSegment::getByid($data['id'])) {
+            return new Response([
+                'success' => false,
+                'msg' => sprintf('segment with id %s not found', $data['id'])
+            ], Response::RESPONSE_CODE_NOT_FOUND);
+        }
+
+        Factory::getInstance()->getSegmentManager()->updateSegment($segment, $data);
+
+        $result = $segment->getDataForWebserviceExport();
         $result['success'] = true;
 
         return new Response($result, Response::RESPONSE_CODE_OK);
