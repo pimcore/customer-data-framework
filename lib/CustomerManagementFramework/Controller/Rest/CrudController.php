@@ -141,7 +141,13 @@ abstract class CrudController extends Webservice
      */
     protected function sendResponse(Response $response)
     {
-        $this->getResponse()->setHttpResponseCode($response->getResponseCode());
+        $httpResponse = $this->getResponse();
+        $httpResponse->setHttpResponseCode($response->getResponseCode());
+
+        foreach ($response->getHeaders() as $key => $value) {
+            $httpResponse->setHeader($key, $value, true);
+        }
+
         $this->_helper->json($response->getData());
     }
 }

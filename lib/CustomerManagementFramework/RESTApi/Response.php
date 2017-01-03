@@ -18,11 +18,14 @@ class Response {
 
     private $data;
     private $responseCode;
+    private $headers = [];
 
-    public function __construct($data, $responseCode = self::RESPONSE_CODE_OK)
+    public function __construct($data = null, $responseCode = self::RESPONSE_CODE_OK, array $headers = [])
     {
         $this->data = $data;
         $this->responseCode = $responseCode;
+
+        $this->setHeaders($headers);
     }
 
     /**
@@ -57,6 +60,47 @@ class Response {
         $this->responseCode = $responseCode;
     }
 
+    /**
+     * @param string $key
+     * @param string $value
+     * @return $this
+     */
+    public function setHeader($key, $value)
+    {
+        $this->headers[$key] = $value;
 
+        return $this;
+    }
 
+    /**
+     * @param array $headers
+     * @return $this
+     */
+    public function setHeaders(array $headers)
+    {
+        foreach ($headers as $key => $value) {
+            $this->setHeader($key, $value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $key
+     * @return string|null
+     */
+    public function getHeader($key)
+    {
+        if (isset($this->headers[$key])) {
+            return $this->headers[$key];
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
 }
