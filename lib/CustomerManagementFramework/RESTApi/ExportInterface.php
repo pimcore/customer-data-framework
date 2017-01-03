@@ -10,6 +10,7 @@ namespace CustomerManagementFramework\RESTApi;
 
 use CustomerManagementFramework\Filter\ExportActivitiesFilterParams;
 use CustomerManagementFramework\Filter\ExportCustomersFilterParams;
+use CustomerManagementFramework\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 
 interface ExportInterface {
@@ -56,4 +57,11 @@ interface ExportInterface {
      * @return Response
      */
     public function segmentGroups(array $params);
+
+    /**
+     * @param CustomerInterface $customer
+     * @param ExportCustomersFilterParams $params
+     * @return array
+     */
+    public function hydrateCustomer(CustomerInterface $customer, ExportCustomersFilterParams $params);
 }

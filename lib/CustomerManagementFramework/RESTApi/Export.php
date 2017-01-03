@@ -11,6 +11,7 @@ namespace CustomerManagementFramework\RESTApi;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Filter\ExportActivitiesFilterParams;
 use CustomerManagementFramework\Filter\ExportCustomersFilterParams;
+use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Service\ObjectToArray;
 use Pimcore\Placeholder\Object;
 use Psr\Log\LoggerInterface;
@@ -32,13 +33,9 @@ class Export implements ExportInterface {
         switch($action) {
             case "customers":
 
-                $limit = intval($request->getParam('pageSize', 100));
+                $limit  = intval($request->getParam('pageSize', 100));
                 $offset = intval($request->getParam('page', 1));
-
-                $params = new \CustomerManagementFramework\Filter\ExportCustomersFilterParams;
-                $params->setIncludeActivities($request->getParam('includeActivities') == 'true' ? true : false);
-                $params->setSegments($request->getParam('segments'));
-                $params->setAllParams($request->getParams());
+                $params = ExportCustomersFilterParams::fromRequest($request);
 
                 return $this->customers($limit,$offset,$params);
 
@@ -94,13 +91,7 @@ class Export implements ExportInterface {
 
         $result = [];
         foreach($paginator as $customer) {
-            $c = $customer->cmfToArray();
-
-            if($params->getIncludeActivities()) {
-                $c['activities'] = Factory::getInstance()->getActivityStore()->getActivityDataForCustomer($customer);
-            }
-
-            $result[] = $c;
+            $result[] = $this->hydrateCustomer($customer, $params);
         }
 
         return new Response([
@@ -109,6 +100,22 @@ class Export implements ExportInterface {
             'timestamp' => $timestamp,
             'data' => $result
         ]);
+    }
+
+    /**
+     * @param CustomerInterface $customer
+     * @param ExportCustomersFilterParams $params
+     * @return array
+     */
+    public function hydrateCustomer(CustomerInterface $customer, ExportCustomersFilterParams $params)
+    {
+        $data = $customer->cmfToArray();
+
+        if ($params->getIncludeActivities()) {
+            $data['activities'] = Factory::getInstance()->getActivityStore()->getActivityDataForCustomer($customer);
+        }
+
+        return $data;
     }
 
     public function activities($pageSize, $page = 1, ExportActivitiesFilterParams $params)

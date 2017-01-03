@@ -23,6 +23,8 @@ use CustomerManagementFramework\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFramework\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFramework\CustomerView\CustomerViewInterface;
 use CustomerManagementFramework\ExportToolkit\ExportService\MailChimpExportService;
+use CustomerManagementFramework\RESTApi\CrudInterface;
+use CustomerManagementFramework\RESTApi\CustomersApi;
 use CustomerManagementFramework\RESTApi\ExportInterface;
 use CustomerManagementFramework\RESTApi\ImportInterface;
 use CustomerManagementFramework\RESTApi\UpdateInterface;
@@ -144,6 +146,14 @@ class Factory {
      */
     public function getRESTApiUpdate() {
         return \Pimcore::getDiContainer()->get('CustomerManagementFramework\RESTApi\Update');
+    }
+
+    /**
+     * @return CustomersApi|CrudInterface
+     */
+    public function getRESTApiCustomers()
+    {
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\RESTApi\Customers');
     }
 
     /**

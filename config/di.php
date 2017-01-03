@@ -7,6 +7,7 @@ use CustomerManagementFramework\CustomerProvider\DefaultCustomerProvider;
 use CustomerManagementFramework\Encryption\DefaultEncryptionService;
 use CustomerManagementFramework\Encryption\EncryptionServiceInterface;
 use CustomerManagementFramework\ExportToolkit\ExportService\MailChimpExportService;
+use CustomerManagementFramework\RESTApi\CustomersApi;
 
 $config = \CustomerManagementFramework\Plugin::getConfig();
 
@@ -40,6 +41,11 @@ return [
     'CustomerManagementFramework\RESTApi\Update'
         => DI\object('CustomerManagementFramework\RESTApi\Update')
         ->constructor(DI\get('CustomerManagementFramework\Logger')),
+
+    'CustomerManagementFramework\RESTApi\Customers'
+        => DI\object(CustomersApi::class)
+            ->constructor(DI\get(CustomerProviderInterface::class), DI\get('CustomerManagementFramework\RESTApi\Export'))
+            ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
 
     CustomerProviderInterface::class
         => DI\object(DefaultCustomerProvider::class),
