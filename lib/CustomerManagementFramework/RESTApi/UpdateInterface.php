@@ -24,4 +24,11 @@ interface UpdateInterface {
      * @return Response
      */
     public function segmentsOfCustomer(array $data);
+
+    /**
+     * @param array $data
+     *
+     * @return mixed
+     */
+    public function segmentGroup(array $data);
 }

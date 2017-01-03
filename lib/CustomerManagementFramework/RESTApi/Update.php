@@ -9,6 +9,9 @@
 namespace CustomerManagementFramework\RESTApi;
 
 use CustomerManagementFramework\Factory;
+use CustomerManagementFramework\Helper\Objects;
+use CustomerManagementFramework\Service\ObjectToArray;
+use Pimcore\Model\Object\CustomerSegmentGroup;
 use Psr\Log\LoggerInterface;
 
 class Update implements UpdateInterface {
@@ -45,7 +48,7 @@ class Update implements UpdateInterface {
         try {
             switch($action) {
                 case "segment-group":
-                   // return $this->segmentGroup($data);
+                    return $this->segmentGroup($data);
                 case "segment":
                     //return $this->segment($data);
                 case "segments-of-customer":
@@ -64,6 +67,30 @@ class Update implements UpdateInterface {
             "success" => false,
             "msg" => sprintf("rest action '%s' not found", $action)
         ], Response::RESPONSE_CODE_NOT_FOUND);
+    }
+
+    public function segmentGroup(array $data)
+    {
+        if(empty($data['id'])) {
+            return new Response([
+                'success' => false,
+                'msg' => 'id required'
+            ], Response::RESPONSE_CODE_BAD_REQUEST);
+        }
+
+        if(!$segmentGroup = CustomerSegmentGroup::getByid($data['id'])) {
+            return new Response([
+                'success' => false,
+                'msg' => sprintf('segment group with id %s not found', $data['id'])
+            ], Response::RESPONSE_CODE_NOT_FOUND);
+        }
+
+        Factory::getInstance()->getSegmentManager()->updateSegmentGroup($segmentGroup, $data);
+
+        $result = ObjectToArray::getInstance()->toArray($segmentGroup);
+        $result['success'] = true;
+
+        return new Response($result, Response::RESPONSE_CODE_OK);
     }
 
     public function segmentsOfCustomer(array $data)

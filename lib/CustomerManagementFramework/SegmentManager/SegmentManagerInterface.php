@@ -111,6 +111,14 @@ interface SegmentManagerInterface {
     public function createSegmentGroup($segmentGroupName, $segmentGroupReference = null, $calculated = false, array $values = []);
 
     /**
+     * @param CustomerSegmentGroup $segmentGroup
+     * @param array                $values
+     *
+     * @return mixed
+     */
+    public function updateSegmentGroup(CustomerSegmentGroup $segmentGroup, array $values = []);
+
+    /**
      * @param $segmentGroupReference
      * @param $calculated
      *

@@ -79,7 +79,7 @@ class Export implements ExportInterface {
         if($params->getSegments()) {
             $customers = Factory::getInstance()->getSegmentManager()->getCustomersBySegmentIds($params->getSegments());
         } else {
-            $customers = new \Pimcore\Model\Object\Customer\Listing;
+            $customers = Factory::getInstance()->getCustomerProvider()->getList();
         }
 
         $customers->setOrderKey('o_id');

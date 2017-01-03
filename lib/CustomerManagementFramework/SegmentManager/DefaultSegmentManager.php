@@ -60,7 +60,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
     public function getCustomersBySegmentIds(array $segmentIds, $conditionMode = self::CONDITION_AND)
     {
-        $list = new \Pimcore\Model\Object\Customer\Listing;
+        $list = Factory::getInstance()->getCustomerProvider()->getList();
         $list->setUnpublished(false);
 
         $conditions = [];
@@ -394,6 +394,29 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $segmentGroup->save();
 
         return $segmentGroup;
+    }
+
+    public function updateSegmentGroup(CustomerSegmentGroup $segmentGroup, array $values = [])
+    {
+        $calculatedState = $segmentGroup->getCalculated();
+        $segmentGroup->setValues($values);
+        $segmentGroup->setKey(Objects::getValidKey($segmentGroup->getReference() ? : $segmentGroup->getName()));
+        Objects::checkObjectKey($segmentGroup);
+
+        if(isset($values['calculated'])) {
+            if((bool)$values['calculated'] != $calculatedState) {
+                foreach(Factory::getInstance()->getSegmentManager()->getSegmentsFromSegmentGroup($segmentGroup) as $segment) {
+                    if($segment->getCalculated() != (bool)$values['calculated']) {
+                        $segment->setCalculated((bool)$values['calculated']);
+                        $segment->save();
+                    }
+                }
+
+                $segmentGroup->setParent(Service::createFolderByPath((bool)$values['calculated'] ? $this->config->segmentsFolder->calculated : $this->config->segmentsFolder->manual));
+            }
+        }
+
+        $segmentGroup->save();
     }
 
     public function getSegmentGroupByReference($segmentGroupReference, $calculated)
