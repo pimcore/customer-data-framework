@@ -249,7 +249,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
                 $description = [];
 
-                $title = 'Segment(s) added to customer';
+                $title = 'Segment(s) added';
                 if($hintForNotes) {
                     $title .= ' (' . $hintForNotes . ')';
                 }
@@ -270,7 +270,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
                 $description = [];
 
-                $title = 'Segment(s) removed from customer';
+                $title = 'Segment(s) removed';
                 if($hintForNotes) {
                     $title .= ' (' . $hintForNotes . ')';
                 }
