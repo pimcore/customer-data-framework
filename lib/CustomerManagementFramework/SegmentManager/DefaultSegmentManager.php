@@ -172,9 +172,46 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $segmentBuilder->calculateSegments($customer, $this);
     }
 
-    public function mergeCalculatedSegments(CustomerInterface $customer, array $addSegments, array $deleteSegments = [])
+    public function mergeSegments(CustomerInterface $customer, array $addSegments, array $deleteSegments = [])
     {
-        $currentSegments = (array)$customer->getCalculatedSegments();
+        $addCalculatedSegments = [];
+        foreach($addSegments as $segment) {
+            if($segment->getCalculated()) {
+                $addCalculatedSegments[] = $segment;
+            }
+        }
+        $deleteCalculatedSegments = [];
+        foreach($deleteSegments as $segment) {
+            if($segment->getCalculated()) {
+                $deleteCalculatedSegments[] = $segment;
+            }
+        }
+
+        if(sizeof($addCalculatedSegments) || sizeof($deleteCalculatedSegments)) {
+            $this->mergeSegmentsHelper($customer, $addCalculatedSegments, $deleteCalculatedSegments, true);
+        }
+
+        $addManualSegments = [];
+        foreach($addSegments as $segment) {
+            if(!$segment->getCalculated()) {
+                $addManualSegments[] = $segment;
+            }
+        }
+        $deleteManualSegments = [];
+        foreach($deleteSegments as $segment) {
+            if(!$segment->getCalculated()) {
+                $deleteManualSegments[] = $segment;
+            }
+        }
+
+        if(sizeof($addManualSegments) || sizeof($deleteManualSegments)) {
+            $this->mergeSegmentsHelper($customer, $addManualSegments, $deleteManualSegments, false);
+        }
+    }
+
+    protected function mergeSegmentsHelper(CustomerInterface $customer, array $addSegments, array $deleteSegments = [], $calculated = false)
+    {
+        $currentSegments = $calculated ? (array)$customer->getCalculatedSegments() : (array)$customer->getManualSegments();
 
         $saveNeeded = false;
         if(Objects::addObjectsToArray($currentSegments, $addSegments)) {
@@ -188,36 +225,16 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         if($saveNeeded) {
             $backup = \Pimcore\Model\Version::$disabled;
             \Pimcore\Model\Version::disable();
-            $customer->setCalculatedSegments($currentSegments);
+            if($calculated) {
+                $customer->setCalculatedSegments($currentSegments);
+            } else {
+                $customer->setManualSegments($currentSegments);
+            }
+
             $segmentBuildingHookBackup = Factory::getInstance()->getCustomerSaveManager()->getSegmentBuildingHookEnabled();
             Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled(false);
             $customer->save();
             Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled($segmentBuildingHookBackup);
-
-            if(!$backup) {
-                \Pimcore\Model\Version::enable();
-            }
-        }
-    }
-
-    public function mergeManualSegments(CustomerInterface $customer, array $addSegments, array $deleteSegments = [])
-    {
-        $currentSegments = (array)$customer->getManualSegments();
-
-        $saveNeeded = false;
-        if(Objects::addObjectsToArray($currentSegments, $addSegments)) {
-            $saveNeeded = true;
-        }
-
-        if(Objects::removeObjectsFromArray($currentSegments, $deleteSegments)) {
-            $saveNeeded = true;
-        }
-
-        if($saveNeeded) {
-            $backup = \Pimcore\Model\Version::$disabled;
-            \Pimcore\Model\Version::disable();
-            $customer->setManualSegments($currentSegments);
-            $customer->save();
 
             if(!$backup) {
                 \Pimcore\Model\Version::enable();

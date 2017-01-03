@@ -37,11 +37,7 @@ class AddSegment extends AbstractAction {
                 $deleteSegments =  Factory::getInstance()->getSegmentManager()->getSegmentsFromSegmentGroup($segmentGroup, [$segment]);
             }
 
-            if($segment->getCalculated()) {
-                Factory::getInstance()->getSegmentManager()->mergeCalculatedSegments($customer, [$segment], $deleteSegments);
-            } else {
-                Factory::getInstance()->getSegmentManager()->mergeManualSegments($customer, [$segment], $deleteSegments);
-            }
+            Factory::getInstance()->getSegmentManager()->mergeSegments($customer, [$segment], $deleteSegments);
 
         } else {
             $this->logger->error(sprintf("AddSegment action: segment with ID %s not found", $options[self::OPTION_SEGMENT_ID]));

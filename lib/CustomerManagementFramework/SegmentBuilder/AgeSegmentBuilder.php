@@ -85,7 +85,7 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder {
             $segments[] = $ageSegment;
         }
 
-        $segmentManager->mergeCalculatedSegments($customer, $segments, $segmentManager->getSegmentsFromSegmentGroup($this->segmentGroup, $segments));
+        $segmentManager->mergeSegments($customer, $segments, $segmentManager->getSegmentsFromSegmentGroup($this->segmentGroup, $segments));
     }
 
     /**
