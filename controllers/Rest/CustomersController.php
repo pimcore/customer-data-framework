@@ -1,17 +1,16 @@
 <?php
 
-use CustomerManagementFramework\Controller\Rest\CrudController;
+use CustomerManagementFramework\Controller\Rest\RestHandlerController;
 use CustomerManagementFramework\Factory;
-use CustomerManagementFramework\RESTApi\CrudInterface;
-use CustomerManagementFramework\RESTApi\CustomersApi;
+use CustomerManagementFramework\RESTApi\CustomersHandler;
 
-class CustomerManagementFramework_Rest_CustomersController extends CrudController
+class CustomerManagementFramework_Rest_CustomersController extends RestHandlerController
 {
     /**
-     * @return CrudInterface|CustomersApi
+     * @return CustomersHandler
      */
     protected function getHandler()
     {
-        return Factory::getInstance()->getRESTApiCustomers();
+        return Factory::getInstance()->getRESTApiCustomersHandler();
     }
 }

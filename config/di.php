@@ -7,7 +7,7 @@ use CustomerManagementFramework\CustomerProvider\DefaultCustomerProvider;
 use CustomerManagementFramework\Encryption\DefaultEncryptionService;
 use CustomerManagementFramework\Encryption\EncryptionServiceInterface;
 use CustomerManagementFramework\ExportToolkit\ExportService\MailChimpExportService;
-use CustomerManagementFramework\RESTApi\CustomersApi;
+use CustomerManagementFramework\RESTApi\CustomersHandler;
 use Interop\Container\ContainerInterface;
 use Pimcore\View\Helper\Url;
 
@@ -17,6 +17,7 @@ return [
     // parameters/values
     'cmf.rest.customers.route'          => 'cmf-rest-customers',
     'cmf.rest.customers.resource-route' => 'cmf-rest-customers-resource',
+    'cmf.rest.customers.prefix'         => '/cmf/api/customers',
 
     // pimcore URL view helper - TODO move this to core?
     Url::class => function(ContainerInterface $container) {
@@ -62,12 +63,10 @@ return [
         => DI\object('CustomerManagementFramework\RESTApi\Update')
         ->constructor(DI\get('CustomerManagementFramework\Logger')),
 
-    'CustomerManagementFramework\RESTApi\Customers'
-        => DI\object(CustomersApi::class)
+    CustomersHandler::class
+        => DI\object(CustomersHandler::class)
             ->constructor(DI\get(CustomerProviderInterface::class), DI\get('CustomerManagementFramework\RESTApi\Export'))
-            ->method('setApiRoute', DI\get('cmf.rest.customers.route'))
-            ->method('setApiResourceRoute', DI\get('cmf.rest.customers.resource-route'))
-            ->method('setUrlHelper', DI\get(Url::class))
+            ->method('setPathPrefix', DI\get('cmf.rest.customers.prefix'))
             ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
 
     CustomerProviderInterface::class
