@@ -7,6 +7,7 @@ use CustomerManagementFramework\Filter\ExportCustomersFilterParams;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\RESTApi\Exception\ResourceNotFoundException;
 use CustomerManagementFramework\RESTApi\Traits\ResourceUrlGenerator;
+use CustomerManagementFramework\RESTApi\Traits\ResponseGenerator;
 use CustomerManagementFramework\Traits\LoggerAware;
 use Pimcore\Model\Object\Concrete;
 use Symfony\Component\Routing\RouteCollection;
@@ -14,6 +15,7 @@ use Symfony\Component\Routing\RouteCollection;
 class CustomersHandler extends AbstractRoutingHandler
 {
     use LoggerAware;
+    use ResponseGenerator;
     use ResourceUrlGenerator;
 
     /**
@@ -114,9 +116,13 @@ class CustomersHandler extends AbstractRoutingHandler
     {
         $data = $this->getRequestData($request);
 
-        /** @var CustomerInterface|Concrete $customer */
-        $customer = $this->customerProvider->create($data);
-        $customer->save();
+        try {
+            /** @var CustomerInterface|Concrete $customer */
+            $customer = $this->customerProvider->create($data);
+            $customer->save();
+        } catch (\Exception $e) {
+            return $this->createErrorResponse($e->getMessage());
+        }
 
         $response = $this->createCustomerResponse($customer, $request);
         $response->setResponseCode(Response::RESPONSE_CODE_CREATED);
@@ -138,8 +144,12 @@ class CustomersHandler extends AbstractRoutingHandler
         $customer = $this->loadCustomer($params);
         $data     = $this->getRequestData($request);
 
-        $this->customerProvider->update($customer, $data);
-        $customer->save();
+        try {
+            $this->customerProvider->update($customer, $data);
+            $customer->save();
+        } catch (\Exception $e) {
+            return $this->createErrorResponse($e->getMessage());
+        }
 
         return $this->createCustomerResponse($customer, $request);
     }
@@ -155,7 +165,11 @@ class CustomersHandler extends AbstractRoutingHandler
     {
         $customer = $this->loadCustomer($params);
 
-        $this->customerProvider->delete($customer);
+        try {
+            $this->customerProvider->delete($customer);
+        } catch (\Exception $e) {
+            return $this->createErrorResponse($e->getMessage());
+        }
 
         return $this->createResponse(null, Response::RESPONSE_CODE_NO_CONTENT);
     }
@@ -187,30 +201,6 @@ class CustomersHandler extends AbstractRoutingHandler
         }
 
         return $customer;
-    }
-
-    /**
-     * Create a JSON response with normalized body containing timestamp
-     *
-     * TODO timestamp needed?
-     * TODO use a standard format like JSON-API?
-     *
-     * @param array|null $data
-     * @param $code
-     * @return Response
-     */
-    protected function createResponse(array $data = null, $code = Response::RESPONSE_CODE_OK)
-    {
-        $responseData = null;
-        if (null !== $data) {
-            $responseData = [
-                'timestamp' => time()
-            ];
-
-            $responseData['data'] = $data;
-        }
-
-        return new Response($responseData, $code);
     }
 
     /**
