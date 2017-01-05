@@ -5,6 +5,7 @@ namespace CustomerManagementFramework\Controller\Rest;
 use CustomerManagementFramework\RESTApi\Exception\ExceptionInterface;
 use CustomerManagementFramework\RESTApi\HandlerInterface;
 use CustomerManagementFramework\RESTApi\Response;
+use CustomerManagementFramework\RESTApi\Traits\ResponseGenerator;
 use Pimcore\Controller\Action\Webservice;
 
 /**
@@ -12,6 +13,8 @@ use Pimcore\Controller\Action\Webservice;
  */
 abstract class RestHandlerController extends Webservice
 {
+    use ResponseGenerator;
+
     /**
      * @return HandlerInterface
      */
@@ -25,10 +28,10 @@ abstract class RestHandlerController extends Webservice
         try {
             $response = $handler->handle($this->getRequest());
         } catch (ExceptionInterface $e) {
-            $response = new Response([
-                'success' => false,
-                'msg'     => $e->getMessage()
-            ], $e->getCode() > 0 ? $e->getCode() : 400);
+            $response = $this->createErrorResponse(
+                $e->getMessage(),
+                $e->getCode() > 0 ? $e->getCode() : 400
+            );
         }
 
         $this->sendResponse($response);
