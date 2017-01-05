@@ -6,6 +6,7 @@ use CustomerManagementFramework\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFramework\Filter\ExportCustomersFilterParams;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\RESTApi\Exception\ResourceNotFoundException;
+use CustomerManagementFramework\RESTApi\Traits\ResourceUrlGenerator;
 use CustomerManagementFramework\Traits\LoggerAware;
 use Pimcore\Model\Object\Concrete;
 use Symfony\Component\Routing\RouteCollection;
@@ -13,6 +14,7 @@ use Symfony\Component\Routing\RouteCollection;
 class CustomersHandler extends AbstractRoutingHandler
 {
     use LoggerAware;
+    use ResourceUrlGenerator;
 
     /**
      * @var CustomerProviderInterface
@@ -225,8 +227,42 @@ class CustomersHandler extends AbstractRoutingHandler
             $params = ExportCustomersFilterParams::fromRequest($request);
         }
 
-        return $this->createResponse(
+        $response = $this->createResponse(
             $this->export->hydrateCustomer($customer, $params)
         );
+
+        $this->addCustomerResponseLinks($customer, $response);
+
+        return $response;
+    }
+
+    /**
+     * @param CustomerInterface $customer
+     * @param Response $response
+     * @return Response
+     */
+    protected function addCustomerResponseLinks(CustomerInterface $customer, Response $response)
+    {
+        if (!is_array($response->getData())) {
+            return $response;
+        }
+
+        $data  = $response->getData();
+        $links = isset($data['links']) ? $data['links'] : [];
+
+        if ($selfLink = $this->generateElementApiUrl($customer)) {
+            $links[] = [
+                'rel'    => 'self',
+                'href'   => $selfLink,
+                'method' => 'GET'
+            ];
+        }
+
+        if (!empty($links)) {
+            $data['links'] = $links;
+            $response->setData($data);
+        }
+
+        return $response;
     }
 }
