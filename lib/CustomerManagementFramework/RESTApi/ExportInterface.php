@@ -26,15 +26,6 @@ interface ExportInterface {
      *
      * @return Response
      */
-    public function customers($pageSize, $page = 1, ExportCustomersFilterParams $params);
-
-    /**
-     * @param                             $pageSize
-     * @param int                         $page
-     * @param ExportCustomersFilterParams $params
-     *
-     * @return Response
-     */
     public function activities($pageSize, $page = 1, ExportActivitiesFilterParams $params);
 
     /**
@@ -57,11 +48,4 @@ interface ExportInterface {
      * @return Response
      */
     public function segmentGroups(array $params);
-
-    /**
-     * @param CustomerInterface $customer
-     * @param ExportCustomersFilterParams $params
-     * @return array
-     */
-    public function hydrateCustomer(CustomerInterface $customer, ExportCustomersFilterParams $params);
 }

@@ -31,14 +31,6 @@ class Export implements ExportInterface {
     public function exportAction($action, \Zend_Controller_Request_Http $request)
     {
         switch($action) {
-            case "customers":
-
-                $limit  = intval($request->getParam('pageSize', 100));
-                $offset = intval($request->getParam('page', 1));
-                $params = ExportCustomersFilterParams::fromRequest($request);
-
-                return $this->customers($limit,$offset,$params);
-
             case "activities":
                 $pageSize = intval($request->getParam('pageSize', 100));
                 $page = intval($request->getParam('page', 1));
@@ -68,54 +60,6 @@ class Export implements ExportInterface {
             "success" => false,
             "msg" => sprintf("rest action '%s' not found", $action)
         ], Response::RESPONSE_CODE_NOT_FOUND);
-    }
-
-    public function customers($pageSize, $page = 1, ExportCustomersFilterParams $params)
-    {
-
-        if($params->getSegments()) {
-            $customers = Factory::getInstance()->getSegmentManager()->getCustomersBySegmentIds($params->getSegments());
-        } else {
-            $customers = Factory::getInstance()->getCustomerProvider()->getList();
-        }
-
-        $customers->setOrderKey('o_id');
-        $customers->setOrder('asc');
-        $customers->setUnpublished(false);
-
-        $paginator = new \Zend_Paginator($customers);
-        $paginator->setItemCountPerPage($pageSize);
-        $paginator->setCurrentPageNumber($page);
-
-        $timestamp = time();
-
-        $result = [];
-        foreach($paginator as $customer) {
-            $result[] = $this->hydrateCustomer($customer, $params);
-        }
-
-        return new Response([
-            'page' => $page,
-            'totalPages' => $paginator->getPages()->pageCount,
-            'timestamp' => $timestamp,
-            'data' => $result
-        ]);
-    }
-
-    /**
-     * @param CustomerInterface $customer
-     * @param ExportCustomersFilterParams $params
-     * @return array
-     */
-    public function hydrateCustomer(CustomerInterface $customer, ExportCustomersFilterParams $params)
-    {
-        $data = $customer->cmfToArray();
-
-        if ($params->getIncludeActivities()) {
-            $data['activities'] = Factory::getInstance()->getActivityStore()->getActivityDataForCustomer($customer);
-        }
-
-        return $data;
     }
 
     public function activities($pageSize, $page = 1, ExportActivitiesFilterParams $params)

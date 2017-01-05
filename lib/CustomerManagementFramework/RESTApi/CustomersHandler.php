@@ -3,6 +3,7 @@
 namespace CustomerManagementFramework\RESTApi;
 
 use CustomerManagementFramework\CustomerProvider\CustomerProviderInterface;
+use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Filter\ExportCustomersFilterParams;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\RESTApi\Exception\ResourceNotFoundException;
@@ -23,18 +24,11 @@ class CustomersHandler extends AbstractCrudRoutingHandler
     protected $customerProvider;
 
     /**
-     * @var ExportInterface
-     */
-    protected $export;
-
-    /**
      * @param CustomerProviderInterface $customerProvider
-     * @param ExportInterface $export
      */
-    public function __construct(CustomerProviderInterface $customerProvider, ExportInterface $export)
+    public function __construct(CustomerProviderInterface $customerProvider)
     {
         $this->customerProvider = $customerProvider;
-        $this->export           = $export;
     }
 
     /**
@@ -46,7 +40,34 @@ class CustomersHandler extends AbstractCrudRoutingHandler
      */
     public function listRecords(\Zend_Controller_Request_Http $request, array $params = [])
     {
-        return $this->export->exportAction('customers', $request);
+        $params = ExportCustomersFilterParams::fromRequest($request);
+
+        if ($params->getSegments()) {
+            $customers = Factory::getInstance()->getSegmentManager()->getCustomersBySegmentIds($params->getSegments());
+        } else {
+            $customers = Factory::getInstance()->getCustomerProvider()->getList();
+        }
+
+        $customers->setOrderKey('o_id');
+        $customers->setOrder('asc');
+        $customers->setUnpublished(false);
+
+        $paginator = new \Zend_Paginator($customers);
+        $this->handlePaginatorParams($paginator, $request);
+
+        $timestamp = time();
+
+        $result = [];
+        foreach ($paginator as $customer) {
+            $result[] = $this->hydrateCustomer($customer, $params);
+        }
+
+        return new Response([
+            'page'       => $paginator->getCurrentPageNumber(),
+            'totalPages' => $paginator->getPages()->pageCount,
+            'timestamp'  => $timestamp,
+            'data'       => $result
+        ]);
     }
 
     /**
@@ -162,6 +183,21 @@ class CustomersHandler extends AbstractCrudRoutingHandler
     }
 
     /**
+     * @param \Zend_Paginator $paginator
+     * @param \Zend_Controller_Request_Http $request
+     * @param int $defaultPageSize
+     * @param int $defaultPage
+     */
+    protected function handlePaginatorParams(\Zend_Paginator $paginator, \Zend_Controller_Request_Http $request, $defaultPageSize = 100, $defaultPage = 1)
+    {
+        $pageSize = intval($request->getParam('pageSize', $defaultPageSize));
+        $page     = intval($request->getParam('page', $defaultPage));
+
+        $paginator->setItemCountPerPage($pageSize);
+        $paginator->setCurrentPageNumber($page);
+    }
+
+    /**
      * Create customer response with hydrated customer data
      *
      * @param CustomerInterface $customer
@@ -176,27 +212,26 @@ class CustomersHandler extends AbstractCrudRoutingHandler
         }
 
         $response = $this->createResponse(
-            $this->export->hydrateCustomer($customer, $params)
+            $this->hydrateCustomer($customer, $params)
         );
-
-        $this->addCustomerResponseLinks($customer, $response);
 
         return $response;
     }
 
     /**
      * @param CustomerInterface $customer
-     * @param Response $response
-     * @return Response
+     * @param ExportCustomersFilterParams $params
+     * @return array
      */
-    protected function addCustomerResponseLinks(CustomerInterface $customer, Response $response)
+    protected function hydrateCustomer(CustomerInterface $customer, ExportCustomersFilterParams $params)
     {
-        if (!is_array($response->getData())) {
-            return $response;
+        $data = $customer->cmfToArray();
+
+        if ($params->getIncludeActivities()) {
+            $data['activities'] = Factory::getInstance()->getActivityStore()->getActivityDataForCustomer($customer);
         }
 
-        $data  = $response->getData();
-        $links = isset($data['links']) ? $data['links'] : [];
+        $links = isset($data['_links']) ? $data['_links'] : [];
 
         if ($selfLink = $this->generateElementApiUrl($customer)) {
             $links[] = [
@@ -206,11 +241,8 @@ class CustomersHandler extends AbstractCrudRoutingHandler
             ];
         }
 
-        if (!empty($links)) {
-            $data['links'] = $links;
-            $response->setData($data);
-        }
+        $data['_links'] = $links;
 
-        return $response;
+        return $data;
     }
 }

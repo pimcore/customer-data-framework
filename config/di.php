@@ -65,7 +65,7 @@ return [
 
     CustomersHandler::class
         => DI\object(CustomersHandler::class)
-            ->constructor(DI\get(CustomerProviderInterface::class), DI\get('CustomerManagementFramework\RESTApi\Export'))
+            ->constructor(DI\get(CustomerProviderInterface::class))
             ->method('setPathPrefix', DI\get('cmf.rest.customers.prefix'))
             ->method('setApiRoute', DI\get('cmf.rest.customers.route'))
             ->method('setApiResourceRoute', DI\get('cmf.rest.customers.resource-route'))
