@@ -51,6 +51,7 @@ abstract class AbstractRoutingHandler implements HandlerInterface
             $result = $matcher->match($request->getPathInfo());
             $route  = $routes->get($result['_route']);
 
+            // the actual action to call is set on a route option (see createRoute method)
             $action = $route->getOption('action');
             if (empty($action)) {
                 throw new \RuntimeException(
