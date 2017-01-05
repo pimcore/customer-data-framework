@@ -47,13 +47,13 @@ the `getRoutes` method and add your custom routes or modify the existing ones.
 
 The customers API implements standard REST calls for customer CRUD actions:
 
-| Path                    | Method | Description                 |
-|-------------------------|--------|-----------------------------|
-| /cmf/api/customers      | GET    | Fetch all customers         |
-| /cmf/api/customers/{id} | GET    | Fetch a single customer     |
-| /cmf/api/customers      | POST   | Create a new customer       |
-| /cmf/api/customers/{id} | PATCH  | Partially update a customer |
-| /cmf/api/customers/{id} | DELETE | Delete a customer           |
+| Path                      | Method   | Description                 |
+|---------------------------|----------|-----------------------------|
+| `/cmf/api/customers`      | `GET`    | Fetch all customers         |
+| `/cmf/api/customers/{id}` | `GET`    | Fetch a single customer     |
+| `/cmf/api/customers`      | `POST`   | Create a new customer       |
+| `/cmf/api/customers/{id}` | `PATCH`  | Partially update a customer |
+| `/cmf/api/customers/{id}` | `DELETE` | Delete a customer           |
 
 The `GET` requests can be filtered by passing the follwing params as query params:
 
