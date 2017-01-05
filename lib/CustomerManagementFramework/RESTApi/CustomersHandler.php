@@ -10,9 +10,8 @@ use CustomerManagementFramework\RESTApi\Traits\ResourceUrlGenerator;
 use CustomerManagementFramework\RESTApi\Traits\ResponseGenerator;
 use CustomerManagementFramework\Traits\LoggerAware;
 use Pimcore\Model\Object\Concrete;
-use Symfony\Component\Routing\RouteCollection;
 
-class CustomersHandler extends AbstractRoutingHandler
+class CustomersHandler extends AbstractCrudRoutingHandler
 {
     use LoggerAware;
     use ResponseGenerator;
@@ -36,47 +35,6 @@ class CustomersHandler extends AbstractRoutingHandler
     {
         $this->customerProvider = $customerProvider;
         $this->export           = $export;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function getRoutes()
-    {
-        $routes = new RouteCollection();
-
-        $routes->add(
-            'list',
-            $this->createRoute('GET', '/', 'listRecords')
-        );
-
-        $routes->add(
-            'read',
-            $this
-                ->createRoute('GET', '/{id}', 'readRecord')
-                ->setRequirement('id', '\d+')
-        );
-
-        $routes->add(
-            'create',
-            $this->createRoute('POST', '/', 'createRecord')
-        );
-
-        $routes->add(
-            'update',
-            $this
-                ->createRoute('PUT', '/{id}', 'updateRecord')
-                ->setRequirement('id', '\d+')
-        );
-
-        $routes->add(
-            'delete',
-            $this
-                ->createRoute('DELETE', '/{id}', 'deleteRecord')
-                ->setRequirement('id', '\d+')
-        );
-
-        return $routes;
     }
 
     /**
