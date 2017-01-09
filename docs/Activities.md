@@ -29,6 +29,8 @@ The CMF plugin contains a list view for displaying activities. This is added as 
 ![ActivityView](./img/ActivityView.png)
 
 
+### Handle how activities are displayed in the ActivityView
+
 It's possible to handle how activities are displayed within the ActivityView by implementing the following 3 methods of the ActivityInterface:
 ```php
 /**
