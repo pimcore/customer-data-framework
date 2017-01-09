@@ -16,7 +16,7 @@ The ActivityStore is responsible for saving and reading activity data from/into 
 
 [docs for dynamic columns](https://mariadb.com/kb/en/mariadb/dynamic-columns/)
 
-By implementing the ActivityStoreInterface it's possible to create it's own implementation for storing activities (for example in a MongoDB database).
+By implementing the ActivityStoreInterface it's possible to create your own implementation for storing activities (for example in a MongoDB database).
 
 ## ActivityManager
 
