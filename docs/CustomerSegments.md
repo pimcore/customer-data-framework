@@ -9,3 +9,8 @@ The customer management framework includes tools for creating and managing custo
 The customer object contains two separate fields for manual and calculated segments. Manuals segments are added within the Pimcore backend by drag and drop. Calculated segments could be added by the CMF within the segment building process.
 
 ![manual vs calculated segments](./img/Segments.png)
+
+## SegmentManager
+
+The SegmentManager is responsible for managing, creating, reading CustomerSegments and CustomerSegmentGroups within the CMF. Take a look at the SegmentManagerInterface there you will find inline PHP docs for each contained method.
+
