@@ -9,7 +9,8 @@ use CustomerManagementFramework\Encryption\EncryptionServiceInterface;
 use CustomerManagementFramework\ExportToolkit\ExportService\MailChimpExportService;
 use CustomerManagementFramework\RESTApi\CustomersHandler;
 use CustomerManagementFramework\RESTApi\SegmentsHandler;
-use \CustomerManagementFramework\RESTApi\SegmentGroupsHandler;
+use CustomerManagementFramework\RESTApi\SegmentGroupsHandler;
+use CustomerManagementFramework\RESTApi\SegmentsOfCustomerHandler;
 use Interop\Container\ContainerInterface;
 use Pimcore\View\Helper\Url;
 
@@ -28,6 +29,9 @@ return [
     'cmf.rest.segment-groups.prefix'          => '/cmf/api/segment-groups',
     'cmf.rest.segment-groups.route'          => 'cmf-rest-segment-groups',
     'cmf.rest.segment-groups.resource-route' => 'cmf-rest-segment-groups-resource',
+
+    'cmf.rest.segments-of-customer.prefix'          => '/cmf/api/segments-of-customer',
+    'cmf.rest.segments-of-customer.route'          => 'cmf-rest-segments-of-customer',
 
     // pimcore URL view helper - TODO move this to core?
     Url::class => function(ContainerInterface $container) {
@@ -93,6 +97,11 @@ return [
             ->method('setApiRoute', DI\get('cmf.rest.segment-groups.route'))
             ->method('setApiResourceRoute', DI\get('cmf.rest.segment-groups.resource-route'))
             ->method('setUrlHelper', DI\get(Url::class))
+            ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
+
+    SegmentsOfCustomerHandler::class
+        => DI\object(SegmentsOfCustomerHandler::class)
+            ->method('setPathPrefix', DI\get('cmf.rest.segments-of-customer.prefix'))
             ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
 
     CustomerProviderInterface::class

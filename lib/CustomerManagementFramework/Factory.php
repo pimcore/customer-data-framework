@@ -27,6 +27,7 @@ use CustomerManagementFramework\RESTApi\CustomersHandler;
 use CustomerManagementFramework\RESTApi\ExportInterface;
 use CustomerManagementFramework\RESTApi\SegmentGroupsHandler;
 use CustomerManagementFramework\RESTApi\SegmentsHandler;
+use CustomerManagementFramework\RESTApi\SegmentsOfCustomerHandler;
 use CustomerManagementFramework\RESTApi\UpdateInterface;
 use CustomerManagementFramework\SegmentManager\SegmentManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -147,6 +148,14 @@ class Factory {
     public function getRESTApiCustomersHandler()
     {
         return \Pimcore::getDiContainer()->get(CustomersHandler::class);
+    }
+
+    /**
+     * @return SegmentsOfCustomerHandler
+     */
+    public function getRESTApiSegmentsOfCustomerHandler()
+    {
+        return \Pimcore::getDiContainer()->get(SegmentsOfCustomerHandler::class);
     }
 
     /**

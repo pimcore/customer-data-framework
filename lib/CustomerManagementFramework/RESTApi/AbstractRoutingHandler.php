@@ -76,7 +76,7 @@ abstract class AbstractRoutingHandler implements HandlerInterface
         } catch (\Exception $e) {
             return new Response([
                 "success" => false,
-                "msg" => $e->getMessage()
+                "msg" => $e->getMessage() ? : 'bad request'
                 ], Response::RESPONSE_CODE_BAD_REQUEST);
         }
     }
