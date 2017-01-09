@@ -9,6 +9,7 @@ use CustomerManagementFramework\Encryption\EncryptionServiceInterface;
 use CustomerManagementFramework\ExportToolkit\ExportService\MailChimpExportService;
 use CustomerManagementFramework\RESTApi\CustomersHandler;
 use CustomerManagementFramework\RESTApi\SegmentsHandler;
+use \CustomerManagementFramework\RESTApi\SegmentGroupsHandler;
 use Interop\Container\ContainerInterface;
 use Pimcore\View\Helper\Url;
 
@@ -23,6 +24,10 @@ return [
     'cmf.rest.segments.prefix'          => '/cmf/api/segments',
     'cmf.rest.segments.route'          => 'cmf-rest-segments',
     'cmf.rest.segments.resource-route' => 'cmf-rest-segments-resource',
+
+    'cmf.rest.segment-groups.prefix'          => '/cmf/api/segment-groups',
+    'cmf.rest.segment-groups.route'          => 'cmf-rest-segment-groups',
+    'cmf.rest.segment-groups.resource-route' => 'cmf-rest-segment-groups-resource',
 
     // pimcore URL view helper - TODO move this to core?
     Url::class => function(ContainerInterface $container) {
@@ -78,12 +83,20 @@ return [
             ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
 
     SegmentsHandler::class
-    => DI\object(SegmentsHandler::class)
-        ->method('setPathPrefix', DI\get('cmf.rest.segments.prefix'))
-        ->method('setApiRoute', DI\get('cmf.rest.segments.route'))
-        ->method('setApiResourceRoute', DI\get('cmf.rest.segments.resource-route'))
-        ->method('setUrlHelper', DI\get(Url::class))
-        ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
+        => DI\object(SegmentsHandler::class)
+            ->method('setPathPrefix', DI\get('cmf.rest.segments.prefix'))
+            ->method('setApiRoute', DI\get('cmf.rest.segments.route'))
+            ->method('setApiResourceRoute', DI\get('cmf.rest.segments.resource-route'))
+            ->method('setUrlHelper', DI\get(Url::class))
+            ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
+
+    SegmentGroupsHandler::class
+        => DI\object(SegmentGroupsHandler::class)
+            ->method('setPathPrefix', DI\get('cmf.rest.segment-groups.prefix'))
+            ->method('setApiRoute', DI\get('cmf.rest.segment-groups.route'))
+            ->method('setApiResourceRoute', DI\get('cmf.rest.segment-groups.resource-route'))
+            ->method('setUrlHelper', DI\get(Url::class))
+            ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
 
     CustomerProviderInterface::class
         => DI\object(DefaultCustomerProvider::class),

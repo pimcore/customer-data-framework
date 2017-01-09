@@ -8,12 +8,13 @@ use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use CustomerManagementFramework\RESTApi\Exception\ResourceNotFoundException;
 use CustomerManagementFramework\RESTApi\Traits\ResourceUrlGenerator;
 use CustomerManagementFramework\RESTApi\Traits\ResponseGenerator;
+use CustomerManagementFramework\Service\ObjectToArray;
 use CustomerManagementFramework\Traits\LoggerAware;
 use Pimcore\Model\Object\Concrete;
 use Pimcore\Model\Object\CustomerSegment;
 use Pimcore\Model\Object\CustomerSegmentGroup;
 
-class SegmentsHandler extends AbstractCrudRoutingHandler
+class SegmentGroupsHandler extends AbstractCrudRoutingHandler
 {
     use LoggerAware;
     use ResponseGenerator;
@@ -21,7 +22,7 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
 
 
     /**
-     * GET /segments
+     * GET /segment-groups
      *
      * @param \Zend_Controller_Request_Http $request
      * @param array $params
@@ -29,7 +30,7 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
      */
     public function listRecords(\Zend_Controller_Request_Http $request, array $params = [])
     {
-        $list = new CustomerSegment\Listing();
+        $list = new CustomerSegmentGroup\Listing();
 
         $list->setOrderKey('o_id');
         $list->setOrder('asc');
@@ -42,7 +43,7 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
 
         $result = [];
         foreach ($paginator as $segment) {
-            $result[] = $this->hydrateSegment($segment);
+            $result[] = $this->hydrateSegmentGroup($segment);
         }
 
         return new Response([
@@ -62,9 +63,9 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
      */
     public function readRecord(\Zend_Controller_Request_Http $request, array $params = [])
     {
-        $segment = $this->loadSegment($params);
+        $segment = $this->loadSegmentGroup($params);
 
-        return $this->createSegmentResponse($segment);
+        return $this->createSegmentGroupResponse($segment);
     }
 
     /**
@@ -78,38 +79,24 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
     {
         $data = $this->getRequestData($request);
 
-        if(!$data['group']) {
+        if(empty($data['name'])) {
             return new Response([
                 'success' => false,
-                'msg' => "group required"
-            ], Response::RESPONSE_CODE_BAD_REQUEST);
-        }
-        if(!$segmentGroup = CustomerSegmentGroup::getById($data['group'])) {
-            return new Response([
-                'success' => false,
-                'msg' => "group not found"
+                'msg' => 'name required'
             ], Response::RESPONSE_CODE_BAD_REQUEST);
         }
 
-        if(!$data['name']) {
+        if($data['reference'] && Factory::getInstance()->getSegmentManager()->getSegmentGroupByReference($data['reference'], (bool)$data['calculated'])) {
             return new Response([
                 'success' => false,
-                'msg' => "name required"
+                'msg' => sprintf("duplicate segment group - group with reference '%s' already exists", $data['reference'])
             ], Response::RESPONSE_CODE_BAD_REQUEST);
         }
 
-        if($params['reference'] && Factory::getInstance()->getSegmentManager()->getSegmentByReference($data['reference'], $segmentGroup)) {
-            return new Response([
-                'success' => false,
-                'msg' => sprintf("duplicate segment - segment with reference '%s' already exists in this group", $data['reference'])
-            ], Response::RESPONSE_CODE_BAD_REQUEST);
-        }
+        $segmentGroup = Factory::getInstance()->getSegmentManager()->createSegmentGroup($data['name'], $data['reference'], isset($data['calculated']) ? (bool)$data['calculated'] : false, $data);
 
-        $params['calculated'] = isset($data['calculated']) ? $data['calculated'] : $segmentGroup->getCalculated();
 
-        $segment = Factory::getInstance()->getSegmentManager()->createSegment($data['name'], $segmentGroup, $data['reference'], (bool)$data['calculated'], $data['subFolder']);
-
-        $result = $this->hydrateSegment($segment);
+        $result = ObjectToArray::getInstance()->toArray($segmentGroup);
         $result['success'] = true;
 
         return new Response($result);
@@ -135,16 +122,16 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
             ], Response::RESPONSE_CODE_BAD_REQUEST);
         }
 
-        if(!$segment = CustomerSegment::getByid($params['id'])) {
+        if(!$segmentGroup = CustomerSegmentGroup::getByid($params['id'])) {
             return new Response([
                 'success' => false,
                 'msg' => sprintf('segment with id %s not found', $params['id'])
             ], Response::RESPONSE_CODE_NOT_FOUND);
         }
 
-        Factory::getInstance()->getSegmentManager()->updateSegment($segment, $data);
+        Factory::getInstance()->getSegmentManager()->updateSegmentGroup($segmentGroup, $data);
 
-        $result = $this->hydrateSegment($segment);
+        $result = $this->hydrateSegmentGroup($segmentGroup);
         $result['success'] = true;
 
         return new Response($result, Response::RESPONSE_CODE_OK);
@@ -159,10 +146,10 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
      */
     public function deleteRecord(\Zend_Controller_Request_Http $request, array $params = [])
     {
-        $segment = $this->loadSegment($params);
+        $segmentGroup = $this->loadSegmentGroup($params);
 
         try {
-            $segment->delete();
+            $segmentGroup->delete();
         } catch (\Exception $e) {
             return $this->createErrorResponse($e->getMessage());
         }
@@ -171,12 +158,12 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
     }
 
     /**
-     * Load a customer segment from ID.
+     * Load a customer segment group from ID.
      *
      * @param int|array $id
      * @return CustomerSegmentInterface|Concrete
      */
-    protected function loadSegment($id)
+    protected function loadSegmentGroup($id)
     {
         if (is_array($id)) {
             if (!isset($id['id'])) {
@@ -191,9 +178,9 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
             $id = (int)$id;
         }
 
-        $segment = CustomerSegment::getById($id);
+        $segment = CustomerSegmentGroup::getById($id);
         if (!$segment) {
-            throw new ResourceNotFoundException(sprintf('Segment with ID %d was not found', $id));
+            throw new ResourceNotFoundException(sprintf('Segment group with ID %d was not found', $id));
         }
 
         return $segment;
@@ -217,33 +204,33 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
     /**
      * Create customer segment response with hydrated segment data
      *
-     * @param CustomerSegmentInterface $segment
+     * @param CustomerSegmentGroup $segmentGroup
      *
      * @return Response
      * @internal param \Zend_Controller_Request_Http $request
      * @internal param ExportCustomersFilterParams $params
      */
-    protected function createSegmentResponse(CustomerSegmentInterface $segment)
+    protected function createSegmentGroupResponse(CustomerSegmentGroup $segmentGroup)
     {
 
         $response = $this->createResponse(
-            $this->hydrateSegment($segment)
+            $this->hydrateSegmentGroup($segmentGroup)
         );
 
         return $response;
     }
 
     /**
-     * @param CustomerSegmentInterface $customerSegment
+     * @param CustomerSegmentGroup $customerSegmentGroup
      * @return array
      */
-    protected function hydrateSegment(CustomerSegmentInterface $customerSegment)
+    protected function hydrateSegmentGroup(CustomerSegmentGroup $customerSegmentGroup)
     {
-        $data = $customerSegment->getDataForWebserviceExport();
+        $data = ObjectToArray::getInstance()->toArray($customerSegmentGroup);
 
         $links = isset($data['_links']) ? $data['_links'] : [];
 
-        if ($selfLink = $this->generateElementApiUrl($customerSegment)) {
+        if ($selfLink = $this->generateElementApiUrl($customerSegmentGroup)) {
             $links[] = [
                 'rel'    => 'self',
                 'href'   => $selfLink,

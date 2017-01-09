@@ -2,7 +2,6 @@
 
 use CustomerManagementFramework\Controller\Rest\RestHandlerController;
 use CustomerManagementFramework\Factory;
-use CustomerManagementFramework\RESTApi\CustomersHandler;
 
 class CustomerManagementFramework_Rest_SegmentsController extends RestHandlerController
 {
