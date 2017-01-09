@@ -1,6 +1,6 @@
 # Activities
 
-An important part of the customer management framework are customer activities. They could be very simple (for example customer logged in) or quite complex (orders, bookings...)
+An important part of the customer management framework are customer activities. They could be very simple (for example customer logged in) or quite complex (orders, bookings...). The CMF could be used to store all these customer related activty data and use it for example for segment building or as information for the customer service team.
 
 Activities in the CMF are stored all together in a json store - by default in a MariaDB table (plugin_cmf_activities). 
 
