@@ -8,6 +8,7 @@ use CustomerManagementFramework\Encryption\DefaultEncryptionService;
 use CustomerManagementFramework\Encryption\EncryptionServiceInterface;
 use CustomerManagementFramework\ExportToolkit\ExportService\MailChimpExportService;
 use CustomerManagementFramework\RESTApi\CustomersHandler;
+use CustomerManagementFramework\RESTApi\SegmentsHandler;
 use Interop\Container\ContainerInterface;
 use Pimcore\View\Helper\Url;
 
@@ -71,6 +72,14 @@ return [
             ->method('setApiResourceRoute', DI\get('cmf.rest.customers.resource-route'))
             ->method('setUrlHelper', DI\get(Url::class))
             ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
+
+    SegmentsHandler::class
+    => DI\object(CustomersHandler::class)
+        ->method('setPathPrefix', DI\get('cmf.rest.customers.prefix'))
+        ->method('setApiRoute', DI\get('cmf.rest.customers.route'))
+        ->method('setApiResourceRoute', DI\get('cmf.rest.customers.resource-route'))
+        ->method('setUrlHelper', DI\get(Url::class))
+        ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
 
     CustomerProviderInterface::class
         => DI\object(DefaultCustomerProvider::class),
