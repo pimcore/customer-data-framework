@@ -2,5 +2,5 @@
 
 ### Documentation topics:
 
-* [Activities (ActivityManager, ActivityStore, ActivityView)(./docs/Activities.md)
+* [Activities (ActivityManager, ActivityStore, ActivityView)](./docs/Activities.md)
 * [Webservice](./docs/Webservice.md)
