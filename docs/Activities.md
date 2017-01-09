@@ -35,8 +35,9 @@ It's possible to handle how activities are displayed within the ActivityView by 
  *
  * @return array
  */
- 
 public static function cmfGetOverviewData(ActivityStoreEntryInterface $entry);
+
+
 /**
  * Returns an associative array with data which should be shown ActivityView detail page.
  * 
@@ -44,8 +45,9 @@ public static function cmfGetOverviewData(ActivityStoreEntryInterface $entry);
  *
  * @return array
  */
- 
 public static function cmfGetDetailviewData(ActivityStoreEntryInterface $entry);
+
+
 /**
  * Optional: Returns a template file which should be used for the ActivityView detail page. With this it's possible to implement completely individual detail pages for each activity type.
  * 
