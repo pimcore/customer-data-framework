@@ -26,6 +26,9 @@ On top of the ActivityStore the ActivityManager is responsible for handling acti
 
 The CMF plugin contains a list view for displaying activities. This is added as a tab within the customer objects.
 
+![ActivityView](./img/ActivityView.png)
+
+
 It's possible to handle how activities are displayed within the ActivityView by implementing the following 3 methods of the ActivityInterface:
 ```php
 /**
