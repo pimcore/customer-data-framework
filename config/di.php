@@ -70,10 +70,6 @@ return [
         ->constructor(DI\get('CustomerManagementFramework\Logger')),
 
 
-    'CustomerManagementFramework\RESTApi\Update'
-        => DI\object('CustomerManagementFramework\RESTApi\Update')
-        ->constructor(DI\get('CustomerManagementFramework\Logger')),
-
     CustomersHandler::class
         => DI\object(CustomersHandler::class)
             ->constructor(DI\get(CustomerProviderInterface::class))

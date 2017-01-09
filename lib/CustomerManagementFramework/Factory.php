@@ -136,13 +136,6 @@ class Factory {
     }
 
     /**
-     * @return UpdateInterface
-     */
-    public function getRESTApiUpdate() {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\RESTApi\Update');
-    }
-
-    /**
      * @return CustomersHandler
      */
     public function getRESTApiCustomersHandler()
