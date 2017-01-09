@@ -25,7 +25,6 @@ use CustomerManagementFramework\CustomerView\CustomerViewInterface;
 use CustomerManagementFramework\ExportToolkit\ExportService\MailChimpExportService;
 use CustomerManagementFramework\RESTApi\CustomersHandler;
 use CustomerManagementFramework\RESTApi\ExportInterface;
-use CustomerManagementFramework\RESTApi\ImportInterface;
 use CustomerManagementFramework\RESTApi\SegmentGroupsHandler;
 use CustomerManagementFramework\RESTApi\SegmentsHandler;
 use CustomerManagementFramework\RESTApi\UpdateInterface;
@@ -133,13 +132,6 @@ class Factory {
      */
     public function getRESTApiExport() {
         return \Pimcore::getDiContainer()->get('CustomerManagementFramework\RESTApi\Export');
-    }
-
-    /**
-     * @return ImportInterface
-     */
-    public function getRESTApiImport() {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\RESTApi\Import');
     }
 
     /**
