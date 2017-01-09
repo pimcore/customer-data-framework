@@ -20,6 +20,10 @@ return [
     'cmf.rest.customers.resource-route' => 'cmf-rest-customers-resource',
     'cmf.rest.customers.prefix'         => '/cmf/api/customers',
 
+    'cmf.rest.segments.prefix'          => '/cmf/api/segments',
+    'cmf.rest.segments.route'          => 'cmf-rest-segments',
+    'cmf.rest.segments.resource-route' => 'cmf-rest-segments-resource',
+
     // pimcore URL view helper - TODO move this to core?
     Url::class => function(ContainerInterface $container) {
         /** @var \Pimcore\Controller\Action\Helper\ViewRenderer $broker */
@@ -74,10 +78,10 @@ return [
             ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
 
     SegmentsHandler::class
-    => DI\object(CustomersHandler::class)
-        ->method('setPathPrefix', DI\get('cmf.rest.customers.prefix'))
-        ->method('setApiRoute', DI\get('cmf.rest.customers.route'))
-        ->method('setApiResourceRoute', DI\get('cmf.rest.customers.resource-route'))
+    => DI\object(SegmentsHandler::class)
+        ->method('setPathPrefix', DI\get('cmf.rest.segments.prefix'))
+        ->method('setApiRoute', DI\get('cmf.rest.segments.route'))
+        ->method('setApiResourceRoute', DI\get('cmf.rest.segments.resource-route'))
         ->method('setUrlHelper', DI\get(Url::class))
         ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
 

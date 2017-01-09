@@ -73,6 +73,11 @@ abstract class AbstractRoutingHandler implements HandlerInterface
                 sprintf('Resource %s was not found', $request->getPathInfo()),
                 Response::RESPONSE_CODE_NOT_FOUND
             );
+        } catch (\Exception $e) {
+            return new Response([
+                "success" => false,
+                "msg" => $e->getMessage()
+                ], Response::RESPONSE_CODE_BAD_REQUEST);
         }
     }
 

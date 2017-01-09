@@ -5,12 +5,14 @@ namespace CustomerManagementFramework\RESTApi;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Filter\ExportCustomersFilterParams;
 use CustomerManagementFramework\Model\CustomerInterface;
+use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use CustomerManagementFramework\RESTApi\Exception\ResourceNotFoundException;
 use CustomerManagementFramework\RESTApi\Traits\ResourceUrlGenerator;
 use CustomerManagementFramework\RESTApi\Traits\ResponseGenerator;
 use CustomerManagementFramework\Traits\LoggerAware;
 use Pimcore\Model\Object\Concrete;
 use Pimcore\Model\Object\CustomerSegment;
+use Pimcore\Model\Object\CustomerSegmentGroup;
 
 class SegmentsHandler extends AbstractCrudRoutingHandler
 {
@@ -20,7 +22,7 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
 
 
     /**
-     * GET /customers
+     * GET /segments
      *
      * @param \Zend_Controller_Request_Http $request
      * @param array $params
@@ -40,8 +42,8 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
         $timestamp = time();
 
         $result = [];
-        foreach ($paginator as $customer) {
-            $result[] = $this->hydrateCustomer($customer, $params);
+        foreach ($paginator as $segment) {
+            $result[] = $this->hydrateSegment($segment);
         }
 
         return new Response([
@@ -53,7 +55,7 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
     }
 
     /**
-     * GET /customers/{id}
+     * GET /segments/{id}
      *
      * @param \Zend_Controller_Request_Http $request
      * @param array $params
@@ -61,13 +63,13 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
      */
     public function readRecord(\Zend_Controller_Request_Http $request, array $params = [])
     {
-        $customer = $this->loadCustomer($params);
+        $segment = $this->loadSegment($params);
 
-        return $this->createCustomerResponse($customer, $request);
+        return $this->createSegmentResponse($segment);
     }
 
     /**
-     * POST /customers
+     * POST /segments
      *
      * @param \Zend_Controller_Request_Http $request
      * @param array $params
@@ -77,22 +79,45 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
     {
         $data = $this->getRequestData($request);
 
-        try {
-            /** @var CustomerInterface|Concrete $customer */
-            $customer = $this->customerProvider->create($data);
-            $customer->save();
-        } catch (\Exception $e) {
-            return $this->createErrorResponse($e->getMessage());
+        if(!$data['group']) {
+            return new Response([
+                'success' => false,
+                'msg' => "group required"
+            ], Response::RESPONSE_CODE_BAD_REQUEST);
+        }
+        if(!$segmentGroup = CustomerSegmentGroup::getById($data['group'])) {
+            return new Response([
+                'success' => false,
+                'msg' => "group not found"
+            ], Response::RESPONSE_CODE_BAD_REQUEST);
         }
 
-        $response = $this->createCustomerResponse($customer, $request);
-        $response->setResponseCode(Response::RESPONSE_CODE_CREATED);
+        if(!$data['name']) {
+            return new Response([
+                'success' => false,
+                'msg' => "name required"
+            ], Response::RESPONSE_CODE_BAD_REQUEST);
+        }
 
-        return $response;
+        if($params['reference'] && Factory::getInstance()->getSegmentManager()->getSegmentByReference($data['reference'], $segmentGroup)) {
+            return new Response([
+                'success' => false,
+                'msg' => sprintf("duplicate segment - segment with reference '%s' already exists in this group", $data['reference'])
+            ], Response::RESPONSE_CODE_BAD_REQUEST);
+        }
+
+        $params['calculated'] = isset($data['calculated']) ? $data['calculated'] : $segmentGroup->getCalculated();
+
+        $segment = Factory::getInstance()->getSegmentManager()->createSegment($data['name'], $segmentGroup, $data['reference'], (bool)$data['calculated'], $data['subFolder']);
+
+        $result = $this->hydrateSegment($segment);
+        $result['success'] = true;
+
+        return new Response($result);
     }
 
     /**
-     * PUT /customers/{id}
+     * PUT /segments/{id}
      *
      * TODO support partial updates as we do now or demand whole object in PUT? Use PATCH for partial requests?
      *
@@ -102,21 +127,32 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
      */
     public function updateRecord(\Zend_Controller_Request_Http $request, array $params = [])
     {
-        $customer = $this->loadCustomer($params);
-        $data     = $this->getRequestData($request);
+        $data = $this->getRequestData($request);
 
-        try {
-            $this->customerProvider->update($customer, $data);
-            $customer->save();
-        } catch (\Exception $e) {
-            return $this->createErrorResponse($e->getMessage());
+        if(empty($params['id'])) {
+            return new Response([
+                'success' => false,
+                'msg' => 'id required'
+            ], Response::RESPONSE_CODE_BAD_REQUEST);
         }
 
-        return $this->createCustomerResponse($customer, $request);
+        if(!$segment = CustomerSegment::getByid($params['id'])) {
+            return new Response([
+                'success' => false,
+                'msg' => sprintf('segment with id %s not found', $params['id'])
+            ], Response::RESPONSE_CODE_NOT_FOUND);
+        }
+
+        Factory::getInstance()->getSegmentManager()->updateSegment($segment, $data);
+
+        $result = $this->hydrateSegment($segment);
+        $result['success'] = true;
+
+        return new Response($result, Response::RESPONSE_CODE_OK);
     }
 
     /**
-     * DELETE /customers/{id}
+     * DELETE /segments/{id}
      *
      * @param \Zend_Controller_Request_Http $request
      * @param array $params
@@ -124,10 +160,10 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
      */
     public function deleteRecord(\Zend_Controller_Request_Http $request, array $params = [])
     {
-        $customer = $this->loadCustomer($params);
+        $segment = $this->loadSegment($params);
 
         try {
-            $this->customerProvider->delete($customer);
+            $segment->delete();
         } catch (\Exception $e) {
             return $this->createErrorResponse($e->getMessage());
         }
@@ -136,12 +172,12 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
     }
 
     /**
-     * Load a customer from ID/params array. If an array is passed, it tries to resolve the id from the 'id' property
+     * Load a customer segment from ID.
      *
      * @param int|array $id
-     * @return CustomerInterface|Concrete
+     * @return CustomerSegmentInterface|Concrete
      */
-    protected function loadCustomer($id)
+    protected function loadSegment($id)
     {
         if (is_array($id)) {
             if (!isset($id['id'])) {
@@ -156,12 +192,12 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
             $id = (int)$id;
         }
 
-        $customer = $this->customerProvider->getById($id);
-        if (!$customer) {
-            throw new ResourceNotFoundException(sprintf('Customer with ID %d was not found', $id));
+        $segment = CustomerSegment::getById($id);
+        if (!$segment) {
+            throw new ResourceNotFoundException(sprintf('Segment with ID %d was not found', $id));
         }
 
-        return $customer;
+        return $segment;
     }
 
     /**
@@ -180,21 +216,19 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
     }
 
     /**
-     * Create customer response with hydrated customer data
+     * Create customer segment response with hydrated segment data
      *
-     * @param CustomerInterface $customer
-     * @param \Zend_Controller_Request_Http $request
-     * @param ExportCustomersFilterParams $params
+     * @paramCustomerSegmentInterface $segment
+     *
      * @return Response
+     * @internal param \Zend_Controller_Request_Http $request
+     * @internal param ExportCustomersFilterParams $params
      */
-    protected function createCustomerResponse(CustomerInterface $customer, \Zend_Controller_Request_Http $request, ExportCustomersFilterParams $params = null)
+    protected function createSegmentResponse(CustomerSegmentInterface $segment)
     {
-        if (null === $params) {
-            $params = ExportCustomersFilterParams::fromRequest($request);
-        }
 
         $response = $this->createResponse(
-            $this->hydrateCustomer($customer, $params)
+            $this->hydrateSegment($segment)
         );
 
         return $response;
@@ -202,20 +236,15 @@ class SegmentsHandler extends AbstractCrudRoutingHandler
 
     /**
      * @param CustomerInterface $customer
-     * @param ExportCustomersFilterParams $params
      * @return array
      */
-    protected function hydrateCustomer(CustomerInterface $customer, ExportCustomersFilterParams $params)
+    protected function hydrateSegment(CustomerSegmentInterface $customerSegment)
     {
-        $data = $customer->cmfToArray();
-
-        if ($params->getIncludeActivities()) {
-            $data['activities'] = Factory::getInstance()->getActivityStore()->getActivityDataForCustomer($customer);
-        }
+        $data = $customerSegment->getDataForWebserviceExport();
 
         $links = isset($data['_links']) ? $data['_links'] : [];
 
-        if ($selfLink = $this->generateElementApiUrl($customer)) {
+        if ($selfLink = $this->generateElementApiUrl($customerSegment)) {
             $links[] = [
                 'rel'    => 'self',
                 'href'   => $selfLink,
