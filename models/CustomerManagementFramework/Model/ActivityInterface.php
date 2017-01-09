@@ -57,6 +57,8 @@ interface ActivityInterface {
     public function setCustomer($customer);
 
     /**
+     * Returns an associative array with data which should be shown additional to the type and activity date within the ActivityView overview list.
+     * 
      * @param ActivityStoreEntryInterface $entry
      *
      * @return array
@@ -64,6 +66,8 @@ interface ActivityInterface {
     public static function cmfGetOverviewData(ActivityStoreEntryInterface $entry);
 
     /**
+     * Returns an associative array with data which should be shown ActivityView detail page.
+     * 
      * @param ActivityStoreEntryInterface $entry
      *
      * @return array
@@ -71,6 +75,8 @@ interface ActivityInterface {
     public static function cmfGetDetailviewData(ActivityStoreEntryInterface $entry);
 
     /**
+     * Optional: Returns a template file which should be used for the ActivityView detail page. With this it's possible to implement completely individual detail pages for each activity type.
+     * 
      * @param ActivityStoreEntryInterface $entry
      *
      * @return string|bool
