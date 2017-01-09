@@ -1,6 +1,8 @@
 # Activities
 
-Activities in the customer management framework are stored all together in a json store - by default in a MariaDB table (plugin_cmf_activities). 
+An important part of the customer management framework are customer activities. They could be very simple (for example customer logged in) or quite complex (orders, bookings...)
+
+Activities in the CMF are stored all together in a json store - by default in a MariaDB table (plugin_cmf_activities). 
 
 ## Using Pimcore objects and other data entities as activities
 
@@ -24,3 +26,32 @@ On top of the ActivityStore the ActivityManager is responsible for handling acti
 
 The CMF plugin contains a list view for displaying activities. This is added as a tab within the customer objects.
 
+It's possible to handle how activities are displayed within the ActivityView by implementing the following 3 methods of the ActivityInterface:
+```php
+/**
+ * Returns an associative array with data which should be shown additional to the type and activity date within the ActivityView overview list.
+ * 
+ * @param ActivityStoreEntryInterface $entry
+ *
+ * @return array
+ */
+ 
+public static function cmfGetOverviewData(ActivityStoreEntryInterface $entry);
+/**
+ * Returns an associative array with data which should be shown ActivityView detail page.
+ * 
+ * @param ActivityStoreEntryInterface $entry
+ *
+ * @return array
+ */
+ 
+public static function cmfGetDetailviewData(ActivityStoreEntryInterface $entry);
+/**
+ * Optional: Returns a template file which should be used for the ActivityView detail page. With this it's possible to implement completely individual detail pages for each activity type.
+ * 
+ * @param ActivityStoreEntryInterface $entry
+ *
+ * @return string|bool
+ */
+public static function cmfGetDetailviewTemplate(ActivityStoreEntryInterface $entry);
+```
