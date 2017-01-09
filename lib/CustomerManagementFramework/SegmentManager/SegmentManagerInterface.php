@@ -65,16 +65,24 @@ interface SegmentManagerInterface {
     public function getSegmentGroups(array $params = []);
 
     /**
+     * Applies all SegmentBuilders to customers. If the param $changesQueue only is set to true this is done only for customers which where changed since the last run. 
+     * 
+     * @param bool $changesQueueOnly
+     * 
      * @return void
      */
     public function buildCalculatedSegments($changesQueueOnly = true);
 
     /**
+     * Calls all maintenance methods of all SegmentBuilders
+     * 
      * @return void
      */
     public function executeSegmentBuilderMaintenance();
 
     /**
+     * Could be used to add/remove segments to/from customers. If segments are added or removed this will be tracked in the notes/events tab of the customer. With the optional $hintForNotes parameter it's possible to add an iditional hint to the notes/event entries.
+     * 
      * @param CustomerInterface $customer
      * @param array             $addSegments
      * @param array             $deleteSegments
@@ -86,18 +94,27 @@ interface SegmentManagerInterface {
 
 
     /**
-     * @param $segmentReference
+     * Create a calculated segment within the given $segmentGroup. The $segmentGroup needs to be either a CustomerSegmentGroup object or a reference to a calculated CustomerSegmentGroup object.
+     * With the (optional) $subFolder parameter it's possible to create subfolders within the CustomerSegmentGroup for better a better overview.
+     * 
+     * @param string $segmentReference
+     * @param string|CustomerSegmentGroup $segmentGroup
+     * @param string $segmentName
+     * @param string $subFolder
      *
      * @return CustomerSegmentInterface
      */
     public function createCalculatedSegment($segmentReference, $segmentGroup, $segmentName = null, $subFolder = null);
 
     /**
-     * @param      $segmentReference
-     * @param      $segmentGroup
-     * @param null $segmentName
+     * * Create a customer segment within the given $segmentGroup. The $segmentGroup needs to be either a CustomerSegmentGroup object or a reference to a CustomerSegmentGroup object.
+     * With the (optional) $subFolder parameter it's possible to create subfolders within the CustomerSegmentGroup for better a better overview.
+     * 
+     * @param string $segmentReference
+     * @param string|CustomerSegmentGroup $segmentGroup
+     * @param string $segmentName
      * @param bool $calculated
-     * @param null $subFolder
+     * @param string $subFolder
      *
      * @return CustomerSegmentInterface
      */
