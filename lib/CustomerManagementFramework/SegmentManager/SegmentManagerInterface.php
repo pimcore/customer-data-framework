@@ -121,6 +121,8 @@ interface SegmentManagerInterface {
     public function createSegment($segmentName, $segmentGroup, $segmentReference = null, $calculated = true, $subFolder = null);
 
     /**
+     * Returns the CustomerSegment with given reference within given CustomerSegmentGroup.
+     *
      * @param $segmentReference
      * @param CustomerSegmentGroup $segmentGroup
      *
@@ -129,6 +131,8 @@ interface SegmentManagerInterface {
     public function getSegmentByReference($segmentReference, CustomerSegmentGroup $segmentGroup, $calculated = false);
 
     /**
+     * Creates a segment group.
+     * 
      * @param      $segmentGroupName
      * @param null $segmentGroupReference
      * @param bool $calculated
@@ -138,6 +142,8 @@ interface SegmentManagerInterface {
     public function createSegmentGroup($segmentGroupName, $segmentGroupReference = null, $calculated = false, array $values = []);
 
     /**
+     * Updates a segment group.
+     * 
      * @param CustomerSegmentGroup $segmentGroup
      * @param array                $values
      *
@@ -146,6 +152,8 @@ interface SegmentManagerInterface {
     public function updateSegmentGroup(CustomerSegmentGroup $segmentGroup, array $values = []);
 
     /**
+     * Updates a sgement.
+     * 
      * @param CustomerSegment $segment
      * @param array           $values
      *
@@ -154,6 +162,8 @@ interface SegmentManagerInterface {
     public function updateSegment(CustomerSegment $segment, array $values = []);
 
     /**
+     * Returns the SegmentGroup with the given reference.
+     * 
      * @param $segmentGroupReference
      * @param $calculated
      *
