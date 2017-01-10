@@ -133,8 +133,15 @@ class MariaDb implements ActivityStoreInterface{
 
         $sql = "select * from " . self::DELETIONS_TABLE . " where entityType = " . $db->quote($entityType) . " and creationDate >= " . $db->quote($deletionsSinceTimestamp);
 
+        $data = $db->fetchAll($sql);
+
+        foreach($data as $key => $value) {
+            $data[$key]['id'] = intval($data[$key]['id']);
+            $data[$key]['creationDate'] = intval($data[$key]['creationDate']);
+        }
+
         return [
-            'data' => $db->fetchAll($sql)
+            'data' => $data
         ];
     }
 
