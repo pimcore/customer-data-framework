@@ -6,7 +6,8 @@
         "yzalis/crontab":"^1.0",
         "tiben/crontab-manager":"^1.2",
         "guzzlehttp/guzzle": ">=4.1.4 <7.0",
-        "symfony/routing": "^3.2"
+        "symfony/routing": "^3.2",
+        "drewm/mailchimp-api": "*"
     },
     "require-dev": {
         "codeception/codeception": "^2.2"
