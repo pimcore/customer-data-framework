@@ -11,6 +11,7 @@ use CustomerManagementFramework\RESTApi\CustomersHandler;
 use CustomerManagementFramework\RESTApi\SegmentsHandler;
 use CustomerManagementFramework\RESTApi\SegmentGroupsHandler;
 use CustomerManagementFramework\RESTApi\SegmentsOfCustomerHandler;
+use CustomerManagementFramework\RESTApi\DeletionsHandler;
 use Interop\Container\ContainerInterface;
 use Pimcore\View\Helper\Url;
 
@@ -31,7 +32,8 @@ return [
     'cmf.rest.segment-groups.resource-route' => 'cmf-rest-segment-groups-resource',
 
     'cmf.rest.segments-of-customer.prefix'          => '/cmf/api/segments-of-customer',
-    'cmf.rest.segments-of-customer.route'          => 'cmf-rest-segments-of-customer',
+
+    'cmf.rest.deletions.prefix'          => '/cmf/api/deletions',
 
     // pimcore URL view helper - TODO move this to core?
     Url::class => function(ContainerInterface $container) {
@@ -99,6 +101,11 @@ return [
         => DI\object(SegmentsOfCustomerHandler::class)
             ->method('setPathPrefix', DI\get('cmf.rest.segments-of-customer.prefix'))
             ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
+
+    DeletionsHandler::class
+    => DI\object(DeletionsHandler::class)
+        ->method('setPathPrefix', DI\get('cmf.rest.deletions.prefix'))
+        ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
 
     CustomerProviderInterface::class
         => DI\object(DefaultCustomerProvider::class),

@@ -24,6 +24,7 @@ use CustomerManagementFramework\CustomerSaveManager\CustomerSaveManagerInterface
 use CustomerManagementFramework\CustomerView\CustomerViewInterface;
 use CustomerManagementFramework\ExportToolkit\ExportService\MailChimpExportService;
 use CustomerManagementFramework\RESTApi\CustomersHandler;
+use CustomerManagementFramework\RESTApi\DeletionsHandler;
 use CustomerManagementFramework\RESTApi\ExportInterface;
 use CustomerManagementFramework\RESTApi\SegmentGroupsHandler;
 use CustomerManagementFramework\RESTApi\SegmentsHandler;
@@ -149,6 +150,14 @@ class Factory {
     public function getRESTApiSegmentsOfCustomerHandler()
     {
         return \Pimcore::getDiContainer()->get(SegmentsOfCustomerHandler::class);
+    }
+
+    /**
+     * @return DeletionsHandler
+     */
+    public function getRESTApiDeletionsHandler()
+    {
+        return \Pimcore::getDiContainer()->get(DeletionsHandler::class);
     }
 
     /**
