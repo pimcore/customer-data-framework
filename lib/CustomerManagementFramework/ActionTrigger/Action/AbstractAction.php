@@ -8,7 +8,6 @@
 
 namespace CustomerManagementFramework\ActionTrigger\Action;
 
-use CustomerManagementFramework\ActionTrigger\ActionDefinition;
 use Psr\Log\LoggerInterface;
 
 abstract class AbstractAction implements ActionInterface{

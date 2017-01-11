@@ -10,10 +10,6 @@ namespace CustomerManagementFramework\Model;
 
 use Carbon\Carbon;
 use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
-use CustomerManagementFramework\Factory;
-use Pimcore\Model\Object\Booking;
-use Pimcore\Model\Object\ClassDefinition;
-use Pimcore\Translate\Admin;
 
 abstract class AbstractActivity implements ActivityInterface {
 

@@ -9,8 +9,6 @@
 namespace CustomerManagementFramework\ActionTrigger\Queue;
 
 use CustomerManagementFramework\ActionTrigger\ActionDefinition;
-use CustomerManagementFramework\ActionTrigger\Event\SingleCustomerEventInterface;
-use CustomerManagementFramework\ActionTrigger\Rule;
 use CustomerManagementFramework\ActionTrigger\Action\ActionDefinitionInterface;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;

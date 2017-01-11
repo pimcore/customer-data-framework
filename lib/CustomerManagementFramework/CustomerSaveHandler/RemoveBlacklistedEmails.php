@@ -8,8 +8,6 @@
 
 namespace CustomerManagementFramework\CustomerSaveHandler;
 
-use CustomerManagementFramework\DataTransformer\DataTransformerInterface;
-use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 

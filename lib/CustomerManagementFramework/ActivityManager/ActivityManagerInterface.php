@@ -9,7 +9,6 @@
 namespace  CustomerManagementFramework\ActivityManager;
 
 use CustomerManagementFramework\Model\ActivityInterface;
-use CustomerManagementFramework\Model\CustomerInterface;
 
 interface ActivityManagerInterface
 {

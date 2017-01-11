@@ -8,9 +8,6 @@
 
 namespace CustomerManagementFramework\ActionTrigger\Event;
 
-use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
-use CustomerManagementFramework\Model\CustomerInterface;
-
 interface CustomerListEventInterface extends EventInterface {
 
 }

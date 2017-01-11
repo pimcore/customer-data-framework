@@ -31,7 +31,7 @@ class CronTriggerCommand extends AbstractCommand {
         $event = new \CustomerManagementFramework\ActionTrigger\Event\Cron();
 
         $e = new \Zend_EventManager_Event;
-        \CustomerManagementFramework\Factory::getInstance()->getActionTriggerEventHandler()->handleCustomerListEvent($e, $event);
+        Factory::getInstance()->getActionTriggerEventHandler()->handleCustomerListEvent($e, $event);
     }
 
 }

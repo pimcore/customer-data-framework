@@ -6,7 +6,6 @@ namespace CustomerManagementFramework\Testing\_generated;
 // @codingStandardsIgnoreFile
 
 use Codeception\Module\Asserts;
-use CustomerManagementFramework\Testing\Helper\Unit;
 
 trait UnitTesterActions
 {

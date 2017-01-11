@@ -2,8 +2,6 @@
 
 namespace CustomerManagementFramework\ActionTrigger\ActionDefinition;
 
-use CustomerManagementFramework\ActionTrigger\TriggerDefinition;
-use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use Pimcore\Model;
 
 class Dao extends Model\Dao\AbstractDao

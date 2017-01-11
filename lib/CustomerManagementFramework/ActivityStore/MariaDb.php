@@ -14,7 +14,6 @@ use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFramework\Filter\ExportActivitiesFilterParams;
 use CustomerManagementFramework\Model\ActivityInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
-use Import\Customer;
 use Pimcore\Db;
 use Pimcore\Model\Object\Concrete;
 

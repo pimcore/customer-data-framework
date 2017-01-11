@@ -8,11 +8,9 @@
 
 namespace  CustomerManagementFramework\ActivityManager;
 
-use CustomerManagementFramework\Event\NewActivity;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\ActivityInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
-use Pimcore\Db;
 
 class DefaultActivityManager implements ActivityManagerInterface
 {

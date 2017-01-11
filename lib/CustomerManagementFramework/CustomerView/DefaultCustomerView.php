@@ -7,7 +7,6 @@ use CustomerManagementFramework\View\Formatter\ObjectWrapper;
 use CustomerManagementFramework\View\Formatter\ViewFormatterInterface;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Object\Concrete;
-use Pimcore\Model\Object\Fieldcollection;
 
 class DefaultCustomerView implements CustomerViewInterface
 {

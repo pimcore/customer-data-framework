@@ -8,10 +8,6 @@
 
 namespace CustomerManagementFramework\ActivityUrlTracker;
 
-use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
-use CustomerManagementFramework\Filter\ExportActivitiesFilterParams;
-use CustomerManagementFramework\Model\ActivityInterface;
-use CustomerManagementFramework\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 
 interface ActivityUrlTrackerInterface {

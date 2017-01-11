@@ -8,9 +8,7 @@
 
 namespace CustomerManagementFramework\CustomerSaveHandler;
 
-use CustomerManagementFramework\DataTransformer\DataTransformerInterface;
 use CustomerManagementFramework\DataValidator\EmailValidator;
-use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 

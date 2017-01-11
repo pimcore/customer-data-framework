@@ -11,11 +11,6 @@ namespace CustomerManagementFramework\Model;
 use Carbon\Carbon;
 use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFramework\Factory;
-use Pimcore\API\Plugin\Exception;
-use Pimcore\Model\Object\AbstractObject;
-use Pimcore\Model\Object\Booking;
-use Pimcore\Model\Object\ClassDefinition;
-use Pimcore\Translate\Admin;
 
 abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete implements PersistentActivityInterface {
 

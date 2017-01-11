@@ -11,9 +11,7 @@ namespace CustomerManagementFramework\ActivityList;
 use CustomerManagementFramework\ActivityList\DefaultMariaDbActivityList\Dao;
 use CustomerManagementFramework\ActivityStoreEntry\DefaultActivityStoreEntry;
 use CustomerManagementFramework\Model\ActivityInterface;
-use Import\Booking;
 use Pimcore\Model\Listing\AbstractListing;
-use Zend_Paginator_Adapter_Interface;
 
 class DefaultMariaDbActivityList extends AbstractListing implements ActivityListInterface {
 

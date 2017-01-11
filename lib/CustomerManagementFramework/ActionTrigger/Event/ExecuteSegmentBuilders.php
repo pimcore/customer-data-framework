@@ -9,7 +9,6 @@
 namespace CustomerManagementFramework\ActionTrigger\Event;
 
 use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
-use CustomerManagementFramework\Model\ActivityInterface;
 
 class ExecuteSegmentBuilders extends AbstractSingleCustomerEvent{
 

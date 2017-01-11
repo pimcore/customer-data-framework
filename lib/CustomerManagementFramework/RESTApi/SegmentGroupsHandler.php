@@ -3,7 +3,6 @@
 namespace CustomerManagementFramework\RESTApi;
 
 use CustomerManagementFramework\Factory;
-use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use CustomerManagementFramework\RESTApi\Exception\ResourceNotFoundException;
 use CustomerManagementFramework\RESTApi\Traits\ResourceUrlGenerator;
@@ -11,7 +10,6 @@ use CustomerManagementFramework\RESTApi\Traits\ResponseGenerator;
 use CustomerManagementFramework\Service\ObjectToArray;
 use CustomerManagementFramework\Traits\LoggerAware;
 use Pimcore\Model\Object\Concrete;
-use Pimcore\Model\Object\CustomerSegment;
 use Pimcore\Model\Object\CustomerSegmentGroup;
 
 class SegmentGroupsHandler extends AbstractCrudRoutingHandler

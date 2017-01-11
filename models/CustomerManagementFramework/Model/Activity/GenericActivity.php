@@ -11,12 +11,8 @@ namespace CustomerManagementFramework\Model\Activity;
 use Carbon\Carbon;
 use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFramework\Factory;
-use CustomerManagementFramework\Model\AbstractActivity;
 use CustomerManagementFramework\Model\ActivityInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
-use Pimcore\Model\Object\Booking;
-use Pimcore\Model\Object\ClassDefinition;
-use Pimcore\Translate\Admin;
 
 class GenericActivity implements ActivityInterface {
 

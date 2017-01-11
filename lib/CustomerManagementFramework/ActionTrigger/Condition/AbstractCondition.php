@@ -8,8 +8,6 @@
 
 namespace CustomerManagementFramework\ActionTrigger\Condition;
 
-use CustomerManagementFramework\Factory;
-use CustomerManagementFramework\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 
 abstract class AbstractCondition implements ConditionInterface

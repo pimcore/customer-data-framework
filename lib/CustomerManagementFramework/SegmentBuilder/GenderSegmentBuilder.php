@@ -11,7 +11,6 @@ namespace CustomerManagementFramework\SegmentBuilder;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use CustomerManagementFramework\SegmentManager\SegmentManagerInterface;
-use Pimcore\Model\Object\CustomerSegment;
 use Psr\Log\LoggerInterface;
 
 class GenderSegmentBuilder extends AbstractSegmentBuilder {

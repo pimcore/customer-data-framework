@@ -9,8 +9,6 @@
 namespace CustomerManagementFramework\Controller\Plugin;
 
 use CustomerManagementFramework\Factory;
-use CustomerManagementFramework\Model\Activity\TrackedUrlActivity;
-use Hashids\Hashids;
 use Zend_Controller_Request_Abstract;
 
 class UrlActivityTracker extends \Zend_Controller_Plugin_Abstract {

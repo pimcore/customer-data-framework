@@ -8,9 +8,7 @@
 
 namespace CustomerManagementFramework\ActionTrigger\Action;
 
-use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
-use Pimcore\Model\Object\CustomerSegment;
 
 class ChangeFieldValue extends AbstractAction {
 

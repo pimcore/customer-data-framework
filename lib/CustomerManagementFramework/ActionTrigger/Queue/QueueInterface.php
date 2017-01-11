@@ -8,8 +8,6 @@
 
 namespace CustomerManagementFramework\ActionTrigger\Queue;
 
-use CustomerManagementFramework\ActionTrigger\Event\SingleCustomerEventInterface;
-use CustomerManagementFramework\ActionTrigger\Rule;
 use CustomerManagementFramework\ActionTrigger\Action\ActionDefinitionInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;

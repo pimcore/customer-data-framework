@@ -8,15 +8,11 @@
 
 namespace CustomerManagementFramework\ActionTrigger\EventHandler;
 
-
-use CustomerManagementFramework\ActionTrigger\Condition\Bracket;
 use CustomerManagementFramework\ActionTrigger\Condition\Checker;
-use CustomerManagementFramework\ActionTrigger\ConditionDefinition;
 use CustomerManagementFramework\ActionTrigger\Event\CustomerListEventInterface;
 use CustomerManagementFramework\ActionTrigger\Event\EventInterface;
 use CustomerManagementFramework\ActionTrigger\Event\SingleCustomerEventInterface;
 use CustomerManagementFramework\ActionTrigger\Rule;
-use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;

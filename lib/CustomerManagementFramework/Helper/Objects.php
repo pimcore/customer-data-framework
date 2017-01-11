@@ -11,7 +11,6 @@ namespace CustomerManagementFramework\Helper;
 
 use Pimcore\File;
 use Pimcore\Model\Element\Service;
-use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\Concrete;
 
 class Objects {

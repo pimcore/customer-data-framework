@@ -3,7 +3,6 @@
 namespace CustomerManagementFramework\RESTApi;
 
 use CustomerManagementFramework\Factory;
-use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use CustomerManagementFramework\RESTApi\Exception\ResourceNotFoundException;
 use CustomerManagementFramework\RESTApi\Traits\ResourceUrlGenerator;
