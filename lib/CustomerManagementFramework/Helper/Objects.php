@@ -98,7 +98,6 @@ class Objects {
                 if($object->getId() == $removeObject->getId()) {
                     $removed[] = $removeObject;
                     unset($array[$key]);
-                    $changed = true;
                 }
             }
         }

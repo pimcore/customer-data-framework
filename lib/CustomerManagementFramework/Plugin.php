@@ -114,11 +114,6 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
 
     }
 
-    public function handleDocument($event)
-    {
-        // do something
-        $document = $event->getTarget();
-    }
 
     public static function install()
     {

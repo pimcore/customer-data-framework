@@ -17,7 +17,6 @@ class TrackedUrlActivity extends AbstractActivity
 {
     protected $customer;
     private $activityDefinition;
-    private $label;
 
     public function __construct(CustomerInterface $customer, ActivityDefinition $activityDefinition)
     {

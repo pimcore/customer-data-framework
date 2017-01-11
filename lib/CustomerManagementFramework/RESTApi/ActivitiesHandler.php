@@ -261,10 +261,6 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
      */
     protected function createActivityEntryResponse(ActivityStoreEntryInterface $activityStoreEntry, \Zend_Controller_Request_Http $request, ExportCustomersFilterParams $params = null)
     {
-        if (null === $params) {
-            $params = ExportCustomersFilterParams::fromRequest($request);
-        }
-
         $response = $this->createResponse(
             $this->hydrateActivityStoreEntry($activityStoreEntry)
         );

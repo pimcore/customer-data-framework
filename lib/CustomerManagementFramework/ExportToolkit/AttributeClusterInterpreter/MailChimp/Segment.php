@@ -49,7 +49,6 @@ class Segment extends AbstractAttributeClusterInterpreter
     {
         $categorized   = $this->categorizeData();
         $exportService = $this->getExportService();
-        $apiClient     = $exportService->getApiClient();
 
         foreach ($categorized as $groupData) {
             $remoteGroupId = null;
