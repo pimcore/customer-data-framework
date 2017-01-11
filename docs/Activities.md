@@ -22,6 +22,14 @@ By implementing the ActivityStoreInterface it's possible to create your own impl
 
 On top of the ActivityStore the ActivityManager is responsible for handling activities in the CMF. It's a relatively lightweight component which just handles the process of tracking activities. Most of the work is done within the ActivityStore - the ActivityManager is just responsible for putting everything together independetly of the concrete implementation of the ActivityStore.
 
+### Tracking an activity
+
+Example:
+```
+// $activity needs to implement ActvityInterface
+\CustomerManagementFramework\Factory::getInstance()->getActivityManager()->trackActivity($activity)
+```
+
 ## ActivityView
 
 The CMF plugin contains a list view for displaying activities. This is added as a tab within the customer objects.
