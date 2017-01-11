@@ -15,6 +15,11 @@ use CustomerManagementFramework\Model\CustomerInterface;
 
 class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
 
+    /**
+     * @var array $data
+     */
+    private $data;
+
 
     /**
      * @var int;
@@ -78,6 +83,8 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
     private $attributes;
 
     public function __construct($data) {
+
+        $this->data = $data;
 
         $this->setId($data['id']);
         $this->setActivityDate($data['activityDate']);
@@ -160,6 +167,12 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
      */
     public function getRelatedItem()
     {
+        if(empty($this->relatedItem)) {
+            $implementationClass = self::getImplementationClass();
+            $implementationClass = \Pimcore::getDiContainer()->has($implementationClass) ? \Pimcore::getDiContainer()->get($implementationClass) : $implementationClass;
+            $this->relatedItem = \Pimcore::getDiContainer()->call([$implementationClass , 'cmfCreate'], [$this->getAttributes()]);
+        }
+
         return $this->relatedItem;
     }
 
@@ -251,6 +264,22 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
         $this->attributes = $attributes;
     }
 
-    
-    
+    public function getData()
+    {
+        $data = $this->data;
+        $data['id'] = $this->getId();
+        $data['activityDate'] = $this->getActivityDate()->getTimestamp();
+        $data['type'] = $this->getType();
+        $data['implementationClass'] = $this->getImplementationClass();
+        $data['attributes'] = $this->getAttributes();
+        $data['md5'] = $this->getMd5();
+        $data['creationDate'] = $this->getCreationDate();
+        $data['modificationDate'] = $this->getModificationDate();
+        $data['o_id'] = $this->o_id;
+        $data['a_id'] = $this->a_id;
+
+        return $data;
+    }
+
+
 }

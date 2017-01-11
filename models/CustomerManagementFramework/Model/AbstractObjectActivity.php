@@ -11,11 +11,14 @@ namespace CustomerManagementFramework\Model;
 use Carbon\Carbon;
 use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFramework\Factory;
+use Pimcore\API\Plugin\Exception;
+use Pimcore\Model\Object\AbstractObject;
 use Pimcore\Model\Object\Booking;
 use Pimcore\Model\Object\ClassDefinition;
 use Pimcore\Translate\Admin;
 
-abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete implements ActivityInterface {
+abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete implements PersistentActivityInterface {
+
 
     public function cmfIsActive() {
         return $this->getPublished() && ($this->getCustomer() instanceof CustomerInterface);
@@ -55,18 +58,44 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete imp
 
         $result['o_id']  = $this->getId();
         $result['o_key'] = $this->getKey();
+        $result['o_path'] = $this->getRealFullPath();
 
         return $result;
     }
 
+
+
     public function cmfUpdateData(array $data)
     {
-        // TODO: Implement cmfUpdateDate() method.
+        throw new \Exception('update of pimcore object activities not allowed');
     }
 
-    public static function cmfCreate(array $data)
+    public static function cmfCreate(array $data, $fromWebservice = false)
     {
-        // TODO: Implement cmfCreate() method.
+        if(!empty($data['o_id'])) {
+            $object = self::getById($data['o_id']);
+
+            if(!$object) {
+                throw new \Exception(sprintf('object with o_id %s not found', $data['o_id']));
+
+            }
+        } else {
+            $object = new static;
+        }
+
+        if($fromWebservice) {
+            $object->setValues($data["attributes"]);
+        } else {
+            $object->setValues($data);
+        }
+
+
+        return $object;
+    }
+
+    public function cmfWebserviceUpdateAllowed()
+    {
+        return false;
     }
 
     public static function cmfGetOverviewData(ActivityStoreEntryInterface $entry)

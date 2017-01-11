@@ -135,4 +135,9 @@ interface ActivityStoreEntryInterface {
      * @return void
      */
     public function setAttributes(array $attributes);
+
+    /**
+     * @return array
+     */
+    public function getData();
 }

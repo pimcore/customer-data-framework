@@ -8,6 +8,7 @@ use CustomerManagementFramework\Encryption\DefaultEncryptionService;
 use CustomerManagementFramework\Encryption\EncryptionServiceInterface;
 use CustomerManagementFramework\ExportToolkit\ExportService\MailChimpExportService;
 use CustomerManagementFramework\RESTApi\CustomersHandler;
+use CustomerManagementFramework\RESTApi\ActivitiesHandler;
 use CustomerManagementFramework\RESTApi\SegmentsHandler;
 use CustomerManagementFramework\RESTApi\SegmentGroupsHandler;
 use CustomerManagementFramework\RESTApi\SegmentsOfCustomerHandler;
@@ -22,6 +23,10 @@ return [
     'cmf.rest.customers.route'          => 'cmf-rest-customers',
     'cmf.rest.customers.resource-route' => 'cmf-rest-customers-resource',
     'cmf.rest.customers.prefix'         => '/cmf/api/customers',
+
+    'cmf.rest.activities.route'          => 'cmf-rest-activities',
+    'cmf.rest.activities.resource-route' => 'cmf-rest-activities-resource',
+    'cmf.rest.activities.prefix'         => '/cmf/api/activities',
 
     'cmf.rest.segments.prefix'          => '/cmf/api/segments',
     'cmf.rest.segments.route'          => 'cmf-rest-segments',
@@ -78,6 +83,14 @@ return [
             ->method('setPathPrefix', DI\get('cmf.rest.customers.prefix'))
             ->method('setApiRoute', DI\get('cmf.rest.customers.route'))
             ->method('setApiResourceRoute', DI\get('cmf.rest.customers.resource-route'))
+            ->method('setUrlHelper', DI\get(Url::class))
+            ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
+
+    ActivitiesHandler::class
+        => DI\object()
+            ->method('setPathPrefix', DI\get('cmf.rest.activities.prefix'))
+            ->method('setApiRoute', DI\get('cmf.rest.activities.route'))
+            ->method('setApiResourceRoute', DI\get('cmf.rest.activities.resource-route'))
             ->method('setUrlHelper', DI\get(Url::class))
             ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
 

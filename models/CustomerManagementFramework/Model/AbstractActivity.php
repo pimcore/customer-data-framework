@@ -33,16 +33,19 @@ abstract class AbstractActivity implements ActivityInterface {
         return true;
     }
 
-
+    public function cmfWebserviceUpdateAllowed()
+    {
+        return !($this instanceof PersistentActivityInterface);
+    }
 
     public function cmfUpdateData(array $data)
     {
-        // TODO: Implement cmfUpdateDate() method.
+        return false;
     }
 
-    public static function cmfCreate(array $data)
+    public static function cmfCreate(array $data, $fromWebservice = false)
     {
-        // TODO: Implement cmfCreate() method.
+        return false;
     }
 
     public static function cmfGetOverviewData(ActivityStoreEntryInterface $entry)

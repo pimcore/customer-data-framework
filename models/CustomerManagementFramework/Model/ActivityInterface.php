@@ -25,11 +25,14 @@ interface ActivityInterface {
     public function cmfGetActivityDate();
     
     /**
+     * Returns an array representation of this activity.
+     *
      * @return array
      */
     public function cmfToArray();
 
     /**
+     *
      * @param array $data
      *
      * @return bool
@@ -37,11 +40,20 @@ interface ActivityInterface {
     public function cmfUpdateData(array $data);
 
     /**
+     * Create an activity object instance from an array of data.
+     *
      * @param array $data
      *
-     * @return static
+     * @return static|false
      */
-    public static function cmfCreate(array $data);
+    public static function cmfCreate(array $data, $fromWebservice = false);
+
+    /**
+     * Is update and creation of activities of this class via REST api allowed?
+     *
+     * @return bool
+     */
+    public function cmfWebserviceUpdateAllowed();
 
 
     /**

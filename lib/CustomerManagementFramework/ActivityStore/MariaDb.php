@@ -24,14 +24,25 @@ class MariaDb implements ActivityStoreInterface{
     const ACTIVITIES_TABLE = 'plugin_cmf_activities';
     const DELETIONS_TABLE = 'plugin_cmf_deletions';
 
+    /**
+     * @param ActivityInterface $activity
+     *
+     * @return ActivityStoreEntryInterface
+     */
     public function insertActivityIntoStore(ActivityInterface $activity) {
 
         $data = self::createDbRowData($activity);
         $data['creationDate'] = time();
 
-        \CustomerManagementFramework\Service\MariaDb::getInstance()->insert(self::ACTIVITIES_TABLE, $data);
+        $id = \CustomerManagementFramework\Service\MariaDb::getInstance()->insert(self::ACTIVITIES_TABLE, $data);
+
+        return self::getEntryById($id);
     }
 
+    /**
+     * @param ActivityInterface           $activity
+     * @param ActivityStoreEntryInterface $entry
+     */
     public function updateActivityInStore(ActivityInterface $activity, ActivityStoreEntryInterface $entry) {
 
         $data = self::createDbRowData($activity);
@@ -39,6 +50,12 @@ class MariaDb implements ActivityStoreInterface{
         \CustomerManagementFramework\Service\MariaDb::getInstance()->update(self::ACTIVITIES_TABLE, $data, "id = " . $entry->getId());
     }
 
+
+    /**
+     * @param ActivityInterface $activity
+     *
+     * @return bool|DefaultActivityStoreEntry
+     */
     public function getEntryForActivity(ActivityInterface $activity)
     {
         $db = Db::get();
@@ -60,6 +77,11 @@ class MariaDb implements ActivityStoreInterface{
         return $entry;
     }
 
+    /**
+     * @param CustomerInterface $customer
+     *
+     * @return array
+     */
     public function getActivityDataForCustomer(CustomerInterface $customer) {
         $db = Db::get();
 
@@ -74,15 +96,23 @@ class MariaDb implements ActivityStoreInterface{
         return $result;
     }
 
+    /**
+     * @return DefaultMariaDbActivityList
+     */
     public function getActivityList() {
         return new DefaultMariaDbActivityList();
     }
 
+    /**
+     * @param                              $pageSize
+     * @param int                          $page
+     * @param ExportActivitiesFilterParams $params
+     *
+     * @return \Zend_Paginator
+     */
     public function getActivitiesDataForWebservice($pageSize, $page = 1, ExportActivitiesFilterParams $params)
     {
         $db = Db::get();
-
-        $timestamp = time();
 
         $select = $db->select();
         $select
@@ -111,23 +141,19 @@ class MariaDb implements ActivityStoreInterface{
         $paginator->setItemCountPerPage($pageSize);
         $paginator->setCurrentPageNumber($page);
 
-        $data = [];
-        foreach($paginator as $value) {
-            if($value['attributes']) {
-                $value['attributes'] = \Zend_Json::decode($value['attributes']);
-            }
-
-            $data[] = $value;
+        foreach($paginator as &$value) {
+            $value = new DefaultActivityStoreEntry($value);
         }
 
-        return [
-            'page' => $page,
-            'totalPages' => $paginator->getPages()->pageCount,
-            'timestamp' => $timestamp,
-            'data' => $data
-        ];
+        return $paginator;
     }
 
+    /**
+     * @param $entityType
+     * @param $deletionsSinceTimestamp
+     *
+     * @return array
+     */
     public function getDeletionsData($entityType, $deletionsSinceTimestamp) {
         $db = Db::get();
 
@@ -145,43 +171,65 @@ class MariaDb implements ActivityStoreInterface{
         ];
     }
 
+    /**
+     * @param ActivityInterface $activity
+     */
     public function deleteActivity(ActivityInterface $activity) {
 
         $db = Db::get();
-        $row = false;
+        $id = false;
         if($activity instanceof Concrete) {
-            $row = $db->fetchRow("select * from " . self::ACTIVITIES_TABLE . " where o_id = ? ", $activity->getId());
+            $id = $db->fetchOne("select id from " . self::ACTIVITIES_TABLE . " where o_id = ? limit 1", $activity->getId());
         } elseif(method_exists($activity, 'getId')) {
-            $row = $db->fetchRow("select * from " . self::ACTIVITIES_TABLE . " where a_id = ? ", $activity->getId());
+            $id = $db->fetchOne("select id from " . self::ACTIVITIES_TABLE . " where a_id = ? limit 1", $activity->getId());
         }
 
-        if($row) {
-            $db->beginTransaction();
-
-            try {
-                $db->query("delete from " . self::ACTIVITIES_TABLE . " where id = " . intval($row['id']));
-
-                $db->insertOrUpdate(self::DELETIONS_TABLE, [
-                    'id' => $row['id'],
-                    'creationDate' => time(),
-                    'entityType' => 'activities',
-                    'type' => $activity->cmfGetType()
-                ]);
-
-                $db->commit();
-            } catch(\Exception $e) {
-                print $e->getMessage();
-                print "rollback";
-                $e->rollback();
-            }
-
+        if($id) {
+            $entry = $this->getEntryById($id);
+            $this->deleteEntry($entry);
         }
     }
 
+
+    /**
+     * @param ActivityStoreEntryInterface $entry
+     *
+     * @return void
+     */
+    public function deleteEntry(ActivityStoreEntryInterface $entry) {
+        $db = Db::get();
+        $db->beginTransaction();
+
+        try {
+            $db->query("delete from " . self::ACTIVITIES_TABLE . " where id = " . $entry->getId());
+
+            $db->insertOrUpdate(self::DELETIONS_TABLE, [
+                'id' => $entry->getId(),
+                'creationDate' => time(),
+                'entityType' => 'activities',
+                'type' => $entry->getType()
+            ]);
+
+            $db->commit();
+        } catch(\Exception $e) {
+            $e->rollback();
+
+            throw new $e;
+        }
+    }
+
+    /**
+     * @param CustomerInterface $customer
+     */
     public function deleteCustomer(CustomerInterface $customer) {
 
     }
 
+    /**
+     * @param ActivityInterface $activity
+     *
+     * @return array
+     */
     protected function createDbRowData(ActivityInterface $activity) {
 
         $db = Db::get();
@@ -206,6 +254,11 @@ class MariaDb implements ActivityStoreInterface{
         return $data;
     }
 
+    /**
+     * @param $id
+     *
+     * @return DefaultActivityStoreEntry
+     */
     public function getEntryById($id) {
 
         $db = Db::get();
@@ -215,6 +268,13 @@ class MariaDb implements ActivityStoreInterface{
         }
     }
 
+
+    /**
+     * @param CustomerInterface $customer
+     * @param null              $activityType
+     *
+     * @return string
+     */
     public function countActivitiesOfCustomer(CustomerInterface $customer, $activityType = null)
     {
         $db = Db::get();
@@ -227,6 +287,13 @@ class MariaDb implements ActivityStoreInterface{
         return $db->fetchOne("select count(id) from " . self::ACTIVITIES_TABLE . " where customerId = ? $and", $customer->getId());
     }
 
+    /**
+     * @param string $operator
+     * @param string $type
+     * @param int    $count
+     *
+     * @return array
+     */
     public function getCustomerIdsMatchingActivitiesCount($operator, $type, $count)
     {
         $db = Db::get();
@@ -243,6 +310,9 @@ class MariaDb implements ActivityStoreInterface{
         return $db->fetchCol($sql);
     }
 
+    /**
+     * @return array
+     */
     public function getAvailableActivityTypes()
     {
         $sql = "select distinct type from " . self::ACTIVITIES_TABLE;

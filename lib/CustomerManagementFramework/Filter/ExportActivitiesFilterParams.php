@@ -16,6 +16,22 @@ class ExportActivitiesFilterParams {
     private $type;
 
     /**
+     * @param \Zend_Controller_Request_Http $request
+     * @return static
+     */
+    public static function fromRequest(\Zend_Controller_Request_Http $request)
+    {
+        $params = new static();
+        $params->setType($request->getParam('type', false));
+        $params->setModifiedSinceTimestamp($request->getParam('modifiedSinceTimestamp'));
+        $params->setAllParams($request->getParams());
+
+        $params->setAllParams($request->getParams());
+
+        return $params;
+    }
+
+    /**
      * @var int
      */
     private $modifiedSinceTimestamp;

@@ -31,6 +31,13 @@ class MariaDb {
     }
 
 
+    /**
+     * Generates insert SQL statement for MariaDBs dynamic column feature.
+     *
+     * @param array $data
+     *
+     * @return string
+     */
     public function createDynamicColumnInsert(array $data) {
 
         $db = Db::get();
@@ -53,6 +60,14 @@ class MariaDb {
         return "COLUMN_CREATE(" . $insert .  ")";
     }
 
+    /**
+     * Insert $data into table $tableName. Returns last inserted ID.
+     *
+     * @param string $tableName
+     * @param array  $data
+     *
+     * @return int
+     */
     public function insert($tableName, array $data) {
 
         $db = Db::get();
@@ -69,8 +84,19 @@ class MariaDb {
             implode(',', array_values($data)));
 
         $db->query($sql);
+
+        return $db->lastInsertId();
     }
 
+    /**
+     * Updates table $tableName with $data for rows which are matching $where.
+     *
+     * @param $tableName
+     * @param $data
+     * @param $where
+     *
+     * @return void
+     */
     public function update($tableName, $data, $where) {
         $db = Db::get();
 

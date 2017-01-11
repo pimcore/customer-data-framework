@@ -23,6 +23,7 @@ use CustomerManagementFramework\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFramework\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFramework\CustomerView\CustomerViewInterface;
 use CustomerManagementFramework\ExportToolkit\ExportService\MailChimpExportService;
+use CustomerManagementFramework\RESTApi\ActivitiesHandler;
 use CustomerManagementFramework\RESTApi\CustomersHandler;
 use CustomerManagementFramework\RESTApi\DeletionsHandler;
 use CustomerManagementFramework\RESTApi\ExportInterface;
@@ -142,6 +143,14 @@ class Factory {
     public function getRESTApiCustomersHandler()
     {
         return \Pimcore::getDiContainer()->get(CustomersHandler::class);
+    }
+
+    /**
+     * @return ActivitiesHandler
+     */
+    public function getRESTApiActivitiesHandler()
+    {
+        return \Pimcore::getDiContainer()->get(ActivitiesHandler::class);
     }
 
     /**
