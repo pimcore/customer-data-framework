@@ -25,6 +25,7 @@ interface SegmentManagerInterface {
      * Returns a list of customers which are within the given customer segments.
      * 
      * @param int[] $segmentIds
+     * @param string $conditionMode
      *
      * @return CustomerSegment\Listing
      */
@@ -123,8 +124,9 @@ interface SegmentManagerInterface {
     /**
      * Returns the CustomerSegment with given reference within given CustomerSegmentGroup.
      *
-     * @param $segmentReference
+     * @param string $segmentReference
      * @param CustomerSegmentGroup $segmentGroup
+     * @param bool $calculated
      *
      * @return CustomerSegmentInterface
      */
@@ -133,9 +135,10 @@ interface SegmentManagerInterface {
     /**
      * Creates a segment group.
      * 
-     * @param      $segmentGroupName
-     * @param null $segmentGroupReference
-     * @param bool $calculated
+     * @param       $segmentGroupName
+     * @param null  $segmentGroupReference
+     * @param bool  $calculated
+     * @param array $values
      *
      * @return CustomerSegmentGroup
      */

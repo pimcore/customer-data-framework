@@ -42,7 +42,9 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder {
     /**
      * prepare data and configurations which could be reused for all calculateSegments() calls
      *
-     * @return \Pimcore\Model\Object\Customer\Listing
+     * @param SegmentManagerInterface $segmentManager
+     *
+     * @return void
      */
     public function prepare(SegmentManagerInterface $segmentManager)
     {
@@ -54,8 +56,9 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder {
      * build segment(s) for given customer
      *
      * @param CustomerInterface $customer
+     * @param SegmentManagerInterface $segmentManager
      *
-     * @return CustomerSegmentInterface[]
+     * @return void
      */
     public function calculateSegments(CustomerInterface $customer, SegmentManagerInterface $segmentManager)
     {

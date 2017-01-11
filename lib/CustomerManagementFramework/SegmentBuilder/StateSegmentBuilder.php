@@ -41,6 +41,8 @@ class StateSegmentBuilder extends AbstractSegmentBuilder {
     /**
      * prepare data and configurations which could be reused for all calculateSegments() calls
      *
+     * @param SegmentManagerInterface $segmentManager
+     *
      * @return \Pimcore\Model\Object\Customer\Listing
      */
     public function prepare(SegmentManagerInterface $segmentManager)
@@ -58,6 +60,7 @@ class StateSegmentBuilder extends AbstractSegmentBuilder {
      * build segment(s) for given customer
      *
      * @param CustomerInterface $customer
+     * @param SegmentManagerInterface $segmentManager
      *
      * @return CustomerSegmentInterface[]
      */

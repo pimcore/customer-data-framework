@@ -17,7 +17,9 @@ interface SegmentBuilderInterface {
     public function __construct($config, LoggerInterface $logger);
 
     /**
-     * - prepares data and configurations which could be reused for all buildSegment(CustomerInterface $customer) calls
+     * prepares data and configurations which could be reused for all buildSegment(CustomerInterface $customer) calls
+     *
+     * @param SegmentManagerInterface $segmentManager
      *
      * @return void
      */
@@ -27,6 +29,7 @@ interface SegmentBuilderInterface {
      * update calculated segment(s) for given customer
      *
      * @param CustomerInterface $customer
+     * @param SegmentManagerInterface $segmentManager
      *
      * @return void
      */
@@ -48,6 +51,8 @@ interface SegmentBuilderInterface {
 
     /**
      * executed in maintenance mode
+     *
+     * @param SegmentManagerInterface $segmentManager
      *
      * @return void
      */

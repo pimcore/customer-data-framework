@@ -217,11 +217,12 @@ class Factory {
     }
 
     /**
-     * @param                 $className
-     * @param LoggerInterface $logger
-     * @param null            $needsToBeSubclassOf
+     * @param            $className
+     * @param null       $needsToBeSubclassOf
+     * @param array|null $constructorParams
      *
-     * @return mixed
+     * @return object
+     * @throws \Exception
      */
     public function createObject($className, $needsToBeSubclassOf = null, array $constructorParams = null)
     {

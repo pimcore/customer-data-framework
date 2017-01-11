@@ -106,7 +106,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
     }
 
     /**
-     * @param array $segmentBuilderConfigs
+     * @param bool $changesQueueOnly
      *
      * @return void
      */

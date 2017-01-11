@@ -105,7 +105,8 @@ class DefaultEventHandler implements EventHandlerInterface{
     }
 
     /**
-     * @param SingleCustomerEventInterface $event
+     * @param EventInterface $event
+     * @param bool           $checkConditions
      *
      * @return Rule[]
      */

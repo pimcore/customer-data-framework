@@ -91,7 +91,7 @@ interface ActionDefinitionInterface
     public function getCreationDate();
 
     /**
-     * @param int $creationDate
+     * @param int $modificationDate
      *
      * @return void
      */

@@ -28,6 +28,8 @@ class Dao {
     /**
      * get select query
      *
+     * @param bool $clone
+     *
      * @return \Zend_Db_Select
      * @throws \Exception
      */

@@ -270,7 +270,6 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
 
     /**
      * @param ActivityStoreEntryInterface $activityStoreEntry
-     * @param ExportCustomersFilterParams $params
      * @return array
      */
     protected function hydrateActivityStoreEntry(ActivityStoreEntryInterface $activityStoreEntry)

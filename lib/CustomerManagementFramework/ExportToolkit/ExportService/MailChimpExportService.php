@@ -129,6 +129,7 @@ class MailChimpExportService
 
     /**
      * @param ElementInterface $object
+     * @param string $remoteId
      * @param \DateTime|null $date
      * @return Note
      */

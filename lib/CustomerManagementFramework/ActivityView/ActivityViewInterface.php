@@ -35,10 +35,11 @@ interface ActivityViewInterface {
     public function getDetailviewTemplate(ActivityStoreEntryInterface $activityEntry);
 
     /**
-     * @param Data $fd
-     * @param $value
+     * @param       $implementationClass
+     * @param array $attributes
+     * @param array $visibleKeys
      *
-     * @return mixed
+     * @return array
      */
     public function formatAttributes($implementationClass, array $attributes, array $visibleKeys = []);
 

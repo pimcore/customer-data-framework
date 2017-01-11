@@ -48,6 +48,7 @@ interface ActivityInterface {
      * Create an activity object instance from an array of data.
      *
      * @param array $data
+     * @param bool $fromWebservice
      *
      * @return static|false
      */
