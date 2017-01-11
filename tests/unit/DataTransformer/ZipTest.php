@@ -174,7 +174,6 @@ class ZipTest extends \PHPUnit_Framework_TestCase
             'rm11AA' => 'RM1 1AA',
             'rm11AA london' => 'RM1 1AA',
             'london rm11AA' => 'RM1 1AA',
-            'rm11AA london' => 'RM1 1AA',
         ];
 
         foreach($tests as $from => $to) {
