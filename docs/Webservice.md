@@ -130,9 +130,11 @@ The segments of customers API allows to add segments to customers and remove seg
 |--------------------------------|--------|---------------------------------------|
 | /cmf/api/segments-of-customers | POST    | Add/remove segments                   |
 
+``` 
 Example POST body JSON:
 {
     "customerId": 12345,
     "addSegments": [123,456],
     "removeSegments": [567,789]
 }
+```
