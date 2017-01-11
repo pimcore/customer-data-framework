@@ -55,8 +55,8 @@ Calculates segments based on the gender field.
 
 Calculates state segments based on the zip field and zip ranges for each state. It currently works for AT, DE and CH 
 
-| configuration option  | description                                                                                                                             |
-| ----------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| segmentGroup          | name of the segment group                                                                                                               |
-| countryTransformers   | define the data transformers which should be used for each country                                                                                                               |
+| configuration option  | description                                                                                                                                                         |
+| ----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| segmentGroup          | name of the segment group                                                                                                                                           |
+| countryTransformers   | define the data transformers which should be used for each country - the data transformer is responsible to convert the zip to a state based on it's implementation |
 
