@@ -9,6 +9,7 @@
 namespace CustomerManagementFramework;
 
 use Pimcore\Logger;
+use Pimcore\Model\Staticroute;
 use TiBeN\CrontabManager\CrontabAdapter;
 use TiBeN\CrontabManager\CrontabJob;
 use TiBeN\CrontabManager\CrontabRepository;
@@ -21,7 +22,9 @@ class Installer {
         $this->installDatabaseTables();
         $this->installClasses();
         $this->installCrontab();
+        $this->installStaticRoutes();
         $this->installConfig();
+
 
         return true;
     }
@@ -173,6 +176,17 @@ class Installer {
         }
 
 
+    }
+
+    private static function installStaticRoutes() {
+        $file = PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/staticroutes/staticroutes.php';
+        $routes = include($file);
+
+        foreach($routes as $routeConfig) {
+            $route = new Staticroute();
+            $route->setValues($routeConfig);
+            $route->save();
+        }
     }
 
     private static function installConfig() {
