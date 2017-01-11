@@ -18,6 +18,8 @@ class DefaultActivityManager implements ActivityManagerInterface
 {
 
     /**
+     * Add or update activity in the ActivityStore
+     *
      * @param ActivityInterface $activity
      *
      * @return void
@@ -53,6 +55,8 @@ class DefaultActivityManager implements ActivityManagerInterface
     }
 
     /**
+     * Delete an activity from the activty store.
+     *
      * @param ActivityInterface $activity
      *
      * @return void
