@@ -39,4 +39,24 @@ Calculates age range segments based on a birthday field.
 | ageGroups             | array of arrays to define the used age groups. Example: [[0,50],[51,100]] would result in an age group 0-50 and another one with 51-100 |
 
 
+##### GenderSegmentBuilder
+
+Calculates segments based on the gender field. 
+
+| configuration option  | description                                                                                                                             |
+| ----------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| segmentGroup          | name of the segment group                                                                                                               |
+| maleSegmentName       | name of the male segment                                                                                                                |
+| femaleSegmentName     | name of the female segment                                                                                                              |
+| notsetSegmentName     | name of the segment if the gender of the customer is not male or female                                                                 |
+
+
+##### StateSegmentBuilder
+
+Calculates state segments based on the zip field and zip ranges for each state. It currently works for AT, DE and CH 
+
+| configuration option  | description                                                                                                                             |
+| ----------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| segmentGroup          | name of the segment group                                                                                                               |
+| countryTransformers   | define the data transformers which should be used for each country                                                                                                               |
 
