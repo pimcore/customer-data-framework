@@ -129,13 +129,7 @@ class Factory {
     {
         return \Pimcore::getDiContainer()->get('CustomerManagementFramework\SegmentManager');
     }
-    
-    /**
-     * @return ExportInterface
-     */
-    public function getRESTApiExport() {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\RESTApi\Export');
-    }
+
 
     /**
      * @return CustomersHandler

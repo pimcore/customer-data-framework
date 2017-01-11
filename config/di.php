@@ -72,10 +72,6 @@ return [
         => DI\object('CustomerManagementFramework\SegmentManager\DefaultSegmentManager')
            ->constructor(DI\get('CustomerManagementFramework\Logger')),
 
-    'CustomerManagementFramework\RESTApi\Export'
-        => DI\object('CustomerManagementFramework\RESTApi\Export')
-        ->constructor(DI\get('CustomerManagementFramework\Logger')),
-
 
     CustomersHandler::class
         => DI\object(CustomersHandler::class)
