@@ -8,18 +8,22 @@ use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
 interface ActivityInterface {
 
     /**
+     * Returns if the activity is active. Only active activities are stored in the ActivityStore.
+     *
      * @return bool
      */
     public function cmfIsActive();
 
-    public function cmfUpdateOnSave();
-
     /**
+     * Return the type of the activity (i.e. Booking, Login...)
+     *
      * @return string
      */
     public function cmfGetType();
 
     /**
+     * Return the date when the activity occured.
+     *
      * @return Carbon
      */
     public function cmfGetActivityDate();
@@ -32,6 +36,7 @@ interface ActivityInterface {
     public function cmfToArray();
 
     /**
+     * Updates the data of the activity instance but doesn't save it.
      *
      * @param array $data
      *
@@ -57,11 +62,15 @@ interface ActivityInterface {
 
 
     /**
+     * Get the customer of the activity. A customer is required.
+     *
      * @return CustomerInterface
      */
     public function getCustomer();
 
     /**
+     * Set the customer of the activity.
+     *
      * @param CustomerInterface $customer
      *
      * @return void

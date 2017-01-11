@@ -4,6 +4,7 @@ namespace CustomerManagementFramework;
 
 use CustomerManagementFramework\ActionTrigger\Event\SingleCustomerEventInterface;
 use CustomerManagementFramework\Controller\Plugin\UrlActivityTracker;
+use CustomerManagementFramework\Model\AbstractObjectActivity;
 use CustomerManagementFramework\Model\ActivityInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
@@ -57,7 +58,7 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         \Pimcore::getEventManager()->attach(["object.postUpdate"], function (\Zend_EventManager_Event $e) {
             $object = $e->getTarget();
 
-            if($object instanceof ActivityInterface) {
+            if($object instanceof AbstractObjectActivity) {
                 $trackIt = true;
                 if(!$object->cmfUpdateOnSave()) {
                     if(Factory::getInstance()->getActivityStore()->getEntryForActivity($object)) {

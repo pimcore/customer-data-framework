@@ -62,3 +62,14 @@ public static function cmfGetDetailviewData(ActivityStoreEntryInterface $entry);
  */
 public static function cmfGetDetailviewTemplate(ActivityStoreEntryInterface $entry);
 ```
+
+
+### Generic activities
+
+As mentioned above activities could use their own persistance additionally to the ActivityStore but don't have to. It's also possible to save activities only in the ActivityStore. The framework includes a generic activity implentation which could be used for these cases: 
+
+```
+CustomerManagementFramework\Model\Activity\GenericActivity
+```
+
+This activity is used as a standard via the REST api if now implentationClass is defined. It can handle an nested, associative array of data which is only saved in the ActivityStore. 

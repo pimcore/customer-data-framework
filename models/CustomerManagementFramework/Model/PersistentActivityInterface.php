@@ -7,7 +7,17 @@ use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
 
 interface PersistentActivityInterface extends ActivityInterface {
 
-   public function save();
+    /**
+     * save activity
+     *
+     * @return void
+     */
+    public function save();
 
-   public function delete();
+    /**
+     * delete activity
+     *
+     * @return void
+     */
+    public function delete();
 }
