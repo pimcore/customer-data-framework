@@ -47,13 +47,13 @@ the `getRoutes` method and add your custom routes or modify the existing ones.
 
 The customers API implements standard REST calls for customer CRUD actions:
 
-| Path                      | Method   | Description                 |
-|---------------------------|----------|-----------------------------|
-| `/cmf/api/customers`      | `GET`    | Fetch all customers         |
-| `/cmf/api/customers/{id}` | `GET`    | Fetch a single customer     |
-| `/cmf/api/customers`      | `POST`   | Create a new customer       |
-| `/cmf/api/customers/{id}` | `PATCH`  | Partially update a customer |
-| `/cmf/api/customers/{id}` | `DELETE` | Delete a customer           |
+| Path                    | Method | Description                 |
+|-------------------------|--------|-----------------------------|
+| /cmf/api/customers      | GET    | Fetch all customers         |
+| /cmf/api/customers/{id} | GET    | Fetch a single customer     |
+| /cmf/api/customers      | POST   | Create a new customer       |
+| /cmf/api/customers/{id} | PATCH  | Partially update a customer |
+| /cmf/api/customers/{id} | DELETE | Delete a customer           |
 
 The `GET` requests can be filtered by passing the follwing params as query params:
 
@@ -63,31 +63,76 @@ The `GET` requests can be filtered by passing the follwing params as query param
 | segments              | comma-separated list of IDs   | filter by segments                                          |
 
 
-### Export API
+### Activities API
 
-#### activites
+The activities API implements standard REST calls for activity CRUD actions:
 
-/cmf/api/export/activities
+| Path                    | Method | Description                   |
+|-------------------------|--------|-------------------------------|
+| /cmf/api/activities      | GET    | Fetch all activities         |
+| /cmf/api/activities/{id} | GET    | Fetch a single activity      |
+| /cmf/api/activities      | POST   | Create a new activity        |
+| /cmf/api/activities/{id} | PATCH  | Partially update a activity  |
+| /cmf/api/activities/{id} | DELETE | Delete a activity            |
 
-#### deletions (of customers and activities)
+The `GET` requests can be filtered by passing the follwing params as query params:
 
-/cmf/api/export/deletions
+| Parameter             | Possible Values               | Description                                                    |
+| --------------------- |-----------------------------  |--------------------------------------------------------------- |
+| type                  | string                        | filter by activity type                                        |
+| modifiedSinceTimestamp| timestamp/int                 | get activities which where modified since given timestamp      |
+
+### Deletions API
+
+The deletions API delivers information about deletions of customers and activities:
+
+| Path                     | Method | Description                   |
+|--------------------------|--------|-------------------------------|
+| /cmf/api/deletions       | GET    | Fetch all segments            |
+
+The request can be filtered by passing the follwing params as query params:
+
+| Parameter               | Possible Values               | Description                                                    |
+| ----------------------- |-----------------------------  |--------------------------------------------------------------- |
+| entityType              | customers/activities          | get deletions of customers or activities                       |
+| deletionsSinceTimestamp | timestamp/int                 | get deletions since given timestamp only                       |
 
 
-#### segments
+### Segments API
 
-/cmf/api/export/segments
+The segments API implements standard REST calls for customer segment CRUD actions:
 
-#### segment groups
+| Path                     | Method | Description                   |
+|--------------------------|--------|-------------------------------|
+| /cmf/api/segments        | GET    | Fetch all segments            |
+| /cmf/api/segments/{id}   | GET    | Fetch a single segment        |
+| /cmf/api/segments        | POST   | Create a new segment          |
+| /cmf/api/segments/{id}   | PATCH  | Partially update a segment    |
+| /cmf/api/segments/{id}   | DELETE | Delete a segment              |
 
-/cmf/api/export/segment-groups
+### Segment groups API
 
-### Import API
+The segment groups API implements standard REST calls for customer segment group CRUD actions:
 
-#### segments
+| Path                           | Method | Description                           |
+|--------------------------------|--------|---------------------------------------|
+| /cmf/api/segment-groups        | GET    | Fetch all segment groups              |
+| /cmf/api/segment-groups/{id}   | GET    | Fetch a single segment group          |
+| /cmf/api/segment-groups        | POST   | Create a new segment group            |
+| /cmf/api/segment-groups/{id}   | PATCH  | Partially update a segment group      |
+| /cmf/api/segment-groups/{id}   | DELETE | Delete a segment group                |
 
-/cmf/api/import/segment
-___
-#### segment groups
+### Segments of customers API
 
-/cmf/api/import/segment-group
+The segments of customers API allows to add segments to customers and remove segments form customers:
+
+| Path                           | Method | Description                           |
+|--------------------------------|--------|---------------------------------------|
+| /cmf/api/segments-of-customers | POST    | Add/remove segments                   |
+
+Example POST body JSON:
+{
+    "customerId": 12345,
+    "addSegments": [123,456],
+    "removeSegments": [567,789]
+}
