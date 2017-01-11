@@ -41,7 +41,7 @@ class Installer {
             $permission->setKey($key);
 
             $res = new \Pimcore\Model\User\Permission\Definition\Dao();
-            $res->configure(\Pimcore\Db::get());
+            $res->configure();
             $res->setModel($permission);
             $res->save();
         }
