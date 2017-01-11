@@ -55,6 +55,12 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         return CustomerSegmentGroup::getById($id);
     }
 
+    /**
+     * @param array  $segmentIds
+     * @param string $conditionMode
+     *
+     * @return \Pimcore\Model\Object\Listing\Concrete
+     */
     public function getCustomersBySegmentIds(array $segmentIds, $conditionMode = self::CONDITION_AND)
     {
         $list = Factory::getInstance()->getCustomerProvider()->getList();
@@ -73,6 +79,11 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         return $list;
     }
 
+    /**
+     * @param array $params
+     *
+     * @return CustomerSegment[]
+     */
     public function getSegments(array $params = [])
     {
         $list = CustomerSegment::getList();
@@ -81,6 +92,11 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         return $list->load();
     }
 
+    /**
+     * @param array $params
+     *
+     * @return CustomerSegmentGroup[]
+     */
     public function getSegmentGroups(array $params = [])
     {
         $list = CustomerSegmentGroup::getList();
@@ -140,6 +156,9 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled($backup);
     }
 
+    /**
+     * @param CustomerInterface $customer
+     */
     public function buildCalculatedSegmentsOnCustomerSave(CustomerInterface $customer)
     {
         $segmentBuilders = self::createSegmentBuilders();
@@ -155,6 +174,9 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
     }
 
+    /**
+     *
+     */
     public function executeSegmentBuilderMaintenance()
     {
         $segmentBuilders = self::createSegmentBuilders();
@@ -164,6 +186,10 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
     }
 
+    /**
+     * @param CustomerInterface       $customer
+     * @param SegmentBuilderInterface $segmentBuilder
+     */
     protected function applySegmentBuilderToCustomer(CustomerInterface $customer, SegmentBuilderInterface $segmentBuilder)
     {
         $this->logger->info(sprintf("apply segment builder %s to customer %s", $segmentBuilder->getName(), (string)$customer));
@@ -215,6 +241,13 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
     }
 
+    /**
+     * @param CustomerInterface $customer
+     * @param array             $addSegments
+     * @param array             $deleteSegments
+     * @param bool              $calculated
+     * @param                   $hintForNotes
+     */
     protected function mergeSegmentsHelper(CustomerInterface $customer, array $addSegments, array $deleteSegments = [], $calculated = false, $hintForNotes)
     {
         $currentSegments = $calculated ? (array)$customer->getCalculatedSegments() : (array)$customer->getManualSegments();
@@ -290,6 +323,13 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
     }
 
+    /**
+     * @param                      $segmentReference
+     * @param CustomerSegmentGroup $segmentGroup
+     * @param null                 $calculated
+     *
+     * @return mixed
+     */
     public function getSegmentByReference($segmentReference, CustomerSegmentGroup $segmentGroup, $calculated = null) {
 
 
@@ -313,6 +353,16 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
     }
 
+    /**
+     * @param string                      $segmentName
+     * @param CustomerSegmentGroup|string $segmentGroup
+     * @param null                        $segmentReference
+     * @param bool                        $calculated
+     * @param null                        $subFolder
+     *
+     * @return mixed|CustomerSegment
+     * @throws \Exception
+     */
     public function createSegment($segmentName, $segmentGroup, $segmentReference = null, $calculated = true, $subFolder = null){
 
         if($segmentGroup instanceof CustomerSegmentGroup && $segmentGroup->getCalculated() != $calculated) {
@@ -360,11 +410,27 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         return $segment;
     }
 
+    /**
+     * @param string                      $segmentReference
+     * @param CustomerSegmentGroup|string $segmentGroup
+     * @param null                        $segmentName
+     * @param null                        $subFolder
+     *
+     * @return mixed|CustomerSegment
+     */
     public function createCalculatedSegment($segmentReference, $segmentGroup, $segmentName = null, $subFolder = null)
     {
         return $this->createSegment($segmentName ? : $segmentReference, $segmentGroup, $segmentReference, true, $subFolder);
     }
 
+    /**
+     * @param       $segmentGroupName
+     * @param null  $segmentGroupReference
+     * @param bool  $calculated
+     * @param array $values
+     *
+     * @return CustomerSegmentGroup
+     */
     public function createSegmentGroup($segmentGroupName, $segmentGroupReference = null, $calculated = false, array $values = [])
     {
         if($segmentGroupName instanceof CustomerSegmentGroup) {
@@ -393,6 +459,10 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         return $segmentGroup;
     }
 
+    /**
+     * @param CustomerSegmentGroup $segmentGroup
+     * @param array                $values
+     */
     public function updateSegmentGroup(CustomerSegmentGroup $segmentGroup, array $values = [])
     {
         $calculatedState = $segmentGroup->getCalculated();
@@ -416,6 +486,12 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $segmentGroup->save();
     }
 
+    /**
+     * @param CustomerSegment $segment
+     * @param array           $values
+     *
+     * @throws \Exception
+     */
     public function updateSegment(CustomerSegment $segment, array $values = [])
     {
 
@@ -443,6 +519,12 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $segment->save();
     }
 
+    /**
+     * @param $segmentGroupReference
+     * @param $calculated
+     *
+     * @return mixed
+     */
     public function getSegmentGroupByReference($segmentGroupReference, $calculated)
     {
         if(!is_null($segmentGroupReference)) {
@@ -458,6 +540,12 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
     }
 
+    /**
+     * @param CustomerSegmentGroup $segmentGroup
+     * @param array                $ignoreSegments
+     *
+     * @return array
+     */
     public function getSegmentsFromSegmentGroup(CustomerSegmentGroup $segmentGroup, array $ignoreSegments = [])
     {
         $ignoreIds = [];
@@ -479,12 +567,18 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         return $result ? : [];
     }
 
+    /**
+     * @param CustomerInterface $customer
+     */
     public function addCustomerToChangesQueue(CustomerInterface $customer)
     {
         Db::get()->query(sprintf("insert ignore into %s set customerId=?", self::CHANGES_QUEUE_TABLE), $customer->getId());
     }
 
 
+    /**
+     * @param CustomerSegmentInterface $segment
+     */
     public function preSegmentUpdate(CustomerSegmentInterface $segment)
     {
         if($segment instanceof Concrete) {
@@ -509,6 +603,12 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
     }
 
+    /**
+     * @param CustomerInterface        $customer
+     * @param CustomerSegmentInterface $segment
+     *
+     * @return bool
+     */
     public function customerHasSegment(CustomerInterface $customer, CustomerSegmentInterface $segment)
     {
         if($segments = $customer->getAllSegments()) {
@@ -541,7 +641,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
 
     /**
-     * @return SegmentBuilderInterface[]|void
+     * @return SegmentBuilderInterface[]|null
      */
     protected function createSegmentBuilders() {
 
@@ -550,12 +650,12 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
         if(is_null($config)) {
             $this->logger->alert("no segmentBuilders section found in plugin config file");
-            return;
+            return null;
         }
 
         if(!sizeof($config)) {
             $this->logger->alert("no segment builders defined in plugin config file");
-            return;
+            return null;
         }
 
         $segmentBuilders = [];

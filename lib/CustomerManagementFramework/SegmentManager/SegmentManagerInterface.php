@@ -191,7 +191,7 @@ interface SegmentManagerInterface {
      * @param CustomerSegmentInterface $segment
      * 
      * @return bool
-     * /
+     */
     public function customerHasSegment(CustomerInterface $customer, CustomerSegmentInterface $segment);
 
     /**
@@ -201,6 +201,13 @@ interface SegmentManagerInterface {
      */
     public function addCustomerToChangesQueue(CustomerInterface $customer);
 
+    /**
+     * Called in pimcore's pre object update hook for CustomerSegment objects.
+     *
+     * @param CustomerSegmentInterface $segment
+     *
+     * @return void
+     */
     public function preSegmentUpdate(CustomerSegmentInterface $segment);
 
 
