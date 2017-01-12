@@ -80,6 +80,6 @@ As mentioned above activities could use their own persistance additionally to th
 CustomerManagementFramework\Model\Activity\GenericActivity
 ```
 
-This activity is used as a standard via the REST api if now implentationClass is defined. It can handle an nested, associative array of data which is only saved in the ActivityStore. 
+This activity is used as a standard via the [REST api](./Webservice.md) if now implentationClass is defined. It can handle an nested, associative array of data which is only saved in the ActivityStore. 
 
 But this doesn't mean that only these GenericActivity implementation could be used for activities without it's own persistance. It would definitly make sense to implement a separate activity class to track logins for example.
