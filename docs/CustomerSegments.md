@@ -29,7 +29,8 @@ In the SegmentManagerInterface there is a method addCustomerToChangesQueue() whi
 As mentioned above they need to implement the SegmentBuilderInterface. Most of the work is done in the `prepare(SegmentManagerInterface $segmentManager)` and `calculateSegments(CustomerInterface $customer, SegmentManagerInterface $segmentManager)` methods.
 
 `prepare()` is called when a SegmentBuilder gets prepared. Later on it will be executed with `calculateSegments`. So add in `prepare()` code which needs to be done once for all customers (for example some initializations etc.).
-`calculateSegments` then does the actual work: it calculates the segment for the given customer and adds/removes the calculated segments according to the implemented logic.
+
+`calculateSegments()` then does the actual work: it calculates the segment for the given customer and adds/removes the calculated segments according to the implemented logic.
 
 Both of the methods could interact with the SegmentManager for creating segments and adding/removing them to the customer.
 
