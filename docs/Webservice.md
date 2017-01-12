@@ -61,6 +61,8 @@ The `GET` requests can be filtered by passing the follwing params as query param
 | --------------------- |-----------------------------  |-----------------------------------------------------------  |
 | includeActivities     | true/false                    | include activities of customer into result set              |
 | segments              | comma-separated list of IDs   | filter by segments                                          |
+| page                  | int                           | page number for paging                                      |
+| pageSize              | int                           | page size   for paging                                      |
 
 
 ### Activities API
@@ -81,6 +83,8 @@ The `GET` requests can be filtered by passing the follwing params as query param
 | --------------------- |-----------------------------  |--------------------------------------------------------------- |
 | type                  | string                        | filter by activity type                                        |
 | modifiedSinceTimestamp| timestamp/int                 | get activities which where modified since given timestamp      |
+| page                  | int                           | page number for paging                                         |
+| pageSize              | int                           | page size   for paging                                         |
 
 ### Deletions API
 
@@ -110,6 +114,13 @@ The segments API implements standard REST calls for customer segment CRUD action
 | /cmf/api/segments/{id}   | PATCH  | Partially update a segment    |
 | /cmf/api/segments/{id}   | DELETE | Delete a segment              |
 
+The `GET` requests can be filtered by passing the follwing params as query params:
+
+| Parameter             | Possible Values               | Description                                                    |
+| --------------------- |-----------------------------  |--------------------------------------------------------------- |
+| page                  | int                           | page number for paging                                         |
+| pageSize              | int                           | page size   for paging                                         |
+
 ### Segment groups API
 
 The segment groups API implements standard REST calls for customer segment group CRUD actions:
@@ -121,6 +132,13 @@ The segment groups API implements standard REST calls for customer segment group
 | /cmf/api/segment-groups        | POST   | Create a new segment group            |
 | /cmf/api/segment-groups/{id}   | PATCH  | Partially update a segment group      |
 | /cmf/api/segment-groups/{id}   | DELETE | Delete a segment group                |
+
+The `GET` requests can be filtered by passing the follwing params as query params:
+
+| Parameter             | Possible Values               | Description                                                    |
+| --------------------- |-----------------------------  |--------------------------------------------------------------- |
+| page                  | int                           | page number for paging                                         |
+| pageSize              | int                           | page size   for paging                                         |
 
 ### Segments of customers API
 
