@@ -67,12 +67,14 @@ interface SegmentManagerInterface {
 
     /**
      * Applies all SegmentBuilders to customers. If the param $changesQueue only is set to true this is done only for customers which where changed since the last run. 
-     * 
+     * If $segmentBuilderClass is given (php class name) then only this SegmentBuilder will be executed.
+     *
      * @param bool $changesQueueOnly
+     * @param string $segmentBuilderClass
      * 
      * @return void
      */
-    public function buildCalculatedSegments($changesQueueOnly = true);
+    public function buildCalculatedSegments($changesQueueOnly = true, $segmentBuilderClass = null);
 
     /**
      * Calls all maintenance methods of all SegmentBuilders

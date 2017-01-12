@@ -110,7 +110,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
      *
      * @return void
      */
-    public function buildCalculatedSegments($changesQueueOnly = true)
+    public function buildCalculatedSegments($changesQueueOnly = true, $segmentBuilderClass = null)
     {
         $logger = $this->logger;
         $logger->notice("start segment building");
@@ -118,7 +118,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $backup = Factory::getInstance()->getCustomerSaveManager()->getSegmentBuildingHookEnabled();
         Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled(false);
 
-        $segmentBuilders = self::createSegmentBuilders();
+        $segmentBuilders = self::createSegmentBuilders($segmentBuilderClass);
         self::prepareSegmentBuilders($segmentBuilders);
 
         $customerList = Factory::getInstance()->getCustomerProvider()->getList();
@@ -149,7 +149,9 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
                 \Pimcore::getEventManager()->trigger($event->getName(), $event);
 
-                Db::get()->query(sprintf("delete from %s where customerId = ?", self::CHANGES_QUEUE_TABLE), $customer->getId());
+                if(is_null($segmentBuilderClass)) {
+                    Db::get()->query(sprintf("delete from %s where customerId = ?", self::CHANGES_QUEUE_TABLE), $customer->getId());
+                }
             }
         }
 
@@ -643,7 +645,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
     /**
      * @return SegmentBuilderInterface[]|null
      */
-    protected function createSegmentBuilders() {
+    protected function createSegmentBuilders($segmentBuilderClass = null) {
 
 
         $config = $this->config->segmentBuilders;
@@ -660,7 +662,10 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
         $segmentBuilders = [];
         foreach($config as $segmentBuilderConfig) {
-            $segmentBuilders[] = Factory::getInstance()->createObject((string)$segmentBuilderConfig->segmentBuilder, SegmentBuilderInterface::class, [$segmentBuilderConfig, $this->logger]);
+
+            if(is_null($segmentBuilderClass) || $segmentBuilderClass == (string)$segmentBuilderConfig->segmentBuilder) {
+                $segmentBuilders[] = Factory::getInstance()->createObject((string)$segmentBuilderConfig->segmentBuilder, SegmentBuilderInterface::class, [$segmentBuilderConfig, $this->logger]);
+            }
         }
 
         return $segmentBuilders;
