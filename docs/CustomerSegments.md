@@ -24,6 +24,28 @@ SegmentBuilders could be implemented to be either executed directly on customer 
  
 In the SegmentManagerInterface there is a method addCustomerToChangesQueue() which could be used to trigger customer changes. This needs to be done everytime a customer/SegmentBuilder related data record get's changed. By default this is done on customer object save and also when a new customer activity got tracked.
 
+#### Create your own SegmentBuilder
+
+As mentioned above they need to implement the SegmentBuilderInterface. Most of the work is done in the `prepare(SegmentManagerInterface $segmentManager)` and `calculateSegments(CustomerInterface $customer, SegmentManagerInterface $segmentManager)` methods.
+
+`prepare()` is called when a SegmentBuilder gets prepared. Later on it will be executed with `calculateSegments`. So add in `prepare()` code which needs to be done once for all customers (for example some initializations etc.).
+`calculateSegments` then does the actual work: it calculates the segment for the given customer and adds/removes the calculated segments according to the implemented logic.
+
+Both of the methods could interact with the SegmentManager for creating segments and adding/removing them to the customer.
+
+SegmentManager sample calls:
+```php
+// create a segment called "male" within the segment group "gender". The segment group "gender" will be created too if it doesn't exist.
+$segment = $segmentManager->createCalculatedSegment("male", "gender");
+
+// get all other segments of the segment group "gender" (but exclude "male")
+$deleteSegments = $segmentManager->getSegmentsFromSegmentGroup($segment->getGroup(),[$segment]);
+
+// add the segment to the customer and remove all other segments from the segment group "gender). The param "GenderSegmentBuilder" is an optional comment which will be added to the notes/events tab of the customer.
+$addSegments = [$segment];
+$segmentManager->mergeSegments($customer, $addSegments, $deleteSegments, "GenderSegmentBuilder");
+```
+
 #### Built in segment builders
 
 Segment builders need to be added to the CMF plugin config file. Only segment builders which are configured there will be executed. The CMF framework includes some SegmentBulders which could be used out of the box:
