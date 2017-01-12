@@ -60,3 +60,19 @@ Calculates state segments based on the zip field and zip ranges for each state. 
 | segmentGroup          | name of the segment group                                                                                                                                           |
 | countryTransformers   | define the data transformers which should be used for each country - the data transformer is responsible to convert the zip to a state based on it's implementation |
 
+## Console commands
+
+build segments for customers in the changes queue: 
+```
+php pimcore/cli/console.php cmf:build-segments
+```
+ 
+build segments for all customers: 
+```
+php pimcore/cli/console.php cmf:build-segments -f
+```
+
+build segment x for all customers: 
+```
+php pimcore/cli/console.php cmf:build-segments --segmentBuilder='\Website\CustomerManagementFramework\SegmentBuilder\Brand'
+```
