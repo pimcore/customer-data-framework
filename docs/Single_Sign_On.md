@@ -32,10 +32,12 @@ can be implemented. The basic SSO client authentication process could look like 
 * After clicking on the button, the process is the same as above. Instead of looking up a customer by his identity we save
   the fetched identity to the already logged in customer (after checking the identity doesn't yet exist in the database).
 
-The SSO client layout consists of 3 core interfaces:
+### Components
+
+The SSO client layout consists of 3 core interfaces which define how different parts of the authentication work together.
 
 
-### SsoIdentity 
+#### SsoIdentity
 
 See [SsoIdentityInterface](../models/CustomerManagementFramework/Model/SsoIdentityInterface.php).
 
@@ -45,7 +47,7 @@ The actual SSO identity which maps a local customer to a remote service. E.g. lo
 The SSO identity can additionally contain profile data and optionally save API credentials (e.g. OAuth tokens). 
 
 
-### SsoIdentityService
+#### SsoIdentityService
 
 See [SsoIdentityServiceInterface](../lib/CustomerManagementFramework/Authentication/SsoIdentity/SsoIdentityServiceInterface.php).
 
@@ -56,7 +58,7 @@ How the SsoIdentityService stores the actual identities on the customer object i
 service stores them as objects as childs of the customer object.
 
 
-### ExternalAuthHandler
+#### ExternalAuthHandler
 
 See [ExternalAuthHandlerInterface](../lib/CustomerManagementFramework/Authentication/Sso/ExternalAuthHandlerInterface.php).
 
@@ -71,6 +73,10 @@ and are free to decide how to deal with request data:
 The CMF ships with a default external auth handler implementation which is based on the [`HybridAuth`](http://hybridauth.github.io/)
 library which is already integrated into Pimcore. After configuring your available providers in `website/config/hybridauth.php`
 the handler is ready and can be initialized by calling `authenticate()` on a controller action.
+
+### Example
+
+You can find an annotated example of a simple username/password login form with added social login functionality in [../frontend-samples/sso_client](../frontend-samples/sso_client).
 
 
 ## SSO Provider
