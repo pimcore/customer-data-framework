@@ -64,11 +64,7 @@ class TermSegmentBuilder extends Sql
             throw new \Exception('term definition needs to be a subclass of AbstractTermSegmentBuilderDefinition');
         }
 
-        $allMatchingTerms = [];
-        foreach($termDefinition->definitionsToArray() as $terms) {
-            $allMatchingTerms = array_merge($allMatchingTerms, (array)$terms);
-        }
-        $allMatchingTerms = array_unique($allMatchingTerms);
+        $allMatchingTerms = $termDefinition->getAllPhrases();
 
         $allTerms = false;
         if(sizeof($allMatchingTerms)) {

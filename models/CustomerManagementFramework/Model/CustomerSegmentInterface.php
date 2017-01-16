@@ -21,4 +21,5 @@ interface CustomerSegmentInterface {
     public function setCalculated($calculated);
     public function getDataForWebserviceExport();
     public function save();
+    public function delete();
 }
