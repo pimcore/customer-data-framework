@@ -14,7 +14,9 @@ interface DataTransformerInterface
     /**
      * @param mixed $data
      *
+     * @param array $options
+     *
      * @return mixed
      */
-    public function transform($data);
+    public function transform($data, $options = []);
 }

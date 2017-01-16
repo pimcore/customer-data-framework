@@ -12,7 +12,7 @@ use CustomerManagementFramework\DataTransformer\DataTransformerInterface;
 
 class Nl implements DataTransformerInterface
 {
-    public function transform($data)
+    public function transform($data, $options = [])
     {
         preg_match("/\\d{4} {0,1}\\w{2}/", $data, $matches);
 

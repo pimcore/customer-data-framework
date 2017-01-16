@@ -41,6 +41,8 @@
 				<path>/plugins/CustomerManagementFramework/static/js/config/trigger.js</path>
 				<path>/plugins/CustomerManagementFramework/static/js/config/conditions.js</path>
 				<path>/plugins/CustomerManagementFramework/static/js/config/actions.js</path>
+
+				<path>/plugins/CustomerManagementFramework/static/js/pimcore/report/custom/definitions/termSegmentBuilder.js</path>
 			</pluginJsPaths>
 
 			<pluginCssPaths>

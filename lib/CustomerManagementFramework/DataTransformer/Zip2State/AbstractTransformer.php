@@ -14,7 +14,7 @@ abstract class AbstractTransformer implements DataTransformerInterface
 {
     protected $zipRegions = [ ];
 
-    public function transform($zip)
+    public function transform($data, $options = [])
     {
 
         foreach($this->zipRegions as $state => $regions) {
@@ -22,15 +22,15 @@ abstract class AbstractTransformer implements DataTransformerInterface
                 $from = $region[0];
                 $to = $region[1];
 
-                if(strlen($zip) != strlen($from)) {
+                if(strlen($data) != strlen($from)) {
                     return null;
                 }
 
-                if($zip == $from) {
+                if($data == $from) {
                     return $state;
                 }
 
-                if($zip >= $from && $zip <= $to) {
+                if($data >= $from && $data <= $to) {
                     return $state;
                 }
             }

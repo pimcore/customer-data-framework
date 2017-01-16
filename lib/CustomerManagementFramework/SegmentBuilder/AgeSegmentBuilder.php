@@ -69,7 +69,7 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder {
             $timestamp = $birthDate->getTimestamp();
 
             $transformer = new TimestampToAge();
-            $age = $transformer->transform($timestamp);
+            $age = $transformer->transform($timestamp, []);
 
             $this->logger->debug(sprintf("age of customer ID %s: %s years", $customer->getId(), $age));
 

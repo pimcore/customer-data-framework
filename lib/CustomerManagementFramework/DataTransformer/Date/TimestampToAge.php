@@ -13,7 +13,7 @@ use CustomerManagementFramework\DataTransformer\DataTransformerInterface;
 
 class TimestampToAge implements DataTransformerInterface {
 
-    public function transform($data)
+    public function transform($data, $options = [])
     {
         $date = Carbon::createFromTimestamp(strtotime(date('Y-m-d', $data)));
         $today = new Carbon();

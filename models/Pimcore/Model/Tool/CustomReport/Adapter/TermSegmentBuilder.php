@@ -1,0 +1,130 @@
+<?php
+/**
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @category   Pimcore
+ * @package    Pimcore
+ * @copyright  Copyright (c) 2009-2016 pimcore GmbH (http://www.pimcore.org)
+ * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ */
+
+namespace Pimcore\Model\Tool\CustomReport\Adapter;
+
+use CustomerManagementFramework\Model\AbstractTermSegmentBuilderDefinition;
+use Pimcore\Model;
+use Pimcore\Db;
+
+class TermSegmentBuilder extends Sql
+{
+    /**
+     * @param $configuration
+     * @return array|mixed|null
+     * @throws \Exception
+     */
+    public function getColumns($configuration)
+    {
+        $columns = parent::getColumns($configuration);
+
+        if($columns[0] != 'term') {
+            throw new \Exception("SQL statement needs to return one single column named 'term' with all distinct terms.");
+        }
+
+        return $columns;
+    }
+
+    /**
+     * @param $filters
+     * @param $fields
+     * @param bool $ignoreSelectAndGroupBy
+     * @param null $drillDownFilters
+     * @param null $selectField
+     * @return array
+     */
+    protected function getBaseQuery($filters, $fields, $ignoreSelectAndGroupBy = false, $drillDownFilters = null, $selectField = null)
+    {
+        $db = Db::get();
+        $condition = ["1 = 1"];
+
+        $sql = $this->buildQueryString($this->config, $ignoreSelectAndGroupBy, $drillDownFilters, $selectField);
+
+        if(!$termDefinition = Model\Object\TermSegmentBuilderDefinition::getById($this->config->termDefinition)) {
+            throw new \Exception('please select a term definition');
+        }
+
+        /**
+         * @var AbstractTermSegmentBuilderDefinition $termDefinition
+         */
+        if(!$termDefinition instanceof AbstractTermSegmentBuilderDefinition) {
+            throw new \Exception('term definition needs to be a subclass of AbstractTermSegmentBuilderDefinition');
+        }
+
+        $allMatchingTerms = [];
+        foreach($termDefinition->definitionsToArray() as $terms) {
+            $allMatchingTerms = array_merge($allMatchingTerms, (array)$terms);
+        }
+        $allMatchingTerms = array_unique($allMatchingTerms);
+
+        $allTerms = false;
+        if(sizeof($allMatchingTerms)) {
+
+            foreach($allMatchingTerms as $term)  {
+                if(@preg_match($term, null) !== false) {
+                    if($allTerms === false) {
+                        //MySQL regexp function doesn't work the same way like PHP regex matching => therfore we need to fetch all distinct terms and match them with PHP
+                        $allTerms = $db->fetchCol($sql);
+
+                    }
+                    foreach($allTerms as $t) {
+                        if(@preg_match($term, $t)){
+                            $condition[] = "term != " . $db->quote($t);
+                        }
+                    }
+                } else {
+                    $condition[] = "term != " . $db->quote($term);
+                }
+
+            }
+        }
+
+        if ($filters) {
+            if (is_array($filters)) {
+                foreach ($filters as $filter) {
+                    $value = $filter["value"] ;
+
+                    $operator = $filter['operator'];
+                    switch ($operator) {
+                        case 'like':
+                            $condition[] = $db->quoteIdentifier($filter["property"]) . " LIKE " . $db->quote("%" . $value. "%");
+                            break;
+                    }
+                }
+            }
+        }
+
+        if (!preg_match("/(ALTER|CREATE|DROP|RENAME|TRUNCATE|UPDATE|DELETE) /i", $sql, $matches)) {
+            $condition = implode(" AND ", $condition);
+
+            $total = "SELECT COUNT(*) FROM (" . $sql . ") AS somerandxyz WHERE " . $condition;
+
+            if ($fields) {
+                $data = "SELECT `" . implode("`, `", $fields) . "` FROM (" . $sql . ") AS somerandxyz WHERE " . $condition;
+            } else {
+                $data = "SELECT * FROM (" . $sql . ") AS somerandxyz WHERE " . $condition;
+            }
+        } else {
+            return;
+        }
+
+
+        return [
+            "data" => $data,
+            "count" => $total
+        ];
+    }
+}

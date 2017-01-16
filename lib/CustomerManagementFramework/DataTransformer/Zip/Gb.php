@@ -12,7 +12,7 @@ use CustomerManagementFramework\DataTransformer\DataTransformerInterface;
 
 class Gb implements DataTransformerInterface
 {
-    public function transform($data)
+    public function transform($data, $options = [])
     {
         $data = strtoupper($data);
 

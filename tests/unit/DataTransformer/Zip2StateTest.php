@@ -26,7 +26,7 @@ class Zip2StateTest extends \PHPUnit_Framework_TestCase
 
         foreach($tests as $from => $to) {
 
-            $result = $transfomer->transform($from);
+            $result = $transfomer->transform($from, []);
 
             $this->assertEquals($to, $result);
         }
@@ -43,7 +43,7 @@ class Zip2StateTest extends \PHPUnit_Framework_TestCase
 
         foreach($tests as $from => $to) {
 
-            $result = $transfomer->transform($from);
+            $result = $transfomer->transform($from, []);
 
             $this->assertEquals($to, $result);
         }
@@ -60,7 +60,7 @@ class Zip2StateTest extends \PHPUnit_Framework_TestCase
 
         foreach($tests as $from => $to) {
 
-            $result = $transfomer->transform($from);
+            $result = $transfomer->transform($from, []);
 
             $this->assertEquals($to, $result);
         }
