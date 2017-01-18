@@ -130,7 +130,7 @@ class Installer {
         );
     }
 
-    private static function installClasses()
+    public static function installClasses()
     {
         self::installClass("CustomerSegmentGroup", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_CustomerSegmentGroup_export.json');
         self::installClass("CustomerSegment", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_CustomerSegment_export.json');
@@ -144,6 +144,7 @@ class Installer {
         if(!$class) {
             $class = new \Pimcore\Model\Object\ClassDefinition();
             $class->setName($classname);
+            $class->setGroup("CustomerManagement");
         }
         $json = file_get_contents($filepath);
 
