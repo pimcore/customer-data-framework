@@ -18,6 +18,11 @@ use Pimcore\View\Helper\Url;
 
 $config = \CustomerManagementFramework\Plugin::getConfig();
 
+
+
+$logger = \Pimcore\Logger::getLogger();
+$logger = reset($logger);
+
 return [
     // parameters/values
     'cmf.rest.customers.route'          => 'cmf-rest-customers',
@@ -56,7 +61,7 @@ return [
     },
 
     'CustomerManagementFramework\Logger'
-        => reset(\Pimcore\Logger::getLogger()),
+        => $logger,
 
     'CustomerManagementFramework\ActivityManager'
         => DI\object('CustomerManagementFramework\ActivityManager\DefaultActivityManager'),
