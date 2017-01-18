@@ -136,6 +136,7 @@ class Installer {
         self::installClass("CustomerSegment", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_CustomerSegment_export.json');
         self::installClass("ActivityDefinition", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_ActivityDefinition_export.json');
         self::installClass("SsoIdentity", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_SsoIdentity_export.json');
+        self::installClass("TermSegmentBuilderDefinition", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_TermSegmentBuilderDefinition_export.json');
     }
 
     private static function installClass($classname, $filepath) {
