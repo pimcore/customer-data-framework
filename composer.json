@@ -7,7 +7,8 @@
         "tiben/crontab-manager":"^1.2",
         "guzzlehttp/guzzle": ">=4.1.4 <7.0",
         "symfony/routing": "^3.2",
-        "drewm/mailchimp-api": "*"
+        "drewm/mailchimp-api": "*",
+        "pimcore-helpers/SearchQueryParser": "~0.2"
     },
     "require-dev": {
         "codeception/codeception": "^2.2"
