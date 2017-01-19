@@ -29,7 +29,7 @@ class Installer {
         return true;
     }
 
-    private function installPermissions() {
+    public function installPermissions() {
 
         $permissions = [
             "plugin_customermanagementframework_activityview",
@@ -47,7 +47,7 @@ class Installer {
         }
     }
 
-    private function installDatabaseTables() {
+    public function installDatabaseTables() {
         \Pimcore\Db::get()->query(
             "CREATE TABLE IF NOT EXISTS `plugin_cmf_activities` (
               `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -130,7 +130,7 @@ class Installer {
         );
     }
 
-    private static function installClasses()
+    public static function installClasses()
     {
         self::installClass("CustomerSegmentGroup", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_CustomerSegmentGroup_export.json');
         self::installClass("CustomerSegment", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_CustomerSegment_export.json');
@@ -139,7 +139,7 @@ class Installer {
         self::installClass("TermSegmentBuilderDefinition", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_TermSegmentBuilderDefinition_export.json');
     }
 
-    private static function installClass($classname, $filepath) {
+    public static function installClass($classname, $filepath) {
         $class = \Pimcore\Model\Object\ClassDefinition::getByName($classname);
         if(!$class) {
             $class = new \Pimcore\Model\Object\ClassDefinition();
@@ -154,7 +154,7 @@ class Installer {
         }
     }
 
-    private static function installCrontab() {
+    public static function installCrontab() {
 
 
         $crons = [
@@ -180,7 +180,7 @@ class Installer {
 
     }
 
-    private static function installStaticRoutes() {
+    public static function installStaticRoutes() {
         $file = PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/staticroutes/staticroutes.php';
         $routes = include($file);
 
@@ -191,7 +191,7 @@ class Installer {
         }
     }
 
-    private static function installConfig() {
+    public static function installConfig() {
 
         $dir = PIMCORE_WEBSITE_PATH . '/config/plugins/CustomerManagementFramework';
 
