@@ -221,12 +221,12 @@ class Factory {
      * @param null       $needsToBeSubclassOf
      * @param array|null $constructorParams
      *
-     * @return object
+     * @return mixed
      * @throws \Exception
      */
     public function createObject($className, $needsToBeSubclassOf = null, array $constructorParams = null)
     {
-        
+
         if(!\Pimcore::getDiContainer()->has($className)) {
             $definition = \DI\object($className);
             if($constructorParams) {
@@ -238,7 +238,7 @@ class Factory {
             \Pimcore::getDiContainer()->set($className, $definition);
         }
 
-        $object = \Pimcore::getDiContainer()->make($className);
+        $object = \Pimcore::getDiContainer()->make($className, $constructorParams);
 
         if(!is_subclass_of($object, $needsToBeSubclassOf)) {
             throw new \Exception(sprintf("%s needs to extend/implement %s", $className, $needsToBeSubclassOf));

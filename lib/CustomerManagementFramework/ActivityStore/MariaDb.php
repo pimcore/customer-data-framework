@@ -11,7 +11,9 @@ namespace CustomerManagementFramework\ActivityStore;
 use CustomerManagementFramework\ActivityList\DefaultMariaDbActivityList;
 use CustomerManagementFramework\ActivityStoreEntry\DefaultActivityStoreEntry;
 use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
+use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Filter\ExportActivitiesFilterParams;
+use CustomerManagementFramework\Model\ActivityExternalIdInterface;
 use CustomerManagementFramework\Model\ActivityInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
 use Pimcore\Db;
@@ -62,7 +64,7 @@ class MariaDb implements ActivityStoreInterface{
         $row = false;
         if($activity instanceof Concrete) {
             $row = $db->fetchRow("select *, column_json(attributes) as attributes from " . self::ACTIVITIES_TABLE . " where o_id = ? order by id desc LIMIT 1 ", $activity->getId());
-        } elseif(method_exists($activity, 'getId')) {
+        } elseif($activity instanceof ActivityExternalIdInterface) {
             $row = $db->fetchRow("select *, column_json(attributes) as attributes from " . self::ACTIVITIES_TABLE . " where a_id = ? order by id desc LIMIT 1 ", $activity->getId());
         }
 
@@ -71,7 +73,7 @@ class MariaDb implements ActivityStoreInterface{
         }
 
 
-        $entry = new DefaultActivityStoreEntry($row);
+        $entry = Factory::getInstance()->createObject('CustomerManagementFramework\ActivityStoreEntry', ActivityStoreEntryInterface::class, ["data"=>$row]);
 
         return $entry;
     }
@@ -141,7 +143,7 @@ class MariaDb implements ActivityStoreInterface{
         $paginator->setCurrentPageNumber($page);
 
         foreach($paginator as &$value) {
-            $value = new DefaultActivityStoreEntry($value);
+            $value = Factory::getInstance()->createObject('CustomerManagementFramework\ActivityStoreEntry', ActivityStoreEntryInterface::class, ["data"=>$value]);
         }
 
         return $paginator;
@@ -237,14 +239,27 @@ class MariaDb implements ActivityStoreInterface{
 
         $attributes = $activity->cmfToArray();
 
+        $dataTypes = [];
+        if($_dataTypes = $activity->cmfGetAttributeDataTypes()) {
+            foreach($_dataTypes as $field => $dataType) {
+                if($dataType == ActivityInterface::DATATYPE_STRING) {
+                    $dataTypes[$field] = 'char';
+                } elseif($dataType == ActivityInterface::DATATYPE_DOUBLE) {
+                    $dataTypes[$field] = 'double';
+                } elseif($dataType == ActivityInterface::DATATYPE_INTEGER) {
+                    $dataTypes[$field] = 'int';
+                }
+            }
+        }
+
         $data = [
             'customerId' => $activity->getCustomer()->getId(),
             'type' => $db->quote($activity->cmfGetType()),
             'implementationClass' => $db->quote(get_class($activity)),
             'o_id' => $activity instanceof Concrete ? $activity->getId() : null,
-            'a_id' => !($activity instanceof Concrete) && method_exists($activity, 'getId') ? $activity->getId() : null,
+            'a_id' => $activity instanceof ActivityExternalIdInterface ? $activity->getId() : null,
             'activityDate' => $activity->cmfGetActivityDate()->getTimestamp(),
-            'attributes' => \CustomerManagementFramework\Service\MariaDb::getInstance()->createDynamicColumnInsert($attributes),
+            'attributes' => \CustomerManagementFramework\Service\MariaDb::getInstance()->createDynamicColumnInsert($attributes, $dataTypes),
         ];
 
         $data['md5'] = $db->quote(md5(serialize($data)));
@@ -256,14 +271,14 @@ class MariaDb implements ActivityStoreInterface{
     /**
      * @param $id
      *
-     * @return DefaultActivityStoreEntry
+     * @return ActivityStoreEntryInterface
      */
     public function getEntryById($id) {
 
         $db = Db::get();
 
         if($row = $db->fetchRow(sprintf("select *, column_json(attributes) as attributes from %s where id = ?", self::ACTIVITIES_TABLE), $id)) {
-            return new DefaultActivityStoreEntry($row);
+            return Factory::getInstance()->createObject('CustomerManagementFramework\ActivityStoreEntry', ActivityStoreEntryInterface::class, ["data"=>$row]);
         }
     }
 

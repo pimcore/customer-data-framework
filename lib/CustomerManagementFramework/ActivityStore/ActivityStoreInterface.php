@@ -91,7 +91,7 @@ interface ActivityStoreInterface {
     /**
      * @param $id
      *
-     * @return mixed
+     * @return ActivityStoreEntryInterface
      */
     public function getEntryById($id);
 

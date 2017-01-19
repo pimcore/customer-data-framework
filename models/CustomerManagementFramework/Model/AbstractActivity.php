@@ -67,6 +67,11 @@ abstract class AbstractActivity implements ActivityInterface {
         return false;
     }
 
+    public function cmfGetAttributeDataTypes()
+    {
+        return false;
+    }
+
     /**
      * @param ActivityStoreEntryInterface $entry
      *

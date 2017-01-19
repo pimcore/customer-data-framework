@@ -7,6 +7,10 @@ use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
 
 interface ActivityInterface {
 
+    const DATATYPE_STRING = 'string';
+    const DATATYPE_INTEGER = 'integer';
+    const DATATYPE_DOUBLE = 'double';
+
     /**
      * Returns if the activity is active. Only active activities are stored in the ActivityStore.
      *
@@ -34,6 +38,13 @@ interface ActivityInterface {
      * @return array
      */
     public function cmfToArray();
+
+    /**
+     * Returns an optional array with data types for each attribute which could be used by the ActivityStore to create columns/fields correctly based on given data types. (see self::DATATYPE_* constants)
+     *
+     * @return array|false
+     */
+    public function cmfGetAttributeDataTypes();
 
     /**
      * Updates the data of the activity instance but doesn't save it.

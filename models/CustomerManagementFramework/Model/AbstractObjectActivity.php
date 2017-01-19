@@ -58,6 +58,10 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete imp
         return $result;
     }
 
+    public function cmfGetAttributeDataTypes()
+    {
+        return false;
+    }
 
 
     public function cmfUpdateData(array $data)

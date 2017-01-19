@@ -8,6 +8,7 @@
 
 namespace  CustomerManagementFramework\ActivityManager;
 
+use Carbon\Carbon;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\ActivityInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
@@ -26,6 +27,10 @@ class DefaultActivityManager implements ActivityManagerInterface
     public function trackActivity(ActivityInterface $activity) {
 
         $store = Factory::getInstance()->getActivityStore();
+
+        if(!( $activity->cmfGetActivityDate() instanceof Carbon)) {
+            throw new \Exception(get_class($activity) . '::cmfGetActivityDate() needs to return a \Carbon\Carbon instance');
+        }
 
         if(!$activity->getCustomer() instanceof CustomerInterface) {
             $store->deleteActivity($activity);

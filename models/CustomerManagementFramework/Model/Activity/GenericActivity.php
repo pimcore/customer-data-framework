@@ -79,6 +79,10 @@ class GenericActivity implements ActivityInterface {
         return $this->data['attributes'];
     }
 
+    public function cmfGetAttributeDataTypes()
+    {
+        return false;
+    }
 
     public static function cmfGetOverviewData(ActivityStoreEntryInterface $entry)
     {

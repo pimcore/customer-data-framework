@@ -9,6 +9,7 @@
 namespace CustomerManagementFramework\ActivityList;
 
 use CustomerManagementFramework\ActivityList\DefaultMariaDbActivityList\Dao;
+use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFramework\ActivityStoreEntry\DefaultActivityStoreEntry;
 use CustomerManagementFramework\Model\ActivityInterface;
 use Pimcore\Model\Listing\AbstractListing;
@@ -188,7 +189,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
 
         $activities = [];
         foreach($raw as $row) {
-            $activities[] = new DefaultActivityStoreEntry($row);
+            $activities[] = Factory::getInstance()->createObject('CustomerManagementFramework\ActivityStoreEntry', ActivityStoreEntryInterface::class, ["data"=>$row]);
         }
 
         $this->activities = $activities;

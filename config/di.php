@@ -69,6 +69,9 @@ return [
     'CustomerManagementFramework\ActivityStore'
         => DI\object('CustomerManagementFramework\ActivityStore\MariaDb'),
 
+    'CustomerManagementFramework\ActivityStoreEntry'
+    => DI\object('CustomerManagementFramework\ActivityStoreEntry\DefaultActivityStoreEntry'),
+
     'CustomerManagementFramework\ActivityView'
         => DI\object('CustomerManagementFramework\ActivityView\DefaultActivityView')
             ->constructor(DI\get('CustomerManagementFramework\View\Formatter')),

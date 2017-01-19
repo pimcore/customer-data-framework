@@ -43,7 +43,7 @@ if (sizeof($paginator)) {
 
                     <?php foreach($this->activities as $activity) {
                         /**
-                         * @var \CustomerManagementFramework\ActivityStoreEntry\DefaultActivityStoreEntry $activity
+                         * @var \CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface $activity
                          */
                         ?>
 

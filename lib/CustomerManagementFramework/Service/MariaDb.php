@@ -38,7 +38,7 @@ class MariaDb {
      *
      * @return string
      */
-    public function createDynamicColumnInsert(array $data) {
+    public function createDynamicColumnInsert(array $data, array $dataTypes = []) {
 
         $db = Db::get();
 
@@ -48,8 +48,13 @@ class MariaDb {
             $i++;
             if(!is_array($value)) {
                 $insert .= "'" . $key . "'" . ','. $db->quote($value);
+
+                if(isset($dataTypes[$key])) {
+                    $insert .= " as " . $dataTypes[$key];
+                }
+
             } else {
-                $insert .= "'" . $key . "'" . ','.$this->createDynamicColumnInsert($value);
+                $insert .= "'" . $key . "'" . ','.$this->createDynamicColumnInsert($value, $dataTypes);
             }
 
             if($i < sizeof($data)) {
