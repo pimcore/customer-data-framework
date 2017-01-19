@@ -19,7 +19,7 @@ return [
 
     'SegmentManager' => [
         'segmentBuilders' => [
-            [
+            /*[
                 'segmentBuilder' => '\CustomerManagementFramework\SegmentBuilder\GenderSegmentBuilder',
                 'segmentGroup' => 'Geschlecht',
                 'valueMapping' => [
@@ -51,7 +51,7 @@ return [
             ],
             [
                 'segmentBuilder' => '\Website\CustomerManagementFramework\SegmentBuilder\Season'
-            ]
+            ]*/
         ],
         'segmentsFolder' => [
             'manual' => '/segments/manual',
@@ -65,7 +65,7 @@ return [
 
     'CustomerSaveManager' => [
         'saveHandlers' => [
-            [
+            /*[
                 'saveHandler' => '\CustomerManagementFramework\CustomerSaveHandler\NormalizeZip',
                 'countryTransformers' =>
                     [
@@ -92,20 +92,20 @@ return [
             ],
             [
                 'saveHandler' => '\Website\CustomerManagementFramework\CustomerSaveHandler\CustomerId'
-            ]
+            ]*/
         ]
     ],
 
     'CustomerSaveValidator' => [
         'requiredFields' => [
-            ['email'],
-            ['firstname', 'name', 'zip', 'birthday'],
+            /*['email'],
+            ['firstname', 'name', 'zip', 'birthday'],*/
         ]
     ],
 
     'CustomerDuplicatesService' => [
         'duplicateCheckFields' => [
-            ['firstname', 'lastname', 'zip', 'birthday'],
+            /*['firstname', 'lastname', 'zip', 'birthday'],*/
         ]
     ],
 
