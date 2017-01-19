@@ -130,7 +130,7 @@ class Installer {
         );
     }
 
-    public static function installClasses()
+    private static function installClasses()
     {
         self::installClass("CustomerSegmentGroup", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_CustomerSegmentGroup_export.json');
         self::installClass("CustomerSegment", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_CustomerSegment_export.json');
