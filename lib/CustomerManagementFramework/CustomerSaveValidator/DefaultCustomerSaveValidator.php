@@ -31,9 +31,10 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface{
 
     public function validate(CustomerInterface $customer) {
 
-        $valid = true;
+
         foreach($this->requiredFields as $requiredFields) {
             if(is_array($requiredFields)) {
+                $valid = true;
                 foreach($requiredFields as $requiredField) {
                     if(!$this->validateField($customer, $requiredField)) {
                         $valid = false;

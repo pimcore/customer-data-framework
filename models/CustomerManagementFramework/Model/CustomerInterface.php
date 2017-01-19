@@ -15,6 +15,11 @@ interface CustomerInterface extends ElementInterface {
     /**
      * @return boolean
      */
+    public function getPublished();
+
+    /**
+     * @return boolean
+     */
     public function getActive();
 
     /**

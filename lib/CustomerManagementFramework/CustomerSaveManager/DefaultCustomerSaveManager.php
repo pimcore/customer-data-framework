@@ -34,6 +34,12 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         $this->config = $config->CustomerSaveManager;
         $this->logger = $logger;
     }
+    public function preAdd(CustomerInterface $customer) {
+        if($customer->getPublished()) {
+            $this->validateOnSave($customer);
+        }
+    }
+
 
     public function preUpdate(CustomerInterface $customer)
     {

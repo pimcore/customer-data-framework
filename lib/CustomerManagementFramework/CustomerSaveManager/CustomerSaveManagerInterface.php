@@ -16,6 +16,8 @@ interface CustomerSaveManagerInterface
 
     public function __construct(LoggerInterface $logger);
 
+    public function preAdd(CustomerInterface $customer);
+
     public function preUpdate(CustomerInterface $customer);
     
     public function postUpdate(CustomerInterface $customer);
