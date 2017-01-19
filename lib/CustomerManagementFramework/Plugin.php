@@ -43,6 +43,14 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
             }
         });
 
+        \Pimcore::getEventManager()->attach(["object.preAdd"], function (\Zend_EventManager_Event $e) {
+            $object = $e->getTarget();
+
+            if($object instanceof CustomerInterface) {
+                Factory::getInstance()->getCustomerSaveManager()->preAdd($object);
+            }
+        });
+
         \Pimcore::getEventManager()->attach(["object.preUpdate"], function (\Zend_EventManager_Event $e) {
             $object = $e->getTarget();
 
