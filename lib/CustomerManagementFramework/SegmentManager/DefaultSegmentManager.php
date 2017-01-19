@@ -651,13 +651,13 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $config = $this->config->segmentBuilders;
 
         if(is_null($config)) {
-            $this->logger->alert("no segmentBuilders section found in plugin config file");
-            return null;
+            $this->logger->info("no segmentBuilders section found in plugin config file");
+            return [];
         }
 
         if(!sizeof($config)) {
-            $this->logger->alert("no segment builders defined in plugin config file");
-            return null;
+            $this->logger->info("no segment builders defined in plugin config file");
+            return [];
         }
 
         $segmentBuilders = [];
