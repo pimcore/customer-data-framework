@@ -448,7 +448,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $segmentGroup = new CustomerSegmentGroup();
         $segmentGroup->setParent($segmentFolder);
         $segmentGroup->setPublished(true);
-        $segmentGroup->setKey($segmentGroupReference ? : $segmentGroupName);
+        $segmentGroup->setKey(Objects::getValidKey($segmentGroupReference ? : $segmentGroupName));
         $segmentGroup->setCalculated($calculated);
         $segmentGroup->setName($segmentGroupName);
         $segmentGroup->setReference($segmentGroupReference);
@@ -620,7 +620,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
                 }
             }
         }
-        
+
         return false;
     }
 
