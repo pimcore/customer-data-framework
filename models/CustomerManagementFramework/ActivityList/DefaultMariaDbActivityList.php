@@ -11,6 +11,7 @@ namespace CustomerManagementFramework\ActivityList;
 use CustomerManagementFramework\ActivityList\DefaultMariaDbActivityList\Dao;
 use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFramework\ActivityStoreEntry\DefaultActivityStoreEntry;
+use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\ActivityInterface;
 use Pimcore\Model\Listing\AbstractListing;
 
