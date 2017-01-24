@@ -32,7 +32,7 @@ class DefaultActionManager implements ActionManagerInterface
 
         if(class_exists($action->getImplementationClass())) {
 
-            $actionImpl = Factory::getInstance()->createObject($action->getImplementationClass(), ActionInterface::class, [$this->logger]);
+            $actionImpl = Factory::getInstance()->createObject($action->getImplementationClass(), ActionInterface::class, ["logger"=>$this->logger]);
 
             $actionImpl->process($action, $customer);
 

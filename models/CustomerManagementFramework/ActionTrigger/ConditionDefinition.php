@@ -54,7 +54,7 @@ class ConditionDefinition implements ConditionDefinitionInterface
         $class = $this->getImplementationClass();
 
         if(class_exists($class)) {
-            return Factory::getInstance()->createObject($class, ConditionInterface::class, [\Pimcore::getDiContainer()->get("CustomerManagementFramework\\Logger")]);
+            return Factory::getInstance()->createObject($class, ConditionInterface::class, ["logger"=>\Pimcore::getDiContainer()->get("CustomerManagementFramework\\Logger")]);
         }
 
         return false;

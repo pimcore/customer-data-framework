@@ -99,7 +99,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
             $class = (string)$saveHandlerConfig->saveHandler;
 
-            $saveHandlers[] = Factory::getInstance()->createObject($class, CustomerSaveHandlerInterface::class, [$saveHandlerConfig, $this->logger]);
+            $saveHandlers[] = Factory::getInstance()->createObject($class, CustomerSaveHandlerInterface::class, ["config" => $saveHandlerConfig, "logger" => $this->logger]);
         }
 
         return $saveHandlers;

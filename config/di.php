@@ -60,6 +60,10 @@ return [
         return null;
     },
 
+    'CustomerManagementFramework\CustomerSaveHandler\*' => DI\object('CustomerManagementFramework\CustomerSaveHandler\*'),
+    'CustomerManagementFramework\SegmentBuilder\*' => DI\object('CustomerManagementFramework\SegmentBuilder\*'),
+    'CustomerManagementFramework\DataTransformer\*\*' => DI\object('CustomerManagementFramework\DataTransformer\*\*'),
+
     'CustomerManagementFramework\Logger'
         => $logger,
 

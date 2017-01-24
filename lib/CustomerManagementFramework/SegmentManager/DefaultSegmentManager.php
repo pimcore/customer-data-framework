@@ -664,7 +664,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         foreach($config as $segmentBuilderConfig) {
 
             if(is_null($segmentBuilderClass) || $segmentBuilderClass == (string)$segmentBuilderConfig->segmentBuilder) {
-                $segmentBuilders[] = Factory::getInstance()->createObject((string)$segmentBuilderConfig->segmentBuilder, SegmentBuilderInterface::class, [$segmentBuilderConfig, $this->logger]);
+                $segmentBuilders[] = Factory::getInstance()->createObject((string)$segmentBuilderConfig->segmentBuilder, SegmentBuilderInterface::class, ["config"=>$segmentBuilderConfig, "logger"=>$this->logger]);
             }
         }
 
