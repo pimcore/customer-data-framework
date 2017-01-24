@@ -433,7 +433,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
      *
      * @return CustomerSegmentGroup
      */
-    public function createSegmentGroup($segmentGroupName, $segmentGroupReference = null, $calculated = false, array $values = [])
+    public function createSegmentGroup($segmentGroupName, $segmentGroupReference = null, $calculated = true, array $values = [])
     {
         if($segmentGroupName instanceof CustomerSegmentGroup) {
             return $segmentGroupName;
@@ -620,7 +620,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
                 }
             }
         }
-
+        
         return false;
     }
 
@@ -651,12 +651,12 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $config = $this->config->segmentBuilders;
 
         if(is_null($config)) {
-            $this->logger->info("no segmentBuilders section found in plugin config file");
+            $this->logger->alert("no segmentBuilders section found in plugin config file");
             return [];
         }
 
         if(!sizeof($config)) {
-            $this->logger->info("no segment builders defined in plugin config file");
+            $this->logger->alert("no segment builders defined in plugin config file");
             return [];
         }
 

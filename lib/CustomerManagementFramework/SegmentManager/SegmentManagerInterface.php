@@ -144,7 +144,7 @@ interface SegmentManagerInterface {
      *
      * @return CustomerSegmentGroup
      */
-    public function createSegmentGroup($segmentGroupName, $segmentGroupReference = null, $calculated = false, array $values = []);
+    public function createSegmentGroup($segmentGroupName, $segmentGroupReference = null, $calculated = true, array $values = []);
 
     /**
      * Updates a segment group.
