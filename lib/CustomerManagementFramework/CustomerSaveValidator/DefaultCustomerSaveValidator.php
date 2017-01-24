@@ -67,7 +67,7 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface{
     {
         $getter = 'get' . ucfirst($field);
 
-        if(!$customer->$getter()){
+        if(is_null($customer->$getter())){
             if($throwException) {
                 throw new ValidationException(sprintf("Please enter a value for the following required field: %s", $field));
             }
