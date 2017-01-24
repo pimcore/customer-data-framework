@@ -224,9 +224,8 @@ class Factory {
      * @return mixed
      * @throws \Exception
      */
-    public function createObject($className, $needsToBeSubclassOf = null, array $constructorParams = null)
+    public function createObject($className, $needsToBeSubclassOf = null, array $constructorParams = [])
     {
-
         if(!\Pimcore::getDiContainer()->has($className)) {
             $definition = \DI\object($className);
             if($constructorParams) {
