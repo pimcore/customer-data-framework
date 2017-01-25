@@ -129,9 +129,8 @@ class CustomerManagementFramework_CustomersController extends Admin
 
         $filterProperties = Plugin::getConfig()->CustomerList->filterProperties;
 
-        $equalsProperties      = isset($filterProperties->equals) ? $filterProperties->equals->toArray() : [];
-        $searchProperties      = isset($filterProperties->search) ? $filterProperties->search->toArray() : [];
-        $searchQueryProperties = isset($filterProperties->searchQuery) ? $filterProperties->searchQuery->toArray() : [];
+        $equalsProperties = isset($filterProperties->equals) ? $filterProperties->equals->toArray() : [];
+        $searchProperties = isset($filterProperties->search) ? $filterProperties->search->toArray() : [];
 
         foreach ($equalsProperties as $property => $databaseField) {
             if (array_key_exists($property, $filters)) {
@@ -139,23 +138,10 @@ class CustomerManagementFramework_CustomersController extends Admin
             }
         }
 
-        foreach ($searchProperties as $property => $databaseField) {
-            if (array_key_exists($property, $filters)) {
-                $handler->addFilter(new Filter\Search($databaseField, $filters[$property]));
+        foreach ($searchProperties as $property => $databaseFields) {
+            if (array_key_exists($property, $filters) && !empty($filters[$property]) && is_string($filters[$property])) {
+                $handler->addFilter(new SearchQuery($databaseFields, $filters[$property]));
             }
-        }
-
-        // handle search query
-        if (array_key_exists('search', $filters)) {
-            if (count($searchQueryProperties) === 0) {
-                throw new RuntimeException('No search query properties are defined in config (filterProperties/searchQuery');
-            }
-
-            if (!is_string($filters['search']) || empty($filters['search'])) {
-                throw new InvalidArgumentException('Search query string is invalid or missing');
-            }
-
-            $handler->addFilter(new SearchQuery($searchQueryProperties, $filters['search']));
         }
 
         if (array_key_exists('segments', $filters)) {
