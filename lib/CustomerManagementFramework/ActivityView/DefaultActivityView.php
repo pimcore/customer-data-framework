@@ -64,14 +64,13 @@ class DefaultActivityView implements ActivityViewInterface {
     }
 
     /**
-     * @param string $value
-     * @return string
+     * @inheritDoc
      */
-    public function translate($value)
+    public function translate($messageId, $parameters = [])
     {
-        return $this->viewFormatter->translate($value);
+        return $this->viewFormatter->translate($messageId, $parameters);
     }
-    
+
     public function formatAttributes($implementationClass, array $attributes, array $visibleKeys = []) {
 
         $class = false;

@@ -9,9 +9,11 @@
 namespace CustomerManagementFramework\ActivityView;
 
 use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
+use CustomerManagementFramework\Translate\TranslatorInterface;
 use Pimcore\Model\Object\ClassDefinition\Data;
 
-interface ActivityViewInterface {
+interface ActivityViewInterface extends TranslatorInterface
+{
 
     /**
      * @param ActivityStoreEntryInterface $activityEntry
@@ -42,11 +44,4 @@ interface ActivityViewInterface {
      * @return array
      */
     public function formatAttributes($implementationClass, array $attributes, array $visibleKeys = []);
-
-    /**
-     * @param string $value
-     *
-     * @return string
-     */
-    public function translate($value);
 }

@@ -15,18 +15,32 @@ class DefaultViewFormatter implements ViewFormatterInterface
     protected $translate = [];
 
     /**
-     * @param $value
-     * @return array|string
+     * @param string $messageId
+     * @param array|mixed $parameters
+     * @return string
      */
-    public function translate($value)
+    public function translate($messageId, $parameters = [])
     {
+        if (!is_array($parameters)) {
+            if (!empty($parameters)) {
+                $parameters = [$parameters];
+            } else {
+                $parameters = [];
+            }
+        }
+
         $locale = (string)\Zend_Registry::get("Zend_Locale");
         if (!$ta = $this->translate[$locale]) {
             $ta = new Admin(\Zend_Registry::get("Zend_Locale"));
             $this->translate[$locale] = $ta;
         }
 
-        return $ta->translate($value);
+        $message = $ta->translate($messageId);
+        if (count($parameters) > 0) {
+            $message = vsprintf($message, $parameters);
+        }
+
+        return $message;
     }
 
     /**

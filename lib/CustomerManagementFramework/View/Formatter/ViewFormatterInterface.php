@@ -1,16 +1,11 @@
 <?php
 namespace CustomerManagementFramework\View\Formatter;
 
+use CustomerManagementFramework\Translate\TranslatorInterface;
 use Pimcore\Model\Object\ClassDefinition\Data;
 
-interface ViewFormatterInterface
+interface ViewFormatterInterface extends TranslatorInterface
 {
-    /**
-     * @param $value
-     * @return array|string
-     */
-    public function translate($value);
-
     /**
      * @param Data $fd
      * @return array|string

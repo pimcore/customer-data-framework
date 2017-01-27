@@ -3,9 +3,10 @@
 namespace CustomerManagementFramework\CustomerView;
 
 use CustomerManagementFramework\Model\CustomerInterface;
+use CustomerManagementFramework\Translate\TranslatorInterface;
 use CustomerManagementFramework\View\Formatter\ViewFormatterInterface;
 
-interface CustomerViewInterface
+interface CustomerViewInterface extends TranslatorInterface
 {
     /**
      * @return ViewFormatterInterface
@@ -37,10 +38,4 @@ interface CustomerViewInterface
      * @return array
      */
     public function getDetailviewData(CustomerInterface $customer);
-
-    /**
-     * @param string $value
-     * @return string
-     */
-    public function translate($value);
 }
