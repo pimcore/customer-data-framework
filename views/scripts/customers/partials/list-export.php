@@ -1,9 +1,9 @@
 <?php
-$exporterConfig = \CustomerManagementFramework\Factory::getInstance()
+$exporterConfigs = \CustomerManagementFramework\Factory::getInstance()
     ->getCustomerListExporterManager()
     ->getConfig();
 
-if (count($exporterConfig) === 0) {
+if (count($exporterConfigs) === 0) {
     return;
 }
 ?>
@@ -12,7 +12,7 @@ if (count($exporterConfig) === 0) {
     <div class="box-body">
         <div class="row">
             <div class="col-xs-12 text-right">
-                <?php foreach ($exporterConfig as $exporter => $exporterConfig): ?>
+                <?php foreach ($exporterConfigs as $exporter => $exporterConfig): ?>
 
                     <?php
                     $exportParams = array_merge([

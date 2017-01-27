@@ -4,6 +4,7 @@ $paginator = $this->paginator;
 
 /** @var \CustomerManagementFramework\CustomerView\CustomerViewInterface $customerView */
 $customerView = $this->customerView;
+$cv           = $customerView;
 ?>
 
 <section class="content">
@@ -23,7 +24,7 @@ $customerView = $this->customerView;
     <?php if ($paginator->getTotalItemCount() === 0): ?>
 
         <div class="callout callout-warning">
-            <p>No results.</p>
+            <p><?= $cv->translate('No results.') ?></p>
         </div>
 
     <?php else: ?>
@@ -33,7 +34,7 @@ $customerView = $this->customerView;
             <div class="box-header with-border">
                 <h3 class="box-title">
                     <i class="fa fa-user"></i>
-                    Customers
+                    <?= $cv->translate('Customers') ?>
                 </h3>
             </div>
             <!-- /.box-header -->
@@ -44,10 +45,10 @@ $customerView = $this->customerView;
                     <tr>
                         <th class="reference-id-column table-id-column">#</th>
                         <th class="icon-column icon-column--center"></th>
-                        <th>Name</th>
-                        <th>E-Mail</th>
-                        <th>Gender</th>
-                        <th>Segments</th>
+                        <th><?= $cv->translate('Name') ?></th>
+                        <th><?= $cv->translate('E-Mail') ?></th>
+                        <th><?= $cv->translate('Gender') ?></th>
+                        <th><?= $cv->translate('Segments') ?></th>
                     </tr>
                     </thead>
 
