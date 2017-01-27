@@ -4,7 +4,12 @@ namespace CustomerManagementFramework\CustomerList\Filter;
 
 use BackendToolkit\Listing\Filter\AbstractFilter;
 use BackendToolkit\Listing\OnCreateQueryFilterInterface;
+use CustomerManagementFramework\CustomerList\Filter\Exception\SearchQueryException;
+use CustomerManagementFramework\Factory;
+use CustomerManagementFramework\View\Formatter\ViewFormatterInterface;
+use Phlexy\LexingException;
 use Pimcore\Model\Object\Listing as CoreListing;
+use SearchQueryParser\ParserException;
 use SearchQueryParser\QueryBuilder\ZendDbSelect;
 use SearchQueryParser\SearchQueryParser;
 
@@ -49,6 +54,27 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
      */
     protected function parseQuery($queryString)
     {
-        return SearchQueryParser::parseQuery($queryString);
+        try {
+            return SearchQueryParser::parseQuery($queryString);
+        } catch (LexingException $e) {
+            $this->handleParserException($e);
+        } catch (ParserException $e) {
+            $this->handleParserException($e);
+        }
+    }
+
+    /**
+     * @param \Exception $e
+     * @throws SearchQueryException
+     */
+    protected function handleParserException(\Exception $e)
+    {
+        $message = $e->getMessage();
+
+        if ($e instanceof LexingException) {
+            $message = preg_replace('/on line \d+$/', '', $message);
+        }
+
+        throw new SearchQueryException($message, $e->getCode(), $e);
     }
 }

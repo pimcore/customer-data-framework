@@ -4,6 +4,7 @@ use BackendToolkit\Controller\Traits\PaginatorController;
 use BackendToolkit\Listing\Filter;
 use BackendToolkit\Listing\FilterHandler;
 use CustomerManagementFramework\Controller\Admin;
+use CustomerManagementFramework\CustomerList\Filter\Exception\SearchQueryException;
 use CustomerManagementFramework\CustomerList\Filter\SearchQuery;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\CustomerList\Filter\CustomerSegment as CustomerSegmentFilter;
@@ -29,12 +30,29 @@ class CustomerManagementFramework_CustomersController extends Admin
 
         $this->loadSegmentGroups();
 
-        $filters   = $this->fetchListFilters();
-        $listing   = $this->buildListing($filters);
-        $paginator = $this->buildPaginator($listing);
+        $filters = $this->fetchListFilters();
 
+        $errors       = [];
+        $paginator    = null;
+        $customerView = Factory::getInstance()->getCustomerView();
+
+        try {
+            $listing   = $this->buildListing($filters);
+            $paginator = $this->buildPaginator($listing);
+        } catch (SearchQueryException $e) {
+            $errors[] = $customerView->translate('There was an error in you search query: %s', $e->getMessage());
+        } catch (Exception $e) {
+            $errors[] = $customerView->translate('Error while building customer list: %s', $e->getMessage());
+        }
+
+        // empty paginator as the view expects a valid paginator
+        if (null === $paginator) {
+            $paginator = $this->buildPaginator([]);
+        }
+
+        $this->view->errors       = $errors;
         $this->view->paginator    = $paginator;
-        $this->view->customerView = Factory::getInstance()->getCustomerView();
+        $this->view->customerView = $customerView;
     }
 
     public function exportAction()

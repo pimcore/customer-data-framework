@@ -8,6 +8,16 @@ $customerView = $this->customerView;
 
 <section class="content">
 
+    <?php if (isset($this->errors) && count($this->errors) > 0): ?>
+        <?php foreach ($this->errors as $error): ?>
+
+            <div class="callout callout-danger">
+                <?= $error ?>
+            </div>
+
+        <?php endforeach; ?>
+    <?php endif; ?>
+
     <?= $this->template('customers/partials/list-filter.php'); ?>
 
     <?php if ($paginator->getTotalItemCount() === 0): ?>
