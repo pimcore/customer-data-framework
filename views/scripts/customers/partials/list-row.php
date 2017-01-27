@@ -13,6 +13,8 @@ if ($cv->hasDetailView($customer)) {
         'action'     => 'detail',
         'id'         => $customer->getId()
     ], null, true);
+
+    $userDetailUrl = $this->formQueryString($this->request, $userDetailUrl);
 }
 ?>
 

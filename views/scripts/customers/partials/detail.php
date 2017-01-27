@@ -4,6 +4,14 @@ $customer = $this->customer;
 
 /** @var \CustomerManagementFramework\CustomerView\CustomerViewInterface $cv */
 $cv = $this->customerView;
+
+$backUrl = $this->url([
+    'module'     => 'CustomerManagementFramework',
+    'controller' => 'customers',
+    'action'     => 'list'
+], null, true);
+
+$backUrl = $this->formQueryString($this->request, $backUrl);
 ?>
 
 <div class="box box-info">
@@ -15,6 +23,12 @@ $cv = $this->customerView;
 
             <?= $customer->getFirstname() ?> <?= $customer->getLastname() ?>
         </h3>
+
+        <div>
+            <a href="<?= $backUrl ?>" class="btn btn-default btn-xs">
+                &laquo; <?= $cv->translate('back') ?>
+            </a>
+        </div>
     </div>
 
     <div class="box-body">
