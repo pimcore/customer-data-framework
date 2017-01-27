@@ -42,7 +42,8 @@ $cv = $this->customerView;
                 <table class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th class="reference-id-column table-id-column">#</th>
+                        <th class="table-id-column">#</th>
+                        <th class="reference-id-column">ID</th>
                         <th class="icon-column icon-column--center"></th>
                         <th><?= $cv->translate('Name') ?></th>
                         <th><?= $cv->translate('E-Mail') ?></th>

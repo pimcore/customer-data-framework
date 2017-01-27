@@ -9,6 +9,10 @@ $cv = $this->customerView;
 <div class="box box-info">
     <div class="box-header with-border with-form">
         <h3 class="box-title">
+            <a href="#" class="js-pimcore-link" data-pimcore-id="<?= $customer->getId() ?>">
+                <i class="fa fa-link"></i>
+            </a>
+
             <?= $customer->getFirstname() ?> <?= $customer->getLastname() ?>
         </h3>
     </div>

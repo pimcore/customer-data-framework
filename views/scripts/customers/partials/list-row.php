@@ -17,7 +17,13 @@ if ($cv->hasDetailView($customer)) {
 ?>
 
 <tr>
-    <td class="reference-id-column table-id-column">
+    <td class="table-id-column">
+        <a href="#" class="js-pimcore-link" data-pimcore-id="<?= $customer->getId() ?>">
+            <i class="fa fa-link"></i>
+        </a>
+    </td>
+
+    <td class="reference-id-column">
         <?php if (null !== $userDetailUrl): ?>
             <a href="<?= $userDetailUrl ?>"><?= $customer->getId() ?></a>
         <?php else: ?>
