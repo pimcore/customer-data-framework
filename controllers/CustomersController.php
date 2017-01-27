@@ -50,9 +50,10 @@ class CustomerManagementFramework_CustomersController extends Admin
             $paginator = $this->buildPaginator([]);
         }
 
-        $this->view->errors       = $errors;
-        $this->view->paginator    = $paginator;
-        $this->view->customerView = $customerView;
+        $this->view->errors          = $errors;
+        $this->view->paginator       = $paginator;
+        $this->view->customerView    = $customerView;
+        $this->view->searchBarFields = $this->getConfiguredSearchBarFields();
     }
 
     public function exportAction()
@@ -255,5 +256,25 @@ class CustomerManagementFramework_CustomersController extends Admin
 
             return $segment;
         }
+    }
+
+    /**
+     * @return array
+     */
+    protected function getConfiguredSearchBarFields()
+    {
+        $filterProperties = Plugin::getConfig()->CustomerList->filterProperties;
+        $searchProperties = isset($filterProperties->search) ? $filterProperties->search->toArray() : [];
+
+        $searchBarFields = [];
+        if (isset($searchProperties['search'])) {
+            $searchProperties = $searchProperties['search'];
+
+            if (is_array($searchProperties) && count($searchProperties) > 0) {
+                $searchBarFields = array_values($searchProperties);
+            }
+        }
+
+        return $searchBarFields;
     }
 }

@@ -5,17 +5,20 @@ $cv = $this->customerView;
 
 <form class="search-filters" role="form" action="<?= $this->filterFormAction($this->paginator) ?>">
 
-    <div class="box box-default box-collapsible-state search-filters-box search-filters-box--standalone" data-identifier="customer-search-bar">
-        <div class="box-body">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="form-group">
-                        <input type="text" name="filter[search]" class="form-control" placeholder="<?= $cv->translate('Search') ?>..." value="<?= $this->formFilterValue('search') ?>">
+    <?php if (count($this->searchBarFields) > 0): ?>
+        <div class="box box-default box-collapsible-state search-filters-box search-filters-box--standalone" data-identifier="customer-search-bar">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group" id="searchBar">
+                            <input type="text" name="filter[search]" class="form-control" placeholder="<?= $cv->translate('Search') ?>..." value="<?= $this->formFilterValue('search') ?>">
+                            <?= $this->template('customers/partials/list-filter/search-bar-help.php') ?>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    <?php endif; ?>
 
     <?= $this->template('partials/filter/box/header.php', ['identifier' => 'customer-search-filter']) ?>
 
