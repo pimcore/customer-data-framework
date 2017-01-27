@@ -2,12 +2,12 @@
 /** @var \CustomerManagementFramework\Model\CustomerInterface $customer */
 $customer = $this->customer;
 
-/** @var \CustomerManagementFramework\CustomerView\CustomerViewInterface $customerView */
-$customerView = $this->customerView;
+/** @var \CustomerManagementFramework\CustomerView\CustomerViewInterface $cv */
+$cv = $this->customerView;
 ?>
 
 <section class="content">
 
-    <?= $this->template($customerView->getDetailviewTemplate($customer)) ?>
+    <?= $this->template($cv->getDetailviewTemplate($customer)) ?>
 
 </section>

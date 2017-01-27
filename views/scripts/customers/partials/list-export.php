@@ -1,4 +1,7 @@
 <?php
+/** @var \CustomerManagementFramework\CustomerView\CustomerViewInterface $cv */
+$cv = $this->customerView;
+
 $exporterConfigs = \CustomerManagementFramework\Factory::getInstance()
     ->getCustomerListExporterManager()
     ->getConfig();
@@ -26,7 +29,8 @@ if (count($exporterConfigs) === 0) {
 
                     <a href="<?= $exportUrl ?>" class="btn btn-default">
                         <i class="<?= isset($exporterConfig->icon) ? $exporterConfig->icon : 'fa fa-download' ?>"></i>
-                        Export <span class="label label-info"><?= $exporterConfig->name ?></span>
+                        <?= $cv->translate('Export') ?>
+                        <span class="label label-info"><?= $exporterConfig->name ?></span>
                     </a>
 
                 <?php endforeach; ?>

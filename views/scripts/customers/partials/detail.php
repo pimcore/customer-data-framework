@@ -2,8 +2,8 @@
 /** @var \CustomerManagementFramework\Model\CustomerInterface $customer */
 $customer = $this->customer;
 
-/** @var \CustomerManagementFramework\CustomerView\CustomerViewInterface $customerView */
-$customerView = $this->customerView;
+/** @var \CustomerManagementFramework\CustomerView\CustomerViewInterface $cv */
+$cv = $this->customerView;
 ?>
 
 <div class="box box-info">
@@ -16,7 +16,7 @@ $customerView = $this->customerView;
     <div class="box-body">
         <div class="row">
             <?php
-            $detailAttributes = $customerView->getDetailviewData($customer);
+            $detailAttributes = $cv->getDetailviewData($customer);
             ?>
 
             <?php foreach (array_chunk($detailAttributes, ceil(sizeof($detailAttributes) / 2), true) as $attributes): ?>

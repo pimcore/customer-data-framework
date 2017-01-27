@@ -2,9 +2,8 @@
 /** @var Zend_Paginator|\CustomerManagementFramework\Model\CustomerInterface[] $paginator */
 $paginator = $this->paginator;
 
-/** @var \CustomerManagementFramework\CustomerView\CustomerViewInterface $customerView */
-$customerView = $this->customerView;
-$cv           = $customerView;
+/** @var \CustomerManagementFramework\CustomerView\CustomerViewInterface $cv */
+$cv = $this->customerView;
 ?>
 
 <section class="content">
@@ -56,7 +55,7 @@ $cv           = $customerView;
 
                     <?php
                     foreach ($paginator as $customer) {
-                        echo $this->template($customerView->getOverviewTemplate($customer), [
+                        echo $this->template($cv->getOverviewTemplate($customer), [
                             'customer' => $customer
                         ]);
                     }

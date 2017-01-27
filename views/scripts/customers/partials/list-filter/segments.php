@@ -1,8 +1,13 @@
+<?php
+/** @var \CustomerManagementFramework\CustomerView\CustomerViewInterface $cv */
+$cv = $this->customerView;
+?>
+
 <?php if (isset($this->segmentGroups)): ?>
 
     <fieldset>
         <legend>
-            Segments
+            <?= $cv->translate('Segments') ?>
         </legend>
 
         <div class="row">

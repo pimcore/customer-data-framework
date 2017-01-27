@@ -1,12 +1,12 @@
 <?php
-/** @var \CustomerManagementFramework\CustomerView\CustomerViewInterface $customerView */
-$customerView = $this->customerView;
+/** @var \CustomerManagementFramework\CustomerView\CustomerViewInterface $cv */
+$cv = $this->customerView;
 
 /** @var \CustomerManagementFramework\Model\CustomerInterface $customer */
 $customer = $this->customer;
 
 $userDetailUrl = null;
-if ($customerView->hasDetailView($customer)) {
+if ($cv->hasDetailView($customer)) {
     $userDetailUrl = $this->url([
         'module'     => 'CustomerManagementFramework',
         'controller' => 'customers',
@@ -26,8 +26,9 @@ if ($customerView->hasDetailView($customer)) {
     </td>
     <td class="icon-column icon-column--center">
         <?= $this->partial('customers/partials/active-state.php', [
-            'customer' => $customer,
-            'language' => $this->language
+            'customerView' => $cv,
+            'customer'     => $customer,
+            'language'     => $this->language
         ]); ?>
     </td>
     <td>
@@ -44,7 +45,7 @@ if ($customerView->hasDetailView($customer)) {
 
     <td>
         <?php foreach ($customer->getAllSegments() as $segment): ?>
-            <?= $customerView->getViewFormatter()->formatValue($segment); ?>
+            <?= $cv->getViewFormatter()->formatValue($segment); ?>
         <?php endforeach; ?>
     </td>
 </tr>
