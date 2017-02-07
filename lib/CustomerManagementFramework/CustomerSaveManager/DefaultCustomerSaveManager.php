@@ -50,7 +50,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         }
 
         $this->applySaveHandlers($customer);
-        $this->validateOnSave($customer);
+        $this->validateOnSave($customer, false);
 
         /*$ex = new ValidationException('...');
         $ex->setSubItems(["test"=>"tester"]);*/
@@ -69,7 +69,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         Factory::getInstance()->getSegmentManager()->addCustomerToChangesQueue($customer);
     }
 
-    public function validateOnSave(CustomerInterface $customer) {
+    public function validateOnSave(CustomerInterface $customer, $withDuplicatesCheck = true) {
 
         if(!$this->customerSaveValidatorEnabled) {
             return false;
@@ -80,7 +80,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
          */
         $validator = \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerSaveValidator');
 
-        $validator->validate($customer);
+        $validator->validate($customer, $withDuplicatesCheck);
     }
 
     public function applySaveHandlers(CustomerInterface $customer)

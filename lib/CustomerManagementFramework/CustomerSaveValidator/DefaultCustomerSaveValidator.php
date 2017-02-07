@@ -31,10 +31,14 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface{
         $this->requiredFields = $this->config->requiredFields ? $this->config->requiredFields->toArray() : [];
     }
 
-    public function validate(CustomerInterface $customer) {
+    public function validate(CustomerInterface $customer, $withDuplicatesCheck = true) {
 
         $validRequiredFields = $this->validateRequiredFields($customer);
-        $validDuplicates = $this->validateDuplicates($customer);
+
+        $validDuplicates = true;
+        if($withDuplicatesCheck) {
+            $validDuplicates = $this->validateDuplicates($customer);
+        }
 
         return $validRequiredFields && $validDuplicates;
     }
@@ -75,6 +79,7 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface{
 
     protected function validateDuplicates(CustomerInterface $customer)
     {
+
         if($this->config->checkForDuplicates) {
 
             if($duplicates = Factory::getInstance()->getCustomerDuplicatesService()->getDuplicatesOfCustomer($customer)) {

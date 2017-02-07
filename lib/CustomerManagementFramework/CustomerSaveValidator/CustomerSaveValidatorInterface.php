@@ -26,5 +26,5 @@ interface CustomerSaveValidatorInterface {
      * @return bool
      * @throws ValidationException
      */
-    public function validate(CustomerInterface $customer);
+    public function validate(CustomerInterface $customer, $withDuplicatesCheck = true);
 }
