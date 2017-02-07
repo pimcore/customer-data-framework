@@ -22,6 +22,8 @@ class CustomerManagementFramework_CustomersController extends Admin
     {
         parent::init();
         $this->checkPermission('plugin_customermanagementframework_customerview');
+
+        \Pimcore\Model\Object\AbstractObject::setHideUnpublished(true);
     }
 
     public function listAction()
