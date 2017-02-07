@@ -9,6 +9,7 @@
 namespace CustomerManagementFramework\CustomerSaveHandler;
 
 use CustomerManagementFramework\Model\CustomerInterface;
+use CustomerManagementFramework\Validator\BlacklistValidator;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -49,17 +50,8 @@ class RemoveBlacklistedEmails implements CustomerSaveHandlerInterface
 
         $email = strtolower(trim($email));
 
-        $blacklistedMails = [];
-        if(file_exists((string)$this->config->blackListFile)) {
-            $blacklistedMails = preg_split("/\r\n|\n|\r/", file_get_contents((string)$this->config->blackListFile));
+        $validator = new \CustomerManagementFramework\DataValidator\BlacklistValidator();
 
-            foreach($blacklistedMails as $key => $value) {
-                $blacklistedMails[$key] = trim(strtolower($value));
-            }
-        } else {
-            $this->logger->warning(sprintf("mail black list file not found"));
-        }
-
-        return in_array($email, $blacklistedMails);
+        return !$validator->isValid($email);
     }
 }
