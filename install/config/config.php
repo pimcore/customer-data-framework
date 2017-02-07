@@ -8,7 +8,8 @@
 
 return [
     'General' => [
-        'CustomerPimcoreClass' => 'Customer'
+        'CustomerPimcoreClass' => 'Customer',
+        'mailBlackListFile' => PIMCORE_WEBSITE_PATH . '/config/plugins/CustomerManagementFramework/mail-blacklist.txt'
     ],
 
     'Encryption' => [
@@ -100,7 +101,8 @@ return [
         'requiredFields' => [
             /*['email'],
             ['firstname', 'name', 'zip', 'birthday'],*/
-        ]
+        ],
+        'checkForDuplicates' => true
     ],
 
     'CustomerDuplicatesService' => [
