@@ -12,5 +12,12 @@ use CustomerManagementFramework\Model\CustomerInterface;
 
 interface CustomerDuplicatesServiceInterface {
 
-    public function getDuplicatesOfCustomer(CustomerInterface $customer);
+    public function getDuplicatesOfCustomer(CustomerInterface $customer, $limit = 10);
+
+    /**
+     * returns which field combination matched for last found duplicates;
+     *
+     * @return array
+     */
+    public function getMatchedDuplicateFields();
 }

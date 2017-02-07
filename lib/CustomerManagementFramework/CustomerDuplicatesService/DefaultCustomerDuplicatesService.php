@@ -25,20 +25,25 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
      */
     private $duplicateCheckFields;
 
+    /**
+     * @var array
+     */
+    protected $matchedDuplicateFields;
+
     public function __construct()
     {
         $this->config =  Plugin::getConfig()->CustomerDuplicatesService;
         $this->duplicateCheckFields = $this->config->duplicateCheckFields ? $this->config->duplicateCheckFields->toArray() : [];
     }
 
-    public function getDuplicatesOfCustomer(CustomerInterface $customer) {
+    public function getDuplicatesOfCustomer(CustomerInterface $customer, $limit = 10) {
         foreach($this->duplicateCheckFields as $fields) {
 
             if(!is_array($fields)) {
-                return $this->getDuplicatesOfCustomerByFields($customer, $this->duplicateCheckFields);
+                return $this->getDuplicatesOfCustomerByFields($customer, $this->duplicateCheckFields, $limit = 10);
             }
 
-            if($duplicates = $this->getDuplicatesOfCustomerByFields($customer, $fields)) {
+            if($duplicates = $this->getDuplicatesOfCustomerByFields($customer, $fields, $limit = 10)) {
                 return $duplicates;
             }
         }
@@ -46,7 +51,17 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
         return [];
     }
 
-    protected function getDuplicatesOfCustomerByFields(CustomerInterface $customer, array $fields) {
+    /**
+     * @return array
+     */
+    public function getMatchedDuplicateFields()
+    {
+        return $this->matchedDuplicateFields;
+    }
+
+
+
+    protected function getDuplicatesOfCustomerByFields(CustomerInterface $customer, array $fields, $limit = 10) {
 
 
         if(!sizeof($fields)) {
@@ -61,7 +76,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
             $value = $customer->$getter();
 
             if(is_null($value)) {
-                $conditions[] = $field . " is null";
+                return [];
             } else {
                 if($cond = $this->createNormalizedMysqlCompareCondition($field, $value)) {
                     $conditions[] = $cond;
@@ -71,7 +86,12 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
         $conditions = '(' . implode(' and ', $conditions) . ')';
 
         $list->setCondition($conditions);
+        $list->setLimit($limit);
         $list = $list->load();
+
+        if($list) {
+            $this->matchedDuplicateFields = $fields;
+        }
 
         return $list ? : [];
     }

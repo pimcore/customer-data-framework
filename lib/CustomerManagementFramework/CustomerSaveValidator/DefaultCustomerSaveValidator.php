@@ -8,6 +8,8 @@
 
 namespace CustomerManagementFramework\CustomerSaveValidator;
 
+use CustomerManagementFramework\CustomerSaveValidator\Exception\DuplicateCustomerException;
+use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Plugin;
 use Pimcore\Model\Element\ValidationException;
@@ -31,7 +33,15 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface{
 
     public function validate(CustomerInterface $customer) {
 
+        $validRequiredFields = $this->validateRequiredFields($customer);
+        $validDuplicates = $this->validateDuplicates($customer);
 
+        return $validRequiredFields && $validDuplicates;
+    }
+
+    protected function validateRequiredFields(CustomerInterface $customer) {
+
+        $valid = false;
         foreach($this->requiredFields as $requiredFields) {
             if(is_array($requiredFields)) {
                 $valid = true;
@@ -60,7 +70,24 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface{
             throw new ValidationException("Not all required fields are set. Please fill-up one of the following field combinations: " . implode(' or ', $combinations));
         }
 
-        return $valid;
+        return true;
+    }
+
+    protected function validateDuplicates(CustomerInterface $customer)
+    {
+        if($this->config->checkForDuplicates) {
+
+            if($duplicates = Factory::getInstance()->getCustomerDuplicatesService()->getDuplicatesOfCustomer($customer)) {
+                $ex = new DuplicateCustomerException("Duplicate customer found: ID " . $duplicates[0]->getId());
+
+                $ex->setDuplicateCustomer($duplicates[0]);
+                $ex->setMatchedDuplicateFields(Factory::getInstance()->getCustomerDuplicatesService()->getMatchedDuplicateFields());
+
+                throw $ex;
+            }
+        }
+
+        return true;
     }
 
     protected function validateField(CustomerInterface $customer, $field, $throwException = false)
