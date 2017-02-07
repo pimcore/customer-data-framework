@@ -118,7 +118,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
             return $this->createNormalizedMysqlCompareConditionForStringFields($field, $value);
         }
 
-        if($value instanceof Carbon) {
+        if($value instanceof Carbon || $value instanceof \Zend_Date) {
             return $this->createNormalizedMysqlCompareConditionForDateFields($field, $value);
         }
 
@@ -131,7 +131,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
         return sprintf("TRIM(LCASE(%s)) = %s", $field, $db->quote(trim(strtolower($value))));
     }
 
-    protected function createNormalizedMysqlCompareConditionForDateFields($field, Carbon $value) {
+    protected function createNormalizedMysqlCompareConditionForDateFields($field, $value) {
 
         return sprintf("%s = %s", $field, $value->getTimestamp());
     }
