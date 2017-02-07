@@ -111,6 +111,10 @@ return [
         ]
     ],
 
+    'CustomerMerger' => [
+        'archiveDir' => '/customers/__archive'
+    ],
+
     'CustomerList' => [
         'filterProperties' => [
             'equals' => [

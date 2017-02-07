@@ -134,6 +134,11 @@ return [
     'CustomerManagementFramework\CustomerDuplicatesService'
         => DI\object('CustomerManagementFramework\CustomerDuplicatesService\DefaultCustomerDuplicatesService'),
 
+
+    'CustomerManagementFramework\CustomerMerger'
+        => DI\object('CustomerManagementFramework\CustomerMerger\DefaultCustomerMerger')
+            ->constructor(DI\get('CustomerManagementFramework\Logger')),
+
     'CustomerManagementFramework\CustomerSaveManager'
         => DI\object('CustomerManagementFramework\CustomerSaveManager\DefaultCustomerSaveManager')
            ->constructor(DI\get('CustomerManagementFramework\Logger')),

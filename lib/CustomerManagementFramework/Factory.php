@@ -17,6 +17,7 @@ use CustomerManagementFramework\ActivityUrlTracker\ActivityUrlTrackerInterface;
 use CustomerManagementFramework\ActivityView\ActivityViewInterface;
 use CustomerManagementFramework\Authentication\SsoIdentity\SsoIdentityServiceInterface;
 use CustomerManagementFramework\CustomerDuplicatesService\CustomerDuplicatesServiceInterface;
+use CustomerManagementFramework\CustomerMerger\CustomerMergerInterface;
 use CustomerManagementFramework\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFramework\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFramework\CustomerView\CustomerViewInterface;
@@ -84,6 +85,14 @@ class Factory {
     public function getCustomerProvider()
     {
         return \Pimcore::getDiContainer()->get(CustomerProviderInterface::class);
+    }
+
+    /**
+     * @return CustomerMergerInterface
+     */
+    public function getCustomerMerger()
+    {
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerMerger');
     }
 
     /**

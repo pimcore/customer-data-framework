@@ -13,6 +13,13 @@ interface CustomerInterface extends ElementInterface {
     public function getId();
 
     /**
+     * @return int
+     */
+    public static function classId();
+
+    public function save();
+
+    /**
      * @return boolean
      */
     public function getPublished();
