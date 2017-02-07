@@ -70,7 +70,12 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
 
         $list = new Customer\Listing;
 
-        $conditions = ["o_id !=" . $customer->getId()];
+        $conditions = [
+            "o_id !=" . $customer->getId(),
+            "o_published = 1",
+            "active = 1",
+        ];
+
         foreach($fields as $field) {
             $getter = 'get' . ucfirst($field);
             $value = $customer->$getter();
