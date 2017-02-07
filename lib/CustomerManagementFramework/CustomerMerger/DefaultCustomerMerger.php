@@ -8,6 +8,8 @@
 
 namespace CustomerManagementFramework\CustomerMerger;
 
+use CustomerManagementFramework\ActionTrigger\Condition\Customer;
+use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Helper\Notes;
 use CustomerManagementFramework\Helper\Objects;
@@ -59,7 +61,6 @@ class DefaultCustomerMerger implements CustomerMergerInterface {
             $note = Notes::createNote($sourceCustomer, 'cmf.CustomerMerger', "customer merged + deactivated");
             $note->addData("mergedTargetCustomer", "object", $targetCustomer);
             $note->save();
-
         }
 
         Factory::getInstance()->getCustomerSaveManager()->setCustomerSaveValidatorEnabled($saveValidatorBackup);
@@ -68,7 +69,7 @@ class DefaultCustomerMerger implements CustomerMergerInterface {
         $this->logger->notice("merge customer " . $sourceCustomer . " with " . $targetCustomer);
     }
 
-    private function mergeCustomerValues(CustomerInterface $sourceCustomer, CustomerInterface $destinationCustomer)
+    private function mergeCustomerValues(CustomerInterface $sourceCustomer, CustomerInterface $targetCustomer)
     {
         $class = ClassDefinition::getById($sourceCustomer::classId());
 
@@ -77,18 +78,38 @@ class DefaultCustomerMerger implements CustomerMergerInterface {
             $setter = 'set' . ucfirst($fd->getName());
 
             if($value = $sourceCustomer->$getter()) {
-                $destinationCustomer->$setter($value);
+                $targetCustomer->$setter($value);
             }
         }
 
         $calculatedSegments = (array)$sourceCustomer->getCalculatedSegments();
-        Objects::addObjectsToArray($calculatedSegments, (array)$destinationCustomer->getCalculatedSegments());
-        $destinationCustomer->setCalculatedSegments($calculatedSegments);
+        Objects::addObjectsToArray($calculatedSegments, (array)$targetCustomer->getCalculatedSegments());
+        $targetCustomer->setCalculatedSegments($calculatedSegments);
 
         $manualSegments = (array)$sourceCustomer->getManualSegments();
-        Objects::addObjectsToArray($manualSegments, (array)$destinationCustomer->getManualSegments());
-        $destinationCustomer->setCalculatedSegments($manualSegments);
+        Objects::addObjectsToArray($manualSegments, (array)$targetCustomer->getManualSegments());
+        $targetCustomer->setCalculatedSegments($manualSegments);
 
         Factory::getInstance()->getCustomerSaveManager()->setCustomerSaveValidatorEnabled(false);
+
+        $this->mergeActivities($sourceCustomer, $targetCustomer);
+    }
+
+    private function mergeActivities(CustomerInterface $sourceCustomer, CustomerInterface $targetCustomer)
+    {
+        $list = \CustomerManagementFramework\Factory::getInstance()->getActivityStore()->getActivityList();
+        $list->setCondition("customerId=" . $sourceCustomer->getId());
+        $list->setOrderKey('activityDate');
+        $list->setOrder('desc');
+
+        /**
+         * @var ActivityStoreEntryInterface $item
+         */
+        foreach($list as $item) {
+            $item->setCustomer($targetCustomer);
+            $item->save();
+        }
+
+        print $targetCustomer->getId();
     }
 }

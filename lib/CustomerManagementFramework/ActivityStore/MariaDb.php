@@ -51,6 +51,43 @@ class MariaDb implements ActivityStoreInterface{
         \CustomerManagementFramework\Service\MariaDb::getInstance()->update(self::ACTIVITIES_TABLE, $data, "id = " . $entry->getId());
     }
 
+    public function updateActivityStoreEntry(ActivityStoreEntryInterface $entry, $updateAttributes = false) {
+        if(!$entry->getId()) {
+            throw new \Exception("updateActivityStoreEntry only allowed for existing activity store entries");
+        }
+
+        if($updateAttributes) {
+            $relatedItem = $entry->getRelatedItem();
+
+            $this->updateActivityInStore($relatedItem, $entry);
+
+            return;
+        }
+
+        $data = $entry->getData();
+        unset($data['attributes']);
+
+        $db = Db::get();
+
+        $data['type'] = $db->quote($data['type']);
+        $data['implementationClass'] = $db->quote($data['implementationClass']);
+        $data['a_id'] = $db->quote($data['a_id']);
+
+        $md5Data = [
+            'customerId' => $data['customerId'],
+            'type' => $data['type'],
+            'implementationClass' => $data['implementationClass'],
+            'o_id' => $data['o_id'],
+            'a_id' => $data['a_id'],
+            'activityDate' => $data['activityDate'],
+            'attributes' => $data['attributes'],
+        ];
+
+        $data['md5'] = $db->quote(md5(serialize($md5Data)));
+        $data['modificationDate'] = time();
+
+        \CustomerManagementFramework\Service\MariaDb::getInstance()->update(self::ACTIVITIES_TABLE, $data, "id = " . $entry->getId());
+    }
 
     /**
      * @param ActivityInterface $activity
@@ -257,7 +294,7 @@ class MariaDb implements ActivityStoreInterface{
             'type' => $db->quote($activity->cmfGetType()),
             'implementationClass' => $db->quote(get_class($activity)),
             'o_id' => $activity instanceof Concrete ? $activity->getId() : null,
-            'a_id' => $activity instanceof ActivityExternalIdInterface ? $activity->getId() : null,
+            'a_id' => $activity instanceof ActivityExternalIdInterface ? $db->quote($activity->getId()) : null,
             'activityDate' => $activity->cmfGetActivityDate()->getTimestamp(),
             'attributes' => \CustomerManagementFramework\Service\MariaDb::getInstance()->createDynamicColumnInsert($attributes, $dataTypes),
         ];

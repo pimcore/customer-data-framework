@@ -9,6 +9,7 @@
 namespace CustomerManagementFramework\ActivityStoreEntry;
 
 use Carbon\Carbon;
+use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Helper\Json;
 use CustomerManagementFramework\Model\ActivityInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
@@ -30,6 +31,11 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
      * @var CustomerInterface
      */
     private $customer;
+
+    /**
+     * @var int
+     */
+    private $customerId;
 
     /**
      * @var int
@@ -96,6 +102,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
         $this->setModificationDate($data['modificationDate']);
         $this->o_id = $data['o_id'];
         $this->a_id = $data['a_id'];
+        $this->customerId = intval($data['customerId']);
     }
 
     /**
@@ -119,7 +126,19 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
      */
     public function getCustomer()
     {
+        if(empty($this->customer) && $this->customerId) {
+            $this->customer = Factory::getInstance()->getCustomerProvider()->getById($this->customerId);
+        }
+
         return $this->customer;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCustomerId()
+    {
+        return $this->customerId;
     }
 
     /**
@@ -128,6 +147,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
     public function setCustomer(CustomerInterface $customer)
     {
         $this->customer = $customer;
+        $this->customerId = $customer->getId();
     }
 
     /**
@@ -172,6 +192,8 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
             $implementationClass = \Pimcore::getDiContainer()->has($implementationClass) ? \Pimcore::getDiContainer()->get($implementationClass) : $implementationClass;
             $attributes = $this->getAttributes();
             $attributes['activityDate'] = $this->getActivityDate();
+            $attributes['o_id'] = $this->o_id ? : $attributes['o_id'];
+            $attributes['a_id'] = $this->a_id ? : $attributes['a_id'];
             $this->relatedItem = \Pimcore::getDiContainer()->call([$implementationClass , 'cmfCreate'], [$attributes]);
         }
 
@@ -270,6 +292,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
     {
         $data = $this->data;
         $data['id'] = $this->getId();
+        $data['customerId'] = $this->customerId;
         $data['activityDate'] = $this->getActivityDate()->getTimestamp();
         $data['type'] = $this->getType();
         $data['implementationClass'] = $this->getImplementationClass();
@@ -283,5 +306,11 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
         return $data;
     }
 
+    public function save($updateAttributes = false)
+    {
+        $relatedItem = $this->getRelatedItem();
+        $relatedItem->setCustomer($this->getCustomer());
+        Factory::getInstance()->getActivityStore()->updateActivityStoreEntry($this, $updateAttributes);
+    }
 
 }

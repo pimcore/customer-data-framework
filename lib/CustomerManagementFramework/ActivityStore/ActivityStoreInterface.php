@@ -37,6 +37,14 @@ interface ActivityStoreInterface {
     public function updateActivityInStore(ActivityInterface $activity, ActivityStoreEntryInterface $entry);
 
     /**
+     *
+     * @param ActivityStoreEntryInterface $entry
+     *
+     * @return void
+     */
+    public function updateActivityStoreEntry(ActivityStoreEntryInterface $entry, $updateAttributes = false);
+
+    /**
      * @param ActivityInterface $activity
      *
      * @return ActivityStoreEntryInterface

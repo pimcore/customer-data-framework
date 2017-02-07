@@ -16,6 +16,8 @@ interface ActivityStoreEntryInterface {
 
     public function __construct($data);
 
+    public function save($updateAttributes = false);
+
     /**
      * @return int
      */
@@ -32,6 +34,11 @@ interface ActivityStoreEntryInterface {
      * @return CustomerInterface
      */
     public function getCustomer();
+
+    /**
+     * @return int
+     */
+    public function getCustomerId();
 
     /**
      * @param CustomerInterface $customer
