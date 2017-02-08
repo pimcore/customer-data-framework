@@ -75,6 +75,23 @@ class Objects {
     }
 
     /**
+     * Removes duplicate Pimcore objects from array
+     *
+     * @param $array
+     * @return array
+     */
+    public static function objectArrayUnique($array)
+    {
+        $result = [];
+
+        foreach($array as $object) {
+            $result[$object->getId()] = $object;
+        }
+
+        return array_values($result);
+    }
+
+    /**
      * remove pimcore objects from given array
      * - returns true if data in array got changed
      *
