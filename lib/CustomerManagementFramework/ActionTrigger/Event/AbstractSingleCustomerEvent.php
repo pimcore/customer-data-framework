@@ -8,6 +8,7 @@
 
 namespace CustomerManagementFramework\ActionTrigger\Event;
 
+use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
 
 abstract class AbstractSingleCustomerEvent implements SingleCustomerEventInterface {
@@ -22,6 +23,11 @@ abstract class AbstractSingleCustomerEvent implements SingleCustomerEventInterfa
     public function getCustomer()
     {
         return $this->customer;
+    }
+
+    public function appliesToTrigger(TriggerDefinitionInterface $trigger)
+    {
+        return false;
     }
 
 }

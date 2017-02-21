@@ -55,6 +55,9 @@ class DefaultActivityManager implements ActivityManagerInterface
             \Pimcore::getEventManager()->trigger($event->getName(), $event);
         }
 
+        $event = new \CustomerManagementFramework\ActionTrigger\Event\AfterTrackActivity($activity->getCustomer());
+        $event->setActivity($activity);
+        \Pimcore::getEventManager()->trigger($event->getName(), $event);
     }
 
     /**
