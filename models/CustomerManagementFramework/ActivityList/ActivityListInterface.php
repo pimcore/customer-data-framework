@@ -10,5 +10,7 @@ namespace CustomerManagementFramework\ActivityList;
 
 interface ActivityListInterface extends \Zend_Paginator_Adapter_Interface, \Zend_Paginator_AdapterAggregate, \Iterator //\Zend_Paginator_Adapter_Interface, \Zend_Paginator_AdapterAggregate, \Iterator
 {
-    
+
+    public function setCondition($condition, $conditionVariables = null);
+
 }

@@ -135,7 +135,7 @@ class Dao {
 
     protected function addOrder(\Zend_DB_Select $select)
     {
-        $orderKey = $this->model->getOrderKey();
+        $orderKey = $this->model->getOrderKey() ? : [];
         $order = $this->model->getOrder();
 
         foreach($orderKey as $i => $key) {
