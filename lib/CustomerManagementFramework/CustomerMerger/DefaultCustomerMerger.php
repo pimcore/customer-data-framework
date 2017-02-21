@@ -67,6 +67,8 @@ class DefaultCustomerMerger implements CustomerMergerInterface {
         Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled($segmentBuilderHookBackup);
 
         $this->logger->notice("merge customer " . $sourceCustomer . " with " . $targetCustomer);
+
+        return $targetCustomer;
     }
 
     private function mergeCustomerValues(CustomerInterface $sourceCustomer, CustomerInterface $targetCustomer)
@@ -88,7 +90,7 @@ class DefaultCustomerMerger implements CustomerMergerInterface {
 
         $manualSegments = (array)$sourceCustomer->getManualSegments();
         Objects::addObjectsToArray($manualSegments, (array)$targetCustomer->getManualSegments());
-        $targetCustomer->setCalculatedSegments($manualSegments);
+        $targetCustomer->setManualSegments($manualSegments);
 
         Factory::getInstance()->getCustomerSaveManager()->setCustomerSaveValidatorEnabled(false);
 
@@ -109,7 +111,5 @@ class DefaultCustomerMerger implements CustomerMergerInterface {
             $item->setCustomer($targetCustomer);
             $item->save();
         }
-
-        print $targetCustomer->getId();
     }
 }

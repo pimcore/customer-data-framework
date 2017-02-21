@@ -15,5 +15,12 @@ interface CustomerMergerInterface {
 
     public function __construct(LoggerInterface $logger);
 
-    public function mergeCustomers(CustomerInterface $sourceCustomer, CustomerInterface $destinationCustomer);
+    /**
+     * Adds all values from source customer to target customer and returns merged target customer instance.
+     *
+     * @param CustomerInterface $sourceCustomer
+     * @param CustomerInterface $targetCustomer
+     * @return CustomerInterface
+     */
+    public function mergeCustomers(CustomerInterface $sourceCustomer, CustomerInterface $targetCustomer);
 }
