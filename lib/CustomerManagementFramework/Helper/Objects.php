@@ -74,12 +74,6 @@ class Objects {
         return sizeof($added) ? $added : false;
     }
 
-    /**
-     * Removes duplicate Pimcore objects from array
-     *
-     * @param $array
-     * @return array
-     */
     public static function objectArrayUnique($array)
     {
         $result = [];
