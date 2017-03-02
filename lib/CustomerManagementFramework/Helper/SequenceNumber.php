@@ -8,28 +8,28 @@
 
 namespace CustomerManagementFramework\Helper;
 
+use Pimcore\Db;
+
 class SequenceNumber
 {
-    public static function getCurrent($sequenceName, $startingNumber = 10000) {
-        $sequenceFile = PIMCORE_SYSTEM_TEMP_DIRECTORY . "/cmf-sequence-number-" . $sequenceName . ".pid";
-        $number = file_get_contents($sequenceFile);
+    const TABLE_NAME = 'plugin_cmf_sequence_numbers';
 
+    public static function getCurrent($sequenceName, $startingNumber = 10000) {
+
+        $db = Db::get();
+        $number = $db->fetchOne("select number from " . self::TABLE_NAME . " where name = ?", $sequenceName);
         return intval($number) ? : $startingNumber;
     }
 
     public static function getNext($sequenceName, $startingNumber = 10000) {
-        $sequenceFile = PIMCORE_SYSTEM_TEMP_DIRECTORY . "/cmf-sequence-number-" . $sequenceName . ".pid";
+        $db = Db::get();
+
         $handle = self::SemaphoreWait();
 
-        if(file_exists($sequenceFile)) {
-            $number = file_get_contents($sequenceFile);
-        } else {
-            $number = $startingNumber;
-        }
-
+        $number = self::getCurrent($sequenceName, $startingNumber);
         $number += 1;
 
-        file_put_contents($sequenceFile, $number);
+        $db->query("insert into " . self::TABLE_NAME . " (name, number) values (?,?) on duplicate key update number = ?", [$sequenceName, $number, $number]);
 
         self::SemaphoreSignal($handle);
 

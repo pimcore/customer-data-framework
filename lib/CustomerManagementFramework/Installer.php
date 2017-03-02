@@ -128,6 +128,14 @@ class Installer {
               KEY `actionId` (`actionId`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
         );
+
+        \Pimcore\Db::get()->query(
+            "CREATE TABLE IF NOT EXISTS `plugin_cmf_sequence_numbers` (
+              `name` char(50) NOT NULL,
+              `number` int(11) NOT NULL DEFAULT '0',
+              PRIMARY KEY (`name`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+        );
     }
 
     public static function installClasses()
