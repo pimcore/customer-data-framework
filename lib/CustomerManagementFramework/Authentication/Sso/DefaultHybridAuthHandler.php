@@ -89,7 +89,23 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
             throw new AuthenticationException(sprintf('Failed to authenticate with adapter for provider "%s"', htmlentities($provider)));
         }
 
-        $this->userProfile = $this->adapter->getUserProfile();
+        /*
+         * try/catch needed because sometimes it could happen that the access token is not valid anymore
+         * => in these cases re-login needs to be performed.
+         */
+        try{
+            $this->userProfile = $this->adapter->getUserProfile();
+        } catch( \Exception $e ){
+            // User not connected?
+            if( $e->getCode() == 6 || $e->getCode() == 7 ){
+                // log the user out (erase his session locally)
+                $this->adapter->logout();
+                // try to authenticate again
+                $this->adapter = HybridAuth::authenticate( $provider );
+                $this->userProfile = $this->adapter->getUserProfile();
+            }
+        }
+
         if (!$this->userProfile || !($this->userProfile instanceof \Hybrid_User_Profile)) {
             throw new \RuntimeException(sprintf('Failed to load user profile for provider "%s"', htmlentities($provider)));
         }
