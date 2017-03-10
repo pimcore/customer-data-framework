@@ -184,4 +184,9 @@ interface CustomerInterface extends ElementInterface {
      * @return array
      */
     public function cmfToArray();
+
+    /**
+     * @return array
+     */
+    public function getRelatedCustomerGroups();
 }

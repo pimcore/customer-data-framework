@@ -36,4 +36,9 @@ abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implement
     {
         return array_merge((array)$this->getCalculatedSegments(), (array)$this->getManualSegments());
     }
+
+    public function getRelatedCustomerGroups()
+    {
+        return [];
+    }
 }
