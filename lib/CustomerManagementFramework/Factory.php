@@ -21,6 +21,7 @@ use CustomerManagementFramework\CustomerMerger\CustomerMergerInterface;
 use CustomerManagementFramework\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFramework\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFramework\CustomerView\CustomerViewInterface;
+use CustomerManagementFramework\DuplicatesIndex\DuplicatesIndexInterface;
 use CustomerManagementFramework\RESTApi\ActivitiesHandler;
 use CustomerManagementFramework\RESTApi\CustomersHandler;
 use CustomerManagementFramework\RESTApi\DeletionsHandler;
@@ -51,6 +52,14 @@ class Factory {
         }
 
         return self::$instance;
+    }
+
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\Logger');
     }
 
     /**
@@ -109,6 +118,14 @@ class Factory {
     public function getCustomerDuplicatesService()
     {
         return \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerDuplicatesService');
+    }
+
+    /**
+     * @return DuplicatesIndexInterface
+     */
+    public function getDuplicatesIndex()
+    {
+        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\DuplicatesIndex');
     }
 
 
@@ -237,7 +254,7 @@ class Factory {
     {
         $object = \Pimcore::getDiContainer()->make($className, $constructorParams);
 
-        if(!is_subclass_of($object, $needsToBeSubclassOf)) {
+        if(!is_null($needsToBeSubclassOf) && !is_subclass_of($object, $needsToBeSubclassOf)) {
             throw new \Exception(sprintf("%s needs to extend/implement %s", $className, $needsToBeSubclassOf));
         }
 
