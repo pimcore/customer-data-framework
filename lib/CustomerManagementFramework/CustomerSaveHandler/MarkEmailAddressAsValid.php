@@ -13,26 +13,19 @@ use CustomerManagementFramework\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 
 /**
- * normalizes the zip field of a given customer according to several country zip formats
+ * marks an email address as valid if it has a valid format
  *
  * @package CustomerManagementFramework\CustomerSaveHandler
  */
-class MarkEmailAddressAsValid implements CustomerSaveHandlerInterface
+class MarkEmailAddressAsValid extends AbstractCustomerSaveHandler
 {
-    private $config;
 
-    /**
-     * @var LoggerInterface $logger
-     */
-    private $logger;
 
     private $markValidField;
 
     public function __construct($config, LoggerInterface $logger)
     {
-        $this->config = $config;
-
-        $this->logger = $logger;
+        parent::__construct($config, $logger);
 
         $this->markValidField = $this->config->markValidField ? : 'emailOk';
     }
@@ -43,7 +36,7 @@ class MarkEmailAddressAsValid implements CustomerSaveHandlerInterface
      *
      * @return void
      */
-    public function process(CustomerInterface $customer)
+    public function preSave(CustomerInterface $customer)
     {
         $setter = 'set' . ucfirst($this->markValidField);
 

@@ -19,8 +19,12 @@ interface CustomerSaveManagerInterface
     public function preAdd(CustomerInterface $customer);
 
     public function preUpdate(CustomerInterface $customer);
-
+    
     public function postUpdate(CustomerInterface $customer);
+
+    public function preDelete(CustomerInterface $customer);
+
+    public function postDelete(CustomerInterface $customer);
 
     public function setSegmentBuildingHookEnabled($segmentBuildingHookEnabled);
 
@@ -33,7 +37,7 @@ interface CustomerSaveManagerInterface
      */
     public function setCustomerSaveValidatorEnabled($customerSaveValidatorEnabled);
 
-    public function applySaveHandlers(CustomerInterface $customer);
-
     public function validateOnSave(CustomerInterface $customer, $withDuplicatesCheck = true);
+
+    public function saveWithDisabledHooks(CustomerInterface $customer, $disableVersions = false);
 }

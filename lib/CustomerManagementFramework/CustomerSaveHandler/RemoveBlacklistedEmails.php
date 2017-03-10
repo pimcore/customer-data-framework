@@ -9,37 +9,21 @@
 namespace CustomerManagementFramework\CustomerSaveHandler;
 
 use CustomerManagementFramework\Model\CustomerInterface;
-use CustomerManagementFramework\Validator\BlacklistValidator;
-use Psr\Log\LoggerInterface;
 
 /**
- * normalizes the zip field of a given customer according to several country zip formats
+ * removes email address from customer if it is blacklisted
  *
  * @package CustomerManagementFramework\CustomerSaveHandler
  */
-class RemoveBlacklistedEmails implements CustomerSaveHandlerInterface
+class RemoveBlacklistedEmails extends AbstractCustomerSaveHandler
 {
-    private $config;
-
-    /**
-     * @var LoggerInterface $logger
-     */
-    private $logger;
-
-    public function __construct($config, LoggerInterface $logger)
-    {
-        $this->config = $config;
-
-        $this->logger = $logger;
-    }
-
 
     /**
      * @param CustomerInterface $customer
      *
      * @return void
      */
-    public function process(CustomerInterface $customer)
+    public function preSave(CustomerInterface $customer)
     {
         if($this->isBlacklisted($customer->getEmail())) {
             $customer->setEmail(null);

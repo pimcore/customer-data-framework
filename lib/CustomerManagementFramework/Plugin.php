@@ -85,10 +85,22 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
             }
         });
 
+        \Pimcore::getEventManager()->attach("object.preDelete", function (\Zend_EventManager_Event $e) {
+            $object = $e->getTarget();
+
+            if($object instanceof CustomerInterface) {
+                Factory::getInstance()->getCustomerSaveManager()->preDelete($object);
+            }
+        });
+
         \Pimcore::getEventManager()->attach("object.postDelete", function (\Zend_EventManager_Event $e) {
             $object = $e->getTarget();
             if($object instanceof ActivityInterface) {
                 Factory::getInstance()->getActivityManager()->deleteActivity($object);
+            }
+
+            if($object instanceof CustomerInterface) {
+                Factory::getInstance()->getCustomerSaveManager()->postDelete($object);
             }
         });
 

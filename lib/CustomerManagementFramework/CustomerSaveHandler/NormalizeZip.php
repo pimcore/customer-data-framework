@@ -18,20 +18,15 @@ use Psr\Log\LoggerInterface;
  *
  * @package CustomerManagementFramework\CustomerSaveHandler
  */
-class NormalizeZip implements CustomerSaveHandlerInterface
+class NormalizeZip extends AbstractCustomerSaveHandler
 {
-    private $config;
 
     private $countryTransformers;
 
-    /**
-     * @var LoggerInterface $logger
-     */
-    private $logger;
 
     public function __construct($config, LoggerInterface $logger)
     {
-        $this->config = $config;
+        parent::__construct($config, $logger);
 
         $this->countryTransformers = $config->countryTransformers ? $config->countryTransformers->toArray() : [
             'AT' => 'CustomerManagementFramework\DataTransformer\Zip\At',
@@ -44,8 +39,6 @@ class NormalizeZip implements CustomerSaveHandlerInterface
             'SE' => 'CustomerManagementFramework\DataTransformer\Zip\Se',
             'GB' => 'CustomerManagementFramework\DataTransformer\Zip\Gb',
         ];
-
-        $this->logger = $logger;
     }
 
 
@@ -54,7 +47,7 @@ class NormalizeZip implements CustomerSaveHandlerInterface
      *
      * @return void
      */
-    public function process(CustomerInterface $customer)
+    public function preSave(CustomerInterface $customer)
     {
 
         $countryCode = $customer->getCountryCode();
