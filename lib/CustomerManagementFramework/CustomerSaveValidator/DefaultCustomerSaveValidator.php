@@ -82,10 +82,11 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface{
 
         if($this->config->checkForDuplicates) {
 
-            if($duplicates = Factory::getInstance()->getCustomerDuplicatesService()->getDuplicatesOfCustomer($customer)) {
-                $ex = new DuplicateCustomerException("Duplicate customer found: ID " . $duplicates[0]->getId());
+            $duplicates = Factory::getInstance()->getCustomerDuplicatesService()->getDuplicatesOfCustomer($customer);
+            if(!is_null($duplicates) && $duplicates->getCount()) {
+                $ex = new DuplicateCustomerException("Duplicate customer found: ID " . $duplicates->current());
 
-                $ex->setDuplicateCustomer($duplicates[0]);
+                $ex->setDuplicateCustomer($duplicates->current());
                 $ex->setMatchedDuplicateFields(Factory::getInstance()->getCustomerDuplicatesService()->getMatchedDuplicateFields());
 
                 throw $ex;
