@@ -4,6 +4,8 @@ use CustomerManagementFramework\Authentication\SsoIdentity\DefaultSsoIdentitySer
 use CustomerManagementFramework\Authentication\SsoIdentity\SsoIdentityServiceInterface;
 use CustomerManagementFramework\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFramework\CustomerProvider\DefaultCustomerProvider;
+use CustomerManagementFramework\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface;
+use \CustomerManagementFramework\CustomerProvider\ObjectNamingScheme\DefaultObjectNamingScheme;
 use CustomerManagementFramework\Encryption\DefaultEncryptionService;
 use CustomerManagementFramework\Encryption\EncryptionServiceInterface;
 use CustomerManagementFramework\ExportToolkit\ExportService\MailChimpExportService;
@@ -63,6 +65,7 @@ return [
     'CustomerManagementFramework\CustomerSaveHandler\*' => DI\object('CustomerManagementFramework\CustomerSaveHandler\*'),
     'CustomerManagementFramework\SegmentBuilder\*' => DI\object('CustomerManagementFramework\SegmentBuilder\*'),
     'CustomerManagementFramework\DataTransformer\*\*' => DI\object('CustomerManagementFramework\DataTransformer\*\*'),
+    'CustomerManagementFramework\DataSimilarityMatcher\*' => DI\object('CustomerManagementFramework\DataSimilarityMatcher\*'),
 
     'CustomerManagementFramework\Logger'
         => $logger,
@@ -131,17 +134,22 @@ return [
     CustomerProviderInterface::class
         => DI\object(DefaultCustomerProvider::class),
 
+    ObjectNamingSchemeInterface::class
+        => DI\object(DefaultObjectNamingScheme::class),
+
     'CustomerManagementFramework\CustomerDuplicatesService'
         => DI\object('CustomerManagementFramework\CustomerDuplicatesService\DefaultCustomerDuplicatesService'),
 
-
-    'CustomerManagementFramework\CustomerMerger'
-        => DI\object('CustomerManagementFramework\CustomerMerger\DefaultCustomerMerger')
-            ->constructor(DI\get('CustomerManagementFramework\Logger')),
+    'CustomerManagementFramework\DuplicatesIndex'
+        => DI\object('CustomerManagementFramework\DuplicatesIndex\DefaultMariaDbDuplicatesIndex'),
 
     'CustomerManagementFramework\CustomerSaveManager'
         => DI\object('CustomerManagementFramework\CustomerSaveManager\DefaultCustomerSaveManager')
            ->constructor(DI\get('CustomerManagementFramework\Logger')),
+
+    'CustomerManagementFramework\CustomerMerger'
+        => DI\object('CustomerManagementFramework\CustomerMerger\DefaultCustomerMerger')
+            ->constructor(DI\get('CustomerManagementFramework\Logger')),
 
     'CustomerManagementFramework\CustomerSaveValidator'
         => DI\object('CustomerManagementFramework\CustomerSaveValidator\DefaultCustomerSaveValidator'),
