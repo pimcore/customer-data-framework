@@ -54,4 +54,12 @@ interface CustomerProviderInterface
      * @return CustomerInterface|null
      */
     public function getById($id);
+
+    /**
+     * Sets the correct parent folder and object key for the given customer.
+     *
+     * @param CustomerInterface $customer
+     * @return void
+     */
+    public function applyObjectNamingScheme(CustomerInterface $customer);
 }

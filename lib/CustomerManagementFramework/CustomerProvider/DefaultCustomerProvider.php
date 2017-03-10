@@ -2,6 +2,7 @@
 
 namespace CustomerManagementFramework\CustomerProvider;
 
+use CustomerManagementFramework\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Plugin;
 use Pimcore\Model\Element\ElementInterface;
@@ -20,10 +21,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     protected $parentPath;
 
-    /**
-     * @var Folder
-     */
-    protected $parentFolder;
+    protected $namingScheme;
 
     public function __construct()
     {
@@ -38,6 +36,8 @@ class DefaultCustomerProvider implements CustomerProviderInterface
         if (empty($this->parentPath)) {
             throw new \RuntimeException('Customer save path is not defined');
         }
+
+        $this->namingScheme = $config->namingScheme;
     }
 
     /**
@@ -90,16 +90,12 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     public function create(array $data = [])
     {
-        $parentFolder = Folder::getByPath($this->parentPath);
-        if (!$parentFolder) {
-            throw new \RuntimeException(sprintf('Parent folder %s could not be loaded', $parentFolder));
-        }
 
         /** @var CustomerInterface|ElementInterface|Concrete $customer */
         $customer = \Pimcore::getDiContainer()->make($this->getDiClassName());
         $customer->setPublished(true);
-        $customer->setParent($parentFolder);
         $customer->setValues($data);
+        $this->applyObjectNamingScheme($customer);
 
         return $customer;
     }
@@ -137,6 +133,18 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     public function getById($id)
     {
         return $this->callStatic('getById', [$id]);
+    }
+
+    /**
+     * Sets the correct parent folder and object key for the given customer.
+     *
+     * @param CustomerInterface $customer
+     * @return void
+     */
+    public function applyObjectNamingScheme(CustomerInterface $customer)
+    {
+        $namingScheme = \Pimcore::getDiContainer()->get(ObjectNamingSchemeInterface::class);
+        $namingScheme->apply($customer, $this->parentPath, $this->namingScheme);
     }
 
     /**

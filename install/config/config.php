@@ -61,10 +61,13 @@ return [
     ],
 
     'CustomerProvider' => [
-        'parentPath' => '/customers'
+        'parentPath' => '/customers',
+        //'namingScheme' => '{countryCode}/{zip}/{firstname}-{lastname}' //naming scheme relative to the parentPath (incl. object key)
     ],
 
     'CustomerSaveManager' => [
+        'enableAutomaticObjectNamingScheme' => true,
+
         'saveHandlers' => [
             /*[
                 'saveHandler' => '\CustomerManagementFramework\CustomerSaveHandler\NormalizeZip',
@@ -94,7 +97,7 @@ return [
             [
                 'saveHandler' => '\Website\CustomerManagementFramework\CustomerSaveHandler\CustomerId'
             ]*/
-        ]
+        ],
     ],
 
     'CustomerSaveValidator' => [

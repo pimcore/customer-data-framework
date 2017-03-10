@@ -239,10 +239,9 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     protected function applyNamingScheme(CustomerInterface $customer)
     {
-        if(php_sapi_name() === 'cli') {
+        if($this->config->enableAutomaticObjectNamingScheme) {
             Factory::getInstance()->getCustomerProvider()->applyObjectNamingScheme($customer);
         }
-
     }
 
 }
