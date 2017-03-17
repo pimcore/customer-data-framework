@@ -370,15 +370,21 @@ class MariaDb implements ActivityStoreInterface{
     {
         $attributes = $activity->cmfToArray();
 
+        if(!is_array($attributes)) {
+            throw new \Exception("cmfToArray() needs to return an associative array");
+        }
+
         $dataTypes = [];
-        if($_dataTypes = $activity->cmfGetAttributeDataTypes()) {
+        if($_dataTypes = $activity::cmfGetAttributeDataTypes()) {
             foreach($_dataTypes as $field => $dataType) {
                 if($dataType == ActivityInterface::DATATYPE_STRING) {
-                    $dataTypes[$field] = 'char';
+                    $dataTypes[$field] = \CustomerManagementFramework\Service\MariaDb::DYNAMIC_COLUMN_DATA_TYPE_CHAR;
                 } elseif($dataType == ActivityInterface::DATATYPE_DOUBLE) {
-                    $dataTypes[$field] = 'double';
+                    $dataTypes[$field] = \CustomerManagementFramework\Service\MariaDb::DYNAMIC_COLUMN_DATA_TYPE_DOUBLE;
                 } elseif($dataType == ActivityInterface::DATATYPE_INTEGER) {
-                    $dataTypes[$field] = 'int';
+                    $dataTypes[$field] = \CustomerManagementFramework\Service\MariaDb::DYNAMIC_COLUMN_DATA_TYPE_INTEGER;
+                } elseif($dataType == ActivityInterface::DATATYPE_BOOL) {
+                    $dataTypes[$field] = \CustomerManagementFramework\Service\MariaDb::DYNAMIC_COLUMN_DATA_TYPE_BOOLEAN;
                 }
             }
         }

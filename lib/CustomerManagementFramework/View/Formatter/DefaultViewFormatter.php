@@ -60,7 +60,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
     public function formatValueByFieldDefinition(Data $fd, $value)
     {
         if ($fd instanceof Data\Checkbox) {
-            return $this->formatCheckboxValue($value);
+            return $this->formatBooleanValue($value);
         }
 
         if ($fd instanceof Data\Datetime) {
@@ -96,20 +96,20 @@ class DefaultViewFormatter implements ViewFormatterInterface
      * @param $value
      * @return string
      */
-    protected function formatCheckboxValue($value)
+    public function formatBooleanValue($value)
     {
         if ($value) {
             return '<i class="glyphicon glyphicon-check"></i>';
         }
 
-        return '<i class="glyphicon glyphicon-uncheck"></i>';
+        return '<i class="glyphicon glyphicon-unchecked"></i>';
     }
 
     /**
      * @param $value
      * @return string
      */
-    protected function formatDatetimeValue($value)
+    public function formatDatetimeValue($value)
     {
         $date = Carbon::parse($value);
 

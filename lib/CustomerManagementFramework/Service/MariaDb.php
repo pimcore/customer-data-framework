@@ -12,6 +12,11 @@ use Pimcore\Db;
 
 class MariaDb {
 
+    CONST DYNAMIC_COLUMN_DATA_TYPE_CHAR = 'char';
+    CONST DYNAMIC_COLUMN_DATA_TYPE_DOUBLE = 'double';
+    CONST DYNAMIC_COLUMN_DATA_TYPE_INTEGER = 'integer';
+    CONST DYNAMIC_COLUMN_DATA_TYPE_BOOLEAN= 'boolean';
+
     private function __construct()
     {
 
@@ -40,17 +45,20 @@ class MariaDb {
      */
     public function createDynamicColumnInsert(array $data, array $dataTypes = []) {
 
-        $db = Db::get();
-
         $insert = '';
         $i=0;
         foreach($data as $key => $value) {
             $i++;
             if(!is_array($value)) {
-                $insert .= "'" . $key . "'" . ','. $db->quote($value);
 
-                if(isset($dataTypes[$key])) {
-                    $insert .= " as " . $dataTypes[$key];
+                $dataType = isset($dataTypes[$key]) ? $dataTypes[$key] : false;
+
+                $insert .= "'" . $key . "'" . ','. $this->convertDynamicColumnValueAccordingToDataType($value, $dataType);
+
+                $dataType = $this->castDynamicColumnDatatype($dataType);
+                
+                if($dataType) {
+                    $insert .= " as " . $dataType;
                 }
 
             } else {
@@ -63,6 +71,30 @@ class MariaDb {
         }
 
         return "COLUMN_CREATE(" . $insert .  ")";
+    }
+
+    private function castDynamicColumnDatatype($dataType) {
+
+        if($dataType == self::DYNAMIC_COLUMN_DATA_TYPE_BOOLEAN) {
+            return self::DYNAMIC_COLUMN_DATA_TYPE_INTEGER;
+        }
+
+        return $dataType;
+    }
+
+    private function convertDynamicColumnValueAccordingToDataType($value, $dataType) {
+
+        $db = Db::get();
+
+        if(is_null($value)) {
+            return 'null';
+        }
+
+        if($dataType == self::DYNAMIC_COLUMN_DATA_TYPE_BOOLEAN) {
+            return $value ? 1 : 0;
+        }
+
+        return $db->quote($value);
     }
 
     /**

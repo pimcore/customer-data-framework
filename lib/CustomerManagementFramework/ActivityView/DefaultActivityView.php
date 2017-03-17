@@ -9,6 +9,7 @@
 namespace CustomerManagementFramework\ActivityView;
 
 use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
+use CustomerManagementFramework\Model\ActivityInterface;
 use CustomerManagementFramework\View\Formatter\ViewFormatterInterface;
 use Pimcore\Model\Object\ClassDefinition;
 
@@ -44,11 +45,12 @@ class DefaultActivityView implements ActivityViewInterface {
         $implementationClass = $activityEntry->getImplementationClass();
         if(class_exists($implementationClass)) {
             if(method_exists($implementationClass, 'cmfGetDetailviewData')) {
-                return $implementationClass::cmfGetDetailviewData($activityEntry);
+                $data = $implementationClass::cmfGetDetailviewData($activityEntry);
+                return $data ? : [];
             }
         }
 
-        return false;
+        return [];
     }
 
     public function getDetailviewTemplate(ActivityStoreEntryInterface $activityEntry)
@@ -81,6 +83,10 @@ class DefaultActivityView implements ActivityViewInterface {
         }
 
         $attributes = $this->extractVisibleAttributes($attributes, $visibleKeys);
+        if(method_exists($implementationClass, 'cmfGetAttributeDataTypes')) {
+            $dataTypes = (array)$implementationClass::cmfGetAttributeDataTypes();
+        }
+        $dataTypes = is_array($dataTypes) ? $dataTypes : [];
 
         $result = [];
         $vf     = $this->viewFormatter;
@@ -94,6 +100,10 @@ class DefaultActivityView implements ActivityViewInterface {
             if($class && $fd = $class->getFieldDefinition($key)) {
                 $result[$vf->getLabelByFieldDefinition($fd)] = $vf->formatValueByFieldDefinition($fd, $value);
                 continue;
+            }elseif(isset($dataTypes[$key])) {
+                if($dataTypes[$key] == ActivityInterface::DATATYPE_BOOL) {
+                    $value = $this->viewFormatter->formatBooleanValue($value);
+                }
             }
 
             $result[$key] = $value;

@@ -67,7 +67,7 @@ abstract class AbstractActivity implements ActivityInterface {
         return false;
     }
 
-    public function cmfGetAttributeDataTypes()
+    public static function cmfGetAttributeDataTypes()
     {
         return false;
     }

@@ -14,9 +14,21 @@ interface ViewFormatterInterface extends TranslatorInterface
 
     /**
      * @param mixed $value
-     * @return mixed
+     * @return string
      */
     public function formatValue($value);
+
+    /**
+     * @param mixed $value
+     * @return mixed
+     */
+    public function formatBooleanValue($value);
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public function formatDatetimeValue($value);
 
     /**
      * @param Data $fd

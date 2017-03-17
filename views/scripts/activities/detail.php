@@ -32,7 +32,12 @@ $activity = $this->activity;
 
                 <div class="box-body">
                     <div class="row">
-                        <?php foreach (array_chunk($visibleAttributes, ceil(sizeof($visibleAttributes) / 2), true) as $attributes): ?>
+                        <?php
+
+                        $chunkSize = ceil(sizeof($visibleAttributes) / 2);
+                        $chunkSize = $chunkSize > 0 ? $chunkSize : 1;
+
+                        foreach (array_chunk($visibleAttributes, $chunkSize, true) as $attributes): ?>
 
                             <div class="col col-sm-6">
                                 <table class="table table-striped">

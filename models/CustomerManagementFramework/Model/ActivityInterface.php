@@ -10,6 +10,7 @@ interface ActivityInterface {
     const DATATYPE_STRING = 'string';
     const DATATYPE_INTEGER = 'integer';
     const DATATYPE_DOUBLE = 'double';
+    const DATATYPE_BOOL = 'bool';
 
     /**
      * Returns if the activity is active. Only active activities are stored in the ActivityStore.
@@ -44,7 +45,7 @@ interface ActivityInterface {
      *
      * @return array|false
      */
-    public function cmfGetAttributeDataTypes();
+    public static function cmfGetAttributeDataTypes();
 
     /**
      * Updates the data of the activity instance but doesn't save it.

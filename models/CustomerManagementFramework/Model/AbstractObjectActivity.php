@@ -58,7 +58,7 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete imp
         return $result;
     }
 
-    public function cmfGetAttributeDataTypes()
+    public static function cmfGetAttributeDataTypes()
     {
         return false;
     }
