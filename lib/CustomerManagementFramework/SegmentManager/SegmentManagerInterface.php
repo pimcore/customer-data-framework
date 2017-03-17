@@ -19,8 +19,6 @@ interface SegmentManagerInterface {
     const CONDITION_AND = 'and';
     const CONDITION_OR = 'or';
 
-    public function __construct(LoggerInterface $logger);
-
     /**
      * Returns a list of customers which are within the given customer segments.
      * 

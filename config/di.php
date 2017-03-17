@@ -5,7 +5,19 @@ use CustomerManagementFramework\Authentication\SsoIdentity\SsoIdentityServiceInt
 use CustomerManagementFramework\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFramework\CustomerProvider\DefaultCustomerProvider;
 use CustomerManagementFramework\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface;
-use \CustomerManagementFramework\CustomerProvider\ObjectNamingScheme\DefaultObjectNamingScheme;
+use CustomerManagementFramework\CustomerProvider\ObjectNamingScheme\DefaultObjectNamingScheme;
+use CustomerManagementFramework\CustomerDuplicatesService\CustomerDuplicatesServiceInterface;
+use CustomerManagementFramework\DuplicatesIndex\DuplicatesIndexInterface;
+use CustomerManagementFramework\DuplicatesIndex\DefaultMariaDbDuplicatesIndex;
+use CustomerManagementFramework\CustomerDuplicatesService\DefaultCustomerDuplicatesService;
+use CustomerManagementFramework\CustomerMerger\CustomerMergerInterface;
+use CustomerManagementFramework\CustomerMerger\DefaultCustomerMerger;
+use CustomerManagementFramework\SegmentManager\SegmentManagerInterface;
+use CustomerManagementFramework\CustomerSaveValidator\CustomerSaveValidatorInterface;
+use CustomerManagementFramework\CustomerSaveValidator\DefaultCustomerSaveValidator;
+use CustomerManagementFramework\SegmentManager\DefaultSegmentManager;
+use CustomerManagementFramework\CustomerSaveManager\CustomerSaveManagerInterface;
+use CustomerManagementFramework\CustomerSaveManager\DefaultCustomerSaveManager;
 use CustomerManagementFramework\Encryption\DefaultEncryptionService;
 use CustomerManagementFramework\Encryption\EncryptionServiceInterface;
 use CustomerManagementFramework\ExportToolkit\ExportService\MailChimpExportService;
@@ -83,9 +95,9 @@ return [
         => DI\object('CustomerManagementFramework\ActivityView\DefaultActivityView')
             ->constructor(DI\get('CustomerManagementFramework\View\Formatter')),
 
-    'CustomerManagementFramework\SegmentManager'
-        => DI\object('CustomerManagementFramework\SegmentManager\DefaultSegmentManager')
-           ->constructor(DI\get('CustomerManagementFramework\Logger')),
+    SegmentManagerInterface::class
+        => DI\object(DefaultSegmentManager::class)
+           ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
 
 
     CustomersHandler::class
@@ -137,22 +149,23 @@ return [
     ObjectNamingSchemeInterface::class
         => DI\object(DefaultObjectNamingScheme::class),
 
-    'CustomerManagementFramework\CustomerDuplicatesService'
-        => DI\object('CustomerManagementFramework\CustomerDuplicatesService\DefaultCustomerDuplicatesService'),
+    CustomerDuplicatesServiceInterface::class
+        => DI\object(DefaultCustomerDuplicatesService::class),
 
-    'CustomerManagementFramework\DuplicatesIndex'
-        => DI\object('CustomerManagementFramework\DuplicatesIndex\DefaultMariaDbDuplicatesIndex'),
+    DuplicatesIndexInterface::class
+        => DI\object(DefaultMariaDbDuplicatesIndex::class)
+            ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
 
-    'CustomerManagementFramework\CustomerSaveManager'
-        => DI\object('CustomerManagementFramework\CustomerSaveManager\DefaultCustomerSaveManager')
-           ->constructor(DI\get('CustomerManagementFramework\Logger')),
+    CustomerSaveManagerInterface::class
+        => DI\object(DefaultCustomerSaveManager::class)
+           ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
 
-    'CustomerManagementFramework\CustomerMerger'
-        => DI\object('CustomerManagementFramework\CustomerMerger\DefaultCustomerMerger')
-            ->constructor(DI\get('CustomerManagementFramework\Logger')),
+    CustomerMergerInterface::class
+        => DI\object(DefaultCustomerMerger::class)
+            ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
 
-    'CustomerManagementFramework\CustomerSaveValidator'
-        => DI\object('CustomerManagementFramework\CustomerSaveValidator\DefaultCustomerSaveValidator'),
+    CustomerSaveValidatorInterface::class
+        => DI\object(DefaultCustomerSaveValidator::class),
 
     'CustomerManagementFramework\CustomerView'
         => DI\object('CustomerManagementFramework\CustomerView\DefaultCustomerView')

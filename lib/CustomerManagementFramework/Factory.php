@@ -101,7 +101,7 @@ class Factory {
      */
     public function getCustomerMerger()
     {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerMerger');
+        return \Pimcore::getDiContainer()->get(CustomerMergerInterface::class);
     }
 
     /**
@@ -117,7 +117,7 @@ class Factory {
      */
     public function getCustomerDuplicatesService()
     {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerDuplicatesService');
+        return \Pimcore::getDiContainer()->get(CustomerDuplicatesServiceInterface::class);
     }
 
     /**
@@ -125,7 +125,7 @@ class Factory {
      */
     public function getDuplicatesIndex()
     {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\DuplicatesIndex');
+        return \Pimcore::getDiContainer()->get(DuplicatesIndexInterface::class);
     }
 
 
@@ -134,7 +134,7 @@ class Factory {
      */
     public function getCustomerSaveManager()
     {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerSaveManager');
+        return \Pimcore::getDiContainer()->get(CustomerSaveManagerInterface::class);
     }
 
     /**
@@ -150,7 +150,7 @@ class Factory {
      */
     public function getSegmentManager()
     {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\SegmentManager');
+        return \Pimcore::getDiContainer()->get(SegmentManagerInterface::class);
     }
 
 

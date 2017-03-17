@@ -15,6 +15,7 @@ use CustomerManagementFramework\Helper\Notes;
 use CustomerManagementFramework\Helper\Objects;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Plugin;
+use CustomerManagementFramework\Traits\LoggerAware;
 use Pimcore\Model\Object\ClassDefinition;
 use Pimcore\Model\Object\Service;
 use Psr\Log\LoggerAwareInterface;
@@ -22,11 +23,11 @@ use Psr\Log\LoggerInterface;
 
 class DefaultCustomerMerger implements CustomerMergerInterface {
 
-    protected $logger;
+    use LoggerAware;
+
     protected $config;
 
-    public function __construct(LoggerInterface $logger) {
-        $this->logger = $logger;
+    public function __construct() {
 
         $config = Plugin::getConfig();
         $this->config = $config->CustomerMerger;
@@ -66,7 +67,7 @@ class DefaultCustomerMerger implements CustomerMergerInterface {
         Factory::getInstance()->getCustomerSaveManager()->setCustomerSaveValidatorEnabled($saveValidatorBackup);
         Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled($segmentBuilderHookBackup);
 
-        $this->logger->notice("merge customer " . $sourceCustomer . " with " . $targetCustomer);
+        $this->getLogger()->notice("merge customer " . $sourceCustomer . " with " . $targetCustomer);
 
         return $targetCustomer;
     }

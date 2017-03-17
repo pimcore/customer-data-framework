@@ -13,32 +13,29 @@ use CustomerManagementFramework\CustomerSaveValidator\CustomerSaveValidatorInter
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Plugin;
+use CustomerManagementFramework\Traits\LoggerAware;
 use Pimcore\Model\Version;
 use Psr\Log\LoggerInterface;
 
 class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 {
+    use LoggerAware;
+
     private $segmentBuildingHookEnabled = true;
     private $customerSaveValidatorEnabled = true;
 
     protected $config;
 
     /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
      * @var CustomerSaveHandlerInterface[]
      */
     protected $saveHandlers;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct()
     {
 
         $config = Plugin::getConfig();
         $this->config = $config->CustomerSaveManager;
-        $this->logger = $logger;
     }
     public function preAdd(CustomerInterface $customer) {
         if($customer->getPublished()) {
@@ -92,7 +89,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         /**
          * @var CustomerSaveValidatorInterface $validator
          */
-        $validator = \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerSaveValidator');
+        $validator = \Pimcore::getDiContainer()->get(CustomerSaveValidatorInterface::class);
 
         $validator->validate($customer, $withDuplicatesCheck);
     }
@@ -107,7 +104,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
 
         foreach($saveHandlers as $handler) {
-            $this->logger->debug(sprintf("apply save handler %s %s method to customer %s", get_class($handler), $saveHandlerMethod, (string)$customer));
+            $this->getLogger()->debug(sprintf("apply save handler %s %s method to customer %s", get_class($handler), $saveHandlerMethod, (string)$customer));
 
             if($saveHandlerMethod == 'preAdd') {
                 $handler->preAdd($customer);
@@ -170,7 +167,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
                 /**
                  * @var CustomerSaveHandlerInterface $saveHandler
                  */
-                $saveHandler = Factory::getInstance()->createObject($class, CustomerSaveHandlerInterface::class, ["config" => $saveHandlerConfig, "logger" => $this->logger]);
+                $saveHandler = Factory::getInstance()->createObject($class, CustomerSaveHandlerInterface::class, ["config" => $saveHandlerConfig, "logger" => $this->getLogger()]);
                 $saveHandlers[] = $saveHandler;
             }
 

@@ -13,8 +13,6 @@ use Psr\Log\LoggerInterface;
 
 interface CustomerMergerInterface {
 
-    public function __construct(LoggerInterface $logger);
-
     /**
      * Adds all values from source customer to target customer and returns merged target customer instance.
      *

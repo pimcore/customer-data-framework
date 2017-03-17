@@ -16,6 +16,7 @@ use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
 use CustomerManagementFramework\Plugin;
 use CustomerManagementFramework\SegmentBuilder\SegmentBuilderInterface;
+use CustomerManagementFramework\Traits\LoggerAware;
 use Pimcore\Db;
 use Pimcore\Model\Object\Concrete;
 use Pimcore\Model\Object\CustomerSegment;
@@ -25,15 +26,14 @@ use Psr\Log\LoggerInterface;
 
 class DefaultSegmentManager implements SegmentManagerInterface {
 
-    CONST CHANGES_QUEUE_TABLE = 'plugin_cmf_segmentbuilder_changes_queue';
+    use LoggerAware;
 
-    protected $logger;
+    CONST CHANGES_QUEUE_TABLE = 'plugin_cmf_segmentbuilder_changes_queue';
 
     private $config;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct()
     {
-        $this->logger = $logger;
         $this->config = $config = Plugin::getConfig()->SegmentManager;
     }
 
@@ -112,7 +112,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
      */
     public function buildCalculatedSegments($changesQueueOnly = true, $segmentBuilderClass = null)
     {
-        $logger = $this->logger;
+        $logger = $this->getLogger();
         $logger->notice("start segment building");
 
         $backup = Factory::getInstance()->getCustomerSaveManager()->getSegmentBuildingHookEnabled();
@@ -140,7 +140,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
                     try {
                         $this->applySegmentBuilderToCustomer($customer, $segmentBuilder);
                     } catch(\Exception $e) {
-                        $this->logger->error($e);
+                        $this->getLogger()->error($e);
                     }
 
                 }
@@ -194,7 +194,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
      */
     protected function applySegmentBuilderToCustomer(CustomerInterface $customer, SegmentBuilderInterface $segmentBuilder)
     {
-        $this->logger->info(sprintf("apply segment builder %s to customer %s", $segmentBuilder->getName(), (string)$customer));
+        $this->getLogger()->info(sprintf("apply segment builder %s to customer %s", $segmentBuilder->getName(), (string)$customer));
         $segmentBuilder->calculateSegments($customer, $this);
     }
 
@@ -636,7 +636,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
                 continue;
             }
 
-            $this->logger->notice(sprintf("prepare segment builder %s", $segmentBuilder->getName()));
+            $this->getLogger()->notice(sprintf("prepare segment builder %s", $segmentBuilder->getName()));
             $segmentBuilder->prepare($this);
         }
     }
@@ -651,12 +651,12 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $config = $this->config->segmentBuilders;
 
         if(is_null($config)) {
-            $this->logger->alert("no segmentBuilders section found in plugin config file");
+            $this->getLogger()->alert("no segmentBuilders section found in plugin config file");
             return [];
         }
 
         if(!sizeof($config)) {
-            $this->logger->alert("no segment builders defined in plugin config file");
+            $this->getLogger()->alert("no segment builders defined in plugin config file");
             return [];
         }
 
@@ -664,7 +664,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         foreach($config as $segmentBuilderConfig) {
 
             if(is_null($segmentBuilderClass) || $segmentBuilderClass == (string)$segmentBuilderConfig->segmentBuilder) {
-                $segmentBuilders[] = Factory::getInstance()->createObject((string)$segmentBuilderConfig->segmentBuilder, SegmentBuilderInterface::class, ["config"=>$segmentBuilderConfig, "logger"=>$this->logger]);
+                $segmentBuilders[] = Factory::getInstance()->createObject((string)$segmentBuilderConfig->segmentBuilder, SegmentBuilderInterface::class, ["config"=>$segmentBuilderConfig, "logger"=>$this->getLogger()]);
             }
         }
 
