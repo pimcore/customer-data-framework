@@ -96,7 +96,9 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
         $this->setActivityDate($data['activityDate']);
         $this->setType($data['type']);
         $this->setImplementationClass($data['implementationClass']);
-        $this->setAttributes(is_array($data['attributes']) ? $data['attributes'] : \Zend_Json::decode(Json::cleanUpJson($data['attributes'])));
+        if(isset($data['attributes'])) {
+            $this->setAttributes(is_array($data['attributes']) ? $data['attributes'] : \Zend_Json::decode(Json::cleanUpJson($data['attributes'])));
+        }
         $this->setMd5($data['md5']);
         $this->setCreationDate($data['creationDate']);
         $this->setModificationDate($data['modificationDate']);

@@ -32,42 +32,66 @@ class MariaDb implements ActivityStoreInterface{
      */
     public function insertActivityIntoStore(ActivityInterface $activity) {
 
-        $data = self::createDbRowData($activity);
-        $data['creationDate'] = time();
+        $entry = new DefaultActivityStoreEntry([
+            'customerId' => $activity->getCustomer()->getId(),
+            'type' => $activity->cmfGetType(),
+            'implementationClass' => get_class($activity),
+            'o_id' => $activity instanceof Concrete ? $activity->getId() : null,
+            'a_id' => $activity instanceof ActivityExternalIdInterface ? $activity->getId() : null,
+            'activityDate' => $activity->cmfGetActivityDate()->getTimestamp()
+        ]);
 
-        $id = \CustomerManagementFramework\Service\MariaDb::getInstance()->insert(self::ACTIVITIES_TABLE, $data);
+        $this->saveActivityStoreEntry($entry, $activity);
 
-        return self::getEntryById($id);
+        return $entry;
     }
 
     /**
      * @param ActivityInterface           $activity
      * @param ActivityStoreEntryInterface $entry
      */
-    public function updateActivityInStore(ActivityInterface $activity, ActivityStoreEntryInterface $entry) {
+    public function updateActivityInStore(ActivityInterface $activity, ActivityStoreEntryInterface $entry = null) {
 
-        $data = self::createDbRowData($activity);
+        if(is_null($entry)) {
+            $entry = $this->getEntryForActivity($activity);
+        }
 
-        \CustomerManagementFramework\Service\MariaDb::getInstance()->update(self::ACTIVITIES_TABLE, $data, "id = " . $entry->getId());
+        if(!$entry instanceof ActivityStoreEntryInterface) {
+            throw new \Exception("ActivityStoreEntry not found for given activity");
+        }
+
+        $this->saveActivityStoreEntry($entry, $activity);
     }
 
     public function updateActivityStoreEntry(ActivityStoreEntryInterface $entry, $updateAttributes = false) {
+
         if(!$entry->getId()) {
-            throw new \Exception("updateActivityStoreEntry only allowed for existing activity store entries");
+            throw new \Exception("updating only allowed for existing activity store entries");
         }
 
-        if($updateAttributes) {
-            $relatedItem = $entry->getRelatedItem();
-
-            $this->updateActivityInStore($relatedItem, $entry);
-
-            return;
+        $activity = null;
+        if(!$updateAttributes) {
+            $this->saveActivityStoreEntry($entry);
         }
 
-        $data = $entry->getData();
-        unset($data['attributes']);
+        if($activity = $entry->getRelatedItem()) {
+            $this->saveActivityStoreEntry($entry, $activity);
+        }
+
+        throw new \Exception("related activity not found - updating attributes failed");
+    }
+
+    protected function saveActivityStoreEntry(ActivityStoreEntryInterface $entry, ActivityInterface $activity = null)
+    {
 
         $db = Db::get();
+        $time = time();
+        $data = $entry->getData();
+
+        unset($data['attributes']);
+        if(!is_null($activity)) {
+            $data['attributes'] = $this->getActivityAttributeDataAsDynamicColumnInsert($activity);
+        }
 
         $data['type'] = $db->quote($data['type']);
         $data['implementationClass'] = $db->quote($data['implementationClass']);
@@ -84,9 +108,17 @@ class MariaDb implements ActivityStoreInterface{
         ];
 
         $data['md5'] = $db->quote(md5(serialize($md5Data)));
-        $data['modificationDate'] = time();
+        $data['modificationDate'] = $time;
 
-        \CustomerManagementFramework\Service\MariaDb::getInstance()->update(self::ACTIVITIES_TABLE, $data, "id = " . $entry->getId());
+        if($entry->getId()) {
+            \CustomerManagementFramework\Service\MariaDb::getInstance()->update(self::ACTIVITIES_TABLE, $data, "id = " . $entry->getId());
+        } else {
+            $data['creationDate'] = $time;
+            $id = \CustomerManagementFramework\Service\MariaDb::getInstance()->insert(self::ACTIVITIES_TABLE, $data);
+            $entry->setId($id);
+        }
+
+
     }
 
     /**
@@ -102,6 +134,11 @@ class MariaDb implements ActivityStoreInterface{
         if($activity instanceof Concrete) {
             $row = $db->fetchRow("select *, column_json(attributes) as attributes from " . self::ACTIVITIES_TABLE . " where o_id = ? order by id desc LIMIT 1 ", $activity->getId());
         } elseif($activity instanceof ActivityExternalIdInterface) {
+
+            if(!$activity->getId()) {
+                return false;
+            }
+
             $row = $db->fetchRow("select *, column_json(attributes) as attributes from " . self::ACTIVITIES_TABLE . " where a_id = ? order by id desc LIMIT 1 ", $activity->getId());
         }
 
@@ -211,21 +248,19 @@ class MariaDb implements ActivityStoreInterface{
 
     /**
      * @param ActivityInterface $activity
+     *
+     * @return bool
      */
     public function deleteActivity(ActivityInterface $activity) {
 
-        $db = Db::get();
-        $id = false;
-        if($activity instanceof Concrete) {
-            $id = $db->fetchOne("select id from " . self::ACTIVITIES_TABLE . " where o_id = ? limit 1", $activity->getId());
-        } elseif(method_exists($activity, 'getId')) {
-            $id = $db->fetchOne("select id from " . self::ACTIVITIES_TABLE . " where a_id = ? limit 1", $activity->getId());
+        $entry = $this->getEntryForActivity($activity);
+
+        if(!$entry) {
+            return false;
         }
 
-        if($id) {
-            $entry = $this->getEntryById($id);
-            $this->deleteEntry($entry);
-        }
+        $this->deleteEntry($entry);
+        return true;
     }
 
 
@@ -263,47 +298,6 @@ class MariaDb implements ActivityStoreInterface{
 
     }
 
-    /**
-     * @param ActivityInterface $activity
-     *
-     * @return array
-     */
-    protected function createDbRowData(ActivityInterface $activity) {
-
-        $db = Db::get();
-
-        $time = time();
-
-        $attributes = $activity->cmfToArray();
-
-        $dataTypes = [];
-        if($_dataTypes = $activity->cmfGetAttributeDataTypes()) {
-            foreach($_dataTypes as $field => $dataType) {
-                if($dataType == ActivityInterface::DATATYPE_STRING) {
-                    $dataTypes[$field] = 'char';
-                } elseif($dataType == ActivityInterface::DATATYPE_DOUBLE) {
-                    $dataTypes[$field] = 'double';
-                } elseif($dataType == ActivityInterface::DATATYPE_INTEGER) {
-                    $dataTypes[$field] = 'int';
-                }
-            }
-        }
-
-        $data = [
-            'customerId' => $activity->getCustomer()->getId(),
-            'type' => $db->quote($activity->cmfGetType()),
-            'implementationClass' => $db->quote(get_class($activity)),
-            'o_id' => $activity instanceof Concrete ? $activity->getId() : null,
-            'a_id' => $activity instanceof ActivityExternalIdInterface ? $db->quote($activity->getId()) : null,
-            'activityDate' => $activity->cmfGetActivityDate()->getTimestamp(),
-            'attributes' => \CustomerManagementFramework\Service\MariaDb::getInstance()->createDynamicColumnInsert($attributes, $dataTypes),
-        ];
-
-        $data['md5'] = $db->quote(md5(serialize($data)));
-        $data['modificationDate'] = $time;
-
-        return $data;
-    }
 
     /**
      * @param $id
@@ -369,5 +363,26 @@ class MariaDb implements ActivityStoreInterface{
         $sql = "select distinct type from " . self::ACTIVITIES_TABLE;
 
         return Db::get()->fetchCol($sql);
+    }
+
+
+    protected function getActivityAttributeDataAsDynamicColumnInsert(ActivityInterface $activity)
+    {
+        $attributes = $activity->cmfToArray();
+
+        $dataTypes = [];
+        if($_dataTypes = $activity->cmfGetAttributeDataTypes()) {
+            foreach($_dataTypes as $field => $dataType) {
+                if($dataType == ActivityInterface::DATATYPE_STRING) {
+                    $dataTypes[$field] = 'char';
+                } elseif($dataType == ActivityInterface::DATATYPE_DOUBLE) {
+                    $dataTypes[$field] = 'double';
+                } elseif($dataType == ActivityInterface::DATATYPE_INTEGER) {
+                    $dataTypes[$field] = 'int';
+                }
+            }
+        }
+
+        return \CustomerManagementFramework\Service\MariaDb::getInstance()->createDynamicColumnInsert($attributes, $dataTypes);
     }
 }

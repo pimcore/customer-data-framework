@@ -34,7 +34,7 @@ interface ActivityStoreInterface {
      *
      * @return void
      */
-    public function updateActivityInStore(ActivityInterface $activity, ActivityStoreEntryInterface $entry);
+    public function updateActivityInStore(ActivityInterface $activity, ActivityStoreEntryInterface $entry = null);
 
     /**
      *
@@ -66,9 +66,23 @@ interface ActivityStoreInterface {
     /**
      * @param ActivityInterface $activity
      *
-     * @return void
+     * @return bool
      */
     public function deleteActivity(ActivityInterface $activity);
+
+    /**
+     * @param $id
+     *
+     * @return ActivityStoreEntryInterface
+     */
+    public function getEntryById($id);
+
+    /**
+     * @param ActivityStoreEntryInterface $entry
+     *
+     * @return void
+     */
+    public function deleteEntry(ActivityStoreEntryInterface $entry);
 
     /**
      * Deletes all activities for $customer in the store.
@@ -96,19 +110,6 @@ interface ActivityStoreInterface {
      */
     public function getDeletionsData($type, $deletionsSinceTimestamp);
 
-    /**
-     * @param $id
-     *
-     * @return ActivityStoreEntryInterface
-     */
-    public function getEntryById($id);
-
-    /**
-     * @param ActivityStoreEntryInterface $entry
-     *
-     * @return void
-     */
-    public function deleteEntry(ActivityStoreEntryInterface $entry);
 
     /**
      * @param CustomerInterface $customer
