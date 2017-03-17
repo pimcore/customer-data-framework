@@ -1,7 +1,7 @@
 <div class="container">
     <table class="table">
 
-        <?php foreach($this->rows as $row) {?>
+        <?php foreach($this->paginator as $row) {?>
 
                 <tr>
 
@@ -23,4 +23,10 @@
         <?php }?>
 
     </table>
+
+    <?php if($this->paginator->getPages()->pageCount > 1): ?>
+        <div class="text-center">
+            <?= $this->paginationControl($paginator, 'Sliding', 'includes/pagination/default.php', ['params'=>$this->getAllParams()]); ?>
+        </div>
+    <?php endif; ?>
 </div>

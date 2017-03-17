@@ -5,7 +5,11 @@
 
             <tr>
                 <td colspan="99">
+                    <br/>
                     <?= $duplicate['dbData']['id'] ?>
+                    <br/>
+                    <strong>matched field combinations:</strong><br/>
+                    <?= str_replace(';', '<br/>', $duplicate['dbData']['fieldCombinations']) ?>
                 </td>
             </tr>
 
@@ -21,7 +25,7 @@
                         <td><?=$customer->getFirstname()?> <?=$customer->getLastname()?></td>
                         <td><?=$customer->getStreet() ?></td>
                         <td><?=$customer->getZip() ?> <?=$customer->getCity() ?></td>
-                        <td><?=$customer->getBirthDate() instanceof \Pimcore\Date ? date('d.m.Y',$customer->getBirthDate()->getTimestamp()) : '-'?></td>
+                        <td><?=$customer->getBirthDate() ? date('d.m.Y',$customer->getBirthDate()->getTimestamp()) : '-'?></td>
                         <td>shoe size <?=$customer->getShoeSize() ? : '-' ?></td>
 
                     </tr>
@@ -34,4 +38,10 @@
         <?php }?>
 
     </table>
+
+    <?php if($this->paginator->getPages()->pageCount > 1): ?>
+        <div class="text-center">
+            <?= $this->paginationControl($paginator, 'Sliding', 'includes/pagination/default.php', ['params'=>$this->getAllParams()]); ?>
+        </div>
+    <?php endif; ?>
 </div>

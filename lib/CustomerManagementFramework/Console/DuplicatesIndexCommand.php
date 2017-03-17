@@ -28,6 +28,12 @@ class DuplicatesIndexCommand extends AbstractCommand {
     {
         \Pimcore::getDiContainer()->set("CustomerManagementFramework\\Logger", $this->getLogger());
 
+        if($input->getOption("analyze")) {
+            Factory::getInstance()->getDuplicatesIndex()->setAnalyzeFalsePositives(true);
+        } else {
+            Factory::getInstance()->getDuplicatesIndex()->setAnalyzeFalsePositives(false);
+        }
+
         if($input->getOption("recreate")) {
             $this->getLogger()->notice("start recreate index");
             Factory::getInstance()->getDuplicatesIndex()->recreateIndex($this->logger);
@@ -35,14 +41,9 @@ class DuplicatesIndexCommand extends AbstractCommand {
         }
 
         if($input->getOption("calculate")) {
-            $this->getLogger()->notice("start calculate potential duplicates");
-            if($input->getOption("analyze")) {
-                Factory::getInstance()->getDuplicatesIndex()->setAnalyzeFalsePositives(true);
-            } else {
-                Factory::getInstance()->getDuplicatesIndex()->setAnalyzeFalsePositives(false);
-            }
-            Factory::getInstance()->getDuplicatesIndex()->calculatePotentialDuplicates();
-            $this->getLogger()->notice("finished calculate potential duplicates");
+            $this->getLogger()->notice("start calculating potential duplicates");
+            Factory::getInstance()->getDuplicatesIndex()->calculatePotentialDuplicates($output);
+            $this->getLogger()->notice("finished calculating potential duplicates");
         }
     }
 

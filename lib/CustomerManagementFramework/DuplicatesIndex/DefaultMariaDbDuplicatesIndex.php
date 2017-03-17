@@ -15,14 +15,19 @@ use CustomerManagementFramework\DataTransformer\DuplicateIndex\Standard;
 use CustomerManagementFramework\Factory;
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Plugin;
+use CustomerManagementFramework\Traits\LoggerAware;
 use Pimcore\Db;
 use Pimcore\Logger;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
 
-    const DUPLICATES_TABLE = 'plugin_cmf_duplicatesindex';
-    const DUPLICATES_CUSTOMERS_TABLE = 'plugin_cmf_duplicatesindex_customers';
+    use LoggerAware;
+
+    const DUPLICATESINDEX_TABLE = 'plugin_cmf_duplicatesindex';
+    const DUPLICATESINDEX_CUSTOMERS_TABLE = 'plugin_cmf_duplicatesindex_customers';
     const POTENTIAL_DUPLICATES_TABLE = 'plugin_cmf_potential_duplicates';
     const FALSE_POSITIVES_TABLE = 'plugin_cmf_duplicates_false_positives';
 
@@ -39,8 +44,13 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
     public function recreateIndex(LoggerInterface $logger)
     {
         $db = Db::get();
-        $db->query("truncate table " . self::DUPLICATES_TABLE);
-        $db->query("truncate table " . self::DUPLICATES_CUSTOMERS_TABLE);
+        $db->query("truncate table " . self::DUPLICATESINDEX_TABLE);
+        $db->query("truncate table " . self::DUPLICATESINDEX_CUSTOMERS_TABLE);
+
+        if($this->analyzeFalsePositives) {
+            $db = Db::get();
+            $db->query("truncate table " . self::FALSE_POSITIVES_TABLE);
+        }
 
         $logger->notice("tables truncated");
 
@@ -85,38 +95,45 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
         $this->updateDuplicateIndex($customer->getId(), $duplicateDataRows, $this->duplicateCheckFields);
     }
 
-    public function calculatePotentialDuplicates()
+    public function calculatePotentialDuplicates(OutputInterface $output)
     {
-
         if($this->analyzeFalsePositives) {
             $db = Db::get();
             $db->query("truncate table " . self::FALSE_POSITIVES_TABLE);
         }
 
+        $this->getLogger()->notice("start calculating exact duplicate matches");
+        $exakt = $this->calculateExactDuplicateMatches();
 
-        $exakt = $this->calculateExaktDuplicateMatches();
-        $fuzzy = $this->calculateFuzzyDuplicateMatches();
+        $this->getLogger()->notice("start calculating fuzzy duplicate matches");
+        $fuzzy = $this->calculateFuzzyDuplicateMatches($output);
+
 
         $total = [];
 
-        foreach($exakt as $item) {
-            sort($item);
-            $total[] = implode(',', $item);
+        foreach([$exakt, $fuzzy] as $dataSet) {
+            foreach($dataSet as $fieldCombination => $items) {
+
+                foreach($items as $item) {
+
+                    $item = is_array($item) ? implode(',', $item) : $item;
+
+                    $total[$item] = isset($total[$item]) ? $total[$item] : [];
+                    $total[$item][] = $fieldCombination;
+
+                }
+            }
         }
 
-        foreach($fuzzy as $item) {
-            sort($item);
-            $total[] = implode(',', $item);
-        }
-
-        $total = array_unique($total);
+        $this->getLogger()->notice("update potential duplicates table");
 
         $totalIds = [];
-        foreach($total as $row) {
+        foreach($total as $duplicateIds => $fieldCombinations) {
 
-            if(!$id = Db::get()->fetchOne("select id from " . self::POTENTIAL_DUPLICATES_TABLE  . " where duplicateIds = '" . $row . "'")) {
+            if(!$id = Db::get()->fetchOne("select id from " . self::POTENTIAL_DUPLICATES_TABLE  . " where duplicateCustomerIds = ?", $duplicateIds)) {
                 Db::get()->insert(self::POTENTIAL_DUPLICATES_TABLE, [
-                    'duplicateIds' => $row,
+                    'duplicateCustomerIds' => $duplicateIds,
+                    'fieldCombinations' => implode(';', array_unique((array)$fieldCombinations)),
                     'creationDate' => time()
                 ]);
 
@@ -149,59 +166,83 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
 
 
 
-    protected function calculateExaktDuplicateMatches()
+    protected function calculateExactDuplicateMatches()
     {
         $db = Db::get();
 
-        $duplicateIds = $db->fetchCol("select duplicate_id from " . self::DUPLICATES_CUSTOMERS_TABLE . " group by duplicate_id having count(*) > 1 order by count(*) desc");
+        $duplicateIds = $db->fetchCol("select duplicate_id from " . self::DUPLICATESINDEX_CUSTOMERS_TABLE . " group by duplicate_id having count(*) > 1 order by count(*) desc");
 
         $result = [];
 
         foreach($duplicateIds as $duplicateId) {
-            $customerIds = $db->fetchCol("select customer_id from " . self::DUPLICATES_CUSTOMERS_TABLE . " where duplicate_id = " . $duplicateId . " order by customer_id");
+            $customerIds = $db->fetchCol("select customer_id from " . self::DUPLICATESINDEX_CUSTOMERS_TABLE . " where duplicate_id = ? order by customer_id", $duplicateId);
 
-            $result[] = $customerIds;
+            $fieldCombination = $db->fetchOne("select fieldCombination from " . self::DUPLICATESINDEX_TABLE . " where id = ?", $duplicateId);
+            $result[$fieldCombination][] = $customerIds;
         }
 
         return $result;
     }
 
-    protected function calculateFuzzyDuplicateMatches()
+    protected function calculateFuzzyDuplicateMatches(OutputInterface $output)
     {
 
-        $metaphone = $this->calculateFuzzyDuplicateMatchesByAlgorithm("metaphone"); // 5268
-        $soundex = $this->calculateFuzzyDuplicateMatchesByAlgorithm("soundex"); //5602
+        $metaphone = $this->calculateFuzzyDuplicateMatchesByAlgorithm("metaphone", $output); // 5268
+        $soundex = $this->calculateFuzzyDuplicateMatchesByAlgorithm("soundex", $output); //5602
 
+        $resultSets = [$metaphone, $soundex];
 
-        return array_merge((array) $metaphone, (array) $soundex);
+        $result = [];
+        foreach($resultSets as $resultSet) {
+            foreach($resultSet as $fieldCombination => $duplicateClusters) {
+                $result[$fieldCombination] = isset($result[$fieldCombination]) ? $result[$fieldCombination] : [];
+
+                $result[$fieldCombination] = array_merge((array) $result[$fieldCombination], $duplicateClusters);
+            }
+        }
+
+        return $result;
     }
 
-    protected function calculateFuzzyDuplicateMatchesByAlgorithm($algorithm)
+    protected function calculateFuzzyDuplicateMatchesByAlgorithm($algorithm, OutputInterface $output)
     {
         $db = Db::get();
 
-        $phoneticDuplicates = $db->fetchCol("select `" . $algorithm . "` from " . self::DUPLICATES_TABLE . " where `" . $algorithm . "` is not null and `" . $algorithm . "` != '' group by `" . $algorithm . "` having count(*) > 1");
+        $phoneticDuplicates = $db->fetchCol("select `" . $algorithm . "` from " . self::DUPLICATESINDEX_TABLE . " where `" . $algorithm . "` is not null and `" . $algorithm . "` != '' group by `" . $algorithm . "` having count(*) > 1");
 
         $result = [];
 
+        $totalCount = sizeof($phoneticDuplicates);
+
+        $output->writeln('');
+        $this->getLogger()->notice(sprintf("calculate potential duplicates for %s", $algorithm));
+
+        $progress = new ProgressBar($output, $totalCount);
+        $progress->setFormat('verbose');
+
         foreach($phoneticDuplicates as $phoneticDuplicate) {
 
-            $sql = "select * from plugin_cmf_duplicatesindex_customers c, plugin_cmf_duplicatesindex i where i.id = c.duplicate_id and " . $algorithm . " = '" . $phoneticDuplicate . "'  order by customer_id";
+            $progress->advance();
 
-            $rows = $db->fetchAll($sql);
+            $rows = $db->fetchAll("select * from " . self::DUPLICATESINDEX_CUSTOMERS_TABLE . " c, " . self::DUPLICATESINDEX_TABLE . " i where i.id = c.duplicate_id and `" . $algorithm . "` = ?  order by customer_id", $phoneticDuplicate);
 
-            $customerIdClusters = $this->extractSimilarCustomerIdClusters($rows);
+            $customerIdClusters = $this->extractSimilarCustomerIdClustersGroupedByFieldCombinations($rows);
 
-            foreach($customerIdClusters as $cluster) {
-                $result[] = $cluster;
+            foreach($customerIdClusters as $fieldCombination => $clusters) {
+                foreach($clusters as $cluster) {
+                    $result[$fieldCombination][] = $cluster;
+                }
             }
-
         }
+
+        $progress->finish();
+        $output->writeln('');
+        $output->writeln('');
 
         return $result;
     }
 
-    protected function extractSimilarCustomerIdClusters($rows) {
+    protected function extractSimilarCustomerIdClustersGroupedByFieldCombinations($rows) {
 
         $groupedByFieldCombination = [];
         foreach($rows as $row) {
@@ -210,25 +251,96 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
         }
 
         $result = [];
-        foreach($groupedByFieldCombination as $fieldCombinationRows) {
-            $resultCluster = [];
+        foreach($groupedByFieldCombination as $fieldCombination => $fieldCombinationRows) {
+            $result[$fieldCombination] = $this->extractSimilarCustomerIdClusters($fieldCombinationRows);
 
-            if(!$this->rowsAreSimilar($fieldCombinationRows)) {
-                continue;
-            }
-
-            foreach($fieldCombinationRows as $fieldCombinationRow) {
-                $resultCluster[] = $fieldCombinationRow['customer_id'];
-            }
-            sort($resultCluster);
-            $resultCluster = array_unique($resultCluster);
-
-            if(sizeof($resultCluster) > 1) {
-                $result[] = $resultCluster;
-            }
         }
 
+
         return $result;
+    }
+
+    private function extractSimilarCustomerIdClusters($rows) {
+
+        $result = [];
+
+        if(!$this->rowsAreSimilar($rows)) {
+
+            // if not all rows are similar try to find similar duplicates pairwise
+            if(sizeof($rows) > 2) {
+                foreach($this->getCombinations($rows, 2) as $combination) {
+                    if($clusters = $this->extractSimilarCustomerIdClusters($combination)) {
+                        foreach($clusters as $cluster) {
+                            $result[] = $cluster;
+                        }
+
+                    }
+                }
+            }
+
+            return $result;
+        }
+
+        $cluster = [];
+        foreach($rows as $row) {
+            $cluster[] = $row['customer_id'];
+        }
+
+        $result[] = $cluster;
+
+        return $result;
+    }
+
+    protected function getCombinations($base,$n){
+
+        $baselen = count($base);
+        if($baselen == 0){
+            return;
+        }
+        if($n == 1){
+            $return = array();
+            foreach($base as $b){
+                $return[] = array($b);
+            }
+            return $return;
+        }else{
+            //get one level lower combinations
+            $oneLevelLower = $this->getCombinations($base,$n-1);
+
+            //for every one level lower combinations add one element to them that the last element of a combination is preceeded by the element which follows it in base array if there is none, does not add
+            $newCombs = array();
+
+            foreach($oneLevelLower as $oll){
+
+                $lastEl = $oll[$n-2];
+                $found = false;
+                foreach($base as  $key => $b){
+                    if($b == $lastEl){
+                        $found = true;
+                        continue;
+                        //last element found
+
+                    }
+                    if($found == true){
+                        //add to combinations with last element
+                        if($key < $baselen){
+
+                            $tmp = $oll;
+                            $newCombination = array_slice($tmp,0);
+                            $newCombination[]=$b;
+                            $newCombs[] = array_slice($newCombination,0);
+                        }
+
+                    }
+                }
+
+            }
+
+        }
+
+        return $newCombs;
+
+
     }
 
     /**
@@ -246,10 +358,10 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
 
         unset($rows[0]);
 
-        $fieldCombinationConfig = $this->getFieldCombinationConfig(explode(',', $firstRow['fieldCombination']));
+        $fieldCombinationConfig = $this->getFieldCombinationConfig($firstRow['fieldCombination']);
 
         foreach($rows as $row) {
-            if(!$this->rowsAreSimilarHelper($firstRow, $row, $fieldCombinationConfig)) {
+            if(!$this->twoRowsAreSimilar($firstRow, $row, $fieldCombinationConfig)) {
 
                 Factory::getInstance()->getLogger()->debug("false positive: " . json_encode($firstRow['duplicateData']) . ' | ' . json_encode($row['duplicateData']));
 
@@ -265,7 +377,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
                 return false;
             } else {
 
-                Factory::getInstance()->getLogger()->notice("potential duplicate found: " . $firstRow['duplicate_id'] . ' | ' . $row['duplicate_id']);
+                Factory::getInstance()->getLogger()->debug("potential duplicate found: " . $firstRow['duplicate_id'] . ' | ' . $row['duplicate_id']);
             }
         }
 
@@ -273,7 +385,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
         return true;
     }
 
-    protected function rowsAreSimilarHelper(array $row1, array $row2, array $fieldCombinationConfig) {
+    protected function twoRowsAreSimilar(array $row1, array $row2, array $fieldCombinationConfig) {
 
         // fuzzy matching is only enabled if at least one field has a similitry option configured
         $applies = false;
@@ -290,10 +402,8 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
 
         foreach($fieldCombinationConfig as $field => $options) {
             if($options['similarity']) {
-                /**
-                 * @var DataSimilarityMatcherInterface $similarityMatcher;
-                 */
-                $similarityMatcher = Factory::getInstance()->createObject($options['similarity'], DataSimilarityMatcherInterface::class);
+
+                $similarityMatcher = $this->getSimilarityMatcher($options['similarity']);
 
                 $dataRow1 = json_decode($row1['duplicateData'], true);
                 $dataRow2 = json_decode($row2['duplicateData'], true);
@@ -306,55 +416,60 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
             }
         }
 
-
-      /*  if(in_array($row1['duplicate_id'], [1031,1032,1033,1034,1035,1040,1041,1042,1043,1044,1045,1046,1047]) && in_array($row1['duplicate_id'], [1031,1032,1033,1034,1035,1040,1041,1042,1043,1044,1045,1046,1047])) {
-
-          //  var_dump($fieldCombinationConfig);
-
-            $similarityMatcher = new BirthDate();
-            $dataRow1 = json_decode($row1['duplicateData'], true);
-            $dataRow2 = json_decode($row2['duplicateData'], true);
-            var_dump($options);
-            var_dump($row1);
-            var_dump($row2);
-
-            var_dump($similarityMatcher->calculateSimilarity($dataRow1['birthDate'], $dataRow2['birthDate']));
-            var_dump($similarityMatcher->isSimilar($dataRow1['birthDate'], $dataRow2['birthDate']));
-            exit;
-        }*/
-
-
         return true;
     }
 
-    protected function getFieldCombinationConfig(array $fieldCombination) {
+    private $similarityMatchers = [];
+    /**
+     * @param string $similiarity
+     * @return DataSimilarityMatcherInterface
+     */
+    protected function getSimilarityMatcher($similiarity) {
+        if(!isset($this->similarityMatchers[$similiarity])) {
+            $this->similarityMatchers[$similiarity] = Factory::getInstance()->createObject($similiarity, DataSimilarityMatcherInterface::class);
+        }
 
-        foreach($this->duplicateCheckFields as $fields) {
+        return $this->similarityMatchers[$similiarity];
+    }
 
-            if(sizeof($fields) != sizeof($fieldCombination)) {
-                continue;
-            }
+    private $fieldCombinationConfig = [];
+    /**
+     * @param string $fieldCombinationCommaSeparated
+     * @return array
+     */
+    protected function getFieldCombinationConfig($fieldCombinationCommaSeparated) {
 
-            $matched = true;
-            foreach($fieldCombination as $field) {
-                $iterationMatched = false;
-                foreach($fields as $fieldKey => $trash) {
-                    if($fieldKey == $field) {
-                        $iterationMatched = true;
+        if(!isset($this->fieldCombinationConfig[$fieldCombinationCommaSeparated])) {
+            $this->fieldCombinationConfig[$fieldCombinationCommaSeparated] = [];
+            foreach ($this->duplicateCheckFields as $fields) {
+                $fieldCombination = explode(',', $fieldCombinationCommaSeparated);
+
+                if (sizeof($fields) != sizeof($fieldCombination)) {
+                    continue;
+                }
+
+                $matched = true;
+                foreach ($fieldCombination as $field) {
+                    $iterationMatched = false;
+                    foreach ($fields as $fieldKey => $trash) {
+                        if ($fieldKey == $field) {
+                            $iterationMatched = true;
+                        }
+                    }
+
+                    if (!$iterationMatched) {
+                        $matched = false;
                     }
                 }
 
-                if(!$iterationMatched) {
-                    $matched = false;
+                if ($matched) {
+                    $this->fieldCombinationConfig[$fieldCombinationCommaSeparated] = $fields;
+                    break;
                 }
-            }
-
-            if($matched) {
-                return $fields;
             }
         }
 
-        return [];
+        return $this->fieldCombinationConfig[$fieldCombinationCommaSeparated];
     }
 
     protected function updateDuplicateIndex($customerId, array $duplicateDataRows, array $fieldCombinations) {
@@ -362,7 +477,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
         $db->beginTransaction();
         try {
 
-            $db->query("delete from " . self::DUPLICATES_CUSTOMERS_TABLE . " where customer_id = ?", $customerId);
+            $db->query("delete from " . self::DUPLICATESINDEX_CUSTOMERS_TABLE . " where customer_id = ?", $customerId);
 
             foreach($duplicateDataRows as $index => $duplicateDataRow) {
                 $valid = true;
@@ -384,9 +499,9 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
 
 
 
-                if(!$duplicateId = $db->fetchOne("select id from " . self::DUPLICATES_TABLE . " WHERE duplicateDataMd5 = ? and fieldCombinationCrc = ?", [$dataMd5, $fieldCombinationCrc])) {
+                if(!$duplicateId = $db->fetchOne("select id from " . self::DUPLICATESINDEX_TABLE . " WHERE duplicateDataMd5 = ? and fieldCombinationCrc = ?", [$dataMd5, $fieldCombinationCrc])) {
 
-                    $db->insert(self::DUPLICATES_TABLE, [
+                    $db->insert(self::DUPLICATESINDEX_TABLE, [
                         'duplicateData' => $data,
                         'duplicateDataMd5' => $dataMd5,
                         'fieldCombination' => $fieldCombination,
@@ -399,7 +514,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
                     $duplicateId = $db->lastInsertId();
                 }
 
-                $db->insert(self::DUPLICATES_CUSTOMERS_TABLE, [
+                $db->insert(self::DUPLICATESINDEX_CUSTOMERS_TABLE, [
                     'customer_id' => $customerId,
                     'duplicate_id' => $duplicateId
                 ]);

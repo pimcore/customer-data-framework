@@ -10,6 +10,7 @@ namespace CustomerManagementFramework\DuplicatesIndex;
 
 use CustomerManagementFramework\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 interface DuplicatesIndexInterface
 {
@@ -17,7 +18,7 @@ interface DuplicatesIndexInterface
 
     public function updateDuplicateIndexForCustomer(CustomerInterface $customer);
 
-    public function calculatePotentialDuplicates();
+    public function calculatePotentialDuplicates(OutputInterface $output);
 
     public function setAnalyzeFalsePositives($analyzeFalsePositives);
     public function getAnalyzeFalsePositives();
