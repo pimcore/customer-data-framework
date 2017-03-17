@@ -32,9 +32,29 @@ class CustomerManagementFramework_DuplicatesController extends Admin
 
         $rows = $db->fetchAll("select * from plugin_cmf_potential_duplicates  limit 100");
 
+        $select = $db->select();
+        $select
+            ->from("plugin_cmf_potential_duplicates",
+                [
+                    'id',
+                    'duplicateCustomerIds',
+                    'declinedDuplicateIds',
+                    'creationDate',
+                    'modificationDate'
+                ]
+            )
+            ->order("id asc")
+        ;
+
+        $paginator = new \Zend_Paginator(new \Zend_Paginator_Adapter_DbSelect($select));
+        $paginator->setItemCountPerPage(100);
+        $paginator->setCurrentPageNumber($this->getParam('page', 1));
+
+        $this->view->paginator = $paginator;
+
         $duplicates = [];
         foreach($rows as $row) {
-            $duplicateIds = explode(',', $row['duplicateIds']);
+            $duplicateIds = explode(',', $row['duplicateCustomerIds']);
 
             $duplicateRow = [
                 'dbData' => $row,
@@ -60,6 +80,24 @@ class CustomerManagementFramework_DuplicatesController extends Admin
     {
         $this->enableLayout();
         $db = \Pimcore\Db::get();
-        $this->view->rows = $db->fetchAll("select * from plugin_cmf_duplicates_false_positives  limit 1000");;
+
+        $select = $db->select();
+        $select
+            ->from("plugin_cmf_duplicates_false_positives",
+                [
+                    'row1',
+                    'row2',
+                    'row1Details',
+                    'row2Details',
+                ]
+            )
+            ->order("row1 asc")
+        ;
+
+        $paginator = new \Zend_Paginator(new \Zend_Paginator_Adapter_DbSelect($select));
+        $paginator->setItemCountPerPage(200);
+        $paginator->setCurrentPageNumber($this->getParam('page', 1));
+
+        $this->view->paginator = $paginator;
     }
 }
