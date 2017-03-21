@@ -47,8 +47,10 @@ class MariaDb implements ActivityStoreInterface{
     }
 
     /**
-     * @param ActivityInterface           $activity
+     * @param ActivityInterface $activity
      * @param ActivityStoreEntryInterface $entry
+     * @return ActivityStoreEntryInterface
+     * @throws \Exception
      */
     public function updateActivityInStore(ActivityInterface $activity, ActivityStoreEntryInterface $entry = null) {
 
@@ -61,6 +63,7 @@ class MariaDb implements ActivityStoreInterface{
         }
 
         $this->saveActivityStoreEntry($entry, $activity);
+        return $entry;
     }
 
     public function updateActivityStoreEntry(ActivityStoreEntryInterface $entry, $updateAttributes = false) {
@@ -139,7 +142,7 @@ class MariaDb implements ActivityStoreInterface{
                 return false;
             }
 
-            $row = $db->fetchRow("select *, column_json(attributes) as attributes from " . self::ACTIVITIES_TABLE . " where a_id = ? order by id desc LIMIT 1 ", $activity->getId());
+            $row = $db->fetchRow("select *, column_json(attributes) as attributes from " . self::ACTIVITIES_TABLE . " where a_id = ? AND type = ? order by id desc LIMIT 1 ", [ $activity->getId(), $activity->cmfGetType() ] );
         }
 
         if(!is_array($row)) {
