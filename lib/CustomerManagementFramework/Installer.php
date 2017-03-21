@@ -136,6 +136,58 @@ class Installer {
               PRIMARY KEY (`name`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
         );
+
+
+
+        \Pimcore\Db::get()->query(
+            "CREATE TABLE IF NOT EXISTS `plugin_cmf_duplicatesindex` (
+              `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+              `duplicateData` text NOT NULL,
+              `duplicateDataMd5` varchar(32) DEFAULT NULL,
+              `fieldCombination` char(255) NOT NULL DEFAULT '',
+              `fieldCombinationCrc` int(11) unsigned NOT NULL,
+              `metaphone` varchar(50) DEFAULT NULL,
+              `soundex` varchar(50) DEFAULT NULL,
+              `creationDate` bigint(20) unsigned DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              KEY `duplicateDataCrc` (`duplicateDataMd5`),
+              KEY `fieldCombination` (`fieldCombination`),
+              KEY `soundex` (`soundex`),
+              KEY `metaphone` (`metaphone`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+        );
+
+        \Pimcore\Db::get()->query(
+            "CREATE TABLE IF NOT EXISTS `plugin_cmf_duplicatesindex_customers` (
+              `duplicate_id` int(11) unsigned NOT NULL,
+              `customer_id` int(11) unsigned NOT NULL,
+              KEY `duplicate_id` (`duplicate_id`),
+              KEY `customer_id` (`customer_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+        );
+
+        \Pimcore\Db::get()->query(
+            "CREATE TABLE IF NOT EXISTS `plugin_cmf_duplicates_false_positives` (
+              `row1` text NOT NULL,
+              `row2` text NOT NULL,
+              `row1Details` text NOT NULL,
+              `row2Details` text NOT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+        );
+
+        \Pimcore\Db::get()->query(
+            "CREATE TABLE IF NOT EXISTS `plugin_cmf_potential_duplicates` (
+              `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+              `duplicateCustomerIds` varchar(255) NOT NULL DEFAULT '',
+              `fieldCombinations` text NOT NULL,
+              `declined` tinyint(1) DEFAULT NULL,
+              `modificationDate` bigint(20) unsigned DEFAULT NULL,
+              `creationDate` bigint(20) unsigned DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              KEY `duplicateIds` (`duplicateCustomerIds`),
+              KEY `declined` (`declined`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+        );
     }
 
     public static function installClasses()
