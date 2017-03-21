@@ -9,6 +9,9 @@
 .pimcore_icon_customers {
     background: url(/plugins/CustomerManagementFramework/static/icons/customer.svg) center center no-repeat !important;
 }
+.pimcore_icon_customerduplicates {
+    background: url(/pimcore/static6/img/flat-color-icons/copy.svg) center center no-repeat !important;
+}
 
 .pimcore_icon_customerautomationrules {
     background: url(/pimcore/static6/img/flat-color-icons/services.svg) center center no-repeat !important;

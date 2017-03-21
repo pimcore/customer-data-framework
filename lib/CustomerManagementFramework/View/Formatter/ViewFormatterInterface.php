@@ -2,15 +2,23 @@
 namespace CustomerManagementFramework\View\Formatter;
 
 use CustomerManagementFramework\Translate\TranslatorInterface;
+use Pimcore\Model\Object\ClassDefinition;
 use Pimcore\Model\Object\ClassDefinition\Data;
 
 interface ViewFormatterInterface extends TranslatorInterface
 {
     /**
      * @param Data $fd
-     * @return array|string
+     * @return string
      */
     public function getLabelByFieldDefinition(Data $fd);
+
+    /**
+     * @param ClassDefinition $class
+     * @param string $fieldName
+     * @return string
+     */
+    public function getLabelByFieldName(ClassDefinition $class, $fieldName);
 
     /**
      * @param mixed $value
@@ -36,4 +44,15 @@ interface ViewFormatterInterface extends TranslatorInterface
      * @return string
      */
     public function formatValueByFieldDefinition(Data $fd, $value);
+
+    /**
+     * @param string $locale
+     * @return void
+     */
+    public function setLocale($locale);
+
+    /**
+     * @return string
+     */
+    public function getLocale();
 }

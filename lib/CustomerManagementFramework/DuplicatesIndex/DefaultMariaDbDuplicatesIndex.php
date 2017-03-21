@@ -8,6 +8,7 @@
 
 namespace CustomerManagementFramework\DuplicatesIndex;
 
+use CustomerManagementFramework\CustomerDuplicates\PotentialDuplicateItemInterface;
 use CustomerManagementFramework\DataSimilarityMatcher\BirthDate;
 use CustomerManagementFramework\DataSimilarityMatcher\DataSimilarityMatcherInterface;
 use CustomerManagementFramework\DataTransformer\DataTransformerInterface;
@@ -80,6 +81,11 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
 
     public function updateDuplicateIndexForCustomer(CustomerInterface $customer)
     {
+        if(!$this->isRelevantForDuplicateIndex($customer)) {
+            $this->deleteCustomerFromDuplicateIndex($customer);
+            return;
+        }
+
         $duplicateDataRows = [];
         foreach($this->duplicateCheckFields as $fields) {
             $data = [];
@@ -93,6 +99,18 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
         }
 
         $this->updateDuplicateIndex($customer->getId(), $duplicateDataRows, $this->duplicateCheckFields);
+    }
+
+    public function isRelevantForDuplicateIndex(CustomerInterface $customer)
+    {
+        return $customer->getPublished() && $customer->getActive();
+    }
+
+    public function deleteCustomerFromDuplicateIndex(CustomerInterface $customer)
+    {
+        $db = Db::get();
+        $db->query(sprintf("delete from %s where customer_id = ?", self::DUPLICATESINDEX_CUSTOMERS_TABLE), $customer->getId());
+        $db->query(sprintf("delete from %s where FIND_IN_SET(?, duplicateCustomerIds)", self::POTENTIAL_DUPLICATES_TABLE), $customer->getId());
     }
 
     public function calculatePotentialDuplicates(OutputInterface $output)
@@ -148,6 +166,92 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
         Db::get()->query("delete from " . self::POTENTIAL_DUPLICATES_TABLE . " where id not in(" . implode(',', $totalIds) . ")");
     }
 
+    public function getPotentialDuplicates($page, $pageSize = 100)
+    {
+        $db = \Pimcore\Db::get();
+
+        $select = $db->select();
+        $select
+            ->from(self::POTENTIAL_DUPLICATES_TABLE,
+                [
+                    'id',
+                    'duplicateCustomerIds',
+                    'declined',
+                    'fieldCombinations',
+                    'creationDate',
+                    'modificationDate'
+                ]
+            )
+            ->where('(declined is null or declined = 0)')
+            ->order("id asc")
+        ;
+
+        $paginator = new \Zend_Paginator(new \Zend_Paginator_Adapter_DbSelect($select));
+        $paginator->setItemCountPerPage($pageSize);
+        $paginator->setCurrentPageNumber($page ? : 0);
+
+
+        foreach($paginator as &$row) {
+
+            /**
+             * @var \CustomerManagementFramework\CustomerDuplicates\PotentialDuplicateItemInterface $item
+             */
+            $item = Factory::getInstance()->createObject(\CustomerManagementFramework\CustomerDuplicates\PotentialDuplicateItemInterface::class, \CustomerManagementFramework\CustomerDuplicates\PotentialDuplicateItemInterface::class);
+
+            $customers = [];
+            foreach(explode(',', $row['duplicateCustomerIds']) as $customerId) {
+                if($customer = Factory::getInstance()->getCustomerProvider()->getById($customerId)) {
+                    $customers[] = $customer;
+                }
+            }
+
+            if(sizeof($customers) != 2) {
+                continue;
+            }
+
+            $fieldCombinations = [];
+            foreach(explode(';',$row['fieldCombinations']) as $fieldCombination) {
+                $fieldCombinations[] = explode(',', $fieldCombination);
+            }
+
+            $item->setId($row['id']);
+            $item->setDuplicateCustomers($customers);
+            $item->setCreationDate($row['creationDate']);
+            $item->setModificationDate($row['modificationDate']);
+            $item->setDeclined((bool) $row['declined']);
+            $item->setFieldCombinations($fieldCombinations);
+
+            $row = $item;
+
+        }
+
+        return $paginator;
+    }
+
+    public function getFalsePositives($page, $pageSize = 200)
+    {
+        $db = \Pimcore\Db::get();
+
+        $select = $db->select();
+        $select
+            ->from(self::FALSE_POSITIVES_TABLE,
+                [
+                    'row1',
+                    'row2',
+                    'row1Details',
+                    'row2Details',
+                ]
+            )
+            ->order("row1 asc")
+        ;
+
+        $paginator = new \Zend_Paginator(new \Zend_Paginator_Adapter_DbSelect($select));
+        $paginator->setItemCountPerPage($pageSize);
+        $paginator->setCurrentPageNumber($page ? : 1);
+
+        return $paginator;
+    }
+
     /**
      * @return bool
      */
@@ -164,6 +268,15 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
         $this->analyzeFalsePositives = $analyzeFalsePositives;
     }
 
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function declinePotentialDuplicate($id)
+    {
+        $db = Db::get();
+        $db->query(sprintf("update %s set declined = 1 where id = ?", self::POTENTIAL_DUPLICATES_TABLE), $id);
+    }
 
 
     protected function calculateExactDuplicateMatches()
@@ -176,9 +289,13 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
 
         foreach($duplicateIds as $duplicateId) {
             $customerIds = $db->fetchCol("select customer_id from " . self::DUPLICATESINDEX_CUSTOMERS_TABLE . " where duplicate_id = ? order by customer_id", $duplicateId);
-
             $fieldCombination = $db->fetchOne("select fieldCombination from " . self::DUPLICATESINDEX_TABLE . " where id = ?", $duplicateId);
-            $result[$fieldCombination][] = $customerIds;
+
+            $clusters = $this->getCombinations($customerIds, 2);
+
+            foreach($clusters as $cluster) {
+                $result[$fieldCombination][] = $cluster;
+            }
         }
 
         return $result;
@@ -187,8 +304,8 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
     protected function calculateFuzzyDuplicateMatches(OutputInterface $output)
     {
 
-        $metaphone = $this->calculateFuzzyDuplicateMatchesByAlgorithm("metaphone", $output); // 5268
-        $soundex = $this->calculateFuzzyDuplicateMatchesByAlgorithm("soundex", $output); //5602
+        $metaphone = $this->calculateFuzzyDuplicateMatchesByAlgorithm("metaphone", $output);
+        $soundex = $this->calculateFuzzyDuplicateMatchesByAlgorithm("soundex", $output);
 
         $resultSets = [$metaphone, $soundex];
 
@@ -253,7 +370,6 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
         $result = [];
         foreach($groupedByFieldCombination as $fieldCombination => $fieldCombinationRows) {
             $result[$fieldCombination] = $this->extractSimilarCustomerIdClusters($fieldCombinationRows);
-
         }
 
 
@@ -264,29 +380,15 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
 
         $result = [];
 
-        if(!$this->rowsAreSimilar($rows)) {
-
-            // if not all rows are similar try to find similar duplicates pairwise
-            if(sizeof($rows) > 2) {
-                foreach($this->getCombinations($rows, 2) as $combination) {
-                    if($clusters = $this->extractSimilarCustomerIdClusters($combination)) {
-                        foreach($clusters as $cluster) {
-                            $result[] = $cluster;
-                        }
-
-                    }
+        foreach($this->getCombinations($rows, 2) as $combination) {
+            if($this->rowsAreSimilar($combination)) {
+                $cluster = [];
+                foreach($combination as $row) {
+                    $cluster[] = $row['customer_id'];
                 }
+                $result[] = $cluster;
             }
-
-            return $result;
         }
-
-        $cluster = [];
-        foreach($rows as $row) {
-            $cluster[] = $row['customer_id'];
-        }
-
-        $result[] = $cluster;
 
         return $result;
     }

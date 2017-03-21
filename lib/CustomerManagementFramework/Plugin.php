@@ -127,6 +127,17 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
             }
 
         });
+        \Pimcore::getEventManager()->attach('plugin.ObjectMerger.postMerge', function(\Zend_EventManager_Event $e){
+
+            $sourceCustomer = Factory::getInstance()->getCustomerProvider()->getById($e->getParam('sourceId'));
+            $targetCustomer = Factory::getInstance()->getCustomerProvider()->getById($e->getParam('targetId'));
+
+            if($sourceCustomer && $targetCustomer) {
+                Factory::getInstance()->getCustomerMerger()->mergeCustomers($sourceCustomer, $targetCustomer, false);
+            }
+
+        });
+
 
         $front = \Zend_Controller_Front::getInstance();
 

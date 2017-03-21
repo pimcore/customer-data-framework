@@ -20,16 +20,15 @@ use CustomerManagementFramework\CustomerDuplicatesService\CustomerDuplicatesServ
 use CustomerManagementFramework\CustomerMerger\CustomerMergerInterface;
 use CustomerManagementFramework\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFramework\CustomerSaveManager\CustomerSaveManagerInterface;
+use CustomerManagementFramework\CustomerDuplicatesView\CustomerDuplicatesViewInterface;
 use CustomerManagementFramework\CustomerView\CustomerViewInterface;
 use CustomerManagementFramework\DuplicatesIndex\DuplicatesIndexInterface;
 use CustomerManagementFramework\RESTApi\ActivitiesHandler;
 use CustomerManagementFramework\RESTApi\CustomersHandler;
 use CustomerManagementFramework\RESTApi\DeletionsHandler;
-use CustomerManagementFramework\RESTApi\ExportInterface;
 use CustomerManagementFramework\RESTApi\SegmentGroupsHandler;
 use CustomerManagementFramework\RESTApi\SegmentsHandler;
 use CustomerManagementFramework\RESTApi\SegmentsOfCustomerHandler;
-use CustomerManagementFramework\RESTApi\UpdateInterface;
 use CustomerManagementFramework\SegmentManager\SegmentManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -110,6 +109,14 @@ class Factory {
     public function getCustomerView()
     {
         return \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerView');
+    }
+
+    /**
+     * @return CustomerDuplicatesViewInterface
+     */
+    public function getCustomerDuplicatesView()
+    {
+        return \Pimcore::getDiContainer()->get(CustomerDuplicatesViewInterface::class);
     }
 
     /**

@@ -56,6 +56,34 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
             menuItems.add(item);
         }
 
+        // customer duplicates view
+        if (user.isAllowed('plugin_customermanagementframework_customerview')) {
+            var customerDuplicateViewPanelId = 'plugin_cmf_customerduplicatesview';
+            var item = {
+                text: t('plugin_cmf_customerduplicatesview'),
+                iconCls: 'pimcore_icon_customerduplicates',
+                handler: function () {
+                    try {
+                        pimcore.globalmanager.get(customerDuplicateViewPanelId).activate();
+                    }
+                    catch (e) {
+                        pimcore.globalmanager.add(
+                            customerDuplicateViewPanelId,
+                            new pimcore.tool.genericiframewindow(
+                                customerDuplicateViewPanelId,
+                                '/plugin/CustomerManagementFramework/duplicates/list',
+                                'pimcore_icon_customerduplicates',
+                                t('plugin_cmf_customerduplicatesview')
+                            )
+                        );
+                    }
+                }
+            };
+
+            // add to menu
+            menuItems.add(item);
+        }
+
         var customerAutomationRulesPanelId = 'plugin_cmf_customerautomationrules';
         var item = {
             text: t('plugin_cmf_customerautomationrules'),
@@ -104,6 +132,20 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
 
             object.tab.items.items[1].insert(1, panel);
             panel.updateLayout();
+        }
+    },
+
+    pluginObjectMergerPostMerge: function(data) {
+        var frame = document.getElementById("pimcore_iframe_frame_plugin_cmf_customerduplicatesview");
+        if(frame) {
+            var $ = frame.contentWindow.$;
+
+            $('#customerduplicates_' + data.sourceId + '_' + data.targetId).remove();
+            $('#customerduplicates_' + data.targetId + '_' + data.sourceId).remove();
+
+            if(!$('.js-duplicates-item').length) {
+                frame.contentWindow.location.reload();
+            }
         }
     }
 });

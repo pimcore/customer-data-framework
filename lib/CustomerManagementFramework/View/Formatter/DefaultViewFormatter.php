@@ -4,6 +4,7 @@ namespace CustomerManagementFramework\View\Formatter;
 
 use Carbon\Carbon;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
+use Pimcore\Model\Object\ClassDefinition;
 use Pimcore\Model\Object\ClassDefinition\Data;
 use Pimcore\Translate\Admin;
 
@@ -13,6 +14,8 @@ class DefaultViewFormatter implements ViewFormatterInterface
      * @var \Zend_Translate_Adapter[]
      */
     protected $translate = [];
+    protected $locale;
+
 
     /**
      * @param string $messageId
@@ -29,12 +32,13 @@ class DefaultViewFormatter implements ViewFormatterInterface
             }
         }
 
-        $locale = (string)\Zend_Registry::get("Zend_Locale");
+        $locale = $this->applyLocale();
+        $locale = $this->getLanguageFromLocale($locale);
+
         if (!$ta = $this->translate[$locale]) {
-            $ta = new Admin(\Zend_Registry::get("Zend_Locale"));
+            $ta = new Admin(new \Zend_Locale($locale));
             $this->translate[$locale] = $ta;
         }
-
         $message = $ta->translate($messageId);
         if (count($parameters) > 0) {
             $message = vsprintf($message, $parameters);
@@ -52,6 +56,17 @@ class DefaultViewFormatter implements ViewFormatterInterface
         return $this->translate($fd->getTitle());
     }
 
+    public function getLabelByFieldName(ClassDefinition $class, $fieldName)
+    {
+        if($fieldName == 'id') {
+            return 'ID';
+        }
+
+        $fd = $class->getFieldDefinition($fieldName);
+        return $this->getLabelByFieldDefinition($fd);
+    }
+
+
     /**
      * @param Data $fd
      * @param $value
@@ -65,6 +80,10 @@ class DefaultViewFormatter implements ViewFormatterInterface
 
         if ($fd instanceof Data\Datetime) {
             return $this->formatDatetimeValue($value);
+        }
+
+        if ($fd instanceof Data\Date) {
+            return $this->formatDatetimeValue($value, true);
         }
 
         if (is_array($value)) {
@@ -109,11 +128,36 @@ class DefaultViewFormatter implements ViewFormatterInterface
      * @param $value
      * @return string
      */
-    public function formatDatetimeValue($value)
+    public function formatDatetimeValue($value, $dateOnly = false)
     {
+        $this->applyLocale();
+
+        if(is_object($value) && method_exists($value, 'getTimestamp')) {
+            $value = date('Y-m-d H:i:s', $value->getTimestamp());
+        }
+
         $date = Carbon::parse($value);
 
+        if($dateOnly) {
+            return $date->formatLocalized("%x");
+        }
         return $date->formatLocalized("%x %X");
+    }
+
+    /**
+     * @param string $locale
+     */
+    public function setLocale($locale)
+    {
+        $this->locale = $locale;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocale()
+    {
+        return $this->locale;
     }
 
     /**
@@ -123,5 +167,27 @@ class DefaultViewFormatter implements ViewFormatterInterface
     protected function formatSegmentValue(CustomerSegmentInterface $segment)
     {
         return sprintf('<span class="label label-default">%s</span>', $segment->getName());
+    }
+
+    protected function getLanguageFromLocale($locale)
+    {
+        return explode('_', $locale)[0];
+    }
+
+    /**
+     * @return string
+     */
+    protected function applyLocale()
+    {
+        $locale = $this->getLocale() ? : (string)\Zend_Registry::get('Zend_Locale');
+
+        $dateLocaleMap = [
+            'de' => 'de_AT'
+        ];
+
+        setLocale(LC_TIME, isset($dateLocaleMap[$locale]) ? $dateLocaleMap[$locale] : $locale);
+        Carbon::setLocale($this->getLanguageFromLocale($locale));
+
+        return $locale;
     }
 }

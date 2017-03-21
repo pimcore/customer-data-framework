@@ -1,5 +1,6 @@
 plugin_cmf_mainmenu,"Customer Management Framework"
 plugin_cmf_customerview,"Customers"
+plugin_cmf_customerduplicatesview,"Customer duplicates"
 plugin_cmf_customerautomationrules,Customer automation rules
 plugin_cmf_actiontriggerrule_add_rule,Add rule
 plugin_cmf_icon_rule_triggers,Triggers

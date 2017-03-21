@@ -9,7 +9,11 @@ use CustomerManagementFramework\CustomerProvider\ObjectNamingScheme\DefaultObjec
 use CustomerManagementFramework\CustomerDuplicatesService\CustomerDuplicatesServiceInterface;
 use CustomerManagementFramework\DuplicatesIndex\DuplicatesIndexInterface;
 use CustomerManagementFramework\DuplicatesIndex\DefaultMariaDbDuplicatesIndex;
+use CustomerManagementFramework\CustomerDuplicatesView\CustomerDuplicatesViewInterface;
+use CustomerManagementFramework\CustomerDuplicatesView\DefaultCustomerDuplicatesView;
 use CustomerManagementFramework\CustomerDuplicatesService\DefaultCustomerDuplicatesService;
+use CustomerManagementFramework\CustomerDuplicates\PotentialDuplicateItem;
+use CustomerManagementFramework\CustomerDuplicates\PotentialDuplicateItemInterface;
 use CustomerManagementFramework\CustomerMerger\CustomerMergerInterface;
 use CustomerManagementFramework\CustomerMerger\DefaultCustomerMerger;
 use CustomerManagementFramework\SegmentManager\SegmentManagerInterface;
@@ -156,6 +160,9 @@ return [
         => DI\object(DefaultMariaDbDuplicatesIndex::class)
             ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
 
+    PotentialDuplicateItemInterface::class
+        => DI\object(PotentialDuplicateItem::class),
+
     CustomerSaveManagerInterface::class
         => DI\object(DefaultCustomerSaveManager::class)
            ->method('setLogger', DI\get('CustomerManagementFramework\Logger')),
@@ -169,6 +176,10 @@ return [
 
     'CustomerManagementFramework\CustomerView'
         => DI\object('CustomerManagementFramework\CustomerView\DefaultCustomerView')
+            ->constructor(DI\get('CustomerManagementFramework\View\Formatter')),
+
+    CustomerDuplicatesViewInterface::class
+        => DI\object(DefaultCustomerDuplicatesView::class)
             ->constructor(DI\get('CustomerManagementFramework\View\Formatter')),
 
     'CustomerManagementFramework\CustomerList\ExporterManager'
@@ -194,7 +205,8 @@ return [
             ->constructor(DI\get('CustomerManagementFramework\Logger')),
 
     'CustomerManagementFramework\View\Formatter'
-        => DI\object('CustomerManagementFramework\View\Formatter\DefaultViewFormatter'),
+        => DI\object('CustomerManagementFramework\View\Formatter\DefaultViewFormatter')
+           ->method('setLocale', 'de_DE'),
 
     EncryptionServiceInterface::class
         => \DI\object(DefaultEncryptionService::class)

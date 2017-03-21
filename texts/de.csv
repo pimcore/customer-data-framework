@@ -1,5 +1,6 @@
 plugin_cmf_mainmenu,"Customer Management Framework"
 plugin_cmf_customerview,"Kunden"
+plugin_cmf_customerduplicatesview,"Kunden-Duplikate"
 plugin_cmf_customerautomationrules,Kunden-Automatisierungsregeln
 plugin_cmf_actiontriggerrule_add_rule,Regel hinzufügen
 plugin_cmf_actiontriggerrule_add_rule_enter_name,Geben Sie den Namen der neuen Regel ein

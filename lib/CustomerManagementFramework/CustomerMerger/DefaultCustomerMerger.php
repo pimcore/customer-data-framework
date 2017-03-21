@@ -33,7 +33,7 @@ class DefaultCustomerMerger implements CustomerMergerInterface {
         $this->config = $config->CustomerMerger;
     }
 
-    public function mergeCustomers(CustomerInterface $sourceCustomer, CustomerInterface $targetCustomer)
+    public function mergeCustomers(CustomerInterface $sourceCustomer, CustomerInterface $targetCustomer, $mergeAttributes = true)
     {
         $saveValidatorBackup = Factory::getInstance()->getCustomerSaveManager()->getCustomerSaveValidatorEnabled();
         $segmentBuilderHookBackup = Factory::getInstance()->getCustomerSaveManager()->getSegmentBuildingHookEnabled();
@@ -41,7 +41,7 @@ class DefaultCustomerMerger implements CustomerMergerInterface {
         Factory::getInstance()->getCustomerSaveManager()->setCustomerSaveValidatorEnabled(false);
         Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled(false);
 
-        $this->mergeCustomerValues($sourceCustomer, $targetCustomer);
+        $this->mergeCustomerValues($sourceCustomer, $targetCustomer, $mergeAttributes);
         $targetCustomer->save();
 
         if(!$sourceCustomer->getId()) {
@@ -67,21 +67,28 @@ class DefaultCustomerMerger implements CustomerMergerInterface {
         Factory::getInstance()->getCustomerSaveManager()->setCustomerSaveValidatorEnabled($saveValidatorBackup);
         Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled($segmentBuilderHookBackup);
 
-        $this->getLogger()->notice("merge customer " . $sourceCustomer . " with " . $targetCustomer);
+        $logAddon = '';
+        if(!$mergeAttributes) {
+            $logAddon .= ' (attributes merged manually)';
+        }
+
+        $this->getLogger()->notice("merge customer " . $sourceCustomer . " with " . $targetCustomer . $logAddon);
 
         return $targetCustomer;
     }
 
-    private function mergeCustomerValues(CustomerInterface $sourceCustomer, CustomerInterface $targetCustomer)
+    private function mergeCustomerValues(CustomerInterface $sourceCustomer, CustomerInterface $targetCustomer, $mergeAttributes)
     {
-        $class = ClassDefinition::getById($sourceCustomer::classId());
+        if($mergeAttributes) {
+            $class = ClassDefinition::getById($sourceCustomer::classId());
 
-        foreach($class->getFieldDefinitions() as $fd) {
-            $getter = 'get' . ucfirst($fd->getName());
-            $setter = 'set' . ucfirst($fd->getName());
+            foreach($class->getFieldDefinitions() as $fd) {
+                $getter = 'get' . ucfirst($fd->getName());
+                $setter = 'set' . ucfirst($fd->getName());
 
-            if($value = $sourceCustomer->$getter()) {
-                $targetCustomer->$setter($value);
+                if($value = $sourceCustomer->$getter()) {
+                    $targetCustomer->$setter($value);
+                }
             }
         }
 

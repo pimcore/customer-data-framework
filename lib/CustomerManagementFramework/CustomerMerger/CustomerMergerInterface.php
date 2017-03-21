@@ -18,7 +18,8 @@ interface CustomerMergerInterface {
      *
      * @param CustomerInterface $sourceCustomer
      * @param CustomerInterface $targetCustomer
+     * @param bool $mergeAttributes
      * @return CustomerInterface
      */
-    public function mergeCustomers(CustomerInterface $sourceCustomer, CustomerInterface $targetCustomer);
+    public function mergeCustomers(CustomerInterface $sourceCustomer, CustomerInterface $targetCustomer, $mergeAttributes = true);
 }

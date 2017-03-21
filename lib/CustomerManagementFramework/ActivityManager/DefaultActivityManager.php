@@ -48,15 +48,17 @@ class DefaultActivityManager implements ActivityManagerInterface
         if($entry = $store->getEntryForActivity($activity)) {
             $store->updateActivityInStore($activity, $entry);
         } else {
-            $store->insertActivityIntoStore($activity);
+            $entry = $store->insertActivityIntoStore($activity);
 
             $event = new \CustomerManagementFramework\ActionTrigger\Event\NewActivity($activity->getCustomer());
             $event->setActivity($activity);
+            $event->setEntry( $entry );
             \Pimcore::getEventManager()->trigger($event->getName(), $event);
         }
 
         $event = new \CustomerManagementFramework\ActionTrigger\Event\AfterTrackActivity($activity->getCustomer());
         $event->setActivity($activity);
+        $event->setEntry( $entry );
         \Pimcore::getEventManager()->trigger($event->getName(), $event);
     }
 
