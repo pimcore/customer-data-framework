@@ -9,6 +9,7 @@
 namespace CustomerManagementFramework\ActionTrigger\Event;
 
 use CustomerManagementFramework\ActionTrigger\Trigger\TriggerDefinitionInterface;
+use CustomerManagementFramework\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFramework\Model\ActivityInterface;
 
 class NewActivity extends AbstractSingleCustomerEvent{
@@ -17,6 +18,9 @@ class NewActivity extends AbstractSingleCustomerEvent{
      * @var ActivityInterface $activity
      */
     private $activity;
+
+    /** @var ActivityStoreEntryInterface */
+    private $entry;
 
     const OPTION_TYPE = 'type';
 
@@ -35,6 +39,22 @@ class NewActivity extends AbstractSingleCustomerEvent{
     {
         $this->activity = $activity;
     }
+
+    /**
+     * @return ActivityStoreEntryInterface
+     */
+    public function getEntry() {
+        return $this->entry;
+    }
+
+    /**
+     * @param ActivityStoreEntryInterface $entry
+     */
+    public function setEntry( $entry ) {
+        $this->entry = $entry;
+    }
+
+
 
     public function getName(){
         return "plugin.cmf.new-activity";
