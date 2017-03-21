@@ -1,5 +1,5 @@
 {
-    "name": "YourVendorName/CustomerManagementFramework",
+    "name": "pimcore-plugins/CustomerManagementFramework",
     "type": "pimcore-plugin",
     "require": {
         "pimcore/installer-plugin": ">=1",
