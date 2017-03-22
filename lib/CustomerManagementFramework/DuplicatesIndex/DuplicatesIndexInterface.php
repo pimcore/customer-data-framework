@@ -58,9 +58,10 @@ interface DuplicatesIndexInterface
     /**
      * @param int $page
      * @param int $pageSize
+     * @param bool $declined
      * @return \Zend_Paginator
      */
-    public function getPotentialDuplicates($page, $pageSize = 100);
+    public function getPotentialDuplicates($page, $pageSize = 100, $declined = false);
 
     /**
      * @param int $page

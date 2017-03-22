@@ -8,8 +8,6 @@
 
 namespace CustomerManagementFramework\DuplicatesIndex;
 
-use CustomerManagementFramework\CustomerDuplicates\PotentialDuplicateItemInterface;
-use CustomerManagementFramework\DataSimilarityMatcher\BirthDate;
 use CustomerManagementFramework\DataSimilarityMatcher\DataSimilarityMatcherInterface;
 use CustomerManagementFramework\DataTransformer\DataTransformerInterface;
 use CustomerManagementFramework\DataTransformer\DuplicateIndex\Standard;
@@ -166,7 +164,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
         Db::get()->query("delete from " . self::POTENTIAL_DUPLICATES_TABLE . " where id not in(" . implode(',', $totalIds) . ")");
     }
 
-    public function getPotentialDuplicates($page, $pageSize = 100)
+    public function getPotentialDuplicates($page, $pageSize = 100, $declined = false)
     {
         $db = \Pimcore\Db::get();
 
@@ -182,9 +180,14 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
                     'modificationDate'
                 ]
             )
-            ->where('(declined is null or declined = 0)')
             ->order("id asc")
         ;
+
+        if($declined) {
+            $select->where('(declined = 1)');
+        } else {
+            $select->where('(declined is null or declined = 0)');
+        }
 
         $paginator = new \Zend_Paginator(new \Zend_Paginator_Adapter_DbSelect($select));
         $paginator->setItemCountPerPage($pageSize);

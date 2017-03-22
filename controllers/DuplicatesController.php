@@ -28,7 +28,7 @@ class CustomerManagementFramework_DuplicatesController extends Admin
     {
         $this->enableLayout();
 
-        $paginator = Factory::getInstance()->getDuplicatesIndex()->getPotentialDuplicates($this->getParam('page', 1), 100);
+        $paginator = Factory::getInstance()->getDuplicatesIndex()->getPotentialDuplicates($this->getParam('page', 1), 100, $this->getParam('declined'));
 
         $this->view->paginator = $paginator;
         $this->view->duplicates = $paginator->getCurrentItems();
