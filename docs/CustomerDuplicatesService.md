@@ -104,7 +104,7 @@ Each SimilarityMatcher has a default treshold - but it's possbile to (optionally
 php pimcore/cli/console.php cmf:duplicates-index
 ```
 
-####options:
+#### options:
 
 -c - calculate potential duplicates. This needs to run as cron job for example once a day.
 
