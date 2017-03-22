@@ -104,7 +104,10 @@ Each SimilarityMatcher has a default treshold - but it's possbile to (optionally
 php pimcore/cli/console.php cmf:duplicates-index
 ```
 
-options:
+####options:
+
 -c - calculate potential duplicates. This needs to run as cron job for example once a day.
+
 -a - analyse false positives. If set false positives will be logged (by default in the plugin_cmf_duplicates_false_positives table).
+
 -r - reacreate index. Recreate the total index for all customers.
