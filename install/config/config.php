@@ -111,6 +111,37 @@ return [
     'CustomerDuplicatesService' => [
         'duplicateCheckFields' => [
             /*['firstname', 'lastname', 'zip', 'birthday'],*/
+        ],
+
+        'DuplicatesIndex' => [
+            'enableDuplicatesIndex' => true,
+            'duplicateCheckFields' => [
+
+                [
+                    'firstname' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class],
+                    'zip' => ['similarity' => \CustomerManagementFramework\DataSimilarityMatcher\Zip::class],
+                    'street' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class],
+                    'birthDate' => ['similarity' => \CustomerManagementFramework\DataSimilarityMatcher\BirthDate::class],
+
+                ],
+                [
+                    'lastname' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class],
+                    'firstname' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class],
+                    'zip' => ['similarity' => \CustomerManagementFramework\DataSimilarityMatcher\Zip::class],
+                    'city' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class],
+                    'street' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class]
+                ],
+                [
+                    'email' => ['metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class, 'similarityTreshold' => 90]
+                ]
+            ],
+            'dataTransformers' => [
+                'street' => \CustomerManagementFramework\DataTransformer\DuplicateIndex\Street::class,
+                'firstname' => \CustomerManagementFramework\DataTransformer\DuplicateIndex\Simplify::class,
+                'city' => \CustomerManagementFramework\DataTransformer\DuplicateIndex\Simplify::class,
+                'lastname' => \CustomerManagementFramework\DataTransformer\DuplicateIndex\Simplify::class,
+                'birthDate' => \CustomerManagementFramework\DataTransformer\DuplicateIndex\Date::class,
+            ],
         ]
     ],
 
