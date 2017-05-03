@@ -5,8 +5,6 @@ namespace CustomerManagementFramework\CustomerList\Filter;
 use BackendToolkit\Listing\Filter\AbstractFilter;
 use BackendToolkit\Listing\OnCreateQueryFilterInterface;
 use CustomerManagementFramework\CustomerList\Filter\Exception\SearchQueryException;
-use CustomerManagementFramework\Factory;
-use CustomerManagementFramework\View\Formatter\ViewFormatterInterface;
 use Phlexy\LexingException;
 use Pimcore\Model\Object\Listing as CoreListing;
 use SearchQueryParser\ParserException;
@@ -41,10 +39,7 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
      */
     public function applyOnCreateQuery(CoreListing\Concrete $listing, \Zend_Db_Select $query)
     {
-        $queryBuilder = new ZendDbSelect($this->fields, [
-            'stripWildcards' => false // allow LIKE wildcards
-        ]);
-
+        $queryBuilder = new ZendDbSelect($this->fields);
         $queryBuilder->processQuery($query, $this->parsedQuery);
     }
 
