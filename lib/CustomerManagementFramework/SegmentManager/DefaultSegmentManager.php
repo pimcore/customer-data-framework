@@ -563,7 +563,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $list = new CustomerSegment\Listing;
         $list->setUnpublished(true);
         $list->setCondition("group__id = ?" . $ignoreCondition, $segmentGroup->getId());
-
+        $list->setOrderKey('name');
         $result = $list->load();
 
         return $result ? : [];
@@ -620,7 +620,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
                 }
             }
         }
-        
+
         return false;
     }
 
