@@ -16,15 +16,35 @@ use CustomerManagementFramework\Model\CustomerInterface;
 class DefaultActivityManager implements ActivityManagerInterface
 {
 
+    protected $disableEvents = false;
+
+    /**
+     * @return bool
+     */
+    public function isDisableEvents() {
+        return $this->disableEvents;
+    }
+
+    /**
+     * @param bool $disableEvents
+     * @return $this
+     */
+    public function setDisableEvents( $disableEvents ) {
+        $this->disableEvents = $disableEvents;
+        return $this;
+    }
+
+
     /**
      * Add or update activity in the ActivityStore
      *
      * @param ActivityInterface $activity
      *
      * @return void
+     * @throws \Exception
      */
     
-    public function trackActivity(ActivityInterface $activity) {
+    public function trackActivity(ActivityInterface $activity  ) {
 
         $store = Factory::getInstance()->getActivityStore();
 
@@ -50,16 +70,20 @@ class DefaultActivityManager implements ActivityManagerInterface
         } else {
             $entry = $store->insertActivityIntoStore($activity);
 
-            $event = new \CustomerManagementFramework\ActionTrigger\Event\NewActivity($activity->getCustomer());
+            if( !$this->isDisableEvents() ) {
+                $event = new \CustomerManagementFramework\ActionTrigger\Event\NewActivity($activity->getCustomer());
+                $event->setActivity($activity);
+                $event->setEntry( $entry );
+                \Pimcore::getEventManager()->trigger($event->getName(), $event);
+            }
+        }
+
+        if( !$this->isDisableEvents() ) {
+            $event = new \CustomerManagementFramework\ActionTrigger\Event\AfterTrackActivity($activity->getCustomer());
             $event->setActivity($activity);
             $event->setEntry( $entry );
             \Pimcore::getEventManager()->trigger($event->getName(), $event);
         }
-
-        $event = new \CustomerManagementFramework\ActionTrigger\Event\AfterTrackActivity($activity->getCustomer());
-        $event->setActivity($activity);
-        $event->setEntry( $entry );
-        \Pimcore::getEventManager()->trigger($event->getName(), $event);
     }
 
     /**

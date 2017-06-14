@@ -7,8 +7,8 @@ $searchBarFields = $this->searchBarFields;
 
 $exampleQueries = [
     'foo',
-    'foo AND bar*',
-    '*foo* OR bar',
+    'foo AND bar',
+    'foo OR bar',
     'foo OR !bar',
     'foo AND "bar"',
     'foo OR (bar AND baz)',
@@ -16,14 +16,7 @@ $exampleQueries = [
 
 $modifiers = [
     'Exact search (field must match exactly)' => [
-        '<term>',
         '"<term>"',
-        '\'<term>\'',
-        '"fo*obar"'
-    ],
-    'Fuzzy search (use * as wildcard)' => [
-        '*foo*',
-        'fo*o'
     ],
     'Negation'     => [
         '!<term>',

@@ -28,51 +28,51 @@ $duplicates = $this->duplicates;
 
         <?php foreach($duplicates as $duplicate) {
             $listData = $duplicatesView->getListData($duplicate->getDuplicateCustomers()[0]);
-            ?>
+        ?>
             <tbody id="customerduplicates_<?=$duplicate->getDuplicateCustomers()[0]->getId()?>_<?=$duplicate->getDuplicateCustomers()[1]->getId()?>" class="js-duplicates-item duplicates-item" >
-            <tr>
-                <td colspan="99">
-
-                    <a class="btn btn-primary btn-xs pull-right" onClick="new window.top.pimcore.plugin.objectmerger.panel(<?=$duplicate->getDuplicateCustomers()[0]->getId()?>, <?=$duplicate->getDuplicateCustomers()[1]->getId()?>); "><?=$duplicatesView->getViewFormatter()->translate('merge')?></a>
-                    <?php if(!$this->getParam('declined')) {?>
-                        <a class="btn btn-danger btn-xs pull-right js-decline-duplicate" data-id="<?=$duplicate->getId()?>" style="margin-right: 5px;"><?=$duplicatesView->getViewFormatter()->translate('decline duplicate')?></a>
-                    <?php } ?>
-
-                    <?php if(PIMCORE_DEBUG) {
-
-                        $fieldCombinations = $duplicate->getFieldCombinations();
-                        foreach($fieldCombinations as $key => $combination) {
-                            $fieldCombinations[$key] = implode(', ', $combination);
-                        }
-
-                        ?>
-
-                        <a class="btn btn-default btn-xs pull-right" style="margin-right: 5px;" data-toggle="tooltip" data-placement="left" data-html="true" title="<div style='text-align:left;'><strong>matched field combinations (duplicate ID <?= $duplicate->getId() ?>):</strong><br/><br/><?= implode('<br>', $fieldCombinations) ?></div>">info (debug)</a>
-                    <?php } ?>
-
-                </td>
-            </tr>
-
-            <tr>
-                <?foreach($listData as $label => $value) {?>
-                    <th><?=$label?></th>
-                <?}?>
-            </tr>
-            <?php
-
-            foreach($duplicate->getDuplicateCustomers() as $customer) {
-                $listData = $duplicatesView->getListData($customer);
-                ?>
                 <tr>
-                    <?php foreach($listData as $label => $value) {?>
-                        <td><?=$value?></td>
-                    <?php } ?>
+                    <td colspan="99">
 
+                        <a class="btn btn-primary btn-xs pull-right" onClick="new window.top.pimcore.plugin.objectmerger.panel(<?=$duplicate->getDuplicateCustomers()[0]->getId()?>, <?=$duplicate->getDuplicateCustomers()[1]->getId()?>); "><?=$duplicatesView->getViewFormatter()->translate('merge')?></a>
+                        <?php if(!$this->getParam('declined')) {?>
+                            <a class="btn btn-danger btn-xs pull-right js-decline-duplicate" data-id="<?=$duplicate->getId()?>" style="margin-right: 5px;"><?=$duplicatesView->getViewFormatter()->translate('decline duplicate')?></a>
+                        <?php } ?>
+
+                        <?php if(PIMCORE_DEBUG) {
+
+                            $fieldCombinations = $duplicate->getFieldCombinations();
+                            foreach($fieldCombinations as $key => $combination) {
+                                $fieldCombinations[$key] = implode(', ', $combination);
+                            }
+
+                            ?>
+
+                            <a class="btn btn-default btn-xs pull-right" style="margin-right: 5px;" data-toggle="tooltip" data-placement="left" data-html="true" title="<div style='text-align:left;'><strong>matched field combinations (duplicate ID <?= $duplicate->getId() ?>):</strong><br/><br/><?= implode('<br>', $fieldCombinations) ?></div>">info (debug)</a>
+                        <?php } ?>
+
+                    </td>
                 </tr>
-            <?php } ?>
+
+                <tr>
+                    <?foreach($listData as $label => $value) {?>
+                        <th><?=$label?></th>
+                    <?}?>
+                </tr>
+                    <?php
+
+                    foreach($duplicate->getDuplicateCustomers() as $customer) {
+                        $listData = $duplicatesView->getListData($customer);
+                    ?>
+                        <tr>
+                            <?php foreach($listData as $label => $value) {?>
+                                <td><?=$value?></td>
+                            <?php } ?>
+
+                        </tr>
+                    <?php } ?>
 
             </tbody>
-        <?php }?>
+            <?php }?>
 
     </table>
 
