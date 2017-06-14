@@ -107,11 +107,17 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
     /**
      * @param bool $changesQueueOnly
-     *
+     * @param null $segmentBuilderClass
+     * @param int[]|null $customQueue
+     * @param boolean|null $activeState
+     * @param array $options
      * @return void
      */
-    public function buildCalculatedSegments($changesQueueOnly = true, $segmentBuilderClass = null)
-    {
+    public function buildCalculatedSegments(
+        $changesQueueOnly = true, $segmentBuilderClass = null,
+        array $customQueue = null, $activeState = null,
+        $options = [], $captureSignals = false
+    ) {
         $logger = $this->getLogger();
         $logger->notice("start segment building");
 
@@ -122,38 +128,221 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         self::prepareSegmentBuilders($segmentBuilders);
 
         $customerList = Factory::getInstance()->getCustomerProvider()->getList();
+        // don't modify queue
+        $removeCustomerFromQueue = is_null($segmentBuilderClass);
 
-        if($changesQueueOnly) {
-            $customerList->setCondition(sprintf("o_id in (select customerId from %s)", self::CHANGES_QUEUE_TABLE));
+        $conditionParts = [];
+        $conditionVariables = null;
+
+        if( !empty( $customQueue ) ) {
+            // restrict to given customer
+            $customerIds = array_filter( $customQueue, 'is_numeric' );
+            if( !empty( $customerIds ) ) {
+                $conditionParts[] = sprintf("o_id in (%s)", implode( ',', $customQueue ) );
+
+            } else {
+                // capture empty
+                $conditionParts[] = '0 = 1';
+            }
+            // don't modify queue
+            $removeCustomerFromQueue = false;
+
+        } elseif( $changesQueueOnly ) {
+            $conditionParts[] = sprintf("o_id in (select customerId from %s)", self::CHANGES_QUEUE_TABLE );
         }
 
-        $paginator = new \Zend_Paginator($customerList);
-        $paginator->setItemCountPerPage(100);
+        if( $activeState !== null  ) {
+            if( $activeState === true ) {
+                // active only
+                $conditionParts[] = 'active = 1';
+            } elseif( $activeState === false ) {
+                // inactive only
+                $conditionParts[] = '(active IS NULL OR active != 1)';
+            }
 
-        $totalPages = $paginator->getPages()->pageCount;
-        for ($pageNumber = 1; $pageNumber <= $totalPages; $pageNumber++) {
-            $logger->notice(sprintf("build customer segments page %s of %s", $pageNumber, $totalPages));
-            $paginator->setCurrentPageNumber($pageNumber);
+        }
 
-            foreach($paginator as $customer) {
-                foreach($segmentBuilders as $segmentBuilder) {
+        if( !empty( $conditionParts ) ) {
+            $customerList->setCondition( implode( ' AND ', $conditionParts ),  $conditionVariables );
+        }
+        $customerList->setOrderKey( 'o_id');
+
+        // parse options
+        $desiredPageSize = isset( $options[ 'pageSize'] ) && (is_int( $options[ 'pageSize'] ) || ctype_digit( $options[ 'pageSize'] ) ) ? (int)$options[ 'pageSize'] : null;
+        $desiredStartPage = isset( $options[ 'startPage'] ) && (is_int( $options[ 'startPage'] ) || ctype_digit( $options[ 'startPage'] ) ) ? (int)$options[ 'startPage'] : null;
+        $desiredEndPage = isset( $options[ 'endPage'] ) && (is_int( $options[ 'endPage'] ) || ctype_digit( $options[ 'endPage'] ) ) ? (int)$options[ 'endPage'] : null;
+        $desiredPages = isset( $options[ 'pages'] ) && (is_int( $options[ 'pages'] ) || ctype_digit( $options[ 'pages'] ) )  ? (int)$options[ 'pages'] : null;
+
+
+        // pre-fetch all ids - load by id -> slow sql
+        $flushQueuePerPage = false;
+        if( true ) {
+
+            $logger->notice( sprintf(
+                'Pre-fetching all ids via adapter for speedup and coherent paging '
+            ));
+            // note: listing is now constant and may be flushed per iteration
+            $flushQueuePerPage = true;
+            $paginator = new \Zend_Paginator( new \Pimcore\Model\Tool\ListingAdapter( $customerList ) );
+        } else {
+            $paginator = new \Zend_Paginator($customerList);
+        }
+
+
+
+
+        $pageSize = $desiredPageSize !== null && $desiredPageSize > 0 ? $desiredPageSize : 250;
+        $paginator->setItemCountPerPage( $pageSize );
+        $totalAmount = $paginator->getTotalItemCount();
+        $totalPages = $paginator->count();
+
+        $startPage = $desiredStartPage !== null && $desiredStartPage  > 0 ? min( $totalPages, $desiredStartPage ) : 1;
+        $endPage = $totalPages;
+        if( $desiredPages !== null && $desiredPages >= 0 ) {
+            $endPage = min( $totalPages, $startPage + $desiredPages );
+        } elseif( $desiredEndPage > 0 && $desiredEndPage > $startPage ) {
+            $endPage = min( $totalPages, $desiredEndPage );
+        }
+
+        $taskTotalAmount = min( (($endPage - $startPage) + 1)*$pageSize, $totalAmount );
+
+        $customerQueueRemoval = [];
+
+        $flushQueue = function( $queue )  {
+            $queueSize = count( $queue );
+            if( $queueSize > 0 ) {
+                $this->getLogger()->notice( sprintf(
+                    'Flushing queue of size %d', $queueSize
+                ));
+
+                foreach( array_chunk( $queue, 50 ) as $nextChunk ) {
                     try {
-                        $this->applySegmentBuilderToCustomer($customer, $segmentBuilder);
-                    } catch(\Exception $e) {
-                        $this->getLogger()->error($e);
+
+                        $removedAmount = Db::get()->delete( self::CHANGES_QUEUE_TABLE,
+                            sprintf( 'customerId IN (%s)', implode( ',', $nextChunk ) )
+                        );
+
+                        $this->getLogger()->notice( sprintf(
+                            'Removed %d / %d customer from queue of size %d',
+                            $removedAmount, count( $nextChunk ), $queueSize
+                        ) );
+                    } catch( \Exception $e ) {
+                        $this->getLogger()->error( sprintf( 'Failed to flush queue due too %s!', $e->getMessage() ) );
                     }
-
-                }
-
-                $event = new \CustomerManagementFramework\ActionTrigger\Event\ExecuteSegmentBuilders($customer);
-
-                \Pimcore::getEventManager()->trigger($event->getName(), $event);
-
-                if(is_null($segmentBuilderClass)) {
-                    Db::get()->query(sprintf("delete from %s where customerId = ?", self::CHANGES_QUEUE_TABLE), $customer->getId());
                 }
             }
+            return [];
+        };
+
+        $stopFurtherProcessing = false;
+        if( $captureSignals ) {
+            $stopProcessingHook = function( $signal ) use (&$stopFurtherProcessing ){
+                $stopFurtherProcessing = true;
+                $this->getLogger()->error( sprintf(
+                    'Captured signal "%d", stopping further processing',
+                    $signal
+                ));
+            };
+            $logger->warning( 'Enabling signal listeing (Ctrl+C, Kill) during processing...');
+            // kill
+            pcntl_signal(SIGTERM, $stopProcessingHook);
+            // capture ctrl+c
+            pcntl_signal(SIGINT, $stopProcessingHook );
+
         }
+
+
+
+        $progressCount =  max( (int)($pageSize / 10), 1 );
+        $progressTime = $startTime = time();
+        $itemCount = 1;
+        try {
+            for( $pageNumber = $startPage; $pageNumber <= $endPage && $pageNumber <= $totalPages && !$stopFurtherProcessing ; $pageNumber++ ) {
+
+                $logger->notice( sprintf(
+                    "Building segments for %d / %d customers in total, currently at page %d / %d out of %d total pages",
+                    $taskTotalAmount, $totalAmount, $pageNumber, $endPage, $totalPages
+                ) );
+
+                $paginator->setCurrentPageNumber( $pageNumber );
+                /** @var CustomerInterface $customer */
+                foreach( $paginator as $customer ) {
+
+                    if( $itemCount%$progressCount === 0 ) {
+
+                        $remaining = $totalAmount - $itemCount;
+                        $taskRemaining = $taskTotalAmount - $itemCount;
+
+                        $currentTime = time();
+                        // avg seconds per customer
+                        $seconds = ( $currentTime - $progressTime ) / $progressCount;
+
+                        $estimatedCompletionSeconds = $remaining * $seconds;
+                        $estimatedCompletionMinutes = $estimatedCompletionSeconds / 60;
+                        $estimatedCompletionHours = $estimatedCompletionMinutes / 60;
+
+                        $taskEstimatedCompletionSeconds = $taskRemaining * $seconds;
+                        $taskEstimatedCompletionMinutes = $taskEstimatedCompletionSeconds / 60;
+                        $taskEstimatedCompletionHours = $taskEstimatedCompletionMinutes / 60;
+
+                        $logger->notice( sprintf(
+                            'Progress at %.2F - %d / %d (%d) - avg at %.2F s/item, completion-total in (%d s, %d m, %d h), completion-task in (%d s, %d m, %d h)',
+                            round( $itemCount / $taskTotalAmount, 4 )*100, $itemCount, $taskTotalAmount, $totalAmount, $seconds,
+                            $estimatedCompletionSeconds, $estimatedCompletionMinutes, $estimatedCompletionHours,
+                            $taskEstimatedCompletionSeconds, $taskEstimatedCompletionMinutes, $taskEstimatedCompletionHours
+                        ) );
+
+                        $progressTime = $currentTime;
+
+                    }
+
+                    foreach( $segmentBuilders as $segmentBuilder ) {
+                        try {
+                            $this->applySegmentBuilderToCustomer( $customer, $segmentBuilder );
+                        } catch( \Exception $e ) {
+                            $this->getLogger()->error( $e );
+                        }
+
+                    }
+
+                    $event = new \CustomerManagementFramework\ActionTrigger\Event\ExecuteSegmentBuilders( $customer );
+
+                    \Pimcore::getEventManager()->trigger( $event->getName(), $event );
+
+                    if( $removeCustomerFromQueue ) {
+                        // delay queue removal to prevent paging issue
+                        $customerQueueRemoval[] = $customer->getId();
+                    }
+                    $itemCount += 1;
+
+                    if( $captureSignals ) {
+                        // capture events
+                        pcntl_signal_dispatch();
+                        if( $stopFurtherProcessing ) {
+                            // stop processing captured signal
+                            break;
+                        }
+                    }
+                }
+
+                if( !$stopFurtherProcessing && $captureSignals ) {
+                    // capture events
+                    pcntl_signal_dispatch();
+                }
+
+
+                if( !$stopFurtherProcessing ) {
+                    if( $flushQueuePerPage ) {
+                        $customerQueueRemoval = $flushQueue( $customerQueueRemoval );
+                    }
+                    \Pimcore::collectGarbage();
+                }
+
+            }
+        } finally {
+            $flushQueue( $customerQueueRemoval );
+        }
+
 
         Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled($backup);
     }
@@ -272,10 +461,8 @@ class DefaultSegmentManager implements SegmentManagerInterface {
                 $customer->setManualSegments($currentSegments);
             }
 
-            $segmentBuildingHookBackup = Factory::getInstance()->getCustomerSaveManager()->getSegmentBuildingHookEnabled();
-            Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled(false);
-            $customer->save();
-            Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled($segmentBuildingHookBackup);
+            Factory::getInstance()->getCustomerSaveManager()->saveDirty( $customer );
+
 
             if(is_array($addedSegments) && sizeof($addedSegments)) {
 
@@ -625,6 +812,35 @@ class DefaultSegmentManager implements SegmentManagerInterface {
     }
 
     /**
+     * Return segments of given customers which are within given customer segment group.
+     *
+     * @param CustomerInterface $customer
+     * @param CustomerSegmentGroup|string $group
+     * @return CustomerSegmentInterface[]
+     */
+    public function getCustomersSegmentsFromGroup(CustomerInterface $customer, $group)
+    {
+        $group = $group instanceof CustomerSegmentGroup ? $group : $this->getSegmentGroupByReference($group, true);
+
+        if(!$group instanceof CustomerSegmentGroup) {
+            return [];
+        }
+
+        if(!$segments = $customer->getAllSegments()) {
+            return [];
+        }
+
+        $result = [];
+        foreach($segments as $segment) {
+            if($segment->getGroup() && $segment->getGroup()->getId() == $group->getId()) {
+                $result[] = $segment;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * @param SegmentBuilderInterface[] $segmentBuilders
      * @param bool  $ignoreAsyncSegmentBuilders
      */
@@ -641,9 +857,25 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         }
     }
 
+    /**
+     * Returns a segment builder instance of given class.
+     *
+     * @param $segmentBuilderClass
+     * @return SegmentBuilderInterface|null
+     */
+    public function createSegmentBuilder($segmentBuilderClass)
+    {
+        $builders = $this->createSegmentBuilders($segmentBuilderClass);
+
+        if(sizeof($builders)) {
+            return $builders[0];
+        }
+
+        return null;
+    }
 
     /**
-     * @return SegmentBuilderInterface[]|null
+     * @return SegmentBuilderInterface[]
      */
     protected function createSegmentBuilders($segmentBuilderClass = null) {
 
@@ -663,7 +895,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $segmentBuilders = [];
         foreach($config as $segmentBuilderConfig) {
 
-            if(is_null($segmentBuilderClass) || $segmentBuilderClass == (string)$segmentBuilderConfig->segmentBuilder) {
+            if(is_null($segmentBuilderClass) || ltrim($segmentBuilderClass, '\\') == ltrim((string)$segmentBuilderConfig->segmentBuilder, '\\')) {
                 $segmentBuilders[] = Factory::getInstance()->createObject((string)$segmentBuilderConfig->segmentBuilder, SegmentBuilderInterface::class, ["config"=>$segmentBuilderConfig, "logger"=>$this->getLogger()]);
             }
         }

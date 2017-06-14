@@ -10,9 +10,9 @@ namespace CustomerManagementFramework\SegmentManager;
 
 use CustomerManagementFramework\Model\CustomerInterface;
 use CustomerManagementFramework\Model\CustomerSegmentInterface;
+use CustomerManagementFramework\SegmentBuilder\SegmentBuilderInterface;
 use Pimcore\Model\Object\CustomerSegment;
 use Pimcore\Model\Object\CustomerSegmentGroup;
-use Psr\Log\LoggerInterface;
 
 interface SegmentManagerInterface {
 
@@ -64,15 +64,26 @@ interface SegmentManagerInterface {
     public function getSegmentGroups(array $params = []);
 
     /**
-     * Applies all SegmentBuilders to customers. If the param $changesQueue only is set to true this is done only for customers which where changed since the last run. 
+     * Applies all SegmentBuilders to customers. If the param $changesQueue only is set to true this is done only for customers which where changed since the last run.
      * If $segmentBuilderClass is given (php class name) then only this SegmentBuilder will be executed.
      *
      * @param bool $changesQueueOnly
      * @param string $segmentBuilderClass
-     * 
+     *
+     * @param int[]|null $customQueue Process only customer from given queue
+     * @param boolean|null $activeState Consider active-state, null : ignore, false -> inactive only, true -> active only
+     * @param array $options
      * @return void
      */
-    public function buildCalculatedSegments($changesQueueOnly = true, $segmentBuilderClass = null);
+    public function buildCalculatedSegments($changesQueueOnly = true, $segmentBuilderClass = null, array $customQueue = null, $activeState = null, $options = [] );
+
+    /**
+     * Returns a segment builder instance of given class.
+     *
+     * @param $segmentBuilderClass
+     * @return SegmentBuilderInterface|null
+     */
+    public function createSegmentBuilder($segmentBuilderClass);
 
     /**
      * Calls all maintenance methods of all SegmentBuilders
@@ -196,6 +207,15 @@ interface SegmentManagerInterface {
      * @return bool
      */
     public function customerHasSegment(CustomerInterface $customer, CustomerSegmentInterface $segment);
+
+    /**
+     * Return segments of given customers which are within given customer segment group.
+     *
+     * @param CustomerInterface $customer
+     * @param CustomerSegmentGroup|string $group
+     * @return CustomerSegmentInterface[]
+     */
+    public function getCustomersSegmentsFromGroup(CustomerInterface $customer, $group);
 
     /**
      * @param CustomerInterface $customer
