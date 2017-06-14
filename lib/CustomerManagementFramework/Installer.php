@@ -21,7 +21,6 @@ class Installer {
         $this->installPermissions();
         $this->installDatabaseTables();
         $this->installClasses();
-        $this->installCrontab();
         $this->installStaticRoutes();
         $this->installConfig();
 
@@ -137,8 +136,6 @@ class Installer {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
         );
 
-
-
         \Pimcore\Db::get()->query(
             "CREATE TABLE IF NOT EXISTS `plugin_cmf_duplicatesindex` (
               `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -212,32 +209,6 @@ class Installer {
         if(!$success){
             Logger::err("Could not import $classname Class.");
         }
-    }
-
-    public static function installCrontab() {
-
-
-        $crons = [
-            '* * * * * php ' . PIMCORE_DOCUMENT_ROOT . '/pimcore/cli/console.php cmf:handle-cron-triggers -v > ' . PIMCORE_LOG_DIRECTORY . '/cmf-cron-trigger-lastrun.log',
-            '*/7 * * * * php ' . PIMCORE_DOCUMENT_ROOT . '/pimcore/cli/console.php cmf:process-actiontrigger-queue -v > ' . PIMCORE_LOG_DIRECTORY . '/cmf-process-actiontrigger-queue-lastrun.log',
-            '*/5 * * * * php ' . PIMCORE_DOCUMENT_ROOT . '/pimcore/cli/console.php cmf:build-segments -v > ' . PIMCORE_LOG_DIRECTORY . '/cmf-build-segments-queue-lastrun.log',
-        ];
-
-        foreach($crons as $cron) {
-
-            try {
-
-                $crontabJob = CrontabJob::createFromCrontabLine($cron);
-                $crontabRepository = new CrontabRepository(new CrontabAdapter());
-                $crontabJob->comments = 'installed by CMF plugin';
-                $crontabRepository->addJob($crontabJob);
-                $crontabRepository->persist();
-            } catch(\Exception $e) {
-                Logger::error($e->getMessage());
-            }
-        }
-
-
     }
 
     public static function installStaticRoutes() {
