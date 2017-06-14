@@ -1,6 +1,7 @@
 {
-    "name": "pimcore-plugins/CustomerManagementFramework",
-    "type": "pimcore-plugin",
+    "name": "pimcore/customer-management-framework-bundle",
+    "license": "GPL-3.0+",
+    "type": "pimcore-bundle",
     "require": {
         "pimcore/installer-plugin": ">=1",
         "tiben/crontab-manager":"^1.2",
