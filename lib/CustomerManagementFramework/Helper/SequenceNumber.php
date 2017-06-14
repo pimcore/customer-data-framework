@@ -21,6 +21,33 @@ class SequenceNumber
         return intval($number) ? : $startingNumber;
     }
 
+    public static function setCurrent( $sequenceName, $sequenceValue = 10000  ) {
+        $handle = self::SemaphoreWait();
+        $current = self::getCurrent( $sequenceName, $sequenceValue );
+
+        try {
+            if( $current > $sequenceValue ) {
+                throw new \RuntimeException( sprintf(
+                    'Current sequence value of %d is greater then desired %d, preventing update!'
+                ));
+            }
+            Db::get()->query("insert into " . self::TABLE_NAME . " (name, number) values (?,?) on duplicate key update number = ?", [$sequenceName, $sequenceValue, $sequenceValue]);
+
+            $logger = \Pimcore::getDiContainer()->get("CustomerManagementFramework\\Logger");
+
+            $logger->info( sprintf(
+                "Updated Sequence Number '%s' from %d to %d (pid :%s)",
+                $sequenceName, $current, $sequenceValue, getmypid()
+            ) );
+
+            return self::getCurrent( $sequenceName, $sequenceValue );
+        } finally {
+            self::SemaphoreSignal($handle);
+        }
+
+
+    }
+
     public static function getNext($sequenceName, $startingNumber = 10000) {
         $db = Db::get();
 
@@ -35,7 +62,7 @@ class SequenceNumber
 
         $logger = \Pimcore::getDiContainer()->get("CustomerManagementFramework\\Logger");
 
-        $logger->info("Generated Sequenence Number " . $sequenceName . " " . $number . " (pid : " . getmypid() . ")");
+        $logger->info("Generated Sequence Number " . $sequenceName . " " . $number . " (pid : " . getmypid() . ")");
 
 
         return $number;
