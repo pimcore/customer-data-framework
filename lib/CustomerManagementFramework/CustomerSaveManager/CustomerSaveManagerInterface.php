@@ -35,7 +35,24 @@ interface CustomerSaveManagerInterface
      */
     public function setCustomerSaveValidatorEnabled($customerSaveValidatorEnabled);
 
-    public function validateOnSave(CustomerInterface $customer, $withDuplicatesCheck = true);
+    /**
+     * @param CustomerInterface $customer
+     * @param bool $withDuplicatesCheck
+     * @return bool
+     */
+    function validateOnSave(CustomerInterface $customer, $withDuplicatesCheck = true);
 
-    public function saveWithDisabledHooks(CustomerInterface $customer, $disableVersions = false);
+    /**
+     * @param CustomerInterface $customer
+     * @param bool $disableVersions
+     * @return mixed
+     */
+    function saveWithDisabledHooks(CustomerInterface $customer, $disableVersions = false );
+
+    /**
+     * Dirty / quick save customer w/o invoking any hooks, save-handlers, version and alike
+     * @param CustomerInterface $customer
+     * @return mixed
+     */
+    function saveDirty( CustomerInterface $customer );
 }

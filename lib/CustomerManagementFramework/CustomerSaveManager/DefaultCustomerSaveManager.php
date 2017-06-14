@@ -24,6 +24,10 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     private $segmentBuildingHookEnabled = true;
     private $customerSaveValidatorEnabled = true;
 
+    private $disableSaveHandlers = false;
+    private $disableDuplicateIndex = false;
+    private $disableQueue = false;
+
     protected $config;
 
     /**
@@ -37,12 +41,104 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         $config = Plugin::getConfig();
         $this->config = $config->CustomerSaveManager;
     }
+
+    /**
+     * @return boolean
+     */
+    public function getSegmentBuildingHookEnabled() {
+        return $this->segmentBuildingHookEnabled;
+    }
+
+    /**
+     * @param boolean $segmentBuildingHookEnabled
+     * @return $this
+     */
+    public function setSegmentBuildingHookEnabled($segmentBuildingHookEnabled) {
+        $this->segmentBuildingHookEnabled = $segmentBuildingHookEnabled;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getCustomerSaveValidatorEnabled() {
+        return $this->customerSaveValidatorEnabled;
+    }
+
+    /**
+     * @param bool $customerSaveValidatorEnabled
+     * @return $this
+     */
+    public function setCustomerSaveValidatorEnabled($customerSaveValidatorEnabled) {
+        $this->customerSaveValidatorEnabled = $customerSaveValidatorEnabled;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDisableSaveHandlers() {
+        return $this->disableSaveHandlers;
+    }
+
+    /**
+     * @param bool $disableSaveHandlers
+     * @return $this
+     */
+    public function setDisableSaveHandlers( $disableSaveHandlers ) {
+        $this->disableSaveHandlers = $disableSaveHandlers;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDisableDuplicateIndex() {
+        return $this->disableDuplicateIndex;
+    }
+
+    /**
+     * @param bool $disableDuplicateIndex
+     * @return $this
+     */
+    public function setDisableDuplicateIndex( $disableDuplicateIndex ) {
+        $this->disableDuplicateIndex = $disableDuplicateIndex;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDisableQueue() {
+        return $this->disableQueue;
+    }
+
+    /**
+     * @param bool $disableQueue
+     * @return $this
+     */
+    public function setDisableQueue( $disableQueue ) {
+        $this->disableQueue = $disableQueue;
+        return $this;
+    }
+
+
+
+    protected function applyNamingScheme(CustomerInterface $customer) {
+        if($this->config->enableAutomaticObjectNamingScheme) {
+            Factory::getInstance()->getCustomerProvider()->applyObjectNamingScheme($customer);
+        }
+    }
+
+
     public function preAdd(CustomerInterface $customer) {
         if($customer->getPublished()) {
             $this->validateOnSave($customer);
         }
+        if( !$this->isDisableSaveHandlers() ) {
+            $this->applySaveHandlers($customer, 'preAdd', true);
+        }
 
-        $this->applySaveHandlers($customer, 'preAdd', true);
         $this->applyNamingScheme($customer);
     }
 
@@ -53,36 +149,50 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
             $customer->setIdEncoded(md5($customer->getId()));
         }
 
-        $this->applySaveHandlers($customer, 'preUpdate', true);
+        if( !$this->isDisableSaveHandlers() ) {
+            $this->applySaveHandlers( $customer, 'preUpdate', true );
+        }
         $this->validateOnSave($customer, false);
         $this->applyNamingScheme($customer);
     }
 
     public function postUpdate(CustomerInterface $customer)
     {
-        $this->applySaveHandlers($customer, 'postUpdate');
+        if( !$this->isDisableSaveHandlers() ) {
+            $this->applySaveHandlers( $customer, 'postUpdate' );
+        }
 
-        if($this->segmentBuildingHookEnabled) {
+        if( $this->getSegmentBuildingHookEnabled() ) {
             Factory::getInstance()->getSegmentManager()->buildCalculatedSegmentsOnCustomerSave($customer);
         }
 
-        Factory::getInstance()->getSegmentManager()->addCustomerToChangesQueue($customer);
-        Factory::getInstance()->getCustomerDuplicatesService()->updateDuplicateIndexForCustomer($customer);
+        if( !$this->isDisableQueue() ) {
+            Factory::getInstance()->getSegmentManager()->addCustomerToChangesQueue($customer);
+        }
+
+        if( !$this->isDisableDuplicateIndex() ) {
+            Factory::getInstance()->getCustomerDuplicatesService()->updateDuplicateIndexForCustomer($customer);
+        }
+
     }
 
     public function preDelete(CustomerInterface $customer)
     {
-        $this->applySaveHandlers($customer, 'preDelete', true);
+        if( !$this->isDisableSaveHandlers() ) {
+            $this->applySaveHandlers( $customer, 'preDelete', true );
+        }
     }
 
     public function postDelete(CustomerInterface $customer)
     {
-        $this->applySaveHandlers($customer, 'postDelete');
+        if( !$this->isDisableSaveHandlers() ) {
+            $this->applySaveHandlers( $customer, 'postDelete' );
+        }
     }
 
     public function validateOnSave(CustomerInterface $customer, $withDuplicatesCheck = true) {
 
-        if(!$this->customerSaveValidatorEnabled) {
+        if(!$this->getCustomerSaveValidatorEnabled() ) {
             return false;
         }
 
@@ -91,7 +201,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
          */
         $validator = \Pimcore::getDiContainer()->get(CustomerSaveValidatorInterface::class);
 
-        $validator->validate($customer, $withDuplicatesCheck);
+        return $validator->validate($customer, $withDuplicatesCheck);
     }
 
     protected function applySaveHandlers(CustomerInterface $customer, $saveHandlerMethod, $reinitSaveHandlers = false)
@@ -146,9 +256,11 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
             }
         }
 
-        foreach($saveHandlers as $handler) {
-            if($handler->isOriginalCustomerNeeded()) {
-                $handler->setOriginalCustomer($originalCustomer);
+        if($originalCustomer) {
+            foreach($saveHandlers as $handler) {
+                if($handler->isOriginalCustomerNeeded()) {
+                    $handler->setOriginalCustomer($originalCustomer);
+                }
             }
         }
     }
@@ -178,67 +290,104 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     }
 
     /**
-     * @return boolean
+     * @param CustomerInterface $customer
+     * @param bool $disableVersions
+     * @return mixed
      */
-    public function getSegmentBuildingHookEnabled()
-    {
-        return $this->segmentBuildingHookEnabled;
+    public function saveWithDisabledHooks(CustomerInterface $customer, $disableVersions = false ) {
+        $options = new \stdClass();
+        $options->customerSaveValidatorEnabled = false;
+        $options->segmentBuildingHookEnabled = false;
+        return $this->saveWithOptions( $customer, $options, $disableVersions  );
     }
 
     /**
-     * @param boolean $segmentBuildingHookEnabled
+     * @param CustomerInterface $customer
+     * @return mixed
      */
-    public function setSegmentBuildingHookEnabled($segmentBuildingHookEnabled)
-    {
-        $this->segmentBuildingHookEnabled = $segmentBuildingHookEnabled;
+    function saveDirty( CustomerInterface $customer ) {
+        return $this->saveWithOptions( $customer, $this->createDirtyOptions(), true  );
+    }
+    /**
+     * Disable all
+     * @return \stdClass
+     */
+    protected function createDirtyOptions() {
+        $options = new \stdClass();
+        $options->customerSaveValidatorEnabled = false;
+        $options->segmentBuildingHookEnabled = false;
+        $options->disableSaveHandlers = true;
+        $options->disableDuplicateIndex = true;
+        $options->disableQueue = true;
+        return $options;
+
     }
 
     /**
-     * @return bool
+     * @param CustomerInterface $customer
+     * @param \stdClass $options
+     * @param bool $disableVersions
+     * @return mixed
      */
-    public function getCustomerSaveValidatorEnabled()
-    {
-        return $this->customerSaveValidatorEnabled;
-    }
+    protected function saveWithOptions( CustomerInterface $customer, \stdClass $options, $disableVersions = false ) {
+        // retrieve default options
+        $backupOptions = $this->getSaveOptions();
+        // apply desired options
+        $this->applySaveOptions( $options );
 
-    /**
-     * @param bool $customerSaveValidatorEnabled
-     */
-    public function setCustomerSaveValidatorEnabled($customerSaveValidatorEnabled)
-    {
-        $this->customerSaveValidatorEnabled = $customerSaveValidatorEnabled;
-    }
-
-    public function saveWithDisabledHooks(CustomerInterface $customer, $disableVersions = false)
-    {
-        $customerSaveValidatorEnabled = $this->getCustomerSaveValidatorEnabled();
-        $segmentBuildingHookEnabled = $this->getSegmentBuildingHookEnabled();
-
+        // backup current version option
         $versionsEnabled = !Version::$disabled;
         if($disableVersions) {
             Version::disable();
         }
 
-        $this->setSegmentBuildingHookEnabled(false);
-        $this->setCustomerSaveValidatorEnabled(false);
+        try {
+            return $customer->save();
+        } finally {
+            // restore version options
+            if($disableVersions && $versionsEnabled) {
+                Version::enable();
+            }
 
-        $result = $customer->save();
-
-        $this->setSegmentBuildingHookEnabled($segmentBuildingHookEnabled);
-        $this->setCustomerSaveValidatorEnabled($customerSaveValidatorEnabled);
-
-        if($disableVersions && $versionsEnabled) {
-            Version::enable();
-        }
-
-        return $result;
-    }
-
-    protected function applyNamingScheme(CustomerInterface $customer)
-    {
-        if($this->config->enableAutomaticObjectNamingScheme) {
-            Factory::getInstance()->getCustomerProvider()->applyObjectNamingScheme($customer);
+            // restore default options
+            $this->applySaveOptions( $backupOptions );
         }
     }
+
+    /**
+     * Backup options for later restore
+     * @return \stdClass
+     */
+    protected function getSaveOptions() {
+        $options = new \stdClass();
+        $options->customerSaveValidatorEnabled = $this->getCustomerSaveValidatorEnabled();
+        $options->segmentBuildingHookEnabled = $this->getSegmentBuildingHookEnabled();
+        $options->disableSaveHandlers = $this->isDisableSaveHandlers();
+        $options->disableDuplicateIndex = $this->isDisableDuplicateIndex();
+        $options->disableQueue = $this->isDisableQueue();
+        return $options;
+    }
+    /**
+     * Restore options
+     * @param \stdClass $options
+     */
+    protected function applySaveOptions( \stdClass $options ) {
+        if( isset($options->customerSaveValidatorEnabled) && $options->customerSaveValidatorEnabled !== $this->getCustomerSaveValidatorEnabled() ) {
+            $this->setCustomerSaveValidatorEnabled( $options->customerSaveValidatorEnabled );
+        }
+        if( isset($options->segmentBuildingHookEnabled) && $options->segmentBuildingHookEnabled !== $this->getSegmentBuildingHookEnabled() ) {
+            $this->setSegmentBuildingHookEnabled( $options->segmentBuildingHookEnabled );
+        }
+        if( isset($options->disableSaveHandlers) && $options->disableSaveHandlers !== $this->isDisableSaveHandlers() ) {
+            $this->setDisableSaveHandlers( $options->disableSaveHandlers );
+        }
+        if( isset($options->disableDuplicateIndex) && $options->disableDuplicateIndex !== $this->isDisableDuplicateIndex() ) {
+            $this->setDisableDuplicateIndex( $options->disableDuplicateIndex );
+        }
+        if( isset($options->disableQueue) && $options->disableQueue !== $this->isDisableQueue() ) {
+            $this->setDisableQueue( $options->disableQueue );
+        }
+    }
+
 
 }
