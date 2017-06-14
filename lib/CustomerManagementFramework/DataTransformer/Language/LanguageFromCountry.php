@@ -10,8 +10,8 @@ namespace CustomerManagementFramework\DataTransformer\Language;
 
 use CustomerManagementFramework\DataTransformer\DataTransformerInterface;
 
-class LanguageFromCountry implements DataTransformerInterface
-{
+class LanguageFromCountry implements DataTransformerInterface {
+
     /**
      * Tries to determine language based on country code.
      *
@@ -21,11 +21,17 @@ class LanguageFromCountry implements DataTransformerInterface
      */
     public function transform($data, $options = [])
     {
-        $countryCode = $data;
+        $countryCode = trim($data);
 
-        if(strlen(trim($countryCode)) != 2) {
+        if(strlen($countryCode) != 2) {
             return false;
         }
+
+        if( $locale = \Zend_Locale::getLocaleToTerritory( $countryCode ) ) {
+            $parts = explode( '_', $locale );
+            return reset( $parts );
+        }
+        // approximate -> warn will most likely be wrong
 
         $localelist = \Zend_Locale::getLocaleList();
 
@@ -34,7 +40,7 @@ class LanguageFromCountry implements DataTransformerInterface
             $locale = explode('_', $locale);
             if(isset($locale[1])) {
 
-                if(strtolower($locale[1]) == strtolower(trim($countryCode))) {
+                if(strtolower($locale[1]) == strtolower($countryCode)) {
                     return $locale[0];
                 }
 
