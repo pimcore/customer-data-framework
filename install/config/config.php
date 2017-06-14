@@ -194,8 +194,8 @@ return [
         'plugin.cmf.after-track-activity' => '\CustomerManagementFramework\ActionTrigger\Event\AfterTrackActivity'
     ],
 
-    'MailChimp' => [
+    /*'MailChimp' => [
         'apiKey' => 'c64d7cc4fe11e068c515389cfe3a8607-us14',
         'listId' => '7a54a0555c',
-    ]
+    ]*/
 ];
