@@ -1,5 +1,5 @@
 <?php
-/** @var \CustomerManagementFramework\Model\CustomerInterface $customer */
+/** @var \CustomerManagementFrameworkBundle\Model\CustomerInterface $customer */
 $customer = $this->customer;
 
 /** @var Zend_Form $form */

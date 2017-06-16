@@ -1,8 +1,8 @@
 <?php
-/** @var Zend_Paginator|\CustomerManagementFramework\Model\CustomerInterface[] $paginator */
+/** @var Zend_Paginator|\CustomerManagementFrameworkBundle\Model\CustomerInterface[] $paginator */
 $paginator = $this->paginator;
 
-/** @var \CustomerManagementFramework\CustomerView\CustomerViewInterface $cv */
+/** @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $cv */
 $cv = $this->customerView;
 ?>
 

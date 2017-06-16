@@ -1,6 +1,6 @@
 <?php
 
-namespace CustomerManagementFramework\Testing\Fixtures\View\Formatter;
+namespace CustomerManagementFrameworkBundle\Testing\Fixtures\View\Formatter;
 
 class NoToStringObject
 {

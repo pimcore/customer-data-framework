@@ -1,12 +1,12 @@
 <?php
 
 /**
- * @var \CustomerManagementFramework\CustomerDuplicatesView\CustomerDuplicatesViewInterface $duplicatesView
+ * @var \CustomerManagementFrameworkBundle\CustomerDuplicatesView\CustomerDuplicatesViewInterface $duplicatesView
  */
 $duplicatesView = $this->duplicatesView;
 
 /**
- * @var \CustomerManagementFramework\CustomerDuplicates\PotentialDuplicateItemInterface[] $duplicates
+ * @var \CustomerManagementFrameworkBundle\Model\CustomerDuplicates\PotentialDuplicateItemInterface[] $duplicates
  */
 $duplicates = $this->duplicates;
 ?>

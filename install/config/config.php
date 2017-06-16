@@ -118,29 +118,29 @@ return [
             'duplicateCheckFields' => [
 
                 [
-                    'firstname' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class],
-                    'zip' => ['similarity' => \CustomerManagementFramework\DataSimilarityMatcher\Zip::class],
-                    'street' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class],
-                    'birthDate' => ['similarity' => \CustomerManagementFramework\DataSimilarityMatcher\BirthDate::class],
+                    'firstname' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText::class],
+                    'zip' => ['similarity' => \CustomerManagementFrameworkBundle\DataSimilarityMatcher\Zip::class],
+                    'street' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText::class],
+                    'birthDate' => ['similarity' => \CustomerManagementFrameworkBundle\DataSimilarityMatcher\BirthDate::class],
 
                 ],
                 [
-                    'lastname' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class],
-                    'firstname' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class],
-                    'zip' => ['similarity' => \CustomerManagementFramework\DataSimilarityMatcher\Zip::class],
-                    'city' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class],
-                    'street' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class]
+                    'lastname' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText::class],
+                    'firstname' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText::class],
+                    'zip' => ['similarity' => \CustomerManagementFrameworkBundle\DataSimilarityMatcher\Zip::class],
+                    'city' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText::class],
+                    'street' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText::class]
                 ],
                 [
-                    'email' => ['metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class, 'similarityTreshold' => 90]
+                    'email' => ['metaphone' => true, 'similarity' => \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText::class, 'similarityTreshold' => 90]
                 ]
             ],
             'dataTransformers' => [
-                'street' => \CustomerManagementFramework\DataTransformer\DuplicateIndex\Street::class,
-                'firstname' => \CustomerManagementFramework\DataTransformer\DuplicateIndex\Simplify::class,
-                'city' => \CustomerManagementFramework\DataTransformer\DuplicateIndex\Simplify::class,
-                'lastname' => \CustomerManagementFramework\DataTransformer\DuplicateIndex\Simplify::class,
-                'birthDate' => \CustomerManagementFramework\DataTransformer\DuplicateIndex\Date::class,
+                'street' => \CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Street::class,
+                'firstname' => \CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Simplify::class,
+                'city' => \CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Simplify::class,
+                'lastname' => \CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Simplify::class,
+                'birthDate' => \CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Date::class,
             ],
         ]
     ],
@@ -179,7 +179,7 @@ return [
             'csv' => [
                 'name'       => 'CSV',
                 'icon'       => 'fa fa-file-text-o',
-                'exporter'   => \CustomerManagementFramework\CustomerList\Exporter\Csv::class,
+                'exporter'   => \CustomerManagementFrameworkBundle\CustomerList\Exporter\Csv::class,
                 'properties' => [
                     'id',
                     'email',

@@ -1,0 +1,68 @@
+services:
+    pimcore.templating.view_helper.minifiedAssetUrl:
+        class: Pimcore\Templating\Helper\HeadScript
+        tags:
+            - { name: templating.helper, alias: minifiedAssetUrl }
+
+    pimcore.templating.view_helper.jsConfig:
+        class: Pimcore\Templating\Helper\JsConfig
+        tags:
+            - { name: templating.helper, alias: jsConfig }
+
+    cmf.event_listener.pimcore_object:
+       class: CustomerManagementFrameworkBundle\Event\PimcoreObjectEventListener
+       tags:
+           - { name: kernel.event_listener, event: pimcore.object.preUpdate, method: onPreUpdate }
+           - { name: kernel.event_listener, event: pimcore.object.postUpdate, method: onPostUpdate }
+           - { name: kernel.event_listener, event: pimcore.object.preAdd, method: onPreAdd }
+           - { name: kernel.event_listener, event: pimcore.object.preDelete, method: onPreDelete }
+           - { name: kernel.event_listener, event: pimcore.object.postDelete, method: onPostDelete }
+
+    cmf.activity_view_formatter:
+        class: CustomerManagementFrameworkBundle\View\Formatter\DefaultViewFormatter
+        lazy: true
+
+    cmf.activity_view:
+        class: CustomerManagementFrameworkBundle\ActivityView\DefaultActivityView
+        lazy: true
+        arguments: ['@cmf.activity_view_formatter']
+
+    cmf.activity_store:
+        class: CustomerManagementFrameworkBundle\ActivityStore\MariaDb
+        lazy: true
+
+    cmf.activity_store_entry:
+        class: CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\DefaultActivityStoreEntry
+        lazy: true
+        shared: false
+
+    cmf.customer_save_manager:
+        class: CustomerManagementFrameworkBundle\CustomerSaveManager\DefaultCustomerSaveManager
+        lazy: true
+
+    cmf.customer_save_validator:
+        class: CustomerManagementFrameworkBundle\CustomerSaveValidator\DefaultCustomerSaveValidator
+        lazy: true
+
+    cmf.segment_manager:
+        class: CustomerManagementFrameworkBundle\SegmentManager\DefaultSegmentManager
+        lazy: true
+    cmf.segment_manager.segment_merger:
+        class: CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\DefaultSegmentMerger
+        lazy: true
+
+    cmf.customer_duplicates_service:
+        class: CustomerManagementFrameworkBundle\CustomerDuplicatesService\DefaultCustomerDuplicatesService
+        lazy: true
+
+    cmf.customer_duplicates_index:
+        class: CustomerManagementFrameworkBundle\DuplicatesIndex\DefaultMariaDbDuplicatesIndex
+        lazy: true
+
+    cmf.customer_provider:
+         class: CustomerManagementFrameworkBundle\CustomerProvider\DefaultCustomerProvider
+         lazy: true
+
+    cmf.customer_provider.object_naming_scheme:
+         class: CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\DefaultObjectNamingScheme
+         lazy: true

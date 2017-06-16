@@ -1,5 +1,5 @@
 <?php
-/** @var \CustomerManagementFramework\CustomerView\CustomerViewInterface $cv */
+/** @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $cv */
 $cv = $this->customerView;
 
 /** @var array $searchBarFields */

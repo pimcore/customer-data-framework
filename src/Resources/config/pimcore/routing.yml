@@ -1,0 +1,4 @@
+_pimcore_customermanagementframework_backend:
+    resource: "@PimcoreCustomerManagementFrameworkBundle/Controller/"
+    type:     annotation
+    prefix:   /admin/customermanagementframework

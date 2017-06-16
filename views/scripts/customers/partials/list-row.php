@@ -1,8 +1,8 @@
 <?php
-/** @var \CustomerManagementFramework\CustomerView\CustomerViewInterface $cv */
+/** @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $cv */
 $cv = $this->customerView;
 
-/** @var \CustomerManagementFramework\Model\CustomerInterface $customer */
+/** @var \CustomerManagementFrameworkBundle\Model\CustomerInterface $customer */
 $customer = $this->customer;
 
 $userDetailUrl = null;

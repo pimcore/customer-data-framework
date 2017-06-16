@@ -1,6 +1,6 @@
 <?php
 
-namespace CustomerManagementFramework\Testing;
+namespace CustomerManagementFrameworkBundle\Testing;
 
 /**
  * Inherited Methods

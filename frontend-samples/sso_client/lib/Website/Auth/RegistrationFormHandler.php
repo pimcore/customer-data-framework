@@ -2,7 +2,7 @@
 
 namespace Website\Auth;
 
-use CustomerManagementFramework\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
 /**
  * Helper for building and reading/writing the registration form

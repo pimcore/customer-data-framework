@@ -6,14 +6,14 @@
  * Time: 11:46
  */
 
-namespace CustomerManagementFramework\Testing\DataTransformer;
+namespace CustomerManagementFrameworkBundle\Testing\DataTransformer;
 
 class ZipTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testCorrectTransformationsDe()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip\De();
+        $transfomer = new \CustomerManagementFrameworkBundle\DataTransformer\Zip\De();
 
         $tests = [
             '6125' => '06125',
@@ -34,7 +34,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsNl()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip\Nl();
+        $transfomer = new \CustomerManagementFrameworkBundle\DataTransformer\Zip\Nl();
 
         $tests = [
             '1234ta' => '1234 TA',
@@ -53,7 +53,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsAt()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip\At();
+        $transfomer = new \CustomerManagementFrameworkBundle\DataTransformer\Zip\At();
 
         $tests = [
             '5733 Bramberg' => '5733',
@@ -72,7 +72,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsDk()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip\Dk();
+        $transfomer = new \CustomerManagementFrameworkBundle\DataTransformer\Zip\Dk();
 
         $tests = [
             '1234 Test' => '1234',
@@ -91,7 +91,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsBe()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip\Be();
+        $transfomer = new \CustomerManagementFrameworkBundle\DataTransformer\Zip\Be();
 
         $tests = [
             '1234 Test' => '1234',
@@ -110,7 +110,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsCh()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip\Ch();
+        $transfomer = new \CustomerManagementFrameworkBundle\DataTransformer\Zip\Ch();
 
         $tests = [
             '1234 Test' => '1234',
@@ -129,7 +129,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsRu()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip\Ru();
+        $transfomer = new \CustomerManagementFrameworkBundle\DataTransformer\Zip\Ru();
 
         $tests = [
             '123456 Test' => '123456',
@@ -148,7 +148,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsSe()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip\Se();
+        $transfomer = new \CustomerManagementFrameworkBundle\DataTransformer\Zip\Se();
 
         $tests = [
             '12345' => '123 45',
@@ -167,7 +167,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsGb()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip\Gb();
+        $transfomer = new \CustomerManagementFrameworkBundle\DataTransformer\Zip\Gb();
 
         $tests = [
             'RM11AA' => 'RM1 1AA',

@@ -1,8 +1,8 @@
 <?php
-/** @var \CustomerManagementFramework\Model\CustomerInterface|\Pimcore\Model\Object\Customer $customer */
+/** @var \CustomerManagementFrameworkBundle\Model\CustomerInterface|\Pimcore\Model\Object\Customer $customer */
 $customer = $this->customer;
 
-/** @var \CustomerManagementFramework\Authentication\SsoIdentity\SsoIdentityServiceInterface $ssoIdentityService */
+/** @var \CustomerManagementFrameworkBundle\Authentication\SsoIdentity\SsoIdentityServiceInterface $ssoIdentityService */
 $ssoIdentityService = $this->ssoIdentityService;
 $ssoIdentities      = $ssoIdentityService->getSsoIdentities($customer);
 

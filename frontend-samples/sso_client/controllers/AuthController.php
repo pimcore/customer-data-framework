@@ -1,8 +1,8 @@
 <?php
 
-use CustomerManagementFramework\Authentication\SsoIdentity\SsoIdentityServiceInterface;
-use CustomerManagementFramework\Factory;
-use CustomerManagementFramework\Model\SsoIdentityInterface;
+use CustomerManagementFrameworkBundle\Authentication\SsoIdentity\SsoIdentityServiceInterface;
+use CustomerManagementFrameworkBundle\Factory;
+use CustomerManagementFrameworkBundle\Model\SsoIdentityInterface;
 use Website\Auth\Adapter\Customer as CustomerAuthAdapter;
 use Website\Auth\AuthService;
 use Website\Auth\RegistrationFormHandler;
@@ -114,7 +114,7 @@ class AuthController extends Action
         $registrationFormHandler = new RegistrationFormHandler();
 
         // create a new, empty customer instance
-        /** @var \CustomerManagementFramework\Model\CustomerInterface|\Pimcore\Model\Object\Customer $customer */
+        /** @var \CustomerManagementFrameworkBundle\Model\CustomerInterface|\Pimcore\Model\Object\Customer $customer */
         $customer = Factory::getInstance()
             ->getCustomerProvider()
             ->create();
@@ -194,12 +194,12 @@ class AuthController extends Action
         $this->disableLayout();
         $this->disableViewAutoRender();
 
-        /** @var \CustomerManagementFramework\Authentication\Sso\DefaultHybridAuthHandler $hybridAuthHandler */
+        /** @var \CustomerManagementFrameworkBundle\Authentication\Sso\DefaultHybridAuthHandler $hybridAuthHandler */
         $hybridAuthHandler = null;
 
         try {
             $hybridAuthHandler = $this->authenticateHybridAuth();
-        } catch (\CustomerManagementFramework\Authentication\AuthenticationException $e) {
+        } catch (\CustomerManagementFrameworkBundle\Authentication\AuthenticationException $e) {
             \Pimcore\Logger::warning('Failed to log in via SSO: ' . $e->getMessage());
 
             $this->redirect($this->view->url([
@@ -250,11 +250,11 @@ class AuthController extends Action
      * with authentication requests. Therefore we can call this method repeatedly after the first login (e.g. to fetch
      * the external profile) as it will return the data stored in the session instead of authenticating again.
      *
-     * @return \CustomerManagementFramework\Authentication\Sso\DefaultHybridAuthHandler
+     * @return \CustomerManagementFrameworkBundle\Authentication\Sso\DefaultHybridAuthHandler
      */
     protected function authenticateHybridAuth()
     {
-        /** @var \CustomerManagementFramework\Authentication\Sso\DefaultHybridAuthHandler $hybridAuthHandler */
+        /** @var \CustomerManagementFrameworkBundle\Authentication\Sso\DefaultHybridAuthHandler $hybridAuthHandler */
         $hybridAuthHandler = Pimcore::getDiContainer()->get('CustomerManagementFramework\Authentication\Sso\HybridAuthHandler');
         $hybridAuthHandler->authenticate($this->getRequest());
 

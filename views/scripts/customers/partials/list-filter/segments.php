@@ -1,5 +1,5 @@
 <?php
-/** @var \CustomerManagementFramework\CustomerView\CustomerViewInterface $cv */
+/** @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $cv */
 $cv = $this->customerView;
 ?>
 
@@ -28,11 +28,11 @@ $cv = $this->customerView;
                             data-select2-options='<?= json_encode(['allowClear' => false]) ?>'>
 
                             <?php
-                            $segments = \CustomerManagementFramework\Factory::getInstance()
+                            $segments = \CustomerManagementFrameworkBundle\Factory::getInstance()
                                 ->getSegmentManager()
                                 ->getSegmentsFromSegmentGroup($segmentGroup);
 
-                            /** @var \CustomerManagementFramework\Model\CustomerSegmentInterface|\Pimcore\Model\Element\ElementInterface $segment */
+                            /** @var \CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface|\Pimcore\Model\Element\ElementInterface $segment */
                             foreach ($segments as $segment): ?>
 
                                 <option value="<?= $segment->getId() ?>" <?= $this->formFilterSelectedState($segmentGroup->getId(), $segment->getId(), true, ['filters', 'segments']) ?>>

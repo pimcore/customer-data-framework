@@ -2,8 +2,8 @@
 
 namespace Website\Auth;
 
-use CustomerManagementFramework\Factory;
-use CustomerManagementFramework\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\Factory;
+use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Tool\HybridAuth;
 
 /**

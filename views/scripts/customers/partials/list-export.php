@@ -1,8 +1,8 @@
 <?php
-/** @var \CustomerManagementFramework\CustomerView\CustomerViewInterface $cv */
+/** @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $cv */
 $cv = $this->customerView;
 
-$exporterConfigs = \CustomerManagementFramework\Factory::getInstance()
+$exporterConfigs = \CustomerManagementFrameworkBundle\Factory::getInstance()
     ->getCustomerListExporterManager()
     ->getConfig();
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace CustomerManagementFramework\Testing\View\Formatter;
+namespace CustomerManagementFrameworkBundle\Testing\View\Formatter;
 
-use CustomerManagementFramework\Testing\Fixtures\View\Formatter\NoToStringObject;
-use CustomerManagementFramework\Testing\Fixtures\View\Formatter\ToStringObject;
-use CustomerManagementFramework\View\Formatter\ObjectWrapper;
+use CustomerManagementFrameworkBundle\Testing\Fixtures\View\Formatter\NoToStringObject;
+use CustomerManagementFrameworkBundle\Testing\Fixtures\View\Formatter\ToStringObject;
+use CustomerManagementFrameworkBundle\View\Formatter\ObjectWrapper;
 
 class ObjectWrapperTest extends \PHPUnit_Framework_TestCase
 {

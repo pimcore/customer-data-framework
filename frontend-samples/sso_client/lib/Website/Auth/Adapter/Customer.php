@@ -2,8 +2,8 @@
 
 namespace Website\Auth\Adapter;
 
-use CustomerManagementFramework\Factory;
-use CustomerManagementFramework\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\Factory;
+use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\Object\ClassDefinition\Data\Password;
 use Pimcore\Model\Object\Customer as CustomerModel;
 use Zend_Auth_Adapter_Exception;

@@ -6,14 +6,14 @@
  * Time: 11:46
  */
 
-namespace CustomerManagementFramework\Testing\DataTransformer;
+namespace CustomerManagementFrameworkBundle\Testing\DataTransformer;
 
 class Zip2StateTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testCorrectTransformationsAt()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip2State\At;
+        $transfomer = new \CustomerManagementFrameworkBundle\DataTransformer\Zip2State\At;
 
         $tests = [
             '1020' => 'Wien',
@@ -34,7 +34,7 @@ class Zip2StateTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsDe()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip2State\De;
+        $transfomer = new \CustomerManagementFrameworkBundle\DataTransformer\Zip2State\De;
 
         $tests = [
             '80331' => 'Bayern',
@@ -51,7 +51,7 @@ class Zip2StateTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectTransformationsCh()
     {
-        $transfomer = new \CustomerManagementFramework\DataTransformer\Zip2State\Ch;
+        $transfomer = new \CustomerManagementFrameworkBundle\DataTransformer\Zip2State\Ch;
 
         $tests = [
             '8614' => 'Zürich, Thurgau',
