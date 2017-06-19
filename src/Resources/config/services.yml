@@ -9,6 +9,9 @@ services:
         tags:
             - { name: templating.helper, alias: jsConfig }
 
+    cmf.logger:
+        alias: logger
+
     cmf.event_listener.pimcore_object:
        class: CustomerManagementFrameworkBundle\Event\PimcoreObjectEventListener
        tags:
@@ -47,6 +50,7 @@ services:
     cmf.segment_manager:
         class: CustomerManagementFrameworkBundle\SegmentManager\DefaultSegmentManager
         lazy: true
+
     cmf.segment_manager.segment_merger:
         class: CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\DefaultSegmentMerger
         lazy: true
@@ -58,6 +62,8 @@ services:
     cmf.customer_duplicates_index:
         class: CustomerManagementFrameworkBundle\DuplicatesIndex\DefaultMariaDbDuplicatesIndex
         lazy: true
+        calls:
+            - [setLogger, ['@cmf.logger']]
 
     cmf.customer_provider:
          class: CustomerManagementFrameworkBundle\CustomerProvider\DefaultCustomerProvider

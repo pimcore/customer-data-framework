@@ -8,23 +8,8 @@
 
 namespace CustomerManagementFrameworkBundle\Command;
 
-use Monolog\Logger;
 
 abstract class AbstractCommand extends \Pimcore\Console\AbstractCommand {
 
-    /**
-     * Get log level - default to info, but show all messages in verbose mode
-     *
-     * @return null|string
-     */
-    protected function getLogLevel()
-    {
-        $logLevel = Logger::NOTICE;
-        if ($this->output->isVerbose()) {
-            $logLevel = null;
-        }
-
-        return $logLevel;
-    }
 
 }

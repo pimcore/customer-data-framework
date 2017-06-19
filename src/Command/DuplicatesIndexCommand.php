@@ -8,6 +8,7 @@
 
 namespace CustomerManagementFrameworkBundle\Command;
 
+use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
 use CustomerManagementFrameworkBundle\Factory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,24 +27,29 @@ class DuplicatesIndexCommand extends AbstractCommand {
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-      //  \Pimcore::getDiContainer()->set("CustomerManagementFramework\\Logger", $this->getLogger());
+        $logger = \Pimcore::getContainer()->get('cmf.logger');
+
+        /**
+         * @var DuplicatesIndexInterface $duplicatesIndex
+         */
+        $duplicatesIndex = \Pimcore::getContainer()->get('cmf.customer_duplicates_index');
 
         if($input->getOption("analyze")) {
-            Factory::getInstance()->getDuplicatesIndex()->setAnalyzeFalsePositives(true);
+            $duplicatesIndex->setAnalyzeFalsePositives(true);
         } else {
-            Factory::getInstance()->getDuplicatesIndex()->setAnalyzeFalsePositives(false);
+            $duplicatesIndex->setAnalyzeFalsePositives(false);
         }
 
         if($input->getOption("recreate")) {
-            $this->getLogger()->notice("start recreate index");
-            Factory::getInstance()->getDuplicatesIndex()->recreateIndex($this->logger);
-            $this->getLogger()->notice("finished recreate index");
+            $logger->notice("start recreate index");
+            $duplicatesIndex->recreateIndex();
+            $logger->notice("finished recreate index");
         }
 
         if($input->getOption("calculate")) {
-            $this->getLogger()->notice("start calculating potential duplicates");
-            Factory::getInstance()->getDuplicatesIndex()->calculatePotentialDuplicates($output);
-            $this->getLogger()->notice("finished calculating potential duplicates");
+            $logger->notice("start calculating potential duplicates");
+            $duplicatesIndex->calculatePotentialDuplicates($output);
+            $logger->notice("finished calculating potential duplicates");
         }
     }
 

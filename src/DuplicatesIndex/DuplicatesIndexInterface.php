@@ -18,7 +18,7 @@ interface DuplicatesIndexInterface
      * @param LoggerInterface $logger
      * @return void
      */
-    public function recreateIndex(LoggerInterface $logger);
+    public function recreateIndex();
 
     /**
      * @param CustomerInterface $customer

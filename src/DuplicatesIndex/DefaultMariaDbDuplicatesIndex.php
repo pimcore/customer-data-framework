@@ -20,6 +20,7 @@ use Pimcore\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
+use Zend\Paginator\Paginator;
 
 class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
 
@@ -41,8 +42,10 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
 
     }
 
-    public function recreateIndex(LoggerInterface $logger)
+    public function recreateIndex()
     {
+        $logger = $this->getLogger();
+
         $db = Db::get();
         $db->query("truncate table " . self::DUPLICATESINDEX_TABLE);
         $db->query("truncate table " . self::DUPLICATESINDEX_CUSTOMERS_TABLE);
@@ -55,11 +58,11 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
         $logger->notice("tables truncated");
 
 
-        $customerList = Factory::getInstance()->getCustomerProvider()->getList();
+        $customerList = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
         $customerList->setCondition("active = 1");
         $customerList->setOrderKey('o_id');
 
-        $paginator = new \Zend_Paginator($customerList);
+        $paginator = new Paginator($customerList);
         $paginator->setItemCountPerPage(200);
 
         $totalPages = $paginator->getPages()->pageCount;
@@ -144,7 +147,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
 
         $this->getLogger()->notice("update potential duplicates table");
 
-        $totalIds = [];
+        $totalIds = [-1];
         foreach($total as $duplicateIds => $fieldCombinations) {
 
             if(!$id = Db::get()->fetchOne("select id from " . self::POTENTIAL_DUPLICATES_TABLE  . " where duplicateCustomerIds = ?", $duplicateIds)) {
@@ -161,7 +164,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
         }
 
 
-        Factory::getInstance()->getLogger()->notice("delete potential duplicates which are not valid anymore");
+        $this->getLogger()->notice("delete potential duplicates which are not valid anymore");
         Db::get()->query("delete from " . self::POTENTIAL_DUPLICATES_TABLE . " where id not in(" . implode(',', $totalIds) . ")");
     }
 
@@ -345,7 +348,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
 
             $progress->advance();
 
-            $rows = $db->fetchAll("select * from " . self::DUPLICATESINDEX_CUSTOMERS_TABLE . " c, " . self::DUPLICATESINDEX_TABLE . " i where i.id = c.duplicate_id and `" . $algorithm . "` = ?  order by customer_id", $phoneticDuplicate);
+            $rows = $db->fetchAll("select * from " . self::DUPLICATESINDEX_CUSTOMERS_TABLE . " c, " . self::DUPLICATESINDEX_TABLE . " i where i.id = c.duplicate_id and `" . $algorithm . "` = ?  order by customer_id", [$phoneticDuplicate]);
 
             $customerIdClusters = $this->extractSimilarCustomerIdClustersGroupedByFieldCombinations($rows);
 
@@ -469,7 +472,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
         foreach($rows as $row) {
             if(!$this->twoRowsAreSimilar($firstRow, $row, $fieldCombinationConfig)) {
 
-                Factory::getInstance()->getLogger()->debug("false positive: " . json_encode($firstRow['duplicateData']) . ' | ' . json_encode($row['duplicateData']));
+                $this->getLogger()->debug("false positive: " . json_encode($firstRow['duplicateData']) . ' | ' . json_encode($row['duplicateData']));
 
                 if($this->analyzeFalsePositives) {
                     Db::get()->insert(self::FALSE_POSITIVES_TABLE, [
@@ -483,7 +486,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
                 return false;
             } else {
 
-                Factory::getInstance()->getLogger()->debug("potential duplicate found: " . $firstRow['duplicate_id'] . ' | ' . $row['duplicate_id']);
+                $this->getLogger()->debug("potential duplicate found: " . $firstRow['duplicate_id'] . ' | ' . $row['duplicate_id']);
             }
         }
 
