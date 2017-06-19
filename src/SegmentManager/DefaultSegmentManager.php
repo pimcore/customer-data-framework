@@ -175,21 +175,11 @@ class DefaultSegmentManager implements SegmentManagerInterface {
         $desiredPages = isset( $options[ 'pages'] ) && (is_int( $options[ 'pages'] ) || ctype_digit( $options[ 'pages'] ) )  ? (int)$options[ 'pages'] : null;
 
 
-        // pre-fetch all ids - load by id -> slow sql
-        $flushQueuePerPage = false;
-        if( true ) {
-
-            $logger->notice( sprintf(
-                'Pre-fetching all ids via adapter for speedup and coherent paging '
-            ));
-            // note: listing is now constant and may be flushed per iteration
-            $flushQueuePerPage = true;
-            $paginator = new Paginator( new \CustomerManagementFrameworkBundle\Pimcore\Model\Tool\ListingAdapter( $customerList ) );
-        } else {
-            $paginator = new Paginator($customerList);
-        }
-
-
+        $logger->notice( sprintf(
+            'Pre-fetching all ids via adapter for speedup and coherent paging '
+        ));
+        // note: listing is now constant and may be flushed per iteration
+        $paginator = new Paginator( new \CustomerManagementFrameworkBundle\Pimcore\Model\Tool\ListingAdapter( $customerList ) );
 
 
         $pageSize = $desiredPageSize !== null && $desiredPageSize > 0 ? $desiredPageSize : 250;
@@ -306,11 +296,11 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
                     }
 
-                    /**
-                     * @TODO: convert to event manager
-                     */
-                    //$event = new \CustomerManagementFrameworkBundle\ActionTrigger\Event\ExecuteSegmentBuilders( $customer );
-                    //\Pimcore::getEventManager()->trigger( $event->getName(), $event );
+                    $this->saveMergedSegments($customer);
+
+
+                    $event = new \CustomerManagementFrameworkBundle\ActionTrigger\Event\ExecuteSegmentBuilders( $customer );
+                    \Pimcore::getEventDispatcher()->dispatch( $event->getName(), $event );
 
                     if( $removeCustomerFromQueue ) {
                         // delay queue removal to prevent paging issue
@@ -335,9 +325,7 @@ class DefaultSegmentManager implements SegmentManagerInterface {
 
 
                 if( !$stopFurtherProcessing ) {
-                    if( $flushQueuePerPage ) {
-                        $customerQueueRemoval = $flushQueue( $customerQueueRemoval );
-                    }
+                    $customerQueueRemoval = $flushQueue( $customerQueueRemoval );
                     \Pimcore::collectGarbage();
                 }
 
