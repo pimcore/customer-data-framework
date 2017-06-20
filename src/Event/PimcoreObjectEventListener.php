@@ -8,6 +8,8 @@
 
 namespace CustomerManagementFrameworkBundle\Event;
 
+use CustomerManagementFrameworkBundle\Model\AbstractObjectActivity;
+use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Event\Model\ElementEventInterface;
 use Pimcore\Event\Model\ObjectEvent;
@@ -38,6 +40,18 @@ class PimcoreObjectEventListener {
 
         if($object instanceof CustomerInterface) {
             \Pimcore::getContainer()->get('cmf.customer_save_manager')->postUpdate($object);
+        } elseif($object instanceof AbstractObjectActivity) {
+            $trackIt = true;
+            if(!$object->cmfUpdateOnSave()) {
+                if(\Pimcore::getContainer()->get('cmf.activity_store')->getEntryForActivity($object)) {
+                    $trackIt = false;
+                }
+            }
+
+            if($trackIt) {
+                \Pimcore::getContainer()->get('cmf.activity_manager')->trackActivity($object);
+            }
+
         }
     }
 
@@ -79,6 +93,8 @@ class PimcoreObjectEventListener {
 
         if($object instanceof CustomerInterface) {
             \Pimcore::getContainer()->get('cmf.customer_save_manager')->postDelete($object);
+        } elseif($object instanceof ActivityInterface) {
+            \Pimcore::getContainer()->get('cmf.activity_manager')->deleteActivity($object);
         }
     }
 }

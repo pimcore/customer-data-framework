@@ -32,7 +32,7 @@ class MariaDb implements ActivityStoreInterface{
      */
     public function insertActivityIntoStore(ActivityInterface $activity) {
 
-        $entry = new DefaultActivityStoreEntry([
+        $entry = $this->createEntryInstance([
             'customerId' => $activity->getCustomer()->getId(),
             'type' => $activity->cmfGetType(),
             'implementationClass' => get_class($activity),

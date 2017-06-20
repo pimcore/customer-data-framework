@@ -46,7 +46,7 @@ class DefaultActivityManager implements ActivityManagerInterface
     
     public function trackActivity(ActivityInterface $activity  ) {
 
-        $store = Factory::getInstance()->getActivityStore();
+        $store = \Pimcore::getContainer()->get('cmf.activity_store');
 
         if(!( $activity->cmfGetActivityDate() instanceof Carbon)) {
             throw new \Exception(get_class($activity) . '::cmfGetActivityDate() needs to return a \Carbon\Carbon instance');
@@ -58,7 +58,7 @@ class DefaultActivityManager implements ActivityManagerInterface
         }
 
 
-        Factory::getInstance()->getSegmentManager()->addCustomerToChangesQueue($activity->getCustomer());
+        \Pimcore::getContainer()->get('cmf.segment_manager')->addCustomerToChangesQueue($activity->getCustomer());
 
         if(!$activity->cmfIsActive()) {
             $store->deleteActivity($activity);
@@ -74,7 +74,7 @@ class DefaultActivityManager implements ActivityManagerInterface
                 $event = new \CustomerManagementFrameworkBundle\ActionTrigger\Event\NewActivity($activity->getCustomer());
                 $event->setActivity($activity);
                 $event->setEntry( $entry );
-                \Pimcore::getEventManager()->trigger($event->getName(), $event);
+                \Pimcore::getEventDispatcher()->dispatch($event->getName(), $event);
             }
         }
 
@@ -82,7 +82,7 @@ class DefaultActivityManager implements ActivityManagerInterface
             $event = new \CustomerManagementFrameworkBundle\ActionTrigger\Event\AfterTrackActivity($activity->getCustomer());
             $event->setActivity($activity);
             $event->setEntry( $entry );
-            \Pimcore::getEventManager()->trigger($event->getName(), $event);
+            \Pimcore::getEventDispatcher()->dispatch($event->getName(), $event);
         }
     }
 
@@ -96,7 +96,7 @@ class DefaultActivityManager implements ActivityManagerInterface
 
     public function deleteActivity(ActivityInterface $activity) {
 
-        $store = Factory::getInstance()->getActivityStore();
+        $store = \Pimcore::getContainer()->get('cmf.activity_store');
 
         $store->deleteActivity($activity);
     }

@@ -43,6 +43,10 @@ services:
         class: CustomerManagementFrameworkBundle\ActivityStore\MariaDb
         lazy: true
 
+    cmf.activity_manager:
+        class: CustomerManagementFrameworkBundle\ActivityManager\DefaultActivityManager
+        lazy: true
+
     cmf.activity_store_entry:
         class: CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\DefaultActivityStoreEntry
         lazy: true

@@ -38,23 +38,6 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
 
 
 
-        \Pimcore::getEventManager()->attach(["object.postUpdate"], function (\Zend_EventManager_Event $e) {
-            $object = $e->getTarget();
-
-            if($object instanceof AbstractObjectActivity) {
-                $trackIt = true;
-                if(!$object->cmfUpdateOnSave()) {
-                    if(Factory::getInstance()->getActivityStore()->getEntryForActivity($object)) {
-                        $trackIt = false;
-                    }
-                }
-
-                if($trackIt) {
-                    Factory::getInstance()->getActivityManager()->trackActivity($object);
-                }
-
-            }
-
 
         \Pimcore::getEventManager()->attach('system.console.init', function(\Zend_EventManager_Event $e) {
             /** @var \Pimcore\Console\Application $application */
