@@ -46,6 +46,7 @@ class DefaultEventHandler implements EventHandlerInterface{
 
     public function handleEvent($event)
     {
+        print "handle";
 
         if($event instanceof SingleCustomerEventInterface) {
             $this->handleSingleCustomerEvent($event);

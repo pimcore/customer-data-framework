@@ -24,7 +24,9 @@ services:
     cmf.event_listener.action_trigger:
         class: CustomerManagementFrameworkBundle\ActionTrigger\EventHandler\DefaultEventHandler
         tags:
+            - { name: kernel.event_listener, event: plugin.cmf.new-activity, method: handleEvent }
             - { name: kernel.event_listener, event: plugin.cmf.execute-segment-builders, method: handleEvent }
+            - { name: kernel.event_listener, event: plugin.cmf.after-track-activity, method: handleEvent }
 
     cmf.activity_view_formatter:
         class: CustomerManagementFrameworkBundle\View\Formatter\DefaultViewFormatter

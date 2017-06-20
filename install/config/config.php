@@ -188,11 +188,6 @@ return [
             ],
         ]
     ],
-    'Events' => [
-        'plugin.cmf.new-activity' => '\CustomerManagementFramework\ActionTrigger\Event\NewActivity',
-        'plugin.cmf.execute-segment-builders' => '\CustomerManagementFramework\ActionTrigger\Event\ExecuteSegmentBuilders',
-        'plugin.cmf.after-track-activity' => '\CustomerManagementFramework\ActionTrigger\Event\AfterTrackActivity'
-    ],
 
     /*'MailChimp' => [
         'apiKey' => 'c64d7cc4fe11e068c515389cfe3a8607-us14',
