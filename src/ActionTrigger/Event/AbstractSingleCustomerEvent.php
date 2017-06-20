@@ -10,8 +10,9 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger\Event;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use Symfony\Component\EventDispatcher\Event;
 
-abstract class AbstractSingleCustomerEvent implements SingleCustomerEventInterface {
+abstract class AbstractSingleCustomerEvent extends Event implements SingleCustomerEventInterface {
 
     private $customer;
 

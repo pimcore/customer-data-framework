@@ -21,6 +21,11 @@ services:
            - { name: kernel.event_listener, event: pimcore.object.preDelete, method: onPreDelete }
            - { name: kernel.event_listener, event: pimcore.object.postDelete, method: onPostDelete }
 
+    cmf.event_listener.action_trigger:
+        class: CustomerManagementFrameworkBundle\ActionTrigger\EventHandler\DefaultEventHandler
+        tags:
+            - { name: kernel.event_listener, event: plugin.cmf.execute-segment-builders, method: handleEvent }
+
     cmf.activity_view_formatter:
         class: CustomerManagementFrameworkBundle\View\Formatter\DefaultViewFormatter
         lazy: true
@@ -50,10 +55,14 @@ services:
     cmf.segment_manager:
         class: CustomerManagementFrameworkBundle\SegmentManager\DefaultSegmentManager
         lazy: true
+        calls:
+            - [setLogger, ['@cmf.logger']]
 
     cmf.segment_manager.segment_merger:
         class: CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\DefaultSegmentMerger
         lazy: true
+        calls:
+             - [setLogger, ['@cmf.logger']]
 
     cmf.customer_duplicates_service:
         class: CustomerManagementFrameworkBundle\CustomerDuplicatesService\DefaultCustomerDuplicatesService
@@ -72,3 +81,15 @@ services:
     cmf.customer_provider.object_naming_scheme:
          class: CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\DefaultObjectNamingScheme
          lazy: true
+
+    cmf.action_trigger.queue:
+        class: CustomerManagementFrameworkBundle\ActionTrigger\Queue\DefaultQueue
+        lazy: true
+        calls:
+            - [setLogger, ['@cmf.logger']]
+
+    cmf.action_trigger.action_manager:
+        class: CustomerManagementFrameworkBundle\ActionTrigger\ActionManager\DefaultActionManager
+        lazy: true
+        calls:
+            - [setLogger, ['@cmf.logger']]

@@ -14,7 +14,5 @@ use Psr\Log\LoggerInterface;
 
 interface ActionManagerInterface
 {
-    public function __construct(LoggerInterface $logger);
-
     public function processAction(ActionDefinitionInterface $action, CustomerInterface $customer);
 }

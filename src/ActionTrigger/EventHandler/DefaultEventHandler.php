@@ -15,20 +15,17 @@ use CustomerManagementFrameworkBundle\ActionTrigger\Event\SingleCustomerEventInt
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
 use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use Psr\Log\LoggerInterface;
+use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 
 class DefaultEventHandler implements EventHandlerInterface{
 
+    use LoggerAware;
+
     private $rulesGroupedByEvents;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct()
     {
-        $this->logger = $logger;
 
         $rules = new Rule\Listing();
         $rules->setCondition("active = 1");
@@ -47,10 +44,20 @@ class DefaultEventHandler implements EventHandlerInterface{
         $this->rulesGroupedByEvents = $rulesGroupedByEvents;
     }
 
-    public function handleSingleCustomerEvent(\Zend_EventManager_Event $e, SingleCustomerEventInterface $event)
+    public function handleEvent($event)
     {
 
-        $this->logger->debug(sprintf("handle single customer event: %s", $event->getName()));
+        if($event instanceof SingleCustomerEventInterface) {
+            $this->handleSingleCustomerEvent($event);
+        } elseif($event instanceof CustomerListEventInterface) {
+            $this->handleCustomerListEvent($event);
+        }
+    }
+
+    public function handleSingleCustomerEvent(SingleCustomerEventInterface $event)
+    {
+
+        $this->getLogger()->debug(sprintf("handle single customer event: %s", $event->getName()));
 
         $appliedRules = $this->getAppliedRules($event);
         foreach($appliedRules as $rule) {
@@ -58,7 +65,7 @@ class DefaultEventHandler implements EventHandlerInterface{
         }
     }
 
-    public function handleCustomerListEvent(\Zend_EventManager_Event $e, CustomerListEventInterface $event)
+    public function handleCustomerListEvent(CustomerListEventInterface $event)
     {
        // var_dump($this->getAppliedRules($event, false) );
         foreach($this->getAppliedRules($event, false) as $rule) {
@@ -66,7 +73,7 @@ class DefaultEventHandler implements EventHandlerInterface{
             if($conditions = $rule->getCondition()) {
                 $where = Checker::getDbConditionForRule($rule);
 
-                $listing = Factory::getInstance()->getCustomerProvider()->getList();
+                $listing = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
                 $listing->setCondition($where);
                 $listing->setOrderKey('o_id');
                 $listing->setOrder('asc');
@@ -96,9 +103,9 @@ class DefaultEventHandler implements EventHandlerInterface{
         if($actions = $rule->getAction()) {
             foreach($actions as $action) {
                 if($action->getActionDelay()) {
-                    Factory::getInstance()->getActionTriggerQueue()->addToQueue($action, $customer);
+                    \Pimcore::getContainer()->get('cmf.action_trigger.queue')->addToQueue($action, $customer);
                 } else {
-                    Factory::getInstance()->getActionTriggerActionManager()->processAction($action, $customer);
+                    \Pimcore::getContainer()->get('cmf.action_trigger.action_manager')->processAction($action, $customer);
                 }
             }
         }

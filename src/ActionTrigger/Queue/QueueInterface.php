@@ -10,11 +10,10 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger\Queue;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\Action\ActionDefinitionInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
 interface QueueInterface {
-
-    public function __construct(LoggerInterface $logger);
 
     public function addToQueue(ActionDefinitionInterface $action, CustomerInterface $customer);
 

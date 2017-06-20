@@ -26,17 +26,16 @@ class ActionTriggerQueueCommand extends AbstractCommand {
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        \Pimcore::getDiContainer()->set("CustomerManagementFramework\\Logger", $this->getLogger());
 
         if(Lock::isLocked(self::LOCK_KEY)) {
-            die('locked - not starting now');
+          //  die('locked - not starting now');
 
         }
 
         Lock::lock(self::LOCK_KEY);
 
         try {
-            Factory::getInstance()->getActionTriggerQueue()->processQueue();
+            \Pimcore::getContainer()->get('cmf.action_trigger.queue')->processQueue();
         } catch(\Exception $e) {
             $this->getLogger()->error($e->getMessage());
         }

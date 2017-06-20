@@ -11,12 +11,14 @@ namespace CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger;
 use CustomerManagementFrameworkBundle\Helper\Notes;
 use CustomerManagementFrameworkBundle\Helper\Objects;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Model\Element\Note;
 
 class DefaultSegmentMerger implements SegmentMergerInterface {
 
-    protected $mergedSegmentsCustomerSaveQueue;
+    use LoggerAware;
 
+    protected $mergedSegmentsCustomerSaveQueue;
 
     /**
      * @inheritdoc
@@ -117,6 +119,10 @@ class DefaultSegmentMerger implements SegmentMergerInterface {
             foreach($queueEntry['notes'] as $note) {
                 $note->save();
             }
+
+            unset($this->mergedSegmentsCustomerSaveQueue[$customer->getId()]);
+
+            $this->getLogger()->debug("merged segments saved for customer " . (string) $customer);
         }
     }
 

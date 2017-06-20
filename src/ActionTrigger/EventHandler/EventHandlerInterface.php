@@ -15,9 +15,9 @@ use Psr\Log\LoggerInterface;
 
 interface EventHandlerInterface {
 
-    public function __construct(LoggerInterface $logger);
+    public function handleEvent($event);
 
-    public function handleSingleCustomerEvent(\Zend_EventManager_Event $e, SingleCustomerEventInterface $event);
+    public function handleSingleCustomerEvent(SingleCustomerEventInterface $event);
 
-    public function handleCustomerListEvent(\Zend_EventManager_Event $e, CustomerListEventInterface $event);
+    public function handleCustomerListEvent(CustomerListEventInterface $event);
 }

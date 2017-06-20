@@ -12,20 +12,13 @@ use CustomerManagementFrameworkBundle\ActionTrigger\Action\ActionInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\Action\ActionDefinitionInterface;
 use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Psr\Log\LoggerInterface;
 
 class DefaultActionManager implements ActionManagerInterface
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    use LoggerAware;
 
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-    
     public function processAction(ActionDefinitionInterface $action, CustomerInterface $customer)
     {
         $this->logger->info(sprintf("process action ID %s", $action->getId()));

@@ -48,9 +48,6 @@ class BuildSegmentsCommand extends AbstractCommand {
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-       // \Pimcore::getDiContainer()->set("CustomerManagementFramework\\Logger", $this->getLogger());
-        \Pimcore::getContainer()->set("cmf.logger", $this->getLogger());
-
         $customQueue = null;
         if( $input->getOption( 'customer') ) {
             $customQueue = [  trim( $input->getOption( 'customer' ) ) ];

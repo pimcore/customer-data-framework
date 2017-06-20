@@ -12,24 +12,19 @@ use CustomerManagementFrameworkBundle\Model\ActionTrigger\ActionDefinition;
 use CustomerManagementFrameworkBundle\ActionTrigger\Action\ActionDefinitionInterface;
 use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db;
 use Pimcore\Model\Object\Customer;
 use Psr\Log\LoggerInterface;
+use Zend\Paginator\Adapter\ArrayAdapter;
+use Zend\Paginator\Paginator;
 
 class DefaultQueue implements QueueInterface
 {
+    use LoggerAware;
 
     const QUEUE_TABLE = 'plugin_cmf_actiontrigger_queue';
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
 
     public function addToQueue(ActionDefinitionInterface $action, CustomerInterface $customer)
     {
@@ -62,18 +57,10 @@ class DefaultQueue implements QueueInterface
             ->where('actionDate <= ?', time())
         ;
 
+        $items = $db->fetchAll($select);
 
-        $paginator = new \Zend_Paginator(new \Zend_Paginator_Adapter_DbSelect($select));
-        $paginator->setItemCountPerPage(100);
-        $paginator->setCurrentPageNumber(1);
-
-        $totalPages = $paginator->getPages()->pageCount;
-        for($i=1; $i<=$totalPages; $i++) {
-            $paginator->setCurrentPageNumber($i);
-
-            foreach($paginator as $item) {
-                $this->processQueueItem($item);
-            }
+        foreach($items as $item) {
+            $this->processQueueItem($item);
         }
     }
 
@@ -86,10 +73,10 @@ class DefaultQueue implements QueueInterface
         $customer = Customer::getById($item['customerId']);
 
         if($action && $customer) {
-            Factory::getInstance()->getActionTriggerActionManager()->processAction($action, $customer);
+            \Pimcore::getContainer()->get('cmf.action_trigger.action_manager')->processAction($action, $customer);
         }
 
         $db = Db::get();
-        $db->delete(self::QUEUE_TABLE, 'id='.intval($item['id']));
+        $db->deleteWhere(self::QUEUE_TABLE, 'id='.intval($item['id']));
     }
 }

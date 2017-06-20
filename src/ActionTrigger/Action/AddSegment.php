@@ -8,7 +8,6 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Action;
 
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\Object\CustomerSegment;
 
@@ -34,10 +33,11 @@ class AddSegment extends AbstractAction {
             $deleteSegments = [];
 
             if($options{self::OPTION_REMOVE_OTHER_SEGMENTS_FROM_SEGMENT_GROUP} && ($segmentGroup = $segment->getGroup())) {
-                $deleteSegments =  Factory::getInstance()->getSegmentManager()->getSegmentsFromSegmentGroup($segmentGroup, [$segment]);
+                $deleteSegments =  \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentsFromSegmentGroup($segmentGroup, [$segment]);
             }
 
-            Factory::getInstance()->getSegmentManager()->mergeSegments($customer, [$segment], $deleteSegments, "AddSegment action trigger action");
+            \Pimcore::getContainer()->get('cmf.segment_manager')->mergeSegments($customer, [$segment], $deleteSegments, "AddSegment action trigger action");
+            \Pimcore::getContainer()->get('cmf.segment_manager')->saveMergedSegments($customer);
 
         } else {
             $this->logger->error(sprintf("AddSegment action: segment with ID %s not found", $options[self::OPTION_SEGMENT_ID]));
