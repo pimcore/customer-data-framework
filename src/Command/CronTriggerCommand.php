@@ -24,14 +24,12 @@ class CronTriggerCommand extends AbstractCommand {
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = $this->getLogger();
-        \Pimcore::getDiContainer()->set("CustomerManagementFramework\\Logger", $logger);
 
         $logger->notice('cron trigger');
 
         $event = new \CustomerManagementFrameworkBundle\ActionTrigger\Event\Cron();
 
-        $e = new \Zend_EventManager_Event;
-        Factory::getInstance()->getActionTriggerEventHandler()->handleCustomerListEvent($e, $event);
+        \Pimcore::getContainer()->get('cmf.event_listener.action_trigger')->handleCustomerListEvent($event);
     }
 
 }

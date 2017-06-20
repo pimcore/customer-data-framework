@@ -13,9 +13,9 @@ use CustomerManagementFrameworkBundle\ActionTrigger\Event\CustomerListEventInter
 use CustomerManagementFrameworkBundle\ActionTrigger\Event\EventInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\Event\SingleCustomerEventInterface;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use Zend\Paginator\Paginator;
 
 class DefaultEventHandler implements EventHandlerInterface{
 
@@ -46,8 +46,6 @@ class DefaultEventHandler implements EventHandlerInterface{
 
     public function handleEvent($event)
     {
-        print "handle";
-
         if($event instanceof SingleCustomerEventInterface) {
             $this->handleSingleCustomerEvent($event);
         } elseif($event instanceof CustomerListEventInterface) {
@@ -79,10 +77,10 @@ class DefaultEventHandler implements EventHandlerInterface{
                 $listing->setOrderKey('o_id');
                 $listing->setOrder('asc');
                 
-                $paginator = new \Zend_Paginator($listing);
+                $paginator = new Paginator($listing);
                 $paginator->setItemCountPerPage(100);
 
-                $this->logger->debug(sprintf("handleCustomerListEvent: found %s matching customers", $paginator->getTotalItemCount()));
+                $this->getLogger()->info(sprintf("handleCustomerListEvent: found %s matching customers", $paginator->getTotalItemCount()));
 
                 $totalPages = $paginator->getPages()->pageCount;
                 for($i=1; $i<=$totalPages; $i++) {

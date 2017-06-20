@@ -4,7 +4,7 @@
     "type": "pimcore-bundle",
     "require": {
         "pimcore/installer-plugin": ">=1",
-        "tiben/crontab-manager":"^1.2",
+        "mtdowling/cron-expression": "^1.2",
         "guzzlehttp/guzzle": ">=4.1.4 <7.0",
         "symfony/routing": "^3.2",
         "drewm/mailchimp-api": "*",
