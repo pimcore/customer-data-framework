@@ -15,6 +15,7 @@ use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Model\Tool\TmpStore;
 use Psr\Log\LoggerInterface;
+use Zend\Paginator\Paginator;
 
 class AgeSegmentBuilder extends AbstractSegmentBuilder {
 
@@ -114,16 +115,16 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder {
             return;
         }
 
-        $this->logger->debug("execute maintenance of AgeSegmentBuilder");
+        $this->logger->info("execute maintenance of AgeSegmentBuilder");
 
         TmpStore::add($tmpStoreKey, 1, null, (60*60*24)); // only execute it once per day
 
         $this->prepare($segmentManager);
 
-        $list = Factory::getInstance()->getCustomerProvider()->getList();
+        $list = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
         $list->setCondition("DATE_FORMAT(FROM_UNIXTIME(" . $this->birthDayField ."),'%m-%d') = DATE_FORMAT(NOW(),'%m-%d')");
 
-        $paginator = new \Zend_Paginator($list);
+        $paginator = new Paginator($list);
         $paginator->setItemCountPerPage(100);
 
         $pageCount = $paginator->getPages()->pageCount;

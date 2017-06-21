@@ -21,6 +21,11 @@ services:
            - { name: kernel.event_listener, event: pimcore.object.preDelete, method: onPreDelete }
            - { name: kernel.event_listener, event: pimcore.object.postDelete, method: onPostDelete }
 
+    cmf.event_listener.maintenance:
+          class: CustomerManagementFrameworkBundle\Event\MaintenanceEventListener
+          tags:
+              - { name: kernel.event_listener, event: pimcore.system.maintenance, method: onMaintenance }
+
     cmf.event_listener.action_trigger:
         class: CustomerManagementFrameworkBundle\ActionTrigger\EventHandler\DefaultEventHandler
         tags:

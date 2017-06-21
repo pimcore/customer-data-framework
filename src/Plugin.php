@@ -17,51 +17,16 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
     public function init()
     {
 
-        \Pimcore::getEventManager()->attach("system.di.init", function (\Zend_EventManager_Event $e) {
-            $builder = $e->getTarget();
-
-
-            $customFile = PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/config/di.php';
-            if (file_exists($customFile)) {
-                $builder->addDefinitions($customFile);
-            }
-
-            $customFile = \Pimcore\Config::locateConfigFile("plugins/CustomerManagementFramework/di.php");
-            if (file_exists($customFile)) {
-                $builder->addDefinitions($customFile);
-            }
-
-        });
-
         parent::init();
 
 
 
 
-
-        \Pimcore::getEventManager()->attach('system.console.init', function(\Zend_EventManager_Event $e) {
-            /** @var \Pimcore\Console\Application $application */
-            $application = $e->getTarget();
-
-            // add a namespace to autoload commands from
-            $application->addAutoloadNamespace('CustomerManagementFramework\\Console', PIMCORE_DOCUMENT_ROOT . '/plugins/CustomerManagementFramework/lib/CustomerManagementFramework/Console');
-
-
-        });
-
         \Pimcore::getEventManager()->attach('system.maintenance', function(\Zend_EventManager_Event $e) {
             Factory::getInstance()->getSegmentManager()->executeSegmentBuilderMaintenance();
         });
 
-        \Pimcore::getEventManager()->attach(array_keys(Plugin::getConfig()->Events->toArray()), function(\Zend_EventManager_Event $e) {
 
-            $event = $e->getTarget();
-
-            if($event instanceof SingleCustomerEventInterface) {
-                Factory::getInstance()->getActionTriggerEventHandler()->handleSingleCustomerEvent($e, $event);
-            }
-
-        });
         \Pimcore::getEventManager()->attach('plugin.ObjectMerger.postMerge', function(\Zend_EventManager_Event $e){
 
             $sourceCustomer = Factory::getInstance()->getCustomerProvider()->getById($e->getParam('sourceId'));
