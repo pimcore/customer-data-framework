@@ -4,9 +4,10 @@ namespace CustomerManagementFrameworkBundle\RESTApi;
 
 use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouteCollection;
 
-class SegmentsOfCustomerHandler extends AbstractRoutingHandler
+class SegmentsOfCustomerHandler extends AbstractHandler
 {
     use LoggerAware;
 
@@ -25,10 +26,9 @@ class SegmentsOfCustomerHandler extends AbstractRoutingHandler
     /**
      * POST /segments-of-customer
      *
-     * @param \Zend_Controller_Request_Http $request
-     * @param array                         $params
+     * @param Request $request
      */
-    protected function updateRecords(\Zend_Controller_Request_Http $request, array $params = []){
+    public function updateRecords(Request $request){
 
         $data = $this->getRequestData($request);
 
@@ -39,9 +39,7 @@ class SegmentsOfCustomerHandler extends AbstractRoutingHandler
             ], Response::RESPONSE_CODE_BAD_REQUEST);
         }
 
-        $customerClass = \Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassName();
-
-        if(!$customer = $customerClass::getById($data['customerId'])) {
+        if(!$customer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById($data['customerId'])) {
             return new Response([
                 'success' => false,
                 'msg' => sprintf('customer with id %s not found', $data['customerId'])
@@ -51,7 +49,7 @@ class SegmentsOfCustomerHandler extends AbstractRoutingHandler
         $addSegments = [];
         if(is_array($data['addSegments'])) {
             foreach($data['addSegments'] as $segmentId) {
-                if($segment = \Pimcore\Model\Object\CustomerSegment::getById($segmentId)) {
+                if($segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId)) {
                     $addSegments[] = $segment;
                 }
             }
@@ -60,13 +58,14 @@ class SegmentsOfCustomerHandler extends AbstractRoutingHandler
         $deleteSegments = [];
         if(is_array($data['removeSegments'])) {
             foreach($data['removeSegments'] as $segmentId) {
-                if($segment = \Pimcore\Model\Object\CustomerSegment::getById($segmentId)) {
+                if($segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId)) {
                     $deleteSegments[] = $segment;
                 }
             }
         }
 
         \Pimcore::getContainer()->get('cmf.segment_manager')->mergeSegments($customer, $addSegments, $deleteSegments, "REST update API: segments-of-customer action");
+        \Pimcore::getContainer()->get('cmf.segment_manager')->saveMergedSegments($customer);
 
 
         return new Response(['success'=>true], Response::RESPONSE_CODE_OK);

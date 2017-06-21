@@ -192,12 +192,13 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
     {
         if(empty($this->relatedItem)) {
             $implementationClass = self::getImplementationClass();
-            $implementationClass = \Pimcore::getDiContainer()->has($implementationClass) ? \Pimcore::getDiContainer()->get($implementationClass) : $implementationClass;
+            $implementationClass = \Pimcore::getContainer()->has($implementationClass) ? \Pimcore::getContainer()->has($implementationClass) : $implementationClass;
             $attributes = $this->getAttributes();
             $attributes['activityDate'] = $this->getActivityDate();
             $attributes['o_id'] = $this->o_id ? : $attributes['o_id'];
             $attributes['a_id'] = $this->a_id ? : $attributes['a_id'];
-            $this->relatedItem = \Pimcore::getDiContainer()->call([$implementationClass , 'cmfCreate'], [$attributes]);
+            $attributes['customerId'] = $this->getCustomerId();
+            $this->relatedItem = $implementationClass::cmfCreate($attributes);
         }
 
         return $this->relatedItem;

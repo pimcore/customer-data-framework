@@ -8,6 +8,8 @@
 
 namespace CustomerManagementFrameworkBundle\Filter;
 
+use Symfony\Component\HttpFoundation\Request;
+
 class ExportActivitiesFilterParams {
 
     /**
@@ -16,17 +18,15 @@ class ExportActivitiesFilterParams {
     private $type;
 
     /**
-     * @param \Zend_Controller_Request_Http $request
+     * @param Request $request
      * @return static
      */
-    public static function fromRequest(\Zend_Controller_Request_Http $request)
+    public static function fromRequest(Request $request)
     {
         $params = new static();
-        $params->setType($request->getParam('type', false));
-        $params->setModifiedSinceTimestamp($request->getParam('modifiedSinceTimestamp'));
-        $params->setAllParams($request->getParams());
-
-        $params->setAllParams($request->getParams());
+        $params->setType($request->get('type', false));
+        $params->setModifiedSinceTimestamp($request->get('modifiedSinceTimestamp'));
+        $params->setAllParams($request->request->all());
 
         return $params;
     }

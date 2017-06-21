@@ -93,8 +93,9 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     public function create(array $data = [])
     {
 
+        $className = $this->getDiClassName();
         /** @var CustomerInterface|ElementInterface|Concrete $customer */
-        $customer = \Pimcore::getDiContainer()->make($this->getDiClassName());
+        $customer = new $className;
         $customer->setPublished(true);
         $customer->setValues($data);
         $this->applyObjectNamingScheme($customer);

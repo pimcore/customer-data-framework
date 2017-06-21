@@ -8,6 +8,8 @@
 
 namespace CustomerManagementFrameworkBundle\Filter;
 
+use Symfony\Component\HttpFoundation\Request;
+
 class ExportCustomersFilterParams {
 
 
@@ -27,15 +29,15 @@ class ExportCustomersFilterParams {
     private $segments;
 
     /**
-     * @param \Zend_Controller_Request_Http $request
+     * @param Request $request
      * @return static
      */
-    public static function fromRequest(\Zend_Controller_Request_Http $request)
+    public static function fromRequest(Request $request)
     {
         $params = new static();
-        $params->setIncludeActivities($request->getParam('includeActivities') == 'true' ? true : false);
-        $params->setSegments($request->getParam('segments'));
-        $params->setAllParams($request->getParams());
+        $params->setIncludeActivities($request->get('includeActivities') == 'true' ? true : false);
+        $params->setSegments($request->get('segments'));
+        $params->setAllParams($request->request->all());
 
         return $params;
     }

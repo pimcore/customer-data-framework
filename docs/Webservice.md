@@ -49,11 +49,11 @@ The customers API implements standard REST calls for customer CRUD actions:
 
 | Path                    | Method | Description                 |
 |-------------------------|--------|-----------------------------|
-| /cmf/api/customers      | GET    | Fetch all customers         |
-| /cmf/api/customers/{id} | GET    | Fetch a single customer     |
-| /cmf/api/customers      | POST   | Create a new customer       |
-| /cmf/api/customers/{id} | PATCH  | Partially update a customer |
-| /cmf/api/customers/{id} | DELETE | Delete a customer           |
+| /webservice/cmf/customers      | GET    | Fetch all customers         |
+| /webservice/cmf/customers/{id} | GET    | Fetch a single customer     |
+| /webservice/cmf/customers      | POST   | Create a new customer       |
+| /webservice/cmf/customers/{id} | PATCH  | Partially update a customer |
+| /webservice/cmf/customers/{id} | DELETE | Delete a customer           |
 
 The `GET` requests can be filtered by passing the follwing params as query params:
 
@@ -71,11 +71,11 @@ The activities API implements standard REST calls for activity CRUD actions:
 
 | Path                    | Method | Description                   |
 |-------------------------|--------|-------------------------------|
-| /cmf/api/activities      | GET    | Fetch all activities         |
-| /cmf/api/activities/{id} | GET    | Fetch a single activity      |
-| /cmf/api/activities      | POST   | Create a new activity        |
-| /cmf/api/activities/{id} | PATCH  | Partially update a activity  |
-| /cmf/api/activities/{id} | DELETE | Delete a activity            |
+| /webservice/cmf/activities      | GET    | Fetch all activities         |
+| /webservice/cmf/activities/{id} | GET    | Fetch a single activity      |
+| /webservice/cmf/activities      | POST   | Create a new activity        |
+| /webservice/cmf/activities/{id} | PATCH  | Partially update a activity  |
+| /webservice/cmf/activities/{id} | DELETE | Delete a activity            |
 
 The `GET` requests can be filtered by passing the follwing params as query params:
 
@@ -92,7 +92,7 @@ The deletions API delivers information about deletions of customers and activiti
 
 | Path                     | Method | Description                   |
 |--------------------------|--------|-------------------------------|
-| /cmf/api/deletions       | GET    | Fetch all segments            |
+| /webservice/cmf/deletions       | GET    | Fetch all segments            |
 
 The request can be filtered by passing the follwing params as query params:
 
@@ -108,11 +108,11 @@ The segments API implements standard REST calls for customer segment CRUD action
 
 | Path                     | Method | Description                   |
 |--------------------------|--------|-------------------------------|
-| /cmf/api/segments        | GET    | Fetch all segments            |
-| /cmf/api/segments/{id}   | GET    | Fetch a single segment        |
-| /cmf/api/segments        | POST   | Create a new segment          |
-| /cmf/api/segments/{id}   | PATCH  | Partially update a segment    |
-| /cmf/api/segments/{id}   | DELETE | Delete a segment              |
+| /webservice/cmf/segments        | GET    | Fetch all segments            |
+| /webservice/cmf/segments/{id}   | GET    | Fetch a single segment        |
+| /webservice/cmf/segments        | POST   | Create a new segment          |
+| /webservice/cmf/segments/{id}   | PATCH  | Partially update a segment    |
+| /webservice/cmf/segments/{id}   | DELETE | Delete a segment              |
 
 The `GET` requests can be filtered by passing the follwing params as query params:
 
@@ -127,11 +127,11 @@ The segment groups API implements standard REST calls for customer segment group
 
 | Path                           | Method | Description                           |
 |--------------------------------|--------|---------------------------------------|
-| /cmf/api/segment-groups        | GET    | Fetch all segment groups              |
-| /cmf/api/segment-groups/{id}   | GET    | Fetch a single segment group          |
-| /cmf/api/segment-groups        | POST   | Create a new segment group            |
-| /cmf/api/segment-groups/{id}   | PATCH  | Partially update a segment group      |
-| /cmf/api/segment-groups/{id}   | DELETE | Delete a segment group                |
+| /webservice/cmf/segment-groups        | GET    | Fetch all segment groups              |
+| /webservice/cmf/segment-groups/{id}   | GET    | Fetch a single segment group          |
+| /webservice/cmf/segment-groups        | POST   | Create a new segment group            |
+| /webservice/cmf/segment-groups/{id}   | PATCH  | Partially update a segment group      |
+| /webservice/cmf/segment-groups/{id}   | DELETE | Delete a segment group                |
 
 The `GET` requests can be filtered by passing the follwing params as query params:
 
@@ -146,7 +146,7 @@ The segments of customers API allows to add segments to customers and remove seg
 
 | Path                           | Method | Description                           |
 |--------------------------------|--------|---------------------------------------|
-| /cmf/api/segments-of-customers | POST    | Add/remove segments                   |
+| /webservice/cmf/segments-of-customers | POST    | Add/remove segments                   |
 
 ``` 
 Example POST body JSON:

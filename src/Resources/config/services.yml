@@ -112,3 +112,44 @@ services:
         lazy: true
         calls:
             - [setLogger, ['@cmf.logger']]
+
+    cmf.rest.activities_handler:
+        class: CustomerManagementFrameworkBundle\RESTApi\ActivitiesHandler
+        lazy: true
+        calls:
+            - [setApiResourceRoute, ['customermanagementframework_rest_api_activities_readrecord']]
+            - [setLogger, ['@cmf.logger']]
+
+    cmf.rest.customers_handler:
+        class: CustomerManagementFrameworkBundle\RESTApi\CustomersHandler
+        lazy: true
+        arguments: ['@cmf.customer_provider']
+        calls:
+            - [setApiResourceRoute, ['customermanagementframework_rest_api_customers_readrecord']]
+            - [setLogger, ['@cmf.logger']]
+
+    cmf.rest.segments_of_customer_handler:
+        class: CustomerManagementFrameworkBundle\RESTApi\SegmentsOfCustomerHandler
+        lazy: true
+        calls:
+            - [setLogger, ['@cmf.logger']]
+
+    cmf.rest.segments_handler:
+        class: CustomerManagementFrameworkBundle\RESTApi\SegmentsHandler
+        lazy: true
+        calls:
+            - [setApiResourceRoute, ['customermanagementframework_rest_api_segments_readrecord']]
+            - [setLogger, ['@cmf.logger']]
+
+    cmf.rest.segment_groups_handler:
+            class: CustomerManagementFrameworkBundle\RESTApi\SegmentGroupsHandler
+            lazy: true
+            calls:
+                - [setApiResourceRoute, ['customermanagementframework_rest_api_segmentgroups_readrecord']]
+                - [setLogger, ['@cmf.logger']]
+
+    cmf.rest.deletions_handler:
+        class: CustomerManagementFrameworkBundle\RESTApi\DeletionsHandler
+        lazy: true
+        calls:
+            - [setLogger, ['@cmf.logger']]

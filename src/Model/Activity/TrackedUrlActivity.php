@@ -53,4 +53,20 @@ class TrackedUrlActivity extends AbstractActivity
     {
         return $entry->getAttributes();
     }
+
+    public function cmfWebserviceUpdateAllowed()
+    {
+        return true;
+    }
+
+    /**
+     * @param array $data
+     * @param bool  $fromWebservice
+     *
+     * @return bool
+     */
+    public static function cmfCreate(array $data, $fromWebservice = false)
+    {
+        return new static(\Pimcore::getContainer()->get('cmf.customer_provider')->getById($data['customerId']), ActivityDefinition::getById('6697057'));
+    }
 }

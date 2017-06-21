@@ -4,34 +4,23 @@ namespace CustomerManagementFrameworkBundle\RESTApi;
 
 use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouteCollection;
 
-class DeletionsHandler extends AbstractRoutingHandler
+class DeletionsHandler extends AbstractHandler
 {
     use LoggerAware;
 
-    protected function getRoutes()
-    {
-        $routes = new RouteCollection();
-
-        $routes->add(
-            'list',
-            $this->createRoute('GET', '/', 'listRecords')
-        );
-
-        return $routes;
-    }
 
     /**
-     * POST /deletions
+     * GET /deletions
      *
-     * @param \Zend_Controller_Request_Http $request
-     * @param array                         $params
+     * @param Request $request
      */
-    protected function listRecords(\Zend_Controller_Request_Http $request, array $params = []){
+    public function listRecords(Request $request){
 
-        $entityType = $request->getparam('entityType');
-        $deletionsSinceTimestamp = $request->getParam('deletionsSinceTimestamp');
+        $entityType = $request->get('entityType');
+        $deletionsSinceTimestamp = $request->get('deletionsSinceTimestamp');
 
         $timestamp = time();
 

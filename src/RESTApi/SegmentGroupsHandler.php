@@ -11,8 +11,10 @@ use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Model\Object\Concrete;
 use Pimcore\Model\Object\CustomerSegmentGroup;
+use Symfony\Component\HttpFoundation\Request;
+use Zend\Paginator\Paginator;
 
-class SegmentGroupsHandler extends AbstractCrudRoutingHandler
+class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterface
 {
     use LoggerAware;
     use ResponseGenerator;
@@ -22,11 +24,10 @@ class SegmentGroupsHandler extends AbstractCrudRoutingHandler
     /**
      * GET /segment-groups
      *
-     * @param \Zend_Controller_Request_Http $request
-     * @param array $params
+     * @param Request $request
      * @return Response
      */
-    public function listRecords(\Zend_Controller_Request_Http $request, array $params = [])
+    public function listRecords(Request $request)
     {
         $list = new CustomerSegmentGroup\Listing();
 
@@ -34,7 +35,7 @@ class SegmentGroupsHandler extends AbstractCrudRoutingHandler
         $list->setOrder('asc');
         $list->setUnpublished(false);
 
-        $paginator = new \Zend_Paginator($list);
+        $paginator = new Paginator($list);
         $this->handlePaginatorParams($paginator, $request);
 
         $timestamp = time();
@@ -55,25 +56,23 @@ class SegmentGroupsHandler extends AbstractCrudRoutingHandler
     /**
      * GET /segments/{id}
      *
-     * @param \Zend_Controller_Request_Http $request
-     * @param array $params
+     * @param Request $request
      * @return Response
      */
-    public function readRecord(\Zend_Controller_Request_Http $request, array $params = [])
+    public function readRecord(Request $request)
     {
-        $segment = $this->loadSegmentGroup($params);
+        $segmentGroup = $this->loadSegmentGroup($request->get('id'));
 
-        return $this->createSegmentGroupResponse($segment);
+        return $this->createSegmentGroupResponse($segmentGroup);
     }
 
     /**
      * POST /segments
      *
-     * @param \Zend_Controller_Request_Http $request
-     * @param array $params
+     * @param Request $request
      * @return Response
      */
-    public function createRecord(\Zend_Controller_Request_Http $request, array $params = [])
+    public function createRecord(Request $request)
     {
         $data = $this->getRequestData($request);
 
@@ -81,14 +80,14 @@ class SegmentGroupsHandler extends AbstractCrudRoutingHandler
             return new Response([
                 'success' => false,
                 'msg' => 'name required'
-            ], Response::RESPONSE_CODE_BAD_REQUEST);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         if($data['reference'] && \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentGroupByReference($data['reference'], (bool)$data['calculated'])) {
             return new Response([
                 'success' => false,
                 'msg' => sprintf("duplicate segment group - group with reference '%s' already exists", $data['reference'])
-            ], Response::RESPONSE_CODE_BAD_REQUEST);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $segmentGroup = \Pimcore::getContainer()->get('cmf.segment_manager')->createSegmentGroup($data['name'], $data['reference'], isset($data['calculated']) ? (bool)$data['calculated'] : false, $data);
@@ -105,25 +104,24 @@ class SegmentGroupsHandler extends AbstractCrudRoutingHandler
      *
      * TODO support partial updates as we do now or demand whole object in PUT? Use PATCH for partial requests?
      *
-     * @param \Zend_Controller_Request_Http $request
-     * @param array $params
+     * @param Request $request
      * @return Response
      */
-    public function updateRecord(\Zend_Controller_Request_Http $request, array $params = [])
+    public function updateRecord(Request $request)
     {
         $data = $this->getRequestData($request);
 
-        if(empty($params['id'])) {
+        if(empty($request->get('id'))) {
             return new Response([
                 'success' => false,
                 'msg' => 'id required'
             ], Response::RESPONSE_CODE_BAD_REQUEST);
         }
 
-        if(!$segmentGroup = CustomerSegmentGroup::getByid($params['id'])) {
+        if(!$segmentGroup = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentGroupById($request->get('id'))) {
             return new Response([
                 'success' => false,
-                'msg' => sprintf('segment with id %s not found', $params['id'])
+                'msg' => sprintf('segment with id %s not found', $request->get('id'))
             ], Response::RESPONSE_CODE_NOT_FOUND);
         }
 
@@ -138,13 +136,12 @@ class SegmentGroupsHandler extends AbstractCrudRoutingHandler
     /**
      * DELETE /segments/{id}
      *
-     * @param \Zend_Controller_Request_Http $request
-     * @param array $params
+     * @param Request $request
      * @return Response
      */
-    public function deleteRecord(\Zend_Controller_Request_Http $request, array $params = [])
+    public function deleteRecord(Request $request)
     {
-        $segmentGroup = $this->loadSegmentGroup($params);
+        $segmentGroup = $this->loadSegmentGroup($request->get('id'));
 
         try {
             $segmentGroup->delete();
@@ -159,7 +156,7 @@ class SegmentGroupsHandler extends AbstractCrudRoutingHandler
      * Load a customer segment group from ID.
      *
      * @param int|array $id
-     * @return CustomerSegmentInterface|Concrete
+     * @return CustomerSegmentGroup
      */
     protected function loadSegmentGroup($id)
     {
@@ -184,20 +181,6 @@ class SegmentGroupsHandler extends AbstractCrudRoutingHandler
         return $segment;
     }
 
-    /**
-     * @param \Zend_Paginator $paginator
-     * @param \Zend_Controller_Request_Http $request
-     * @param int $defaultPageSize
-     * @param int $defaultPage
-     */
-    protected function handlePaginatorParams(\Zend_Paginator $paginator, \Zend_Controller_Request_Http $request, $defaultPageSize = 100, $defaultPage = 1)
-    {
-        $pageSize = intval($request->getParam('pageSize', $defaultPageSize));
-        $page     = intval($request->getParam('page', $defaultPage));
-
-        $paginator->setItemCountPerPage($pageSize);
-        $paginator->setCurrentPageNumber($page);
-    }
 
     /**
      * Create customer segment response with hydrated segment data
@@ -205,8 +188,6 @@ class SegmentGroupsHandler extends AbstractCrudRoutingHandler
      * @param CustomerSegmentGroup $segmentGroup
      *
      * @return Response
-     * @internal param \Zend_Controller_Request_Http $request
-     * @internal param ExportCustomersFilterParams $params
      */
     protected function createSegmentGroupResponse(CustomerSegmentGroup $segmentGroup)
     {
@@ -228,7 +209,7 @@ class SegmentGroupsHandler extends AbstractCrudRoutingHandler
 
         $links = isset($data['_links']) ? $data['_links'] : [];
 
-        if ($selfLink = $this->generateElementApiUrl($customerSegmentGroup)) {
+        if ($selfLink = $this->generateResourceApiUrl($customerSegmentGroup->getId())) {
             $links[] = [
                 'rel'    => 'self',
                 'href'   => $selfLink,

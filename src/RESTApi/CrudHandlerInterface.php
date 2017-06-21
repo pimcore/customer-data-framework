@@ -2,52 +2,51 @@
 
 namespace CustomerManagementFrameworkBundle\RESTApi;
 
+use Symfony\Component\HttpFoundation\Request;
+
 interface CrudHandlerInterface
 {
     /**
      * GET /
      *
-     * @param \Zend_Controller_Request_Http $request
-     * @param array $params
+     * @param Request $request
      * @return Response
      */
-    public function listRecords(\Zend_Controller_Request_Http $request, array $params = []);
+    public function listRecords(Request $request);
 
     /**
      * GET /{id}
      *
-     * @param \Zend_Controller_Request_Http $request
+     * @param Request $request
      * @param array $params
      * @return Response
      */
-    public function readRecord(\Zend_Controller_Request_Http $request, array $params = []);
+    public function readRecord(Request $request);
 
     /**
      * POST /
      *
-     * @param \Zend_Controller_Request_Http $request
-     * @param array $params
+     * @param Request $request
      * @return Response
      */
-    public function createRecord(\Zend_Controller_Request_Http $request, array $params = []);
+    public function createRecord(Request $request);
 
     /**
      * PUT /{id}
      *
      * TODO support partial updates as we do now or demand whole object in PUT? Use PATCH for partial requests?
      *
-     * @param \Zend_Controller_Request_Http $request
+     * @param Request $request
      * @param array $params
      * @return Response
      */
-    public function updateRecord(\Zend_Controller_Request_Http $request, array $params = []);
+    public function updateRecord(Request $request);
 
     /**
      * DELETE /{id}
      *
-     * @param \Zend_Controller_Request_Http $request
-     * @param array $params
+     * @param Request $request
      * @return Response
      */
-    public function deleteRecord(\Zend_Controller_Request_Http $request, array $params = []);
+    public function deleteRecord(Request $request);
 }

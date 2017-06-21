@@ -13,6 +13,7 @@ use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntr
 use CustomerManagementFrameworkBundle\Filter\ExportActivitiesFilterParams;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use Zend\Paginator\Paginator;
 
 /**
  * Interface ActivityStoreInterface
@@ -98,7 +99,7 @@ interface ActivityStoreInterface {
      * @param int                          $page
      * @param ExportActivitiesFilterParams $params
      *
-     * @return \Zend_Paginator
+     * @return Paginator
      */
     public function getActivitiesDataForWebservice($pageSize, $page = 1, ExportActivitiesFilterParams $params);
 

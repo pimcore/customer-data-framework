@@ -3,9 +3,7 @@
 namespace CustomerManagementFrameworkBundle\RESTApi;
 
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Filter\ExportActivitiesFilterParams;
-use CustomerManagementFrameworkBundle\Filter\ExportCustomersFilterParams;
 use CustomerManagementFrameworkBundle\Model\Activity\GenericActivity;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\PersistentActivityInterface;
@@ -13,8 +11,9 @@ use CustomerManagementFrameworkBundle\RESTApi\Exception\ResourceNotFoundExceptio
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResourceUrlGenerator;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResponseGenerator;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use \Symfony\Component\HttpFoundation\Request;
 
-class ActivitiesHandler extends AbstractCrudRoutingHandler
+class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
 {
     use LoggerAware;
     use ResponseGenerator;
@@ -23,18 +22,17 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
     /**
      * GET /activities
      *
-     * @param \Zend_Controller_Request_Http $request
-     * @param array $params
+     * @param Request $request
      * @return Response
      */
-    public function listRecords(\Zend_Controller_Request_Http $request, array $params = [])
+    public function listRecords(Request $request)
     {
         $param = ExportActivitiesFilterParams::fromRequest($request);
 
         $timestamp = time();
 
-        $pageSize = intval($request->getParam('pageSize')) ? : 100;
-        $page = intval($request->getParam('page')) ? : 1;
+        $pageSize = intval($request->get('pageSize', 100));
+        $page = intval($request->get('page', 1));
 
         $paginator = \Pimcore::getContainer()->get('cmf.activity_store')->getActivitiesDataForWebservice($pageSize, $page, $param);
 
@@ -48,8 +46,6 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
 
         foreach($paginator as $entry) {
 
-
-
             /**
              * @var ActivityStoreEntryInterface $entry;
              */
@@ -62,25 +58,24 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
     /**
      * GET /activities/{id}
      *
-     * @param \Zend_Controller_Request_Http $request
+     * @param Request $request
      * @param array $params
      * @return Response
      */
-    public function readRecord(\Zend_Controller_Request_Http $request, array $params = [])
+    public function readRecord(Request $request)
     {
-        $customer = $this->loadActivityStoreEntry($params);
+        $entry = $this->loadActivityStoreEntry($request->get('id'));
 
-        return $this->createActivityEntryResponse($customer, $request);
+        return $this->createActivityEntryResponse($entry);
     }
 
     /**
      * POST /activities
      *
-     * @param \Zend_Controller_Request_Http $request
-     * @param array $params
+     * @param Request $request
      * @return Response
      */
-    public function createRecord(\Zend_Controller_Request_Http $request, array $params = [])
+    public function createRecord(Request $request)
     {
         $data = $this->getRequestData($request);
 
@@ -102,7 +97,7 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
             /**
              * @var ActivityInterface $activity
              */
-            $activity = \Pimcore::getDiContainer()->call([$implementationClass , 'cmfCreate'], [$data]);
+            $activity = $implementationClass::cmfCreate($data);
 
 
             if($activity && $activity->cmfWebserviceUpdateAllowed()) {
@@ -120,6 +115,7 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
                 }
 
                 $entry = \Pimcore::getContainer()->get('cmf.activity_store')->insertActivityIntoStore($activity);
+                $entry = \Pimcore::getContainer()->get('cmf.activity_store')->getEntryById($entry->getId());
 
             } else {
                 return $this->createErrorResponse(sprintf("creation of activities with implementation class %s not allowed via REST webservice", $implementationClass));
@@ -128,8 +124,8 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
             return $this->createErrorResponse($e->getMessage());
         }
 
-        $response = $this->createActivityEntryResponse($entry, $request);
-        $response->setResponseCode(Response::RESPONSE_CODE_CREATED);
+        $response = $this->createActivityEntryResponse($entry);
+        $response->setStatusCode(Response::HTTP_CREATED);
 
         return $response;
     }
@@ -139,13 +135,12 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
      *
      * TODO support partial updates as we do now or demand whole object in PUT? Use PATCH for partial requests?
      *
-     * @param \Zend_Controller_Request_Http $request
      * @param array $params
      * @return Response
      */
-    public function updateRecord(\Zend_Controller_Request_Http $request, array $params = [])
+    public function updateRecord(Request $request)
     {
-        $entry = $this->loadActivityStoreEntry($params);
+        $entry = $this->loadActivityStoreEntry($request->get('id'));
         $data     = $this->getRequestData($request);
 
         if(isset($data['implementationClass']) && $data['implementationClass'] != $entry->getImplementationClass()) {
@@ -157,13 +152,13 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
             $activity = $entry->getRelatedItem();
 
             if($activity && $activity->cmfWebserviceUpdateAllowed()) {
-                $activity->cmfUpdateData($data['attributes']);
+                $activity->cmfUpdateData($data);
                 if($activity instanceof PersistentActivityInterface) {
                     $activity->save();
                 }
 
                 \Pimcore::getContainer()->get('cmf.activity_store')->updateActivityInStore($activity, $entry);
-                $entry = $this->loadActivityStoreEntry($params);
+                $entry = $this->loadActivityStoreEntry($request->get('id'));
             } else {
                 return $this->createErrorResponse(sprintf("update of activities with implementation class %s not allowed via REST webservice", $entry->getImplementationClass()));
             }
@@ -172,22 +167,22 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
             return $this->createErrorResponse($e->getMessage());
         }
 
-        return $this->createActivityEntryResponse($entry, $request);
+        return $this->createActivityEntryResponse($entry);
     }
 
     /**
-     * DELETE /activities/{id}
+     * DELETE /{id}
      *
-     * @param \Zend_Controller_Request_Http $request
-     * @param array $params
+     * @param Request $request
      * @return Response
      */
-    public function deleteRecord(\Zend_Controller_Request_Http $request, array $params = [])
+    public function deleteRecord(Request $request)
     {
-        $entry = $this->loadActivityStoreEntry($params);
+        $entry = $this->loadActivityStoreEntry($request->get('id'));
 
         try {
             $activity = $entry->getRelatedItem();
+
 
             if($activity && $activity->cmfWebserviceUpdateAllowed()) {
 
@@ -236,30 +231,14 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
         return $entry;
     }
 
-    /**
-     * @param \Zend_Paginator $paginator
-     * @param \Zend_Controller_Request_Http $request
-     * @param int $defaultPageSize
-     * @param int $defaultPage
-     */
-    protected function handlePaginatorParams(\Zend_Paginator $paginator, \Zend_Controller_Request_Http $request, $defaultPageSize = 100, $defaultPage = 1)
-    {
-        $pageSize = intval($request->getParam('pageSize', $defaultPageSize));
-        $page     = intval($request->getParam('page', $defaultPage));
-
-        $paginator->setItemCountPerPage($pageSize);
-        $paginator->setCurrentPageNumber($page);
-    }
 
     /**
      * Create customer response with hydrated customer data
      *
      * @param ActivityStoreEntryInterface $activityStoreEntry
-     * @param \Zend_Controller_Request_Http $request
-     * @param ExportCustomersFilterParams $params
      * @return Response
      */
-    protected function createActivityEntryResponse(ActivityStoreEntryInterface $activityStoreEntry, \Zend_Controller_Request_Http $request, ExportCustomersFilterParams $params = null)
+    protected function createActivityEntryResponse(ActivityStoreEntryInterface $activityStoreEntry)
     {
         $response = $this->createResponse(
             $this->hydrateActivityStoreEntry($activityStoreEntry)
@@ -285,7 +264,7 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
     {
         $links = isset($activityRow['_links']) ? $activityRow['_links'] : [];
 
-        if ($selfLink = $this->generateApiUrl($activityRow['id'])) {
+        if ($selfLink = $this->generateResourceApiUrl($activityRow['id'])) {
             $links[] = [
                 'rel'    => 'self',
                 'href'   => $selfLink,
@@ -298,20 +277,4 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
         return $activityRow;
     }
 
-    /**
-     * Generate record URL
-     *
-     * @param int $id
-     * @return string|null
-     */
-    protected function generateApiUrl($id)
-    {
-        if (!$this->urlHelper || !$this->apiResourceRoute) {
-            return null;
-        }
-
-        return $this->urlHelper->url([
-            'id' => $id
-        ], $this->apiResourceRoute, true);
-    }
 }

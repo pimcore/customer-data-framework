@@ -211,17 +211,6 @@ class Installer {
         }
     }
 
-    public static function installStaticRoutes() {
-        $file = PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/staticroutes/staticroutes.php';
-        $routes = include($file);
-
-        foreach($routes as $routeConfig) {
-            $route = new Staticroute();
-            $route->setValues($routeConfig);
-            $route->save();
-        }
-    }
-
     public static function installConfig() {
 
         $dir = PIMCORE_WEBSITE_PATH . '/config/plugins/CustomerManagementFramework';

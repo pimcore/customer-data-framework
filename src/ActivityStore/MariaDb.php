@@ -8,6 +8,7 @@
 
 namespace CustomerManagementFrameworkBundle\ActivityStore;
 
+use CustomerManagementFrameworkBundle\Model\AbstractObjectActivity;
 use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\DefaultActivityStoreEntry;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
@@ -18,6 +19,7 @@ use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Db;
 use Pimcore\Model\Object\Concrete;
+use Zend\Paginator\Paginator;
 
 class MariaDb implements ActivityStoreInterface{
 
@@ -93,15 +95,20 @@ class MariaDb implements ActivityStoreInterface{
 
         unset($data['attributes']);
         if(!is_null($activity)) {
+
             $data['attributes'] = $this->getActivityAttributeDataAsDynamicColumnInsert($activity);
         }
 
-        $data['type'] = $db->quote($data['type']);
-        $data['implementationClass'] = $db->quote($data['implementationClass']);
+        $data['type'] = $db->quote($activity->cmfGetType());
+        $data['implementationClass'] = $db->quote(get_class($activity));
         $data['a_id'] = $db->quote($data['a_id']);
 
+        if($activity instanceof ActivityExternalIdInterface) {
+            $data['a_id'] = $db->quote($activity->getId());
+        }
+
         $md5Data = [
-            'customerId' => $data['customerId'],
+            'customerId' => $activity->getCustomer()->getId(),
             'type' => $data['type'],
             'implementationClass' => $data['implementationClass'],
             'o_id' => $data['o_id'],
@@ -167,7 +174,7 @@ class MariaDb implements ActivityStoreInterface{
 
         foreach($result as $key => $value) {
             if($value['attributes']) {
-                $result[$key]['attributes'] = \Zend_Json::decode($value['attributes']);
+                $result[$key]['attributes'] = json_decode($value['attributes'], true);
             }
         }
 
@@ -186,7 +193,7 @@ class MariaDb implements ActivityStoreInterface{
      * @param int                          $page
      * @param ExportActivitiesFilterParams $params
      *
-     * @return \Zend_Paginator
+     * @return Paginator
      */
     public function getActivitiesDataForWebservice($pageSize, $page = 1, ExportActivitiesFilterParams $params)
     {
@@ -215,7 +222,7 @@ class MariaDb implements ActivityStoreInterface{
             $select->where("modificationDate >= ?", $ts);
         }
 
-        $paginator = new \Zend_Paginator(new \Zend_Paginator_Adapter_DbSelect($select));
+        $paginator = new Paginator(new Db\ZendCompatibility\QueryBuilder\PaginationAdapter($select));
         $paginator->setItemCountPerPage($pageSize);
         $paginator->setCurrentPageNumber($page);
 
@@ -372,7 +379,6 @@ class MariaDb implements ActivityStoreInterface{
     protected function getActivityAttributeDataAsDynamicColumnInsert(ActivityInterface $activity)
     {
         $attributes = $activity->cmfToArray();
-
         if(!is_array($attributes)) {
             throw new \Exception("cmfToArray() needs to return an associative array");
         }

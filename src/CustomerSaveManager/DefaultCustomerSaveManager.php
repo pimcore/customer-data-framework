@@ -14,6 +14,7 @@ use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidato
 use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use Pimcore\Db;
 use Pimcore\Model\Version;
 
 class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
@@ -187,6 +188,8 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         if( !$this->isDisableSaveHandlers() ) {
             $this->applySaveHandlers( $customer, 'postDelete' );
         }
+
+        $this->addToDeletionsTable($customer);
     }
 
     public function validateOnSave(CustomerInterface $customer, $withDuplicatesCheck = true) {
@@ -201,6 +204,16 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         $validator = \Pimcore::getContainer()->get('cmf.customer_save_validator');
 
         return $validator->validate($customer, $withDuplicatesCheck);
+    }
+
+    protected function addToDeletionsTable(CustomerInterface $customer)
+    {
+        $db = Db::get();
+        $db->insertOrUpdate("plugin_cmf_deletions", [
+            'id' => $customer->getId(),
+            'creationDate' => time(),
+            'entityType' => 'customers'
+        ]);
     }
 
     protected function applySaveHandlers(CustomerInterface $customer, $saveHandlerMethod, $reinitSaveHandlers = false)
