@@ -22,18 +22,14 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
 
 
 
-        \Pimcore::getEventManager()->attach('system.maintenance', function(\Zend_EventManager_Event $e) {
-            Factory::getInstance()->getSegmentManager()->executeSegmentBuilderMaintenance();
-        });
-
 
         \Pimcore::getEventManager()->attach('plugin.ObjectMerger.postMerge', function(\Zend_EventManager_Event $e){
 
-            $sourceCustomer = Factory::getInstance()->getCustomerProvider()->getById($e->getParam('sourceId'));
-            $targetCustomer = Factory::getInstance()->getCustomerProvider()->getById($e->getParam('targetId'));
+            $sourceCustomer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById($e->getParam('sourceId'));
+            $targetCustomer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById($e->getParam('targetId'));
 
             if($sourceCustomer && $targetCustomer) {
-                Factory::getInstance()->getCustomerMerger()->mergeCustomers($sourceCustomer, $targetCustomer, false);
+                \Pimcore::getContainer()->get('cmf.customer_merger')->mergeCustomers($sourceCustomer, $targetCustomer, false);
             }
 
         });

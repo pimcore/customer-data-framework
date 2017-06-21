@@ -28,14 +28,14 @@ class DefaultActivityUrlTracker implements ActivityUrlTrackerInterface
 
     public function trackActivity($customerIdEncoded, $activityCode, array $params)
     {
-        $class = Factory::getInstance()->getCustomerProvider()->getCustomerClassName();
+        $class = \Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassName();
 
         if($customer = $class::getByIdEncoded($customerIdEncoded, 1)) {
 
             if($activityDefinition = ActivityDefinition::getByCode($activityCode, 1)) {
                 $activity = new TrackedUrlActivity($customer, $activityDefinition);
 
-                Factory::getInstance()->getActivityManager()->trackActivity($activity);
+                \Pimcore::getContainer()->get('cmf.activity_manager')->trackActivity($activity);
             }
         }
     }

@@ -42,7 +42,7 @@ class Customer implements \Zend_Auth_Adapter_Interface
      */
     public function authenticate()
     {
-        $list = Factory::getInstance()->getCustomerProvider()->getList();
+        $list = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
         $list->addConditionParam('email = ?', $this->email);
         $list->setLimit(1);
 

@@ -115,8 +115,7 @@ class AuthController extends Action
 
         // create a new, empty customer instance
         /** @var \CustomerManagementFrameworkBundle\Model\CustomerInterface|\Pimcore\Model\Object\Customer $customer */
-        $customer = Factory::getInstance()
-            ->getCustomerProvider()
+        $customer = \Pimcore::getContainer()->get('cmf.customer_provider')
             ->create();
 
         /** @var SsoIdentityInterface $ssoIdentity */

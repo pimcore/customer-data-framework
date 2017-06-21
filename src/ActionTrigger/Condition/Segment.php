@@ -24,7 +24,7 @@ class Segment extends AbstractCondition
 
         if(isset($options[self::OPTION_SEGMENT_ID])) {
             if($segment = CustomerSegment::getById(intval($options[self::OPTION_SEGMENT_ID]))) {
-                $check = Factory::getInstance()->getSegmentManager()->customerHasSegment($customer, $segment);
+                $check = \Pimcore::getContainer()->get('cmf.segment_manager')->customerHasSegment($customer, $segment);
 
                 if($options[self::OPTION_NOT]) {
                     return !$check;

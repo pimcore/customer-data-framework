@@ -311,7 +311,7 @@ class Segment extends AbstractAttributeClusterInterpreter
         $categorized = [];
 
         foreach (array_keys($this->data) as $segmentId) {
-            $segment  = Factory::getInstance()->getSegmentManager()->getSegmentById($segmentId);
+            $segment  = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId);
             $group    = $segment->getGroup();
 
             $groupKey = '__default';

@@ -102,7 +102,7 @@ class GenericActivity implements ActivityInterface {
     public function getCustomer()
     {
         if(empty($this->customer)) {
-            $this->customer = Factory::getInstance()->getCustomerProvider()->getById($this->data['customerId']);
+            $this->customer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById($this->data['customerId']);
         }
 
         return $this->customer;

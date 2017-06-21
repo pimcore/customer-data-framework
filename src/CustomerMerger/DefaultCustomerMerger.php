@@ -36,11 +36,11 @@ class DefaultCustomerMerger implements CustomerMergerInterface {
 
     public function mergeCustomers(CustomerInterface $sourceCustomer, CustomerInterface $targetCustomer, $mergeAttributes = true)
     {
-        $saveValidatorBackup = Factory::getInstance()->getCustomerSaveManager()->getCustomerSaveValidatorEnabled();
-        $segmentBuilderHookBackup = Factory::getInstance()->getCustomerSaveManager()->getSegmentBuildingHookEnabled();
+        $saveValidatorBackup = \Pimcore::getContainer()->get('cmf.customer_save_manager')->getCustomerSaveValidatorEnabled();
+        $segmentBuilderHookBackup = \Pimcore::getContainer()->get('cmf.customer_save_manager')->getSegmentBuildingHookEnabled();
 
-        Factory::getInstance()->getCustomerSaveManager()->setCustomerSaveValidatorEnabled(false);
-        Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled(false);
+        \Pimcore::getContainer()->get('cmf.customer_save_manager')->setCustomerSaveValidatorEnabled(false);
+        \Pimcore::getContainer()->get('cmf.customer_save_manager')->setSegmentBuildingHookEnabled(false);
 
         $this->mergeCustomerValues($sourceCustomer, $targetCustomer, $mergeAttributes);
         $targetCustomer->save();
@@ -65,8 +65,8 @@ class DefaultCustomerMerger implements CustomerMergerInterface {
             $note->save();
         }
 
-        Factory::getInstance()->getCustomerSaveManager()->setCustomerSaveValidatorEnabled($saveValidatorBackup);
-        Factory::getInstance()->getCustomerSaveManager()->setSegmentBuildingHookEnabled($segmentBuilderHookBackup);
+        \Pimcore::getContainer()->get('cmf.customer_save_manager')->setCustomerSaveValidatorEnabled($saveValidatorBackup);
+        \Pimcore::getContainer()->get('cmf.customer_save_manager')->setSegmentBuildingHookEnabled($segmentBuilderHookBackup);
 
         $logAddon = '';
         if(!$mergeAttributes) {
@@ -101,14 +101,14 @@ class DefaultCustomerMerger implements CustomerMergerInterface {
         Objects::addObjectsToArray($manualSegments, (array)$targetCustomer->getManualSegments());
         $targetCustomer->setManualSegments($manualSegments);
 
-        Factory::getInstance()->getCustomerSaveManager()->setCustomerSaveValidatorEnabled(false);
+        \Pimcore::getContainer()->get('cmf.customer_save_manager')->setCustomerSaveValidatorEnabled(false);
 
         $this->mergeActivities($sourceCustomer, $targetCustomer);
     }
 
     private function mergeActivities(CustomerInterface $sourceCustomer, CustomerInterface $targetCustomer)
     {
-        $list = \CustomerManagementFrameworkBundle\Factory::getInstance()->getActivityStore()->getActivityList();
+        $list = \Pimcore::getContainer()->get('cmf.activity_store')->getActivityList();
         $list->setCondition("customerId=" . $sourceCustomer->getId());
         $list->setOrderKey('activityDate');
         $list->setOrder('desc');

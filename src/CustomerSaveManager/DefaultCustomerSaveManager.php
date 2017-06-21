@@ -250,7 +250,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         foreach($saveHandlers as $handler) {
             if($handler->isOriginalCustomerNeeded()) {
                 \Pimcore::collectGarbage();
-                $originalCustomer = Factory::getInstance()->getCustomerProvider()->getById($customer->getId());
+                $originalCustomer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById($customer->getId());
                 break;
             }
         }

@@ -36,7 +36,7 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
         $pageSize = intval($request->getParam('pageSize')) ? : 100;
         $page = intval($request->getParam('page')) ? : 1;
 
-        $paginator = Factory::getInstance()->getActivityStore()->getActivitiesDataForWebservice($pageSize, $page, $param);
+        $paginator = \Pimcore::getContainer()->get('cmf.activity_store')->getActivitiesDataForWebservice($pageSize, $page, $param);
 
 
         $result = [
@@ -108,7 +108,7 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
             if($activity && $activity->cmfWebserviceUpdateAllowed()) {
 
                 if(!$activity->getCustomer()) {
-                    if(!$customer = Factory::getInstance()->getCustomerProvider()->getById($data['customerId'])) {
+                    if(!$customer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById($data['customerId'])) {
                         return $this->createErrorResponse(sprintf("customer %s not found", $data['customerId']));
                     }
 
@@ -119,7 +119,7 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
                     $activity->save();
                 }
 
-                $entry = Factory::getInstance()->getActivityStore()->insertActivityIntoStore($activity);
+                $entry = \Pimcore::getContainer()->get('cmf.activity_store')->insertActivityIntoStore($activity);
 
             } else {
                 return $this->createErrorResponse(sprintf("creation of activities with implementation class %s not allowed via REST webservice", $implementationClass));
@@ -162,7 +162,7 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
                     $activity->save();
                 }
 
-                Factory::getInstance()->getActivityStore()->updateActivityInStore($activity, $entry);
+                \Pimcore::getContainer()->get('cmf.activity_store')->updateActivityInStore($activity, $entry);
                 $entry = $this->loadActivityStoreEntry($params);
             } else {
                 return $this->createErrorResponse(sprintf("update of activities with implementation class %s not allowed via REST webservice", $entry->getImplementationClass()));
@@ -195,7 +195,7 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
                     $activity->delete();
                 }
 
-                Factory::getInstance()->getActivityStore()->deleteEntry($entry);
+                \Pimcore::getContainer()->get('cmf.activity_store')->deleteEntry($entry);
 
             } else {
                 return $this->createErrorResponse(sprintf("deletion of activities with implementation class %s not allowed via REST webservice", $entry->getImplementationClass()));
@@ -228,7 +228,7 @@ class ActivitiesHandler extends AbstractCrudRoutingHandler
             $id = (int)$id;
         }
 
-        $entry = Factory::getInstance()->getActivityStore()->getEntryById($id);
+        $entry = \Pimcore::getContainer()->get('cmf.activity_store')->getEntryById($id);
         if (!$entry) {
             throw new ResourceNotFoundException(sprintf('Activity with ID %d was not found', $id));
         }

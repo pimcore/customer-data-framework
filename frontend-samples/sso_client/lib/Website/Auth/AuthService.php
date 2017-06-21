@@ -34,8 +34,7 @@ class AuthService
     {
         $customer = null;
         if ($this->isLoggedIn()) {
-            $customer = Factory::getInstance()
-                ->getCustomerProvider()
+            $customer = \Pimcore::getContainer()->get('cmf.customer_provider')
                 ->getById($this->getAuth()->getIdentity());
 
             if (!$customer) {

@@ -106,7 +106,7 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete imp
     {
         $attributes = $entry->getAttributes();
 
-        return Factory::getInstance()->getActivityView()->formatAttributes($entry->getImplementationClass(), $attributes);
+        return \Pimcore::getContainer()->get('cmf.activity_view')->formatAttributes($entry->getImplementationClass(), $attributes);
     }
 
     public static function cmfGetDetailviewTemplate(ActivityStoreEntryInterface $entry)

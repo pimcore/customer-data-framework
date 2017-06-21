@@ -39,7 +39,7 @@ class SegmentsOfCustomerHandler extends AbstractRoutingHandler
             ], Response::RESPONSE_CODE_BAD_REQUEST);
         }
 
-        $customerClass = Factory::getInstance()->getCustomerProvider()->getCustomerClassName();
+        $customerClass = \Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassName();
 
         if(!$customer = $customerClass::getById($data['customerId'])) {
             return new Response([
@@ -66,7 +66,7 @@ class SegmentsOfCustomerHandler extends AbstractRoutingHandler
             }
         }
 
-        Factory::getInstance()->getSegmentManager()->mergeSegments($customer, $addSegments, $deleteSegments, "REST update API: segments-of-customer action");
+        \Pimcore::getContainer()->get('cmf.segment_manager')->mergeSegments($customer, $addSegments, $deleteSegments, "REST update API: segments-of-customer action");
 
 
         return new Response(['success'=>true], Response::RESPONSE_CODE_OK);

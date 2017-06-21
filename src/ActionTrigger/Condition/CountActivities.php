@@ -21,9 +21,9 @@ class CountActivities extends AbstractCondition
 
         $options = $conditionDefinition->getOptions();
 
-        $countActivities = Factory::getInstance()->getActivityStore()->countActivitiesOfCustomer($customer, $options[self::OPTION_TYPE]);
+        $countActivities = \Pimcore::getContainer()->get('cmf.activity_store')->countActivitiesOfCustomer($customer, $options[self::OPTION_TYPE]);
 
-        $this->logger->debug(sprintf("CountActivities condition: count activities of type '%s' for customer ID %s - result: %s", $options[self::OPTION_TYPE], $customer->getId(), $countActivities));
+        $this->logger->info(sprintf("CountActivities condition: count activities of type '%s' for customer ID %s - result: %s", $options[self::OPTION_TYPE], $customer->getId(), $countActivities));
 
         $operator = $options[self::OPTION_OPERATOR];
 
@@ -56,7 +56,7 @@ class CountActivities extends AbstractCondition
         $type = $options[self::OPTION_TYPE];
         $count = intval($options[self::OPTION_COUNT]);
 
-        $ids = Factory::getInstance()->getActivityStore()->getCustomerIdsMatchingActivitiesCount($operator, $type, $count);
+        $ids = \Pimcore::getContainer()->get('cmf.activity_store')->getCustomerIdsMatchingActivitiesCount($operator, $type, $count);
 
         if(!sizeof($ids)) {
             return "-1";

@@ -130,7 +130,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
     public function getCustomer()
     {
         if(empty($this->customer) && $this->customerId) {
-            $this->customer = Factory::getInstance()->getCustomerProvider()->getById($this->customerId);
+            $this->customer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById($this->customerId);
         }
 
         return $this->customer;
@@ -313,7 +313,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
     {
         $relatedItem = $this->getRelatedItem();
         $relatedItem->setCustomer($this->getCustomer());
-        Factory::getInstance()->getActivityStore()->updateActivityStoreEntry($this, $updateAttributes);
+        \Pimcore::getContainer()->get('cmf.activity_store')->updateActivityStoreEntry($this, $updateAttributes);
     }
 
 }

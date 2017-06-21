@@ -87,6 +87,12 @@ services:
         calls:
             - [setLogger, ['@cmf.logger']]
 
+    cmf.customer_merger:
+            class: CustomerManagementFrameworkBundle\CustomerMerger\DefaultCustomerMerger
+            lazy: true
+            calls:
+                - [setLogger, ['@cmf.logger']]
+
     cmf.customer_provider:
          class: CustomerManagementFrameworkBundle\CustomerProvider\DefaultCustomerProvider
          lazy: true

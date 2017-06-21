@@ -53,89 +53,10 @@ class Factory {
         return self::$instance;
     }
 
-    /**
-     * @return LoggerInterface
-     */
-    public function getLogger()
-    {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\Logger');
-    }
-
-    /**
-     * @return ActivityManagerInterface
-     */
-    public function getActivityManager()
-    {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActivityManager');
-    }
 
 
-    /**
-     * @return ActivityStoreInterface
-     */
-    public function getActivityStore()
-    {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActivityStore');
-    }
 
 
-    /**
-     * @return ActivityViewInterface
-     */
-    public function getActivityView()
-    {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActivityView');
-    }
-
-    /**
-     * @return CustomerProviderInterface
-     */
-    public function getCustomerProvider()
-    {
-        return \Pimcore::getDiContainer()->get(CustomerProviderInterface::class);
-    }
-
-    /**
-     * @return CustomerMergerInterface
-     */
-    public function getCustomerMerger()
-    {
-        return \Pimcore::getDiContainer()->get(CustomerMergerInterface::class);
-    }
-
-    /**
-     * @return CustomerViewInterface
-     */
-    public function getCustomerView()
-    {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerView');
-    }
-
-    /**
-     * @return CustomerDuplicatesViewInterface
-     */
-    public function getCustomerDuplicatesView()
-    {
-        return \Pimcore::getDiContainer()->get(CustomerDuplicatesViewInterface::class);
-    }
-
-
-    /**
-     * @return DuplicatesIndexInterface
-     */
-    public function getDuplicatesIndex()
-    {
-        return \Pimcore::getDiContainer()->get(DuplicatesIndexInterface::class);
-    }
-
-
-    /**
-     * @return CustomerSaveManagerInterface
-     */
-    public function getCustomerSaveManager()
-    {
-        return \Pimcore::getDiContainer()->get(CustomerSaveManagerInterface::class);
-    }
 
     /**
      * @return SsoIdentityServiceInterface
@@ -145,13 +66,6 @@ class Factory {
         return \Pimcore::getDiContainer()->get(SsoIdentityServiceInterface::class);
     }
 
-    /**
-     * @return SegmentManagerInterface
-     */
-    public function getSegmentManager()
-    {
-        return \Pimcore::getDiContainer()->get(SegmentManagerInterface::class);
-    }
 
 
     /**
@@ -210,37 +124,6 @@ class Factory {
         return \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerList\ExporterManager');
     }
 
-    /**
-     * @return EventHandlerInterface
-     */
-    public function getActionTriggerEventHandler()
-    {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActionTrigger\EventHandler');
-    }
-
-    /**
-     * @return QueueInterface
-     */
-    public function getActionTriggerQueue()
-    {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActionTrigger\Queue');
-    }
-
-    /**
-     * @return ActionManagerInterface
-     */
-    public function getActionTriggerActionManager()
-    {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActionTrigger\ActionManager');
-    }
-
-    /**
-     * @return ActivityUrlTrackerInterface
-     */
-    public function getActivityUrlTracker()
-    {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\ActivityUrlTracker');
-    }
 
     /**
      * @param            $className

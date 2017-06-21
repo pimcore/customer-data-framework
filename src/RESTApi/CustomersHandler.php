@@ -43,9 +43,9 @@ class CustomersHandler extends AbstractCrudRoutingHandler
         $params = ExportCustomersFilterParams::fromRequest($request);
 
         if ($params->getSegments()) {
-            $customers = Factory::getInstance()->getSegmentManager()->getCustomersBySegmentIds($params->getSegments());
+            $customers = \Pimcore::getContainer()->get('cmf.segment_manager')->getCustomersBySegmentIds($params->getSegments());
         } else {
-            $customers = Factory::getInstance()->getCustomerProvider()->getList();
+            $customers = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
         }
 
         $customers->setOrderKey('o_id');
@@ -228,7 +228,7 @@ class CustomersHandler extends AbstractCrudRoutingHandler
         $data = $customer->cmfToArray();
 
         if ($params->getIncludeActivities()) {
-            $data['activities'] = Factory::getInstance()->getActivityStore()->getActivityDataForCustomer($customer);
+            $data['activities'] = \Pimcore::getContainer()->get('cmf.activity_store')->getActivityDataForCustomer($customer);
         }
 
         $links = isset($data['_links']) ? $data['_links'] : [];

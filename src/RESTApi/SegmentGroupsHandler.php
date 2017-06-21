@@ -84,14 +84,14 @@ class SegmentGroupsHandler extends AbstractCrudRoutingHandler
             ], Response::RESPONSE_CODE_BAD_REQUEST);
         }
 
-        if($data['reference'] && Factory::getInstance()->getSegmentManager()->getSegmentGroupByReference($data['reference'], (bool)$data['calculated'])) {
+        if($data['reference'] && \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentGroupByReference($data['reference'], (bool)$data['calculated'])) {
             return new Response([
                 'success' => false,
                 'msg' => sprintf("duplicate segment group - group with reference '%s' already exists", $data['reference'])
             ], Response::RESPONSE_CODE_BAD_REQUEST);
         }
 
-        $segmentGroup = Factory::getInstance()->getSegmentManager()->createSegmentGroup($data['name'], $data['reference'], isset($data['calculated']) ? (bool)$data['calculated'] : false, $data);
+        $segmentGroup = \Pimcore::getContainer()->get('cmf.segment_manager')->createSegmentGroup($data['name'], $data['reference'], isset($data['calculated']) ? (bool)$data['calculated'] : false, $data);
 
 
         $result = ObjectToArray::getInstance()->toArray($segmentGroup);
@@ -127,7 +127,7 @@ class SegmentGroupsHandler extends AbstractCrudRoutingHandler
             ], Response::RESPONSE_CODE_NOT_FOUND);
         }
 
-        Factory::getInstance()->getSegmentManager()->updateSegmentGroup($segmentGroup, $data);
+        \Pimcore::getContainer()->get('cmf.segment_manager')->updateSegmentGroup($segmentGroup, $data);
 
         $result = $this->hydrateSegmentGroup($segmentGroup);
         $result['success'] = true;

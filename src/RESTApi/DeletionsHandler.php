@@ -49,7 +49,7 @@ class DeletionsHandler extends AbstractRoutingHandler
             ], Response::RESPONSE_CODE_BAD_REQUEST);
         }
 
-        $result = Factory::getInstance()->getActivityStore()->getDeletionsData($entityType, $deletionsSinceTimestamp);
+        $result = \Pimcore::getContainer()->get('cmf.activity_store')->getDeletionsData($entityType, $deletionsSinceTimestamp);
         $result['success'] = true;
         $result['timestamp'] = $timestamp;
 

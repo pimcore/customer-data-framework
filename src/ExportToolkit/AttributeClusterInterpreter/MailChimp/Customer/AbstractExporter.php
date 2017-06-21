@@ -61,8 +61,8 @@ abstract class AbstractExporter
      */
     protected function getCustomer($id)
     {
-        return Factory::getInstance()
-            ->getCustomerProvider()
+        return \Pimcore::getContainer()
+            ->get('cmf.customer_provider')
             ->getById($id);
     }
 

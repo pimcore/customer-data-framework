@@ -34,7 +34,7 @@ class Customer extends AbstractAttributeClusterInterpreter
     protected function getSegments()
     {
         if (!$this->segments) {
-            $this->segments = Factory::getInstance()->getSegmentManager()->getSegments([]);
+            $this->segments = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegments([]);
         }
 
         return $this->segments;

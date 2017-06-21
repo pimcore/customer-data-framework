@@ -227,7 +227,7 @@ class BatchExporter extends AbstractExporter
             $objectIds = $this->interpreter->getObjectIds();
             foreach ($objectIds as $objectId) {
                 /** @var CustomerInterface|ElementInterface $customer */
-                $customer = Factory::getInstance()->getCustomerProvider()->getById($objectId);
+                $customer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById($objectId);
                 $remoteId = $apiClient->subscriberHash($this->interpreter->getDataEntry($objectId)['email_address']);
 
                 // add note

@@ -207,7 +207,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
 
             $customers = [];
             foreach(explode(',', $row['duplicateCustomerIds']) as $customerId) {
-                if($customer = Factory::getInstance()->getCustomerProvider()->getById($customerId)) {
+                if($customer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById($customerId)) {
                     $customers[] = $customer;
                 }
             }

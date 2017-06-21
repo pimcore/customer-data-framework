@@ -28,8 +28,8 @@ $cv = $this->customerView;
                             data-select2-options='<?= json_encode(['allowClear' => false]) ?>'>
 
                             <?php
-                            $segments = \CustomerManagementFrameworkBundle\Factory::getInstance()
-                                ->getSegmentManager()
+                            $segments = \Pimcore::getContainer()
+                                ->get('cmf.segment_manager')
                                 ->getSegmentsFromSegmentGroup($segmentGroup);
 
                             /** @var \CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface|\Pimcore\Model\Element\ElementInterface $segment */
