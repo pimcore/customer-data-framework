@@ -21,6 +21,8 @@ $contentBoxClasses = [];
 if (sizeof($paginator)) {
     $contentBoxClasses = ['no-padding', 'table-responsive'];
 }
+
+$this->jsConfig()->add('formAutoSubmit', true);
 ?>
 
 <section class="content">
@@ -39,6 +41,8 @@ if (sizeof($paginator)) {
                                 <option value="<?= $type ?>"<?php if ($this->type == $type) { ?> selected="selected"<?php } ?>><?= $av->translate($type) ?></option>
                             <?php endforeach; ?>
                         </select>
+
+                        <input type="hidden" name="customerId" value="<?=$this->getParam('customerId')?>"/>
                     </div>
                 </form>
             </div>

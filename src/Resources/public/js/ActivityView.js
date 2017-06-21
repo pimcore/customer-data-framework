@@ -60,7 +60,7 @@ ActivityView.ActivityTab = Class.create({
         if (!this._iframe) return;
 
         //var url = TranslationToolkit.config.Tab.URL;
-        var url = "/plugin/CustomerManagementFramework/activities/list/customerId/" + this.config.object.id;
+        var url = "/admin/customermanagementframework/activities/list?customerId=" + this.config.object.id;
 
         this._iframe.dom.src = url;
     }

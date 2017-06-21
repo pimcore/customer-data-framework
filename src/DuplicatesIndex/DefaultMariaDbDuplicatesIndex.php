@@ -193,7 +193,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
             $select->where('(declined is null or declined = 0)');
         }
 
-        $paginator = new \Zend_Paginator(new \Zend_Paginator_Adapter_DbSelect($select));
+        $paginator = new Paginator(new Db\ZendCompatibility\QueryBuilder\PaginationAdapter($select));
         $paginator->setItemCountPerPage($pageSize);
         $paginator->setCurrentPageNumber($page ? : 0);
 
@@ -203,7 +203,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
             /**
              * @var \CustomerManagementFrameworkBundle\Model\CustomerDuplicates\PotentialDuplicateItemInterface $item
              */
-            $item = Factory::getInstance()->createObject(\CustomerManagementFrameworkBundle\Model\CustomerDuplicates\PotentialDuplicateItemInterface::class, \CustomerManagementFrameworkBundle\Model\CustomerDuplicates\PotentialDuplicateItemInterface::class);
+            $item = \Pimcore::getContainer()->get('cmf.potential_duplicate_item');
 
             $customers = [];
             foreach(explode(',', $row['duplicateCustomerIds']) as $customerId) {
@@ -282,7 +282,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
     public function declinePotentialDuplicate($id)
     {
         $db = Db::get();
-        $db->query(sprintf("update %s set declined = 1 where id = ?", self::POTENTIAL_DUPLICATES_TABLE), $id);
+        $db->query(sprintf("update %s set declined = 1 where id = ?", self::POTENTIAL_DUPLICATES_TABLE), [$id]);
     }
 
 

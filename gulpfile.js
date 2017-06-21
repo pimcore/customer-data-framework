@@ -11,7 +11,7 @@ function bt(path) {
 var backendToolkit = require('../BackendToolkit/build/gulp-tasks');
 backendToolkit(gulp, require('gulp-load-plugins')(), {
     frontend: {
-        path: 'static/dist',
+        path: 'src/Resources/public/dist',
 
         files: {
             scripts: {

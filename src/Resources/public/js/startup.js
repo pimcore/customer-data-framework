@@ -43,7 +43,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
                             customerViewPanelId,
                             new pimcore.tool.genericiframewindow(
                                 customerViewPanelId,
-                                '/plugin/CustomerManagementFramework/customers/list',
+                                '/admin/customermanagementframework/customers/list',
                                 'pimcore_icon_customers',
                                 t('plugin_cmf_customerview')
                             )
@@ -71,7 +71,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
                             customerDuplicateViewPanelId,
                             new pimcore.tool.genericiframewindow(
                                 customerDuplicateViewPanelId,
-                                '/plugin/CustomerManagementFramework/duplicates/list',
+                                '/admin/customermanagementframework/duplicates/list',
                                 'pimcore_icon_customerduplicates',
                                 t('plugin_cmf_customerduplicatesview')
                             )

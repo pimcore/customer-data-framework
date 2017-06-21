@@ -1,4 +1,11 @@
 <?php
+/**
+ * @var \Pimcore\Templating\PhpEngine $this
+ * @var \Pimcore\Templating\PhpEngine $view
+ * @var \Pimcore\Templating\GlobalVariables $app
+ */
+
+$this->extend('PimcoreCustomerManagementFrameworkBundle::layout.html.php');
 
 /**
  * @var \CustomerManagementFrameworkBundle\CustomerDuplicatesView\CustomerDuplicatesViewInterface $duplicatesView
@@ -18,8 +25,8 @@ $duplicates = $this->duplicates;
 
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist" style="margin-bottom:20px;">
-            <li role="presentation"<?php if(!$this->getParam('declined')) {?> class="active"<?php } ?>><a href="<?=$this->url(['declined'=>0])?>"><?=$duplicatesView->getViewFormatter()->translate('Current')?></a></li>
-            <li role="presentation"<?php if($this->getParam('declined')) {?> class="active"<?php } ?>><a href="<?=$this->url(['declined'=>1])?>"><?=$duplicatesView->getViewFormatter()->translate('Declined')?></a></li>
+            <li role="presentation"<?php if(!$this->getParam('declined')) {?> class="active"<?php } ?>><a href="<?=$this->pimcoreUrl(['declined'=>0])?>"><?=$duplicatesView->getViewFormatter()->translate('Current')?></a></li>
+            <li role="presentation"<?php if($this->getParam('declined')) {?> class="active"<?php } ?>><a href="<?=$this->pimcoreUrl(['declined'=>1])?>"><?=$duplicatesView->getViewFormatter()->translate('Declined')?></a></li>
         </ul>
 
     </div>
@@ -54,9 +61,9 @@ $duplicates = $this->duplicates;
                 </tr>
 
                 <tr>
-                    <?foreach($listData as $label => $value) {?>
+                    <?php foreach($listData as $label => $value) {?>
                         <th><?=$label?></th>
-                    <?}?>
+                    <?php }?>
                 </tr>
                     <?php
 

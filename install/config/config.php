@@ -114,7 +114,7 @@ return [
         ],
 
         'DuplicatesIndex' => [
-            'enableDuplicatesIndex' => true,
+            /*'enableDuplicatesIndex' => true,
             'duplicateCheckFields' => [
 
                 [
@@ -141,8 +141,28 @@ return [
                 'city' => \CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Simplify::class,
                 'lastname' => \CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Simplify::class,
                 'birthDate' => \CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Date::class,
+            ],*/
+        ],
+
+        'DuplicatesView' => [
+            'listFields' => [
+                /*"id",
+                "email",
+                [
+                    "firstname",
+                    "lastname"
+                ],
+                "street",
+                [
+                    "zip",
+                    "city"
+                ],
+                "birthDate",
+                "shoeSize",*/
             ],
         ]
+
+
     ],
 
     'CustomerMerger' => [

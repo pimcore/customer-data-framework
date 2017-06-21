@@ -7,7 +7,7 @@
 }
 
 .pimcore_icon_customers {
-    background: url(/bundles/customermanagementframework/static/icons/customer.svg) center center no-repeat !important;
+    background: url(/bundles/customermanagementframework/icons/customer.svg) center center no-repeat !important;
 }
 .pimcore_icon_customerduplicates {
     background: url(/pimcore/static6/img/flat-color-icons/copy.svg) center center no-repeat !important;

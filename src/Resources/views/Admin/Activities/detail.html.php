@@ -5,7 +5,7 @@
  * @var \Pimcore\Templating\GlobalVariables $app
  */
 
-$this->extend('PimcoreCustomerManagementFrameworkBundle:layout.html.php');
+$this->extend('PimcoreCustomerManagementFrameworkBundle::layout.html.php');
 
 $this->headLink()->appendStylesheet('/plugins/CustomerManagementFramework/static/css/activity-list.css');
 /**
@@ -25,8 +25,7 @@ $av = $this->activityView;
 
         <?php if ($template = $av->getDetailviewTemplate($activity)): ?>
 
-            <?$this->addScriptPath(PIMCORE_WEBSITE_PATH . '/views/scripts')?>
-            <?$this->template($template)?>
+            <?= $this->template($template)?>
 
         <?php else: ?>
 

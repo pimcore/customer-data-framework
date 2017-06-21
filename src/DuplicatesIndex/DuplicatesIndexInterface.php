@@ -11,6 +11,7 @@ namespace CustomerManagementFrameworkBundle\DuplicatesIndex;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Zend\Paginator\Paginator;
 
 interface DuplicatesIndexInterface
 {
@@ -59,14 +60,14 @@ interface DuplicatesIndexInterface
      * @param int $page
      * @param int $pageSize
      * @param bool $declined
-     * @return \Zend_Paginator
+     * @return Paginator
      */
     public function getPotentialDuplicates($page, $pageSize = 100, $declined = false);
 
     /**
      * @param int $page
      * @param int $pageSize
-     * @return \Zend_Paginator
+     * @return Paginator
      */
     public function getFalsePositives($page, $pageSize = 100);
 

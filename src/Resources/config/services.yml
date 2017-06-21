@@ -1,11 +1,11 @@
 services:
     pimcore.templating.view_helper.minifiedAssetUrl:
-        class: Pimcore\Templating\Helper\HeadScript
+        class: CustomerManagementFrameworkBundle\Templating\Helper\MinifiedAssetUrl
         tags:
             - { name: templating.helper, alias: minifiedAssetUrl }
 
     pimcore.templating.view_helper.jsConfig:
-        class: Pimcore\Templating\Helper\JsConfig
+        class: CustomerManagementFrameworkBundle\Templating\Helper\JsConfig
         tags:
             - { name: templating.helper, alias: jsConfig }
 
@@ -35,14 +35,14 @@ services:
         calls:
             - [setLogger, ['@cmf.logger']]
 
-    cmf.activity_view_formatter:
+    cmf.view_formatter:
         class: CustomerManagementFrameworkBundle\View\Formatter\DefaultViewFormatter
         lazy: true
 
     cmf.activity_view:
         class: CustomerManagementFrameworkBundle\ActivityView\DefaultActivityView
         lazy: true
-        arguments: ['@cmf.activity_view_formatter']
+        arguments: ['@cmf.view_formatter']
 
     cmf.activity_store:
         class: CustomerManagementFrameworkBundle\ActivityStore\MariaDb
@@ -81,11 +81,22 @@ services:
         class: CustomerManagementFrameworkBundle\CustomerDuplicatesService\DefaultCustomerDuplicatesService
         lazy: true
 
+    cmf.customer_duplicates_view:
+        class: CustomerManagementFrameworkBundle\CustomerDuplicatesView\DefaultCustomerDuplicatesView
+        lazy: true
+        arguments: ['@cmf.view_formatter']
+
+
     cmf.customer_duplicates_index:
         class: CustomerManagementFrameworkBundle\DuplicatesIndex\DefaultMariaDbDuplicatesIndex
         lazy: true
         calls:
             - [setLogger, ['@cmf.logger']]
+
+    cmf.potential_duplicate_item:
+        class: CustomerManagementFrameworkBundle\Model\CustomerDuplicates\PotentialDuplicateItem
+        lazy: true
+        shared: false
 
     cmf.customer_merger:
             class: CustomerManagementFrameworkBundle\CustomerMerger\DefaultCustomerMerger

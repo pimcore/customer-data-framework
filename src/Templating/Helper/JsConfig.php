@@ -6,58 +6,135 @@
  * Time: 11:15
  */
 
-namespace CustomerManagementFrameworkBundle\View\Helper;
+declare(strict_types=1);
+
+namespace CustomerManagementFrameworkBundle\Templating\Helper;
 
 use Symfony\Component\Templating\Helper\Helper;
 
-class JsConfig extends Helper {
+class JsConfig extends Helper
+{
+    const DEFAULT_VAR_NAME = '_config';
 
-    protected static $config = [ ];
+    /**
+     * Current variable name to use
+     *
+     * @var string
+     */
+    protected $currentVariable = self::DEFAULT_VAR_NAME;
 
-    protected static $jsVariable = [ "_config" ];
-    protected static $jsVariableName = "_config";
+    /**
+     * Registered variables
+     *
+     * @var array
+     */
+    protected $variables = [self::DEFAULT_VAR_NAME];
 
-    public function getName()
+    /**
+     * The final config
+     *
+     * @var array
+     */
+    protected $config = [];
+
+    /**
+     * @param array $config
+     */
+    public function __construct(array $config = [])
     {
-        return 'JsConfig';
+        $this->config = $config;
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function getName(): string
+    {
+        return 'jsConfig';
+    }
 
-    public function jsConfig( $jsVariableName = "_config" ){
-        if( !in_array( $jsVariableName, self::$jsVariable ) ){
-            self::$jsVariable[] = $jsVariableName;
+    /**
+     * Returns the helper instance. If a var name is set, it changes
+     * the current variable to the given var before returning the instance.
+     *
+     * @param string|null $varName
+     *
+     * @return self
+     */
+    public function __invoke(string $varName = null): JsConfig
+    {
+        if (null !== $varName) {
+            return $this->jsConfig($varName);
         }
-        self::$jsVariableName = $jsVariableName;
+
         return $this;
     }
 
-    public function add( $key, $value = '' ){
-        if( is_array( $key ) ){
-            if( is_array(self::$config[self::$jsVariableName]) ){
-                self::$config[self::$jsVariableName] = array_merge( self::$config[self::$jsVariableName], $key );
-            }else{
-                self::$config[self::$jsVariableName] = $key;
+    /**
+     * Get helper instance scoped to given variable name
+     *
+     * @param string $varName
+     *
+     * @return self
+     */
+    public function jsConfig(string $varName = self::DEFAULT_VAR_NAME): JsConfig
+    {
+        if (!in_array($varName, $this->variables)) {
+            $this->variables[] = $varName;
+        }
+
+        $this->currentVariable = $varName;
+
+        return $this;
+    }
+
+    /**
+     * Add a value to the config. If no varName is specified, the current
+     * one will be used.
+     *
+     * @param mixed $key
+     * @param mixed $value
+     * @param null|string $varName
+     */
+    public function add($key, $value = '', string $varName = null)
+    {
+        if (null === $varName) {
+            $varName = $this->currentVariable;
+        }
+
+        if (is_array($key)) {
+            if (array_key_exists($varName, $this->config) && is_array($this->config[$varName])) {
+                $this->config[$varName] = array_merge($this->config[$varName], $key);
+            } else {
+                $this->config[$varName] = $key;
             }
-        }else{
-            self::$config[self::$jsVariableName][ $key ] = $value;
+        } else {
+            if (!array_key_exists($varName, $this->config)) {
+                $this->config[$varName] = [];
+            }
+
+            $this->config[$varName][$key] = $value;
         }
     }
 
-    public function __toString(){
-        $config = "<script>\n";
-        foreach(self::$jsVariable as $index => $varKey){
-            if( count( self::$config[$varKey] ) > 0 ){
-                $values = self::$config[$varKey];
-            }else{
+    public function __toString(): string
+    {
+        $config = [
+            '<script>'
+        ];
+
+        foreach ($this->variables as $index => $varKey) {
+            if (count($this->config[$varKey]) > 0) {
+                $values = $this->config[$varKey];
+            } else {
                 $values = new \stdClass();
             }
-            $config .= "\tvar " . $varKey . " = " . json_encode( $values ) . ";";
-            $config .= "\n";
+
+            $config[] = '    var ' . $varKey . ' = ' . json_encode($values) . ';';
         }
-        $config .= "\n";
-        $config .= "</script>\n";
 
-        return $config;
+        $config[] = '</script>';
+
+        return implode("\n", $config) . "\n";
     }
-
 }

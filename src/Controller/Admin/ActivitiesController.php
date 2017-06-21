@@ -8,9 +8,7 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
-//use CustomerManagementFrameworkBundle\Controller\Admin;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
-use Pimcore\Templating\Model\ViewModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,8 +16,6 @@ use Pimcore\Controller\Configuration\TemplatePhp;
 use Zend\Paginator\Paginator;
 
 
-/*use Zend_Db_Select;
-use Zend_Paginator;*/
 
 /**
  * @Route("/activities")
