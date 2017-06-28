@@ -21,6 +21,13 @@ class SequenceNumber
         return intval($number) ? : $startingNumber;
     }
 
+    /**
+     * Sets sequence number of given name to $sequenceValue
+     *
+     * @param $sequenceName
+     * @param int $sequenceValue
+     * @return int
+     */
     public static function setCurrent( $sequenceName, $sequenceValue = 10000  ) {
         $handle = self::SemaphoreWait();
         $current = self::getCurrent( $sequenceName, $sequenceValue );
@@ -33,7 +40,7 @@ class SequenceNumber
             }
             Db::get()->query("insert into " . self::TABLE_NAME . " (name, number) values (?,?) on duplicate key update number = ?", [$sequenceName, $sequenceValue, $sequenceValue]);
 
-            $logger = \Pimcore::getDiContainer()->get("CustomerManagementFramework\\Logger");
+            $logger = \Pimcore::getContainer()->get("cmf.logger");
 
             $logger->info( sprintf(
                 "Updated Sequence Number '%s' from %d to %d (pid :%s)",
@@ -48,6 +55,13 @@ class SequenceNumber
 
     }
 
+    /**
+     * Incremets sequence number of given name by 1 and returns the new generated number. If the sequence didn't exist before, the sequence will start with $startingNumber.
+     *
+     * @param $sequenceName
+     * @param int $startingNumber
+     * @return int
+     */
     public static function getNext($sequenceName, $startingNumber = 10000) {
         $db = Db::get();
 
@@ -60,7 +74,7 @@ class SequenceNumber
 
         self::SemaphoreSignal($handle);
 
-        $logger = \Pimcore::getDiContainer()->get("CustomerManagementFramework\\Logger");
+        $logger = \Pimcore::getContainer()->get("cmf.logger");
 
         $logger->info("Generated Sequence Number " . $sequenceName . " " . $number . " (pid : " . getmypid() . ")");
 
