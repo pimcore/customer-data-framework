@@ -14,6 +14,13 @@ class SequenceNumber
 {
     const TABLE_NAME = 'plugin_cmf_sequence_numbers';
 
+    /**
+     * Get current number of sequence.
+     *
+     * @param $sequenceName
+     * @param int $startingNumber
+     * @return int
+     */
     public static function getCurrent($sequenceName, $startingNumber = 10000) {
 
         $db = Db::get();
@@ -22,7 +29,7 @@ class SequenceNumber
     }
 
     /**
-     * Sets sequence number of given name to $sequenceValue
+     * Sets current number of sequence to $sequenceValue
      *
      * @param $sequenceName
      * @param int $sequenceValue
@@ -56,7 +63,7 @@ class SequenceNumber
     }
 
     /**
-     * Incremets sequence number of given name by 1 and returns the new generated number. If the sequence didn't exist before, the sequence will start with $startingNumber.
+     * Incremets sequence number by 1 and returns the new generated number. If the sequence didn't exist before, the sequence will be set to $startingNumber.
      *
      * @param $sequenceName
      * @param int $startingNumber
