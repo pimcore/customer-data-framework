@@ -155,4 +155,18 @@ class MariaDb {
         $db->query($sql);
     }
 
+    /**
+     * quotes each single item of given array
+     *
+     * @param array $data
+     * @return array
+     */
+    public function quoteArray(array $data) {
+        $db = Db::get();
+        foreach($data as $key => $value) {
+            $data[$key] = $db->quote($value);
+        }
+
+        return $data;
+    }
 }

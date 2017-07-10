@@ -2,33 +2,27 @@
 
 namespace CustomerManagementFrameworkBundle\Controller;
 
-use BackendToolkit;
-use CustomerManagementFrameworkBundle\View\Helper\JsConfig;
+use CustomerManagementFrameworkBundle\Templating\Helper\JsConfig;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
+use Pimcore\Controller\EventedControllerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Zend\Paginator\Paginator;
 
-class Admin extends AdminController
+class Admin extends AdminController implements EventedControllerInterface
 {
-    public function init()
+    /**
+     * @param FilterControllerEvent $event
+     */
+    public function onKernelController(FilterControllerEvent $event)
     {
-        parent::init();
-
-        $this->initViewHelpers();
         $this->initJsConfig();
 
-        // init backend toolkit view helpers and paths
-        BackendToolkit\Plugin::registerViewHelpers($this->view);
-        BackendToolkit\Plugin::registerViewPaths($this->view);
     }
-
-    /**
-     * Init view helpers
-     */
-    protected function initViewHelpers()
+    public function onKernelResponse(FilterResponseEvent $event)
     {
-        /** @var \Zend_View $view */
-        $view = $this->view;
 
-        $view->addHelperPath(__DIR__ . '/../View/Helper', 'CustomerManagementFramework\\View\\Helper\\');
     }
 
     /**
@@ -50,7 +44,7 @@ class Admin extends AdminController
     protected function getJsConfigHelper()
     {
         /** @var JsConfig $jsConfig */
-        $jsConfig = $this->view->getHelper('JsConfig');
+        $jsConfig = \Pimcore::getContainer()->get('pimcore.templating.view_helper.jsConfig');
 
         return $jsConfig;
     }
@@ -82,16 +76,20 @@ class Admin extends AdminController
     /**
      * Build object paginator for filtered list
      *
+     * @param Request $request
      * @param mixed $data
      * @param int $defaultPageSize
-     * @return \Zend_Paginator
+     * @return Paginator
      */
-    protected function buildPaginator($data, $defaultPageSize = DefaultPageSize::DEFAULT_PAGE_SIZE)
+    protected function buildPaginator(Request $request, $data, $defaultPageSize = null)
     {
-        /** @var \Zend_Controller_Action $this */
-        $paginator = \Zend_Paginator::factory($data);
-        $paginator->setItemCountPerPage((int)$this->getParam('perPage', $defaultPageSize));
-        $paginator->setCurrentPageNumber((int)$this->getParam('page', 1));
+        if(is_null($defaultPageSize)) {
+            $defaultPageSize = \Pimcore::getContainer()->get('pimcore.templating.view_helper.defaultPageSize')->defaultPageSize();
+        }
+
+        $paginator = new Paginator($data);
+        $paginator->setItemCountPerPage((int)$request->get('perPage', $defaultPageSize));
+        $paginator->setCurrentPageNumber((int)$request->get('page', 1));
 
         return $paginator;
     }

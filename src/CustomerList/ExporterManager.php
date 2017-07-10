@@ -10,7 +10,7 @@ use Pimcore\Model\Object\Customer;
 class ExporterManager implements ExporterManagerInterface
 {
     /**
-     * @var \Zend_Config
+     * @var \Pimcore\Config
      */
     protected $config;
 
@@ -20,7 +20,7 @@ class ExporterManager implements ExporterManagerInterface
     }
 
     /**
-     * @return \Zend_Config
+     * @return \Pimcore\Config
      */
     public function getConfig()
     {
@@ -49,11 +49,10 @@ class ExporterManager implements ExporterManagerInterface
 
         $config = $this->config->$key;
 
+        $exporter = $config->exporter;
         /** @var ExporterInterface $exporter */
-        $exporter = \Pimcore::getDiContainer()->make($config->exporter, [
-            'name'       => $config->name,
-            'properties' => $config->properties->toArray()
-        ]);
+        $exporter = new $exporter($config->name, $config->properties->toArray());
+
 
         if (null !== $listing) {
             $exporter->setListing($listing);

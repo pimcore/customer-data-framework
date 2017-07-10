@@ -96,14 +96,14 @@ class DefaultSegmentManager implements SegmentManagerInterface {
     /**
      * @param array $params
      *
-     * @return CustomerSegmentGroup[]
+     * @return CustomerSegmentGroup\Listing
      */
-    public function getSegmentGroups(array $params = [])
+    public function getSegmentGroups()
     {
         $list = CustomerSegmentGroup::getList();
         $list->setUnpublished(false);
 
-        return $list->load();
+        return $list;
     }
 
     /**

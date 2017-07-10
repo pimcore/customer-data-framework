@@ -5,13 +5,11 @@ $customer = $this->customer;
 /** @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $cv */
 $cv = $this->customerView;
 
-$backUrl = $this->url([
-    'module'     => 'CustomerManagementFramework',
-    'controller' => 'customers',
-    'action'     => 'list'
-], null, true);
+$backUrl = $this->url('customermanagementframework_admin_customers_list');
 
 $backUrl = $this->formQueryString($this->request, $backUrl);
+
+$this->extend('PimcoreCustomerManagementFrameworkBundle::layout.html.php');
 ?>
 
 <div class="box box-info">

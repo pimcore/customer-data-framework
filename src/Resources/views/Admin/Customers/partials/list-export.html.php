@@ -2,8 +2,8 @@
 /** @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $cv */
 $cv = $this->customerView;
 
-$exporterConfigs = \CustomerManagementFrameworkBundle\Factory::getInstance()
-    ->getCustomerListExporterManager()
+$exporterConfigs = Pimcore::getContainer()
+    ->get('cmf.customer_export_manager')
     ->getConfig();
 
 if (count($exporterConfigs) === 0) {
@@ -19,12 +19,10 @@ if (count($exporterConfigs) === 0) {
 
                     <?php
                     $exportParams = array_merge([
-                        'controller' => 'customers',
-                        'action'     => 'export',
                         'exporter'   => $exporter,
                     ], $this->clearUrlParams ?: []);
 
-                    $exportUrl = $this->formQueryString($this->request, $this->url($exportParams));
+                    $exportUrl = $this->formQueryString($this->request, $this->url('customermanagementframework_admin_customers_export', $exportParams));
                     ?>
 
                     <a href="<?= $exportUrl ?>" class="btn btn-default">

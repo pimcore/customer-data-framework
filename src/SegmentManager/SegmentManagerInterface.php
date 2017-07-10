@@ -55,13 +55,13 @@ interface SegmentManagerInterface {
     public function getSegments(array $params = []);
 
     /**
-     * Returns an array with all customer segment groups. Optionally this could be filtered by given params.
+     * Returns an object list with all customer segment groups. Optionally this could be filtered by given params.
      * 
      * @param array $params
      *
-     * @return CustomerSegment[]
+     * @return CustomerSegmentGroup\Listing
      */
-    public function getSegmentGroups(array $params = []);
+    public function getSegmentGroups();
 
     /**
      * Applies all SegmentBuilders to customers. If the param $changesQueue only is set to true this is done only for customers which where changed since the last run.

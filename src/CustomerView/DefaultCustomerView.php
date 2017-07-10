@@ -37,7 +37,7 @@ class DefaultCustomerView implements CustomerViewInterface
      */
     public function getOverviewTemplate(CustomerInterface $customer)
     {
-        return 'customers/partials/list-row.php';
+        return 'PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials:list-row.html.php';
     }
 
     /**
@@ -57,7 +57,7 @@ class DefaultCustomerView implements CustomerViewInterface
      */
     public function getDetailviewTemplate(CustomerInterface $customer)
     {
-        return 'customers/partials/detail.php';
+        return 'PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials:detail.html.php';
     }
 
     /**

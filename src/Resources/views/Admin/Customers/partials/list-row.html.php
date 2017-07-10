@@ -7,14 +7,12 @@ $customer = $this->customer;
 
 $userDetailUrl = null;
 if ($cv->hasDetailView($customer)) {
-    $userDetailUrl = $this->url([
-        'module'     => 'CustomerManagementFramework',
-        'controller' => 'customers',
-        'action'     => 'detail',
+    $userDetailUrl = $this->url('customermanagementframework_admin_customers_detail', [
         'id'         => $customer->getId()
-    ], null, true);
+    ]);
 
     $userDetailUrl = $this->formQueryString($this->request, $userDetailUrl);
+
 }
 ?>
 
@@ -33,7 +31,7 @@ if ($cv->hasDetailView($customer)) {
         <?php endif; ?>
     </td>
     <td class="icon-column icon-column--center">
-        <?= $this->partial('customers/partials/active-state.php', [
+        <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials:active-state.html.php', [
             'customerView' => $cv,
             'customer'     => $customer,
             'language'     => $this->language

@@ -1,6 +1,13 @@
 <?php
+/**
+ * @var \Pimcore\Templating\PhpEngine $this
+ * @var \Pimcore\Templating\PhpEngine $view
+ * @var \Pimcore\Templating\GlobalVariables $app
+ */
+
 /** @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $cv */
 $cv = $this->customerView;
+
 ?>
 
 <?php if (isset($this->segmentGroups)): ?>
@@ -35,7 +42,7 @@ $cv = $this->customerView;
                             /** @var \CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface|\Pimcore\Model\Element\ElementInterface $segment */
                             foreach ($segments as $segment): ?>
 
-                                <option value="<?= $segment->getId() ?>" <?= $this->formFilterSelectedState($segmentGroup->getId(), $segment->getId(), true, ['filters', 'segments']) ?>>
+                                <option value="<?= $segment->getId() ?>" <?= isset($this->filters['segments'][$segmentGroup->getId()]) && array_search($segment->getId(), $this->filters['segments'][$segmentGroup->getId()]) !== false ? 'selected="selected"' : ''?>>
                                     <?= $segment->getName() ?>
                                 </option>
 

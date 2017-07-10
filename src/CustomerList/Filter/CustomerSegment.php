@@ -2,8 +2,9 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerList\Filter;
 
-use BackendToolkit\Listing\Filter\AbstractFilter;
-use BackendToolkit\Listing\OnCreateQueryFilterInterface;
+use CustomerManagementFrameworkBundle\Listing\Filter\AbstractFilter;
+use CustomerManagementFrameworkBundle\Listing\Filter\OnCreateQueryFilterInterface;
+use CustomerManagementFrameworkBundle\Service\MariaDb;
 use Pimcore\Db;
 use Pimcore\Model\Object;
 use Pimcore\Model\Object\Listing as CoreListing;
@@ -24,7 +25,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
     /**
      * @var string
      */
-    protected $type = \Zend_Db_Select::SQL_AND;
+    protected $type = Db\ZendCompatibility\QueryBuilder::SQL_OR;
 
     /**
      * @var Object\CustomerSegmentGroup
@@ -50,11 +51,10 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      * @param Object\CustomerSegmentGroup|null $segmentGroup
      * @param string $type
      */
-    public function __construct(array $segments, Object\CustomerSegmentGroup $segmentGroup = null, $type = \Zend_Db_Select::SQL_AND)
+    public function __construct(array $segments, Object\CustomerSegmentGroup $segmentGroup = null)
     {
         $this->identifier   = $this->buildIdentifier($segmentGroup);
         $this->segmentGroup = $segmentGroup;
-        $this->type         = $type;
 
         foreach ($segments as $segment) {
             $this->addCustomerSegment($segment);
@@ -117,15 +117,15 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      * Apply filter directly to query
      *
      * @param CoreListing\Concrete|CoreListing\Dao $listing
-     * @param \Zend_Db_Select $query
+     * @param Db\ZendCompatibility\QueryBuilder $query
      */
-    public function applyOnCreateQuery(CoreListing\Concrete $listing, \Zend_Db_Select $query)
+    public function applyOnCreateQuery(CoreListing\Concrete $listing, Db\ZendCompatibility\QueryBuilder $query)
     {
         if (count($this->segments) === 0) {
             return;
         }
 
-        if ($this->type === \Zend_Db_Select::SQL_OR) {
+        if ($this->type === Db\ZendCompatibility\QueryBuilder::SQL_OR) {
             $this->applyOrQuery($listing, $query);
         } else {
             $this->applyAndQuery($listing, $query);
@@ -136,9 +136,9 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      * Add a single join with a IN() conditions. If any of the segment IDs matches, the row will be returned
      *
      * @param CoreListing\Concrete|CoreListing\Dao $listing
-     * @param \Zend_Db_Select $query
+     * @param Db\ZendCompatibility\QueryBuilder $query
      */
-    protected function applyOrQuery(CoreListing\Concrete $listing, \Zend_Db_Select $query)
+    protected function applyOrQuery(CoreListing\Concrete $listing, Db\ZendCompatibility\QueryBuilder $query)
     {
         $segmentIds = array_map(function (Object\CustomerSegment $segment) {
             return $segment->getId();
@@ -157,9 +157,9 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      * Add one join per ID we want to search. If any of the joins does not match, the query will fail
      *
      * @param CoreListing\Concrete|CoreListing\Dao $listing
-     * @param \Zend_Db_Select $query
+     * @param Db\ZendCompatibility\QueryBuilder $query
      */
-    protected function applyAndQuery(CoreListing\Concrete $listing, \Zend_Db_Select $query)
+    protected function applyAndQuery(CoreListing\Concrete $listing, Db\ZendCompatibility\QueryBuilder $query)
     {
         $index = 0;
         foreach ($this->segments as $segment) {
@@ -178,47 +178,45 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      * Add the actual INNER JOIN acting as filter
      *
      * @param CoreListing\Concrete $listing
-     * @param \Zend_Db_Select $query
+     * @param Db\ZendCompatibility\QueryBuilder $query
      * @param string $joinName
      * @param int|array $conditionValue
      */
-    protected function addJoin(CoreListing\Concrete $listing, \Zend_Db_Select $query, $joinName, $conditionValue)
+    protected function addJoin(CoreListing\Concrete $listing, Db\ZendCompatibility\QueryBuilder $query, $joinName, $conditionValue)
     {
         $tableName          = $this->getTableName($listing->getClassId());
         $relationsTableName = $this->getTableName($listing->getClassId(), 'object_relations_');
 
-        $connection = Db::get();
+        $dbService = MariaDb::getInstance();
 
-        // relation matches one of our field names and relates to our current object
-        $baseCondition = $connection->quoteInto(sprintf(
-            '%1$s.fieldname IN (?) AND %1$s.src_id = %2$s.o_id',
-            $joinName,
-            $tableName
-        ), $this->relationNames);
-
-        $condition = $baseCondition;
-        if ($this->type === \Zend_Db_Select::SQL_OR) {
-            // must match any of the passed IDs
-            $condition .= $connection->quoteInto(sprintf(
-                ' AND %s.dest_id IN (?)',
-                $joinName
-            ), $conditionValue);
-        } else {
-            // runs an extra join for every ID - all joins must match
-            $condition .= $connection->quoteInto(sprintf(
-                ' AND %s.dest_id = ?',
-                $joinName
-            ), $conditionValue);
+        if(is_array($conditionValue)) {
+            $conditionValue = $dbService->quoteArray($conditionValue);
         }
 
-        // add field names and condition value to condition
-        $condition = Db::get()->quoteInto(
-            $condition,
-            [
-                $this->relationNames,
-                $conditionValue
-            ]
+        $relationNames = implode(',', $dbService->quoteArray($this->relationNames));
+
+        // relation matches one of our field names and relates to our current object
+        $baseCondition = sprintf(
+            '%1$s.fieldname IN (%3$s) AND %1$s.src_id = %2$s.o_id',
+            $joinName,
+            $tableName,
+            $relationNames
         );
+
+        $condition = $baseCondition;
+
+        if ($this->type === Db\ZendCompatibility\QueryBuilder::SQL_OR) {
+            // must match any of the passed IDs
+            $condition .= sprintf(
+                ' AND %1$s.dest_id IN (%2$s)',
+                $joinName, implode(',', $conditionValue));
+        } else {
+            // runs an extra join for every ID - all joins must match
+            $condition .= sprintf(
+                ' AND %1$s.dest_id = %2$s',
+                $joinName , $conditionValue);
+
+        }
 
         $query->join(
             [$joinName => $relationsTableName],

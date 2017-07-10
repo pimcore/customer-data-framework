@@ -111,8 +111,8 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
     public function deleteCustomerFromDuplicateIndex(CustomerInterface $customer)
     {
         $db = Db::get();
-        $db->query(sprintf("delete from %s where customer_id = ?", self::DUPLICATESINDEX_CUSTOMERS_TABLE), $customer->getId());
-        $db->query(sprintf("delete from %s where FIND_IN_SET(?, duplicateCustomerIds)", self::POTENTIAL_DUPLICATES_TABLE), $customer->getId());
+        $db->query(sprintf("delete from %s where customer_id = ?", self::DUPLICATESINDEX_CUSTOMERS_TABLE), [$customer->getId()]);
+        $db->query(sprintf("delete from %s where FIND_IN_SET(?, duplicateCustomerIds)", self::POTENTIAL_DUPLICATES_TABLE), [$customer->getId()]);
     }
 
     public function calculatePotentialDuplicates(OutputInterface $output)

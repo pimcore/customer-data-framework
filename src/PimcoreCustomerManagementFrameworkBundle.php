@@ -13,24 +13,24 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
     public function getJsPaths()
     {
         return [
-            '/bundles/customermanagementframework/js/startup.js',
-            '/bundles/customermanagementframework/js/ActivityView.js',
-            '/bundles/customermanagementframework/js/CustomerView.js',
-            '/bundles/customermanagementframework/js/CustomerView.js',
-            '/bundles/customermanagementframework/js/config/panel.js',
-            '/bundles/customermanagementframework/js/config/rule.js',
-            '/bundles/customermanagementframework/js/config/trigger.js',
-            '/bundles/customermanagementframework/js/config/conditions.js',
-            '/bundles/customermanagementframework/js/config/actions.js',
-            '/bundles/customermanagementframework/js/config/actions.js',
-            '/bundles/customermanagementframework/js/pimcore/report/custom/definitions/termSegmentBuilder.js',
+            '/bundles/pimcorecustomermanagementframework/js/startup.js',
+            '/bundles/pimcorecustomermanagementframework/js/ActivityView.js',
+            '/bundles/pimcorecustomermanagementframework/js/CustomerView.js',
+            '/bundles/pimcorecustomermanagementframework/js/CustomerView.js',
+            '/bundles/pimcorecustomermanagementframework/js/config/panel.js',
+            '/bundles/pimcorecustomermanagementframework/js/config/rule.js',
+            '/bundles/pimcorecustomermanagementframework/js/config/trigger.js',
+            '/bundles/pimcorecustomermanagementframework/js/config/conditions.js',
+            '/bundles/pimcorecustomermanagementframework/js/config/actions.js',
+            '/bundles/pimcorecustomermanagementframework/js/config/actions.js',
+            '/bundles/pimcorecustomermanagementframework/js/pimcore/report/custom/definitions/termSegmentBuilder.js',
         ];
     }
 
     public function getCssPaths()
     {
         return [
-            '/bundles/customermanagementframework/css/pimcore.css',
+            '/bundles/pimcorecustomermanagementframework/css/pimcore.css',
         ];
     }
 

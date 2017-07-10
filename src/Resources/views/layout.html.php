@@ -8,8 +8,8 @@
     <title>Customer Management</title>
 
     <?php
-    $this->headLink()->appendStylesheet($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/customermanagementframework/dist/css/lib.css'));
-    $this->headLink()->appendStylesheet($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/customermanagementframework/dist/css/style.css'));
+    $this->headLink()->appendStylesheet($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/dist/css/lib.css'));
+    $this->headLink()->appendStylesheet($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/dist/css/style.css'));
     ?>
 
     <?= $this->headLink(); ?>
@@ -25,8 +25,8 @@
 <?= $this->jsConfig() ?>
 
 <?php
-$this->headScript()->appendFile($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/customermanagementframework/dist/js/lib.js'));
-$this->headScript()->appendFile($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/customermanagementframework/dist/js/script.js'));
+$this->headScript()->appendFile($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/dist/js/lib.js'));
+$this->headScript()->appendFile($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/dist/js/script.js'));
 ?>
 
 <?= $this->headScript() ?>

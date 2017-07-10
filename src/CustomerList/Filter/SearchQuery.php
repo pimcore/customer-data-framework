@@ -2,10 +2,11 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerList\Filter;
 
-use BackendToolkit\Listing\Filter\AbstractFilter;
-use BackendToolkit\Listing\OnCreateQueryFilterInterface;
+use CustomerManagementFrameworkBundle\Listing\Filter\AbstractFilter;
+use CustomerManagementFrameworkBundle\Listing\Filter\OnCreateQueryFilterInterface;
 use CustomerManagementFrameworkBundle\CustomerList\Filter\Exception\SearchQueryException;
 use Phlexy\LexingException;
+use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\Model\Object\Listing as CoreListing;
 use SearchQueryParser\ParserException;
 use SearchQueryParser\QueryBuilder\ZendDbSelect;
@@ -37,7 +38,7 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
     /**
      * @inheritDoc
      */
-    public function applyOnCreateQuery(CoreListing\Concrete $listing, \Zend_Db_Select $query)
+    public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $query)
     {
         $queryBuilder = new ZendDbSelect($this->fields, [
             'stripWildcards' => false // allow LIKE wildcards
@@ -53,6 +54,7 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
     protected function parseQuery($queryString)
     {
         try {
+            //$queryString = str_replace('')
             return SearchQueryParser::parseQuery($queryString);
         } catch (LexingException $e) {
             $this->handleParserException($e);

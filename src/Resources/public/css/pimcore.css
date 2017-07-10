@@ -7,7 +7,7 @@
 }
 
 .pimcore_icon_customers {
-    background: url(/bundles/customermanagementframework/icons/customer.svg) center center no-repeat !important;
+    background: url(/bundles/pimcorecustomermanagementframework/icons/customer.svg) center center no-repeat !important;
 }
 .pimcore_icon_customerduplicates {
     background: url(/pimcore/static6/img/flat-color-icons/copy.svg) center center no-repeat !important;
@@ -45,7 +45,7 @@
 }
 
 .plugin_cmf_icon_actiontriggerrule_ExecuteSegmentBuilders  {
-    background: url(/bundles/customermanagementframework/icons/segment.svg) center center no-repeat !important;
+    background: url(/bundles/pimcorecustomermanagementframework/icons/segment.svg) center center no-repeat !important;
 }
 
 .plugin_cmf_icon_actiontriggerrule_Cron {
@@ -57,9 +57,9 @@
 }
 
 .plugin_cmf_icon_actiontriggerrule_AddSegment,.plugin_cmf_icon_actiontriggerrule_Segment {
-    background: url(/bundles/customermanagementframework/icons/segment.svg) center center no-repeat !important;
+    background: url(/bundles/pimcorecustomermanagementframework/icons/segment.svg) center center no-repeat !important;
 }
 
 .plugin_cmf_icon_actiontriggerrule_ChangeFieldValue,.plugin_cmf_icon_actiontriggerrule_Customer {
-    background: url(/bundles/customermanagementframework/icons/customer.svg) center center no-repeat !important;
+    background: url(/bundles/pimcorecustomermanagementframework/icons/customer.svg) center center no-repeat !important;
 }

@@ -1,5 +1,13 @@
 <?php
-/** @var Zend_Paginator|\CustomerManagementFrameworkBundle\Model\CustomerInterface[] $paginator */
+/**
+ * @var \Pimcore\Templating\PhpEngine $this
+ * @var \Pimcore\Templating\PhpEngine $view
+ * @var \Pimcore\Templating\GlobalVariables $app
+ */
+
+$this->extend('PimcoreCustomerManagementFrameworkBundle::layout.html.php');
+
+/** @var \Zend\Paginator\Paginator|\CustomerManagementFrameworkBundle\Model\CustomerInterface[] $paginator */
 $paginator = $this->paginator;
 
 /** @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $cv */
@@ -18,7 +26,7 @@ $cv = $this->customerView;
         <?php endforeach; ?>
     <?php endif; ?>
 
-    <?= $this->template('customers/partials/list-filter.php'); ?>
+    <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials:list-filter.html.php'); ?>
 
     <?php if ($paginator->getTotalItemCount() === 0): ?>
 
@@ -66,10 +74,10 @@ $cv = $this->customerView;
                 </table>
             </div>
             <!-- /.box-body -->
+            <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Partial/Table:pagination-footer.html.php') ?>
 
-            <?= $this->template('partials/table/pagination-footer.php') ?>
 
-            <?= $this->template('customers/partials/list-export.php'); ?>
+            <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials:list-export.html.php'); ?>
         </div>
 
     <?php endif; ?>

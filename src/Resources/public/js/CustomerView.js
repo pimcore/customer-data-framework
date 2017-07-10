@@ -60,7 +60,7 @@ CustomerView.CustomerTab = Class.create({
         if (!this._iframe) return;
 
         //var url = TranslationToolkit.config.Tab.URL;
-        var url = "/plugin/CustomerManagementFramework/customers/list/segmentId/" + this.config.object.id;
+        var url = "/admin/customermanagementframework/customers/list?segmentId=" + this.config.object.id;
 
         this._iframe.dom.src = url;
     }
