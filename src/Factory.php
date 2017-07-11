@@ -54,74 +54,12 @@ class Factory {
     }
 
 
-
-
-
-
     /**
      * @return SsoIdentityServiceInterface
      */
     public function getSsoIdentityService()
     {
         return \Pimcore::getDiContainer()->get(SsoIdentityServiceInterface::class);
-    }
-
-
-
-    /**
-     * @return CustomersHandler
-     */
-    public function getRESTApiCustomersHandler()
-    {
-        return \Pimcore::getDiContainer()->get(CustomersHandler::class);
-    }
-
-    /**
-     * @return ActivitiesHandler
-     */
-    public function getRESTApiActivitiesHandler()
-    {
-        return \Pimcore::getDiContainer()->get(ActivitiesHandler::class);
-    }
-
-    /**
-     * @return SegmentsOfCustomerHandler
-     */
-    public function getRESTApiSegmentsOfCustomerHandler()
-    {
-        return \Pimcore::getDiContainer()->get(SegmentsOfCustomerHandler::class);
-    }
-
-    /**
-     * @return DeletionsHandler
-     */
-    public function getRESTApiDeletionsHandler()
-    {
-        return \Pimcore::getDiContainer()->get(DeletionsHandler::class);
-    }
-
-    /**
-     * @return SegmentsHandler
-     */
-    public function getRESTApiSegmentsHandler()
-    {
-        return \Pimcore::getDiContainer()->get(SegmentsHandler::class);
-    }
-
-    /**
-     * @return SegmentGroupsHandler
-     */
-    public function getRESTApiSegmentGroupsHandler()
-    {
-        return \Pimcore::getDiContainer()->get(SegmentGroupsHandler::class);
-    }
-
-    /**
-     * @return CustomerList\ExporterManagerInterface
-     */
-    public function getCustomerListExporterManager()
-    {
-        return \Pimcore::getDiContainer()->get('CustomerManagementFramework\CustomerList\ExporterManager');
     }
 
 
