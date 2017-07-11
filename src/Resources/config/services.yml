@@ -1,3 +1,6 @@
+parameters:
+    cmf.mailchimp.client.apikey:
+
 services:
     pimcore.templating.view_helper.minifiedAssetUrl:
         class: CustomerManagementFrameworkBundle\Templating\Helper\MinifiedAssetUrl
@@ -50,6 +53,13 @@ services:
             tags:
                 - { name: templating.helper, alias: escapeFormValue }
 
+    pimcore.event_listener.frontend.activity_url_tracker:
+        class: CustomerManagementFrameworkBundle\EventListener\Frontend\UrlActivityTracker
+        calls:
+            - [setPimcoreContextResolver, ['@pimcore.service.request.pimcore_context_resolver']]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: -200 }
+
     cmf.logger:
         alias: logger
 
@@ -97,6 +107,11 @@ services:
         class: CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\DefaultActivityStoreEntry
         lazy: true
         shared: false
+
+    cmf.activity_url_tracker:
+        class: CustomerManagementFrameworkBundle\ActivityUrlTracker\DefaultActivityUrlTracker
+        lazy: true
+        arguments: ['@cmf.logger']
 
     cmf.customer_save_manager:
         class: CustomerManagementFrameworkBundle\CustomerSaveManager\DefaultCustomerSaveManager
@@ -221,7 +236,7 @@ services:
     cmf.mailchimp.client:
         class: DrewM\MailChimp\MailChimp
         lazy: true
-        arguments: ['@cmf.mailchimp.client.apikey']
+        arguments: ['%cmf.mailchimp.client.apikey%']
 
     cmf.mailchimp.export_service:
         class: CustomerManagementFrameworkBundle\ExportToolkit\ExportService\MailChimpExportService
