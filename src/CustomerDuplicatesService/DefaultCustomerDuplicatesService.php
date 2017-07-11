@@ -197,7 +197,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
             return;
         }
 
-        if($value instanceof Carbon || $value instanceof \Zend_Date || $value instanceof \Pimcore\Date || $value instanceof \DateTime) {
+        if($value instanceof Carbon || $value instanceof \Pimcore\Date || $value instanceof \DateTime) {
             $this->addNormalizedMysqlCompareConditionForDateFields($list, $field, $value);
             return;
         }
