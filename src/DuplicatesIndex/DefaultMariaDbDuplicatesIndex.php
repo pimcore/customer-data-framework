@@ -252,7 +252,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface {
             ->order("row1 asc")
         ;
 
-        $paginator = new \Zend_Paginator(new \Zend_Paginator_Adapter_DbSelect($select));
+        $paginator = new Paginator(new Db\ZendCompatibility\QueryBuilder\PaginationAdapter($select));
         $paginator->setItemCountPerPage($pageSize);
         $paginator->setCurrentPageNumber($page ? : 1);
 

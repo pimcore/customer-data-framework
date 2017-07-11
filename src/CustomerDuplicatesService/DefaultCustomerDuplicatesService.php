@@ -11,9 +11,7 @@ namespace CustomerManagementFrameworkBundle\CustomerDuplicatesService;
 use Carbon\Carbon;
 
 use CustomerManagementFrameworkBundle\Config;
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use Pimcore\Date;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Object\ClassDefinition;
 use Pimcore\Model\Object\Listing\Concrete;
@@ -199,7 +197,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
             return;
         }
 
-        if($value instanceof Carbon || $value instanceof \Zend_Date || $value instanceof Date || $value instanceof \DateTime) {
+        if($value instanceof Carbon || $value instanceof \Zend_Date || $value instanceof \Pimcore\Date || $value instanceof \DateTime) {
             $this->addNormalizedMysqlCompareConditionForDateFields($list, $field, $value);
             return;
         }
@@ -221,7 +219,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
     /**
      * @param Concrete $list
      * @param string $field
-     * @param Carbon|\Zend_Date|Date|\DateTime $value
+     * @param Carbon|\Pimcore\Date|\DateTime $value
      */
     protected function addNormalizedMysqlCompareConditionForDateFields(Concrete &$list, $field, $value) {
         $list->addConditionParam($field . ' = ?', $value->getTimestamp());

@@ -6,12 +6,13 @@ use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use Pimcore\Model\Object\ClassDefinition;
 use Pimcore\Model\Object\ClassDefinition\Data;
+use Pimcore\Model\Translation\TranslationInterface;
 use Pimcore\Translate\Admin;
 
 class DefaultViewFormatter implements ViewFormatterInterface
 {
     /**
-     * @var \Zend_Translate_Adapter[]
+     * @var TranslationInterface[]
      */
     protected $translate = [];
     protected $locale;

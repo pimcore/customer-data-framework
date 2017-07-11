@@ -119,9 +119,9 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
     protected function getBooleanFieldOperator()
     {
         if ($this->inverse) {
-            return \Zend_Db_Select::SQL_AND;
+            return Db\ZendCompatibility\QueryBuilder::SQL_AND;
         } else {
-            return \Zend_Db_Select::SQL_OR;
+            return Db\ZendCompatibility\QueryBuilder::SQL_OR;
         }
     }
 

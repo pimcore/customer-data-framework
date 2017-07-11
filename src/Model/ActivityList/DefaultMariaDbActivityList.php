@@ -14,6 +14,7 @@ use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\DefaultActivityStoreEntry;
 use Pimcore\Model\Listing\AbstractListing;
+use Zend\Paginator\Adapter\AdapterInterface;
 
 class DefaultMariaDbActivityList extends AbstractListing implements ActivityListInterface {
 
@@ -114,7 +115,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     /**
      * Return a fully configured Paginator Adapter from this method.
      *
-     * @return \Zend_Paginator_Adapter_Interface
+     * @return AdapterInterface
      */
     public function getPaginatorAdapter() {
         return $this;
