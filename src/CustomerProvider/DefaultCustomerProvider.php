@@ -70,7 +70,9 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     public function getCustomerClassName()
     {
-        return get_class(\Pimcore::getDiContainer()->make($this->getDiClassName()));
+        $class = $this->getDiClassName();
+        $customer = new $class;
+        return get_class($customer);
     }
 
     /**
