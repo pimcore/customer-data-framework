@@ -13,7 +13,7 @@ use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 class LanguageFromCountry implements DataTransformerInterface {
 
     /**
-     * Tries to determine language based on country code.
+     * Tries to determine language based on country code (approximate -> warn will in many be wrong).
      *
      * @param mixed $data
      * @param array $options
@@ -27,15 +27,9 @@ class LanguageFromCountry implements DataTransformerInterface {
             return false;
         }
 
-        if( $locale = \Zend_Locale::getLocaleToTerritory( $countryCode ) ) {
-            $parts = explode( '_', $locale );
-            return reset( $parts );
-        }
-        // approximate -> warn will most likely be wrong
+        $localelist = \Pimcore::getContainer()->get('pimcore.locale')->getLocaleList();
 
-        $localelist = \Zend_Locale::getLocaleList();
-
-        foreach($localelist as $locale => $trash) {
+        foreach($localelist as $locale) {
 
             $locale = explode('_', $locale);
             if(isset($locale[1])) {
