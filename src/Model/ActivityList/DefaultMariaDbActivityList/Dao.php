@@ -57,15 +57,8 @@ class Dao {
                 ]
             );
 
-
-            // add joins
-            //  $this->addJoins($select);
-
             // add condition
             $this->addConditions($select);
-
-            // group by
-            //    $this->addGroupBy($select);
 
             // order
             $this->addOrder($select);
@@ -84,7 +77,7 @@ class Dao {
         return $this->query;
     }
 
-    public function setQuery(Db\ZendCompatibility\QueryBuilder $query) {
+    public function setQuery(Db\ZendCompatibility\QueryBuilder $query = null) {
         $this->query = $query;
     }
 

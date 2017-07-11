@@ -8,9 +8,10 @@
 
 namespace CustomerManagementFrameworkBundle\Model\ActivityList;
 
-use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
+use Zend\Paginator\Adapter\AdapterInterface;
+use Zend\Paginator\AdapterAggregateInterface;
 
-interface ActivityListInterface extends \Zend_Paginator_Adapter_Interface, \Zend_Paginator_AdapterAggregate, \Iterator //\Zend_Paginator_Adapter_Interface, \Zend_Paginator_AdapterAggregate, \Iterator
+interface ActivityListInterface extends AdapterInterface, AdapterAggregateInterface, \Iterator
 {
 
     public function setCondition($condition, $conditionVariables = null);

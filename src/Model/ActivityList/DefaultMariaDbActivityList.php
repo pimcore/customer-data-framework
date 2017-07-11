@@ -15,7 +15,7 @@ use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\DefaultActivityStoreEntry;
 use Pimcore\Model\Listing\AbstractListing;
 
-class DefaultMariaDbActivityList extends AbstractListing implements ActivityListInterface, \Zend\Paginator\Adapter\AdapterInterface {
+class DefaultMariaDbActivityList extends AbstractListing implements ActivityListInterface {
 
     /**
      * @var integer
@@ -57,6 +57,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     public function setLimit($limit) {
         if($this->limit != $limit) {
             $this->activities = null;
+            $this->dao->setQuery(null);
         }
         $this->limit = $limit;
     }
@@ -68,6 +69,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     public function setOffset($offset) {
         if($this->offset != $offset) {
             $this->activities = null;
+            $this->dao->setQuery(null);
         }
         $this->offset = $offset;
     }

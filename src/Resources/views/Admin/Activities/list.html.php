@@ -57,7 +57,7 @@ $this->jsConfig()->add('formAutoSubmit', true);
                         <th><?=$av->translate("Activity details")?></th>
                     </tr>
 
-                    <?php foreach($this->activities as $activity) {
+                    <?php foreach($paginator as $activity) {
                         /**
                          * @var \CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface $activity
                          */
@@ -92,7 +92,12 @@ $this->jsConfig()->add('formAutoSubmit', true);
 
                 <?php if($paginator->getPages()->pageCount > 1): ?>
                     <div class="text-center">
-                        <?= $this->paginationControl($paginator, 'Sliding', 'includes/pagination/default.php', ['params'=>$this->getAllParams()]); ?>
+                        <?php if ($paginator->getPages()->pageCount > 1): ?>
+                            <?= $this->render(
+                                "PimcoreCustomerManagementFrameworkBundle:Admin/Partial/Pagination:default.html.php",
+                                get_object_vars($paginator->getPages("Sliding"))
+                            ); ?>
+                        <?php endif; ?>
                     </div>
                 <?php endif; ?>
 
