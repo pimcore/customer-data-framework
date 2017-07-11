@@ -7,7 +7,7 @@ use Pimcore\Model\Object\Customer;
 interface ExporterManagerInterface
 {
     /**
-     * @return \Zend_Config
+     * @return \Pimcore\Config
      */
     public function getConfig();
 

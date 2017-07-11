@@ -217,3 +217,13 @@ services:
         lazy: true
         calls:
             - [setLogger, ['@cmf.logger']]
+
+    cmf.mailchimp.client:
+        class: DrewM\MailChimp\MailChimp
+        lazy: true
+        arguments: ['@cmf.mailchimp.client.apikey']
+
+    cmf.mailchimp.export_service:
+        class: CustomerManagementFrameworkBundle\ExportToolkit\ExportService\MailChimpExportService
+        lazy: true
+        arguments: ['@cmf.mailchimp.client']

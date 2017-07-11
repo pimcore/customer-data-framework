@@ -4,15 +4,16 @@ namespace CustomerManagementFrameworkBundle\ExportToolkit\ConditionModificator\M
 
 use CustomerManagementFrameworkBundle\ExportToolkit\ConditionModificator\AbstractModificationDate;
 use CustomerManagementFrameworkBundle\ExportToolkit\ExportService\MailChimpExportService;
+use Pimcore\Db\ZendCompatibility\QueryBuilder;
 
 class ModificationDate extends AbstractModificationDate
 {
     /**
-     * @return \Zend_Db_Select
+     * @return QueryBuilder
      */
     protected static function buildNoteSubQuery()
     {
-        $exportService = \Pimcore::getDiContainer()->get(MailChimpExportService::class);
+        $exportService = \Pimcore::getContainer()->get('cmf.mailchimp.export_service');
 
         $query = parent::buildNoteSubQuery();
         $query->where('type = ?', $exportService->getExportNoteType());

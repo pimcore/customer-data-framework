@@ -12,6 +12,6 @@ trait ExportServiceAware
      */
     public function getExportService()
     {
-        return \Pimcore::getDiContainer()->get(MailChimpExportService::class);
+        return \Pimcore::getContainer()->get('cmf.mailchimp.export_service');
     }
 }
