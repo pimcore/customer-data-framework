@@ -27,7 +27,7 @@ On top of the ActivityStore the ActivityManager is responsible for handling acti
 Example:
 ```
 // $activity needs to implement ActvityInterface
-\CustomerManagementFramework\Factory::getInstance()->getActivityManager()->trackActivity($activity)
+\Pimcore::getContainer()->get('cmf.activity_manager')->trackActivity($activity);
 ```
 
 ## ActivityView
@@ -77,7 +77,7 @@ public static function cmfGetDetailviewTemplate(ActivityStoreEntryInterface $ent
 As mentioned above activities could use their own persistance additionally to the ActivityStore but don't have to. It's also possible to save activities only in the ActivityStore. The framework includes a generic activity implentation which could be used for these cases: 
 
 ```
-CustomerManagementFramework\Model\Activity\GenericActivity
+CustomerManagementFrameworkBundle\Model\Activity\GenericActivity
 ```
 
 This activity is used as a standard via the [REST api](./Webservice.md) if now implentationClass is defined. It can handle an nested, associative array of data which is only saved in the ActivityStore. 

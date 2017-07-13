@@ -9,7 +9,6 @@
 namespace  CustomerManagementFrameworkBundle\ActivityManager;
 
 use Carbon\Carbon;
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
@@ -21,31 +20,36 @@ class DefaultActivityManager implements ActivityManagerInterface
     /**
      * @return bool
      */
-    public function isDisableEvents() {
+    public function isDisableEvents()
+    {
         return $this->disableEvents;
     }
 
     /**
+     * Disable dispatching of php events.
+     *
      * @param bool $disableEvents
      * @return $this
      */
-    public function setDisableEvents( $disableEvents ) {
+    public function setDisableEvents( $disableEvents )
+    {
         $this->disableEvents = $disableEvents;
         return $this;
     }
 
 
     /**
-     * Add or update activity in the ActivityStore
+     * Add/update activity in activity store.
+     * Each activity is only saved once. The activity will be updated if it already exists in the store.
      *
      * @param ActivityInterface $activity
-     *
      * @return void
+     *
      * @throws \Exception
      */
     
-    public function trackActivity(ActivityInterface $activity  ) {
-
+    public function trackActivity(ActivityInterface $activity  )
+    {
         $store = \Pimcore::getContainer()->get('cmf.activity_store');
 
         if(!( $activity->cmfGetActivityDate() instanceof Carbon)) {
@@ -94,7 +98,8 @@ class DefaultActivityManager implements ActivityManagerInterface
      * @return void
      */
 
-    public function deleteActivity(ActivityInterface $activity) {
+    public function deleteActivity(ActivityInterface $activity)
+    {
 
         $store = \Pimcore::getContainer()->get('cmf.activity_store');
 
