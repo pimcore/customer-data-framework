@@ -14,6 +14,7 @@ use Pimcore\Model\Object\Objectbrick\Data\OAuth1Token;
 use Pimcore\Model\Object\Objectbrick\Data\OAuth2Token;
 use Pimcore\Model\Object\SsoIdentity;
 use Pimcore\Tool\HybridAuth;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
 {
@@ -75,11 +76,11 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
     /**
      * Handle authentication against external service
      *
-     * @param \Zend_Controller_Request_Http $request
+     * @param Request $request
      */
-    public function authenticate(\Zend_Controller_Request_Http $request)
+    public function authenticate(Request $request)
     {
-        $provider = $request->getParam('provider');
+        $provider = $request->get('provider');
         if (empty($provider)) {
             throw new \InvalidArgumentException('Need a provider to authenticate with');
         }
@@ -116,10 +117,10 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
     /**
      * Try to load customer from authentication response
      *
-     * @param \Zend_Controller_Request_Http $request
+     * @param Request $request
      * @return CustomerInterface
      */
-    public function getCustomerFromAuthResponse(\Zend_Controller_Request_Http $request)
+    public function getCustomerFromAuthResponse(Request $request)
     {
         return $this->ssoIdentityService->getCustomerBySsoIdentity(
             $this->getProviderId(),
@@ -131,10 +132,10 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
      * Update customer object from authentication response (create SsoIdentity entry, add data from user profile)
      *
      * @param CustomerInterface $customer
-     * @param \Zend_Controller_Request_Http $request
+     * @param Request $request
      * @return SsoIdentityInterface
      */
-    public function updateCustomerFromAuthResponse(CustomerInterface $customer, \Zend_Controller_Request_Http $request)
+    public function updateCustomerFromAuthResponse(CustomerInterface $customer, Request $request)
     {
         $this->checkAuthenticated();
 

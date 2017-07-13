@@ -51,9 +51,10 @@ interface CustomerProviderInterface
      * Get customer by ID
      *
      * @param int $id
+     * @param bool $foce
      * @return CustomerInterface|null
      */
-    public function getById($id);
+    public function getById($id, $force = false);
 
     /**
      * Sets the correct parent folder and object key for the given customer.

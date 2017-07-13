@@ -133,11 +133,12 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      * Get customer by ID
      *
      * @param int $id
+     * @param bool $force
      * @return CustomerInterface|null
      */
-    public function getById($id)
+    public function getById($id, $force = false)
     {
-        return $this->callStatic('getById', [$id]);
+        return $this->callStatic('getById', [$id, $force]);
     }
 
     /**

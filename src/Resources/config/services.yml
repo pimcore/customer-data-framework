@@ -233,6 +233,38 @@ services:
         calls:
             - [setLogger, ['@cmf.logger']]
 
+    # The user provider loads users by Username.
+    # Pimcore provides a simple ObjectUserProvider which is able to load users from a specified class by a configured
+    # field. The website_demo.security.user_provider will load users from the AppBundle\Model\Object\User by looking at
+    # their username field.
+    cmf.authentication.user_provider:
+        class: CustomerManagementFrameworkBundle\Authentication\UserProvider\CustomerObjectUserProvider
+        arguments: ['email']
+
+    # The encoder factory is responsible for verifying the password hash for a given user. As we need some special
+    # handling to be able to work with the password field, we use the UserAwareEncoderFactory to buiild a dedicated
+    # encoder per user. This service is configured in pimcore.security.encoder_factories to handle our user model.
+    cmf.authentication.user_password_encoder_factory:
+        class: Pimcore\Security\Encoder\Factory\UserAwareEncoderFactory
+        arguments:
+            - Pimcore\Security\Encoder\PasswordFieldEncoder
+            - ['password']
+
+    cmf.authentication.sso.identity_service:
+        class: CustomerManagementFrameworkBundle\Authentication\SsoIdentity\DefaultSsoIdentityService
+        arguments: ['@cmf.customer_provider']
+        calls:
+             - [setLogger, ['@cmf.logger']]
+
+    cmf.authentication.sso.hybrid_auth_handler:
+        class: CustomerManagementFrameworkBundle\Authentication\Sso\DefaultHybridAuthHandler
+        arguments: ['@cmf.authentication.sso.identity_service', '@cmf.encryption_service']
+
+    cmf.encryption_service:
+        class: CustomerManagementFrameworkBundle\Encryption\DefaultEncryptionService
+        calls:
+             - [setLogger, ['@cmf.logger']]
+
     cmf.mailchimp.client:
         class: DrewM\MailChimp\MailChimp
         lazy: true
