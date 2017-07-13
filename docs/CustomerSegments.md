@@ -97,5 +97,5 @@ php pimcore/cli/console.php cmf:build-segments -f
 
 build segment x for all customers: 
 ```
-php pimcore/cli/console.php cmf:build-segments --segmentBuilder='\Website\CustomerManagementFramework\SegmentBuilder\Brand'
+php pimcore/cli/console.php cmf:build-segments --segmentBuilder='\Website\CustomerManagementFrameworkBundle\SegmentBuilder\Brand'
 ```
