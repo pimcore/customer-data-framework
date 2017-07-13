@@ -8,7 +8,6 @@
 
 namespace CustomerManagementFrameworkBundle\Command;
 
-use CustomerManagementFrameworkBundle\Factory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -21,6 +20,10 @@ class CronTriggerCommand extends AbstractCommand
             ->setDescription("Handle cron triggers cronjob - needs to run once per minute");
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = $this->getLogger();

@@ -8,7 +8,6 @@
 
 namespace CustomerManagementFrameworkBundle\Command;
 
-use CustomerManagementFrameworkBundle\Factory;
 use Pimcore\Model\Tool\Lock;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,11 +23,15 @@ class ActionTriggerQueueCommand extends AbstractCommand
             ->setDescription("Process entries from action trigger queue");
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
         if (Lock::isLocked(self::LOCK_KEY)) {
-            //  die('locked - not starting now');
+              die('locked - not starting now');
 
         }
 

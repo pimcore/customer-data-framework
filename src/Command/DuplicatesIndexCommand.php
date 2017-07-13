@@ -9,7 +9,6 @@
 namespace CustomerManagementFrameworkBundle\Command;
 
 use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
-use CustomerManagementFrameworkBundle\Factory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -25,6 +24,10 @@ class DuplicatesIndexCommand extends AbstractCommand
             ->addOption("analyze", "a", null, "analyze false postives (used for calculating potential duplicates)");
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = \Pimcore::getContainer()->get('cmf.logger');

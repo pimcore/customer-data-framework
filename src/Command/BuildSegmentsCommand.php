@@ -8,7 +8,6 @@
 
 namespace CustomerManagementFrameworkBundle\Command;
 
-use CustomerManagementFrameworkBundle\Factory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -72,6 +71,10 @@ class BuildSegmentsCommand extends AbstractCommand
             );
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $customQueue = null;

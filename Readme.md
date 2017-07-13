@@ -5,3 +5,4 @@
 * [Activities (ActivityManager, ActivityStore, ActivityView)](./docs/Activities.md)
 * [Customer Duplicates Service](./docs/CustomerDuplicatesService.md)
 * [Webservice](./docs/Webservice.md)
+* [Cronjobs](./docs/Cronjobs.md)
