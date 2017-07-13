@@ -18,7 +18,7 @@ interface ActivityViewInterface extends TranslatorInterface
     /**
      * @param ActivityStoreEntryInterface $activityEntry
      *
-     * @return array
+     * @return array|false
      */
     public function getOverviewAdditionalData(ActivityStoreEntryInterface $activityEntry);
 
@@ -32,7 +32,7 @@ interface ActivityViewInterface extends TranslatorInterface
     /**
      * @param ActivityStoreEntryInterface $activityEntry
      *
-     * @return string|int
+     * @return string|false
      */
     public function getDetailviewTemplate(ActivityStoreEntryInterface $activityEntry);
 

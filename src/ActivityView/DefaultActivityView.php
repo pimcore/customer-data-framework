@@ -29,6 +29,11 @@ class DefaultActivityView implements ActivityViewInterface
         $this->viewFormatter = $viewFormatter;
     }
 
+    /**
+     * @param ActivityStoreEntryInterface $activityEntry
+     *
+     * @return array|false
+     */
     public function getOverviewAdditionalData(ActivityStoreEntryInterface $activityEntry)
     {
 
@@ -42,6 +47,11 @@ class DefaultActivityView implements ActivityViewInterface
         return false;
     }
 
+    /**
+     * @param ActivityStoreEntryInterface $activityEntry
+     *
+     * @return array
+     */
     public function getDetailviewData(ActivityStoreEntryInterface $activityEntry)
     {
 
@@ -57,6 +67,11 @@ class DefaultActivityView implements ActivityViewInterface
         return [];
     }
 
+    /**
+     * @param ActivityStoreEntryInterface $activityEntry
+     *
+     * @return string|false
+     */
     public function getDetailviewTemplate(ActivityStoreEntryInterface $activityEntry)
     {
         $implementationClass = $activityEntry->getImplementationClass();
@@ -77,6 +92,13 @@ class DefaultActivityView implements ActivityViewInterface
         return $this->viewFormatter->translate($messageId, $parameters);
     }
 
+    /**
+     * @param       $implementationClass
+     * @param array $attributes
+     * @param array $visibleKeys
+     *
+     * @return array
+     */
     public function formatAttributes($implementationClass, array $attributes, array $visibleKeys = [])
     {
 
@@ -117,6 +139,11 @@ class DefaultActivityView implements ActivityViewInterface
         return $result;
     }
 
+    /**
+     * @param array $attributes
+     * @param array $visibleKeys
+     * @return array
+     */
     private function extractVisibleAttributes(array $attributes, array $visibleKeys)
     {
         if (sizeof($visibleKeys)) {
