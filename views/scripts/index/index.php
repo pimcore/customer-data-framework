@@ -1,2 +1,0 @@
-
-CustomerManagementFramework Plugin works!
