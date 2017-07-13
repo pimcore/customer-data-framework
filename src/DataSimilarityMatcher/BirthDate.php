@@ -8,7 +8,8 @@
 
 namespace CustomerManagementFrameworkBundle\DataSimilarityMatcher;
 
-class BirthDate implements DataSimilarityMatcherInterface {
+class BirthDate implements DataSimilarityMatcherInterface
+{
 
     protected $defaultTreshold = 50;
 
@@ -28,27 +29,27 @@ class BirthDate implements DataSimilarityMatcherInterface {
         $y1 = date('y', $value1);
         $y2 = date('y', $value2);
 
-        if($d1 == $d2 && $m1 == $m2 && $y1 == $y2) {
+        if ($d1 == $d2 && $m1 == $m2 && $y1 == $y2) {
             return 100;
         }
 
-        if($d1 == $d2 && $m1 == $m2) {
+        if ($d1 == $d2 && $m1 == $m2) {
             return 66;
         }
 
-        if($d1 == $d2 && $y1 == $y2) {
+        if ($d1 == $d2 && $y1 == $y2) {
             return 66;
         }
 
-        if($m1 == $m2 && $y1 == $y2) {
+        if ($m1 == $m2 && $y1 == $y2) {
             return 66;
         }
 
-        if(abs($y1 - $y2) <= 5) {
+        if (abs($y1 - $y2) <= 5) {
             return 50;
         }
 
-        if(abs($y1 - $y2) <= 10) {
+        if (abs($y1 - $y2) <= 10) {
             return 25;
         }
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerManagementFrameworkBundle\View\Formatter;
 
 use CustomerManagementFrameworkBundle\Translate\TranslatorInterface;

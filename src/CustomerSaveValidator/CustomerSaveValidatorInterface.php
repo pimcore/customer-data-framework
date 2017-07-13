@@ -18,7 +18,8 @@ use Pimcore\Model\Element\ValidationException;
  *
  * @package CustomerManagementFramework\CustomerSaveValidator
  */
-interface CustomerSaveValidatorInterface {
+interface CustomerSaveValidatorInterface
+{
 
     /**
      * @param CustomerInterface $customer

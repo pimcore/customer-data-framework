@@ -15,7 +15,8 @@ use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
-class GenericActivity implements ActivityExternalIdInterface {
+class GenericActivity implements ActivityExternalIdInterface
+{
 
     protected $customer;
 
@@ -34,21 +35,22 @@ class GenericActivity implements ActivityExternalIdInterface {
         return $this->data['a_id'];
     }
 
-    public function cmfIsActive() {
+    public function cmfIsActive()
+    {
         return true;
     }
 
     public function cmfGetActivityDate()
     {
-        if(empty($this->data['activityDate'])) {
+        if (empty($this->data['activityDate'])) {
             return new Carbon();
         }
 
-        if($this->data['activityDate'] instanceof Carbon) {
+        if ($this->data['activityDate'] instanceof Carbon) {
             return $this->data['activityDate'];
         }
 
-        if(is_int($this->data['activityDate'])) {
+        if (is_int($this->data['activityDate'])) {
             return Carbon::createFromTimestamp($this->data['activityDate']);
         }
 
@@ -107,8 +109,10 @@ class GenericActivity implements ActivityExternalIdInterface {
 
     public function getCustomer()
     {
-        if(empty($this->customer)) {
-            $this->customer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById($this->data['customerId']);
+        if (empty($this->customer)) {
+            $this->customer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById(
+                $this->data['customerId']
+            );
         }
 
         return $this->customer;
@@ -116,10 +120,10 @@ class GenericActivity implements ActivityExternalIdInterface {
 
     public function setCustomer($customer)
     {
-        if($customer instanceof CustomerInterface) {
+        if ($customer instanceof CustomerInterface) {
             $this->customer = $customer;
             $this->data['customer'] = $customer->getId();
-        } elseif(is_int($this->data['customer'])) {
+        } elseif (is_int($this->data['customer'])) {
             $this->customer = null;
             $this->data['customer'] = $customer;
         } else {

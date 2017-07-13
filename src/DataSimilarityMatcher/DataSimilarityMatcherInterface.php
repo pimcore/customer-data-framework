@@ -8,7 +8,8 @@
 
 namespace CustomerManagementFrameworkBundle\DataSimilarityMatcher;
 
-interface DataSimilarityMatcherInterface {
+interface DataSimilarityMatcherInterface
+{
 
     /**
      * @param $value1

@@ -45,12 +45,14 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
             $result[] = $this->hydrateSegment($segment);
         }
 
-        return new Response([
-            'page'       => $paginator->getCurrentPageNumber(),
-            'totalPages' => $paginator->getPages()->pageCount,
-            'timestamp'  => $timestamp,
-            'data'       => $result
-        ]);
+        return new Response(
+            [
+                'page' => $paginator->getCurrentPageNumber(),
+                'totalPages' => $paginator->getPages()->pageCount,
+                'timestamp' => $timestamp,
+                'data' => $result,
+            ]
+        );
     }
 
     /**
@@ -76,36 +78,57 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
     {
         $data = $this->getRequestData($request);
 
-        if(!$data['group']) {
-            return new Response([
-                'success' => false,
-                'msg' => "group required"
-            ], Response::RESPONSE_CODE_BAD_REQUEST);
+        if (!$data['group']) {
+            return new Response(
+                [
+                    'success' => false,
+                    'msg' => "group required",
+                ], Response::RESPONSE_CODE_BAD_REQUEST
+            );
         }
-        if(!$segmentGroup = CustomerSegmentGroup::getById($data['group'])) {
-            return new Response([
-                'success' => false,
-                'msg' => "group not found"
-            ], Response::RESPONSE_CODE_BAD_REQUEST);
-        }
-
-        if(!$data['name']) {
-            return new Response([
-                'success' => false,
-                'msg' => "name required"
-            ], Response::RESPONSE_CODE_BAD_REQUEST);
+        if (!$segmentGroup = CustomerSegmentGroup::getById($data['group'])) {
+            return new Response(
+                [
+                    'success' => false,
+                    'msg' => "group not found",
+                ], Response::RESPONSE_CODE_BAD_REQUEST
+            );
         }
 
-        if($data['reference'] && \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentByReference($data['reference'], $segmentGroup)) {
-            return new Response([
-                'success' => false,
-                'msg' => sprintf("duplicate segment - segment with reference '%s' already exists in this group", $data['reference'])
-            ], Response::RESPONSE_CODE_BAD_REQUEST);
+        if (!$data['name']) {
+            return new Response(
+                [
+                    'success' => false,
+                    'msg' => "name required",
+                ], Response::RESPONSE_CODE_BAD_REQUEST
+            );
+        }
+
+        if ($data['reference'] && \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentByReference(
+                $data['reference'],
+                $segmentGroup
+            )
+        ) {
+            return new Response(
+                [
+                    'success' => false,
+                    'msg' => sprintf(
+                        "duplicate segment - segment with reference '%s' already exists in this group",
+                        $data['reference']
+                    ),
+                ], Response::RESPONSE_CODE_BAD_REQUEST
+            );
         }
 
         $data['calculated'] = isset($data['calculated']) ? $data['calculated'] : $segmentGroup->getCalculated();
 
-        $segment = \Pimcore::getContainer()->get('cmf.segment_manager')->createSegment($data['name'], $segmentGroup, $data['reference'], (bool)$data['calculated'], $data['subFolder']);
+        $segment = \Pimcore::getContainer()->get('cmf.segment_manager')->createSegment(
+            $data['name'],
+            $segmentGroup,
+            $data['reference'],
+            (bool)$data['calculated'],
+            $data['subFolder']
+        );
 
         $result = $this->hydrateSegment($segment);
         $result['success'] = true;
@@ -125,18 +148,22 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
     {
         $data = $this->getRequestData($request);
 
-        if(empty($request->get('id'))) {
-            return new Response([
-                'success' => false,
-                'msg' => 'id required'
-            ], Response::RESPONSE_CODE_BAD_REQUEST);
+        if (empty($request->get('id'))) {
+            return new Response(
+                [
+                    'success' => false,
+                    'msg' => 'id required',
+                ], Response::RESPONSE_CODE_BAD_REQUEST
+            );
         }
 
-        if(!$segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentByid($request->get('id'))) {
-            return new Response([
-                'success' => false,
-                'msg' => sprintf('segment with id %s not found', $request->get('id'))
-            ], Response::RESPONSE_CODE_NOT_FOUND);
+        if (!$segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentByid($request->get('id'))) {
+            return new Response(
+                [
+                    'success' => false,
+                    'msg' => sprintf('segment with id %s not found', $request->get('id')),
+                ], Response::RESPONSE_CODE_NOT_FOUND
+            );
         }
 
         \Pimcore::getContainer()->get('cmf.segment_manager')->updateSegment($segment, $data);
@@ -224,9 +251,9 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
 
         if ($selfLink = $this->generateResourceApiUrl($customerSegment->getId())) {
             $links[] = [
-                'rel'    => 'self',
-                'href'   => $selfLink,
-                'method' => 'GET'
+                'rel' => 'self',
+                'href' => $selfLink,
+                'method' => 'GET',
             ];
         }
 

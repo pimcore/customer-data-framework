@@ -11,14 +11,16 @@ namespace CustomerManagementFrameworkBundle\Model;
 use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 
-abstract class AbstractActivity implements ActivityInterface {
+abstract class AbstractActivity implements ActivityInterface
+{
 
     protected $customer;
 
     /**
      * @return bool
      */
-    public function cmfIsActive() {
+    public function cmfIsActive()
+    {
         return true;
     }
 
@@ -58,7 +60,7 @@ abstract class AbstractActivity implements ActivityInterface {
 
     /**
      * @param array $data
-     * @param bool  $fromWebservice
+     * @param bool $fromWebservice
      *
      * @return bool
      */

@@ -34,7 +34,7 @@ class MailChimpExportService
     public function __construct(MailChimp $apiClient, $listId)
     {
         $this->apiClient = $apiClient;
-        $this->listId    = $listId;
+        $this->listId = $listId;
     }
 
     /**
@@ -107,8 +107,11 @@ class MailChimpExportService
         }
 
         if ($object->getModificationDate()) {
-            $lastExportDate   = $this->getLastExportDateTime($object);
-            $modificationDate = Carbon::createFromTimestamp($object->getModificationDate(), $lastExportDate->getTimezone());
+            $lastExportDate = $this->getLastExportDateTime($object);
+            $modificationDate = Carbon::createFromTimestamp(
+                $object->getModificationDate(),
+                $lastExportDate->getTimezone()
+            );
 
             // item was modified after last export -> needs update
             if ($modificationDate > $lastExportDate) {

@@ -11,13 +11,14 @@ namespace CustomerManagementFrameworkBundle\Helper;
 
 use Pimcore\Model\Element\ElementInterface;
 
-class Notes {
+class Notes
+{
 
     /**
      * @param ElementInterface $element
      * @param                  $type
      * @param                  $title
-     * @param null             $description
+     * @param null $description
      *
      * @return \Pimcore\Model\Element\Note
      */

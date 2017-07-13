@@ -20,7 +20,7 @@ class DeletionsController extends RestHandlerController
      */
     public function listRecords(Request $request)
     {
-        $handler  = $this->getHandler();
+        $handler = $this->getHandler();
         $response = null;
 
         try {

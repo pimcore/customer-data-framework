@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerManagementFrameworkBundle\CustomerProvider;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;

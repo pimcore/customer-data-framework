@@ -11,7 +11,8 @@ namespace CustomerManagementFrameworkBundle\DataValidator;
 use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\Plugin;
 
-class BlacklistValidator implements DataValidatorInterface {
+class BlacklistValidator implements DataValidatorInterface
+{
 
     /**
      * returns false if given email is on the blacklist
@@ -19,17 +20,18 @@ class BlacklistValidator implements DataValidatorInterface {
      * @param $item
      * @return bool
      */
-    public function isValid($data) {
+    public function isValid($data)
+    {
         $config = Config::getConfig();
 
         $blacklistFile = (string)$config->General->mailBlackListFile;
 
         $blacklistedMails = [];
 
-        if($blacklistFile && file_exists($blacklistFile)) {
+        if ($blacklistFile && file_exists($blacklistFile)) {
             $blacklistedMails = preg_split("/\r\n|\n|\r/", file_get_contents($blacklistFile));
 
-            foreach($blacklistedMails as $key => $value) {
+            foreach ($blacklistedMails as $key => $value) {
                 $blacklistedMails[$key] = trim(strtolower($value));
             }
         }

@@ -35,12 +35,13 @@ class TrackedUrlActivity extends AbstractActivity
     {
         $attributes = [
             'label' => $this->activityDefinition->getLabel(),
-            'code' => $this->activityDefinition->getCode()
+            'code' => $this->activityDefinition->getCode(),
         ];
 
-        if($additionalAttributes = $this->activityDefinition->getAttributes()) {
-            foreach($additionalAttributes as $additionalAttribute) {
-                $attributes[$additionalAttribute['attribute']->getData()] = $additionalAttribute['attributeValue']->getData();
+        if ($additionalAttributes = $this->activityDefinition->getAttributes()) {
+            foreach ($additionalAttributes as $additionalAttribute) {
+                $attributes[$additionalAttribute['attribute']->getData(
+                )] = $additionalAttribute['attributeValue']->getData();
             }
 
         }
@@ -61,12 +62,15 @@ class TrackedUrlActivity extends AbstractActivity
 
     /**
      * @param array $data
-     * @param bool  $fromWebservice
+     * @param bool $fromWebservice
      *
      * @return bool
      */
     public static function cmfCreate(array $data, $fromWebservice = false)
     {
-        return new static(\Pimcore::getContainer()->get('cmf.customer_provider')->getById($data['customerId']), ActivityDefinition::getById('6697057'));
+        return new static(
+            \Pimcore::getContainer()->get('cmf.customer_provider')->getById($data['customerId']),
+            ActivityDefinition::getById('6697057')
+        );
     }
 }

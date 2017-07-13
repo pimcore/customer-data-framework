@@ -15,7 +15,8 @@ use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Psr\Log\LoggerInterface;
 
-class StateSegmentBuilder extends AbstractSegmentBuilder {
+class StateSegmentBuilder extends AbstractSegmentBuilder
+{
 
     private $config;
     private $logger;
@@ -35,7 +36,7 @@ class StateSegmentBuilder extends AbstractSegmentBuilder {
 
         $this->logger = $logger;
 
-        $this->groupName = (string)$config->segmentGroup ? : 'State';
+        $this->groupName = (string)$config->segmentGroup ?: 'State';
     }
 
     /**
@@ -50,7 +51,7 @@ class StateSegmentBuilder extends AbstractSegmentBuilder {
 
         $this->segmentGroup = $segmentManager->createSegmentGroup($this->groupName, $this->groupName, true);
 
-        foreach($this->countryTransformers as $key => $transformer) {
+        foreach ($this->countryTransformers as $key => $transformer) {
             $transformer = Factory::getInstance()->createObject($transformer, DataTransformerInterface::class);
             $this->countryTransformers[$key] = $transformer;
         }
@@ -70,20 +71,30 @@ class StateSegmentBuilder extends AbstractSegmentBuilder {
 
         $stateSegment = null;
 
-        if(isset($this->countryTransformers[$countryCode])) {
+        if (isset($this->countryTransformers[$countryCode])) {
             $transformer = $this->countryTransformers[$countryCode];
 
-            if($state = $transformer->transform($customer->getZip())) {
-                $stateSegment = $segmentManager->createCalculatedSegment($countryCode . " - " . $state, $this->groupName, $countryCode . " - " . $state, $countryCode);
+            if ($state = $transformer->transform($customer->getZip())) {
+                $stateSegment = $segmentManager->createCalculatedSegment(
+                    $countryCode." - ".$state,
+                    $this->groupName,
+                    $countryCode." - ".$state,
+                    $countryCode
+                );
             }
         }
 
         $segments = [];
-        if($stateSegment) {
+        if ($stateSegment) {
             $segments[] = $stateSegment;
         }
 
-        $segmentManager->mergeSegments($customer, $segments, $segmentManager->getSegmentsFromSegmentGroup($this->segmentGroup, $segments), "StateSegmentBuilder");
+        $segmentManager->mergeSegments(
+            $customer,
+            $segments,
+            $segmentManager->getSegmentsFromSegmentGroup($this->segmentGroup, $segments),
+            "StateSegmentBuilder"
+        );
     }
 
     /**

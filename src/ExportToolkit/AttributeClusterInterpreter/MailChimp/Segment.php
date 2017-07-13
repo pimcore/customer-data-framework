@@ -47,7 +47,7 @@ class Segment extends AbstractAttributeClusterInterpreter
      */
     public function commitData()
     {
-        $categorized   = $this->categorizeData();
+        $categorized = $this->categorizeData();
         $exportService = $this->getExportService();
 
         foreach ($categorized as $groupData) {
@@ -57,15 +57,20 @@ class Segment extends AbstractAttributeClusterInterpreter
             $group = $groupData['group'];
 
             // used for log messages
-            $segmentIds = array_map(function(CustomerSegmentInterface $segment) {
-                return $segment->getId();
-            }, $groupData['segments']);
+            $segmentIds = array_map(
+                function (CustomerSegmentInterface $segment) {
+                    return $segment->getId();
+                },
+                $groupData['segments']
+            );
 
             if (!$group) {
-                $this->logger->warning(sprintf(
-                    '[MailChimp] Skipping exports of segment(s) %s as they have no group',
-                    implode(', ', $segmentIds)
-                ));
+                $this->logger->warning(
+                    sprintf(
+                        '[MailChimp] Skipping exports of segment(s) %s as they have no group',
+                        implode(', ', $segmentIds)
+                    )
+                );
 
                 // TODO add support for segments without group (default group)
                 continue;
@@ -79,12 +84,14 @@ class Segment extends AbstractAttributeClusterInterpreter
 
             $remoteGroupId = $this->exportGroup($group);
             if (!$remoteGroupId) {
-                $this->logger->error(sprintf(
-                    '[MailChimp][GROUP %s] Failed to export group %s - skipping export of segment(s) %s',
-                    $group->getId(),
-                    $group->getName(),
-                    implode(', ', $segmentIds)
-                ));
+                $this->logger->error(
+                    sprintf(
+                        '[MailChimp][GROUP %s] Failed to export group %s - skipping export of segment(s) %s',
+                        $group->getId(),
+                        $group->getName(),
+                        implode(', ', $segmentIds)
+                    )
+                );
 
                 continue;
             }
@@ -105,32 +112,36 @@ class Segment extends AbstractAttributeClusterInterpreter
     protected function exportGroup(CustomerSegmentGroup $group, $forceCreate = false)
     {
         $exportService = $this->getExportService();
-        $apiClient     = $exportService->getApiClient();
+        $apiClient = $exportService->getApiClient();
 
         $data = [
             'title' => $group->getName(),
-            'type'  => 'checkboxes'
+            'type' => 'checkboxes',
         ];
 
         $remoteGroupId = null;
-        $result        = null;
-        $isEdit        = false;
+        $result = null;
+        $isEdit = false;
 
         if ($forceCreate) {
-            $this->logger->info(sprintf(
-                '[MailChimp][GROUP %s] Forcing creation of group %s',
-                $group->getId(),
-                $group->getName()
-            ));
+            $this->logger->info(
+                sprintf(
+                    '[MailChimp][GROUP %s] Forcing creation of group %s',
+                    $group->getId(),
+                    $group->getName()
+                )
+            );
         }
 
         if ($forceCreate || !$exportService->wasExported($group)) {
-            $this->logger->info(sprintf(
-                '[MailChimp][GROUP %s] Creating group %s',
-                $group->getId(),
-                $group->getName(),
-                $remoteGroupId
-            ));
+            $this->logger->info(
+                sprintf(
+                    '[MailChimp][GROUP %s] Creating group %s',
+                    $group->getId(),
+                    $group->getName(),
+                    $remoteGroupId
+                )
+            );
 
             $result = $apiClient->post(
                 $exportService->getListResourceUrl('interest-categories'),
@@ -141,15 +152,17 @@ class Segment extends AbstractAttributeClusterInterpreter
                 $remoteGroupId = $result['id'];
             }
         } else {
-            $isEdit        = true;
+            $isEdit = true;
             $remoteGroupId = $exportService->getRemoteId($group);
 
-            $this->logger->info(sprintf(
-                '[MailChimp][GROUP %s] Updating group %s with remote ID %s',
-                $group->getId(),
-                $group->getName(),
-                $remoteGroupId
-            ));
+            $this->logger->info(
+                sprintf(
+                    '[MailChimp][GROUP %s] Updating group %s with remote ID %s',
+                    $group->getId(),
+                    $group->getName(),
+                    $remoteGroupId
+                )
+            );
 
             $result = $apiClient->patch(
                 $exportService->getListResourceUrl(
@@ -160,33 +173,39 @@ class Segment extends AbstractAttributeClusterInterpreter
         }
 
         if ($apiClient->success()) {
-            $this->logger->info(sprintf(
-                '[MailChimp][GROUP %s] Request was successful for group %s. Remote ID is %s',
-                $group->getId(),
-                $group->getName(),
-                $remoteGroupId
-            ));
+            $this->logger->info(
+                sprintf(
+                    '[MailChimp][GROUP %s] Request was successful for group %s. Remote ID is %s',
+                    $group->getId(),
+                    $group->getName(),
+                    $remoteGroupId
+                )
+            );
 
             // add note
             $exportService
                 ->createExportNote($group, $remoteGroupId)
                 ->save();
         } else {
-            $this->logger->error(sprintf(
-                '[MailChimp][GROUP %s] Failed to export group %s: %s %s',
-                $group->getId(),
-                $group->getName(),
-                json_encode($apiClient->getLastError()),
-                $apiClient->getLastResponse()['body']
-            ));
+            $this->logger->error(
+                sprintf(
+                    '[MailChimp][GROUP %s] Failed to export group %s: %s %s',
+                    $group->getId(),
+                    $group->getName(),
+                    json_encode($apiClient->getLastError()),
+                    $apiClient->getLastResponse()['body']
+                )
+            );
 
             // we tried to edit a resource which doesn't exist (anymore) - fall back to create
             if ($isEdit && isset($result['status']) && $result['status'] === 404) {
-                $this->logger->warning(sprintf(
-                    '[MailChimp][GROUP %s] Edit request was a 404 - falling back to create group %s',
-                    $group->getId(),
-                    $group->getName()
-                ));
+                $this->logger->warning(
+                    sprintf(
+                        '[MailChimp][GROUP %s] Edit request was a 404 - falling back to create group %s',
+                        $group->getId(),
+                        $group->getName()
+                    )
+                );
 
                 return $this->exportGroup($group, true);
             }
@@ -208,31 +227,35 @@ class Segment extends AbstractAttributeClusterInterpreter
     protected function exportSegment(CustomerSegment $segment, $remoteGroupId, $forceCreate = false)
     {
         $exportService = $this->getExportService();
-        $apiClient     = $exportService->getApiClient();
+        $apiClient = $exportService->getApiClient();
 
         $data = [
-            'name' => $this->data[$segment->getId()]['name']
+            'name' => $this->data[$segment->getId()]['name'],
         ];
 
         $remoteSegmentId = null;
-        $result          = null;
-        $isEdit          = false;
+        $result = null;
+        $isEdit = false;
 
         if ($forceCreate) {
-            $this->logger->info(sprintf(
-                '[MailChimp][SEGMENT %s] Forcing creation of segment %s',
-                $segment->getId(),
-                $segment->getName()
-            ));
+            $this->logger->info(
+                sprintf(
+                    '[MailChimp][SEGMENT %s] Forcing creation of segment %s',
+                    $segment->getId(),
+                    $segment->getName()
+                )
+            );
         }
 
         if ($forceCreate || !$exportService->wasExported($segment)) {
-            $this->logger->info(sprintf(
-                '[MailChimp][SEGMENT %s] Creating segment %s',
-                $segment->getId(),
-                $segment->getName(),
-                $remoteSegmentId
-            ));
+            $this->logger->info(
+                sprintf(
+                    '[MailChimp][SEGMENT %s] Creating segment %s',
+                    $segment->getId(),
+                    $segment->getName(),
+                    $remoteSegmentId
+                )
+            );
 
             $result = $apiClient->post(
                 $exportService->getListResourceUrl(
@@ -245,15 +268,17 @@ class Segment extends AbstractAttributeClusterInterpreter
                 $remoteSegmentId = $result['id'];
             }
         } else {
-            $isEdit          = true;
+            $isEdit = true;
             $remoteSegmentId = $exportService->getRemoteId($segment);
 
-            $this->logger->info(sprintf(
-                '[MailChimp][SEGMENT %s] Updating segment %s with remote ID %s',
-                $segment->getId(),
-                $segment->getName(),
-                $remoteSegmentId
-            ));
+            $this->logger->info(
+                sprintf(
+                    '[MailChimp][SEGMENT %s] Updating segment %s with remote ID %s',
+                    $segment->getId(),
+                    $segment->getName(),
+                    $remoteSegmentId
+                )
+            );
 
             $result = $apiClient->patch(
                 $exportService->getListResourceUrl(
@@ -264,33 +289,39 @@ class Segment extends AbstractAttributeClusterInterpreter
         }
 
         if ($apiClient->success()) {
-            $this->logger->info(sprintf(
-                '[MailChimp][SEGMENT %s] Request was successful for segment %s. Remote ID is %s',
-                $segment->getId(),
-                $segment->getName(),
-                $remoteGroupId
-            ));
+            $this->logger->info(
+                sprintf(
+                    '[MailChimp][SEGMENT %s] Request was successful for segment %s. Remote ID is %s',
+                    $segment->getId(),
+                    $segment->getName(),
+                    $remoteGroupId
+                )
+            );
 
             // add note
             $exportService
                 ->createExportNote($segment, $remoteSegmentId)
                 ->save();
         } else {
-            $this->logger->error(sprintf(
-                '[MailChimp][SEGMENT %s] Failed to export segment %s: %s %s',
-                $segment->getId(),
-                $segment->getName(),
-                json_encode($apiClient->getLastError()),
-                $apiClient->getLastResponse()['body']
-            ));
+            $this->logger->error(
+                sprintf(
+                    '[MailChimp][SEGMENT %s] Failed to export segment %s: %s %s',
+                    $segment->getId(),
+                    $segment->getName(),
+                    json_encode($apiClient->getLastError()),
+                    $apiClient->getLastResponse()['body']
+                )
+            );
 
             // we tried to edit a resource which doesn't exist (anymore) - fall back to create
             if ($isEdit && isset($result['status']) && $result['status'] === 404) {
-                $this->logger->error(sprintf(
-                    '[MailChimp][SEGMENT %s] Edit request was a 404 - falling back to create %s',
-                    $segment->getId(),
-                    $segment->getName()
-                ));
+                $this->logger->error(
+                    sprintf(
+                        '[MailChimp][SEGMENT %s] Edit request was a 404 - falling back to create %s',
+                        $segment->getId(),
+                        $segment->getName()
+                    )
+                );
 
                 return $this->exportSegment($segment, $remoteGroupId, true);
             }
@@ -311,8 +342,8 @@ class Segment extends AbstractAttributeClusterInterpreter
         $categorized = [];
 
         foreach (array_keys($this->data) as $segmentId) {
-            $segment  = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId);
-            $group    = $segment->getGroup();
+            $segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId);
+            $group = $segment->getGroup();
 
             $groupKey = '__default';
             if ($group) {
@@ -322,8 +353,8 @@ class Segment extends AbstractAttributeClusterInterpreter
             if (!isset($categorized[$groupKey])) {
                 $categorized[$groupKey] = [
                     'groupKey' => $groupKey,
-                    'group'    => $group,
-                    'segments' => []
+                    'group' => $group,
+                    'segments' => [],
                 ];
             }
 

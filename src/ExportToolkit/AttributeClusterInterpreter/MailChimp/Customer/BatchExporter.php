@@ -41,7 +41,7 @@ class BatchExporter extends AbstractExporter
     public function export()
     {
         $apiClient = $this->apiClient;
-        $batch     = $apiClient->new_batch();
+        $batch = $apiClient->new_batch();
 
         $objectIds = $this->interpreter->getObjectIds();
 
@@ -55,35 +55,43 @@ class BatchExporter extends AbstractExporter
             $this->createBatchOperation($batch, $customer, $entry);
         }
 
-        $this->logger->info(sprintf(
-            '[MailChimp][BATCH] Executing batch'
-        ));
+        $this->logger->info(
+            sprintf(
+                '[MailChimp][BATCH] Executing batch'
+            )
+        );
 
         $result = $batch->execute();
 
         if ($apiClient->success()) {
-            $this->logger->info(sprintf(
-                '[MailChimp][BATCH] Executed batch. ID is %s',
-                $result['id']
-            ));
+            $this->logger->info(
+                sprintf(
+                    '[MailChimp][BATCH] Executed batch. ID is %s',
+                    $result['id']
+                )
+            );
         } else {
-            $this->logger->error(sprintf(
-                '[MailChimp][BATCH] Batch request failed: %s %s',
-                json_encode($apiClient->getLastError()),
-                $apiClient->getLastResponse()['body']
-            ));
+            $this->logger->error(
+                sprintf(
+                    '[MailChimp][BATCH] Batch request failed: %s %s',
+                    json_encode($apiClient->getLastError()),
+                    $apiClient->getLastResponse()['body']
+                )
+            );
         }
 
         $recordSleepInterval = count($objectIds) * $this->recordCheckSleepInterval;
-        $totalSleepInterval  = $this->initialCheckSleepInterval + $recordSleepInterval;
+        $totalSleepInterval = $this->initialCheckSleepInterval + $recordSleepInterval;
 
-        $this->logger->info(sprintf(
-            '[MailChimp][BATCH][CHECK] Sleeping for %dms (initial) + %dms (%dms per record) = %d ms before checking batch results',
-            $this->initialCheckSleepInterval,
-            $recordSleepInterval,
-            $this->recordCheckSleepInterval,
-            $totalSleepInterval
-        ));
+        $this->logger->info(
+            sprintf(
+                '[MailChimp][BATCH][CHECK] Sleeping for %dms (initial) + %dms (%dms per record) = %d ms before checking batch results',
+                $this->initialCheckSleepInterval,
+                $recordSleepInterval,
+                $this->recordCheckSleepInterval,
+                $totalSleepInterval
+            )
+        );
 
         // usleep takes microseconds as input
         usleep($totalSleepInterval * 1000);
@@ -92,10 +100,12 @@ class BatchExporter extends AbstractExporter
         $batchStatus = $this->checkBatchStatus($batch);
 
         if (!$batchStatus) {
-            $this->logger->error(sprintf(
-                '[MailChimp][BATCH] Failed to check batch status after a maximum of %d iterations',
-                $this->maxCheckIterations
-            ));
+            $this->logger->error(
+                sprintf(
+                    '[MailChimp][BATCH] Failed to check batch status after a maximum of %d iterations',
+                    $this->maxCheckIterations
+                )
+            );
 
             return;
         }
@@ -112,28 +122,34 @@ class BatchExporter extends AbstractExporter
     protected function createBatchOperation(Batch $batch, CustomerInterface $customer, array $entry)
     {
         $exportService = $this->exportService;
-        $apiClient     = $this->apiClient;
+        $apiClient = $this->apiClient;
 
         $objectId = $customer->getId();
         $remoteId = $apiClient->subscriberHash($entry['email_address']);
 
-        $this->logger->info(sprintf(
-            '[MailChimp][CUSTOMER %s][BATCH] Adding customer with remote ID %s',
-            $objectId,
-            $remoteId
-        ));
-
-        if ($exportService->wasExported($customer)) {
-            $this->logger->info(sprintf(
-                '[MailChimp][CUSTOMER %s][BATCH] Customer already exists remotely with remote ID %s',
+        $this->logger->info(
+            sprintf(
+                '[MailChimp][CUSTOMER %s][BATCH] Adding customer with remote ID %s',
                 $objectId,
                 $remoteId
-            ));
+            )
+        );
+
+        if ($exportService->wasExported($customer)) {
+            $this->logger->info(
+                sprintf(
+                    '[MailChimp][CUSTOMER %s][BATCH] Customer already exists remotely with remote ID %s',
+                    $objectId,
+                    $remoteId
+                )
+            );
         } else {
-            $this->logger->info(sprintf(
-                '[MailChimp][CUSTOMER %s][BATCH] Customer was not exported yet',
-                $objectId
-            ));
+            $this->logger->info(
+                sprintf(
+                    '[MailChimp][CUSTOMER %s][BATCH] Customer was not exported yet',
+                    $objectId
+                )
+            );
         }
 
         $batch->put(
@@ -153,10 +169,12 @@ class BatchExporter extends AbstractExporter
     protected function checkBatchStatus(Batch $batch, $iteration = 0)
     {
         if ($iteration > $this->maxCheckIterations) {
-            $this->logger->error(sprintf(
-                '[MailChimp][BATCH][CHECK %d] Reached max check iterations, aborting',
-                $iteration
-            ));
+            $this->logger->error(
+                sprintf(
+                    '[MailChimp][BATCH][CHECK %d] Reached max check iterations, aborting',
+                    $iteration
+                )
+            );
 
             return false;
         }
@@ -164,46 +182,56 @@ class BatchExporter extends AbstractExporter
         if ($iteration > 0) {
             $sleep = $this->sleepStepInterval * pow(2, $iteration - 1);
 
-            $this->logger->info(sprintf(
-                '[MailChimp][BATCH][CHECK %d] Sleeping for %d ms before checking batch status',
-                $iteration,
-                $sleep
-            ));
+            $this->logger->info(
+                sprintf(
+                    '[MailChimp][BATCH][CHECK %d] Sleeping for %d ms before checking batch status',
+                    $iteration,
+                    $sleep
+                )
+            );
 
             // usleep takes microseconds as input
             usleep($sleep * 1000);
         }
 
-        $this->logger->info(sprintf(
-            '[MailChimp][BATCH][CHECK %d] Checking status',
-            $iteration
-        ));
+        $this->logger->info(
+            sprintf(
+                '[MailChimp][BATCH][CHECK %d] Checking status',
+                $iteration
+            )
+        );
 
         $apiClient = $this->apiClient;
-        $result    = $batch->check_status();
+        $result = $batch->check_status();
 
         if ($apiClient->success()) {
             if ($result['status'] === 'finished') {
-                $this->logger->info(sprintf(
-                    '[MailChimp][BATCH][CHECK %d] Batch is finished',
-                    $iteration
-                ));
+                $this->logger->info(
+                    sprintf(
+                        '[MailChimp][BATCH][CHECK %d] Batch is finished',
+                        $iteration
+                    )
+                );
 
                 return $result;
             } else {
-                $this->logger->warning(sprintf(
-                    '[MailChimp][BATCH][CHECK %d] Batch is not finished yet. Status is "%s"',
-                    $iteration,
-                    $result['status']
-                ));
+                $this->logger->warning(
+                    sprintf(
+                        '[MailChimp][BATCH][CHECK %d] Batch is not finished yet. Status is "%s"',
+                        $iteration,
+                        $result['status']
+                    )
+                );
             }
         } else {
-            $this->logger->error(sprintf(
-                '[MailChimp][BATCH][CHECK %d] Batch status request failed: %s %s',
-                $iteration,
-                json_encode($apiClient->getLastError()),
-                $apiClient->getLastResponse()['body']
-            ));
+            $this->logger->error(
+                sprintf(
+                    '[MailChimp][BATCH][CHECK %d] Batch status request failed: %s %s',
+                    $iteration,
+                    json_encode($apiClient->getLastError()),
+                    $apiClient->getLastResponse()['body']
+                )
+            );
         }
 
         return $this->checkBatchStatus($batch, $iteration + 1);
@@ -217,12 +245,14 @@ class BatchExporter extends AbstractExporter
     protected function handleBatchStatus(array $result)
     {
         $exportService = $this->exportService;
-        $apiClient     = $this->apiClient;
+        $apiClient = $this->apiClient;
 
         if ($result['errored_operations'] === 0) {
-            $this->logger->info(sprintf(
-                '[MailChimp][BATCH] Batch has no errored operations, updating export note for all records (no need to fetch detailed results)'
-            ));
+            $this->logger->info(
+                sprintf(
+                    '[MailChimp][BATCH] Batch has no errored operations, updating export note for all records (no need to fetch detailed results)'
+                )
+            );
 
             $objectIds = $this->interpreter->getObjectIds();
             foreach ($objectIds as $objectId) {

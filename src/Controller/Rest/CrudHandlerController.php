@@ -29,7 +29,7 @@ abstract class CrudHandlerController extends RestHandlerController
      */
     public function listRecords(Request $request)
     {
-        $handler  = $this->getHandler();
+        $handler = $this->getHandler();
         $response = null;
 
         try {
@@ -51,7 +51,7 @@ abstract class CrudHandlerController extends RestHandlerController
      */
     public function readRecord(Request $request)
     {
-        $handler  = $this->getHandler();
+        $handler = $this->getHandler();
         $response = null;
 
         try {
@@ -74,7 +74,7 @@ abstract class CrudHandlerController extends RestHandlerController
      */
     public function deleteRecord(Request $request)
     {
-        $handler  = $this->getHandler();
+        $handler = $this->getHandler();
         $response = null;
 
         try {
@@ -97,7 +97,7 @@ abstract class CrudHandlerController extends RestHandlerController
      */
     public function updateRecord(Request $request)
     {
-        $handler  = $this->getHandler();
+        $handler = $this->getHandler();
         $response = null;
 
         try {
@@ -119,7 +119,7 @@ abstract class CrudHandlerController extends RestHandlerController
      */
     public function createRecord(Request $request)
     {
-        $handler  = $this->getHandler();
+        $handler = $this->getHandler();
         $response = null;
 
         try {

@@ -23,14 +23,20 @@ class DefaultActionManager implements ActionManagerInterface
     {
         $this->logger->info(sprintf("process action ID %s", $action->getId()));
 
-        if(class_exists($action->getImplementationClass())) {
+        if (class_exists($action->getImplementationClass())) {
 
-            $actionImpl = Factory::getInstance()->createObject($action->getImplementationClass(), ActionInterface::class, ["logger"=>$this->logger]);
+            $actionImpl = Factory::getInstance()->createObject(
+                $action->getImplementationClass(),
+                ActionInterface::class,
+                ["logger" => $this->logger]
+            );
 
             $actionImpl->process($action, $customer);
 
         } else {
-            $this->logger->error(sprintf("action implementation class %s not found", $action->getImplementationClass()));
+            $this->logger->error(
+                sprintf("action implementation class %s not found", $action->getImplementationClass())
+            );
         }
     }
 }

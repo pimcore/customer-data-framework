@@ -11,7 +11,8 @@ namespace CustomerManagementFrameworkBundle\CustomerDuplicatesService;
 use CustomerManagementFrameworkBundle\CustomerMerger\CustomerMergerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
-interface CustomerDuplicatesServiceInterface {
+interface CustomerDuplicatesServiceInterface
+{
 
     /**
      * Returns a list of duplicates for the given customer.

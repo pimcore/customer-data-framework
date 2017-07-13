@@ -8,6 +8,7 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Event;
 
-interface CustomerListEventInterface extends EventInterface {
+interface CustomerListEventInterface extends EventInterface
+{
 
 }

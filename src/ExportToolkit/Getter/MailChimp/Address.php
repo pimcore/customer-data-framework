@@ -15,12 +15,12 @@ class Address implements IGetter
     public static function get($object, $config = null)
     {
         $result = [
-            'addr1'   => $object->getStreet() ?: '',
-            'addr2'   => '',
-            'city'    => $object->getCity() ?: '',
-            'state'   => '',
-            'zip'     => $object->getZip() ?: '',
-            'country' => $object->getCountryCode() ?: ''
+            'addr1' => $object->getStreet() ?: '',
+            'addr2' => '',
+            'city' => $object->getCity() ?: '',
+            'state' => '',
+            'zip' => $object->getZip() ?: '',
+            'country' => $object->getCountryCode() ?: '',
         ];
 
         foreach ($result as $key => $value) {

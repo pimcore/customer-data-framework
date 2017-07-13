@@ -25,8 +25,10 @@ class MinifiedAssetUrl extends Helper
     {
         if (null === $condition) {
             $condition = !\Pimcore::inDebugMode();
-        } else if (is_callable($condition)) {
-            $condition = call_user_func($condition, $url, $minifiedExtension);
+        } else {
+            if (is_callable($condition)) {
+                $condition = call_user_func($condition, $url, $minifiedExtension);
+            }
         }
 
         if (!$condition) {
@@ -36,7 +38,7 @@ class MinifiedAssetUrl extends Helper
         $parts = explode('.', $url);
 
         $extension = array_pop($parts);
-        $extension = $minifiedExtension . '.' . $extension;
+        $extension = $minifiedExtension.'.'.$extension;
 
         $parts[] = $extension;
 

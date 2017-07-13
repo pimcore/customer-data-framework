@@ -12,10 +12,12 @@ use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Factory;
 
-abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete implements PersistentActivityInterface {
+abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete implements PersistentActivityInterface
+{
 
 
-    public function cmfIsActive() {
+    public function cmfIsActive()
+    {
         return $this->getPublished() && ($this->getCustomer() instanceof CustomerInterface);
     }
 
@@ -43,15 +45,14 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete imp
 
         $result = [];
 
-        foreach($fieldDefintions as $fd)
-        {
+        foreach ($fieldDefintions as $fd) {
             $fieldName = $fd->getName();
             $result[$fieldName] = $fd->getForWebserviceExport($this);
         }
 
         unset($result['customer']);
 
-        $result['o_id']  = $this->getId();
+        $result['o_id'] = $this->getId();
         $result['o_key'] = $this->getKey();
         $result['o_path'] = $this->getRealFullPath();
 
@@ -71,10 +72,10 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete imp
 
     public static function cmfCreate(array $data, $fromWebservice = false)
     {
-        if(!empty($data['o_id'])) {
+        if (!empty($data['o_id'])) {
             $object = self::getById($data['o_id']);
 
-            if(!$object) {
+            if (!$object) {
                 throw new \Exception(sprintf('object with o_id %s not found', $data['o_id']));
 
             }
@@ -82,7 +83,7 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete imp
             $object = new static;
         }
 
-        if($fromWebservice) {
+        if ($fromWebservice) {
             $object->setValues($data["attributes"]);
         } else {
             $object->setValues($data);
@@ -106,7 +107,10 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete imp
     {
         $attributes = $entry->getAttributes();
 
-        return \Pimcore::getContainer()->get('cmf.activity_view')->formatAttributes($entry->getImplementationClass(), $attributes);
+        return \Pimcore::getContainer()->get('cmf.activity_view')->formatAttributes(
+            $entry->getImplementationClass(),
+            $attributes
+        );
     }
 
     public static function cmfGetDetailviewTemplate(ActivityStoreEntryInterface $entry)

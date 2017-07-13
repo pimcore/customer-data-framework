@@ -12,7 +12,8 @@ use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
-interface ActivityStoreEntryInterface {
+interface ActivityStoreEntryInterface
+{
 
     public function setData($data);
 

@@ -27,7 +27,7 @@ class MarkEmailAddressAsValid extends AbstractCustomerSaveHandler
     {
         parent::__construct($config, $logger);
 
-        $this->markValidField = $this->config->markValidField ? : 'emailOk';
+        $this->markValidField = $this->config->markValidField ?: 'emailOk';
     }
 
 
@@ -38,11 +38,11 @@ class MarkEmailAddressAsValid extends AbstractCustomerSaveHandler
      */
     public function preSave(CustomerInterface $customer)
     {
-        $setter = 'set' . ucfirst($this->markValidField);
+        $setter = 'set'.ucfirst($this->markValidField);
 
         $validator = new EmailValidator();
 
-        if($validator->isValid($customer->getEmail())) {
+        if ($validator->isValid($customer->getEmail())) {
             $customer->$setter(true);
         } else {
             $customer->$setter(false);

@@ -10,16 +10,18 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger\Event;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\Trigger\TriggerDefinitionInterface;
 
-class ExecuteSegmentBuilders extends AbstractSingleCustomerEvent{
+class ExecuteSegmentBuilders extends AbstractSingleCustomerEvent
+{
 
 
-    public function getName(){
+    public function getName()
+    {
         return "plugin.cmf.execute-segment-builders";
     }
 
     public function appliesToTrigger(TriggerDefinitionInterface $trigger)
     {
-        if($trigger->getEventName() != $this->getName()) {
+        if ($trigger->getEventName() != $this->getName()) {
             return false;
         }
 

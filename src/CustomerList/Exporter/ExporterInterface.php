@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerManagementFrameworkBundle\CustomerList\Exporter;
 
 use Pimcore\Model\Object\Customer;

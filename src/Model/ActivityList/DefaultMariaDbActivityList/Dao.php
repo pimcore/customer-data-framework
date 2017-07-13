@@ -12,7 +12,8 @@ use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityL
 use CustomerManagementFrameworkBundle\ActivityStore\MariaDb;
 use Pimcore\Db;
 
-class Dao {
+class Dao
+{
 
     /**
      * @var DefaultMariaDbActivityList
@@ -21,7 +22,8 @@ class Dao {
 
     private $query;
 
-    public function __construct(DefaultMariaDbActivityList $model) {
+    public function __construct(DefaultMariaDbActivityList $model)
+    {
         $this->model = $model;
     }
 
@@ -33,9 +35,9 @@ class Dao {
      * @return Db\ZendCompatibility\QueryBuilder
      * @throws \Exception
      */
-    public function getQuery( $clone = true )
+    public function getQuery($clone = true)
     {
-        if(is_null($this->query)) {
+        if (is_null($this->query)) {
             // init
             $select = Db::get()->select();
 
@@ -53,7 +55,7 @@ class Dao {
                     'attributes' => 'COLUMN_JSON(attributes)',
                     'md5',
                     'creationDate',
-                    'modificationDate'
+                    'modificationDate',
                 ]
             );
 
@@ -70,31 +72,35 @@ class Dao {
             $this->query = $select;
         }
 
-        if($clone) {
+        if ($clone) {
             return clone($this->query);
         }
 
         return $this->query;
     }
 
-    public function setQuery(Db\ZendCompatibility\QueryBuilder $query = null) {
+    public function setQuery(Db\ZendCompatibility\QueryBuilder $query = null)
+    {
         $this->query = $query;
     }
 
-    private function addLimit(Db\ZendCompatibility\QueryBuilder $select) {
-        if($limit = $this->model->getLimit()) {
-            $select->limit($limit,  $this->model->getOffset());
+    private function addLimit(Db\ZendCompatibility\QueryBuilder $select)
+    {
+        if ($limit = $this->model->getLimit()) {
+            $select->limit($limit, $this->model->getOffset());
         }
     }
 
-    public function getCount() {
+    public function getCount()
+    {
         $query = $this->getQuery();
-        $query->limit(null,null);
+        $query->limit(null, null);
         $query->reset("from");
 
-        $query->from( MariaDb::ACTIVITIES_TABLE,
+        $query->from(
+            MariaDb::ACTIVITIES_TABLE,
             [
-                "totalCount" => "count(*)"
+                "totalCount" => "count(*)",
             ]
         );
 
@@ -128,14 +134,14 @@ class Dao {
 
     protected function addOrder(Db\ZendCompatibility\QueryBuilder $select)
     {
-        $orderKey = $this->model->getOrderKey() ? : [];
+        $orderKey = $this->model->getOrderKey() ?: [];
         $order = $this->model->getOrder();
 
-        foreach($orderKey as $i => $key) {
+        foreach ($orderKey as $i => $key) {
 
-            $orderString = str_replace("`","", trim($key));
-            if($order[$i]) {
-                $orderString .= ' ' . $order[$i];
+            $orderString = str_replace("`", "", trim($key));
+            if ($order[$i]) {
+                $orderString .= ' '.$order[$i];
             }
 
             $select->order($orderString);

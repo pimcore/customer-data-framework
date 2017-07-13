@@ -25,10 +25,14 @@ abstract class AbstractHandler implements HandlerInterface
      * @param int $defaultPageSize
      * @param int $defaultPage
      */
-    protected function handlePaginatorParams(Paginator $paginator, Request $request, $defaultPageSize = 100, $defaultPage = 1)
-    {
+    protected function handlePaginatorParams(
+        Paginator $paginator,
+        Request $request,
+        $defaultPageSize = 100,
+        $defaultPage = 1
+    ) {
         $pageSize = intval($request->get('pageSize', $defaultPageSize));
-        $page     = intval($request->get('page', $defaultPage));
+        $page = intval($request->get('page', $defaultPage));
 
         $paginator->setItemCountPerPage($pageSize);
         $paginator->setCurrentPageNumber($page);

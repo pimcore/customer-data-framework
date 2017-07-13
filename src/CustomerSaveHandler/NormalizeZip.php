@@ -52,8 +52,11 @@ class NormalizeZip extends AbstractCustomerSaveHandler
 
         $countryCode = $customer->getCountryCode();
 
-        if(!empty($this->countryTransformers[$countryCode])) {
-            $transformer = Factory::getInstance()->createObject($this->countryTransformers[$countryCode], DataTransformerInterface::class);
+        if (!empty($this->countryTransformers[$countryCode])) {
+            $transformer = Factory::getInstance()->createObject(
+                $this->countryTransformers[$countryCode],
+                DataTransformerInterface::class
+            );
 
             $customer->setZip($transformer->transform($customer->getZip()));
         } else {

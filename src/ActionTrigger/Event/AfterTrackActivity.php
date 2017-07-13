@@ -12,7 +12,8 @@ use CustomerManagementFrameworkBundle\ActionTrigger\Trigger\TriggerDefinitionInt
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 
-class AfterTrackActivity extends AbstractSingleCustomerEvent{
+class AfterTrackActivity extends AbstractSingleCustomerEvent
+{
 
     /**
      * @var ActivityInterface $activity
@@ -41,20 +42,22 @@ class AfterTrackActivity extends AbstractSingleCustomerEvent{
     /**
      * @return ActivityStoreEntryInterface
      */
-    public function getEntry() {
+    public function getEntry()
+    {
         return $this->entry;
     }
 
     /**
      * @param ActivityStoreEntryInterface $entry
      */
-    public function setEntry( $entry ) {
+    public function setEntry($entry)
+    {
         $this->entry = $entry;
     }
 
 
-
-    public function getName(){
+    public function getName()
+    {
         return "plugin.cmf.after-track-activity";
     }
 

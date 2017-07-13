@@ -23,17 +23,21 @@ abstract class AbstractModificationDate implements IConditionModificator, IListM
      */
     public static function modifyList($configName, Listing $list)
     {
-        $list->onCreateQuery(function(Db\ZendCompatibility\QueryBuilder $query) {
-            $subQuery = static::buildNoteSubQuery();
+        $list->onCreateQuery(
+            function (Db\ZendCompatibility\QueryBuilder $query) {
+                $subQuery = static::buildNoteSubQuery();
 
-            $query->joinLeft(
-                ['notes' => new Db\ZendCompatibility\Expression('(' . $subQuery->__toString() . ')')],
-                'notes.cid = o_id',
-                []
-            );
+                $query->joinLeft(
+                    ['notes' => new Db\ZendCompatibility\Expression('('.$subQuery->__toString().')')],
+                    'notes.cid = o_id',
+                    []
+                );
 
-            $query->where('(notes.date IS NULL) OR (o_modificationDate IS NULL) OR (o_modificationDate > notes.date)');
-        });
+                $query->where(
+                    '(notes.date IS NULL) OR (o_modificationDate IS NULL) OR (o_modificationDate > notes.date)'
+                );
+            }
+        );
     }
 
     /**
@@ -46,7 +50,7 @@ abstract class AbstractModificationDate implements IConditionModificator, IListM
             ['n' => 'notes'],
             [
                 'cid',
-                'date' => new Db\ZendCompatibility\Expression('MAX(n.date)')
+                'date' => new Db\ZendCompatibility\Expression('MAX(n.date)'),
             ]
         );
 

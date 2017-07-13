@@ -10,7 +10,8 @@ namespace CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex;
 
 use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 
-class NoTransformation implements DataTransformerInterface {
+class NoTransformation implements DataTransformerInterface
+{
 
     public function transform($data, $options = [])
     {

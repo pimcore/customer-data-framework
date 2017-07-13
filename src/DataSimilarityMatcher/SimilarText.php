@@ -8,7 +8,8 @@
 
 namespace CustomerManagementFrameworkBundle\DataSimilarityMatcher;
 
-class SimilarText implements DataSimilarityMatcherInterface {
+class SimilarText implements DataSimilarityMatcherInterface
+{
 
     protected $defaultTreshold = 80;
 

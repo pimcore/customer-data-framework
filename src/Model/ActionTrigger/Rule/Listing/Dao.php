@@ -12,11 +12,15 @@ class Dao extends Model\Listing\Dao\AbstractDao
     {
         $rules = [];
 
-        $ids = $this->db->fetchCol("SELECT id FROM " . Rule\Dao::TABLE_NAME . " " . $this->getCondition() . $this->getOrder() . $this->getOffsetLimit(), $this->model->getConditionVariables());
+        $ids = $this->db->fetchCol(
+            "SELECT id FROM ".Rule\Dao::TABLE_NAME." ".$this->getCondition().$this->getOrder().$this->getOffsetLimit(),
+            $this->model->getConditionVariables()
+        );
 
         foreach ($ids as $id) {
             $rules[] = Rule::getById($id);
         }
+
         return $rules;
     }
 
@@ -25,7 +29,10 @@ class Dao extends Model\Listing\Dao\AbstractDao
      */
     public function getTotalCount()
     {
-        return (int) $this->db->fetchOne("SELECT COUNT(*) as amount FROM " . Rule\Dao::TABLE_NAME . " " . $this->getCondition(), $this->model->getConditionVariables());
+        return (int)$this->db->fetchOne(
+            "SELECT COUNT(*) as amount FROM ".Rule\Dao::TABLE_NAME." ".$this->getCondition(),
+            $this->model->getConditionVariables()
+        );
     }
 
 }

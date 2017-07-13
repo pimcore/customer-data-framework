@@ -10,7 +10,8 @@ namespace CustomerManagementFrameworkBundle\DataTransformer\Language;
 
 use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 
-class LanguageFromCountry implements DataTransformerInterface {
+class LanguageFromCountry implements DataTransformerInterface
+{
 
     /**
      * Tries to determine language based on country code (approximate -> warn will in many be wrong).
@@ -23,18 +24,18 @@ class LanguageFromCountry implements DataTransformerInterface {
     {
         $countryCode = trim($data);
 
-        if(strlen($countryCode) != 2) {
+        if (strlen($countryCode) != 2) {
             return false;
         }
 
         $localelist = \Pimcore::getContainer()->get('pimcore.locale')->getLocaleList();
 
-        foreach($localelist as $locale) {
+        foreach ($localelist as $locale) {
 
             $locale = explode('_', $locale);
-            if(isset($locale[1])) {
+            if (isset($locale[1])) {
 
-                if(strtolower($locale[1]) == strtolower($countryCode)) {
+                if (strtolower($locale[1]) == strtolower($countryCode)) {
                     return $locale[0];
                 }
 

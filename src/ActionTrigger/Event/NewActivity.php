@@ -12,7 +12,8 @@ use CustomerManagementFrameworkBundle\ActionTrigger\Trigger\TriggerDefinitionInt
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 
-class NewActivity extends AbstractSingleCustomerEvent{
+class NewActivity extends AbstractSingleCustomerEvent
+{
 
     /**
      * @var ActivityInterface $activity
@@ -43,33 +44,35 @@ class NewActivity extends AbstractSingleCustomerEvent{
     /**
      * @return ActivityStoreEntryInterface
      */
-    public function getEntry() {
+    public function getEntry()
+    {
         return $this->entry;
     }
 
     /**
      * @param ActivityStoreEntryInterface $entry
      */
-    public function setEntry( $entry ) {
+    public function setEntry($entry)
+    {
         $this->entry = $entry;
     }
 
 
-
-    public function getName(){
+    public function getName()
+    {
         return "plugin.cmf.new-activity";
     }
 
     public function appliesToTrigger(TriggerDefinitionInterface $trigger)
     {
-        if($trigger->getEventName() != $this->getName()) {
+        if ($trigger->getEventName() != $this->getName()) {
             return false;
         }
-        
+
         $options = $trigger->getOptions();
 
-        if(!empty($options[self::OPTION_TYPE])) {
-            if($this->activity->cmfGetType() == $options[self::OPTION_TYPE]) {
+        if (!empty($options[self::OPTION_TYPE])) {
+            if ($this->activity->cmfGetType() == $options[self::OPTION_TYPE]) {
                 return true;
             }
         }

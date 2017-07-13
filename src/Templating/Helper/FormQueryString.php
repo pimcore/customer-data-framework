@@ -22,9 +22,10 @@ class FormQueryString extends Helper
      */
     public function __invoke(Request $request = null, $url = null, $includeOrder = true, $includeFilters = true)
     {
-        if(is_null($request)) {
+        if (is_null($request)) {
             return $this;
         }
+
         return $this->formQueryString($request, $url, $includeOrder, $includeFilters);
     }
 
@@ -112,9 +113,9 @@ class FormQueryString extends Helper
 
             if (strlen($queryString) > 0) {
                 if (false === strpos($url, '?')) {
-                    $url = $url . '?' . $queryString;
+                    $url = $url.'?'.$queryString;
                 } else {
-                    $url = $url . '&' . $queryString;
+                    $url = $url.'&'.$queryString;
                 }
             }
         }

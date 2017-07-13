@@ -30,24 +30,30 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
 
         $result = [];
 
-        foreach($class->getFieldDefinitions() as $fieldDefinition) {
+        foreach ($class->getFieldDefinitions() as $fieldDefinition) {
             $class = get_class($fieldDefinition);
 
-            if(in_array($class, [
-                \Pimcore\Model\Object\ClassDefinition\Data\Checkbox::class,
-                \Pimcore\Model\Object\ClassDefinition\Data\Input::class,
-                \Pimcore\Model\Object\ClassDefinition\Data\Select::class,
-                \Pimcore\Model\Object\ClassDefinition\Data\Numeric::class,
-                \Pimcore\Model\Object\ClassDefinition\Data\Textarea::class,
-                \Pimcore\Model\Object\ClassDefinition\Data\Slider::class
-            ])) {
-                $result[] = [$fieldDefinition->getName(), $fieldDefinition->getTitle() ? : $fieldDefinition->getName()];
+            if (in_array(
+                $class,
+                [
+                    \Pimcore\Model\Object\ClassDefinition\Data\Checkbox::class,
+                    \Pimcore\Model\Object\ClassDefinition\Data\Input::class,
+                    \Pimcore\Model\Object\ClassDefinition\Data\Select::class,
+                    \Pimcore\Model\Object\ClassDefinition\Data\Numeric::class,
+                    \Pimcore\Model\Object\ClassDefinition\Data\Textarea::class,
+                    \Pimcore\Model\Object\ClassDefinition\Data\Slider::class,
+                ]
+            )) {
+                $result[] = [$fieldDefinition->getName(), $fieldDefinition->getTitle() ?: $fieldDefinition->getName()];
             }
         }
 
-        @usort($result, function($a, $b){
-            return strcmp(strtolower($a[1]), strtolower($b[1]));
-        });
+        @usort(
+            $result,
+            function ($a, $b) {
+                return strcmp(strtolower($a[1]), strtolower($b[1]));
+            }
+        );
 
         return $this->json($result);
     }
@@ -63,9 +69,10 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
         $types = \Pimcore::getContainer()->get('cmf.activity_store')->getAvailableActivityTypes();
 
         $result = [];
-        foreach($types as $type) {
+        foreach ($types as $type) {
             $result[] = [$type];
         }
+
         return $this->json($result);
     }
 }

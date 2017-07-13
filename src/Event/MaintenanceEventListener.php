@@ -15,9 +15,10 @@ use Pimcore\Event\Model\ElementEventInterface;
 use Pimcore\Event\Model\ObjectEvent;
 use Pimcore\Model\Object\ActivityDefinition;
 
-class MaintenanceEventListener {
+class MaintenanceEventListener
+{
 
-    public function onMaintenance( \Pimcore\Event\System\MaintenanceEvent $e)
+    public function onMaintenance(\Pimcore\Event\System\MaintenanceEvent $e)
     {
         \Pimcore::getContainer()->get('cmf.segment_manager')->executeSegmentBuilderMaintenance();
     }

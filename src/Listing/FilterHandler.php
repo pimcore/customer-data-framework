@@ -73,12 +73,14 @@ class FilterHandler
      */
     protected function setFilterCallback()
     {
-        $this->listing->onCreateQuery(function(QueryBuilder $query) {
-            foreach ($this->filters as $filter) {
-                if ($filter instanceof OnCreateQueryFilterInterface) {
-                    $filter->applyOnCreateQuery($this->listing, $query);
+        $this->listing->onCreateQuery(
+            function (QueryBuilder $query) {
+                foreach ($this->filters as $filter) {
+                    if ($filter instanceof OnCreateQueryFilterInterface) {
+                        $filter->applyOnCreateQuery($this->listing, $query);
+                    }
                 }
             }
-        });
+        );
     }
 }

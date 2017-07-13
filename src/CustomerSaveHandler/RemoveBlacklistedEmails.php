@@ -25,12 +25,13 @@ class RemoveBlacklistedEmails extends AbstractCustomerSaveHandler
      */
     public function preSave(CustomerInterface $customer)
     {
-        if($this->isBlacklisted($customer->getEmail())) {
+        if ($this->isBlacklisted($customer->getEmail())) {
             $customer->setEmail(null);
         }
     }
 
-    private function isBlacklisted($email) {
+    private function isBlacklisted($email)
+    {
 
         $email = strtolower(trim($email));
 

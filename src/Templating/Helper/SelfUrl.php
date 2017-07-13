@@ -33,10 +33,10 @@ class SelfUrl extends Helper
          */
         $request = \Pimcore::getContainer()->get('request_stack')->getMasterRequest();
 
-        if(!$reset) {
+        if (!$reset) {
             $params = array_merge($request->query->all(), $params);
         }
 
-        return $router->generate($request->get('_route'),$params);
+        return $router->generate($request->get('_route'), $params);
     }
 }

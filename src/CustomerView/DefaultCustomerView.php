@@ -69,15 +69,15 @@ class DefaultCustomerView implements CustomerViewInterface
         $definition = $customer->getClass();
 
         $result = [];
-        $vf     = $this->viewFormatter;
+        $vf = $this->viewFormatter;
 
         foreach ($definition->getFieldDefinitions() as $fd) {
             if ($fd->getInvisible()) {
                 continue;
             }
 
-            $getter = 'get' . ucfirst($fd->getName());
-            $value  = $vf->formatValueByFieldDefinition($fd, $customer->$getter());
+            $getter = 'get'.ucfirst($fd->getName());
+            $value = $vf->formatValueByFieldDefinition($fd, $customer->$getter());
 
             if (is_object($value)) {
                 $value = $this->wrapObject($value);

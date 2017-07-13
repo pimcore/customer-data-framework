@@ -38,7 +38,7 @@ abstract class AbstractExporter
     public function __construct(Customer $interpreter)
     {
         $this->interpreter = $interpreter;
-        $this->logger      = $interpreter->getLogger();
+        $this->logger = $interpreter->getLogger();
 
         $this->setExportService($interpreter->getExportService());
     }
@@ -50,7 +50,7 @@ abstract class AbstractExporter
     public function setExportService(MailChimpExportService $exportService)
     {
         $this->exportService = $exportService;
-        $this->apiClient     = $exportService->getApiClient();
+        $this->apiClient = $exportService->getApiClient();
 
         return $this;
     }

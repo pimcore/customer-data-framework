@@ -12,7 +12,8 @@ use CustomerManagementFrameworkBundle\ActionTrigger\Trigger\TriggerDefinitionInt
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Symfony\Component\EventDispatcher\Event;
 
-abstract class AbstractSingleCustomerEvent extends Event implements SingleCustomerEventInterface {
+abstract class AbstractSingleCustomerEvent extends Event implements SingleCustomerEventInterface
+{
 
     private $customer;
 

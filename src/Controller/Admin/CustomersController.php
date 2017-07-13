@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\Config;
@@ -34,6 +35,7 @@ class CustomersController extends Admin
 
         \Pimcore\Model\Object\AbstractObject::setHideUnpublished(true);
     }
+
     /**
      * @param Request $request
      * @Route("/list")
@@ -43,12 +45,12 @@ class CustomersController extends Admin
 
         $filters = $this->fetchListFilters($request);
 
-        $errors       = [];
-        $paginator    = null;
+        $errors = [];
+        $paginator = null;
         $customerView = \Pimcore::getContainer()->get('cmf.customer_view');
 
         try {
-            $listing   = $this->buildListing($filters);
+            $listing = $this->buildListing($filters);
             $paginator = $this->buildPaginator($request, $listing);
         } catch (SearchQueryException $e) {
             $errors[] = $customerView->translate('There was an error in you search query: %s', $e->getMessage());
@@ -61,16 +63,19 @@ class CustomersController extends Admin
             $paginator = $this->buildPaginator($request, new ArrayAdapter([]));
         }
 
-        return $this->render('PimcoreCustomerManagementFrameworkBundle:Admin\Customers:list.html.php', [
-            'segmentGroups' => $this->loadSegmentGroups(),
-            'filters' => $filters,
-            'errors' => $errors,
-            'paginator' => $paginator,
-            'customerView' => $customerView,
-            'searchBarFields' => $this->getConfiguredSearchBarFields(),
-            'request' => $request,
-            'clearUrlParams' => $this->clearUrlParams
-        ]);
+        return $this->render(
+            'PimcoreCustomerManagementFrameworkBundle:Admin\Customers:list.html.php',
+            [
+                'segmentGroups' => $this->loadSegmentGroups(),
+                'filters' => $filters,
+                'errors' => $errors,
+                'paginator' => $paginator,
+                'customerView' => $customerView,
+                'searchBarFields' => $this->getConfiguredSearchBarFields(),
+                'request' => $request,
+                'clearUrlParams' => $this->clearUrlParams,
+            ]
+        );
     }
 
     /**
@@ -87,11 +92,14 @@ class CustomersController extends Admin
                 throw new \RuntimeException(sprintf('Customer %d has no detail view to show', $customer->getId()));
             }
 
-            return $this->render('PimcoreCustomerManagementFrameworkBundle:Admin\Customers:detail.html.php', [
-                'customer'     => $customer,
-                'customerView' => $customerView,
-                'request'      => $request
-            ]);
+            return $this->render(
+                'PimcoreCustomerManagementFrameworkBundle:Admin\Customers:detail.html.php',
+                [
+                    'customer' => $customer,
+                    'customerView' => $customerView,
+                    'request' => $request,
+                ]
+            );
         } else {
             throw new \InvalidArgumentException('Invalid customer');
         }
@@ -104,15 +112,15 @@ class CustomersController extends Admin
     public function exportAction(Request $request)
     {
 
-        $exporterName    = $request->get('exporter', 'csv');
+        $exporterName = $request->get('exporter', 'csv');
         $exporterManager = \Pimcore::getContainer()->get('cmf.customer_exporter_manager');
 
         if (!$exporterManager->hasExporter($exporterName)) {
             throw new \InvalidArgumentException('Exporter does not exist');
         }
 
-        $filters  = $this->fetchListFilters($request);
-        $listing  = $this->buildListing($filters);
+        $filters = $this->fetchListFilters($request);
+        $listing = $this->buildListing($filters);
         $exporter = $exporterManager->buildExporter($exporterName, $listing);
 
         $filename = sprintf(
@@ -124,11 +132,13 @@ class CustomersController extends Admin
         $response = new Response();
         $response
             ->setContent($exporter->getExportData())
-            ->headers->add([
-                'Content-Type' => $exporter->getMimeType(),
-                'Content-Length' => $exporter->getFilesize(),
-                'Content-Disposition' =>  sprintf('attachment; filename="%s"', $filename),
-            ]);
+            ->headers->add(
+                [
+                    'Content-Type' => $exporter->getMimeType(),
+                    'Content-Length' => $exporter->getFilesize(),
+                    'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
+                ]
+            );
 
         return $response;
     }
@@ -182,7 +192,10 @@ class CustomersController extends Admin
         }
 
         foreach ($searchProperties as $property => $databaseFields) {
-            if (array_key_exists($property, $filters) && !empty($filters[$property]) && is_string($filters[$property])) {
+            if (array_key_exists($property, $filters) && !empty($filters[$property]) && is_string(
+                    $filters[$property]
+                )
+            ) {
                 $handler->addFilter(new SearchQuery($databaseFields, $filters[$property]));
             }
         }

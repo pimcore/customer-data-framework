@@ -13,22 +13,22 @@ use Pimcore\Model\Tool\Lock;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ActionTriggerQueueCommand extends AbstractCommand {
+class ActionTriggerQueueCommand extends AbstractCommand
+{
 
     const LOCK_KEY = 'cmf_actiontrigger_queue';
 
     protected function configure()
     {
         $this->setName("cmf:process-actiontrigger-queue")
-            ->setDescription("Process entries from action trigger queue")
-        ;
+            ->setDescription("Process entries from action trigger queue");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        if(Lock::isLocked(self::LOCK_KEY)) {
-          //  die('locked - not starting now');
+        if (Lock::isLocked(self::LOCK_KEY)) {
+            //  die('locked - not starting now');
 
         }
 
@@ -36,7 +36,7 @@ class ActionTriggerQueueCommand extends AbstractCommand {
 
         try {
             \Pimcore::getContainer()->get('cmf.action_trigger.queue')->processQueue();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->getLogger()->error($e->getMessage());
         }
 

@@ -13,7 +13,8 @@ use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntr
 use CustomerManagementFrameworkBundle\Factory;
 use Pimcore\Model\Object\CustomerSegmentGroup;
 
-abstract class AbstractTermSegmentBuilderDefinition extends \Pimcore\Model\Object\Concrete {
+abstract class AbstractTermSegmentBuilderDefinition extends \Pimcore\Model\Object\Concrete
+{
 
     /**
      * @return array
@@ -22,11 +23,13 @@ abstract class AbstractTermSegmentBuilderDefinition extends \Pimcore\Model\Objec
     {
         $result = [];
 
-        if($terms = $this->getTerms()) {
-            foreach($terms as $term) {
-                $result[$term['term']->getData()] = isset($result[$term['term']->getData()]) ? $result[$term['term']->getData()] : [];
+        if ($terms = $this->getTerms()) {
+            foreach ($terms as $term) {
+                $result[$term['term']->getData()] = isset(
+                    $result[$term['term']->getData()]
+                ) ? $result[$term['term']->getData()] : [];
                 $phrases = $term['phrases']->getData();
-                if(sizeof($phrases)) {
+                if (sizeof($phrases)) {
                     $phrases = array_column($phrases, 0);
                     $result[$term['term']->getData()] = array_merge($result[$term['term']->getData()], $phrases);
                 }
@@ -42,9 +45,10 @@ abstract class AbstractTermSegmentBuilderDefinition extends \Pimcore\Model\Objec
     public function getAllTerms()
     {
         $result = [];
-        foreach($this->definitionsToArray() as $term => $phrases) {
+        foreach ($this->definitionsToArray() as $term => $phrases) {
             $result[] = $term;
         }
+
         return array_unique($result);
     }
 
@@ -54,9 +58,10 @@ abstract class AbstractTermSegmentBuilderDefinition extends \Pimcore\Model\Objec
     public function getAllPhrases()
     {
         $result = [];
-        foreach($this->definitionsToArray() as $phrases) {
+        foreach ($this->definitionsToArray() as $phrases) {
             $result = array_merge($result, (array)$phrases);
         }
+
         return array_unique($result);
     }
 
@@ -71,15 +76,15 @@ abstract class AbstractTermSegmentBuilderDefinition extends \Pimcore\Model\Objec
 
         $result = [];
 
-        foreach($phrases as $term) {
-            foreach($allPhrases as $_term) {
+        foreach ($phrases as $term) {
+            foreach ($allPhrases as $_term) {
 
-                if($term == $_term) {
+                if ($term == $_term) {
                     $result[] = $term;
                     break;
                 }
 
-                if(@preg_match($_term, $term)){
+                if (@preg_match($_term, $term)) {
                     $result[] = $term;
                     break;
                 }
@@ -100,17 +105,24 @@ abstract class AbstractTermSegmentBuilderDefinition extends \Pimcore\Model\Objec
     public function updateCustomerSegments(CustomerSegmentGroup $customerSegmentGroup)
     {
         $terms = $this->getAllTerms();
-        $currentSegments = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentsFromSegmentGroup($customerSegmentGroup);
+        $currentSegments = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentsFromSegmentGroup(
+            $customerSegmentGroup
+        );
 
         $updatedSegments = [];
-        foreach($terms as $term) {
-            $updatedSegments[] = \Pimcore::getContainer()->get('cmf.segment_manager')->createSegment($term, $customerSegmentGroup, $term, $customerSegmentGroup->getCalculated());
+        foreach ($terms as $term) {
+            $updatedSegments[] = \Pimcore::getContainer()->get('cmf.segment_manager')->createSegment(
+                $term,
+                $customerSegmentGroup,
+                $term,
+                $customerSegmentGroup->getCalculated()
+            );
         }
 
         // remove all entries from $updaedSegments from $currentSegments
-        foreach($currentSegments as $key => $currentSegment) {
-            foreach($updatedSegments as $updatedSegment) {
-                if($currentSegment->getId() == $updatedSegment->getId()) {
+        foreach ($currentSegments as $key => $currentSegment) {
+            foreach ($updatedSegments as $updatedSegment) {
+                if ($currentSegment->getId() == $updatedSegment->getId()) {
                     unset($currentSegments[$key]);
                     break;
                 }
@@ -118,7 +130,7 @@ abstract class AbstractTermSegmentBuilderDefinition extends \Pimcore\Model\Objec
         }
 
         // delete remaining entries from $currentSegments as they are not relevant anymore
-        foreach($currentSegments as $currentSegment) {
+        foreach ($currentSegments as $currentSegment) {
             $currentSegment->delete();
         }
     }

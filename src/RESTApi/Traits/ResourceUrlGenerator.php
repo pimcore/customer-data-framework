@@ -38,8 +38,11 @@ trait ResourceUrlGenerator
             return null;
         }
 
-        return \Pimcore::getContainer()->get('router')->generate($this->apiResourceRoute, [
-            'id' => $id
-        ]);
+        return \Pimcore::getContainer()->get('router')->generate(
+            $this->apiResourceRoute,
+            [
+                'id' => $id,
+            ]
+        );
     }
 }

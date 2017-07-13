@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerManagementFrameworkBundle\Controller\Rest\Api;
 
 use CustomerManagementFrameworkBundle\Controller\Rest\RestHandlerController;
@@ -20,7 +21,7 @@ class SegmentsOfCustomersController extends RestHandlerController
      */
     public function updateRecordsAction(Request $request)
     {
-        $handler  = $this->getHandler();
+        $handler = $this->getHandler();
         $response = null;
 
         try {

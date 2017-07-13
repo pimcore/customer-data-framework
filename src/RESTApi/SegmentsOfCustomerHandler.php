@@ -28,49 +28,58 @@ class SegmentsOfCustomerHandler extends AbstractHandler
      *
      * @param Request $request
      */
-    public function updateRecords(Request $request){
+    public function updateRecords(Request $request)
+    {
 
         $data = $this->getRequestData($request);
 
-        if(empty($data['customerId'])) {
-            return new Response([
-                'success' => false,
-                'msg' => 'customerId required'
-            ], Response::RESPONSE_CODE_BAD_REQUEST);
+        if (empty($data['customerId'])) {
+            return new Response(
+                [
+                    'success' => false,
+                    'msg' => 'customerId required',
+                ], Response::RESPONSE_CODE_BAD_REQUEST
+            );
         }
 
-        if(!$customer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById($data['customerId'])) {
-            return new Response([
-                'success' => false,
-                'msg' => sprintf('customer with id %s not found', $data['customerId'])
-            ], Response::RESPONSE_CODE_BAD_REQUEST);
+        if (!$customer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById($data['customerId'])) {
+            return new Response(
+                [
+                    'success' => false,
+                    'msg' => sprintf('customer with id %s not found', $data['customerId']),
+                ], Response::RESPONSE_CODE_BAD_REQUEST
+            );
         }
 
         $addSegments = [];
-        if(is_array($data['addSegments'])) {
-            foreach($data['addSegments'] as $segmentId) {
-                if($segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId)) {
+        if (is_array($data['addSegments'])) {
+            foreach ($data['addSegments'] as $segmentId) {
+                if ($segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId)) {
                     $addSegments[] = $segment;
                 }
             }
         }
 
         $deleteSegments = [];
-        if(is_array($data['removeSegments'])) {
-            foreach($data['removeSegments'] as $segmentId) {
-                if($segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId)) {
+        if (is_array($data['removeSegments'])) {
+            foreach ($data['removeSegments'] as $segmentId) {
+                if ($segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId)) {
                     $deleteSegments[] = $segment;
                 }
             }
         }
 
-        \Pimcore::getContainer()->get('cmf.segment_manager')->mergeSegments($customer, $addSegments, $deleteSegments, "REST update API: segments-of-customer action");
+        \Pimcore::getContainer()->get('cmf.segment_manager')->mergeSegments(
+            $customer,
+            $addSegments,
+            $deleteSegments,
+            "REST update API: segments-of-customer action"
+        );
         \Pimcore::getContainer()->get('cmf.segment_manager')->saveMergedSegments($customer);
 
 
-        return new Response(['success'=>true], Response::RESPONSE_CODE_OK);
+        return new Response(['success' => true], Response::RESPONSE_CODE_OK);
     }
-
 
 
 }

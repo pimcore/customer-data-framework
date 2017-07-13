@@ -12,7 +12,7 @@ class FormOrderParams extends Helper
     {
         return 'formOrderParams';
     }
-    
+
     /**
      * Get order params
      *
@@ -22,7 +22,7 @@ class FormOrderParams extends Helper
     public function formOrderParams(Request $request)
     {
         $result = [];
-        $order  = $request->get('order');
+        $order = $request->get('order');
 
         if (!is_array($order)) {
             return $result;
@@ -45,7 +45,7 @@ class FormOrderParams extends Helper
     {
         return [
             QueryBuilder::SQL_ASC,
-            QueryBuilder::SQL_DESC
+            QueryBuilder::SQL_DESC,
         ];
     }
 }

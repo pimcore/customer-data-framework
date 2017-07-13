@@ -22,8 +22,8 @@ class Date implements IGetter
         $fields = isset($config['fields']) ? $config['fields'] : [];
 
         foreach ($fields as $field) {
-            $getter = 'get' . ucfirst($field);
-            $value  = $object->$getter();
+            $getter = 'get'.ucfirst($field);
+            $value = $object->$getter();
 
             if ($value) {
                 if (!($value instanceof \DateTime)) {

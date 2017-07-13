@@ -10,7 +10,8 @@ namespace CustomerManagementFrameworkBundle\CustomerSaveValidator\Exception;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
-class DuplicateCustomerException extends \Pimcore\Model\Element\ValidationException {
+class DuplicateCustomerException extends \Pimcore\Model\Element\ValidationException
+{
 
     /**
      * @var CustomerInterface

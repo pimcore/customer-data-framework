@@ -43,7 +43,9 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
         $params = ExportCustomersFilterParams::fromRequest($request);
 
         if ($params->getSegments()) {
-            $customers = \Pimcore::getContainer()->get('cmf.segment_manager')->getCustomersBySegmentIds($params->getSegments());
+            $customers = \Pimcore::getContainer()->get('cmf.segment_manager')->getCustomersBySegmentIds(
+                $params->getSegments()
+            );
         } else {
             $customers = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
         }
@@ -62,12 +64,14 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
             $result[] = $this->hydrateCustomer($customer, $params);
         }
 
-        return new Response([
-            'page'       => $paginator->getCurrentPageNumber(),
-            'totalPages' => $paginator->getPages()->pageCount,
-            'timestamp'  => $timestamp,
-            'data'       => $result
-        ]);
+        return new Response(
+            [
+                'page' => $paginator->getCurrentPageNumber(),
+                'totalPages' => $paginator->getPages()->pageCount,
+                'timestamp' => $timestamp,
+                'data' => $result,
+            ]
+        );
     }
 
     /**
@@ -119,7 +123,7 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
     public function updateRecord(Request $request)
     {
         $customer = $this->loadCustomer($request->get('id'));
-        $data     = $this->getRequestData($request);
+        $data = $this->getRequestData($request);
 
         try {
             $this->customerProvider->update($customer, $data);
@@ -190,8 +194,11 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
      * @param ExportCustomersFilterParams $params
      * @return Response
      */
-    protected function createCustomerResponse(CustomerInterface $customer, Request $request, ExportCustomersFilterParams $params = null)
-    {
+    protected function createCustomerResponse(
+        CustomerInterface $customer,
+        Request $request,
+        ExportCustomersFilterParams $params = null
+    ) {
         if (null === $params) {
             $params = ExportCustomersFilterParams::fromRequest($request);
         }
@@ -213,16 +220,18 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
         $data = $customer->cmfToArray();
 
         if ($params->getIncludeActivities()) {
-            $data['activities'] = \Pimcore::getContainer()->get('cmf.activity_store')->getActivityDataForCustomer($customer);
+            $data['activities'] = \Pimcore::getContainer()->get('cmf.activity_store')->getActivityDataForCustomer(
+                $customer
+            );
         }
 
         $links = isset($data['_links']) ? $data['_links'] : [];
 
         if ($selfLink = $this->generateResourceApiUrl($customer->getId())) {
             $links[] = [
-                'rel'    => 'self',
-                'href'   => $selfLink,
-                'method' => 'GET'
+                'rel' => 'self',
+                'href' => $selfLink,
+                'method' => 'GET',
             ];
         }
 

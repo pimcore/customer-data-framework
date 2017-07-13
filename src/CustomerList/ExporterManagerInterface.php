@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerManagementFrameworkBundle\CustomerList;
 
 use CustomerManagementFrameworkBundle\CustomerList\Exporter\ExporterInterface;

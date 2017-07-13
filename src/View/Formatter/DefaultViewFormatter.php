@@ -59,11 +59,12 @@ class DefaultViewFormatter implements ViewFormatterInterface
 
     public function getLabelByFieldName(ClassDefinition $class, $fieldName)
     {
-        if($fieldName == 'id') {
+        if ($fieldName == 'id') {
             return 'ID';
         }
 
         $fd = $class->getFieldDefinition($fieldName);
+
         return $this->getLabelByFieldDefinition($fd);
     }
 
@@ -133,15 +134,16 @@ class DefaultViewFormatter implements ViewFormatterInterface
     {
         $this->applyLocale();
 
-        if(is_object($value) && method_exists($value, 'getTimestamp')) {
+        if (is_object($value) && method_exists($value, 'getTimestamp')) {
             $value = date('Y-m-d H:i:s', $value->getTimestamp());
         }
 
         $date = Carbon::parse($value);
 
-        if($dateOnly) {
+        if ($dateOnly) {
             return $date->formatLocalized("%x");
         }
+
         return $date->formatLocalized("%x %X");
     }
 
@@ -180,10 +182,10 @@ class DefaultViewFormatter implements ViewFormatterInterface
      */
     protected function applyLocale()
     {
-        $locale = $this->getLocale() ? : \Pimcore::getContainer()->get('pimcore.locale')->getLocale();
+        $locale = $this->getLocale() ?: \Pimcore::getContainer()->get('pimcore.locale')->getLocale();
 
         $dateLocaleMap = [
-            'de' => 'de_AT'
+            'de' => 'de_AT',
         ];
 
         setLocale(LC_TIME, isset($dateLocaleMap[$locale]) ? $dateLocaleMap[$locale] : $locale);

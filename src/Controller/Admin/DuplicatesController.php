@@ -12,7 +12,8 @@ use Pimcore\Controller\Configuration\TemplatePhp;
 /**
  * @Route("/duplicates")
  */
-class DuplicatesController extends Admin {
+class DuplicatesController extends Admin
+{
 
 
     public function init()
@@ -21,6 +22,7 @@ class DuplicatesController extends Admin {
 
         \Pimcore\Model\Object\AbstractObject::setHideUnpublished(true);
     }
+
     /**
      * @param Request $request
      * @Route("/list")
@@ -28,13 +30,20 @@ class DuplicatesController extends Admin {
     public function listAction(Request $request)
     {
 
-        $paginator = \Pimcore::getContainer()->get('cmf.customer_duplicates_index')->getPotentialDuplicates($request->get('page', 1), 100, $request->get('declined'));
+        $paginator = \Pimcore::getContainer()->get('cmf.customer_duplicates_index')->getPotentialDuplicates(
+            $request->get('page', 1),
+            100,
+            $request->get('declined')
+        );
 
-        return $this->render('PimcoreCustomerManagementFrameworkBundle:Admin\Duplicates:list.html.php', [
-            'paginator' => $paginator,
-            'duplicates' => $paginator->getCurrentItems(),
-            'duplicatesView' => \Pimcore::getContainer()->get('cmf.customer_duplicates_view')
-        ]);
+        return $this->render(
+            'PimcoreCustomerManagementFrameworkBundle:Admin\Duplicates:list.html.php',
+            [
+                'paginator' => $paginator,
+                'duplicates' => $paginator->getCurrentItems(),
+                'duplicatesView' => \Pimcore::getContainer()->get('cmf.customer_duplicates_view'),
+            ]
+        );
     }
 
     public function falsePositivesAction()
@@ -53,9 +62,12 @@ class DuplicatesController extends Admin {
     public function declineAction(Request $request)
     {
         try {
-            \Pimcore::getContainer()->get('cmf.customer_duplicates_index')->declinePotentialDuplicate($request->get('id'));
+            \Pimcore::getContainer()->get('cmf.customer_duplicates_index')->declinePotentialDuplicate(
+                $request->get('id')
+            );
+
             return new JsonResponse(["success" => true]);
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             return new JsonResponse(["success" => false, "msg" => $e->getMessage()]);
         }
     }

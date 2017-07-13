@@ -92,8 +92,8 @@ class Csv extends AbstractExporter
     {
         $row = [];
         foreach ($this->properties as $property) {
-            $getter = 'get' . ucfirst($property);
-            $value  = $customer->$getter();
+            $getter = 'get'.ucfirst($property);
+            $value = $customer->$getter();
 
             $row[] = $value;
         }

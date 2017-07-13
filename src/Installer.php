@@ -11,9 +11,11 @@ namespace CustomerManagementFrameworkBundle;
 use Pimcore\Extension\Bundle\Installer\AbstractInstaller;
 use Pimcore\Logger;
 
-class Installer extends AbstractInstaller {
+class Installer extends AbstractInstaller
+{
 
-    public function install() {
+    public function install()
+    {
 
         $this->installPermissions();
         $this->installDatabaseTables();
@@ -27,7 +29,7 @@ class Installer extends AbstractInstaller {
     public function isInstalled()
     {
         // implement your own logic here
-        return file_exists(PIMCORE_CONFIGURATION_DIRECTORY . '/plugins/CustomerManagementFramework/config.php');
+        return file_exists(PIMCORE_CONFIGURATION_DIRECTORY.'/plugins/CustomerManagementFramework/config.php');
     }
 
     public function canBeInstalled()
@@ -43,14 +45,15 @@ class Installer extends AbstractInstaller {
         return true;
     }
 
-    public function installPermissions() {
+    public function installPermissions()
+    {
 
         $permissions = [
             "plugin_customermanagementframework_activityview",
-            "plugin_customermanagementframework_customerview"
+            "plugin_customermanagementframework_customerview",
         ];
 
-        foreach($permissions as $key) {
+        foreach ($permissions as $key) {
             $permission = new \Pimcore\Model\User\Permission\Definition();
             $permission->setKey($key);
 
@@ -61,7 +64,8 @@ class Installer extends AbstractInstaller {
         }
     }
 
-    public function installDatabaseTables() {
+    public function installDatabaseTables()
+    {
         \Pimcore\Db::get()->query(
             "CREATE TABLE IF NOT EXISTS `plugin_cmf_activities` (
               `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -204,18 +208,22 @@ class Installer extends AbstractInstaller {
 
     public static function installClasses()
     {
-        $sourcePath = __DIR__ . '/../install/class_source';
+        $sourcePath = __DIR__.'/../install/class_source';
 
-        self::installClass("CustomerSegmentGroup", $sourcePath . '/class_CustomerSegmentGroup_export.json');
-        self::installClass("CustomerSegment", $sourcePath . '/class_CustomerSegment_export.json');
-        self::installClass("ActivityDefinition", $sourcePath . '/class_ActivityDefinition_export.json');
-        self::installClass("SsoIdentity", $sourcePath . '/class_SsoIdentity_export.json');
-        self::installClass("TermSegmentBuilderDefinition", $sourcePath . '/class_TermSegmentBuilderDefinition_export.json');
+        self::installClass("CustomerSegmentGroup", $sourcePath.'/class_CustomerSegmentGroup_export.json');
+        self::installClass("CustomerSegment", $sourcePath.'/class_CustomerSegment_export.json');
+        self::installClass("ActivityDefinition", $sourcePath.'/class_ActivityDefinition_export.json');
+        self::installClass("SsoIdentity", $sourcePath.'/class_SsoIdentity_export.json');
+        self::installClass(
+            "TermSegmentBuilderDefinition",
+            $sourcePath.'/class_TermSegmentBuilderDefinition_export.json'
+        );
     }
 
-    public static function installClass($classname, $filepath) {
+    public static function installClass($classname, $filepath)
+    {
         $class = \Pimcore\Model\Object\ClassDefinition::getByName($classname);
-        if(!$class) {
+        if (!$class) {
             $class = new \Pimcore\Model\Object\ClassDefinition();
             $class->setName($classname);
             $class->setGroup("CustomerManagement");
@@ -223,28 +231,30 @@ class Installer extends AbstractInstaller {
         $json = file_get_contents($filepath);
 
         $success = \Pimcore\Model\Object\ClassDefinition\Service::importClassDefinitionFromJson($class, $json);
-        if(!$success){
+        if (!$success) {
             Logger::err("Could not import $classname Class.");
         }
     }
 
-    public static function installConfig() {
+    public static function installConfig()
+    {
 
-        $dir = PIMCORE_CONFIGURATION_DIRECTORY . '/plugins/CustomerManagementFramework';
+        $dir = PIMCORE_CONFIGURATION_DIRECTORY.'/plugins/CustomerManagementFramework';
 
         if (!is_dir($dir)) {
             mkdir($dir, 0775, true);
         }
 
-        foreach(["config.php"] as $file) {
+        foreach (["config.php"] as $file) {
 
-            $target = PIMCORE_CONFIGURATION_DIRECTORY . '/plugins/CustomerManagementFramework/' . $file;
+            $target = PIMCORE_CONFIGURATION_DIRECTORY.'/plugins/CustomerManagementFramework/'.$file;
 
             if (!is_file($target)) {
 
                 copy(
-                    realpath(__DIR__ . "/../install/config/") . '/' . $file,
-                    $target);
+                    realpath(__DIR__."/../install/config/").'/'.$file,
+                    $target
+                );
             }
         }
     }

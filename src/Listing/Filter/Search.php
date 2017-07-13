@@ -12,7 +12,7 @@ class Search extends AbstractFieldValue
      */
     protected function processValue($value)
     {
-        return '%' . $value . '%';
+        return '%'.$value.'%';
     }
 
     /**

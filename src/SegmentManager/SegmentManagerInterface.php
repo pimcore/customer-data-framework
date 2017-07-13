@@ -14,14 +14,15 @@ use CustomerManagementFrameworkBundle\SegmentBuilder\SegmentBuilderInterface;
 use Pimcore\Model\Object\CustomerSegment;
 use Pimcore\Model\Object\CustomerSegmentGroup;
 
-interface SegmentManagerInterface {
+interface SegmentManagerInterface
+{
 
     const CONDITION_AND = 'and';
     const CONDITION_OR = 'or';
 
     /**
      * Returns a list of customers which are within the given customer segments.
-     * 
+     *
      * @param int[] $segmentIds
      * @param string $conditionMode
      *
@@ -31,7 +32,7 @@ interface SegmentManagerInterface {
 
     /**
      * Returns the CustomerSegment with the given ID.
-     * 
+     *
      * @param int $id
      * @return CustomerSegmentInterface
      */
@@ -39,7 +40,7 @@ interface SegmentManagerInterface {
 
     /**
      * Returns the CustomerSegmentGroup with the given ID.
-     * 
+     *
      * @param int $id
      * @return CustomerSegmentGroup
      */
@@ -47,7 +48,7 @@ interface SegmentManagerInterface {
 
     /**
      * Returns an array with all customer segments. Optionally this could be filtered by given params.
-     * 
+     *
      * @param array $params
      *
      * @return CustomerSegment[]
@@ -56,7 +57,7 @@ interface SegmentManagerInterface {
 
     /**
      * Returns an object list with all customer segment groups. Optionally this could be filtered by given params.
-     * 
+     *
      * @param array $params
      *
      * @return CustomerSegmentGroup\Listing
@@ -75,7 +76,13 @@ interface SegmentManagerInterface {
      * @param array $options
      * @return void
      */
-    public function buildCalculatedSegments($changesQueueOnly = true, $segmentBuilderClass = null, array $customQueue = null, $activeState = null, $options = [] );
+    public function buildCalculatedSegments(
+        $changesQueueOnly = true,
+        $segmentBuilderClass = null,
+        array $customQueue = null,
+        $activeState = null,
+        $options = []
+    );
 
     /**
      * Returns a segment builder instance of given class.
@@ -87,7 +94,7 @@ interface SegmentManagerInterface {
 
     /**
      * Calls all maintenance methods of all SegmentBuilders
-     * 
+     *
      * @return void
      */
     public function executeSegmentBuilderMaintenance();
@@ -97,13 +104,18 @@ interface SegmentManagerInterface {
      * The changes of this method will be persisted when saveMergedSegments() gets called.
      *
      * @param CustomerInterface $customer
-     * @param array             $addSegments
-     * @param array             $deleteSegments
-     * @param string|null       $hintForNotes
+     * @param array $addSegments
+     * @param array $deleteSegments
+     * @param string|null $hintForNotes
      *
      * @return void
      */
-    public function mergeSegments(CustomerInterface $customer, array $addSegments, array $deleteSegments = [], $hintForNotes = null);
+    public function mergeSegments(
+        CustomerInterface $customer,
+        array $addSegments,
+        array $deleteSegments = [],
+        $hintForNotes = null
+    );
 
     /**
      * Needs to be called after segments are merged with mergeSegments() in order to persist the segments in the customer object
@@ -117,7 +129,7 @@ interface SegmentManagerInterface {
     /**
      * Create a calculated segment within the given $segmentGroup. The $segmentGroup needs to be either a CustomerSegmentGroup object or a reference to a calculated CustomerSegmentGroup object.
      * With the (optional) $subFolder parameter it's possible to create subfolders within the CustomerSegmentGroup for better a better overview.
-     * 
+     *
      * @param string $segmentReference
      * @param string|CustomerSegmentGroup $segmentGroup
      * @param string $segmentName
@@ -130,7 +142,7 @@ interface SegmentManagerInterface {
     /**
      * * Create a customer segment within the given $segmentGroup. The $segmentGroup needs to be either a CustomerSegmentGroup object or a reference to a CustomerSegmentGroup object.
      * With the (optional) $subFolder parameter it's possible to create subfolders within the CustomerSegmentGroup for better a better overview.
-     * 
+     *
      * @param string $segmentReference
      * @param string|CustomerSegmentGroup $segmentGroup
      * @param string $segmentName
@@ -139,7 +151,13 @@ interface SegmentManagerInterface {
      *
      * @return CustomerSegmentInterface
      */
-    public function createSegment($segmentName, $segmentGroup, $segmentReference = null, $calculated = true, $subFolder = null);
+    public function createSegment(
+        $segmentName,
+        $segmentGroup,
+        $segmentReference = null,
+        $calculated = true,
+        $subFolder = null
+    );
 
     /**
      * Returns the CustomerSegment with given reference within given CustomerSegmentGroup.
@@ -154,21 +172,26 @@ interface SegmentManagerInterface {
 
     /**
      * Creates a segment group.
-     * 
+     *
      * @param       $segmentGroupName
-     * @param null  $segmentGroupReference
-     * @param bool  $calculated
+     * @param null $segmentGroupReference
+     * @param bool $calculated
      * @param array $values
      *
      * @return CustomerSegmentGroup
      */
-    public function createSegmentGroup($segmentGroupName, $segmentGroupReference = null, $calculated = true, array $values = []);
+    public function createSegmentGroup(
+        $segmentGroupName,
+        $segmentGroupReference = null,
+        $calculated = true,
+        array $values = []
+    );
 
     /**
      * Updates a segment group.
-     * 
+     *
      * @param CustomerSegmentGroup $segmentGroup
-     * @param array                $values
+     * @param array $values
      *
      * @return mixed
      */
@@ -176,9 +199,9 @@ interface SegmentManagerInterface {
 
     /**
      * Updates a sgement.
-     * 
+     *
      * @param CustomerSegment $segment
-     * @param array           $values
+     * @param array $values
      *
      * @return mixed
      */
@@ -186,7 +209,7 @@ interface SegmentManagerInterface {
 
     /**
      * Returns the SegmentGroup with the given reference.
-     * 
+     *
      * @param $segmentGroupReference
      * @param $calculated
      *
@@ -212,7 +235,7 @@ interface SegmentManagerInterface {
     /**
      * @param CustomerInterface $customer
      * @param CustomerSegmentInterface $segment
-     * 
+     *
      * @return bool
      */
     public function customerHasSegment(CustomerInterface $customer, CustomerSegmentInterface $segment);

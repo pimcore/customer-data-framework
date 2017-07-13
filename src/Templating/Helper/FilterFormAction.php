@@ -24,8 +24,8 @@ class FilterFormAction extends Helper
     {
         // reset page when changing filters
         $formActionParams = [
-            'page'    => null,
-            'perPage' => null
+            'page' => null,
+            'perPage' => null,
         ];
 
         if (null !== $paginator && $paginator->getItemCountPerPage() !== 25) {
@@ -42,7 +42,7 @@ class FilterFormAction extends Helper
         $request = \Pimcore::getContainer()->get('request_stack')->getMasterRequest();
 
 
-        $formAction = $router->generate($request->get('_route'),$formActionParams);
+        $formAction = $router->generate($request->get('_route'), $formActionParams);
 
         return $formAction;
     }

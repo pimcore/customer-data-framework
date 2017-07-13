@@ -72,6 +72,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     {
         $class = $this->getDiClassName();
         $customer = new $class;
+
         return get_class($customer);
     }
 
@@ -83,6 +84,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     public function getList()
     {
         $listClass = $this->getDiListingClassName();
+
         return new $listClass();
     }
 

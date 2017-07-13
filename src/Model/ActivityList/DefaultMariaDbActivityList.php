@@ -16,7 +16,8 @@ use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\DefaultActivitySt
 use Pimcore\Model\Listing\AbstractListing;
 use Zend\Paginator\Adapter\AdapterInterface;
 
-class DefaultMariaDbActivityList extends AbstractListing implements ActivityListInterface {
+class DefaultMariaDbActivityList extends AbstractListing implements ActivityListInterface
+{
 
     /**
      * @var integer
@@ -43,39 +44,46 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
      */
     protected $dao;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->dao = new Dao($this);
     }
 
-    public function getActivities() {
+    public function getActivities()
+    {
         if ($this->activities === null) {
-             $this->load();
+            $this->load();
             //$this->activities = [Booking::getById(5950159),Booking::getById(5950160),Booking::getById(5950161)];
         }
+
         return $this->activities;
     }
 
-    public function setLimit($limit) {
-        if($this->limit != $limit) {
+    public function setLimit($limit)
+    {
+        if ($this->limit != $limit) {
             $this->activities = null;
             $this->dao->setQuery(null);
         }
         $this->limit = $limit;
     }
 
-    public function getLimit() {
+    public function getLimit()
+    {
         return $this->limit;
     }
 
-    public function setOffset($offset) {
-        if($this->offset != $offset) {
+    public function setOffset($offset)
+    {
+        if ($this->offset != $offset) {
             $this->activities = null;
             $this->dao->setQuery(null);
         }
         $this->offset = $offset;
     }
 
-    public function getOffset() {
+    public function getOffset()
+    {
         return $this->offset;
     }
 
@@ -91,6 +99,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     {
         $this->setOffset($offset);
         $this->setLimit($itemCountPerPage);
+
         return $this->getActivities();
     }
 
@@ -105,19 +114,21 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
      */
     public function count()
     {
-        if($this->totalCount === null) {
+        if ($this->totalCount === null) {
             $this->totalCount = $this->dao->getCount();
         }
+
         return $this->totalCount;
     }
 
-    
+
     /**
      * Return a fully configured Paginator Adapter from this method.
      *
      * @return AdapterInterface
      */
-    public function getPaginatorAdapter() {
+    public function getPaginatorAdapter()
+    {
         return $this;
     }
 
@@ -132,6 +143,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     {
         $this->getActivities();
         $var = current($this->activities);
+
         return $var;
     }
 
@@ -158,6 +170,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     {
         $this->getActivities();
         $var = key($this->activities);
+
         return $var;
     }
 
@@ -171,6 +184,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     public function valid()
     {
         $var = $this->current() !== false;
+
         return $var;
     }
 
@@ -186,13 +200,14 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         reset($this->activities);
     }
 
-    public function load() {
+    public function load()
+    {
         $raw = $this->dao->load();
 
         $this->totalCount = $this->dao->getCount();
 
         $activities = [];
-        foreach($raw as $row) {
+        foreach ($raw as $row) {
             $entry = \Pimcore::getContainer()->get("cmf.activity_store")->createEntryInstance($row);
             $activities[] = $entry;
         }

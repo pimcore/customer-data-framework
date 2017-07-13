@@ -5,7 +5,8 @@ namespace CustomerManagementFrameworkBundle\Model;
 use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 
-interface ActivityInterface {
+interface ActivityInterface
+{
 
     const DATATYPE_STRING = 'string';
     const DATATYPE_INTEGER = 'integer';
@@ -32,7 +33,7 @@ interface ActivityInterface {
      * @return Carbon
      */
     public function cmfGetActivityDate();
-    
+
     /**
      * Returns an array representation of this activity.
      *
@@ -92,7 +93,7 @@ interface ActivityInterface {
 
     /**
      * Returns an associative array with data which should be shown additional to the type and activity date within the ActivityView overview list.
-     * 
+     *
      * @param ActivityStoreEntryInterface $entry
      *
      * @return array
@@ -101,7 +102,7 @@ interface ActivityInterface {
 
     /**
      * Returns an associative array with data which should be shown ActivityView detail page.
-     * 
+     *
      * @param ActivityStoreEntryInterface $entry
      *
      * @return array
@@ -110,7 +111,7 @@ interface ActivityInterface {
 
     /**
      * Optional: Returns a template file which should be used for the ActivityView detail page. With this it's possible to implement completely individual detail pages for each activity type.
-     * 
+     *
      * @param ActivityStoreEntryInterface $entry
      *
      * @return string|bool

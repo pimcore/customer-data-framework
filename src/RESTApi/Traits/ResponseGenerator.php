@@ -4,14 +4,12 @@
 namespace CustomerManagementFrameworkBundle\RESTApi\Traits;
 
 
-
 use CustomerManagementFrameworkBundle\RESTApi\Response;
 
 trait ResponseGenerator
 {
     /**
      * Create a JSON response with normalized body containing timestamp
-
      *
      * @param array|null $data
      * @param $code
@@ -22,7 +20,7 @@ trait ResponseGenerator
         $responseData = null;
         if (null !== $data) {
             $responseData = [
-                'timestamp' => time()
+                'timestamp' => time(),
             ];
 
             $responseData['data'] = $data;
@@ -44,10 +42,12 @@ trait ResponseGenerator
             $errors = [$errors];
         }
 
-        $response =  new Response([
-            'success' => false,
-            'errors'  => $errors
-        ], $code);
+        $response = new Response(
+            [
+                'success' => false,
+                'errors' => $errors,
+            ], $code
+        );
 
         return $response;
     }

@@ -22,12 +22,13 @@ class FormFilterParams extends Helper
      */
     public function __invoke(Request $request = null)
     {
-        if(is_null($request)) {
+        if (is_null($request)) {
             return $this;
         }
+
         return $this->formFilterParams($request);
     }
-    
+
     /**
      * Get filter params with values
      *
@@ -36,7 +37,7 @@ class FormFilterParams extends Helper
      */
     public function formFilterParams(Request $request)
     {
-        $result  = [];
+        $result = [];
         $filters = $request->get('filter');
 
         if (!is_array($filters)) {

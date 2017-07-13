@@ -11,12 +11,14 @@ namespace CustomerManagementFrameworkBundle\DataTransformer\Date;
 use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 
-class TimestampToAge implements DataTransformerInterface {
+class TimestampToAge implements DataTransformerInterface
+{
 
     public function transform($data, $options = [])
     {
         $date = Carbon::createFromTimestamp(strtotime(date('Y-m-d', $data)));
         $today = new Carbon();
+
         return $today->diffInYears($date);
     }
 

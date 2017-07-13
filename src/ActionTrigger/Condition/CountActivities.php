@@ -17,27 +17,38 @@ class CountActivities extends AbstractCondition
     const OPTION_COUNT = 'count';
     const OPTION_OPERATOR = 'operator';
 
-    public function check(ConditionDefinitionInterface $conditionDefinition, CustomerInterface $customer) {
+    public function check(ConditionDefinitionInterface $conditionDefinition, CustomerInterface $customer)
+    {
 
         $options = $conditionDefinition->getOptions();
 
-        $countActivities = \Pimcore::getContainer()->get('cmf.activity_store')->countActivitiesOfCustomer($customer, $options[self::OPTION_TYPE]);
+        $countActivities = \Pimcore::getContainer()->get('cmf.activity_store')->countActivitiesOfCustomer(
+            $customer,
+            $options[self::OPTION_TYPE]
+        );
 
-        $this->logger->info(sprintf("CountActivities condition: count activities of type '%s' for customer ID %s - result: %s", $options[self::OPTION_TYPE], $customer->getId(), $countActivities));
+        $this->logger->info(
+            sprintf(
+                "CountActivities condition: count activities of type '%s' for customer ID %s - result: %s",
+                $options[self::OPTION_TYPE],
+                $customer->getId(),
+                $countActivities
+            )
+        );
 
         $operator = $options[self::OPTION_OPERATOR];
 
-        if($count = $options[self::OPTION_COUNT]) {
+        if ($count = $options[self::OPTION_COUNT]) {
 
-            if($operator == ">" && ($countActivities > $count)) {
+            if ($operator == ">" && ($countActivities > $count)) {
                 return true;
             }
 
-            if($operator == "<" && ($countActivities < $count)) {
+            if ($operator == "<" && ($countActivities < $count)) {
                 return true;
             }
 
-            if($operator == "=" && ($countActivities == $count)) {
+            if ($operator == "=" && ($countActivities == $count)) {
                 return true;
             }
 
@@ -56,12 +67,16 @@ class CountActivities extends AbstractCondition
         $type = $options[self::OPTION_TYPE];
         $count = intval($options[self::OPTION_COUNT]);
 
-        $ids = \Pimcore::getContainer()->get('cmf.activity_store')->getCustomerIdsMatchingActivitiesCount($operator, $type, $count);
+        $ids = \Pimcore::getContainer()->get('cmf.activity_store')->getCustomerIdsMatchingActivitiesCount(
+            $operator,
+            $type,
+            $count
+        );
 
-        if(!sizeof($ids)) {
+        if (!sizeof($ids)) {
             return "-1";
         }
 
-        return "o_id in (" . implode(',', $ids) . ")";
+        return "o_id in (".implode(',', $ids).")";
     }
 }

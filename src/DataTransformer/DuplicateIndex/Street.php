@@ -8,14 +8,15 @@
 
 namespace CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex;
 
-class Street extends Simplify {
+class Street extends Simplify
+{
 
     public function transform($data, $options = [])
     {
         $data = parent::transform($data, $options);
-        $data = str_replace(['strasse'],['str.'], $data);
+        $data = str_replace(['strasse'], ['str.'], $data);
 
         return preg_replace('/\str$/', 'str.', $data);
     }
-    
+
 }

@@ -14,7 +14,7 @@ abstract class AbstractOAuth2Token extends AbstractData implements OAuth2TokenIn
     {
         return [
             'accessToken',
-            'refreshToken'
+            'refreshToken',
         ];
     }
 }

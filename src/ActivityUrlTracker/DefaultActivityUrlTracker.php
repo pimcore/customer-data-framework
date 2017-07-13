@@ -30,9 +30,9 @@ class DefaultActivityUrlTracker implements ActivityUrlTrackerInterface
     {
         $class = \Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassName();
 
-        if($customer = $class::getByIdEncoded($customerIdEncoded, 1)) {
+        if ($customer = $class::getByIdEncoded($customerIdEncoded, 1)) {
 
-            if($activityDefinition = ActivityDefinition::getByCode($activityCode, 1)) {
+            if ($activityDefinition = ActivityDefinition::getByCode($activityCode, 1)) {
                 $activity = new TrackedUrlActivity($customer, $activityDefinition);
 
                 \Pimcore::getContainer()->get('cmf.activity_manager')->trackActivity($activity);

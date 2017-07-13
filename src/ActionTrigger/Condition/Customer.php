@@ -17,15 +17,16 @@ class Customer extends AbstractCondition
     const OPTION_CUSTOMER = 'customer';
     const OPTION_NOT = 'not';
 
-    public function check(ConditionDefinitionInterface $conditionDefinition, CustomerInterface $customer) {
+    public function check(ConditionDefinitionInterface $conditionDefinition, CustomerInterface $customer)
+    {
 
         $options = $conditionDefinition->getOptions();
 
-        if(isset($options[self::OPTION_CUSTOMER_ID])) {
-            if($desiredCustomer = AbstractObject::getById(intval($options[self::OPTION_CUSTOMER_ID]))) {
+        if (isset($options[self::OPTION_CUSTOMER_ID])) {
+            if ($desiredCustomer = AbstractObject::getById(intval($options[self::OPTION_CUSTOMER_ID]))) {
                 $check = $desiredCustomer->getId() == $customer->getId();
 
-                if($options[self::OPTION_NOT]) {
+                if ($options[self::OPTION_NOT]) {
                     return !$check;
                 }
 
@@ -40,7 +41,7 @@ class Customer extends AbstractCondition
     {
         $options = $conditionDefinition->getOptions();
 
-        if(!$options[self::OPTION_CUSTOMER_ID]) {
+        if (!$options[self::OPTION_CUSTOMER_ID]) {
             return '-1';
         }
 
@@ -50,8 +51,8 @@ class Customer extends AbstractCondition
 
         $not = $options[self::OPTION_NOT];
 
-        if($not) {
-            $condition = '!(' . $condition . ')';
+        if ($not) {
+            $condition = '!('.$condition.')';
         }
 
         return $condition;
@@ -63,7 +64,7 @@ class Customer extends AbstractCondition
 
         $options = $condition->getOptions();
 
-        if(isset($options[self::OPTION_CUSTOMER])) {
+        if (isset($options[self::OPTION_CUSTOMER])) {
             $customer = AbstractObject::getByPath($options[self::OPTION_CUSTOMER]);
             $options[self::OPTION_CUSTOMER_ID] = $customer->getId();
             unset($options[self::OPTION_CUSTOMER]);
@@ -78,8 +79,8 @@ class Customer extends AbstractCondition
 
         $options = $conditionDefinition->getOptions();
 
-        if(isset($options[self::OPTION_CUSTOMER_ID])) {
-            if($segment = AbstractObject::getById(intval($options[self::OPTION_CUSTOMER_ID]))) {
+        if (isset($options[self::OPTION_CUSTOMER_ID])) {
+            if ($segment = AbstractObject::getById(intval($options[self::OPTION_CUSTOMER_ID]))) {
                 $options[self::OPTION_CUSTOMER] = $segment->getFullPath();
             }
         }

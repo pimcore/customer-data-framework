@@ -15,7 +15,8 @@ use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
-class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
+class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
+{
 
     /**
      * @var array $data
@@ -89,7 +90,8 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
      */
     private $attributes;
 
-    public function setData($data) {
+    public function setData($data)
+    {
 
         $this->data = $data;
 
@@ -97,8 +99,13 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
         $this->setActivityDate($data['activityDate']);
         $this->setType($data['type']);
         $this->setImplementationClass($data['implementationClass']);
-        if(isset($data['attributes'])) {
-            $this->setAttributes(is_array($data['attributes']) ? $data['attributes'] : json_decode(Json::cleanUpJson($data['attributes']), true));
+        if (isset($data['attributes'])) {
+            $this->setAttributes(
+                is_array($data['attributes']) ? $data['attributes'] : json_decode(
+                    Json::cleanUpJson($data['attributes']),
+                    true
+                )
+            );
         }
         $this->setMd5($data['md5']);
         $this->setCreationDate($data['creationDate']);
@@ -129,7 +136,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
      */
     public function getCustomer()
     {
-        if(empty($this->customer) && $this->customerId) {
+        if (empty($this->customer) && $this->customerId) {
             $this->customer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById($this->customerId);
         }
 
@@ -190,13 +197,15 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface {
      */
     public function getRelatedItem()
     {
-        if(empty($this->relatedItem)) {
+        if (empty($this->relatedItem)) {
             $implementationClass = self::getImplementationClass();
-            $implementationClass = \Pimcore::getContainer()->has($implementationClass) ? \Pimcore::getContainer()->has($implementationClass) : $implementationClass;
+            $implementationClass = \Pimcore::getContainer()->has($implementationClass) ? \Pimcore::getContainer()->has(
+                $implementationClass
+            ) : $implementationClass;
             $attributes = $this->getAttributes();
             $attributes['activityDate'] = $this->getActivityDate();
-            $attributes['o_id'] = $this->o_id ? : $attributes['o_id'];
-            $attributes['a_id'] = $this->a_id ? : $attributes['a_id'];
+            $attributes['o_id'] = $this->o_id ?: $attributes['o_id'];
+            $attributes['a_id'] = $this->a_id ?: $attributes['a_id'];
             $attributes['customerId'] = $this->getCustomerId();
             $this->relatedItem = $implementationClass::cmfCreate($attributes);
         }

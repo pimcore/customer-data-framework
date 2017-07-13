@@ -13,7 +13,8 @@ use CustomerManagementFrameworkBundle\ActionTrigger\Event\CustomerListEventInter
 use CustomerManagementFrameworkBundle\ActionTrigger\Event\SingleCustomerEventInterface;
 use Psr\Log\LoggerInterface;
 
-interface EventHandlerInterface {
+interface EventHandlerInterface
+{
 
     public function handleEvent($event);
 

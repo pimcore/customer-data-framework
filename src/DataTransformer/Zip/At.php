@@ -16,7 +16,7 @@ class At implements DataTransformerInterface
     {
         preg_match("/\\b\\d{4}\\b/", $data, $matches);
 
-        if($match = $matches[0]) {
+        if ($match = $matches[0]) {
             return $match;
         }
 

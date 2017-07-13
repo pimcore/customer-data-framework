@@ -2,7 +2,8 @@
 
 namespace CustomerManagementFrameworkBundle\Model;
 
-interface PersistentActivityInterface extends ActivityInterface {
+interface PersistentActivityInterface extends ActivityInterface
+{
 
     /**
      * save activity

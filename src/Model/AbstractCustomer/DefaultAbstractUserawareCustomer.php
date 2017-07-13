@@ -12,7 +12,8 @@ use CustomerManagementFrameworkBundle\Model\AbstractCustomer;
 use Pimcore\Model\Object\ClassDefinition\Data\Password;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-abstract class DefaultAbstractUserawareCustomer extends AbstractCustomer implements UserInterface {
+abstract class DefaultAbstractUserawareCustomer extends AbstractCustomer implements UserInterface
+{
     public function getRoles()
     {
         return ['ROLE_USER'];

@@ -18,15 +18,16 @@ class Segment extends AbstractCondition
     const OPTION_SEGMENT = 'segment';
     const OPTION_NOT = 'not';
 
-    public function check(ConditionDefinitionInterface $conditionDefinition, CustomerInterface $customer) {
+    public function check(ConditionDefinitionInterface $conditionDefinition, CustomerInterface $customer)
+    {
 
         $options = $conditionDefinition->getOptions();
 
-        if(isset($options[self::OPTION_SEGMENT_ID])) {
-            if($segment = CustomerSegment::getById(intval($options[self::OPTION_SEGMENT_ID]))) {
+        if (isset($options[self::OPTION_SEGMENT_ID])) {
+            if ($segment = CustomerSegment::getById(intval($options[self::OPTION_SEGMENT_ID]))) {
                 $check = \Pimcore::getContainer()->get('cmf.segment_manager')->customerHasSegment($customer, $segment);
 
-                if($options[self::OPTION_NOT]) {
+                if ($options[self::OPTION_NOT]) {
                     return !$check;
                 }
 
@@ -41,7 +42,7 @@ class Segment extends AbstractCondition
     {
         $options = $conditionDefinition->getOptions();
 
-        if(!$options[self::OPTION_SEGMENT_ID]) {
+        if (!$options[self::OPTION_SEGMENT_ID]) {
             return '-1';
         }
 
@@ -49,10 +50,14 @@ class Segment extends AbstractCondition
 
         $not = $options[self::OPTION_NOT];
 
-        $condition =  sprintf("FIND_IN_SET(%s, manualSegments) or FIND_IN_SET(%s, calculatedSegments)", $segmentId, $segmentId);
+        $condition = sprintf(
+            "FIND_IN_SET(%s, manualSegments) or FIND_IN_SET(%s, calculatedSegments)",
+            $segmentId,
+            $segmentId
+        );
 
-        if($not) {
-            $condition = '!(' . $condition . ')';
+        if ($not) {
+            $condition = '!('.$condition.')';
         }
 
         return $condition;
@@ -64,7 +69,7 @@ class Segment extends AbstractCondition
 
         $options = $condition->getOptions();
 
-        if(isset($options[self::OPTION_SEGMENT])) {
+        if (isset($options[self::OPTION_SEGMENT])) {
             $segment = CustomerSegment::getByPath($options[self::OPTION_SEGMENT]);
             $options[self::OPTION_SEGMENT_ID] = $segment->getId();
             unset($options[self::OPTION_SEGMENT]);
@@ -79,8 +84,8 @@ class Segment extends AbstractCondition
 
         $options = $conditionDefinition->getOptions();
 
-        if(isset($options['segmentId'])) {
-            if($segment = CustomerSegment::getById(intval($options['segmentId']))) {
+        if (isset($options['segmentId'])) {
+            if ($segment = CustomerSegment::getById(intval($options['segmentId']))) {
                 $options['segment'] = $segment->getFullPath();
             }
         }

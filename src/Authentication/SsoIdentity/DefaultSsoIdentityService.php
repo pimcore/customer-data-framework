@@ -61,7 +61,9 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
         }
 
         if ($list->count() > 1) {
-            $exception = new \RuntimeException(sprintf('Ambiguous results: found more than one identity for %s:%s', $provider, $identifier));
+            $exception = new \RuntimeException(
+                sprintf('Ambiguous results: found more than one identity for %s:%s', $provider, $identifier)
+            );
             $this->getLogger()->error($exception->getMessage());
 
             throw $exception;
@@ -80,7 +82,7 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
             ->where('fieldname = ?', 'ssoIdentities')
             ->where('dest_id = ?', $ssoIdentity->getId());
 
-        $stmt   = $select->query();
+        $stmt = $select->query();
         $result = $stmt->fetchAll();
 
         if (count($result) === 1) {
@@ -142,7 +144,7 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
      */
     public function createSsoIdentity(CustomerInterface $customer, $provider, $identifier, $profileData)
     {
-        $key  = File::getValidFilename(sprintf('%s-%s', $provider, $identifier));
+        $key = File::getValidFilename(sprintf('%s-%s', $provider, $identifier));
         $path = sprintf('%s/%s', $customer->getRealFullPath(), $key);
 
         $ssoIdentity = SsoIdentity::getByPath($path);

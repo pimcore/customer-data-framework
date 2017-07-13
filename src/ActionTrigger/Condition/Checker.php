@@ -19,18 +19,18 @@ class Checker
 
         $expression = '';
         $openBrackets = 0;
-        if($conditions = $rule->getCondition()) {
+        if ($conditions = $rule->getCondition()) {
 
 
-            foreach($conditions as $cond) {
+            foreach ($conditions as $cond) {
                 $res = "false";
 
                 $conditionImplementation = $cond->getImplementationObject();
 
-                if($conditionImplementation) {
+                if ($conditionImplementation) {
                     $res = $conditionImplementation->check($cond, $event->getCustomer());
 
-                    if($res) {
+                    if ($res) {
                         $res = "true";
                     } else {
                         $res = "false";
@@ -38,39 +38,38 @@ class Checker
                 }
 
 
-
-                if($expression) {
+                if ($expression) {
 
                     $operator = $cond->getOperator();
 
-                    if($operator == 'and') {
+                    if ($operator == 'and') {
                         $expression .= ' && ';
-                    } elseif($operator == 'or') {
+                    } elseif ($operator == 'or') {
                         $expression .= ' || ';
-                    } elseif($operator == 'and_not') {
+                    } elseif ($operator == 'and_not') {
                         $expression .= ' && !';
                     }
                 }
 
-                if($cond->getBracketLeft()) {
+                if ($cond->getBracketLeft()) {
                     $expression .= '(';
                     $openBrackets++;
                 }
 
                 $expression .= $res;
 
-                if($openBrackets && $cond->getBracketRight()) {
+                if ($openBrackets && $cond->getBracketRight()) {
                     $expression .= ')';
                     $openBrackets--;
                 }
             }
         }
 
-        for($i=0;$i<$openBrackets;$i++) {
+        for ($i = 0; $i < $openBrackets; $i++) {
             $expression .= ')';
         }
 
-        if(!$expression) {
+        if (!$expression) {
             return true;
         }
 
@@ -85,54 +84,53 @@ class Checker
 
         $expression = '';
         $openBrackets = 0;
-        if($conditions = $rule->getCondition()) {
+        if ($conditions = $rule->getCondition()) {
 
 
-            foreach($conditions as $cond) {
+            foreach ($conditions as $cond) {
                 $res = "false";
 
                 $conditionImplementation = $cond->getImplementationObject();
 
-                if($conditionImplementation) {
+                if ($conditionImplementation) {
                     $res = $conditionImplementation->getDbCondition($cond);
 
-                    $res = '(' . $res . ')';
+                    $res = '('.$res.')';
                 }
 
 
-
-                if($expression) {
+                if ($expression) {
 
                     $operator = $cond->getOperator();
 
-                    if($operator == 'and') {
+                    if ($operator == 'and') {
                         $expression .= ' and ';
-                    } elseif($operator == 'or') {
+                    } elseif ($operator == 'or') {
                         $expression .= ' or ';
-                    } elseif($operator == 'and_not') {
+                    } elseif ($operator == 'and_not') {
                         $expression .= ' and not ';
                     }
                 }
 
-                if($cond->getBracketLeft()) {
+                if ($cond->getBracketLeft()) {
                     $expression .= '(';
                     $openBrackets++;
                 }
 
                 $expression .= $res;
 
-                if($openBrackets && $cond->getBracketRight()) {
+                if ($openBrackets && $cond->getBracketRight()) {
                     $expression .= ')';
                     $openBrackets--;
                 }
             }
         }
 
-        for($i=0;$i<$openBrackets;$i++) {
+        for ($i = 0; $i < $openBrackets; $i++) {
             $expression .= ')';
         }
 
-        if(!$expression) {
+        if (!$expression) {
             return '1';
         }
 

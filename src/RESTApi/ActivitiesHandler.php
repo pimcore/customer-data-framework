@@ -34,20 +34,24 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
         $pageSize = intval($request->get('pageSize', 100));
         $page = intval($request->get('page', 1));
 
-        $paginator = \Pimcore::getContainer()->get('cmf.activity_store')->getActivitiesDataForWebservice($pageSize, $page, $param);
+        $paginator = \Pimcore::getContainer()->get('cmf.activity_store')->getActivitiesDataForWebservice(
+            $pageSize,
+            $page,
+            $param
+        );
 
 
         $result = [
             'page' => $page,
             'totalPages' => $paginator->getPages()->pageCount,
             'timestamp' => $timestamp,
-            'data' => []
+            'data' => [],
         ];
 
-        foreach($paginator as $entry) {
+        foreach ($paginator as $entry) {
 
             /**
-             * @var ActivityStoreEntryInterface $entry;
+             * @var ActivityStoreEntryInterface $entry ;
              */
             $result['data'][] = $this->hydrateActivityStoreEntry($entry);
         }
@@ -81,15 +85,19 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
 
         $implementationClass = !empty($data['implementationClass']) ? $data['implementationClass'] : GenericActivity::class;
 
-        if(!(is_subclass_of($implementationClass, ActivityInterface::class))) {
-            return $this->createErrorResponse(sprintf('%s is not a valid activity implementation class', $implementationClass));
+        if (!(is_subclass_of($implementationClass, ActivityInterface::class))) {
+            return $this->createErrorResponse(
+                sprintf('%s is not a valid activity implementation class', $implementationClass)
+            );
         }
 
-        if(!(is_subclass_of($implementationClass, ActivityInterface::class))) {
-            return $this->createErrorResponse(sprintf('%s is not a valid activity implementation class', $implementationClass));
+        if (!(is_subclass_of($implementationClass, ActivityInterface::class))) {
+            return $this->createErrorResponse(
+                sprintf('%s is not a valid activity implementation class', $implementationClass)
+            );
         }
 
-        if(!isset($data['customerId'])) {
+        if (!isset($data['customerId'])) {
             return $this->createErrorResponse('customerId required');
         }
 
@@ -100,17 +108,20 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
             $activity = $implementationClass::cmfCreate($data);
 
 
-            if($activity && $activity->cmfWebserviceUpdateAllowed()) {
+            if ($activity && $activity->cmfWebserviceUpdateAllowed()) {
 
-                if(!$activity->getCustomer()) {
-                    if(!$customer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById($data['customerId'])) {
+                if (!$activity->getCustomer()) {
+                    if (!$customer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById(
+                        $data['customerId']
+                    )
+                    ) {
                         return $this->createErrorResponse(sprintf("customer %s not found", $data['customerId']));
                     }
 
                     $activity->setCustomer($customer);
                 }
 
-                if($activity instanceof PersistentActivityInterface) {
+                if ($activity instanceof PersistentActivityInterface) {
                     $activity->save();
                 }
 
@@ -118,7 +129,12 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
                 $entry = \Pimcore::getContainer()->get('cmf.activity_store')->getEntryById($entry->getId());
 
             } else {
-                return $this->createErrorResponse(sprintf("creation of activities with implementation class %s not allowed via REST webservice", $implementationClass));
+                return $this->createErrorResponse(
+                    sprintf(
+                        "creation of activities with implementation class %s not allowed via REST webservice",
+                        $implementationClass
+                    )
+                );
             }
         } catch (\Exception $e) {
             return $this->createErrorResponse($e->getMessage());
@@ -141,9 +157,9 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
     public function updateRecord(Request $request)
     {
         $entry = $this->loadActivityStoreEntry($request->get('id'));
-        $data     = $this->getRequestData($request);
+        $data = $this->getRequestData($request);
 
-        if(isset($data['implementationClass']) && $data['implementationClass'] != $entry->getImplementationClass()) {
+        if (isset($data['implementationClass']) && $data['implementationClass'] != $entry->getImplementationClass()) {
             return $this->createErrorResponse("changing of the implementationClass not allowed via REST webservice");
         }
 
@@ -151,16 +167,21 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
 
             $activity = $entry->getRelatedItem();
 
-            if($activity && $activity->cmfWebserviceUpdateAllowed()) {
+            if ($activity && $activity->cmfWebserviceUpdateAllowed()) {
                 $activity->cmfUpdateData($data);
-                if($activity instanceof PersistentActivityInterface) {
+                if ($activity instanceof PersistentActivityInterface) {
                     $activity->save();
                 }
 
                 \Pimcore::getContainer()->get('cmf.activity_store')->updateActivityInStore($activity, $entry);
                 $entry = $this->loadActivityStoreEntry($request->get('id'));
             } else {
-                return $this->createErrorResponse(sprintf("update of activities with implementation class %s not allowed via REST webservice", $entry->getImplementationClass()));
+                return $this->createErrorResponse(
+                    sprintf(
+                        "update of activities with implementation class %s not allowed via REST webservice",
+                        $entry->getImplementationClass()
+                    )
+                );
             }
 
         } catch (\Exception $e) {
@@ -184,16 +205,21 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
             $activity = $entry->getRelatedItem();
 
 
-            if($activity && $activity->cmfWebserviceUpdateAllowed()) {
+            if ($activity && $activity->cmfWebserviceUpdateAllowed()) {
 
-                if($activity instanceof PersistentActivityInterface) {
+                if ($activity instanceof PersistentActivityInterface) {
                     $activity->delete();
                 }
 
                 \Pimcore::getContainer()->get('cmf.activity_store')->deleteEntry($entry);
 
             } else {
-                return $this->createErrorResponse(sprintf("deletion of activities with implementation class %s not allowed via REST webservice", $entry->getImplementationClass()));
+                return $this->createErrorResponse(
+                    sprintf(
+                        "deletion of activities with implementation class %s not allowed via REST webservice",
+                        $entry->getImplementationClass()
+                    )
+                );
             }
         } catch (\Exception $e) {
             return $this->createErrorResponse($e->getMessage());
@@ -266,9 +292,9 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
 
         if ($selfLink = $this->generateResourceApiUrl($activityRow['id'])) {
             $links[] = [
-                'rel'    => 'self',
-                'href'   => $selfLink,
-                'method' => 'GET'
+                'rel' => 'self',
+                'href' => $selfLink,
+                'method' => 'GET',
             ];
         }
 

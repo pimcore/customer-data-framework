@@ -10,7 +10,8 @@ namespace CustomerManagementFrameworkBundle\Filter;
 
 use Symfony\Component\HttpFoundation\Request;
 
-class ExportActivitiesFilterParams {
+class ExportActivitiesFilterParams
+{
 
     /**
      * @var string|boolean
@@ -50,7 +51,7 @@ class ExportActivitiesFilterParams {
     }
 
     /**
-     * @param string $type|boolean
+     * @param string $type |boolean
      */
     public function setType($type)
     {

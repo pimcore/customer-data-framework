@@ -30,8 +30,8 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
      */
     public function __construct(array $fields, $query)
     {
-        $this->fields      = $fields;
-        $this->query       = $query;
+        $this->fields = $fields;
+        $this->query = $query;
         $this->parsedQuery = $this->parseQuery($query);
     }
 
@@ -40,9 +40,11 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
      */
     public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $query)
     {
-        $queryBuilder = new ZendDbSelect($this->fields, [
+        $queryBuilder = new ZendDbSelect(
+            $this->fields, [
             'stripWildcards' => false // allow LIKE wildcards
-        ]);
+        ]
+        );
 
         $queryBuilder->processQuery($query, $this->parsedQuery);
     }

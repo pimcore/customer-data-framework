@@ -8,7 +8,8 @@
 
 namespace CustomerManagementFrameworkBundle\DataSimilarityMatcher;
 
-class ShoeSize implements DataSimilarityMatcherInterface {
+class ShoeSize implements DataSimilarityMatcherInterface
+{
 
     protected $defaultTreshold = 50;
 
@@ -21,19 +22,19 @@ class ShoeSize implements DataSimilarityMatcherInterface {
     {
         $distance = abs($value1 - $value2);
 
-        if($distance == 0) {
+        if ($distance == 0) {
             return 100;
         }
 
-        if($distance == 1) {
+        if ($distance == 1) {
             return 75;
         }
 
-        if($distance == 2) {
+        if ($distance == 2) {
             return 50;
         }
 
-        if($distance == 3) {
+        if ($distance == 3) {
             return 25;
         }
 

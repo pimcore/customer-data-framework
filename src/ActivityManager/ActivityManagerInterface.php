@@ -6,7 +6,7 @@
  * Time: 15:22
  */
 
-namespace  CustomerManagementFrameworkBundle\ActivityManager;
+namespace CustomerManagementFrameworkBundle\ActivityManager;
 
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 

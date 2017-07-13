@@ -47,10 +47,12 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
      * @param SsoIdentityServiceInterface $ssoIdentityService
      * @param EncryptionServiceInterface $encryptionService
      */
-    public function __construct(SsoIdentityServiceInterface $ssoIdentityService, EncryptionServiceInterface $encryptionService)
-    {
+    public function __construct(
+        SsoIdentityServiceInterface $ssoIdentityService,
+        EncryptionServiceInterface $encryptionService
+    ) {
         $this->ssoIdentityService = $ssoIdentityService;
-        $this->encryptionService  = $encryptionService;
+        $this->encryptionService = $encryptionService;
     }
 
     /**
@@ -87,28 +89,32 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
 
         $this->adapter = HybridAuth::authenticate($provider);
         if (!$this->adapter || !($this->adapter instanceof \Hybrid_Provider_Adapter)) {
-            throw new AuthenticationException(sprintf('Failed to authenticate with adapter for provider "%s"', htmlentities($provider)));
+            throw new AuthenticationException(
+                sprintf('Failed to authenticate with adapter for provider "%s"', htmlentities($provider))
+            );
         }
 
         /*
          * try/catch needed because sometimes it could happen that the access token is not valid anymore
          * => in these cases re-login needs to be performed.
          */
-        try{
+        try {
             $this->userProfile = $this->adapter->getUserProfile();
-        } catch( \Exception $e ){
+        } catch (\Exception $e) {
             // User not connected?
-            if( $e->getCode() == 6 || $e->getCode() == 7 ){
+            if ($e->getCode() == 6 || $e->getCode() == 7) {
                 // log the user out (erase his session locally)
                 $this->adapter->logout();
                 // try to authenticate again
-                $this->adapter = HybridAuth::authenticate( $provider );
+                $this->adapter = HybridAuth::authenticate($provider);
                 $this->userProfile = $this->adapter->getUserProfile();
             }
         }
 
         if (!$this->userProfile || !($this->userProfile instanceof \Hybrid_User_Profile)) {
-            throw new \RuntimeException(sprintf('Failed to load user profile for provider "%s"', htmlentities($provider)));
+            throw new \RuntimeException(
+                sprintf('Failed to load user profile for provider "%s"', htmlentities($provider))
+            );
         }
 
         $this->authenticated = true;
@@ -146,11 +152,13 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
         );
 
         if (null !== $ssoIdentity) {
-            throw new \RuntimeException(sprintf(
-                'Customer has already an SSO identity for provider %s and identifier %s',
-                $this->getProviderId(),
-                $this->getProfileIdentifier()
-            ));
+            throw new \RuntimeException(
+                sprintf(
+                    'Customer has already an SSO identity for provider %s and identifier %s',
+                    $this->getProviderId(),
+                    $this->getProfileIdentifier()
+                )
+            );
         }
 
         $ssoIdentity = $this->ssoIdentityService->createSsoIdentity(
@@ -176,8 +184,10 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
         $wrappedAdapter = $this->getAdapter()->adapter;
         if ($wrappedAdapter instanceof \Hybrid_Provider_Model_OAuth1) {
             $this->applyOAuth1Credentials($ssoIdentity);
-        } else if ($this->getAdapter()->adapter instanceof \Hybrid_Provider_Model_OAuth2) {
-            $this->applyOAuth2Credentials($ssoIdentity);
+        } else {
+            if ($this->getAdapter()->adapter instanceof \Hybrid_Provider_Model_OAuth2) {
+                $this->applyOAuth2Credentials($ssoIdentity);
+            }
         }
     }
 
@@ -196,10 +206,13 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
         }
 
         // see https://tools.ietf.org/html/rfc5849#section-2.3
-        $this->addTokenData($token, [
-            'access_token'        => 'token',
-            'access_token_secret' => 'tokenSecret',
-        ]);
+        $this->addTokenData(
+            $token,
+            [
+                'access_token' => 'token',
+                'access_token_secret' => 'tokenSecret',
+            ]
+        );
     }
 
     /**
@@ -218,11 +231,14 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
 
         // see https://tools.ietf.org/html/rfc6749#section-5.1
         // TODO get scope and token_type from response
-        $this->addTokenData($token, [
-            'access_token'  => 'accessToken',
-            'refresh_token' => 'refreshToken',
-            'expires_at'    => 'expiresAt'
-        ]);
+        $this->addTokenData(
+            $token,
+            [
+                'access_token' => 'accessToken',
+                'refresh_token' => 'refreshToken',
+                'expires_at' => 'expiresAt',
+            ]
+        );
     }
 
     /**
@@ -237,16 +253,20 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
 
         foreach ($mapping as $field => $property) {
             if (!isset($accessToken[$field])) {
-                throw new \RuntimeException(sprintf(
-                    'Unable to find field %s on access token data. Existing fields: %s',
-                    $field,
-                    implode(', ', array_keys($accessToken))
-                ));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to find field %s on access token data. Existing fields: %s',
+                        $field,
+                        implode(', ', array_keys($accessToken))
+                    )
+                );
             }
 
-            $setter = 'set' . ucfirst($property);
+            $setter = 'set'.ucfirst($property);
             if (!method_exists($token, $setter)) {
-                throw new \RuntimeException(sprintf('Can\'t apply property %s on token as method %s does not exist.', $property, $setter));
+                throw new \RuntimeException(
+                    sprintf('Can\'t apply property %s on token as method %s does not exist.', $property, $setter)
+                );
             }
 
             $secure = false;
@@ -271,15 +291,15 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
         $userProfile = $this->userProfile;
 
         $properties = [
-            'email'       => $userProfile->emailVerified ? $userProfile->email : null,
-            'gender'      => $userProfile->gender,
-            'firstname'   => $userProfile->firstName,
-            'lastname'    => $userProfile->lastName,
-            'street'      => $userProfile->address,
-            'zip'         => $userProfile->zip,
-            'city'        => $userProfile->city,
+            'email' => $userProfile->emailVerified ? $userProfile->email : null,
+            'gender' => $userProfile->gender,
+            'firstname' => $userProfile->firstName,
+            'lastname' => $userProfile->lastName,
+            'street' => $userProfile->address,
+            'zip' => $userProfile->zip,
+            'city' => $userProfile->city,
             'countryCode' => $userProfile->country,
-            'phone'       => $userProfile->phone,
+            'phone' => $userProfile->phone,
         ];
 
         foreach ($properties as $property => $value) {
@@ -295,8 +315,8 @@ class DefaultHybridAuthHandler implements ExternalAuthHandlerInterface
      */
     protected function setIfEmpty(CustomerInterface $customer, $property, $value = null)
     {
-        $getter = 'get' . ucfirst($property);
-        $setter = 'set' . ucfirst($property);
+        $getter = 'get'.ucfirst($property);
+        $setter = 'set'.ucfirst($property);
 
         if (!empty($value) && empty($customer->$getter())) {
             $customer->$setter($value);

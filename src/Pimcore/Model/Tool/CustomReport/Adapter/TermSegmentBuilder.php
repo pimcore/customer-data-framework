@@ -31,8 +31,10 @@ class TermSegmentBuilder extends Sql
     {
         $columns = parent::getColumns($configuration);
 
-        if($columns[0] != 'term') {
-            throw new \Exception("SQL statement needs to return one single column named 'term' with all distinct terms.");
+        if ($columns[0] != 'term') {
+            throw new \Exception(
+                "SQL statement needs to return one single column named 'term' with all distinct terms."
+            );
         }
 
         return $columns;
@@ -46,43 +48,48 @@ class TermSegmentBuilder extends Sql
      * @param null $selectField
      * @return array
      */
-    protected function getBaseQuery($filters, $fields, $ignoreSelectAndGroupBy = false, $drillDownFilters = null, $selectField = null)
-    {
+    protected function getBaseQuery(
+        $filters,
+        $fields,
+        $ignoreSelectAndGroupBy = false,
+        $drillDownFilters = null,
+        $selectField = null
+    ) {
         $db = Db::get();
         $condition = ["1 = 1"];
 
         $sql = $this->buildQueryString($this->config, $ignoreSelectAndGroupBy, $drillDownFilters, $selectField);
 
-        if(!$termDefinition = Model\Object\TermSegmentBuilderDefinition::getById($this->config->termDefinition)) {
+        if (!$termDefinition = Model\Object\TermSegmentBuilderDefinition::getById($this->config->termDefinition)) {
             throw new \Exception('please select a term definition');
         }
 
         /**
          * @var AbstractTermSegmentBuilderDefinition $termDefinition
          */
-        if(!$termDefinition instanceof AbstractTermSegmentBuilderDefinition) {
+        if (!$termDefinition instanceof AbstractTermSegmentBuilderDefinition) {
             throw new \Exception('term definition needs to be a subclass of AbstractTermSegmentBuilderDefinition');
         }
 
         $allMatchingTerms = $termDefinition->getAllPhrases();
 
         $allTerms = false;
-        if(sizeof($allMatchingTerms)) {
+        if (sizeof($allMatchingTerms)) {
 
-            foreach($allMatchingTerms as $term)  {
-                if(@preg_match($term, null) !== false) {
-                    if($allTerms === false) {
+            foreach ($allMatchingTerms as $term) {
+                if (@preg_match($term, null) !== false) {
+                    if ($allTerms === false) {
                         //MySQL regexp function doesn't work the same way like PHP regex matching => therfore we need to fetch all distinct terms and match them with PHP
                         $allTerms = $db->fetchCol($sql);
 
                     }
-                    foreach($allTerms as $t) {
-                        if(@preg_match($term, $t)){
-                            $condition[] = "term != " . $db->quote($t);
+                    foreach ($allTerms as $t) {
+                        if (@preg_match($term, $t)) {
+                            $condition[] = "term != ".$db->quote($t);
                         }
                     }
                 } else {
-                    $condition[] = "term != " . $db->quote($term);
+                    $condition[] = "term != ".$db->quote($term);
                 }
 
             }
@@ -91,7 +98,7 @@ class TermSegmentBuilder extends Sql
         if ($filters) {
             if (is_array($filters)) {
                 foreach ($filters as $filter) {
-                    $value = $filter["value"] ;
+                    $value = $filter["value"];
                     $type = $filter["type"];
                     if ($type == "date") {
                         $value = strtotime($value);
@@ -99,7 +106,9 @@ class TermSegmentBuilder extends Sql
                     $operator = $filter['operator'];
                     switch ($operator) {
                         case 'like':
-                            $condition[] = $db->quoteIdentifier($filter["property"]) . " LIKE " . $db->quote("%" . $value. "%");
+                            $condition[] = $db->quoteIdentifier($filter["property"])." LIKE ".$db->quote(
+                                    "%".$value."%"
+                                );
                             break;
                         case "lt":
                         case "gt":
@@ -108,13 +117,15 @@ class TermSegmentBuilder extends Sql
                             $compMapping = [
                                 "lt" => "<",
                                 "gt" => ">",
-                                "eq" => "="
+                                "eq" => "=",
                             ];
 
-                            $condition[] = $db->quoteIdentifier($filter["property"]) . " " . $compMapping[$operator] . " " . $db->quote($value);
+                            $condition[] = $db->quoteIdentifier(
+                                    $filter["property"]
+                                )." ".$compMapping[$operator]." ".$db->quote($value);
                             break;
                         case "=":
-                            $condition[] = $db->quoteIdentifier($filter["property"]) . " = " . $db->quote($value);
+                            $condition[] = $db->quoteIdentifier($filter["property"])." = ".$db->quote($value);
                             break;
                     }
                 }
@@ -124,12 +135,12 @@ class TermSegmentBuilder extends Sql
         if (!preg_match("/(ALTER|CREATE|DROP|RENAME|TRUNCATE|UPDATE|DELETE) /i", $sql, $matches)) {
             $condition = implode(" AND ", $condition);
 
-            $total = "SELECT COUNT(*) FROM (" . $sql . ") AS somerandxyz WHERE " . $condition;
+            $total = "SELECT COUNT(*) FROM (".$sql.") AS somerandxyz WHERE ".$condition;
 
             if ($fields) {
-                $data = "SELECT `" . implode("`, `", $fields) . "` FROM (" . $sql . ") AS somerandxyz WHERE " . $condition;
+                $data = "SELECT `".implode("`, `", $fields)."` FROM (".$sql.") AS somerandxyz WHERE ".$condition;
             } else {
-                $data = "SELECT * FROM (" . $sql . ") AS somerandxyz WHERE " . $condition;
+                $data = "SELECT * FROM (".$sql.") AS somerandxyz WHERE ".$condition;
             }
         } else {
             return;
@@ -138,7 +149,7 @@ class TermSegmentBuilder extends Sql
 
         return [
             "data" => $data,
-            "count" => $total
+            "count" => $total,
         ];
     }
 }

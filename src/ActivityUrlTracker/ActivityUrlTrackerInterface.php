@@ -10,7 +10,8 @@ namespace CustomerManagementFrameworkBundle\ActivityUrlTracker;
 
 use Psr\Log\LoggerInterface;
 
-interface ActivityUrlTrackerInterface {
+interface ActivityUrlTrackerInterface
+{
 
     public function __construct(LoggerInterface $logger);
 

@@ -5,7 +5,8 @@ namespace CustomerManagementFrameworkBundle\Model;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Object\CustomerSegment;
 
-interface CustomerInterface extends ElementInterface {
+interface CustomerInterface extends ElementInterface
+{
 
     /**
      * @return int

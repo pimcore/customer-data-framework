@@ -62,7 +62,7 @@ class ActionDefinition extends AbstractModel implements ActionDefinitionInterfac
             return null;
         }
 
-        $cacheKey = "cmf_plugin_actiontrigger_action" . $id;
+        $cacheKey = "cmf_plugin_actiontrigger_action".$id;
 
         try {
             $rule = Runtime::load($cacheKey);
@@ -77,6 +77,7 @@ class ActionDefinition extends AbstractModel implements ActionDefinitionInterfac
             } catch (\Exception $e) {
 
                 Logger::error($e->getMessage());
+
                 return null;
             }
         }
@@ -205,7 +206,7 @@ class ActionDefinition extends AbstractModel implements ActionDefinitionInterfac
             'implementationClass' => $this->getImplementationClass(),
             'options' => $this->getOptions(),
             'creationDate' => $this->getCreationDate(),
-            'modifictaionDate' => $this->getModificationDate()
+            'modifictaionDate' => $this->getModificationDate(),
         ];
     }
 

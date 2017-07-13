@@ -56,8 +56,10 @@ abstract class AbstractFieldBetween extends AbstractFilter implements OnCreateQu
         $operator = null;
         if ($type === static::TYPE_FROM) {
             $operator = '>';
-        } else if ($type === static::TYPE_TO) {
-            $operator = '<';
+        } else {
+            if ($type === static::TYPE_TO) {
+                $operator = '<';
+            }
         }
 
         if (null === $operator) {
@@ -65,7 +67,7 @@ abstract class AbstractFieldBetween extends AbstractFilter implements OnCreateQu
         }
 
         if ($this->isInclusive()) {
-            $operator = $operator . '=';
+            $operator = $operator.'=';
         }
 
         return $operator;
@@ -90,7 +92,7 @@ abstract class AbstractFieldBetween extends AbstractFilter implements OnCreateQu
     public function applyOnCreateQuery(CoreListing\Concrete $listing, Db\ZendCompatibility\QueryBuilder $query)
     {
         $from = $this->getFromValue();
-        $to   = $this->getToValue();
+        $to = $this->getToValue();
 
         if (null === $from && null === $to) {
             return;

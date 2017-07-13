@@ -11,14 +11,15 @@ namespace CustomerManagementFrameworkBundle\Model;
 use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 use Pimcore\Model\Object\CustomerSegment;
 
-abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implements CustomerInterface{
+abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implements CustomerInterface
+{
 
     public function cmfToArray()
     {
         $result = ObjectToArray::getInstance()->toArray($this);
 
         $segmentIds = [];
-        foreach($this->getAllSegments() as $segment) {
+        foreach ($this->getAllSegments() as $segment) {
             $segmentIds[] = $segment->getId();
         }
         $result['segments'] = $segmentIds;

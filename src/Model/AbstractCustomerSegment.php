@@ -11,13 +11,14 @@ namespace CustomerManagementFrameworkBundle\Model;
 
 use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 
-abstract class AbstractCustomerSegment extends \Pimcore\Model\Object\Concrete implements CustomerSegmentInterface {
+abstract class AbstractCustomerSegment extends \Pimcore\Model\Object\Concrete implements CustomerSegmentInterface
+{
 
     public function getDataForWebserviceExport()
     {
         $data = ObjectToArray::getInstance()->toArray($this);
 
-        if($data['group']) {
+        if ($data['group']) {
             $data['group'] = $data['group']['id'];
         }
 

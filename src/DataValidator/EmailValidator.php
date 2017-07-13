@@ -16,7 +16,8 @@ class EmailValidator implements DataValidatorInterface
      *
      * @return bool
      */
-    public function isValid($data) {
+    public function isValid($data)
+    {
         return filter_var($data, FILTER_VALIDATE_EMAIL);
     }
 }

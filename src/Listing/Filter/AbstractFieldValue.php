@@ -41,7 +41,7 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
             throw new \InvalidArgumentException('Field filter needs at least one field to operate on');
         }
 
-        $this->value   = trim($value);
+        $this->value = trim($value);
         $this->inverse = (bool)$inverse;
     }
 
@@ -66,7 +66,7 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
             return;
         }
 
-        $value     = $this->processValue($this->value);
+        $value = $this->processValue($this->value);
         $tableName = $this->getTableName($listing->getClassId());
 
         // we just have one field so match -> no sub-query needed
@@ -95,8 +95,13 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
      * @param Db\ZendCompatibility\QueryBuilder $query
      * @param string $operator
      */
-    protected function applyFieldCondition($field, $value, $tableName, Db\ZendCompatibility\QueryBuilder $query, $operator = Db\ZendCompatibility\QueryBuilder::SQL_AND)
-    {
+    protected function applyFieldCondition(
+        $field,
+        $value,
+        $tableName,
+        Db\ZendCompatibility\QueryBuilder $query,
+        $operator = Db\ZendCompatibility\QueryBuilder::SQL_AND
+    ) {
         $condition = sprintf(
             '`%s`.`%s` %s ?',
             $tableName,

@@ -14,19 +14,20 @@ use CustomerManagementFrameworkBundle\ActionTrigger\Trigger\TriggerDefinitionInt
 class Cron implements CustomerListEventInterface
 {
 
-    public function getName(){
+    public function getName()
+    {
         return "plugin.cmf.cron-trigger";
     }
 
     public function appliesToTrigger(TriggerDefinitionInterface $trigger)
     {
-        if($trigger->getEventName() != $this->getName()) {
+        if ($trigger->getEventName() != $this->getName()) {
             return false;
         }
 
         $options = $trigger->getOptions();
 
-        $cron = CronExpression::factory( $options['definition']);
+        $cron = CronExpression::factory($options['definition']);
 
         return $cron->isDue();
     }

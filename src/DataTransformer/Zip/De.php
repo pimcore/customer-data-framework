@@ -16,9 +16,9 @@ class De implements DataTransformerInterface
     {
         preg_match("/\\b\\d{4,5}\\b/", $data, $matches);
 
-        if($match = $matches[0]) {
-            if(strlen($match) == 4 && !(strpos($match, '0') === 0)) {
-                return '0' . $match;
+        if ($match = $matches[0]) {
+            if (strlen($match) == 4 && !(strpos($match, '0') === 0)) {
+                return '0'.$match;
             }
 
             return $match;

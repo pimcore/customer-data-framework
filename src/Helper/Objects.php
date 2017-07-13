@@ -13,13 +13,15 @@ use Pimcore\File;
 use Pimcore\Model\Element\Service;
 use Pimcore\Model\Object\Concrete;
 
-class Objects {
+class Objects
+{
 
     public static function getValidKey($key)
     {
-        if(!method_exists('Pimcore\Model\Element\Service', 'getValidKey')) {
+        if (!method_exists('Pimcore\Model\Element\Service', 'getValidKey')) {
             return File::getValidFilename($key);
         }
+
         return Service::getValidKey($key, 'object');
     }
 
@@ -33,13 +35,16 @@ class Objects {
         $origKey = is_null($origKey) ? self::getValidKey($object->getKey()) : $origKey;
 
         $list = new \Pimcore\Model\Object\Listing;
-        $list->setCondition("o_path = '".(string)$object->getParent()."/' and o_key = '".$object->getKey()."' and o_id != " . $object->getId());
+        $list->setCondition(
+            "o_path = '".(string)$object->getParent()."/' and o_key = '".$object->getKey(
+            )."' and o_id != ".$object->getId()
+        );
         $list->setLimit(1);
         $list = $list->load();
 
-        if(sizeof($list)) {
+        if (sizeof($list)) {
             $keyCounter++;
-            $object->setKey($origKey . '-' . $keyCounter);
+            $object->setKey($origKey.'-'.$keyCounter);
             self::checkObjectKeyHelper($object, $origKey, $keyCounter);
         }
     }
@@ -65,7 +70,7 @@ class Objects {
                 }
             }
 
-            if(!$found) {
+            if (!$found) {
                 $added[] = $addObject;
                 $array[] = $addObject;
             }
@@ -78,7 +83,7 @@ class Objects {
     {
         $result = [];
 
-        foreach($array as $object) {
+        foreach ($array as $object) {
             $result[$object->getId()] = $object;
         }
 
@@ -98,22 +103,21 @@ class Objects {
     {
         $removed = [];
 
-        foreach($array as $key => $object)
-        {
-            foreach($removeObjects as $removeObject) {
+        foreach ($array as $key => $object) {
+            foreach ($removeObjects as $removeObject) {
 
-                if(!method_exists($removeObject, 'getId')) {
+                if (!method_exists($removeObject, 'getId')) {
                     continue;
                 }
 
-                if($object->getId() == $removeObject->getId()) {
+                if ($object->getId() == $removeObject->getId()) {
                     $removed[] = $removeObject;
                     unset($array[$key]);
                 }
             }
         }
 
-        if(sizeof($removed)) {
+        if (sizeof($removed)) {
             $array = array_values($array);
         }
 

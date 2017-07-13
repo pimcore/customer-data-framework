@@ -10,7 +10,8 @@ namespace CustomerManagementFrameworkBundle\Filter;
 
 use Symfony\Component\HttpFoundation\Request;
 
-class ExportCustomersFilterParams {
+class ExportCustomersFilterParams
+{
 
 
     /**
@@ -87,9 +88,9 @@ class ExportCustomersFilterParams {
      */
     public function setSegments($segments)
     {
-        if(is_array($segments)) {
+        if (is_array($segments)) {
             $this->segments = $segments;
-        } elseif($segments) {
+        } elseif ($segments) {
             $this->segments = [$segments];
         } else {
             $this->segments = [];

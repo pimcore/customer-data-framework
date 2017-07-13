@@ -21,7 +21,8 @@ use Pimcore\Db;
 use Pimcore\Model\Object\Concrete;
 use Zend\Paginator\Paginator;
 
-class MariaDb implements ActivityStoreInterface{
+class MariaDb implements ActivityStoreInterface
+{
 
 
     const ACTIVITIES_TABLE = 'plugin_cmf_activities';
@@ -32,16 +33,19 @@ class MariaDb implements ActivityStoreInterface{
      *
      * @return ActivityStoreEntryInterface
      */
-    public function insertActivityIntoStore(ActivityInterface $activity) {
+    public function insertActivityIntoStore(ActivityInterface $activity)
+    {
 
-        $entry = $this->createEntryInstance([
-            'customerId' => $activity->getCustomer()->getId(),
-            'type' => $activity->cmfGetType(),
-            'implementationClass' => get_class($activity),
-            'o_id' => $activity instanceof Concrete ? $activity->getId() : null,
-            'a_id' => $activity instanceof ActivityExternalIdInterface ? $activity->getId() : null,
-            'activityDate' => $activity->cmfGetActivityDate()->getTimestamp()
-        ]);
+        $entry = $this->createEntryInstance(
+            [
+                'customerId' => $activity->getCustomer()->getId(),
+                'type' => $activity->cmfGetType(),
+                'implementationClass' => get_class($activity),
+                'o_id' => $activity instanceof Concrete ? $activity->getId() : null,
+                'a_id' => $activity instanceof ActivityExternalIdInterface ? $activity->getId() : null,
+                'activityDate' => $activity->cmfGetActivityDate()->getTimestamp(),
+            ]
+        );
 
         $this->saveActivityStoreEntry($entry, $activity);
 
@@ -54,32 +58,35 @@ class MariaDb implements ActivityStoreInterface{
      * @return ActivityStoreEntryInterface
      * @throws \Exception
      */
-    public function updateActivityInStore(ActivityInterface $activity, ActivityStoreEntryInterface $entry = null) {
+    public function updateActivityInStore(ActivityInterface $activity, ActivityStoreEntryInterface $entry = null)
+    {
 
-        if(is_null($entry)) {
+        if (is_null($entry)) {
             $entry = $this->getEntryForActivity($activity);
         }
 
-        if(!$entry instanceof ActivityStoreEntryInterface) {
+        if (!$entry instanceof ActivityStoreEntryInterface) {
             throw new \Exception("ActivityStoreEntry not found for given activity");
         }
 
         $this->saveActivityStoreEntry($entry, $activity);
+
         return $entry;
     }
 
-    public function updateActivityStoreEntry(ActivityStoreEntryInterface $entry, $updateAttributes = false) {
+    public function updateActivityStoreEntry(ActivityStoreEntryInterface $entry, $updateAttributes = false)
+    {
 
-        if(!$entry->getId()) {
+        if (!$entry->getId()) {
             throw new \Exception("updating only allowed for existing activity store entries");
         }
 
         $activity = null;
-        if(!$updateAttributes) {
+        if (!$updateAttributes) {
             $this->saveActivityStoreEntry($entry);
         }
 
-        if($activity = $entry->getRelatedItem()) {
+        if ($activity = $entry->getRelatedItem()) {
             $this->saveActivityStoreEntry($entry, $activity);
         }
 
@@ -94,7 +101,7 @@ class MariaDb implements ActivityStoreInterface{
         $data = $entry->getData();
 
         unset($data['attributes']);
-        if(!is_null($activity)) {
+        if (!is_null($activity)) {
 
             $data['attributes'] = $this->getActivityAttributeDataAsDynamicColumnInsert($activity);
         }
@@ -103,7 +110,7 @@ class MariaDb implements ActivityStoreInterface{
         $data['implementationClass'] = $db->quote(get_class($activity));
         $data['a_id'] = $db->quote($data['a_id']);
 
-        if($activity instanceof ActivityExternalIdInterface) {
+        if ($activity instanceof ActivityExternalIdInterface) {
             $data['a_id'] = $db->quote($activity->getId());
         }
 
@@ -120,11 +127,18 @@ class MariaDb implements ActivityStoreInterface{
         $data['md5'] = $db->quote(md5(serialize($md5Data)));
         $data['modificationDate'] = $time;
 
-        if($entry->getId()) {
-            \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->update(self::ACTIVITIES_TABLE, $data, "id = " . $entry->getId());
+        if ($entry->getId()) {
+            \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->update(
+                self::ACTIVITIES_TABLE,
+                $data,
+                "id = ".$entry->getId()
+            );
         } else {
             $data['creationDate'] = $time;
-            $id = \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->insert(self::ACTIVITIES_TABLE, $data);
+            $id = \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->insert(
+                self::ACTIVITIES_TABLE,
+                $data
+            );
             $entry->setId($id);
         }
 
@@ -141,18 +155,24 @@ class MariaDb implements ActivityStoreInterface{
         $db = Db::get();
 
         $row = false;
-        if($activity instanceof Concrete) {
-            $row = $db->fetchRow("select *, column_json(attributes) as attributes from " . self::ACTIVITIES_TABLE . " where o_id = ? order by id desc LIMIT 1 ", $activity->getId());
-        } elseif($activity instanceof ActivityExternalIdInterface) {
+        if ($activity instanceof Concrete) {
+            $row = $db->fetchRow(
+                "select *, column_json(attributes) as attributes from ".self::ACTIVITIES_TABLE." where o_id = ? order by id desc LIMIT 1 ",
+                $activity->getId()
+            );
+        } elseif ($activity instanceof ActivityExternalIdInterface) {
 
-            if(!$activity->getId()) {
+            if (!$activity->getId()) {
                 return false;
             }
 
-            $row = $db->fetchRow("select *, column_json(attributes) as attributes from " . self::ACTIVITIES_TABLE . " where a_id = ? AND type = ? order by id desc LIMIT 1 ", [ $activity->getId(), $activity->cmfGetType() ] );
+            $row = $db->fetchRow(
+                "select *, column_json(attributes) as attributes from ".self::ACTIVITIES_TABLE." where a_id = ? AND type = ? order by id desc LIMIT 1 ",
+                [$activity->getId(), $activity->cmfGetType()]
+            );
         }
 
-        if(!is_array($row)) {
+        if (!is_array($row)) {
             return false;
         }
 
@@ -167,13 +187,17 @@ class MariaDb implements ActivityStoreInterface{
      *
      * @return array
      */
-    public function getActivityDataForCustomer(CustomerInterface $customer) {
+    public function getActivityDataForCustomer(CustomerInterface $customer)
+    {
         $db = Db::get();
 
-        $result = $db->fetchAll("select id,activityDate,type,o_id,a_id,md5,creationDate,modificationDate,COLUMN_JSON(attributes) as attributes from " . self::ACTIVITIES_TABLE . " where customerId = ? order by activityDate asc", [$customer->getId()]);
+        $result = $db->fetchAll(
+            "select id,activityDate,type,o_id,a_id,md5,creationDate,modificationDate,COLUMN_JSON(attributes) as attributes from ".self::ACTIVITIES_TABLE." where customerId = ? order by activityDate asc",
+            [$customer->getId()]
+        );
 
-        foreach($result as $key => $value) {
-            if($value['attributes']) {
+        foreach ($result as $key => $value) {
+            if ($value['attributes']) {
                 $result[$key]['attributes'] = json_decode($value['attributes'], true);
             }
         }
@@ -184,13 +208,14 @@ class MariaDb implements ActivityStoreInterface{
     /**
      * @return DefaultMariaDbActivityList
      */
-    public function getActivityList() {
+    public function getActivityList()
+    {
         return new DefaultMariaDbActivityList();
     }
 
     /**
      * @param                              $pageSize
-     * @param int                          $page
+     * @param int $page
      * @param ExportActivitiesFilterParams $params
      *
      * @return Paginator
@@ -201,7 +226,8 @@ class MariaDb implements ActivityStoreInterface{
 
         $select = $db->select();
         $select
-            ->from(self::ACTIVITIES_TABLE,
+            ->from(
+                self::ACTIVITIES_TABLE,
                 [
                     'id',
                     'activityDate',
@@ -212,13 +238,12 @@ class MariaDb implements ActivityStoreInterface{
                     'md5',
                     'creationDate',
                     'modificationDate',
-                    'attributes' => 'COLUMN_JSON(attributes)'
+                    'attributes' => 'COLUMN_JSON(attributes)',
                 ]
-                )
-            ->order("activityDate asc")
-        ;
+            )
+            ->order("activityDate asc");
 
-        if($ts = $params->getModifiedSinceTimestamp()) {
+        if ($ts = $params->getModifiedSinceTimestamp()) {
             $select->where("modificationDate >= ?", $ts);
         }
 
@@ -226,7 +251,7 @@ class MariaDb implements ActivityStoreInterface{
         $paginator->setItemCountPerPage($pageSize);
         $paginator->setCurrentPageNumber($page);
 
-        foreach($paginator as &$value) {
+        foreach ($paginator as &$value) {
             $value = $this->createEntryInstance($value);
         }
 
@@ -239,20 +264,23 @@ class MariaDb implements ActivityStoreInterface{
      *
      * @return array
      */
-    public function getDeletionsData($entityType, $deletionsSinceTimestamp) {
+    public function getDeletionsData($entityType, $deletionsSinceTimestamp)
+    {
         $db = Db::get();
 
-        $sql = "select * from " . self::DELETIONS_TABLE . " where entityType = " . $db->quote($entityType) . " and creationDate >= " . $db->quote($deletionsSinceTimestamp);
+        $sql = "select * from ".self::DELETIONS_TABLE." where entityType = ".$db->quote(
+                $entityType
+            )." and creationDate >= ".$db->quote($deletionsSinceTimestamp);
 
         $data = $db->fetchAll($sql);
 
-        foreach($data as $key => $value) {
+        foreach ($data as $key => $value) {
             $data[$key]['id'] = intval($data[$key]['id']);
             $data[$key]['creationDate'] = intval($data[$key]['creationDate']);
         }
 
         return [
-            'data' => $data
+            'data' => $data,
         ];
     }
 
@@ -261,15 +289,17 @@ class MariaDb implements ActivityStoreInterface{
      *
      * @return bool
      */
-    public function deleteActivity(ActivityInterface $activity) {
+    public function deleteActivity(ActivityInterface $activity)
+    {
 
         $entry = $this->getEntryForActivity($activity);
 
-        if(!$entry) {
+        if (!$entry) {
             return false;
         }
 
         $this->deleteEntry($entry);
+
         return true;
     }
 
@@ -279,22 +309,26 @@ class MariaDb implements ActivityStoreInterface{
      *
      * @return void
      */
-    public function deleteEntry(ActivityStoreEntryInterface $entry) {
+    public function deleteEntry(ActivityStoreEntryInterface $entry)
+    {
         $db = Db::get();
         $db->beginTransaction();
 
         try {
-            $db->query("delete from " . self::ACTIVITIES_TABLE . " where id = " . $entry->getId());
+            $db->query("delete from ".self::ACTIVITIES_TABLE." where id = ".$entry->getId());
 
-            $db->insertOrUpdate(self::DELETIONS_TABLE, [
-                'id' => $entry->getId(),
-                'creationDate' => time(),
-                'entityType' => 'activities',
-                'type' => $entry->getType()
-            ]);
+            $db->insertOrUpdate(
+                self::DELETIONS_TABLE,
+                [
+                    'id' => $entry->getId(),
+                    'creationDate' => time(),
+                    'entityType' => 'activities',
+                    'type' => $entry->getType(),
+                ]
+            );
 
             $db->commit();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $e->rollback();
 
             throw new $e;
@@ -304,7 +338,8 @@ class MariaDb implements ActivityStoreInterface{
     /**
      * @param CustomerInterface $customer
      */
-    public function deleteCustomer(CustomerInterface $customer) {
+    public function deleteCustomer(CustomerInterface $customer)
+    {
 
     }
 
@@ -314,11 +349,16 @@ class MariaDb implements ActivityStoreInterface{
      *
      * @return ActivityStoreEntryInterface
      */
-    public function getEntryById($id) {
+    public function getEntryById($id)
+    {
 
         $db = Db::get();
 
-        if($row = $db->fetchRow(sprintf("select *, column_json(attributes) as attributes from %s where id = ?", self::ACTIVITIES_TABLE), $id)) {
+        if ($row = $db->fetchRow(
+            sprintf("select *, column_json(attributes) as attributes from %s where id = ?", self::ACTIVITIES_TABLE),
+            $id
+        )
+        ) {
             return $this->createEntryInstance($row);
         }
     }
@@ -326,7 +366,7 @@ class MariaDb implements ActivityStoreInterface{
 
     /**
      * @param CustomerInterface $customer
-     * @param null              $activityType
+     * @param null $activityType
      *
      * @return string
      */
@@ -335,17 +375,20 @@ class MariaDb implements ActivityStoreInterface{
         $db = Db::get();
 
         $and = '';
-        if($activityType) {
-            $and = ' and type=' . $db->quote($activityType);
+        if ($activityType) {
+            $and = ' and type='.$db->quote($activityType);
         }
 
-        return $db->fetchOne("select count(id) from " . self::ACTIVITIES_TABLE . " where customerId = ? $and", $customer->getId());
+        return $db->fetchOne(
+            "select count(id) from ".self::ACTIVITIES_TABLE." where customerId = ? $and",
+            $customer->getId()
+        );
     }
 
     /**
      * @param string $operator
      * @param string $type
-     * @param int    $count
+     * @param int $count
      *
      * @return array
      */
@@ -354,13 +397,15 @@ class MariaDb implements ActivityStoreInterface{
         $db = Db::get();
 
         $where = '';
-        if($type) {
-            $where = ' where type=' . $db->quote($type);
+        if ($type) {
+            $where = ' where type='.$db->quote($type);
         }
 
-        $operator = in_array($operator, ['<','>','=']) ? $operator : '=';
+        $operator = in_array($operator, ['<', '>', '=']) ? $operator : '=';
 
-        $sql = "select customerId from " . self::ACTIVITIES_TABLE . $where . " group by customerId having count(*) " .  $operator . intval($count);
+        $sql = "select customerId from ".self::ACTIVITIES_TABLE.$where." group by customerId having count(*) ".$operator.intval(
+                $count
+            );
 
         return $db->fetchCol($sql);
     }
@@ -370,7 +415,7 @@ class MariaDb implements ActivityStoreInterface{
      */
     public function getAvailableActivityTypes()
     {
-        $sql = "select distinct type from " . self::ACTIVITIES_TABLE;
+        $sql = "select distinct type from ".self::ACTIVITIES_TABLE;
 
         return Db::get()->fetchCol($sql);
     }
@@ -379,42 +424,45 @@ class MariaDb implements ActivityStoreInterface{
     protected function getActivityAttributeDataAsDynamicColumnInsert(ActivityInterface $activity)
     {
         $attributes = $activity->cmfToArray();
-        if(!is_array($attributes)) {
+        if (!is_array($attributes)) {
             throw new \Exception("cmfToArray() needs to return an associative array");
         }
 
         $dataTypes = [];
-        if($_dataTypes = $activity::cmfGetAttributeDataTypes()) {
-            foreach($_dataTypes as $field => $dataType) {
-                if($dataType == ActivityInterface::DATATYPE_STRING) {
+        if ($_dataTypes = $activity::cmfGetAttributeDataTypes()) {
+            foreach ($_dataTypes as $field => $dataType) {
+                if ($dataType == ActivityInterface::DATATYPE_STRING) {
                     $dataTypes[$field] = \CustomerManagementFrameworkBundle\Service\MariaDb::DYNAMIC_COLUMN_DATA_TYPE_CHAR;
-                } elseif($dataType == ActivityInterface::DATATYPE_DOUBLE) {
+                } elseif ($dataType == ActivityInterface::DATATYPE_DOUBLE) {
                     $dataTypes[$field] = \CustomerManagementFrameworkBundle\Service\MariaDb::DYNAMIC_COLUMN_DATA_TYPE_DOUBLE;
-                } elseif($dataType == ActivityInterface::DATATYPE_INTEGER) {
+                } elseif ($dataType == ActivityInterface::DATATYPE_INTEGER) {
                     $dataTypes[$field] = \CustomerManagementFrameworkBundle\Service\MariaDb::DYNAMIC_COLUMN_DATA_TYPE_INTEGER;
-                } elseif($dataType == ActivityInterface::DATATYPE_BOOL) {
+                } elseif ($dataType == ActivityInterface::DATATYPE_BOOL) {
                     $dataTypes[$field] = \CustomerManagementFrameworkBundle\Service\MariaDb::DYNAMIC_COLUMN_DATA_TYPE_BOOLEAN;
                 }
             }
         }
 
-        return \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->createDynamicColumnInsert($attributes, $dataTypes);
+        return \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->createDynamicColumnInsert(
+            $attributes,
+            $dataTypes
+        );
     }
-
 
 
     /**
      * @param array $data
      * @return ActivityStoreEntryInterface
      */
-    public function createEntryInstance(array $data) {
+    public function createEntryInstance(array $data)
+    {
         /**
          * @var ActivityStoreEntryInterface $entry
          */
         $entry = \Pimcore::getContainer()->get('cmf.activity_store_entry');
         $entry->setData($data);
 
-        if(!$entry instanceof ActivityStoreEntryInterface) {
+        if (!$entry instanceof ActivityStoreEntryInterface) {
             throw new \Exception("Activity store entry needs to implement ActivityStoreEntryInterface");
         }
 

@@ -12,25 +12,25 @@ use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 
 abstract class AbstractTransformer implements DataTransformerInterface
 {
-    protected $zipRegions = [ ];
+    protected $zipRegions = [];
 
     public function transform($data, $options = [])
     {
 
-        foreach($this->zipRegions as $state => $regions) {
-            foreach($regions as $region) {
+        foreach ($this->zipRegions as $state => $regions) {
+            foreach ($regions as $region) {
                 $from = $region[0];
                 $to = $region[1];
 
-                if(strlen($data) != strlen($from)) {
+                if (strlen($data) != strlen($from)) {
                     return null;
                 }
 
-                if($data == $from) {
+                if ($data == $from) {
                     return $state;
                 }
 
-                if($data >= $from && $data <= $to) {
+                if ($data >= $from && $data <= $to) {
                     return $state;
                 }
             }

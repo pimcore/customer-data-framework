@@ -22,6 +22,7 @@ abstract class AbstractCondition implements ConditionInterface
     public static function createConditionDefinitionFromEditmode($setting)
     {
         $setting = json_decode(json_encode($setting), true);
+
         return new \CustomerManagementFrameworkBundle\Model\ActionTrigger\ConditionDefinition($setting);
     }
 

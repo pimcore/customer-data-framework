@@ -12,7 +12,8 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Psr\Log\LoggerInterface;
 
-interface SegmentBuilderInterface {
+interface SegmentBuilderInterface
+{
 
     public function __construct($config, LoggerInterface $logger);
 

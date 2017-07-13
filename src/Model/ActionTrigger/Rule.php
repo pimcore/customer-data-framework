@@ -15,7 +15,8 @@ use Pimcore\Cache\Runtime;
 use Pimcore\Logger;
 use Pimcore\Model\AbstractModel;
 
-class Rule extends AbstractModel {
+class Rule extends AbstractModel
+{
 
     /**
      * @var int $id
@@ -81,7 +82,7 @@ class Rule extends AbstractModel {
             return null;
         }
 
-        $cacheKey = "cmf_plugin_actiontrigger_rule" . $id;
+        $cacheKey = "cmf_plugin_actiontrigger_rule".$id;
 
         try {
             $rule = Runtime::load($cacheKey);
@@ -96,6 +97,7 @@ class Rule extends AbstractModel {
             } catch (\Exception $e) {
 
                 Logger::error($e->getMessage());
+
                 return null;
             }
         }
@@ -248,7 +250,6 @@ class Rule extends AbstractModel {
     {
         $this->creationDate = $creationDate;
     }
-
 
 
 }

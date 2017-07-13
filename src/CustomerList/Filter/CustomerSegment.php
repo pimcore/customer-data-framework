@@ -43,7 +43,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      */
     protected $relationNames = [
         'manualSegments',
-        'calculatedSegments'
+        'calculatedSegments',
     ];
 
     /**
@@ -53,7 +53,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      */
     public function __construct(array $segments, Object\CustomerSegmentGroup $segmentGroup = null)
     {
-        $this->identifier   = $this->buildIdentifier($segmentGroup);
+        $this->identifier = $this->buildIdentifier($segmentGroup);
         $this->segmentGroup = $segmentGroup;
 
         foreach ($segments as $segment) {
@@ -140,9 +140,12 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      */
     protected function applyOrQuery(CoreListing\Concrete $listing, Db\ZendCompatibility\QueryBuilder $query)
     {
-        $segmentIds = array_map(function (Object\CustomerSegment $segment) {
-            return $segment->getId();
-        }, $this->segments);
+        $segmentIds = array_map(
+            function (Object\CustomerSegment $segment) {
+                return $segment->getId();
+            },
+            $this->segments
+        );
 
         $joinName = sprintf(
             '%s_%s',
@@ -182,14 +185,18 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      * @param string $joinName
      * @param int|array $conditionValue
      */
-    protected function addJoin(CoreListing\Concrete $listing, Db\ZendCompatibility\QueryBuilder $query, $joinName, $conditionValue)
-    {
-        $tableName          = $this->getTableName($listing->getClassId());
+    protected function addJoin(
+        CoreListing\Concrete $listing,
+        Db\ZendCompatibility\QueryBuilder $query,
+        $joinName,
+        $conditionValue
+    ) {
+        $tableName = $this->getTableName($listing->getClassId());
         $relationsTableName = $this->getTableName($listing->getClassId(), 'object_relations_');
 
         $dbService = MariaDb::getInstance();
 
-        if(is_array($conditionValue)) {
+        if (is_array($conditionValue)) {
             $conditionValue = $dbService->quoteArray($conditionValue);
         }
 
@@ -209,12 +216,16 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
             // must match any of the passed IDs
             $condition .= sprintf(
                 ' AND %1$s.dest_id IN (%2$s)',
-                $joinName, implode(',', $conditionValue));
+                $joinName,
+                implode(',', $conditionValue)
+            );
         } else {
             // runs an extra join for every ID - all joins must match
             $condition .= sprintf(
                 ' AND %1$s.dest_id = %2$s',
-                $joinName , $conditionValue);
+                $joinName,
+                $conditionValue
+            );
 
         }
 

@@ -6,7 +6,7 @@
  * Time: 15:22
  */
 
-namespace  CustomerManagementFrameworkBundle\ActivityManager;
+namespace CustomerManagementFrameworkBundle\ActivityManager;
 
 use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
@@ -31,9 +31,10 @@ class DefaultActivityManager implements ActivityManagerInterface
      * @param bool $disableEvents
      * @return $this
      */
-    public function setDisableEvents( $disableEvents )
+    public function setDisableEvents($disableEvents)
     {
         $this->disableEvents = $disableEvents;
+
         return $this;
     }
 
@@ -47,45 +48,53 @@ class DefaultActivityManager implements ActivityManagerInterface
      *
      * @throws \Exception
      */
-    
-    public function trackActivity(ActivityInterface $activity  )
+
+    public function trackActivity(ActivityInterface $activity)
     {
         $store = \Pimcore::getContainer()->get('cmf.activity_store');
 
-        if(!( $activity->cmfGetActivityDate() instanceof Carbon)) {
-            throw new \Exception(get_class($activity) . '::cmfGetActivityDate() needs to return a \Carbon\Carbon instance');
+        if (!($activity->cmfGetActivityDate() instanceof Carbon)) {
+            throw new \Exception(
+                get_class($activity).'::cmfGetActivityDate() needs to return a \Carbon\Carbon instance'
+            );
         }
 
-        if(!$activity->getCustomer() instanceof CustomerInterface) {
+        if (!$activity->getCustomer() instanceof CustomerInterface) {
             $store->deleteActivity($activity);
+
             return;
         }
 
 
         \Pimcore::getContainer()->get('cmf.segment_manager')->addCustomerToChangesQueue($activity->getCustomer());
 
-        if(!$activity->cmfIsActive()) {
+        if (!$activity->cmfIsActive()) {
             $store->deleteActivity($activity);
+
             return;
         }
 
-        if($entry = $store->getEntryForActivity($activity)) {
+        if ($entry = $store->getEntryForActivity($activity)) {
             $store->updateActivityInStore($activity, $entry);
         } else {
             $entry = $store->insertActivityIntoStore($activity);
 
-            if( !$this->isDisableEvents() ) {
-                $event = new \CustomerManagementFrameworkBundle\ActionTrigger\Event\NewActivity($activity->getCustomer());
+            if (!$this->isDisableEvents()) {
+                $event = new \CustomerManagementFrameworkBundle\ActionTrigger\Event\NewActivity(
+                    $activity->getCustomer()
+                );
                 $event->setActivity($activity);
-                $event->setEntry( $entry );
+                $event->setEntry($entry);
                 \Pimcore::getEventDispatcher()->dispatch($event->getName(), $event);
             }
         }
 
-        if( !$this->isDisableEvents() ) {
-            $event = new \CustomerManagementFrameworkBundle\ActionTrigger\Event\AfterTrackActivity($activity->getCustomer());
+        if (!$this->isDisableEvents()) {
+            $event = new \CustomerManagementFrameworkBundle\ActionTrigger\Event\AfterTrackActivity(
+                $activity->getCustomer()
+            );
             $event->setActivity($activity);
-            $event->setEntry( $entry );
+            $event->setEntry($entry);
             \Pimcore::getEventDispatcher()->dispatch($event->getName(), $event);
         }
     }

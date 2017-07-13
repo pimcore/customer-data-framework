@@ -20,7 +20,8 @@ use Zend\Paginator\Paginator;
  *
  * @package CustomerManagementFramework\ActivityStore
  */
-interface ActivityStoreInterface {
+interface ActivityStoreInterface
+{
 
     /**
      * @param ActivityInterface $activity
@@ -30,7 +31,7 @@ interface ActivityStoreInterface {
     public function insertActivityIntoStore(ActivityInterface $activity);
 
     /**
-     * @param ActivityInterface           $activity
+     * @param ActivityInterface $activity
      * @param ActivityStoreEntryInterface $entry
      *
      * @return ActivityStoreEntryInterface
@@ -96,7 +97,7 @@ interface ActivityStoreInterface {
 
     /**
      * @param                              $pageSize
-     * @param int                          $page
+     * @param int $page
      * @param ExportActivitiesFilterParams $params
      *
      * @return Paginator
@@ -114,7 +115,7 @@ interface ActivityStoreInterface {
 
     /**
      * @param CustomerInterface $customer
-     * @param null              $activityType
+     * @param null $activityType
      *
      * @return mixed
      */

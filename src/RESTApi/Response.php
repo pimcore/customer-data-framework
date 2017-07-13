@@ -10,7 +10,8 @@ namespace CustomerManagementFrameworkBundle\RESTApi;
 
 use Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse;
 
-class Response extends JsonResponse {
+class Response extends JsonResponse
+{
 
     const RESPONSE_CODE_OK = 200;
     const RESPONSE_CODE_CREATED = 201;

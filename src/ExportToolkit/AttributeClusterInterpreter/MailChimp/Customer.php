@@ -50,11 +50,13 @@ class Customer extends AbstractAttributeClusterInterpreter
         $dataCount = count($this->data);
 
         if ($dataCount <= $this->batchThreshold) {
-            $this->logger->info(sprintf(
-                '[MailChimp] Data count (%d) is below batch threshold (%d), sending one request per entry...',
-                $dataCount,
-                $this->batchThreshold
-            ));
+            $this->logger->info(
+                sprintf(
+                    '[MailChimp] Data count (%d) is below batch threshold (%d), sending one request per entry...',
+                    $dataCount,
+                    $this->batchThreshold
+                )
+            );
 
             $objectIds = array_keys($this->data);
 
@@ -62,9 +64,11 @@ class Customer extends AbstractAttributeClusterInterpreter
                 $this->commitSingle($objectIds[$i]);
             }
         } else {
-            $this->logger->info(sprintf(
-                '[MailChimp] Sending data as batch request'
-            ));
+            $this->logger->info(
+                sprintf(
+                    '[MailChimp] Sending data as batch request'
+                )
+            );
 
             $this->commitBatch();
         }
@@ -114,7 +118,9 @@ class Customer extends AbstractAttributeClusterInterpreter
     public function buildEntry(CustomerInterface $customer)
     {
         if (!isset($this->data[$customer->getId()])) {
-            throw new \RuntimeException(sprintf('Trying to create an entry for customer %d which is not in data set', $customer->getId()));
+            throw new \RuntimeException(
+                sprintf('Trying to create an entry for customer %d which is not in data set', $customer->getId())
+            );
         }
 
         // create entry - move merge fields to sub-array
@@ -132,7 +138,7 @@ class Customer extends AbstractAttributeClusterInterpreter
      */
     public function buildCustomerSegmentData(CustomerInterface $customer)
     {
-        $data          = [];
+        $data = [];
         $exportService = $this->getExportService();
 
         $customerSegments = [];
@@ -148,12 +154,14 @@ class Customer extends AbstractAttributeClusterInterpreter
             $remoteSegmentId = $exportService->getRemoteId($segment);
 
             if (!$exportService->wasExported($segment) || !$remoteSegmentId) {
-                $this->logger->error(sprintf(
-                    '[MailChimp][CUSTOMER %s] Can not handle segment %s (%s) as is was not exported yet and we don\'t have a remote ID. Please export segments first.',
-                    $customer->getId(),
-                    $segment->getName(),
-                    $segment->getId()
-                ));
+                $this->logger->error(
+                    sprintf(
+                        '[MailChimp][CUSTOMER %s] Can not handle segment %s (%s) as is was not exported yet and we don\'t have a remote ID. Please export segments first.',
+                        $customer->getId(),
+                        $segment->getName(),
+                        $segment->getId()
+                    )
+                );
 
                 continue;
             }
@@ -176,7 +184,7 @@ class Customer extends AbstractAttributeClusterInterpreter
      */
     public function transformMergeFields(array $dataRow)
     {
-        $config      = (array)$this->config;
+        $config = (array)$this->config;
         $mergeFields = (isset($config['merge_fields'])) ? (array)$config['merge_fields'] : [];
 
         $result = [];

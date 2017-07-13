@@ -11,7 +11,8 @@ namespace CustomerManagementFrameworkBundle\SegmentBuilder;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Psr\Log\LoggerInterface;
 
-abstract class AbstractSegmentBuilder implements SegmentBuilderInterface {
+abstract class AbstractSegmentBuilder implements SegmentBuilderInterface
+{
     private $config;
     private $logger;
 

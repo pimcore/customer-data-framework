@@ -11,7 +11,8 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger\Action;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 
-interface ActionInterface {
+interface ActionInterface
+{
 
     public function __construct(LoggerInterface $logger);
 

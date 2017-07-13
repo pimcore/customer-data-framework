@@ -48,6 +48,7 @@ class DefaultEncryptionService implements EncryptionServiceInterface
     {
         if (empty($plaintext)) {
             $this->getLogger()->warning('Returning empty encrypt() result as plaintext was empty');
+
             return '';
         }
 
@@ -70,6 +71,7 @@ class DefaultEncryptionService implements EncryptionServiceInterface
     {
         if (empty($ciphertext)) {
             $this->getLogger()->warning('Returning empty decrypt() result as ciphertext was empty');
+
             return '';
         }
 

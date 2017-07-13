@@ -28,7 +28,7 @@ class DefaultPageSize extends Helper
      */
     public function defaultPageSize()
     {
-        return (int) $this->defaultPageSize;
+        return (int)$this->defaultPageSize;
     }
 
     /**

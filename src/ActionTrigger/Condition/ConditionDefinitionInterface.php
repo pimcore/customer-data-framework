@@ -8,7 +8,8 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Condition;
 
-interface ConditionDefinitionInterface {
+interface ConditionDefinitionInterface
+{
     public function __construct(array $definitionData);
 
     /**
@@ -54,10 +55,9 @@ interface ConditionDefinitionInterface {
     public function getOperator();
 
 
-
     /**
      * @return array
      */
     public function toArray();
-    
+
 }

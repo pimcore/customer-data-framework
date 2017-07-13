@@ -120,7 +120,7 @@ class JsConfig extends Helper
     public function __toString(): string
     {
         $config = [
-            '<script>'
+            '<script>',
         ];
 
         foreach ($this->variables as $index => $varKey) {
@@ -130,11 +130,11 @@ class JsConfig extends Helper
                 $values = new \stdClass();
             }
 
-            $config[] = '    var ' . $varKey . ' = ' . json_encode($values) . ';';
+            $config[] = '    var '.$varKey.' = '.json_encode($values).';';
         }
 
         $config[] = '</script>';
 
-        return implode("\n", $config) . "\n";
+        return implode("\n", $config)."\n";
     }
 }

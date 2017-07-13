@@ -10,16 +10,17 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger\Action;
 
 use Psr\Log\LoggerInterface;
 
-abstract class AbstractAction implements ActionInterface{
+abstract class AbstractAction implements ActionInterface
+{
 
     protected $logger;
 
     protected static $actionDelayMultiplier = [
         'm' => 1,
         'h' => 60,
-        'd' => 60*24
+        'd' => 60 * 24,
     ];
-    
+
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;

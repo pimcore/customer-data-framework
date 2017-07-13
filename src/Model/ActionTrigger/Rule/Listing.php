@@ -15,7 +15,8 @@ class Listing extends AbstractListing
     /**
      * @return Rule[]
      */
-    public function load() {
+    public function load()
+    {
         return $this->getDao()->load();
     }
 }

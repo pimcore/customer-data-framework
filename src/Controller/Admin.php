@@ -20,6 +20,7 @@ class Admin extends AdminController implements EventedControllerInterface
         $this->initJsConfig();
 
     }
+
     public function onKernelResponse(FilterResponseEvent $event)
     {
 
@@ -69,7 +70,7 @@ class Admin extends AdminController implements EventedControllerInterface
             'urlSelect',
             'modal',
             'pimcoreLink',
-            'toggleGroup'
+            'toggleGroup',
         ];
     }
 
@@ -83,8 +84,10 @@ class Admin extends AdminController implements EventedControllerInterface
      */
     protected function buildPaginator(Request $request, $data, $defaultPageSize = null)
     {
-        if(is_null($defaultPageSize)) {
-            $defaultPageSize = \Pimcore::getContainer()->get('pimcore.templating.view_helper.defaultPageSize')->defaultPageSize();
+        if (is_null($defaultPageSize)) {
+            $defaultPageSize = \Pimcore::getContainer()->get(
+                'pimcore.templating.view_helper.defaultPageSize'
+            )->defaultPageSize();
         }
 
         $paginator = new Paginator($data);

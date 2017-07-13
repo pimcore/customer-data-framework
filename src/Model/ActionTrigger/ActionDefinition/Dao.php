@@ -11,19 +11,21 @@ class Dao extends Model\Dao\AbstractDao
     public function getById($id)
     {
 
-        $raw = $this->db->fetchRow("SELECT * FROM " . self::TABLE_NAME . " WHERE id = ?", $id);
+        $raw = $this->db->fetchRow("SELECT * FROM ".self::TABLE_NAME." WHERE id = ?", $id);
 
         if ($raw["id"]) {
             $raw['options'] = json_decode($raw['options'], true);
             $this->assignVariablesToModel($raw);
 
         } else {
-            throw new \Exception("Action trigger rule with ID " . $id . " doesn't exist");
+            throw new \Exception("Action trigger rule with ID ".$id." doesn't exist");
         }
     }
 
     protected $lastErrorCode = null;
-    public function save() {
+
+    public function save()
+    {
 
 
         $data = [
@@ -35,8 +37,8 @@ class Dao extends Model\Dao\AbstractDao
         ];
 
 
-        if($this->model->getId()) {
-            $this->db->updateWhere(self::TABLE_NAME , $data, $this->db->quoteInto("id = ?", $this->model->getId()));
+        if ($this->model->getId()) {
+            $this->db->updateWhere(self::TABLE_NAME, $data, $this->db->quoteInto("id = ?", $this->model->getId()));
         } else {
             $data['creationDate'] = time();
             unset($data['id']);
@@ -51,7 +53,8 @@ class Dao extends Model\Dao\AbstractDao
         return true;
     }
 
-    public function delete() {
+    public function delete()
+    {
 
         $this->db->beginTransaction();
         try {
@@ -65,7 +68,8 @@ class Dao extends Model\Dao\AbstractDao
         }
     }
 
-    public function getLastErrorCode() {
+    public function getLastErrorCode()
+    {
         return $this->lastErrorCode;
     }
 }

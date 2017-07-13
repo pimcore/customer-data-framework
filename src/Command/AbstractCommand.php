@@ -11,7 +11,8 @@ namespace CustomerManagementFrameworkBundle\Command;
 
 use Psr\Log\LoggerInterface;
 
-abstract class AbstractCommand extends \Pimcore\Console\AbstractCommand {
+abstract class AbstractCommand extends \Pimcore\Console\AbstractCommand
+{
 
     /**
      * @return LoggerInterface

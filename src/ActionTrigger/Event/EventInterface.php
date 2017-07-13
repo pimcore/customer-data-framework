@@ -10,8 +10,10 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger\Event;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\Trigger\TriggerDefinitionInterface;
 
-interface EventInterface {
-    
+interface EventInterface
+{
+
     public function getName();
+
     public function appliesToTrigger(TriggerDefinitionInterface $trigger);
 }

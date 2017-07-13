@@ -7,6 +7,7 @@
  */
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -29,16 +30,12 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
         $rules->setOrder('ASC');
 
         $json = array();
-        foreach($rules->load() as $rule)
-        {
+        foreach ($rules->load() as $rule) {
 
-            if($rule->getActive())
-            {
+            if ($rule->getActive()) {
                 $icon = 'plugin_cmf_icon_rule_enabled';
                 $title = 'active';
-            }
-            else
-            {
+            } else {
                 $icon = 'plugin_cmf_icon_rule_disabled';
                 $title = 'inactive';
             }
@@ -50,8 +47,8 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
                 'leaf' => true,
                 'qtipCfg' => array(
                     'title' => $title,
-                    'text' => $rule->getDescription()
-                )
+                    'text' => $rule->getDescription(),
+                ),
             );
         }
 
@@ -66,9 +63,8 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
      */
     public function getAction(Request $request)
     {
-        $rule = \CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule::getById( (int)$request->get('id') );
-        if($rule)
-        {
+        $rule = \CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule::getById((int)$request->get('id'));
+        if ($rule) {
             // create json config
             $json = array(
                 'id' => $rule->getId(),
@@ -77,20 +73,18 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
                 'active' => $rule->getActive(),
                 'trigger' => [],
                 'condition' => [],
-                'actions' => []
+                'actions' => [],
             );
 
 
-            foreach($rule->getTrigger() as $trigger)
-            {
+            foreach ($rule->getTrigger() as $trigger) {
                 $json['trigger'][] = $trigger->toArray();
             }
 
 
-            foreach($rule->getAction() as $action)
-            {
+            foreach ($rule->getAction() as $action) {
 
-                if(class_exists($action->getImplementationClass())) {
+                if (class_exists($action->getImplementationClass())) {
                     $actionData = call_user_func([$action->getImplementationClass(), 'getDataForEditmode'], $action);
                 } else {
                     throw new \Exception(sprintf("class '%s' does not exist", $action->getImplementationClass()));
@@ -99,10 +93,12 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
                 $json['actions'][] = $actionData;
             }
 
-            foreach($rule->getCondition() as $condition)
-            {
-                if(class_exists($condition->getImplementationClass())) {
-                    $conditionData = call_user_func([$condition->getImplementationClass(), 'getDataForEditmode'], $condition);
+            foreach ($rule->getCondition() as $condition) {
+                if (class_exists($condition->getImplementationClass())) {
+                    $conditionData = call_user_func(
+                        [$condition->getImplementationClass(), 'getDataForEditmode'],
+                        $condition
+                    );
                 } else {
                     throw new \Exception(sprintf("class '%s' does not exist", $condition->getImplementationClass()));
                 }
@@ -110,10 +106,10 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
                 $json['condition'][] = $conditionData;
             }
 
-            return $this->json( $json );
+            return $this->json($json);
         }
 
-        return $this->json( ['error'=>true, 'msg'=>'rule not found'] );
+        return $this->json(['error' => true, 'msg' => 'rule not found']);
     }
 
     /**
@@ -127,25 +123,23 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
         // send json response
         $return = array(
             'success' => false,
-            'message' => ''
+            'message' => '',
         );
 
         // save rule config
-        try
-        {
-            $rule = \CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule::getById( (int)$request->get('id') );
+        try {
+            $rule = \CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule::getById((int)$request->get('id'));
             $data = json_decode($request->get('data'));
 
             // apply basic settings
-            $rule->setName( $data->settings->name );
-            $rule->setDescription( $data->settings->description );
-            $rule->setActive( (bool)$data->settings->active );
+            $rule->setName($data->settings->name);
+            $rule->setDescription($data->settings->description);
+            $rule->setActive((bool)$data->settings->active);
 
 
             // save trigger
             $arrTrigger = array();
-            foreach($data->trigger as $setting)
-            {
+            foreach ($data->trigger as $setting) {
                 $setting = json_decode(json_encode($setting), true);
                 $trigger = new \CustomerManagementFrameworkBundle\Model\ActionTrigger\TriggerDefinition($setting);
                 $arrTrigger[] = $trigger;
@@ -153,15 +147,14 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
             $rule->setTrigger($arrTrigger);
 
 
-
-
-
             // create a tree from the flat structure
             $arrCondition = [];
-            foreach($data->conditions as $setting)
-            {
-                if(class_exists($setting->implementationClass)) {
-                    $condition = call_user_func([$setting->implementationClass, 'createConditionDefinitionFromEditmode'], $setting);
+            foreach ($data->conditions as $setting) {
+                if (class_exists($setting->implementationClass)) {
+                    $condition = call_user_func(
+                        [$setting->implementationClass, 'createConditionDefinitionFromEditmode'],
+                        $setting
+                    );
                 } else {
                     throw new \Exception(sprintf("class '%s' does not exist", $setting->implementationClass));
                 }
@@ -169,16 +162,18 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
             }
 
 
-            $rule->setCondition( $arrCondition );
+            $rule->setCondition($arrCondition);
 
 
             // save action
             $arrActions = array();
-            foreach($data->actions as $setting)
-            {
+            foreach ($data->actions as $setting) {
 
-                if(class_exists($setting->implementationClass)) {
-                    $action = call_user_func([$setting->implementationClass, 'createActionDefinitionFromEditmode'], $setting);
+                if (class_exists($setting->implementationClass)) {
+                    $action = call_user_func(
+                        [$setting->implementationClass, 'createActionDefinitionFromEditmode'],
+                        $setting
+                    );
                 } else {
                     throw new \Exception(sprintf("class '%s' does not exist", $setting->implementationClass));
                 }
@@ -195,9 +190,7 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
             // finish
             $return['success'] = true;
             $return['id'] = $rule->getId();
-        }
-        catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $return['message'] = $e->getMessage();
         }
 
@@ -216,23 +209,20 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
         // send json response
         $return = array(
             'success' => false,
-            'message' => ''
+            'message' => '',
         );
 
         // save rule
-        try
-        {
+        try {
             $rule = new \CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule();
-            $rule->setName( $request->get('name') );
-            if($rule->save()) {
+            $rule->setName($request->get('name'));
+            if ($rule->save()) {
 
                 $return['success'] = true;
                 $return['id'] = $rule->getId();
             }
 
-        }
-        catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $return['message'] = $e->getMessage();
             $return['success'] = false;
         }
@@ -252,18 +242,15 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
         // send json response
         $return = array(
             'success' => false,
-            'message' => ''
+            'message' => '',
         );
 
         // delete rule
-        try
-        {
-            $rule = \CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule::getById( (int)$request->get('id') );
+        try {
+            $rule = \CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule::getById((int)$request->get('id'));
             $rule->delete();
             $return['success'] = true;
-        }
-        catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $return['message'] = $e->getMessage();
         }
 

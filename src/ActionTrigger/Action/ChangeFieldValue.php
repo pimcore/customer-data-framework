@@ -10,7 +10,8 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger\Action;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
-class ChangeFieldValue extends AbstractAction {
+class ChangeFieldValue extends AbstractAction
+{
 
     const OPTION_FIELD = 'field';
     const OPTION_VALUE = 'value';
@@ -20,13 +21,19 @@ class ChangeFieldValue extends AbstractAction {
 
         $options = $actionDefinition->getOptions();
 
-        if($field = $options[self::OPTION_FIELD]) {
-            $setter = 'set' . ucfirst($field);
-            $getter = 'get' . ucfirst($field);
+        if ($field = $options[self::OPTION_FIELD]) {
+            $setter = 'set'.ucfirst($field);
+            $getter = 'get'.ucfirst($field);
 
-            if(method_exists($customer, $setter)) {
-                if($customer->$getter() != $options[self::OPTION_VALUE]) {
-                    $this->logger->info(sprintf("ChangeFieldValue action: change field %s to value '%s'", $field, $options[self::OPTION_VALUE]));
+            if (method_exists($customer, $setter)) {
+                if ($customer->$getter() != $options[self::OPTION_VALUE]) {
+                    $this->logger->info(
+                        sprintf(
+                            "ChangeFieldValue action: change field %s to value '%s'",
+                            $field,
+                            $options[self::OPTION_VALUE]
+                        )
+                    );
                     $customer->$setter($options[self::OPTION_VALUE]);
                     $customer->save();
                 } else {

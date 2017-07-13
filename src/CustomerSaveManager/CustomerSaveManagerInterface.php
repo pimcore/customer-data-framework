@@ -17,7 +17,7 @@ interface CustomerSaveManagerInterface
     public function preAdd(CustomerInterface $customer);
 
     public function preUpdate(CustomerInterface $customer);
-    
+
     public function postUpdate(CustomerInterface $customer);
 
     public function preDelete(CustomerInterface $customer);
@@ -47,12 +47,12 @@ interface CustomerSaveManagerInterface
      * @param bool $disableVersions
      * @return mixed
      */
-    function saveWithDisabledHooks(CustomerInterface $customer, $disableVersions = false );
+    function saveWithDisabledHooks(CustomerInterface $customer, $disableVersions = false);
 
     /**
      * Dirty / quick save customer w/o invoking any hooks, save-handlers, version and alike
      * @param CustomerInterface $customer
      * @return mixed
      */
-    function saveDirty( CustomerInterface $customer );
+    function saveDirty(CustomerInterface $customer);
 }

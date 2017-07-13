@@ -37,6 +37,7 @@ class EscapeFormValue extends Helper
     public function escapeFormValue($value)
     {
         $engine = \Pimcore::getContainer()->get('pimcore.templating.engine.php');
+
         return str_replace('"', '\"', $engine->escape($value));
     }
 

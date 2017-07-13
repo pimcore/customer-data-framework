@@ -20,15 +20,16 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
      * @param string $namingScheme
      * @return void
      */
-    public function apply(CustomerInterface $customer, $parentPath, $namingScheme) {
+    public function apply(CustomerInterface $customer, $parentPath, $namingScheme)
+    {
 
-        if($namingScheme) {
+        if ($namingScheme) {
             $namingScheme = $this->extractNamingScheme($customer, $namingScheme);
 
             $key = $namingScheme[sizeof($namingScheme) - 1];
             unset($namingScheme[sizeof($namingScheme) - 1]);
 
-            $parentPath .= '/' . implode('/',$namingScheme);
+            $parentPath .= '/'.implode('/', $namingScheme);
             $customer->setKey($key);
         }
 
@@ -36,7 +37,7 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
 
         $customer->setParent(Service::createFolderByPath($parentPath));
 
-        if(!$customer->getKey()) {
+        if (!$customer->getKey()) {
             $customer->setKey(uniqid());
         }
         Objects::checkObjectKey($customer);
@@ -55,17 +56,17 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
     private function extractNamingScheme(CustomerInterface $customer, $namingScheme)
     {
         $namingScheme = explode('/', $namingScheme);
-        foreach($namingScheme as $i => $namingSchemeItem) {
+        foreach ($namingScheme as $i => $namingSchemeItem) {
             preg_match('/{([a-zA-Z0-9]*)}/', $namingSchemeItem, $matchedPlaceholder);
 
-            if(sizeof($matchedPlaceholder)) {
+            if (sizeof($matchedPlaceholder)) {
                 $placeholder = $matchedPlaceholder[0];
                 $field = $matchedPlaceholder[1];
 
-                $getter = 'get' . ucfirst($field);
-                if(method_exists($customer, $getter)) {
-                    $value = (string) $customer->$getter();
-                    $value = $value ? : '--';
+                $getter = 'get'.ucfirst($field);
+                if (method_exists($customer, $getter)) {
+                    $value = (string)$customer->$getter();
+                    $value = $value ?: '--';
                     $namingScheme[$i] = Objects::getValidKey(str_replace($placeholder, $value, $namingSchemeItem));
                 }
             }

@@ -32,17 +32,22 @@ class DefaultQueue implements QueueInterface
 
         $time = time();
 
-        $this->logger->debug(sprintf("add action id %s for customer %s to queue", $action->getId(), $customer->getId()));
+        $this->logger->debug(
+            sprintf("add action id %s for customer %s to queue", $action->getId(), $customer->getId())
+        );
 
         $actionDateTimestamp = time() + $action->getActionDelay();
 
-        $db->insert(self::QUEUE_TABLE, [
-            'customerId' => $customer->getId(),
-            'actionDate' => $actionDateTimestamp,
-            'actionId' => $action->getId(),
-            'creationDate' => $time,
-            'modificationDate' => $time
-        ]);
+        $db->insert(
+            self::QUEUE_TABLE,
+            [
+                'customerId' => $customer->getId(),
+                'actionDate' => $actionDateTimestamp,
+                'actionId' => $action->getId(),
+                'creationDate' => $time,
+                'modificationDate' => $time,
+            ]
+        );
     }
 
     public function processQueue()
@@ -51,15 +56,15 @@ class DefaultQueue implements QueueInterface
 
         $select = $db->select();
         $select
-            ->from(self::QUEUE_TABLE
+            ->from(
+                self::QUEUE_TABLE
             )
             ->order("id asc")
-            ->where('actionDate <= ?', time())
-        ;
+            ->where('actionDate <= ?', time());
 
         $items = $db->fetchAll($select);
 
-        foreach($items as $item) {
+        foreach ($items as $item) {
             $this->processQueueItem($item);
         }
     }
@@ -72,7 +77,7 @@ class DefaultQueue implements QueueInterface
         $action = ActionDefinition::getById($item['actionId']);
         $customer = Customer::getById($item['customerId']);
 
-        if($action && $customer) {
+        if ($action && $customer) {
             \Pimcore::getContainer()->get('cmf.action_trigger.action_manager')->processAction($action, $customer);
         }
 

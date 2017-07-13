@@ -13,7 +13,8 @@ use CustomerManagementFrameworkBundle\Factory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DuplicatesIndexCommand extends AbstractCommand {
+class DuplicatesIndexCommand extends AbstractCommand
+{
 
     protected function configure()
     {
@@ -21,8 +22,7 @@ class DuplicatesIndexCommand extends AbstractCommand {
             ->setDescription("Handles the duplicate search index")
             ->addOption("recreate", "r", null, "recreate index (total index will be deleted and recreated)")
             ->addOption("calculate", "c", null, "calculate potential duplicates")
-            ->addOption("analyze", "a", null, "analyze false postives (used for calculating potential duplicates)")
-        ;
+            ->addOption("analyze", "a", null, "analyze false postives (used for calculating potential duplicates)");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -34,19 +34,19 @@ class DuplicatesIndexCommand extends AbstractCommand {
          */
         $duplicatesIndex = \Pimcore::getContainer()->get('cmf.customer_duplicates_index');
 
-        if($input->getOption("analyze")) {
+        if ($input->getOption("analyze")) {
             $duplicatesIndex->setAnalyzeFalsePositives(true);
         } else {
             $duplicatesIndex->setAnalyzeFalsePositives(false);
         }
 
-        if($input->getOption("recreate")) {
+        if ($input->getOption("recreate")) {
             $logger->notice("start recreate index");
             $duplicatesIndex->recreateIndex();
             $logger->notice("finished recreate index");
         }
 
-        if($input->getOption("calculate")) {
+        if ($input->getOption("calculate")) {
             $logger->notice("start calculating potential duplicates");
             $duplicatesIndex->calculatePotentialDuplicates($output);
             $logger->notice("finished calculating potential duplicates");

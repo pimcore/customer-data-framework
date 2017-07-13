@@ -11,7 +11,8 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger\Condition;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 
-interface ConditionInterface {
+interface ConditionInterface
+{
 
     /**
      * ConditionInterface constructor.
@@ -22,7 +23,7 @@ interface ConditionInterface {
 
     /**
      * @param ConditionDefinitionInterface $conditionDefinition
-     * @param CustomerInterface            $customer
+     * @param CustomerInterface $customer
      *
      * @return bool
      */

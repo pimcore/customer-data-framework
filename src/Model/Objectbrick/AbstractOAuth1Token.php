@@ -14,7 +14,7 @@ abstract class AbstractOAuth1Token extends AbstractData implements OAuth1TokenIn
     {
         return [
             'token',
-            'tokenSecret'
+            'tokenSecret',
         ];
     }
 }

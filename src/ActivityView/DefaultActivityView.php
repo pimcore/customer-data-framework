@@ -13,7 +13,8 @@ use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\View\Formatter\ViewFormatterInterface;
 use Pimcore\Model\Object\ClassDefinition;
 
-class DefaultActivityView implements ActivityViewInterface {
+class DefaultActivityView implements ActivityViewInterface
+{
 
     /**
      * @var ViewFormatterInterface
@@ -28,11 +29,12 @@ class DefaultActivityView implements ActivityViewInterface {
         $this->viewFormatter = $viewFormatter;
     }
 
-    public function getOverviewAdditionalData(ActivityStoreEntryInterface $activityEntry) {
+    public function getOverviewAdditionalData(ActivityStoreEntryInterface $activityEntry)
+    {
 
         $implementationClass = $activityEntry->getImplementationClass();
-        if(class_exists($implementationClass)) {
-            if(method_exists($implementationClass, 'cmfGetOverviewData')) {
+        if (class_exists($implementationClass)) {
+            if (method_exists($implementationClass, 'cmfGetOverviewData')) {
                 return $implementationClass::cmfgetOverviewData($activityEntry);
             }
         }
@@ -40,13 +42,15 @@ class DefaultActivityView implements ActivityViewInterface {
         return false;
     }
 
-    public function getDetailviewData(ActivityStoreEntryInterface $activityEntry) {
+    public function getDetailviewData(ActivityStoreEntryInterface $activityEntry)
+    {
 
         $implementationClass = $activityEntry->getImplementationClass();
-        if(class_exists($implementationClass)) {
-            if(method_exists($implementationClass, 'cmfGetDetailviewData')) {
+        if (class_exists($implementationClass)) {
+            if (method_exists($implementationClass, 'cmfGetDetailviewData')) {
                 $data = $implementationClass::cmfGetDetailviewData($activityEntry);
-                return $data ? : [];
+
+                return $data ?: [];
             }
         }
 
@@ -56,8 +60,8 @@ class DefaultActivityView implements ActivityViewInterface {
     public function getDetailviewTemplate(ActivityStoreEntryInterface $activityEntry)
     {
         $implementationClass = $activityEntry->getImplementationClass();
-        if(class_exists($implementationClass)) {
-            if(method_exists($implementationClass, 'cmfGetDetailviewTemplate')) {
+        if (class_exists($implementationClass)) {
+            if (method_exists($implementationClass, 'cmfGetDetailviewTemplate')) {
                 return $implementationClass::cmfGetDetailviewTemplate($activityEntry);
             }
         }
@@ -73,35 +77,36 @@ class DefaultActivityView implements ActivityViewInterface {
         return $this->viewFormatter->translate($messageId, $parameters);
     }
 
-    public function formatAttributes($implementationClass, array $attributes, array $visibleKeys = []) {
+    public function formatAttributes($implementationClass, array $attributes, array $visibleKeys = [])
+    {
 
         $class = false;
-        if($implementationClass) {
-            if(method_exists($implementationClass, 'classId')) {
+        if ($implementationClass) {
+            if (method_exists($implementationClass, 'classId')) {
                 $class = ClassDefinition::getById($implementationClass::classId());
             }
         }
 
         $attributes = $this->extractVisibleAttributes($attributes, $visibleKeys);
-        if(method_exists($implementationClass, 'cmfGetAttributeDataTypes')) {
+        if (method_exists($implementationClass, 'cmfGetAttributeDataTypes')) {
             $dataTypes = (array)$implementationClass::cmfGetAttributeDataTypes();
         }
         $dataTypes = is_array($dataTypes) ? $dataTypes : [];
 
         $result = [];
-        $vf     = $this->viewFormatter;
+        $vf = $this->viewFormatter;
 
-        foreach($attributes as $key => $value) {
-            if(!is_scalar($value)) {
+        foreach ($attributes as $key => $value) {
+            if (!is_scalar($value)) {
                 unset($attributes[$key]);
                 continue;
             }
 
-            if($class && $fd = $class->getFieldDefinition($key)) {
+            if ($class && $fd = $class->getFieldDefinition($key)) {
                 $result[$vf->getLabelByFieldDefinition($fd)] = $vf->formatValueByFieldDefinition($fd, $value);
                 continue;
-            }elseif(isset($dataTypes[$key])) {
-                if($dataTypes[$key] == ActivityInterface::DATATYPE_BOOL) {
+            } elseif (isset($dataTypes[$key])) {
+                if ($dataTypes[$key] == ActivityInterface::DATATYPE_BOOL) {
                     $value = $this->viewFormatter->formatBooleanValue($value);
                 }
             }
@@ -112,12 +117,14 @@ class DefaultActivityView implements ActivityViewInterface {
         return $result;
     }
 
-    private function extractVisibleAttributes(array $attributes, array $visibleKeys) {
-        if(sizeof($visibleKeys)) {
+    private function extractVisibleAttributes(array $attributes, array $visibleKeys)
+    {
+        if (sizeof($visibleKeys)) {
             $visibleAttributes = [];
-            foreach($visibleKeys as $column) {
+            foreach ($visibleKeys as $column) {
                 $visibleAttributes[$column] = $attributes[$column];
             }
+
             return $visibleAttributes;
         }
 

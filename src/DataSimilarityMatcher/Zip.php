@@ -8,6 +8,7 @@
 
 namespace CustomerManagementFrameworkBundle\DataSimilarityMatcher;
 
-class Zip extends SimilarText {
+class Zip extends SimilarText
+{
     protected $defaultTreshold = 60;
 }

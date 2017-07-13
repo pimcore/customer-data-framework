@@ -16,7 +16,6 @@ use Pimcore\Controller\Configuration\TemplatePhp;
 use Zend\Paginator\Paginator;
 
 
-
 /**
  * @Route("/activities")
  */
@@ -52,7 +51,8 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
             $select = $list->getQuery();
             $select->reset(QueryBuilder::COLUMNS);
             $select->reset(QueryBuilder::FROM);
-            $select->from(\CustomerManagementFrameworkBundle\ActivityStore\MariaDb::ACTIVITIES_TABLE,
+            $select->from(
+                \CustomerManagementFrameworkBundle\ActivityStore\MariaDb::ACTIVITIES_TABLE,
                 ["type" => "distinct(type)"]
             );
             $types = \Pimcore\Db::get()->fetchCol($select);
@@ -70,13 +70,16 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
         }
 
 
-        return $this->render('PimcoreCustomerManagementFrameworkBundle:Admin\Activities:list.html.php', [
-            'types' => $types,
-            'type' => $type,
-            'activities' => $paginator,
-            'customer' => $customer,
-            'activityView' => \Pimcore::getContainer()->get('cmf.activity_view')
-        ]);
+        return $this->render(
+            'PimcoreCustomerManagementFrameworkBundle:Admin\Activities:list.html.php',
+            [
+                'types' => $types,
+                'type' => $type,
+                'activities' => $paginator,
+                'customer' => $customer,
+                'activityView' => \Pimcore::getContainer()->get('cmf.activity_view'),
+            ]
+        );
     }
 
 
@@ -89,9 +92,12 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
 
         $activity = \Pimcore::getContainer()->get("cmf.activity_store")->getEntryById($request->get('activityId'));
 
-        return $this->render('PimcoreCustomerManagementFrameworkBundle:Admin\Activities:detail.html.php', [
-            'activity' => $activity,
-            'activityView' => \Pimcore::getContainer()->get('cmf.activity_view')
-        ]);
+        return $this->render(
+            'PimcoreCustomerManagementFrameworkBundle:Admin\Activities:detail.html.php',
+            [
+                'activity' => $activity,
+                'activityView' => \Pimcore::getContainer()->get('cmf.activity_view'),
+            ]
+        );
     }
 }

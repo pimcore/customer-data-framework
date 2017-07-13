@@ -35,8 +35,10 @@ class DefaultCustomerDuplicatesView implements CustomerDuplicatesViewInterface
 
     public function getListData(CustomerInterface $customer)
     {
-        if(!sizeof(Config::getConfig()->CustomerDuplicatesService->DuplicatesView->listFields)) {
-            throw new \Exception("CustomerDuplicatesService->DuplicatesView->listFields not defined in CMF config file");
+        if (!sizeof(Config::getConfig()->CustomerDuplicatesService->DuplicatesView->listFields)) {
+            throw new \Exception(
+                "CustomerDuplicatesService->DuplicatesView->listFields not defined in CMF config file"
+            );
         }
 
         $class = ClassDefinition::getById($customer::classId());
@@ -44,33 +46,37 @@ class DefaultCustomerDuplicatesView implements CustomerDuplicatesViewInterface
         $fields = Config::getConfig()->CustomerDuplicatesService->DuplicatesView->listFields->toArray();
         $listData = [];
 
-        foreach($fields as $field) {
+        foreach ($fields as $field) {
 
-            if(is_array($field)) {
+            if (is_array($field)) {
                 $labels = [];
                 $values = [];
-                foreach($field as $_field) {
+                foreach ($field as $_field) {
                     $labels[] = $this->viewFormatter->getLabelByFieldName($class, $_field);
                     $values[] = $this->getValueFromCustomer($customer, $_field);
                 }
                 $listData[implode('/', $labels)] = implode(' ', $values);
-             } else {
-                $listData[$this->viewFormatter->getLabelByFieldName($class, $field)] = $this->getValueFromCustomer($customer, $field);
+            } else {
+                $listData[$this->viewFormatter->getLabelByFieldName($class, $field)] = $this->getValueFromCustomer(
+                    $customer,
+                    $field
+                );
             }
         }
 
         return $listData;
     }
 
-    protected function getValueFromCustomer(CustomerInterface $customer, $fieldName, $format = true) {
-        if($fieldName == 'id') {
+    protected function getValueFromCustomer(CustomerInterface $customer, $fieldName, $format = true)
+    {
+        if ($fieldName == 'id') {
             return $customer->getId();
         }
 
-        $getter = 'get' . ucfirst($fieldName);
+        $getter = 'get'.ucfirst($fieldName);
         $value = $customer->$getter();
 
-        if($format) {
+        if ($format) {
             $class = ClassDefinition::getById($customer::classId());
             $fd = $class->getFieldDefinition($fieldName);
             $value = $this->viewFormatter->formatValueByFieldDefinition($fd, $customer->$getter());

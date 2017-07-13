@@ -28,31 +28,37 @@ class SingleExporter extends AbstractExporter
     public function export()
     {
         $exportService = $this->exportService;
-        $apiClient     = $this->apiClient;
+        $apiClient = $this->apiClient;
 
         $customer = $this->getCustomer($this->customerId);
 
         // entry to send to API
-        $entry    = $this->interpreter->buildEntry($customer);
+        $entry = $this->interpreter->buildEntry($customer);
         $remoteId = $this->apiClient->subscriberHash($entry['email_address']);
 
-        $this->logger->info(sprintf(
-            '[MailChimp][CUSTOMER %s] Exporting customer with remote ID %s',
-            $this->customerId,
-            $remoteId
-        ));
-
-        if ($exportService->wasExported($customer)) {
-            $this->logger->info(sprintf(
-                '[MailChimp][CUSTOMER %s] Customer already exists remotely with remote ID %s',
+        $this->logger->info(
+            sprintf(
+                '[MailChimp][CUSTOMER %s] Exporting customer with remote ID %s',
                 $this->customerId,
                 $remoteId
-            ));
+            )
+        );
+
+        if ($exportService->wasExported($customer)) {
+            $this->logger->info(
+                sprintf(
+                    '[MailChimp][CUSTOMER %s] Customer already exists remotely with remote ID %s',
+                    $this->customerId,
+                    $remoteId
+                )
+            );
         } else {
-            $this->logger->info(sprintf(
-                '[MailChimp][CUSTOMER %s] Customer was not exported yet',
-                $this->customerId
-            ));
+            $this->logger->info(
+                sprintf(
+                    '[MailChimp][CUSTOMER %s] Customer was not exported yet',
+                    $this->customerId
+                )
+            );
         }
 
         // always PUT as API handles both create and update on PUT and we don't need to remember a state
@@ -62,23 +68,27 @@ class SingleExporter extends AbstractExporter
         );
 
         if ($apiClient->success()) {
-            $this->logger->info(sprintf(
-                '[MailChimp][CUSTOMER %s] Export was successful. Remote ID is %s',
-                $this->customerId,
-                $remoteId
-            ));
+            $this->logger->info(
+                sprintf(
+                    '[MailChimp][CUSTOMER %s] Export was successful. Remote ID is %s',
+                    $this->customerId,
+                    $remoteId
+                )
+            );
 
             // add note
             $exportService
                 ->createExportNote($customer, $result['id'])
                 ->save();
         } else {
-            $this->logger->error(sprintf(
-                '[MailChimp][CUSTOMER %s] Export failed: %s %s',
-                $this->customerId,
-                json_encode($apiClient->getLastError()),
-                $apiClient->getLastResponse()['body']
-            ));
+            $this->logger->error(
+                sprintf(
+                    '[MailChimp][CUSTOMER %s] Export failed: %s %s',
+                    $this->customerId,
+                    json_encode($apiClient->getLastError()),
+                    $apiClient->getLastResponse()['body']
+                )
+            );
         }
     }
 }
