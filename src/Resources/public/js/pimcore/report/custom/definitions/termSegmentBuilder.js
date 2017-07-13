@@ -46,7 +46,7 @@ pimcore.report.custom.definition.termSegmentBuilder = Class.create({
                         autoLoad: true,
                         proxy: {
                             type: 'ajax',
-                            url: "/plugin/CustomerManagementFramework/report_term-segment-builder/get-segment-builder-definitions",
+                            url: "/admin/customermanagementframework/report/term-segment-builder/get-segment-builder-definitions",
                             reader: {
                                 type: 'json',
                                 rootProperty: "data",

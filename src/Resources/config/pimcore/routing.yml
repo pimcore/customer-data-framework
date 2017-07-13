@@ -3,6 +3,11 @@ _pimcore_customermanagementframework_backend:
     type:     annotation
     prefix:   /admin/customermanagementframework
 
+_pimcore_customermanagementframework_backend_report:
+    resource: "@PimcoreCustomerManagementFrameworkBundle/Controller/Report"
+    type:     annotation
+    prefix:   /admin/customermanagementframework/report
+
 _pimcore_customermanagementframework_rest:
     resource: "@PimcoreCustomerManagementFrameworkBundle/Controller/Rest"
     type:     annotation
