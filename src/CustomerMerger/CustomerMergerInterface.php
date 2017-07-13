@@ -16,6 +16,7 @@ interface CustomerMergerInterface
 
     /**
      * Adds all values from source customer to target customer and returns merged target customer instance.
+     * Afterwards the source customer will be set to inactive and unpublished.
      *
      * @param CustomerInterface $sourceCustomer
      * @param CustomerInterface $targetCustomer

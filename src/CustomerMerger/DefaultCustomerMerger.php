@@ -36,6 +36,15 @@ class DefaultCustomerMerger implements CustomerMergerInterface
         $this->config = $config->CustomerMerger;
     }
 
+    /**
+     * Adds all values from source customer to target customer and returns merged target customer instance.
+     * Afterwards the source customer will be set to inactive and unpublished.
+     *
+     * @param CustomerInterface $sourceCustomer
+     * @param CustomerInterface $targetCustomer
+     * @param bool $mergeAttributes
+     * @return CustomerInterface
+     */
     public function mergeCustomers(
         CustomerInterface $sourceCustomer,
         CustomerInterface $targetCustomer,
@@ -70,6 +79,7 @@ class DefaultCustomerMerger implements CustomerMergerInterface
                 )
             );
             $sourceCustomer->setPublished(false);
+            $sourceCustomer->setActive(false);
             $sourceCustomer->setKey($sourceCustomer->getId());
             $sourceCustomer->save();
 
@@ -95,6 +105,11 @@ class DefaultCustomerMerger implements CustomerMergerInterface
         return $targetCustomer;
     }
 
+    /**
+     * @param CustomerInterface $sourceCustomer
+     * @param CustomerInterface $targetCustomer
+     * @param $mergeAttributes
+     */
     private function mergeCustomerValues(
         CustomerInterface $sourceCustomer,
         CustomerInterface $targetCustomer,
@@ -126,6 +141,10 @@ class DefaultCustomerMerger implements CustomerMergerInterface
         $this->mergeActivities($sourceCustomer, $targetCustomer);
     }
 
+    /**
+     * @param CustomerInterface $sourceCustomer
+     * @param CustomerInterface $targetCustomer
+     */
     private function mergeActivities(CustomerInterface $sourceCustomer, CustomerInterface $targetCustomer)
     {
         $list = \Pimcore::getContainer()->get('cmf.activity_store')->getActivityList();

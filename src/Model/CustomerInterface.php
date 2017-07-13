@@ -31,6 +31,12 @@ interface CustomerInterface extends ElementInterface
     public function getActive();
 
     /**
+     * @param bool $active
+     * @return void
+     */
+    public function setActive($active);
+
+    /**
      * @return string
      */
     public function getGender();
