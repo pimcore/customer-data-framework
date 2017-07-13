@@ -111,7 +111,8 @@ services:
     cmf.activity_url_tracker:
         class: CustomerManagementFrameworkBundle\ActivityUrlTracker\DefaultActivityUrlTracker
         lazy: true
-        arguments: ['@cmf.logger']
+        calls:
+            - [setLogger, ['@cmf.logger']]
 
     cmf.customer_save_manager:
         class: CustomerManagementFrameworkBundle\CustomerSaveManager\DefaultCustomerSaveManager

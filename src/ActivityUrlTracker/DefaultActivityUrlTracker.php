@@ -8,30 +8,29 @@
 
 namespace CustomerManagementFrameworkBundle\ActivityUrlTracker;
 
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\Activity\TrackedUrlActivity;
+use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Model\Object\ActivityDefinition;
-use Psr\Log\LoggerInterface;
 
 class DefaultActivityUrlTracker implements ActivityUrlTrackerInterface
 {
+    use LoggerAware;
 
     /**
-     * @var LoggerInterface
+     * @param $customerIdEncoded
+     * @param $activityCode
+     * @param array $params
+     * @return void
      */
-    private $logger;
-
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
     public function trackActivity($customerIdEncoded, $activityCode, array $params)
     {
         $class = \Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassName();
 
         if ($customer = $class::getByIdEncoded($customerIdEncoded, 1)) {
 
+            /**
+             * @var ActivityDefinition $activityDefinition
+             */
             if ($activityDefinition = ActivityDefinition::getByCode($activityCode, 1)) {
                 $activity = new TrackedUrlActivity($customer, $activityDefinition);
 

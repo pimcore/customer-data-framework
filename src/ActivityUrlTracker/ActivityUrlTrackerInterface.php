@@ -8,12 +8,13 @@
 
 namespace CustomerManagementFrameworkBundle\ActivityUrlTracker;
 
-use Psr\Log\LoggerInterface;
-
 interface ActivityUrlTrackerInterface
 {
-
-    public function __construct(LoggerInterface $logger);
-
+    /**
+     * @param $customerIdEncoded
+     * @param $activityCode
+     * @param array $params
+     * @return void
+     */
     public function trackActivity($customerIdEncoded, $activityCode, array $params);
 }
