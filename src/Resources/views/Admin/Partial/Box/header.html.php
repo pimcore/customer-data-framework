@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var \Pimcore\Templating\PhpEngine $this
+ * @var \Pimcore\Templating\PhpEngine $view
+ * @var \Pimcore\Templating\GlobalVariables $app
+ */
+?>
 <!-- Filters -->
 <div class="box box-default box-collapsible-state search-filters-box" data-identifier="<?= $this->identifier ?>">
     <div class="box-header with-border">

@@ -1,4 +1,10 @@
 <?php
+/**
+ * @var \Pimcore\Templating\PhpEngine $this
+ * @var \Pimcore\Templating\PhpEngine $view
+ * @var \Pimcore\Templating\GlobalVariables $app
+ */
+
 /** @var \Zend\Paginator\Paginator $paginator */
 $paginator = $this->paginator;
 
