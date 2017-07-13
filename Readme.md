@@ -7,3 +7,4 @@
 * [Customer Duplicates Service](./docs/CustomerDuplicatesService.md)
 * [Webservice](./docs/Webservice.md)
 * [Cronjobs](./docs/Cronjobs.md)
+* [Single Sign On](./docs/Single_Sign_on.md)

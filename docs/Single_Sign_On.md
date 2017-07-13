@@ -60,7 +60,7 @@ service stores them as objects as childs of the customer object.
 
 #### ExternalAuthHandler
 
-See [ExternalAuthHandlerInterface](../lib/CustomerManagementFramework/Authentication/Sso/ExternalAuthHandlerInterface.php).
+See [ExternalAuthHandlerInterface](../lib/CustomerManagementFrameworkBundle/Authentication/Sso/ExternalAuthHandlerInterface.php).
 
 Responsible for the actual third-party authentication. As this can vary by authentication method and used libraries, this
 interface defines 3 basic methods which define the authentication flow. All 3 methods take the request object as parameter
@@ -76,7 +76,7 @@ the handler is ready and can be initialized by calling `authenticate()` on a con
 
 ### Example
 
-You can find an annotated example of a simple username/password login form with added social login functionality in [../frontend-samples/sso_client](../frontend-samples/sso_client).
+You can find an annotated example of a simple username/password login form with added social login functionality in [../frontend-samples/sso_client_pimcore5](../frontend-samples/sso_client_pimcore5).
 
 
 ## SSO Provider
