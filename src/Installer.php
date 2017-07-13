@@ -30,6 +30,19 @@ class Installer extends AbstractInstaller {
         return file_exists(PIMCORE_CONFIGURATION_DIRECTORY . '/plugins/CustomerManagementFramework/config.php');
     }
 
+    public function canBeInstalled()
+    {
+        return !$this->isInstalled();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function needsReloadAfterInstall()
+    {
+        return true;
+    }
+
     public function installPermissions() {
 
         $permissions = [
