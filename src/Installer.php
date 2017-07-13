@@ -204,11 +204,13 @@ class Installer extends AbstractInstaller {
 
     public static function installClasses()
     {
-        self::installClass("CustomerSegmentGroup", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_CustomerSegmentGroup_export.json');
-        self::installClass("CustomerSegment", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_CustomerSegment_export.json');
-        self::installClass("ActivityDefinition", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_ActivityDefinition_export.json');
-        self::installClass("SsoIdentity", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_SsoIdentity_export.json');
-        self::installClass("TermSegmentBuilderDefinition", PIMCORE_PLUGINS_PATH . '/CustomerManagementFramework/install/class_source/class_TermSegmentBuilderDefinition_export.json');
+        $sourcePath = __DIR__ . '/../install/class_source';
+
+        self::installClass("CustomerSegmentGroup", $sourcePath . '/class_CustomerSegmentGroup_export.json');
+        self::installClass("CustomerSegment", $sourcePath . '/class_CustomerSegment_export.json');
+        self::installClass("ActivityDefinition", $sourcePath . '/class_ActivityDefinition_export.json');
+        self::installClass("SsoIdentity", $sourcePath . '/class_SsoIdentity_export.json');
+        self::installClass("TermSegmentBuilderDefinition", $sourcePath . '/class_TermSegmentBuilderDefinition_export.json');
     }
 
     public static function installClass($classname, $filepath) {
@@ -228,20 +230,20 @@ class Installer extends AbstractInstaller {
 
     public static function installConfig() {
 
-        $dir = PIMCORE_CONFIGURATION_DIRECTORY . '/config/plugins/CustomerManagementFramework';
+        $dir = PIMCORE_CONFIGURATION_DIRECTORY . '/plugins/CustomerManagementFramework';
 
         if (!is_dir($dir)) {
             mkdir($dir, 0775, true);
         }
 
-        foreach(["config.php", "di.php"] as $file) {
+        foreach(["config.php"] as $file) {
 
-            $target = PIMCORE_CONFIGURATION_DIRECTORY . '/config/plugins/CustomerManagementFramework/' . $file;
+            $target = PIMCORE_CONFIGURATION_DIRECTORY . '/plugins/CustomerManagementFramework/' . $file;
 
             if (!is_file($target)) {
 
                 copy(
-                    PIMCORE_CONFIGURATION_DIRECTORY . "/CustomerManagementFramework/install/config/" . $file,
+                    realpath(__DIR__ . "/../install/config/") . '/' . $file,
                     $target);
             }
         }
