@@ -8,24 +8,26 @@
 
 namespace CustomerManagementFrameworkBundle;
 
+use Pimcore\Extension\Bundle\Installer\AbstractInstaller;
 use Pimcore\Logger;
-use Pimcore\Model\Staticroute;
-use TiBeN\CrontabManager\CrontabAdapter;
-use TiBeN\CrontabManager\CrontabJob;
-use TiBeN\CrontabManager\CrontabRepository;
 
-class Installer {
+class Installer extends AbstractInstaller {
 
     public function install() {
 
         $this->installPermissions();
         $this->installDatabaseTables();
         $this->installClasses();
-        $this->installStaticRoutes();
         $this->installConfig();
 
 
         return true;
+    }
+
+    public function isInstalled()
+    {
+        // implement your own logic here
+        return file_exists(PIMCORE_CONFIGURATION_DIRECTORY . '/plugins/CustomerManagementFramework/config.php');
     }
 
     public function installPermissions() {
@@ -213,7 +215,7 @@ class Installer {
 
     public static function installConfig() {
 
-        $dir = PIMCORE_WEBSITE_PATH . '/config/plugins/CustomerManagementFramework';
+        $dir = PIMCORE_CONFIGURATION_DIRECTORY . '/config/plugins/CustomerManagementFramework';
 
         if (!is_dir($dir)) {
             mkdir($dir, 0775, true);
@@ -221,12 +223,12 @@ class Installer {
 
         foreach(["config.php", "di.php"] as $file) {
 
-            $target = PIMCORE_WEBSITE_PATH . '/config/plugins/CustomerManagementFramework/' . $file;
+            $target = PIMCORE_CONFIGURATION_DIRECTORY . '/config/plugins/CustomerManagementFramework/' . $file;
 
             if (!is_file($target)) {
 
                 copy(
-                    PIMCORE_PLUGINS_PATH . "/CustomerManagementFramework/install/config/" . $file,
+                    PIMCORE_CONFIGURATION_DIRECTORY . "/CustomerManagementFramework/install/config/" . $file,
                     $target);
             }
         }

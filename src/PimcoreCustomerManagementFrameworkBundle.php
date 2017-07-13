@@ -43,4 +43,12 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
 
         $loader->load('services.yml');
     }
+
+    /**
+     * @return Installer
+     */
+    public function getInstaller()
+    {
+        return new Installer();
+    }
 }
