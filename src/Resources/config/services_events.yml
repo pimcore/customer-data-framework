@@ -1,0 +1,31 @@
+services:
+    pimcore.event_listener.frontend.activity_url_tracker:
+            class: CustomerManagementFrameworkBundle\EventListener\Frontend\UrlActivityTracker
+            calls:
+                - [setPimcoreContextResolver, ['@pimcore.service.request.pimcore_context_resolver']]
+            tags:
+                - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: -200 }
+
+
+    cmf.event_listener.pimcore_object:
+       class: CustomerManagementFrameworkBundle\Event\PimcoreObjectEventListener
+       tags:
+           - { name: kernel.event_listener, event: pimcore.object.preUpdate, method: onPreUpdate }
+           - { name: kernel.event_listener, event: pimcore.object.postUpdate, method: onPostUpdate }
+           - { name: kernel.event_listener, event: pimcore.object.preAdd, method: onPreAdd }
+           - { name: kernel.event_listener, event: pimcore.object.preDelete, method: onPreDelete }
+           - { name: kernel.event_listener, event: pimcore.object.postDelete, method: onPostDelete }
+
+    cmf.event_listener.maintenance:
+          class: CustomerManagementFrameworkBundle\Event\MaintenanceEventListener
+          tags:
+              - { name: kernel.event_listener, event: pimcore.system.maintenance, method: onMaintenance }
+
+    cmf.event_listener.action_trigger:
+        class: CustomerManagementFrameworkBundle\ActionTrigger\EventHandler\DefaultEventHandler
+        tags:
+            - { name: kernel.event_listener, event: plugin.cmf.new-activity, method: handleEvent }
+            - { name: kernel.event_listener, event: plugin.cmf.execute-segment-builders, method: handleEvent }
+            - { name: kernel.event_listener, event: plugin.cmf.after-track-activity, method: handleEvent }
+        calls:
+            - [setLogger, ['@cmf.logger']]

@@ -32,5 +32,7 @@ class PimcoreCustomerManagementFrameworkExtension extends Extension
         );
 
         $loader->load('services.yml');
+        $loader->load('services_templating.yml');
+        $loader->load('services_events.yml');
     }
 }

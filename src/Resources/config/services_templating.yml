@@ -1,0 +1,51 @@
+services:
+    pimcore.templating.view_helper.minifiedAssetUrl:
+            class: CustomerManagementFrameworkBundle\Templating\Helper\MinifiedAssetUrl
+            tags:
+                - { name: templating.helper, alias: minifiedAssetUrl }
+
+    pimcore.templating.view_helper.jsConfig:
+        class: CustomerManagementFrameworkBundle\Templating\Helper\JsConfig
+        tags:
+            - { name: templating.helper, alias: jsConfig }
+
+    pimcore.templating.view_helper.filterFormAction:
+        class: CustomerManagementFrameworkBundle\Templating\Helper\FilterFormAction
+        tags:
+            - { name: templating.helper, alias: filterFormAction }
+
+    pimcore.templating.view_helper.formFilterParams:
+        class: CustomerManagementFrameworkBundle\Templating\Helper\FormFilterParams
+        tags:
+            - { name: templating.helper, alias: formFilterParams }
+
+    pimcore.templating.view_helper.formOrderParams:
+        class: CustomerManagementFrameworkBundle\Templating\Helper\FormOrderParams
+        tags:
+            - { name: templating.helper, alias: formOrderParams }
+
+
+    pimcore.templating.view_helper.addPerPageParam:
+        class: CustomerManagementFrameworkBundle\Templating\Helper\AddPerPageParam
+        tags:
+            - { name: templating.helper, alias: addPerPageParam }
+
+    pimcore.templating.view_helper.selfUrl:
+        class: CustomerManagementFrameworkBundle\Templating\Helper\SelfUrl
+        tags:
+            - { name: templating.helper, alias: selfUrl }
+
+    pimcore.templating.view_helper.formQueryString:
+            class: CustomerManagementFrameworkBundle\Templating\Helper\FormQueryString
+            tags:
+                - { name: templating.helper, alias: formQueryString }
+
+    pimcore.templating.view_helper.defaultPageSize:
+            class: CustomerManagementFrameworkBundle\Templating\Helper\DefaultPageSize
+            tags:
+                - { name: templating.helper, alias: defaultPageSize }
+
+    pimcore.templating.view_helper.escapeFormValue:
+            class: CustomerManagementFrameworkBundle\Templating\Helper\EscapeFormValue
+            tags:
+                - { name: templating.helper, alias: escapeFormValue }
