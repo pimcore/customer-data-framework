@@ -26,7 +26,7 @@ On top of the ActivityStore the ActivityManager is responsible for handling acti
 
 Example:
 ```
-// $activity needs to implement ActvityInterface
+// $activity needs to implement ActivityInterface
 \Pimcore::getContainer()->get('cmf.activity_manager')->trackActivity($activity);
 ```
 
