@@ -82,4 +82,4 @@ CustomerManagementFrameworkBundle\Model\Activity\GenericActivity
 
 This activity is used as a standard via the [REST api](./Webservice.md) if no implentationClass is defined. It can handle a nested, associative array of data which is only saved in the ActivityStore. 
 
-But this doesn't mean that only these GenericActivity implementation could be used for activities without it's own persistance. It would definitly make sense to implement a separate activity class to track logins for example.
+But this doesn't mean that only this GenericActivity implementation could be used for activities without it's own persistance. It would definitly make sense to implement a separate activity class to track logins for example.
