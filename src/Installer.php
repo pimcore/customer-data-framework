@@ -14,13 +14,20 @@ use Pimcore\Logger;
 class Installer extends AbstractInstaller
 {
 
+    const CONFIG_FILE_NAME = 'config.php';
+    const CONFIG_FILE_LOCATION = '/plugins/CustomerManagementFramework';
+
+
+    protected $preferCustomConfiguration = true;
+
+
     public function install()
     {
 
         $this->installPermissions();
         $this->installDatabaseTables();
         $this->installClasses();
-        $this->installConfig();
+        $this->installConfig( $this->preferCustomConfiguration );
 
 
         return true;
@@ -28,8 +35,15 @@ class Installer extends AbstractInstaller
 
     public function isInstalled()
     {
-        // implement your own logic here
-        return file_exists(PIMCORE_CONFIGURATION_DIRECTORY.'/plugins/CustomerManagementFramework/config.php');
+
+        $configFile = self::CONFIG_FILE_LOCATION . '/' . self::CONFIG_FILE_NAME;
+        if( file_exists( PIMCORE_CUSTOM_CONFIGURATION_DIRECTORY . $configFile ) ) {
+            return true;
+        }
+        if( file_exists( PIMCORE_CONFIGURATION_DIRECTORY . $configFile ) ) {
+            return true;
+        }
+        return false;
     }
 
     public function canBeInstalled()
@@ -236,10 +250,11 @@ class Installer extends AbstractInstaller
         }
     }
 
-    public static function installConfig()
-    {
+    public static function installConfig( $preferCustomConfiguration = false ) {
 
-        $dir = PIMCORE_CONFIGURATION_DIRECTORY.'/plugins/CustomerManagementFramework';
+        $baseDir = $preferCustomConfiguration ? PIMCORE_CUSTOM_CONFIGURATION_DIRECTORY : PIMCORE_CONFIGURATION_DIRECTORY;
+
+        $dir = $baseDir . self::CONFIG_FILE_LOCATION;
 
         if (!is_dir($dir)) {
             mkdir($dir, 0775, true);
@@ -247,7 +262,7 @@ class Installer extends AbstractInstaller
 
         foreach (["config.php"] as $file) {
 
-            $target = PIMCORE_CONFIGURATION_DIRECTORY.'/plugins/CustomerManagementFramework/'.$file;
+            $target = $dir .'/'.$file;
 
             if (!is_file($target)) {
 
