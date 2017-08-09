@@ -16,6 +16,18 @@
     "autoload": {
         "psr-4": {
             "CustomerManagementFrameworkBundle\\": "src/"
+        },
+        "exclude-from-classmap": [
+            "frontend/",
+            "frontend-samples/",
+            "install/"
+        ]
+    },
+    "extra": {
+        "pimcore": {
+            "bundles": [
+                "CustomerManagementFrameworkBundle\\PimcoreCustomerManagementFrameworkBundle"
+            ]
         }
     }
 }
