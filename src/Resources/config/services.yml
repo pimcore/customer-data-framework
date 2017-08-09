@@ -154,6 +154,9 @@ services:
         calls:
             - [setLogger, ['@cmf.logger']]
 
+    CustomerManagementFrameworkBundle\Security\Authentication\LoginManager:
+        autowire: true
+
     # The user provider loads users by Username.
     # Pimcore provides a simple ObjectUserProvider which is able to load users from a specified class by a configured
     # field. The website_demo.security.user_provider will load users from the AppBundle\Model\Object\User by looking at
