@@ -8,13 +8,9 @@
 
 namespace AppBundle\Model;
 
-
-
 use CustomerManagementFrameworkBundle\Model\AbstractCustomer\DefaultAbstractUserawareCustomer;
 use CustomerManagementFrameworkBundle\Model\SsoAwareCustomerInterface;
 
 abstract class Customer extends DefaultAbstractUserawareCustomer implements SsoAwareCustomerInterface
 {
-
-
 }

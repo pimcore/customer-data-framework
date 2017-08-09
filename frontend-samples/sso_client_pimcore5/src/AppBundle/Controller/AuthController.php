@@ -4,27 +4,19 @@ namespace AppBundle\Controller;
 
 use AppBundle\Form\LoginFormType;
 use AppBundle\Form\RegisterFormType;
-use AppBundle\Model\Customer;
 use CustomerManagementFrameworkBundle\Authentication\SsoIdentity\SsoIdentityServiceInterface;
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\Exception\DuplicateCustomerException;
-use CustomerManagementFrameworkBundle\Factory;
-use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\SsoIdentityInterface;
 use Pimcore\Controller\FrontendController;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Form;
-use Symfony\Component\Form\FormError;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Website\Auth\Adapter\Customer as CustomerAuthAdapter;
 use Website\Auth\AuthService;
 use Website\Auth\RegistrationFormHandler;
-use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/auth")
@@ -32,18 +24,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class AuthController extends FrontendController
 {
     /**
-     * @var AuthService
-     */
-    protected $authService;
-
-
-    /**
      * Just an index page redirecting to login
      *
-     * @param Request $request
-     * @Route("/index")
+     * @Route("/")
+     *
+     * @return RedirectResponse
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
         return $this->redirect($this->generateUrl(
             'app_auth_login'
@@ -51,23 +38,38 @@ class AuthController extends FrontendController
     }
 
     /**
-     * @param Request $request
-     * @Route("/login")
+     * The action we want to open after login
+     *
+     * @Route("/secure")
+     * @Security("has_role('ROLE_USER')")
+     *
+     * @param UserInterface $user
      */
-    public function loginAction(Request $request, UserInterface $user = null)
+    public function secureAction(UserInterface $user)
+    {
+        $this->view->customer           = $user;
+        $this->view->ssoIdentityService = $this->get('cmf.authentication.sso.identity_service');
+    }
+
+    /**
+     * @Route("/login")
+     *
+     * @param UserInterface|null $user
+     *
+     * @return Response
+     */
+    public function loginAction(UserInterface $user = null)
     {
         // redirect to secure action if already logged in
-        /*if ($user) {
-            $redirect();
-            return;
-        }*/
-
-        $customer = \Pimcore\Model\Object\Customer::getById(6692811);
-        print 'class' . get_class($customer);
+        if ($user) {
+            return $this->redirectToRoute('app_auth_secure');
+        }
 
         $authenticationUtils = $this->get('security.authentication_utils');
+
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
+
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
@@ -81,7 +83,6 @@ class AuthController extends FrontendController
 
         $this->view->form = $form->createView();
         $this->view->error = $error;
-
     }
 
     /**
@@ -89,7 +90,7 @@ class AuthController extends FrontendController
      */
     public function logoutAction()
     {
-        //logout is handled by security component, therefore nothing to do here
+        // logout is handled by security component, therefore nothing to do here
     }
 
     /**
@@ -251,19 +252,6 @@ class AuthController extends FrontendController
         return $hybridAuthHandler;
     }
 
-    /**
-     * The action we want to open after login
-     *
-     * @param Request $request
-     * @param UserInterface $user
-     *
-     * @Route("/secure")
-     */
-    public function secureAction(Request $request, UserInterface $user)
-    {
-        $this->view->customer           = $user;
-        $this->view->ssoIdentityService = $this->container->get('cmf.authentication.sso.identity_service');
-    }
 
     /**
      * @param array $errors

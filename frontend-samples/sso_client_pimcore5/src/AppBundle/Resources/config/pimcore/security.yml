@@ -20,14 +20,10 @@ security:
         main:
             anonymous: ~
             provider: cmf
-
             form_login:
                 login_path: app_auth_login
                 check_path: app_auth_login
                 default_target_path: app_auth_secure
-
             logout:
                 path: app_auth_logout
-
-    access_control:
-        - { path: ^/auth/secure, roles: ROLE_USER }
+                target: app_auth_login
