@@ -51,6 +51,4 @@ abstract class DefaultAbstractUserawareCustomer extends AbstractCustomer impleme
         $field = $this->getClass()->getFieldDefinition('password');
         $field->getDataForResource($this->getPassword(), $this);
     }
-
-
 }

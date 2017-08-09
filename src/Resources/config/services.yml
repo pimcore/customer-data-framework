@@ -160,7 +160,9 @@ services:
     # their username field.
     cmf.authentication.user_provider:
         class: CustomerManagementFrameworkBundle\Authentication\UserProvider\CustomerObjectUserProvider
-        arguments: ['email']
+        arguments:
+            - '@cmf.customer_provider'
+            - 'email'
 
     # The encoder factory is responsible for verifying the password hash for a given user. As we need some special
     # handling to be able to work with the password field, we use the UserAwareEncoderFactory to buiild a dedicated
