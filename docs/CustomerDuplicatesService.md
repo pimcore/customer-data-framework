@@ -2,7 +2,7 @@
 
 The customer duplicates service consists of 2 major parts:
 
-## Part 1 - mechanismns for searching duplicates of a given customer: 
+## Part 1 - mechanisms for searching duplicates of a given customer: 
 This is done directly via the database/customer object list. The duplicate service will find customers where the configured fields are equal to the given customer. Simple strtolower/trim transformations are done here so that the comparisons are case insensitive.
 
 The field combination(s) which should match could be defined in the CMF config file (CustomerDuplicatesService->duplicateCheckFields section). (Optional) multiple field combinations are supported (for example first check for duplicates based on firstname/lastname/street/zip/city - if no duplicates where found, check for firstname/street/zip/city/birthDate).
@@ -42,11 +42,11 @@ $duplicates = Factory::getInstance()->getCustomerDuplicatesService()->getDuplica
 
 
 ## Part 2 - Duplicates Index
-The duplicates index is used for searching globally for (fuzzy matching) duplicates. The found duplicates will be visible in the customer duplicates view and the user will have the possibility to merge these duplicates manually.
+The duplicates index is used for searching globally for (fuzzy matching) duplicates. The found duplicates will be visible in the customer duplicates view and the user has the possibility to merge these duplicates manually.
 
  ![DuplicatesView](./img/DuplicatesView.png)
 
- In order to make a performant search for duplicates possible the data will be stored in a special format in the duplicate index. By default this is done via several MariaDB-Tables. But it would be possible to for example create a DuplicateIndex for ElasticSearch by implementing the DuplicateIndexInterface.
+ In order to make a performant search for duplicates possible the data is stored in a special format in the duplicate index. By default this is done via several MariaDB-Tables. But it would be possible to for example create a DuplicateIndex for ElasticSearch by implementing the DuplicateIndexInterface.
  
 ### example config
 
@@ -83,7 +83,7 @@ The duplicates index is used for searching globally for (fuzzy matching) duplica
 ]
 ```
 
-In the CMF config the data/logic how duplicates should be stored in the index is defined like in the above example. It's possible to define the field combinations which should match within the DuplicatesIndex->duplicateCheckFields section.
+In the CMF config the data/logic how duplicates should be stored in the index is defined like in the example above. It's possible to define the field combinations which should match within the DuplicatesIndex->duplicateCheckFields section.
 
 For each field in these field combination it's possible to define how it should be indexed with the following 4 options:
 ##### soundex
@@ -93,7 +93,7 @@ If set to true the field should be relevant for soundex matching. This should be
 Same like soundex but another phonetic algorithmn (metaphone). It's possible to combine soundex + metaphone but sometimes it could be useless and a waste of resources to enable both. If you are not sure just enable both. 
   
 ##### similarity
-Searching duplicates by soundex/metaphone will produce a lot of false positive matches. Especially if there are fields like zip where soundex + metaphone should be disabled a mechanismn for excluding these false positives is needed. But also the soundex/metaphone algorithmn itself will produce many false positives. In the similarity field it's possible to configure a so called SimilarityMatcher (DataSimiliarityMatcherInterface). All potentially found duplicates by soundex/metaphone search will be compared by these SimilarityMatches. Only if all fields are similar according to the SimilarityMatchers the found duplicate will be handled as "real" duplicate otherwise it's a false positive.
+Searching duplicates by soundex/metaphone will produce a lot of false positive matches. Especially if there are fields like zip where soundex + metaphone should be disabled a mechanism for excluding these false positives is needed. But also the soundex/metaphone algorithmn itself will produce many false positives. In the similarity field it's possible to configure a so called SimilarityMatcher (DataSimiliarityMatcherInterface). All potentially found duplicates by soundex/metaphone search will be compared by these SimilarityMatches. Only if all fields are similar according to the SimilarityMatchers the found duplicate will be handled as "real" duplicate otherwise it's a false positive.
 
 ##### treshold
 Each SimilarityMatcher has a default treshold - but it's possbile to (optionally) define a custom treshold which will be handed over to the SimilarityMatcher.
