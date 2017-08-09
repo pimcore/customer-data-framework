@@ -7,7 +7,9 @@ use AppBundle\Form\RegisterFormType;
 use CustomerManagementFrameworkBundle\Authentication\SsoIdentity\SsoIdentityServiceInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\Exception\DuplicateCustomerException;
+use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\SsoIdentityInterface;
+use CustomerManagementFrameworkBundle\Security\Authentication\LoginManagerInterface;
 use Pimcore\Controller\FrontendController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -96,14 +98,21 @@ class AuthController extends FrontendController
      * customer profile and will pre-fill customer data (e.g. name if given).
      *
      * @Route("/register")
+     *
+     * @param Request $request
+     * @param CustomerProviderInterface $customerProvider
+     * @param LoginManagerInterface $loginManager
+     *
+     * @return Response|null
      */
-    public function registerAction(Request $request, CustomerProviderInterface $customerProvider)
+    public function registerAction(
+        Request $request,
+        CustomerProviderInterface $customerProvider,
+        LoginManagerInterface $loginManager
+    )
     {
-
-        // $registrationFormHandler = new RegistrationFormHandler();
-
         // create a new, empty customer instance
-        /** @var \CustomerManagementFrameworkBundle\Model\CustomerInterface|\Pimcore\Model\Object\Customer $customer */
+        /** @var CustomerInterface|\Pimcore\Model\Object\Customer $customer */
         $customer = $customerProvider->create();
 
         /** @var SsoIdentityInterface $ssoIdentity */
@@ -134,37 +143,34 @@ class AuthController extends FrontendController
         $form->handleRequest($request);
 
         $errors = [];
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $customer->setValues($form->getData());
+            $customer->setActive(true);
 
-                $customer->setValues($form->getData());
-                $customer->setActive(true);
+            try {
+                $customer->save();
 
-                try {
+                // add SSO identity to customer object
+                if (null !== $ssoIdentity) {
+                    // fix getParentId() still resolving to 0 as it was set
+                    // when unsaved customer was passed as parent - this isn't necessary after Pimcore 4.4.2
+                    $ssoIdentity->setParent($customer);
+                    $ssoIdentity->save();
+
+                    // set SSO identity on customer as this couldn't be done by auth handler before both objects were saved
+                    $ssoIdentityService = Pimcore::getDiContainer()->get(SsoIdentityServiceInterface::class);
+                    $ssoIdentityService->addSsoIdentity($customer, $ssoIdentity);
                     $customer->save();
+                }
 
-                    // add SSO identity to customer object
-                    if (null !== $ssoIdentity) {
-                        // fix getParentId() still resolving to 0 as it was set
-                        // when unsaved customer was passed as parent - this isn't necessary after Pimcore 4.4.2
-                        $ssoIdentity->setParent($customer);
-                        $ssoIdentity->save();
+                // pass response to login manager as it adds potential remember me cookies
+                $response = $this->redirectToRoute('app_auth_secure');
 
-                        // set SSO identity on customer as this couldn't be done by auth handler before both objects were saved
-                        $ssoIdentityService = Pimcore::getDiContainer()->get(SsoIdentityServiceInterface::class);
-                        $ssoIdentityService->addSsoIdentity($customer, $ssoIdentity);
-                        $customer->save();
-                    }
+                // log user in manually
+                $loginManager->login($customer, $request, $response);
 
-                    // customer object is ready, now log in and redirect to secure action
-                    //$this->authService->login($customer);
-                    return $this->get('security.authentication.guard_handler')
-                        ->authenticateUserAndHandleSuccess(
-                            $customer,
-                            $request,
-                            null,
-                            'main'
-                        );
+                return $response;
             } catch (DuplicateCustomerException $e) {
                 $errors[] = "Customer already exists";
             } catch (\Exception $e) {
@@ -248,22 +254,4 @@ class AuthController extends FrontendController
 
         return $hybridAuthHandler;
     }
-
-
-    /**
-     * @param array $errors
-     * @param Zend_Form $form
-     * @return array
-     */
-    protected function addFormErrors(array $errors, Zend_Form $form)
-    {
-        foreach ($form->getErrors() as $fieldName => $fieldErrors) {
-            foreach ($fieldErrors as $fieldError) {
-                $errors[] = sprintf('%s:%s', $fieldName, $fieldError);
-            }
-        }
-
-        return $errors;
-    }
-
 }

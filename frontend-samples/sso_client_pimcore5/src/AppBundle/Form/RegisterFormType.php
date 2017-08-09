@@ -35,7 +35,7 @@ class RegisterFormType extends AbstractType
             ])
             ->add('provider', HiddenType::class)
             ->add('_submit', SubmitType::class, [
-                'label' => 'Login'
+                'label' => 'Register'
             ]);
     }
 
