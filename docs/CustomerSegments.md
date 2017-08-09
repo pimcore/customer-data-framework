@@ -6,23 +6,23 @@ The customer management framework includes tools for creating and managing custo
 
 ## Manual vs. calculated segments
 
-The customer object contains two separate fields for manual and calculated segments. Manuals segments are added within the Pimcore backend by drag and drop. Calculated segments could be added by the CMF within the segment building process.
+The customer object contains two separate fields for manual and calculated segments. Manual segments are added within the Pimcore backend by drag and drop. Calculated segments could be added by the CMF within the segment building process.
 
 ![manual vs calculated segments](./img/Segments.png)
 
 ## SegmentManager
 
-The SegmentManager is responsible for managing, creating and reading CustomerSegments and CustomerSegmentGroups within the CMF. Take a look at the SegmentManagerInterface there you will find inline PHP docs for each contained method.
+The SegmentManager is responsible for managing, creating and reading CustomerSegments and CustomerSegmentGroups within the CMF. Take a look at the SegmentManagerInterface there you will find inline PHP docs for each implemented method.
 
 ### Segment builders
 
-Segment builders are PHP classes which need to implement the SegmentBuilderInterface. They could be used to create automaticially calculated segments based on the customer data. For example it would be possible to create a SegmentBuilder "Age" which devides customers into segments of age groups depending on a birth day field.
+Segment builders are PHP classes which need to implement the SegmentBuilderInterface. They could be used to create automaticially calculated segments based on the customer data. For example it would be possible to create a SegmentBuilder "Age" which devides customers into segments of age groups depending on a birthday field.
 
 #### Execute on customer save vs. async
 
-SegmentBuilders could be implemented to be either executed directly on customer save but it's also possible to calculate them asynchronously via a cron job. Take a look at the executeOnCustomerSave() method of the SegmentBuilderInterface. If this returns true it's executed directly on customer save otherwise each customer change is added to a queue and later on the segmentation will be done by the cron job.
+SegmentBuilders could be implemented to be either executed directly on customer save but it's also possible to calculate them asynchronously via a cron job. Take a look at the `executeOnCustomerSave()` method of the SegmentBuilderInterface. If this returns true it's executed directly on customer save otherwise each customer change is added to a queue and later on the segmentation will be done by the cron job.
  
-In the SegmentManagerInterface there is a method addCustomerToChangesQueue() which could be used to trigger customer changes. This needs to be done everytime a customer/SegmentBuilder related data record get's changed. By default this is done on customer object save and also when a new customer activity got tracked.
+In the SegmentManagerInterface there is a method `addCustomerToChangesQueue()` which could be used to trigger customer changes. This needs to be done everytime a customer/SegmentBuilder related data record gets changed. By default this is done on customer object save and also when a new customer activity got tracked.
 
 #### Create your own SegmentBuilder
 
@@ -49,7 +49,7 @@ $segmentManager->mergeSegments($customer, $addSegments, $deleteSegments, "Gender
 
 #### Built in segment builders
 
-Segment builders need to be added to the CMF plugin config file. Only segment builders which are configured there will be executed. The CMF framework includes some SegmentBulders which could be used out of the box:
+Segment builders need to be added to the CMF plugin config file. Only segment builders which are configured will be executed. The CMF framework includes some SegmentBulders which could be used out of the box:
  
 ##### AgeSegmentBuilder
 
