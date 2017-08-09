@@ -49,3 +49,13 @@ services:
             class: CustomerManagementFrameworkBundle\Templating\Helper\EscapeFormValue
             tags:
                 - { name: templating.helper, alias: escapeFormValue }
+
+    CustomerManagementFrameworkBundle\Templating\Helper\Encryption:
+        autowire: true
+        tags:
+            - { name: templating.helper, alias: cmfEncryption }
+
+    CustomerManagementFrameworkBundle\Templating\Helper\SsoIdentity:
+        autowire: true
+        tags:
+            - { name: templating.helper, alias: cmfSsoIdentity }

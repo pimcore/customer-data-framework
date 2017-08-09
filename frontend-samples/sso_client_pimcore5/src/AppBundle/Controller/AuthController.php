@@ -15,8 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Website\Auth\AuthService;
-use Website\Auth\RegistrationFormHandler;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 /**
  * @Route("/auth")
@@ -38,34 +37,30 @@ class AuthController extends FrontendController
     }
 
     /**
-     * The action we want to open after login
+     * The action we want to open after login. The Security annotation defines that the action needs a valid user
+     * to be accessible.
      *
      * @Route("/secure")
      * @Security("has_role('ROLE_USER')")
-     *
-     * @param UserInterface $user
      */
-    public function secureAction(UserInterface $user)
+    public function secureAction()
     {
-        $this->view->customer           = $user;
-        $this->view->ssoIdentityService = $this->get('cmf.authentication.sso.identity_service');
     }
 
     /**
      * @Route("/login")
      *
+     * @param AuthenticationUtils $authenticationUtils
      * @param UserInterface|null $user
      *
-     * @return Response
+     * @return Response|null
      */
-    public function loginAction(UserInterface $user = null)
+    public function loginAction(AuthenticationUtils $authenticationUtils, UserInterface $user = null)
     {
         // redirect to secure action if already logged in
         if ($user) {
             return $this->redirectToRoute('app_auth_secure');
         }
-
-        $authenticationUtils = $this->get('security.authentication_utils');
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -90,7 +85,9 @@ class AuthController extends FrontendController
      */
     public function logoutAction()
     {
-        // logout is handled by security component, therefore nothing to do here
+        // logout is handled by security component, therefore nothing to do here. it's only important to have a route
+        // in place which can be referenced as logout path. The route doesn't need to be defined as action with an
+        // annotation - we could also just add a route in a routing config file
     }
 
     /**
@@ -100,14 +97,14 @@ class AuthController extends FrontendController
      *
      * @Route("/register")
      */
-    public function registerAction(Request $request)
+    public function registerAction(Request $request, CustomerProviderInterface $customerProvider)
     {
-        $registrationFormHandler = new RegistrationFormHandler();
+
+        // $registrationFormHandler = new RegistrationFormHandler();
 
         // create a new, empty customer instance
         /** @var \CustomerManagementFrameworkBundle\Model\CustomerInterface|\Pimcore\Model\Object\Customer $customer */
-        $customer = $this->container->get('cmf.customer_provider')
-            ->create();
+        $customer = $customerProvider->create();
 
         /** @var SsoIdentityInterface $ssoIdentity */
         $ssoIdentity = null;

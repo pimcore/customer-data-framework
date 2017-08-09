@@ -5,14 +5,20 @@
  * @var \Pimcore\Templating\GlobalVariables $app
  */
 
+use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\Model\OAuth\OAuth1TokenInterface;
+use CustomerManagementFrameworkBundle\Model\OAuth\OAuth2TokenInterface;
+use CustomerManagementFrameworkBundle\Templating\Helper\Encryption;
+use CustomerManagementFrameworkBundle\Templating\Helper\SsoIdentity;
+
 $this->extend('Layout/auth.html.php');
 
-/** @var \CustomerManagementFrameworkBundle\Model\CustomerInterface|\Pimcore\Model\Object\Customer $customer */
-$customer = $this->customer;
+/** @var CustomerInterface|\Pimcore\Model\Object\Customer $customer */
+$customer = $app->getUser();
 
-/** @var \CustomerManagementFrameworkBundle\Authentication\SsoIdentity\SsoIdentityServiceInterface $ssoIdentityService */
-$ssoIdentityService = $this->ssoIdentityService;
-$ssoIdentities      = $ssoIdentityService->getSsoIdentities($customer);
+/** @var SsoIdentity $ssoIdentityHelper */
+$ssoIdentityHelper = $this->cmfSsoIdentity();
+$ssoIdentities     = $ssoIdentityHelper->getSsoIdentities($customer);
 
 // we don' want to show social login buttons for services we're already connected to
 $connectedSsoIdentities = [];
@@ -23,7 +29,7 @@ foreach ($ssoIdentities as $ssoIdentity) {
 
 <div class="jumbotron">
     <h1>Very secure area</h1>
-    <p>Logged in as customer <label class="label label-default"><?= $customer->getId() ?></label></p>
+    <p>Logged in as customer <code><?= $customer->getUsername() ?></code> with ID <code><?= $customer->getId() ?></code></p>
     <p>
         <a class="btn btn-lg btn-primary" href="<?= $this->url('app_auth_logout') ?>">Logout</a>
     </p>
@@ -37,8 +43,8 @@ foreach ($ssoIdentities as $ssoIdentity) {
     <h2>SSO Identities</h2>
 
     <?php
-    /** @var \CustomerManagementFrameworkBundle\Encryption\EncryptionServiceInterface $encryptionService */
-    $encryptionService = Pimcore::getDiContainer()->get(\CustomerManagementFrameworkBundle\Encryption\EncryptionServiceInterface::class);
+    /** @var Encryption $encryptionHelper */
+    $encryptionHelper = $this->cmfEncryption();
 
     /** @var \Pimcore\Model\Object\SsoIdentity $ssoIdentity */
     foreach ($ssoIdentities as $ssoIdentity): ?>
@@ -52,26 +58,26 @@ foreach ($ssoIdentities as $ssoIdentity) {
                 <?php if ($ssoIdentity->getCredentials()->getOAuth1Token()): ?>
 
                     <?php
-                    /** @var \CustomerManagementFrameworkBundle\Model\OAuth\OAuth1TokenInterface $token */
+                    /** @var OAuth1TokenInterface $token */
                     $token = $ssoIdentity->getCredentials()->getOAuth1Token();
                     dump([
                         'tokenRaw'       => $token->getToken(),
-                        'token'          => $encryptionService->decrypt($token->getToken()),
+                        'token'          => $encryptionHelper->decrypt($token->getToken()),
                         'tokenSecretRaw' => $token->getTokenSecret(),
-                        'tokenSecret'    => $encryptionService->decrypt($token->getTokenSecret()),
+                        'tokenSecret'    => $encryptionHelper->decrypt($token->getTokenSecret()),
                     ])
                     ?>
 
                 <?php elseif ($ssoIdentity->getCredentials()->getOAuth2Token()): ?>
 
                     <?php
-                    /** @var \CustomerManagementFrameworkBundle\Model\OAuth\OAuth2TokenInterface $token */
+                    /** @var OAuth2TokenInterface $token */
                     $token = $ssoIdentity->getCredentials()->getOAuth2Token();
                     dump([
                         'accessTokenRaw'  => $token->getAccessToken(),
-                        'accessToken'     => $encryptionService->decrypt($token->getAccessToken()),
+                        'accessToken'     => $encryptionHelper->decrypt($token->getAccessToken()),
                         'refreshTokenRaw' => $token->getRefreshToken(),
-                        'refreshToken'    => $encryptionService->decrypt($token->getRefreshToken()),
+                        'refreshToken'    => $encryptionHelper->decrypt($token->getRefreshToken()),
                         'expiresAtRaw'    => $token->getExpiresAt(),
                         'expiresAt'       => \Carbon\Carbon::createFromTimestamp($token->getExpiresAt())
                     ])
