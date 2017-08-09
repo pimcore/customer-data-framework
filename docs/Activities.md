@@ -1,6 +1,6 @@
 # Activities
 
-An important part of the customer management framework are customer activities. They could be very simple (for example customer logged in) or quite complex (orders, bookings...). The CMF could be used to store all these customer related activty data and use it for example for segment building or as information for the customer service team.
+An important part of the customer management framework are customer activities. They can be very simple (for example customer logged in) or quite complex (orders, bookings...). The CMF can be used to store all these customer related activity data and use it for example for segment building or as information for the customer service team.
 
 Activities in the CMF are stored all together in a json store - by default in a MariaDB table (plugin_cmf_activities). 
 
@@ -8,7 +8,7 @@ Activities in the CMF are stored all together in a json store - by default in a 
 
 It's possible to use Pimcore objects (or other data entities/sources) as activities too. They just need to implement the ActivityInterface (for Pimcore objects extend the AbstractActivity class).
 
-But allthough these activities have it's own data persistance they are additionally stored in the generic ActivityStore. The idea is that the ActivityStore saves all activities in a standardized form and represents a history of all customer activities. So if an activity is for example an order and later on someone cancels this order the order could be an own activity within the ActivityStore. So there could be the original order activity and an "cancellation" activity too. But for sure it depends on the use case if you need such a detailed history. It's possible to delete/update the original activity too in the ActivityStore.
+But allthough these activities have their own data persistance they are additionally stored in the generic ActivityStore. The idea is that the ActivityStore saves all activities in a standardized form and represents a history of all customer activities. So if an activity is for example an order and later on someone cancels this order the order could be an own activity within the ActivityStore. So there could be the original order activity and an "cancellation" activity too. But for sure it depends on the use case if you need such a detailed history. It's possible to delete/update the original activity too in the ActivityStore.
 
 ## ActivityStore
 
