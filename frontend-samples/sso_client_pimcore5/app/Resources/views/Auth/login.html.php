@@ -10,9 +10,7 @@ $this->extend('Layout/auth.html.php');
 $form = $this->form;
 
 $this->form()->setTheme($form, [':Form/Theme/Bootstrap']);
-
 ?>
-
 
 <?php $this->headTitle('Login') ?>
 
