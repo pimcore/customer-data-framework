@@ -11,6 +11,7 @@ $providers = [
 ];
 
 $blacklist = $this->blacklist ?: [];
+$route     = $this->route ?: 'app_auth_oauth_login';
 
 foreach ($providers as $providerKey => $providerName): ?>
 
@@ -19,7 +20,7 @@ foreach ($providers as $providerKey => $providerName): ?>
         continue;
     }
 
-    $url = $this->url('hwi_oauth_service_redirect', [
+    $url = $this->url($route, [
         'service' => $providerKey
     ]);
     ?>

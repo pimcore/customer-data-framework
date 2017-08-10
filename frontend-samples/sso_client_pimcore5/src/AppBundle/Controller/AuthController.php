@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -210,6 +211,62 @@ class AuthController extends FrontendController
         $this->view->customer = $customer;
         $this->view->form     = $form->createView();
         $this->view->errors   = $errors;
+    }
+
+    /**
+     * Connects an already logged in user to an auth provider
+     *
+     * @Route("/oauth/connect/{service}", name="app_auth_oauth_connect")
+     * @Security("has_role('ROLE_USER')")
+     *
+     * @param Request $request
+     * @param OAuthRegistrationHandler $oAuthHandler
+     * @param UserInterface $user
+     * @param string $service
+     *
+     * @return RedirectResponse
+     */
+    public function oAuthConnectAction(
+        Request $request,
+        OAuthRegistrationHandler $oAuthHandler,
+        UserInterface $user,
+        string $service
+    )
+    {
+        $resourceOwner = $oAuthHandler->getResourceOwner($service);
+
+        $redirectUrl = $this->generateUrl('app_auth_oauth_connect', [
+            'service' => $service
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+
+        // redirect to authorization
+        if (!$resourceOwner->handles($request)) {
+            $authorizationUrl = $oAuthHandler->getAuthorizationUrl($request, $service, $redirectUrl);
+
+            return $this->redirect($authorizationUrl);
+        }
+
+        // get access token from URL
+        $accessToken = $resourceOwner->getAccessToken($request, $redirectUrl);
+
+        // e.g. user cancelled auth on provider side
+        if (null === $accessToken) {
+            return $this->redirectToRoute('app_auth_secure');
+        }
+
+        $oAuthUserInfo = $resourceOwner->getUserInformation($accessToken);
+
+        // we don't want to allow linking an OAuth account to multiple customers
+        if ($oAuthHandler->getCustomerFromUserResponse($oAuthUserInfo)) {
+            throw new \RuntimeException('There\'s already a customer registered with this provider identity');
+        }
+
+        // create a SSO identity object and save it to the user
+        $oAuthHandler->connectSsoIdentity($user, $oAuthUserInfo);
+
+        // redirect to secure page which should now list the newly linked profile
+        return $this->redirectToRoute('app_auth_secure');
     }
 
     private function mergeOAuthFormData(

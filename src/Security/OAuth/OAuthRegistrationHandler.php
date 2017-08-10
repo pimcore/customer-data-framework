@@ -20,6 +20,7 @@ namespace CustomerManagementFrameworkBundle\Security\OAuth;
 use CustomerManagementFrameworkBundle\Authentication\SsoIdentity\SsoIdentityServiceInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\SsoIdentityInterface;
+use HWI\Bundle\OAuthBundle\OAuth\ResourceOwnerInterface;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
 use Pimcore\Model\Element\ElementInterface;
@@ -147,6 +148,16 @@ class OAuthRegistrationHandler
         $user->save();
 
         return $ssoIdentity;
+    }
+
+    public function getResourceOwner(string $name): ResourceOwnerInterface
+    {
+        return $this->oAuthUtils->getResourceOwner($name);
+    }
+
+    public function getAuthorizationUrl(Request $request, string $resourceOwner, string $redirectUrl, array $extraParameters = [])
+    {
+        return $this->oAuthUtils->getAuthorizationUrl($request, $resourceOwner, $redirectUrl, $extraParameters);
     }
 
     private function getAndRemoveValueFromSession(SessionInterface $session, string $name, $default = null)

@@ -35,7 +35,8 @@ foreach ($ssoIdentities as $ssoIdentity) {
     </p>
 
     <?= $this->template('Auth/partials/social-login-buttons.html.php', [
-        'blacklist' => $connectedSsoIdentities
+        'blacklist' => $connectedSsoIdentities,
+        'route'     => 'app_auth_oauth_connect'
     ]) ?>
 </div>
 
