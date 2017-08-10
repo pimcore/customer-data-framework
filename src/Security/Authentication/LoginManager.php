@@ -60,6 +60,11 @@ class LoginManager implements LoginManagerInterface
     private $tokenStorage;
 
     /**
+     * @var UserCheckerInterface
+     */
+    private $defaultUserChecker;
+
+    /**
      * @var ContainerInterface
      */
     private $container;
@@ -69,14 +74,16 @@ class LoginManager implements LoginManagerInterface
         FirewallMap $firewallMap,
         SessionAuthenticationStrategyInterface $sessionStrategy,
         TokenStorageInterface $tokenStorage,
+        UserCheckerInterface $defaultUserChecker,
         ContainerInterface $container
     )
     {
-        $this->firewallMap     = $firewallMap;
-        $this->requestHelper   = $requestHelper;
-        $this->sessionStrategy = $sessionStrategy;
-        $this->tokenStorage    = $tokenStorage;
-        $this->container       = $container;
+        $this->firewallMap        = $firewallMap;
+        $this->requestHelper      = $requestHelper;
+        $this->sessionStrategy    = $sessionStrategy;
+        $this->tokenStorage       = $tokenStorage;
+        $this->defaultUserChecker = $defaultUserChecker;
+        $this->container          = $container;
     }
 
     /**
@@ -112,10 +119,14 @@ class LoginManager implements LoginManagerInterface
 
     private function getUserChecker(FirewallConfig $config): UserCheckerInterface
     {
-        /** @var UserCheckerInterface $userChecker */
-        $userChecker = $this->container->get($config->getUserChecker());
+        if ($this->container->has($config->getUserChecker())) {
+            /** @var UserCheckerInterface $userChecker */
+            $userChecker = $this->container->get($config->getUserChecker());
 
-        return $userChecker;
+            return $userChecker;
+        }
+
+        return $this->defaultUserChecker;
     }
 
     /**
