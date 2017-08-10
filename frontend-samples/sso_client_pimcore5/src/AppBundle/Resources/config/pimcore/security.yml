@@ -11,12 +11,7 @@ security:
         cmf:
           id: cmf.authentication.user_provider
 
-
     firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-
         main:
             anonymous: ~
             provider: cmf
