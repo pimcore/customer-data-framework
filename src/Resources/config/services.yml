@@ -156,7 +156,7 @@ services:
     CustomerManagementFrameworkBundle\Security\OAuth\AccountConnector:
         autowire: true
 
-    CustomerManagementFrameworkBundle\Security\OAuth\OAuthHandler:
+    CustomerManagementFrameworkBundle\Security\OAuth\OAuthRegistrationHandler:
         autowire: true
 
     CustomerManagementFrameworkBundle\Security\Authentication\LoginManager:

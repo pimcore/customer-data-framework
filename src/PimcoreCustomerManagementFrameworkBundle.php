@@ -2,11 +2,9 @@
 
 namespace CustomerManagementFrameworkBundle;
 
-
+use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\OAuthUtilsPass;
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\Config\FileLocator;
 
 class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
 {
@@ -34,14 +32,9 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
         ];
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function build(ContainerBuilder $container)
     {
-        $loader = new XmlFileLoader(
-            $container,
-            new FileLocator(__DIR__.'../../Resources/config')
-        );
-
-        $loader->load('services.yml');
+        $container->addCompilerPass(new OAuthUtilsPass());
     }
 
     /**

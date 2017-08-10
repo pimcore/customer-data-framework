@@ -5,14 +5,14 @@ namespace AppBundle\Controller;
 use AppBundle\Form\LoginFormType;
 use AppBundle\Form\RegistrationFormHandler;
 use AppBundle\Form\RegistrationFormType;
-use CustomerManagementFrameworkBundle\Authentication\SsoIdentity\SsoIdentityServiceInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\Exception\DuplicateCustomerException;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use CustomerManagementFrameworkBundle\Model\SsoIdentityInterface;
 use CustomerManagementFrameworkBundle\Security\Authentication\LoginManagerInterface;
-use CustomerManagementFrameworkBundle\Security\OAuth\OAuthHandler;
-use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
+use CustomerManagementFrameworkBundle\Security\OAuth\Exception\AccountNotLinkedException;
+use CustomerManagementFrameworkBundle\Security\OAuth\OAuthRegistrationHandler;
+use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
+use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
 use Pimcore\Controller\FrontendController;
 use Ramsey\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -54,12 +54,19 @@ class AuthController extends FrontendController
     /**
      * @Route("/login")
      *
+     * @param Request $request
      * @param AuthenticationUtils $authenticationUtils
+     * @param OAuthRegistrationHandler $oAuthHandler
      * @param UserInterface|null $user
      *
-     * @return Response|null
+     * @return null|Response
      */
-    public function loginAction(Request $request, AuthenticationUtils $authenticationUtils, OAuthHandler $oAuthHandler, UserInterface $user = null)
+    public function loginAction(
+        Request $request,
+        AuthenticationUtils $authenticationUtils,
+        OAuthRegistrationHandler $oAuthHandler,
+        UserInterface $user = null
+    )
     {
         // redirect to secure action if already logged in
         if ($user) {
@@ -72,11 +79,11 @@ class AuthController extends FrontendController
         // if error is an AccountNotLinkedException save the error containing the OAuth response
         // to the session and redirect to registration
         if ($error instanceof AccountNotLinkedException) {
-            $oAuthKey = Uuid::uuid4();
-            $oAuthHandler->saveOAuthErrorToSession($request, $oAuthKey, $error);
+            $registrationKey = Uuid::uuid4();
+            $oAuthHandler->saveOAuthTokenToSession($request, $registrationKey, $error->getToken());
 
             return $this->redirectToRoute('app_auth_register', [
-                'oAuthKey' => $oAuthKey
+                'registrationKey' => $registrationKey
             ]);
         }
 
@@ -96,19 +103,21 @@ class AuthController extends FrontendController
     }
 
     /**
-     * @Route("/register/{oAuthKey}", defaults={"oAuthKey" = null})
+     * If registration is called with a registration key, the key will be used to look for an existing OAuth token in
+     * the session. This OAuth token will be used to fetch user info which can be used to prepopulate the form and to
+     * link a SSO identity to the created customer object.
      *
-     * Registration can either be called with a provider parameter or without. If a provider is passed, it will try
-     * to read a SSO identity for the given provider from the HybridAuth store. This identity will then be added to the
-     * customer profile and will pre-fill customer data (e.g. name if given).
+     * This could be further separated into services, but was kept as single method for demonstration purposes as the
+     * registration process is different on every project.
+     *
+     * @Route("/register/{registrationKey}", defaults={"registrationKey" = null})
      *
      * @param Request $request
      * @param CustomerProviderInterface $customerProvider
      * @param LoginManagerInterface $loginManager
-     * @param OAuthHandler $oAuthHandler
-     * @param SsoIdentityServiceInterface $ssoIdentityService
+     * @param OAuthRegistrationHandler $oAuthHandler
      * @param RegistrationFormHandler $registrationFormHandler
-     * @param string|null $oAuthKey
+     * @param string|null $registrationKey
      * @param UserInterface|null $user
      *
      * @return Response|null
@@ -116,11 +125,10 @@ class AuthController extends FrontendController
     public function registerAction(
         Request $request,
         CustomerProviderInterface $customerProvider,
+        OAuthRegistrationHandler $oAuthHandler,
         LoginManagerInterface $loginManager,
-        OAuthHandler $oAuthHandler,
-        SsoIdentityServiceInterface $ssoIdentityService,
         RegistrationFormHandler $registrationFormHandler,
-        string $oAuthKey = null,
+        string $registrationKey = null,
         UserInterface $user = null
     )
     {
@@ -134,48 +142,36 @@ class AuthController extends FrontendController
         /** @var CustomerInterface|\Pimcore\Model\Object\Customer $customer */
         $customer = $customerProvider->create();
 
-        /** @var AccountNotLinkedException $oAuthError */
-        $oAuthError = null;
+        /** @var OAuthToken $oAuthToken */
+        $oAuthToken = null;
 
-        /** @var \Pimcore\Model\Object\SsoIdentity|SsoIdentityInterface $ssoIdentity */
-        $ssoIdentity = null;
+        /** @var UserResponseInterface $oAuthUserInfo */
+        $oAuthUserInfo = null;
 
-        // we handled an oAuth authorization - create SSO Identity and apply profile data to customer object
-        if (null !== $oAuthKey) {
-            // load OAuth error containing auth response from session (saved on login)
-            $oAuthError = $oAuthHandler->loadOAuthErrorFromSession($request, $oAuthKey);
+        // load previously stored token from the session and try to load user profile
+        // from provider
+        if (null !== $registrationKey) {
+            $oAuthToken    = $oAuthHandler->loadOAuthTokenFromSession($request, $registrationKey);
+            $oAuthUserInfo = $oAuthHandler->loadUserInformation($oAuthToken);
+        }
 
-            if ($oAuthError) {
-                // fetch user information from provider
-                $userInformation = $oAuthHandler->getUserInformation(
-                    $request,
-                    $oAuthError->getResourceOwnerName(),
-                    $oAuthError->getRawToken()
-                );
-
-                if ($userInformation) {
-                    // try to load a customer with the given identity from our storage. if this succeeds, we can't register
-                    // the customer and should either log in the existing identity or show an error. for simplicity, we just
-                    // throw an exception here.
-                    if ($oAuthHandler->getCustomerFromAuthResponse($userInformation)) {
-                        throw new \RuntimeException('Customer is already registered');
-                    }
-
-                    // update customer to be registered with auth response (SSO identity, profile data)
-                    $ssoIdentity = $oAuthHandler->updateUserFromUserInformation($customer, $userInformation);
-                }
+        if (null !== $oAuthUserInfo) {
+            // try to load a customer with the given identity from our storage. if this succeeds, we can't register
+            // the customer and should either log in the existing identity or show an error. for simplicity, we just
+            // throw an exception here.
+            // this shouldn't happen as the login would log in the user if found
+            if ($oAuthHandler->getCustomerFromUserResponse($oAuthUserInfo)) {
+                throw new \RuntimeException('Customer is already registered');
             }
         }
 
         $formData = $registrationFormHandler->buildFormData($customer);
+        if (null !== $oAuthToken) {
+            $formData = $this->mergeOAuthFormData($formData, $oAuthUserInfo);
+        }
 
         // build the registration form and pre-fill it with customer data
-        $form = $this->createForm(RegistrationFormType::class, $formData, [
-            'action' => $this->generateUrl('app_auth_register', [
-                'oAuthKey' => $oAuthKey
-            ]),
-        ]);
-
+        $form = $this->createForm(RegistrationFormType::class, $formData);
         $form->handleRequest($request);
 
         $errors = [];
@@ -186,11 +182,9 @@ class AuthController extends FrontendController
             try {
                 $customer->save();
 
-                // add SSO identity to customer object
-                if (null !== $ssoIdentity) {
-                    $ssoIdentityService->addSsoIdentity($customer, $ssoIdentity);
-                    $ssoIdentity->save();
-                    $customer->save();
+                // add SSO identity from OAuth data
+                if (null !== $oAuthUserInfo) {
+                    $oAuthHandler->connectSsoIdentity($customer, $oAuthUserInfo);
                 }
 
                 $response = $this->redirectToRoute('app_auth_secure');
@@ -209,12 +203,24 @@ class AuthController extends FrontendController
 
         // re-save user info to session as we need it in subsequent requests (e.g. after form errors) or
         // when form is rendered for the first time
-        if (null !== $oAuthKey && null !== $oAuthError) {
-            $oAuthHandler->saveOAuthErrorToSession($request, $oAuthKey, $oAuthError);
+        if (null !== $registrationKey && null !== $oAuthToken) {
+            $oAuthHandler->saveOAuthTokenToSession($request, $registrationKey, $oAuthToken);
         }
 
         $this->view->customer = $customer;
         $this->view->form     = $form->createView();
         $this->view->errors   = $errors;
+    }
+
+    private function mergeOAuthFormData(
+        array $formData,
+        UserResponseInterface $userInformation
+    ): array
+    {
+        return array_replace([
+            'firstname' => $userInformation->getFirstName(),
+            'lastname'  => $userInformation->getLastName(),
+            'email'     => $userInformation->getEmail()
+        ], $formData);
     }
 }

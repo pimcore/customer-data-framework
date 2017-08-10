@@ -89,6 +89,8 @@ class AccountConnector implements AccountConnectorInterface
         $this->applyCredentialsToSsoIdentity($ssoIdentity, $response);
         $this->applyProfileToCustomer($user, $response);
 
+        $this->ssoIdentityService->addSsoIdentity($user, $ssoIdentity);
+
         return $ssoIdentity;
     }
 

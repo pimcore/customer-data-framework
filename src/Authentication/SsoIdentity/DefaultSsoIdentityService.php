@@ -24,9 +24,6 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
      */
     protected $customerProvider;
 
-    /**
-     * @param CustomerProviderInterface $customerProvider
-     */
     public function __construct(CustomerProviderInterface $customerProvider)
     {
         $this->customerProvider = $customerProvider;

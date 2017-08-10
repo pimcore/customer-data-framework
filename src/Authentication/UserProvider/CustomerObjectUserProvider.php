@@ -10,8 +10,8 @@ namespace CustomerManagementFrameworkBundle\Authentication\UserProvider;
 
 use CustomerManagementFrameworkBundle\Authentication\SsoIdentity\SsoIdentityServiceInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
+use CustomerManagementFrameworkBundle\Security\OAuth\Exception\AccountNotLinkedException;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
-use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
 use HWI\Bundle\OAuthBundle\Security\Core\User\OAuthAwareUserProviderInterface;
 use Pimcore\Model\Object\AbstractObject;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
@@ -73,6 +73,8 @@ class CustomerObjectUserProvider implements UserProviderInterface, OAuthAwareUse
         );
 
         if (null === $user || null === $username) {
+            // the AccountNotLinkedException will allow the frontend to proceed to registration
+            // and to fetch user data from the OAuth account
             $exception = new AccountNotLinkedException(sprintf(
                 'No customer was found for user "%s" on provider "%s"',
                 $username,
