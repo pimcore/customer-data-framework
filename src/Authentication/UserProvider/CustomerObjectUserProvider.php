@@ -8,35 +8,42 @@
 
 namespace CustomerManagementFrameworkBundle\Authentication\UserProvider;
 
-
-use CustomerManagementFrameworkBundle\Authentication\User\CustomerObjectUser;
+use CustomerManagementFrameworkBundle\Authentication\SsoIdentity\SsoIdentityServiceInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
-use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
+use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
+use HWI\Bundle\OAuthBundle\Security\Core\User\OAuthAwareUserProviderInterface;
 use Pimcore\Model\Object\AbstractObject;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class CustomerObjectUserProvider implements UserProviderInterface
+class CustomerObjectUserProvider implements UserProviderInterface, OAuthAwareUserProviderInterface
 {
     /**
      * @var CustomerProviderInterface
      */
-    protected $customerProvider;
+    private $customerProvider;
+
+    /**
+     * @var SsoIdentityServiceInterface
+     */
+    private $ssoIdentityService;
 
     /**
      * @var string
      */
     protected $usernameField = 'email';
 
-    /**
-     * @param CustomerProviderInterface $customerProvider
-     * @param string $usernameField
-     */
-    public function __construct(CustomerProviderInterface $customerProvider, $usernameField = 'email')
+    public function __construct(
+        CustomerProviderInterface $customerProvider,
+        SsoIdentityServiceInterface $ssoIdentityService,
+        string $usernameField = 'email'
+    )
     {
         $this->customerProvider = $customerProvider;
+        $this->ssoIdentityService = $ssoIdentityService;
         $this->usernameField = $usernameField;
     }
 
@@ -49,10 +56,35 @@ class CustomerObjectUserProvider implements UserProviderInterface
         $list->setCondition(sprintf('active = 1 and %s = ?', $this->usernameField), $username);
 
         if (!$customer = $list->current()) {
-            throw new UsernameNotFoundException(sprintf("user with username %s not found", $username));
+            throw new UsernameNotFoundException(sprintf('Customer "%s" was not found', $username));
         }
 
         return $customer;
+    }
+
+    public function loadUserByOAuthUserResponse(UserResponseInterface $response)
+    {
+        $provider = $response->getResourceOwner()->getName();
+        $username = $response->getUsername();
+
+        $user = $this->ssoIdentityService->getCustomerBySsoIdentity(
+            $provider,
+            $username
+        );
+
+        if (null === $user || null === $username) {
+            $exception = new AccountNotLinkedException(sprintf(
+                'No customer was found for user "%s" on provider "%s"',
+                $username,
+                $provider
+            ));
+
+            $exception->setUsername($username);
+
+            throw $exception;
+        }
+
+        return $user;
     }
 
     /**

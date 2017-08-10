@@ -2,7 +2,6 @@ parameters:
     cmf.mailchimp.client.apikey:
 
 services:
-
     cmf.logger:
         alias: logger
 
@@ -154,6 +153,12 @@ services:
         calls:
             - [setLogger, ['@cmf.logger']]
 
+    CustomerManagementFrameworkBundle\Security\OAuth\AccountConnector:
+        autowire: true
+
+    CustomerManagementFrameworkBundle\Security\OAuth\OAuthHandler:
+        autowire: true
+
     CustomerManagementFrameworkBundle\Security\Authentication\LoginManager:
         autowire: true
         arguments:
@@ -167,6 +172,7 @@ services:
         class: CustomerManagementFrameworkBundle\Authentication\UserProvider\CustomerObjectUserProvider
         arguments:
             - '@cmf.customer_provider'
+            - '@cmf.authentication.sso.identity_service'
             - 'email'
 
     # The encoder factory is responsible for verifying the password hash for a given user. As we need some special
@@ -183,10 +189,6 @@ services:
         arguments: ['@cmf.customer_provider']
         calls:
              - [setLogger, ['@cmf.logger']]
-
-    cmf.authentication.sso.hybrid_auth_handler:
-        class: CustomerManagementFrameworkBundle\Authentication\Sso\DefaultHybridAuthHandler
-        arguments: ['@cmf.authentication.sso.identity_service', '@cmf.encryption_service']
 
     cmf.encryption_service:
         class: CustomerManagementFrameworkBundle\Encryption\DefaultEncryptionService

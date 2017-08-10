@@ -1,3 +1,30 @@
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation
+
+app_auth_logout:
+    path: /auth/logout
+
+app_auth_oauth_redirect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
+    prefix:   /auth/connect
+    requirements:
+        _locale:  de|en
+
+app_auth_oauth_connect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/connect.xml"
+    prefix:   /auth/connect
+    requirements:
+        _locale:  de|en
+
+app_auth_oauth_login:
+    resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
+    prefix:   /auth/oauth
+    requirements:
+        _locale:  de|en
+
+app_auth_oauth_check_google:
+    path: /auth/oauth/check/google
+
+app_auth_oauth_check_twitter:
+    path: /auth/oauth/check/twitter

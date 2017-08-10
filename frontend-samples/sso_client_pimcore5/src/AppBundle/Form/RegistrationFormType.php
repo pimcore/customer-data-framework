@@ -13,7 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class RegisterFormType extends AbstractType
+class RegistrationFormType extends AbstractType
 {
     /**
      * @inheritDoc
@@ -33,7 +33,7 @@ class RegisterFormType extends AbstractType
             ->add('password', PasswordType::class, [
                 'label' => 'Password'
             ])
-            ->add('provider', HiddenType::class)
+            ->add('oAuthKey', HiddenType::class)
             ->add('_submit', SubmitType::class, [
                 'label' => 'Register'
             ]);

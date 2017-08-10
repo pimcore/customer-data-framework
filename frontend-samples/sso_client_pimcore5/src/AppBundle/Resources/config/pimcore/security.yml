@@ -19,6 +19,15 @@ security:
                 login_path: app_auth_login
                 check_path: app_auth_login
                 default_target_path: app_auth_secure
+            oauth:
+                resource_owners:
+                    google: app_auth_oauth_check_google
+                    twitter: app_auth_oauth_check_twitter
+                login_path: app_auth_login
+                failure_path: app_auth_login
+                default_target_path: app_auth_secure
+                oauth_user_provider:
+                    service: cmf.authentication.user_provider
             logout:
                 path: app_auth_logout
                 target: app_auth_login

@@ -35,3 +35,12 @@ $this->form()->setTheme($form, [':Form/Theme/Bootstrap']);
 
     </div>
 </div>
+
+<div class="row mt10">
+    <div class="col-md-12 text-center">
+
+        <?= $this->template(':Auth/partials:social-login-buttons.html.php') ?>
+
+    </div>
+</div>
+
