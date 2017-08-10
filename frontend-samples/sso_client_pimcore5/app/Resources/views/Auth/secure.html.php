@@ -49,18 +49,23 @@ foreach ($ssoIdentities as $ssoIdentity) {
     /** @var \Pimcore\Model\Object\SsoIdentity $ssoIdentity */
     foreach ($ssoIdentities as $ssoIdentity): ?>
 
+        <?php
+        /** @var \Pimcore\Model\Object\SsoIdentity\Credentials $credentials */
+        $credentials = $ssoIdentity->getCredentials();
+        ?>
+
         <div class="panel panel-default">
             <div class="panel-heading"><?= $ssoIdentity->getProvider() ?></div>
             <div class="panel-body">
                 <p>Identifier: <?= $ssoIdentity->getIdentifier() ?></p>
-                <?php dump(json_decode($ssoIdentity->getProfileData())) ?>
+                <?php var_dump(json_decode($ssoIdentity->getProfileData())) ?>
 
-                <?php if ($ssoIdentity->getCredentials()->getOAuth1Token()): ?>
+                <?php if ($credentials->getOAuth1Token()): ?>
 
                     <?php
                     /** @var OAuth1TokenInterface $token */
-                    $token = $ssoIdentity->getCredentials()->getOAuth1Token();
-                    dump([
+                    $token = $credentials->getOAuth1Token();
+                    var_dump([
                         'tokenRaw'       => $token->getToken(),
                         'token'          => $encryptionHelper->decrypt($token->getToken()),
                         'tokenSecretRaw' => $token->getTokenSecret(),
@@ -68,18 +73,20 @@ foreach ($ssoIdentities as $ssoIdentity) {
                     ])
                     ?>
 
-                <?php elseif ($ssoIdentity->getCredentials()->getOAuth2Token()): ?>
+                <?php elseif ($credentials->getOAuth2Token()): ?>
 
                     <?php
                     /** @var OAuth2TokenInterface $token */
-                    $token = $ssoIdentity->getCredentials()->getOAuth2Token();
-                    dump([
+                    $token = $credentials->getOAuth2Token();
+                    var_dump([
+                        'type'            => $token->getTokenType(),
+                        'scope'           => $token->getScope(),
                         'accessTokenRaw'  => $token->getAccessToken(),
                         'accessToken'     => $encryptionHelper->decrypt($token->getAccessToken()),
                         'refreshTokenRaw' => $token->getRefreshToken(),
                         'refreshToken'    => $encryptionHelper->decrypt($token->getRefreshToken()),
                         'expiresAtRaw'    => $token->getExpiresAt(),
-                        'expiresAt'       => \Carbon\Carbon::createFromTimestamp($token->getExpiresAt())
+                        'expiresAt'       => \Carbon\Carbon::createFromTimestamp($token->getExpiresAt()),
                     ])
                     ?>
 
@@ -92,4 +99,4 @@ foreach ($ssoIdentities as $ssoIdentity) {
 
 <?php endif; ?>
 
-<?php dump($customer->cmfToArray()) ?>
+<?php var_dump($customer->cmfToArray()) ?>
