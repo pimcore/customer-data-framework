@@ -12,6 +12,12 @@ $providers = [
 
 $blacklist = $this->blacklist ?: [];
 $route     = $this->route ?: 'app_auth_oauth_login';
+$connect   = $this->connect ?? false;
+
+$prompt = 'Sign in with';
+if ($connect) {
+    $prompt = 'Connect to';
+}
 
 foreach ($providers as $providerKey => $providerName): ?>
 
@@ -25,9 +31,9 @@ foreach ($providers as $providerKey => $providerName): ?>
     ]);
     ?>
 
-    <a class="btn btn-info" href="<?= $url ?>">
+    <a class="btn btn-info btn-sm" href="<?= $url ?>">
         <i class="fa fa-<?= $providerKey ?>" aria-hidden="true"></i>
-        Sign in with <?= $providerName ?>
+        <?= $prompt ?> <?= $providerName ?>
     </a>
 
 <?php endforeach; ?>
