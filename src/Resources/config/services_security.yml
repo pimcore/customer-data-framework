@@ -21,8 +21,14 @@ services:
         class: CustomerManagementFrameworkBundle\Security\UserProvider\CustomerObjectUserProvider
         arguments:
             - '@cmf.customer_provider'
-            - '@cmf.security.sso.identity_service'
             - 'email'
+
+    # OAuth user provider
+    cmf.security.user_provider.oauth:
+        class: CustomerManagementFrameworkBundle\Security\UserProvider\OAuthAwareUserProvider
+        arguments:
+            - '@cmf.security.user_provider'
+            - '@cmf.security.sso.identity_service'
 
     # The encoder factory is responsible for verifying the password hash for a given user. As we need some special
     # handling to be able to work with the password field, we use the UserAwareEncoderFactory to buiild a dedicated

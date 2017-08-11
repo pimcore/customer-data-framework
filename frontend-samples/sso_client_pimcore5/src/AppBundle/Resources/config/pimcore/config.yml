@@ -1,6 +1,7 @@
 imports:
     - { resource: security.yml }
 
+# Configure the HWIOAuth bundle
 hwi_oauth:
     firewall_names: [main]
 

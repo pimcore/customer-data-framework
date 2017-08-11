@@ -19,17 +19,12 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class CustomerObjectUserProvider implements UserProviderInterface, OAuthAwareUserProviderInterface
+class CustomerObjectUserProvider implements UserProviderInterface
 {
     /**
      * @var CustomerProviderInterface
      */
     private $customerProvider;
-
-    /**
-     * @var SsoIdentityServiceInterface
-     */
-    private $ssoIdentityService;
 
     /**
      * @var string
@@ -38,12 +33,10 @@ class CustomerObjectUserProvider implements UserProviderInterface, OAuthAwareUse
 
     public function __construct(
         CustomerProviderInterface $customerProvider,
-        SsoIdentityServiceInterface $ssoIdentityService,
         string $usernameField = 'email'
     )
     {
         $this->customerProvider = $customerProvider;
-        $this->ssoIdentityService = $ssoIdentityService;
         $this->usernameField = $usernameField;
     }
 
@@ -60,33 +53,6 @@ class CustomerObjectUserProvider implements UserProviderInterface, OAuthAwareUse
         }
 
         return $customer;
-    }
-
-    public function loadUserByOAuthUserResponse(UserResponseInterface $response)
-    {
-        $provider = $response->getResourceOwner()->getName();
-        $username = $response->getUsername();
-
-        $user = $this->ssoIdentityService->getCustomerBySsoIdentity(
-            $provider,
-            $username
-        );
-
-        if (null === $user || null === $username) {
-            // the AccountNotLinkedException will allow the frontend to proceed to registration
-            // and to fetch user data from the OAuth account
-            $exception = new AccountNotLinkedException(sprintf(
-                'No customer was found for user "%s" on provider "%s"',
-                $username,
-                $provider
-            ));
-
-            $exception->setUsername($username);
-
-            throw $exception;
-        }
-
-        return $user;
     }
 
     /**
