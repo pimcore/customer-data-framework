@@ -5,19 +5,17 @@
  * @var \Pimcore\Templating\GlobalVariables $app
  */
 
-$this->extend('Layout/auth.html.php');
+$this->extend('Layout/layout.html.php');
 
 $form = $this->form;
 
 $this->form()->setTheme($form, [':Form/Theme/Bootstrap']);
-
 ?>
-
 
 <?php $this->headTitle('Login') ?>
 
-<div class="row">
-    <div class="col-md-4 col-md-push-4">
+<div class="row justify-content-center">
+    <div class="col-4">
 
         <h2 class="form-signin-heading">Login</h2>
 
@@ -37,3 +35,20 @@ $this->form()->setTheme($form, [':Form/Theme/Bootstrap']);
 
     </div>
 </div>
+
+<div class="row justify-content-center mt-4">
+    <div class="col-4 text-center">
+
+        <?= $this->template(':Auth/partials:social-login-buttons.html.php') ?>
+
+    </div>
+</div>
+
+<div class="row justify-content-center mt-4">
+    <div class="col-4 text-center">
+
+        <p>No account? <a href="<?= $this->url('app_auth_register') ?>">Register now!</a></p>
+
+    </div>
+</div>
+

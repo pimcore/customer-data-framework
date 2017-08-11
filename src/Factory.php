@@ -15,7 +15,7 @@ use CustomerManagementFrameworkBundle\ActivityManager\ActivityManagerInterface;
 use CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface;
 use CustomerManagementFrameworkBundle\ActivityUrlTracker\ActivityUrlTrackerInterface;
 use CustomerManagementFrameworkBundle\ActivityView\ActivityViewInterface;
-use CustomerManagementFrameworkBundle\Authentication\SsoIdentity\SsoIdentityServiceInterface;
+use CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface;
 use CustomerManagementFrameworkBundle\CustomerDuplicatesService\CustomerDuplicatesServiceInterface;
 use CustomerManagementFrameworkBundle\CustomerMerger\CustomerMergerInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
@@ -34,11 +34,8 @@ use Psr\Log\LoggerInterface;
 
 class Factory
 {
-
-
     private function __construct()
     {
-
     }
 
     /**
@@ -54,16 +51,6 @@ class Factory
 
         return self::$instance;
     }
-
-
-    /**
-     * @return SsoIdentityServiceInterface
-     */
-    public function getSsoIdentityService()
-    {
-        return \Pimcore::getDiContainer()->get(SsoIdentityServiceInterface::class);
-    }
-
 
     /**
      * @param            $className

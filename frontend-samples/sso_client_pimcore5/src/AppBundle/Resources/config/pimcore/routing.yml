@@ -1,0 +1,17 @@
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
+
+app_auth_logout:
+    path: /auth/logout
+
+app_auth_oauth_login:
+    path: /auth/oauth/login/{service}
+    defaults:
+        _controller: HWIOAuthBundle:Connect:redirectToService
+
+app_auth_oauth_check_google:
+    path: /auth/oauth/check/google
+
+app_auth_oauth_check_twitter:
+    path: /auth/oauth/check/twitter

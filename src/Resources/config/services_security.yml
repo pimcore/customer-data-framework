@@ -1,0 +1,46 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    CustomerManagementFrameworkBundle\Security\OAuth\AccountConnector: ~
+
+    CustomerManagementFrameworkBundle\Security\OAuth\OAuthRegistrationHandler: ~
+
+    CustomerManagementFrameworkBundle\Security\OAuth\SessionTokenStorage: ~
+
+    CustomerManagementFrameworkBundle\Security\Authentication\LoginManager:
+        arguments:
+            $defaultUserChecker: '@security.user_checker'
+
+    # The user provider loads users by Username.
+    # Pimcore provides a simple ObjectUserProvider which is able to load users from a specified class by a configured
+    # field. The website_demo.security.user_provider will load users from the AppBundle\Model\Object\User by looking at
+    # their username field.
+    cmf.security.user_provider:
+        class: CustomerManagementFrameworkBundle\Security\UserProvider\CustomerObjectUserProvider
+        arguments:
+            - '@cmf.customer_provider'
+            - 'email'
+
+    # OAuth user provider
+    cmf.security.user_provider.oauth:
+        class: CustomerManagementFrameworkBundle\Security\UserProvider\OAuthAwareUserProvider
+        arguments:
+            - '@cmf.security.user_provider'
+            - '@cmf.security.sso.identity_service'
+
+    # The encoder factory is responsible for verifying the password hash for a given user. As we need some special
+    # handling to be able to work with the password field, we use the UserAwareEncoderFactory to buiild a dedicated
+    # encoder per user. This service is configured in pimcore.security.encoder_factories to handle our user model.
+    cmf.security.user_password_encoder_factory:
+        class: Pimcore\Security\Encoder\Factory\UserAwareEncoderFactory
+        arguments:
+            - Pimcore\Security\Encoder\PasswordFieldEncoder
+            - ['password']
+
+    cmf.security.sso.identity_service:
+        class: CustomerManagementFrameworkBundle\Security\SsoIdentity\DefaultSsoIdentityService
+        arguments: ['@cmf.customer_provider']
+        calls:
+             - [setLogger, ['@cmf.logger']]

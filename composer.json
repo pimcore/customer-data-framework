@@ -2,13 +2,15 @@
     "name": "pimcore/customer-management-framework-bundle",
     "license": "GPL-3.0+",
     "type": "pimcore-bundle",
+    "config": {
+        "sort-packages": true
+    },
     "require": {
-        "pimcore/installer-plugin": ">=1",
-        "mtdowling/cron-expression": "^1.1.0",
-        "guzzlehttp/guzzle": ">=4.1.4 <7.0",
-        "symfony/routing": "^3.2",
         "drewm/mailchimp-api": "*",
-        "pimcore/search-query-parser": "~1.2.3"
+        "guzzlehttp/guzzle": ">=4.1.4 <7.0",
+        "hwi/oauth-bundle": "^0.5.3",
+        "mtdowling/cron-expression": "^1.1.0",
+        "pimcore/search-query-parser": "^1.2"
     },
     "require-dev": {
         "codeception/codeception": "^2.2"

@@ -3,28 +3,26 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Form\LoginFormType;
-use AppBundle\Form\RegisterFormType;
-use AppBundle\Model\Customer;
-use CustomerManagementFrameworkBundle\Authentication\SsoIdentity\SsoIdentityServiceInterface;
+use AppBundle\Form\RegistrationFormHandler;
+use AppBundle\Form\RegistrationFormType;
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\Exception\DuplicateCustomerException;
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use CustomerManagementFrameworkBundle\Model\SsoIdentityInterface;
+use CustomerManagementFrameworkBundle\Security\Authentication\LoginManagerInterface;
+use CustomerManagementFrameworkBundle\Security\OAuth\Exception\AccountNotLinkedException;
+use CustomerManagementFrameworkBundle\Security\OAuth\OAuthRegistrationHandler;
+use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
+use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
 use Pimcore\Controller\FrontendController;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Form;
-use Symfony\Component\Form\FormError;
+use Ramsey\Uuid\Uuid;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Website\Auth\Adapter\Customer as CustomerAuthAdapter;
-use Website\Auth\AuthService;
-use Website\Auth\RegistrationFormHandler;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 /**
  * @Route("/auth")
@@ -32,146 +30,172 @@ use Symfony\Component\Routing\Annotation\Route;
 class AuthController extends FrontendController
 {
     /**
-     * @var AuthService
-     */
-    protected $authService;
-
-
-    /**
-     * Just an index page redirecting to login
+     * @Route("/", name="app_auth_index")
      *
-     * @param Request $request
-     * @Route("/index")
+     * @param UserInterface|null $user
+     *
+     * @return RedirectResponse
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request, UserInterface $user = null)
     {
-        return $this->redirect($this->generateUrl(
-            'app_auth_login'
-        ));
+        return $this->buildUserRedirect($user);
     }
 
     /**
-     * @param Request $request
      * @Route("/login")
+     *
+     * @param AuthenticationUtils $authenticationUtils
+     * @param OAuthRegistrationHandler $oAuthHandler
+     * @param UserInterface|null $user
+     *
+     * @return null|Response
      */
-    public function loginAction(Request $request, UserInterface $user = null)
+    public function loginAction(
+        AuthenticationUtils $authenticationUtils,
+        OAuthRegistrationHandler $oAuthHandler,
+        UserInterface $user = null
+    )
     {
-        // redirect to secure action if already logged in
-        /*if ($user) {
-            $redirect();
-            return;
-        }*/
+        // redirect to index action if already logged in
+        if ($user && $this->isGranted('ROLE_USER')) {
+            return $this->buildUserRedirect($user);
+        }
 
-        $customer = \Pimcore\Model\Object\Customer::getById(6692811);
-        print 'class' . get_class($customer);
-
-        $authenticationUtils = $this->get('security.authentication_utils');
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
+
+        // OAuth handling - the OAuth authenticator is configured to return to the login page on errors
+        // (see failure_path configuration) - therefore we can fetch the last authentication error
+        // here. If the error is an AccountNotLinkedException (as thrown by our user provider) save the
+        // OAuth token to the session and redirect to registration with a special key which can be used
+        // to load the token to prepopulate the registration form with account data.
+        if ($error instanceof AccountNotLinkedException) {
+            // this can be anything - for simplicity we just use an UUID as it is unique and random
+            $registrationKey = Uuid::uuid4();
+            $oAuthHandler->saveToken($registrationKey, $error->getToken());
+
+            return $this->redirectToRoute('app_auth_register', [
+                'registrationKey' => $registrationKey
+            ]);
+        }
+
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        $formData =[
+        $formData = [
             '_username' => $lastUsername,
         ];
 
-        $form = $this->createForm(LoginFormType::class, $formData, [
-            'action' => $this->generateUrl('app_auth_login'),
-        ]);
+        $form = $this->createForm(LoginFormType::class, $formData);
 
-        $this->view->form = $form->createView();
+        $this->view->form  = $form->createView();
         $this->view->error = $error;
-
     }
 
     /**
-     * @Route("/logout")
-     */
-    public function logoutAction()
-    {
-        //logout is handled by security component, therefore nothing to do here
-    }
-
-    /**
-     * Registration can either be called with a provider parameter or without. If a provider is passed, it will try
-     * to read a SSO identity for the given provider from the HybridAuth store. This identity will then be added to the
-     * customer profile and will pre-fill customer data (e.g. name if given).
+     * If registration is called with a registration key, the key will be used to look for an existing OAuth token in
+     * the session. This OAuth token will be used to fetch user info which can be used to prepopulate the form and to
+     * link a SSO identity to the created customer object.
      *
-     * @Route("/register")
+     * This could be further separated into services, but was kept as single method for demonstration purposes as the
+     * registration process is different on every project.
+     *
+     * @Route("/register/{registrationKey}", defaults={"registrationKey" = null})
+     *
+     * @param Request $request
+     * @param CustomerProviderInterface $customerProvider
+     * @param LoginManagerInterface $loginManager
+     * @param OAuthRegistrationHandler $oAuthHandler
+     * @param RegistrationFormHandler $registrationFormHandler
+     * @param string|null $registrationKey
+     * @param UserInterface|null $user
+     *
+     * @return Response|null
      */
-    public function registerAction(Request $request)
+    public function registerAction(
+        Request $request,
+        CustomerProviderInterface $customerProvider,
+        OAuthRegistrationHandler $oAuthHandler,
+        LoginManagerInterface $loginManager,
+        RegistrationFormHandler $registrationFormHandler,
+        string $registrationKey = null,
+        UserInterface $user = null
+    )
     {
-        $registrationFormHandler = new RegistrationFormHandler();
+        // redirect to secure page if we have a user
+        if ($user) {
+            return $this->buildUserRedirect($user);
+        }
 
         // create a new, empty customer instance
-        /** @var \CustomerManagementFrameworkBundle\Model\CustomerInterface|\Pimcore\Model\Object\Customer $customer */
-        $customer = $this->container->get('cmf.customer_provider')
-            ->create();
+        /** @var CustomerInterface|\Pimcore\Model\Object\Customer $customer */
+        $customer = $customerProvider->create();
 
-        /** @var SsoIdentityInterface $ssoIdentity */
-        $ssoIdentity = null;
+        /** @var OAuthToken $oAuthToken */
+        $oAuthToken = null;
 
-        // we come from an SSO provider - try to load the SSO identity
-        if ($request->get('provider')) {
-            // call authenticate again - if we're logged in the auth handler will keep auth result
-            // in its session and not authenticate again
-            $hybridAuthHandler = $this->authenticateHybridAuth($request);
+        /** @var UserResponseInterface $oAuthUserInfo */
+        $oAuthUserInfo = null;
 
-            // try to load a customer with the given identity from our storage. if this succeeds, we can't register the customer
-            // and should either log in the existing identity or show an error. for simplicity, we just throw an exception.
-            if ($hybridAuthHandler->getCustomerFromAuthResponse($request)) {
+        // load previously stored token from the session and try to load user profile
+        // from provider
+        if (null !== $registrationKey) {
+            $oAuthToken    = $oAuthHandler->loadToken($registrationKey);
+            $oAuthUserInfo = $oAuthHandler->loadUserInformation($oAuthToken);
+        }
+
+        if (null !== $oAuthUserInfo) {
+            // try to load a customer with the given identity from our storage. if this succeeds, we can't register
+            // the customer and should either log in the existing identity or show an error. for simplicity, we just
+            // throw an exception here.
+            // this shouldn't happen as the login would log in the user if found
+            if ($oAuthHandler->getCustomerFromUserResponse($oAuthUserInfo)) {
                 throw new \RuntimeException('Customer is already registered');
             }
+        }
 
-            // update customer to be registered with auth response (SSO identity, profile data)
-            /** @var \Pimcore\Model\Object\SsoIdentity $ssoIdentity */
-            $ssoIdentity = $hybridAuthHandler->updateCustomerFromAuthResponse($customer, $request);
+        // the registration form handler is just a utility class to map pimcore object data to form
+        // and vice versa. TODO: is there a better way (as Symfony does with Doctrine entities)?
+        $formData = $registrationFormHandler->buildFormData($customer);
+        if (null !== $oAuthToken) {
+            $formData = $this->mergeOAuthFormData($formData, $oAuthUserInfo);
         }
 
         // build the registration form and pre-fill it with customer data
-        $form = $this->createForm(RegisterFormType::class, [], [
-            'action' => $this->generateUrl('app_auth_login'),
-        ]);
-
+        $form = $this->createForm(RegistrationFormType::class, $formData);
         $form->handleRequest($request);
 
         $errors = [];
-        
         if ($form->isSubmitted() && $form->isValid()) {
+            $registrationFormHandler->updateCustomerFromForm($customer, $form);
+            $customer->setActive(true);
 
-                $customer->setValues($form->getData());
-                $customer->setActive(true);
+            try {
+                $customer->save();
 
-                try {
-                    $customer->save();
+                // add SSO identity from OAuth data
+                if (null !== $oAuthUserInfo) {
+                    $oAuthHandler->connectSsoIdentity($customer, $oAuthUserInfo);
+                }
 
-                    // add SSO identity to customer object
-                    if (null !== $ssoIdentity) {
-                        // fix getParentId() still resolving to 0 as it was set
-                        // when unsaved customer was passed as parent - this isn't necessary after Pimcore 4.4.2
-                        $ssoIdentity->setParent($customer);
-                        $ssoIdentity->save();
+                $response = $this->buildUserRedirect($customer);
 
-                        // set SSO identity on customer as this couldn't be done by auth handler before both objects were saved
-                        $ssoIdentityService = Pimcore::getDiContainer()->get(SsoIdentityServiceInterface::class);
-                        $ssoIdentityService->addSsoIdentity($customer, $ssoIdentity);
-                        $customer->save();
-                    }
+                // log user in manually
+                // pass response to login manager as it adds potential remember me cookies
+                $loginManager->login($customer, $request, $response);
 
-                    // customer object is ready, now log in and redirect to secure action
-                    //$this->authService->login($customer);
-                    return $this->get('security.authentication.guard_handler')
-                        ->authenticateUserAndHandleSuccess(
-                            $customer,
-                            $request,
-                            null,
-                            'main'
-                        );
+                return $response;
             } catch (DuplicateCustomerException $e) {
                 $errors[] = "Customer already exists";
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
             }
+        }
+
+        // re-save user info to session as we need it in subsequent requests (e.g. after form errors) or
+        // when form is rendered for the first time
+        if (null !== $registrationKey && null !== $oAuthToken) {
+            $oAuthHandler->saveToken($registrationKey, $oAuthToken);
         }
 
         $this->view->customer = $customer;
@@ -180,105 +204,79 @@ class AuthController extends FrontendController
     }
 
     /**
-     * This actions starts the SSO login by passing a provider parameter which is passed to HybridAuth. If the given
-     * provider is configured, HybridAuth will redirect to the given service login page.
+     * Connects an already logged in user to an auth provider
+     *
+     * @Route("/oauth/connect/{service}", name="app_auth_oauth_connect")
+     * @Security("has_role('ROLE_USER')")
      *
      * @param Request $request
-     *
-     * @route("/hybridauth")
-     */
-    public function hybridauthAction(Request $request, UserInterface $customer = null)
-    {
-
-        /** @var \CustomerManagementFrameworkBundle\Authentication\Sso\DefaultHybridAuthHandler $hybridAuthHandler */
-        $hybridAuthHandler = null;
-
-        try {
-            $hybridAuthHandler = $this->authenticateHybridAuth($request);
-        } catch (\CustomerManagementFrameworkBundle\Authentication\AuthenticationException $e) {
-            \Pimcore\Logger::warning('Failed to log in via SSO: ' . $e->getMessage());
-
-            return $this->redirectToRoute("app_auth_login");
-
-        }
-
-        // SSO login succeeded - try to get a local customer with the returned SSO identity
-        $customer = $hybridAuthHandler->getCustomerFromAuthResponse($request);
-
-        if ($customer) {
-            // if there's a customer in the session and a customer is found from the SSO identity, abort if they don't match
-            if ($customer) {
-                if ($customer->getId() !== $this->authService->getCustomer()->getId()) {
-                    throw new \RuntimeException('We have a logged in customer and found a customer from the SSO identity, but do not match');
-                }
-            } else {
-                // customer was logged in and a new SSO identity not used elsewhere was returned -> link it to the current customer
-
-                // update an already logged in customer with the auth identity
-                $customer = $this->authService->getCustomer();
-
-                $ssoIdentity = $hybridAuthHandler->updateCustomerFromAuthResponse($customer, $this->getRequest());
-                $ssoIdentity->save();
-
-                $customer->save();
-            }
-        }
-
-        // if we have a customer, redirect to the secure page, otherwise proceed to registration
-        if ($customer) {
-            return $this->redirectToRoute("app_auth_secure");
-        } else {
-            return $this->redirectToRoute("app_auth_register");
-        }
-    }
-
-    /**
-     * Fetches the HybridAuth handler from the service container and starts authenticating. If the user already authenticated
-     * in the current session, he will not be redirected to the external service anymore as HybridAuth keeps a session state
-     * with authentication requests. Therefore we can call this method repeatedly after the first login (e.g. to fetch
-     * the external profile) as it will return the data stored in the session instead of authenticating again.
-     *
-     * @param Request $request
-     *
-     * @return \CustomerManagementFrameworkBundle\Authentication\Sso\DefaultHybridAuthHandler
-     */
-    protected function authenticateHybridAuth(Request $request)
-    {
-        /** @var \CustomerManagementFrameworkBundle\Authentication\Sso\DefaultHybridAuthHandler $hybridAuthHandler */
-        $hybridAuthHandler = $this->container->get('cmf.authentication.sso.hybrid_auth_handler');
-        $hybridAuthHandler->authenticate($request);
-
-        return $hybridAuthHandler;
-    }
-
-    /**
-     * The action we want to open after login
-     *
-     * @param Request $request
+     * @param OAuthRegistrationHandler $oAuthHandler
      * @param UserInterface $user
+     * @param string $service
      *
-     * @Route("/secure")
+     * @return RedirectResponse
      */
-    public function secureAction(Request $request, UserInterface $user)
+    public function oAuthConnectAction(
+        Request $request,
+        OAuthRegistrationHandler $oAuthHandler,
+        UserInterface $user,
+        string $service
+    )
     {
-        $this->view->customer           = $user;
-        $this->view->ssoIdentityService = $this->container->get('cmf.authentication.sso.identity_service');
-    }
+        $resourceOwner = $oAuthHandler->getResourceOwner($service);
 
-    /**
-     * @param array $errors
-     * @param Zend_Form $form
-     * @return array
-     */
-    protected function addFormErrors(array $errors, Zend_Form $form)
-    {
-        foreach ($form->getErrors() as $fieldName => $fieldErrors) {
-            foreach ($fieldErrors as $fieldError) {
-                $errors[] = sprintf('%s:%s', $fieldName, $fieldError);
-            }
+        $redirectUrl = $this->generateUrl('app_auth_oauth_connect', [
+            'service' => $service
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+
+        // redirect to authorization
+        if (!$resourceOwner->handles($request)) {
+            $authorizationUrl = $oAuthHandler->getAuthorizationUrl($request, $service, $redirectUrl);
+
+            return $this->redirect($authorizationUrl);
         }
 
-        return $errors;
+        // get access token from URL
+        $accessToken = $resourceOwner->getAccessToken($request, $redirectUrl);
+
+        // e.g. user cancelled auth on provider side
+        if (null === $accessToken) {
+            return $this->buildUserRedirect($user);
+        }
+
+        $oAuthUserInfo = $resourceOwner->getUserInformation($accessToken);
+
+        // we don't want to allow linking an OAuth account to multiple customers
+        if ($oAuthHandler->getCustomerFromUserResponse($oAuthUserInfo)) {
+            throw new \RuntimeException('There\'s already a customer registered with this provider identity');
+        }
+
+        // create a SSO identity object and save it to the user
+        $oAuthHandler->connectSsoIdentity($user, $oAuthUserInfo);
+
+        // redirect to secure page which should now list the newly linked profile
+        return $this->buildUserRedirect($user);
     }
 
+    private function buildUserRedirect(UserInterface $user = null): RedirectResponse
+    {
+        if ($user && $this->isGranted('ROLE_USER')) {
+            return $this->redirectToRoute('app_index');
+        }
+
+        return $this->redirectToRoute('app_auth_login');
+    }
+
+    private function mergeOAuthFormData(
+        array $formData,
+        UserResponseInterface $userInformation
+    ): array
+    {
+        return array_replace([
+            'firstname' => $userInformation->getFirstName(),
+            'lastname'  => $userInformation->getLastName(),
+            'email'     => $userInformation->getEmail()
+        ], $formData);
+    }
 }

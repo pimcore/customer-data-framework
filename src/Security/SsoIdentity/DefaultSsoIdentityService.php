@@ -1,6 +1,6 @@
 <?php
 
-namespace CustomerManagementFrameworkBundle\Authentication\SsoIdentity;
+namespace CustomerManagementFrameworkBundle\Security\SsoIdentity;
 
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
@@ -24,9 +24,6 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
      */
     protected $customerProvider;
 
-    /**
-     * @param CustomerProviderInterface $customerProvider
-     */
     public function __construct(CustomerProviderInterface $customerProvider)
     {
         $this->customerProvider = $customerProvider;
