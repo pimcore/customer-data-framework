@@ -1,0 +1,22 @@
+_default:
+    vcs: git
+    prerequisites:
+        - working-copy-check
+        - display-last-changes
+    version-generator:
+        semantic:
+            allow-label: true
+    version-persister:
+        vcs-tag:
+            tag-prefix: "{branch-name}_"
+    post-release-actions:
+        vcs-publish:
+            ask-confirmation: true
+
+master:
+    version-persister:
+        vcs-tag:
+            tag-prefix: 'v'
+    pre-release-actions:
+        vcs-commit:
+            commit-message: "Release v%version%"
