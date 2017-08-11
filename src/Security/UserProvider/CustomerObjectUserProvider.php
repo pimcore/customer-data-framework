@@ -6,17 +6,17 @@
  * Time: 15:28
  */
 
-namespace CustomerManagementFrameworkBundle\Authentication\UserProvider;
+namespace CustomerManagementFrameworkBundle\Security\UserProvider;
 
-use CustomerManagementFrameworkBundle\Authentication\SsoIdentity\SsoIdentityServiceInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Security\OAuth\Exception\AccountNotLinkedException;
+use CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\OAuthAwareUserProviderInterface;
 use Pimcore\Model\Object\AbstractObject;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class CustomerObjectUserProvider implements UserProviderInterface, OAuthAwareUserProviderInterface

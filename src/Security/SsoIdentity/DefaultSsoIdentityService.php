@@ -1,6 +1,6 @@
 <?php
 
-namespace CustomerManagementFrameworkBundle\Authentication\SsoIdentity;
+namespace CustomerManagementFrameworkBundle\Security\SsoIdentity;
 
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;

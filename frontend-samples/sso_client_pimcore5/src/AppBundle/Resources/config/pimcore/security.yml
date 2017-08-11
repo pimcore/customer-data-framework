@@ -4,14 +4,14 @@ pimcore:
     security:
         # The encoder factory as defined in services.yml
         encoder_factories:
-            Pimcore\Model\Object\Customer: cmf.authentication.user_password_encoder_factory
+            Pimcore\Model\Object\Customer: cmf.security.user_password_encoder_factory
 
 security:
     # The user provider is responsible for loading users from the DB. The CMF user provider also implements
     # the OAuthAwareUserProviderInterface defined by the HWIOAuthBundle
     providers:
         cmf:
-            id: cmf.authentication.user_provider
+            id: cmf.security.user_provider
 
     firewalls:
         main:
@@ -37,7 +37,7 @@ security:
                 failure_path: app_auth_login
                 default_target_path: app_index
                 oauth_user_provider:
-                    service: cmf.authentication.user_provider
+                    service: cmf.security.user_provider
 
             # the logout handler listens on the given route and handles
             # logout if the route is matched

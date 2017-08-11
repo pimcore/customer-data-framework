@@ -17,9 +17,9 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Templating\Helper;
 
-use CustomerManagementFrameworkBundle\Authentication\SsoIdentity\SsoIdentityServiceInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\SsoIdentityInterface;
+use CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface;
 use Symfony\Component\Templating\Helper\Helper;
 
 class SsoIdentity extends Helper

@@ -17,13 +17,13 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Security\OAuth;
 
-use CustomerManagementFrameworkBundle\Authentication\SsoIdentity\SsoIdentityServiceInterface;
 use CustomerManagementFrameworkBundle\Encryption\EncryptionServiceInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\OAuth\OAuth1TokenInterface;
 use CustomerManagementFrameworkBundle\Model\OAuth\OAuth2TokenInterface;
 use CustomerManagementFrameworkBundle\Model\OAuth\OAuthTokenInterface;
 use CustomerManagementFrameworkBundle\Model\SsoIdentityInterface;
+use CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface;
 use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\GenericOAuth1ResourceOwner;
 use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\GenericOAuth2ResourceOwner;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
