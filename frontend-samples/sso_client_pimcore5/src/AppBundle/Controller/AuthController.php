@@ -55,7 +55,6 @@ class AuthController extends FrontendController
     /**
      * @Route("/login")
      *
-     * @param Request $request
      * @param AuthenticationUtils $authenticationUtils
      * @param OAuthRegistrationHandler $oAuthHandler
      * @param UserInterface|null $user
@@ -63,7 +62,6 @@ class AuthController extends FrontendController
      * @return null|Response
      */
     public function loginAction(
-        Request $request,
         AuthenticationUtils $authenticationUtils,
         OAuthRegistrationHandler $oAuthHandler,
         UserInterface $user = null
@@ -77,9 +75,13 @@ class AuthController extends FrontendController
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
-        // if error is an AccountNotLinkedException save the error containing the OAuth response
-        // to the session and redirect to registration
+        // OAuth handling - the OAuth authenticator is configured to return to the login page on errors
+        // (see failure_path configuration) - therefore we can fetch the last authentication error
+        // here. If the error is an AccountNotLinkedException (as thrown by our user provider) save the
+        // OAuth token to the session and redirect to registration with a special key which can be used
+        // to load the token to prepopulate the registration form with account data.
         if ($error instanceof AccountNotLinkedException) {
+            // this can be anything - for simplicity we just use an UUID as it is unique and random
             $registrationKey = Uuid::uuid4();
             $oAuthHandler->saveToken($registrationKey, $error->getToken());
 
@@ -166,6 +168,8 @@ class AuthController extends FrontendController
             }
         }
 
+        // the registration form handler is just a utility class to map pimcore object data to form
+        // and vice versa. TODO: is there a better way (as Symfony does with Doctrine entities)?
         $formData = $registrationFormHandler->buildFormData($customer);
         if (null !== $oAuthToken) {
             $formData = $this->mergeOAuthFormData($formData, $oAuthUserInfo);
