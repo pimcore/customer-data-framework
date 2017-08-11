@@ -45,3 +45,11 @@ $this->form()->setTheme($form, [':Form/Theme/Bootstrap']);
 
     </div>
 </div>
+
+<div class="row mt20">
+    <div class="col-md-12 text-center">
+
+        <p><a href="<?= $this->url('app_auth_login') ?>">&larr; Back to login</a></p>
+
+    </div>
+</div>
