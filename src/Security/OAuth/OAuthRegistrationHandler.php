@@ -23,14 +23,13 @@ use CustomerManagementFrameworkBundle\Model\SsoIdentityInterface;
 use HWI\Bundle\OAuthBundle\OAuth\ResourceOwnerInterface;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
-use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\User\AbstractUser;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * Utility class supporting registration process from OAuth responses.
+ * Utility class supporting registration process from OAuth responses. This is mostly a facade pipipng
+ * requests to other services.
  */
 class OAuthRegistrationHandler
 {
@@ -38,6 +37,11 @@ class OAuthRegistrationHandler
      * @var OAuthUtils
      */
     private $oAuthUtils;
+
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
 
     /**
      * @var SsoIdentityServiceInterface
@@ -51,54 +55,44 @@ class OAuthRegistrationHandler
 
     public function __construct(
         OAuthUtils $oAuthUtils,
+        TokenStorageInterface $tokenStorage,
         SsoIdentityServiceInterface $ssoIdentityService,
         AccountConnectorInterface $accountConnector
     )
     {
         $this->oAuthUtils         = $oAuthUtils;
+        $this->tokenStorage       = $tokenStorage;
         $this->ssoIdentityService = $ssoIdentityService;
         $this->accountConnector   = $accountConnector;
     }
 
     /**
-     * Saves an OAuth token to the session with a given key. Will be used to memorize the token during registration
+     * Saves an OAuth token (e.g. to the session) with a given key. Will be used to memorize the token during registration
      * (multiple requests when handling forms).
      *
-     * @param Request $request
      * @param string $key
      * @param OAuthToken $token
      */
-    public function saveOAuthTokenToSession(Request $request, string $key, OAuthToken $token)
+    public function saveToken(string $key, OAuthToken $token)
     {
-        $session = $request->getSession();
-
-        $session->set($this->buildSessionKey('token', $key), $token);
-        $session->set($this->buildSessionKey('timestamp', $key), time());
+        $this->tokenStorage->saveToken($key, $token);
     }
 
     /**
-     * Loads a previously stored OAuth token from the session
+     * Loads a previously stored OAuth token
      *
-     * @param Request $request
      * @param string $key
      * @param int $maxLifetime
      *
      * @return OAuthToken|null
      */
-    public function loadOAuthTokenFromSession(Request $request, string $key, int $maxLifetime = 300)
+    public function loadToken(string $key, int $maxLifetime = 300)
     {
-        $session = $request->getSession();
-
-        $timestamp = $this->getAndRemoveValueFromSession($session, $this->buildSessionKey('timestamp', $key));
-        $token     = $this->getAndRemoveValueFromSession($session, $this->buildSessionKey('token', $key));
-
-        if (null !== $timestamp && (time() - $timestamp) <= $maxLifetime) {
-            return $token;
-        }
+        return $this->tokenStorage->loadToken($key, $maxLifetime);
     }
 
     /**
-     * If an OAuth error is stored in the session for the given key, load user information from the resource
+     * If an OAuth token is stored for the given key, load user information from the resource
      * owner (provider).
      *
      * @param OAuthToken $token
@@ -143,33 +137,38 @@ class OAuthRegistrationHandler
         }
 
         $ssoIdentity = $this->accountConnector->connectToSsoIdentity($user, $userInformation);
-        $ssoIdentity->save();
 
+        // the connector does not save the customer and the identity
+        $ssoIdentity->save();
         $user->save();
 
         return $ssoIdentity;
     }
 
+    /**
+     * Loads a resource owner by name
+     *
+     * @param string $name
+     *
+     * @return ResourceOwnerInterface
+     */
     public function getResourceOwner(string $name): ResourceOwnerInterface
     {
         return $this->oAuthUtils->getResourceOwner($name);
     }
 
+    /**
+     * Builds authorizaiton URL for a given resource owner
+     *
+     * @param Request $request
+     * @param string $resourceOwner
+     * @param string $redirectUrl
+     * @param array $extraParameters
+     *
+     * @return string
+     */
     public function getAuthorizationUrl(Request $request, string $resourceOwner, string $redirectUrl, array $extraParameters = [])
     {
         return $this->oAuthUtils->getAuthorizationUrl($request, $resourceOwner, $redirectUrl, $extraParameters);
-    }
-
-    private function getAndRemoveValueFromSession(SessionInterface $session, string $name, $default = null)
-    {
-        $value = $session->get($name, $default);
-        $session->remove($name);
-
-        return $value;
-    }
-
-    private function buildSessionKey(string $type, string $key): string
-    {
-        return sprintf('cmf.oauth.registration.%s.%s', $type, $key);
     }
 }

@@ -81,7 +81,7 @@ class AuthController extends FrontendController
         // to the session and redirect to registration
         if ($error instanceof AccountNotLinkedException) {
             $registrationKey = Uuid::uuid4();
-            $oAuthHandler->saveOAuthTokenToSession($request, $registrationKey, $error->getToken());
+            $oAuthHandler->saveToken($registrationKey, $error->getToken());
 
             return $this->redirectToRoute('app_auth_register', [
                 'registrationKey' => $registrationKey
@@ -152,7 +152,7 @@ class AuthController extends FrontendController
         // load previously stored token from the session and try to load user profile
         // from provider
         if (null !== $registrationKey) {
-            $oAuthToken    = $oAuthHandler->loadOAuthTokenFromSession($request, $registrationKey);
+            $oAuthToken    = $oAuthHandler->loadToken($registrationKey);
             $oAuthUserInfo = $oAuthHandler->loadUserInformation($oAuthToken);
         }
 
@@ -205,7 +205,7 @@ class AuthController extends FrontendController
         // re-save user info to session as we need it in subsequent requests (e.g. after form errors) or
         // when form is rendered for the first time
         if (null !== $registrationKey && null !== $oAuthToken) {
-            $oAuthHandler->saveOAuthTokenToSession($request, $registrationKey, $oAuthToken);
+            $oAuthHandler->saveToken($registrationKey, $oAuthToken);
         }
 
         $this->view->customer = $customer;

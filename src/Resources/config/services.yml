@@ -159,6 +159,9 @@ services:
     CustomerManagementFrameworkBundle\Security\OAuth\OAuthRegistrationHandler:
         autowire: true
 
+    CustomerManagementFrameworkBundle\Security\OAuth\SessionTokenStorage:
+        autowire: true
+
     CustomerManagementFrameworkBundle\Security\Authentication\LoginManager:
         autowire: true
         arguments:
