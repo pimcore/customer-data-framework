@@ -11,7 +11,7 @@ use CustomerManagementFrameworkBundle\Model\OAuth\OAuth2TokenInterface;
 use CustomerManagementFrameworkBundle\Templating\Helper\Encryption;
 use CustomerManagementFrameworkBundle\Templating\Helper\SsoIdentity;
 
-$this->extend('Layout/auth.html.php');
+$this->extend('Layout/layout.html.php');
 
 /** @var CustomerInterface|\Pimcore\Model\Object\Customer $customer */
 $customer = $app->getUser();

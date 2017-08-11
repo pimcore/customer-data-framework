@@ -5,7 +5,7 @@
  * @var \Pimcore\Templating\GlobalVariables $app
  */
 
-$this->extend('Layout/auth.html.php');
+$this->extend('Layout/layout.html.php');
 
 $form = $this->form;
 

@@ -18,14 +18,14 @@ security:
             form_login:
                 login_path: app_auth_login
                 check_path: app_auth_login
-                default_target_path: app_auth_secure
+                default_target_path: app_index
             oauth:
                 resource_owners:
                     google: app_auth_oauth_check_google
                     twitter: app_auth_oauth_check_twitter
                 login_path: app_auth_login
                 failure_path: app_auth_login
-                default_target_path: app_auth_secure
+                default_target_path: app_index
                 oauth_user_provider:
                     service: cmf.authentication.user_provider
             logout:

@@ -30,26 +30,15 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class AuthController extends FrontendController
 {
     /**
-     * Just an index page redirecting to login
+     * @Route("/", name="app_auth_index")
      *
-     * @Route("/")
+     * @param UserInterface|null $user
      *
      * @return RedirectResponse
      */
-    public function indexAction()
+    public function indexAction(Request $request, UserInterface $user = null)
     {
-        return $this->redirectToRoute('app_auth_login');
-    }
-
-    /**
-     * The action we want to open after login. The Security annotation defines that the action needs a valid user
-     * to be accessible.
-     *
-     * @Route("/secure")
-     * @Security("has_role('ROLE_USER')")
-     */
-    public function secureAction()
-    {
+        return $this->buildUserRedirect($user);
     }
 
     /**
@@ -67,9 +56,9 @@ class AuthController extends FrontendController
         UserInterface $user = null
     )
     {
-        // redirect to secure action if already logged in
-        if ($user) {
-            return $this->redirectToRoute('app_auth_secure');
+        // redirect to index action if already logged in
+        if ($user && $this->isGranted('ROLE_USER')) {
+            return $this->buildUserRedirect($user);
         }
 
         // get the login error if there is one
@@ -97,9 +86,7 @@ class AuthController extends FrontendController
             '_username' => $lastUsername,
         ];
 
-        $form = $this->createForm(LoginFormType::class, $formData, [
-            'action' => $this->generateUrl('app_auth_login'),
-        ]);
+        $form = $this->createForm(LoginFormType::class, $formData);
 
         $this->view->form  = $form->createView();
         $this->view->error = $error;
@@ -135,10 +122,9 @@ class AuthController extends FrontendController
         UserInterface $user = null
     )
     {
-        // redirect to login action if already logged in - login will take care of redirecting to
-        // target path
+        // redirect to secure page if we have a user
         if ($user) {
-            return $this->redirectToRoute('app_auth_login');
+            return $this->buildUserRedirect($user);
         }
 
         // create a new, empty customer instance
@@ -192,7 +178,7 @@ class AuthController extends FrontendController
                     $oAuthHandler->connectSsoIdentity($customer, $oAuthUserInfo);
                 }
 
-                $response = $this->redirectToRoute('app_auth_secure');
+                $response = $this->buildUserRedirect($customer);
 
                 // log user in manually
                 // pass response to login manager as it adds potential remember me cookies
@@ -256,7 +242,7 @@ class AuthController extends FrontendController
 
         // e.g. user cancelled auth on provider side
         if (null === $accessToken) {
-            return $this->redirectToRoute('app_auth_secure');
+            return $this->buildUserRedirect($user);
         }
 
         $oAuthUserInfo = $resourceOwner->getUserInformation($accessToken);
@@ -270,7 +256,16 @@ class AuthController extends FrontendController
         $oAuthHandler->connectSsoIdentity($user, $oAuthUserInfo);
 
         // redirect to secure page which should now list the newly linked profile
-        return $this->redirectToRoute('app_auth_secure');
+        return $this->buildUserRedirect($user);
+    }
+
+    private function buildUserRedirect(UserInterface $user = null): RedirectResponse
+    {
+        if ($user && $this->isGranted('ROLE_USER')) {
+            return $this->redirectToRoute('app_index');
+        }
+
+        return $this->redirectToRoute('app_auth_login');
     }
 
     private function mergeOAuthFormData(
