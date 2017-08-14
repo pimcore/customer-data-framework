@@ -3,7 +3,7 @@
 namespace CustomerManagementFrameworkBundle\CustomerList;
 
 use CustomerManagementFrameworkBundle\CustomerList\Exporter\ExporterInterface;
-use Pimcore\Model\Object\Customer;
+use Pimcore\Model\Object\Listing;
 
 interface ExporterManagerInterface
 {
@@ -20,8 +20,8 @@ interface ExporterManagerInterface
 
     /**
      * @param $key
-     * @param Customer\Listing $listing
+     * @param Listing\Concrete $listing
      * @return ExporterInterface
      */
-    public function buildExporter($key, Customer\Listing $listing = null);
+    public function buildExporter($key, Listing\Concrete $listing = null);
 }

@@ -4,8 +4,7 @@ namespace CustomerManagementFrameworkBundle\CustomerList;
 
 use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\CustomerList\Exporter\ExporterInterface;
-use CustomerManagementFrameworkBundle\Plugin;
-use Pimcore\Model\Object\Customer;
+use Pimcore\Model\Object\Listing;
 
 class ExporterManager implements ExporterManagerInterface
 {
@@ -38,10 +37,10 @@ class ExporterManager implements ExporterManagerInterface
 
     /**
      * @param $key
-     * @param Customer\Listing $listing
+     * @param Listing\Concrete $listing
      * @return ExporterInterface
      */
-    public function buildExporter($key, Customer\Listing $listing = null)
+    public function buildExporter($key, Listing\Concrete $listing = null)
     {
         if (!$this->hasExporter($key)) {
             throw new \InvalidArgumentException(sprintf('Exporter %s is not defined', $key));
