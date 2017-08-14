@@ -9,6 +9,7 @@ use Phlexy\LexingException;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\Model\Object\Listing as CoreListing;
 use SearchQueryParser\ParserException;
+use SearchQueryParser\QueryBuilder\ZendCompatibility;
 use SearchQueryParser\QueryBuilder\ZendDbSelect;
 use SearchQueryParser\SearchQueryParser;
 
@@ -40,7 +41,7 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
      */
     public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $query)
     {
-        $queryBuilder = new ZendDbSelect(
+        $queryBuilder = new ZendCompatibility(
             $this->fields, [
             'stripWildcards' => false // allow LIKE wildcards
         ]
