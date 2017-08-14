@@ -14,6 +14,11 @@ class Csv extends AbstractExporter
     protected $stream;
 
     /**
+     * @var bool
+     */
+    protected $generated;
+
+    /**
      * Get file MIME type
      *
      * @return string
@@ -30,21 +35,26 @@ class Csv extends AbstractExporter
      */
     public function getFilesize()
     {
-        $this->export();
+        if(!$this->generated) {
+            throw new \Exception('Export fore not generated: call generateExportFile before');
+        }
 
         $stat = fstat($this->stream);
 
         return $stat['size'];
     }
 
-    /**
-     * Get export data
-     *
-     * @return string
-     */
-    public function getExportData()
+
+    public function getExtension()
     {
-        $this->export();
+        return 'csv';
+    }
+
+    public function generateExportFile(array $exportData)
+    {
+        $this->render($exportData);
+
+        $this->generated = true;
 
         return stream_get_contents($this->stream, -1, 0);
     }
@@ -52,13 +62,13 @@ class Csv extends AbstractExporter
     /**
      * @return $this
      */
-    protected function render()
+    protected function render(array $exportData)
     {
         $this->stream = fopen('php://temp', 'w+');
 
         $this->renderHeader();
-        foreach ($this->listing as $customer) {
-            $this->renderRow($customer);
+        foreach ($exportData as $exportRow) {
+            $this->renderRow($exportRow);
         }
 
         return $this;
@@ -85,19 +95,11 @@ class Csv extends AbstractExporter
     }
 
     /**
-     * @param Customer $customer
+     * @param [] $row
      * @return $this
      */
-    protected function renderRow(Customer $customer)
+    protected function renderRow(array $row)
     {
-        $row = [];
-        foreach ($this->properties as $property) {
-            $getter = 'get'.ucfirst($property);
-            $value = $customer->$getter();
-
-            $row[] = $value;
-        }
-
         fputcsv($this->stream, $row);
 
         return $this;

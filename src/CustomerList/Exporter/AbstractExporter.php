@@ -23,10 +23,6 @@ abstract class AbstractExporter implements ExporterInterface
      */
     protected $properties;
 
-    /**
-     * @var bool
-     */
-    protected $rendered = false;
 
     /**
      * @param $name
@@ -91,18 +87,27 @@ abstract class AbstractExporter implements ExporterInterface
     /**
      * Run the export
      */
-    public function export()
+    public function getExportData()
     {
         if (null === $this->listing) {
             throw new \RuntimeException('Listing is not set');
         }
 
-        if (!$this->rendered) {
-            $this->render();
-            $this->rendered = true;
+        $rows = [];
+        foreach($this->listing as $customer)
+        {
+            $row = [];
+            foreach ($this->properties as $property) {
+                $getter = 'get'.ucfirst($property);
+                $value = $customer->$getter();
+
+                $row[] = $value;
+            }
+
+            $rows[] = $row;
         }
 
-        return $this;
+        return $rows;
     }
 
     /**
@@ -118,7 +123,7 @@ abstract class AbstractExporter implements ExporterInterface
     /**
      * @return $this
      */
-    abstract protected function render();
+    abstract protected function render(array $exportData);
 
     /**
      * @param $property

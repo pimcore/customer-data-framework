@@ -51,9 +51,24 @@ interface ExporterInterface
     public function getFilesize();
 
     /**
+     * Get extension of exported file
+     *
+     * @return string
+     */
+    public function getExtension();
+
+    /**
      * Get export data
      *
-     * @return mixed
+     * @return []
      */
     public function getExportData();
+
+    /**
+     * Generates the export file from given export data.
+     *
+     * @param array $exportData
+     * @return mixed
+     */
+    public function generateExportFile(array $exportData);
 }

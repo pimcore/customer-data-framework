@@ -3,6 +3,7 @@
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\Config;
+use CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface;
 use CustomerManagementFrameworkBundle\Listing\Filter;
 use CustomerManagementFrameworkBundle\Listing\FilterHandler;
 use CustomerManagementFrameworkBundle\Controller\Admin;
@@ -13,6 +14,7 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use Pimcore\Model\Object\CustomerSegmentGroup;
 use Pimcore\Model\Object\Listing;
+use Pimcore\Model\Tool\TmpStore;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -113,6 +115,9 @@ class CustomersController extends Admin
     {
 
         $exporterName = $request->get('exporter', 'csv');
+        /**
+         * @var ExporterManagerInterface $exporterManager
+         */
         $exporterManager = \Pimcore::getContainer()->get('cmf.customer_exporter_manager');
 
         if (!$exporterManager->hasExporter($exporterName)) {
@@ -124,14 +129,17 @@ class CustomersController extends Admin
         $exporter = $exporterManager->buildExporter($exporterName, $listing);
 
         $filename = sprintf(
-            '%s-%s-segment-export.csv',
+            '%s-%s-segment-export.%s',
             $exporterName,
-            \Carbon\Carbon::now()->format('YmdHis')
+            \Carbon\Carbon::now()->format('YmdHis'),
+            $exporter->getExtension()
         );
+
+        $exportData = $exporter->getExportData();
 
         $response = new Response();
         $response
-            ->setContent($exporter->getExportData())
+            ->setContent($exporter->generateExportFile($exportData))
             ->headers->add(
                 [
                     'Content-Type' => $exporter->getMimeType(),
