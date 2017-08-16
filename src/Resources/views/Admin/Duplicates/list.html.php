@@ -16,6 +16,8 @@ $duplicatesView = $this->duplicatesView;
  * @var \CustomerManagementFrameworkBundle\Model\CustomerDuplicates\PotentialDuplicateItemInterface[] $duplicates
  */
 $duplicates = $this->duplicates;
+
+$this->jsConfig()->add('declineDuplicates', true);
 ?>
 <div class="container">
 

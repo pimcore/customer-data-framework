@@ -1,3 +1,7 @@
 .idea
 
+# composer
 composer.lock
+
+# npm
+/node_modules

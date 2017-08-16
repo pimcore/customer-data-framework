@@ -1,0 +1,206 @@
+// generic AdminLTE additions and overrides
+
+/* utility classes */
+.no-m {
+    margin: 0;
+}
+.no-mt {
+    margin-top: 0;
+}
+.no-mb {
+    margin-bottom: 0;
+}
+.mt15 {
+    margin-top: 15px !important;
+}
+.mb15 {
+    margin-bottom: 15px !important;
+}
+
+.no-p {
+    padding: 0;
+}
+.no-pt {
+    padding-top: 0;
+}
+.no-pb {
+    padding-bottom: 0;
+}
+
+/* color classes not shipped by Admin LTE */
+.bg-primary,
+.bg-success,
+.bg-info,
+.bg-warning,
+.bg-danger {
+    color: #fff !important;
+}
+
+.bg-primary {
+    /* .bg-light-blue */
+    background-color: #3c8dbc !important;
+}
+.bg-success {
+    /* .bg-green */
+    background-color: #00a65a !important;
+}
+.bg-info {
+    /* .bg-aqua */
+    background-color: #00c0ef !important;
+}
+.bg-warning {
+    /* .bg-yellow */
+    background-color: #f39c12 !important;
+}
+.bg-danger {
+    /* .bg-red */
+    background-color: #dd4b39 !important;
+}
+
+/* icons */
+.icon-inline {
+    margin-right: 4px;
+    position: relative;
+    top: 1px;
+}
+
+/* generic components */
+.price {
+    &.price--negative {
+        color: red;
+    }
+}
+
+/* search filter boxes */
+.search-filters {
+    .search-filters-box--standalone {
+        .form-group {
+            margin: 0;
+        }
+    }
+
+    fieldset legend {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .plugin-icheck {
+        margin-top: 0;
+        margin-bottom: 5px;
+
+        label {
+            padding-left: 0;
+
+            & > div {
+                margin-right: 3px;
+                top: -1px;
+            }
+        }
+    }
+}
+
+/* pagination footers */
+.pagination-footer__pagination {
+    text-align: center;
+}
+.pagination-footer__summary {
+    text-align: right;
+}
+
+/* boxes */
+.box {
+    .box-header {
+        &.with-form {
+            padding-bottom: 15px;
+        }
+    }
+}
+
+/* tables */
+table {
+    .reference-id-column {
+        text-align: right;
+    }
+
+    .table-id-column {
+        width: 10px;
+    }
+
+    .date-column {
+        width: 150px;
+        text-align: left;
+    }
+
+    .icon-column {
+        width: 30px;
+
+        &.icon-column--center {
+            text-align: center;
+        }
+    }
+
+    .price-column {
+        width: 120px;
+        text-align: right;
+
+        &.price-column--narrow {
+            width: 60px;
+        }
+    }
+
+    .actions-column {
+        width: 100px;
+        text-align: right;
+    }
+
+    .label-column {
+        label {
+            margin-right: 5px;
+            font-size: 85%;
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+}
+
+.table-collapsible {
+    caption {
+        padding: 10px 10px;
+        border-top: 1px solid #f4f4f4;
+        color: #333;
+        font-weight: bold;
+        cursor: pointer;
+
+        .collapse-indicator {
+            display: inline-block;
+            float: left;
+            margin-right: 10px;
+
+            .collapse-indicator-icon {
+                transition: 180ms all ease;
+            }
+        }
+    }
+
+    &.table-collapsible--collapsed {
+        caption {
+            .collapse-indicator {
+                .collapse-indicator-icon {
+                    transform: rotate(180deg);
+                }
+            }
+        }
+
+        tbody {
+            display: none;
+        }
+    }
+}
+
+.box-footer {
+    table {
+        margin: 0;
+    }
+}

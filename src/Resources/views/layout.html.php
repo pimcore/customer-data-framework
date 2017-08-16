@@ -17,7 +17,7 @@
 
     <?php
     $this->headLink()->appendStylesheet($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/dist/css/lib.css'));
-    $this->headLink()->appendStylesheet($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/dist/css/style.css'));
+    $this->headLink()->appendStylesheet($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/dist/css/cmf.css'));
     ?>
 
     <?= $this->headLink(); ?>
@@ -34,7 +34,7 @@
 
 <?php
 $this->headScript()->appendFile($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/dist/js/lib.js'));
-$this->headScript()->appendFile($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/dist/js/script.js'));
+$this->headScript()->appendFile($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/dist/js/cmf.js'));
 ?>
 
 <?= $this->headScript() ?>

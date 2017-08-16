@@ -135,9 +135,8 @@ table .label-column label {
       transition: 180ms all ease; }
 
 .table-collapsible.table-collapsible--collapsed caption .collapse-indicator .collapse-indicator-icon {
-  -webkit-transform: rotate(180deg);
-      -ms-transform: rotate(180deg);
-          transform: rotate(180deg); }
+  -ms-transform: rotate(180deg);
+      transform: rotate(180deg); }
 
 .table-collapsible.table-collapsible--collapsed tbody {
   display: none; }
