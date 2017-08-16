@@ -5,7 +5,6 @@
  * @var \Pimcore\Templating\GlobalVariables $app
  */
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,8 +15,8 @@
     <title>Customer Management</title>
 
     <?php
-    $this->headLink()->appendStylesheet($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/dist/css/lib.css'));
-    $this->headLink()->appendStylesheet($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/dist/css/cmf.css'));
+    $this->headLink()->appendStylesheet($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/css/lib.css'));
+    $this->headLink()->appendStylesheet($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/css/cmf.css'));
     ?>
 
     <?= $this->headLink(); ?>
@@ -33,8 +32,8 @@
 <?= $this->jsConfig() ?>
 
 <?php
-$this->headScript()->appendFile($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/dist/js/lib.js'));
-$this->headScript()->appendFile($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/dist/js/cmf.js'));
+$this->headScript()->appendFile($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/js/lib.js'));
+$this->headScript()->appendFile($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/js/cmf.js'));
 ?>
 
 <?= $this->headScript() ?>

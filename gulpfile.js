@@ -5,7 +5,7 @@ var gulpTasks = require('./frontend/build/gulp-tasks');
 
 gulpTasks(gulp, require('gulp-load-plugins')(), {
     frontend: {
-        path: 'src/Resources/public/dist',
+        path: 'src/Resources/public/admin',
 
         files: {
             scripts: {
