@@ -196,30 +196,48 @@ return [
         ],
 
         'exporters' => [
-            'csv' => [
-                'name'       => 'CSV',
-                'icon'       => 'fa fa-file-text-o',
-                'exporter'   => \CustomerManagementFrameworkBundle\CustomerList\Exporter\Csv::class,
-                'properties' => [
-                    'id',
-                    'email',
-                    'firstname',
-                    'lastname'
+            'exporters' => [
+                'csv' => [
+                    'name'       => 'CSV',
+                    'icon'       => 'fa fa-file-text-o',
+                    'exporter'   => \CustomerManagementFrameworkBundle\CustomerList\Exporter\Csv::class,
+                    'properties' => [
+                        'id',
+                        'active',
+                        'gender',
+                        'email',
+                        'phone',
+                        'firstname',
+                        'lastname',
+                        'street',
+                        'zip',
+                        'city',
+                        'countryCode',
+                        'idEncoded',
+                    ],
+                    'exportSegmentsAsColumns' => true
                 ],
-                'exportSegmentsAsColumns' => true
-            ],
 
-            'xlsx' => [
-                'name'       => 'XLSX',
-                'icon'       => 'fa fa-file-excel-o',
-                'exporter'   => \CustomerManagementFrameworkBundle\CustomerList\Exporter\Xlsx::class,
-                'properties' => [
-                    'id',
-                    'email',
-                    'firstname',
-                    'lastname'
+                'xlsx' => [
+                    'name'       => 'XLSX',
+                    'icon'       => 'fa fa-file-excel-o',
+                    'exporter'   => \CustomerManagementFrameworkBundle\CustomerList\Exporter\Xlsx::class,
+                    'properties' => [
+                        'id',
+                        'active',
+                        'gender',
+                        'email',
+                        'phone',
+                        'firstname',
+                        'lastname',
+                        'street',
+                        'zip',
+                        'city',
+                        'countryCode',
+                        'idEncoded',
+                    ],
+                    'exportSegmentsAsColumns' => true
                 ],
-                'exportSegmentsAsColumns' => true
             ],
         ]
     ],
