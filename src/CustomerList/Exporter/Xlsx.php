@@ -86,33 +86,23 @@ class Xlsx extends AbstractExporter
 
     protected function render(array $exportData)
     {
-        $this->renderHeader();
-        $rowIndex = 1;
-        foreach ($exportData as $exportRow) {
-            $rowIndex++;
-            $this->renderRow($exportRow, $rowIndex);
+        $this->renderHeader($exportData);
+
+        foreach ($this->getExportRows($exportData) as $exportRow) {
+            $this->renderRow($this->getColumnValuesFromExportRow($exportRow));
         }
     }
 
     /**
+     * @param array $exportData
      * @return $this
      */
-    protected function renderHeader()
+    protected function renderHeader(array $exportData)
     {
-        $titles = [];
-        foreach ($this->properties as $property) {
-            $definition = $this->getPropertyDefinition($property);
-            if ($definition) {
-                $titles[] = $definition->getTitle();
-            } else {
-                $titles[] = $property;
-            }
-        }
+        $titles = $this->getHeaderTitles($exportData);
 
         $style = new Style();
         $style->setFontBold();
-        //$style->set
-
 
         $this->writer->addRowWithStyle($titles, $style);
 
@@ -123,7 +113,7 @@ class Xlsx extends AbstractExporter
      * @param [] $row
      * @return $this
      */
-    protected function renderRow(array $row, $rowIndex)
+    protected function renderRow(array $row)
     {
         $this->writer->addRow($row);
 

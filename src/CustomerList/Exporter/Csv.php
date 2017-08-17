@@ -66,28 +66,21 @@ class Csv extends AbstractExporter
     {
         $this->stream = fopen('php://temp', 'w+');
 
-        $this->renderHeader();
-        foreach ($exportData as $exportRow) {
-            $this->renderRow($exportRow);
+        $this->renderHeader($exportData);
+        foreach ($this->getExportRows($exportData) as $exportRow) {
+            $this->renderRow($this->getColumnValuesFromExportRow($exportRow));
         }
 
         return $this;
     }
 
     /**
+     * @param array $exportData
      * @return $this
      */
-    protected function renderHeader()
+    protected function renderHeader(array $exportData)
     {
-        $titles = [];
-        foreach ($this->properties as $property) {
-            $definition = $this->getPropertyDefinition($property);
-            if ($definition) {
-                $titles[] = $definition->getTitle();
-            } else {
-                $titles[] = $property;
-            }
-        }
+        $titles = $titles = $this->getHeaderTitles($exportData);
 
         fputcsv($this->stream, $titles);
 

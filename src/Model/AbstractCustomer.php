@@ -9,7 +9,6 @@
 namespace CustomerManagementFrameworkBundle\Model;
 
 use CustomerManagementFrameworkBundle\Service\ObjectToArray;
-use Pimcore\Model\Object\CustomerSegment;
 
 abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implements CustomerInterface
 {
@@ -31,7 +30,7 @@ abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implement
     }
 
     /**
-     * @return CustomerSegment[]
+     * @return CustomerSegmentInterface[]
      */
     public function getAllSegments()
     {

@@ -51,7 +51,7 @@ class ExporterManager implements ExporterManagerInterface
 
         $exporter = $config->exporter;
         /** @var ExporterInterface $exporter */
-        $exporter = new $exporter($config->name, $config->properties->toArray());
+        $exporter = new $exporter($config->name, $config->properties->toArray(), (bool) $config->exportSegmentsAsColumns);
 
 
         if (null !== $listing) {

@@ -3,6 +3,7 @@
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\Config;
+use CustomerManagementFrameworkBundle\CustomerList\Exporter\AbstractExporter;
 use CustomerManagementFrameworkBundle\CustomerList\Exporter\ExporterInterface;
 use CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface;
 use CustomerManagementFrameworkBundle\Listing\Filter;
@@ -175,7 +176,7 @@ class CustomersController extends Admin
         $exportData = $exporter->getExportData();
 
         $totalExportData = isset($data['exportData']) ? $data['exportData'] : [];
-        $totalExportData = array_merge($totalExportData, $exportData);
+        $totalExportData = array_merge_recursive($totalExportData, $exportData);
 
         $data['exportData'] = $totalExportData;
         $data['processIds'] = $processIds;
@@ -184,7 +185,7 @@ class CustomersController extends Admin
 
 
         $notProcessedRecordsCount = sizeof($data['processIds']);
-        $totalRecordsCount = $notProcessedRecordsCount + sizeof($data['exportData']);
+        $totalRecordsCount = $notProcessedRecordsCount + sizeof($data['exportData'][AbstractExporter::ROWS]);
 
         $percent = round(($totalRecordsCount - $notProcessedRecordsCount) * 100 / $totalRecordsCount, 0);
 

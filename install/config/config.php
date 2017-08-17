@@ -203,8 +203,23 @@ return [
                 'properties' => [
                     'id',
                     'email',
-                    'name'
-                ]
+                    'firstname',
+                    'lastname'
+                ],
+                'exportSegmentsAsColumns' => true
+            ],
+
+            'xlsx' => [
+                'name'       => 'XLSX',
+                'icon'       => 'fa fa-file-excel-o',
+                'exporter'   => \CustomerManagementFrameworkBundle\CustomerList\Exporter\Xlsx::class,
+                'properties' => [
+                    'id',
+                    'email',
+                    'firstname',
+                    'lastname'
+                ],
+                'exportSegmentsAsColumns' => true
             ],
         ]
     ],
