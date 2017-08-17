@@ -36,6 +36,8 @@ $(function() {
 
                         setTimeout(function(){
                             $('#exportModal').modal('hide');
+                            $('#exportModal').find('.js-progress-label').html('');
+                            $('#exportModal').find('.progress-bar').css('width', '0').attr('aria-valuenow', 0);
                         }, 1000);
 
                         window.location = data.url;
