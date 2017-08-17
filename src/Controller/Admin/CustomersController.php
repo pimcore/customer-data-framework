@@ -144,7 +144,7 @@ class CustomersController extends Admin
     public function exportStepAction(Request $request)
     {
 
-        $perRequest = $request->get('perRequest', 500);
+        $perRequest = $request->get('perRequest', \Pimcore::getContainer()->getParameter('cmf.customer_export.items_per_request'));
 
         try {
             $data = \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->getExportTmpData($request);
