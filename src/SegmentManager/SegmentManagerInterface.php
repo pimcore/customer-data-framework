@@ -47,13 +47,13 @@ interface SegmentManagerInterface
     public function getSegmentGroupById($id);
 
     /**
-     * Returns an array with all customer segments. Optionally this could be filtered by given params.
+     * Returns an array with all customer segments.
      *
      * @param array $params
      *
-     * @return CustomerSegment[]
+     * @return CustomerSegment\Listing
      */
-    public function getSegments(array $params = []);
+    public function getSegments();
 
     /**
      * Returns an object list with all customer segment groups. Optionally this could be filtered by given params.
