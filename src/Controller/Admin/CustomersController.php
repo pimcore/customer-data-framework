@@ -3,6 +3,7 @@
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\Config;
+use CustomerManagementFrameworkBundle\CustomerList\Exporter\ExporterInterface;
 use CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface;
 use CustomerManagementFrameworkBundle\Listing\Filter;
 use CustomerManagementFrameworkBundle\Listing\FilterHandler;
@@ -12,9 +13,10 @@ use CustomerManagementFrameworkBundle\CustomerList\Filter\SearchQuery;
 use CustomerManagementFrameworkBundle\CustomerList\Filter\CustomerSegment as CustomerSegmentFilter;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
+use Pimcore\Db;
+use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\Model\Object\CustomerSegmentGroup;
 use Pimcore\Model\Object\Listing;
-use Pimcore\Model\Tool\TmpStore;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -113,29 +115,125 @@ class CustomersController extends Admin
      */
     public function exportAction(Request $request)
     {
-
-        $exporterName = $request->get('exporter', 'csv');
-        /**
-         * @var ExporterManagerInterface $exporterManager
-         */
-        $exporterManager = \Pimcore::getContainer()->get('cmf.customer_exporter_manager');
-
-        if (!$exporterManager->hasExporter($exporterName)) {
-            throw new \InvalidArgumentException('Exporter does not exist');
-        }
-
         $filters = $this->fetchListFilters($request);
         $listing = $this->buildListing($filters);
-        $exporter = $exporterManager->buildExporter($exporterName, $listing);
+
+        $query = $listing->getQuery();
+        $query->reset(QueryBuilder::COLUMNS);
+        $query->columns(['o_id']);
+        $ids = Db::get()->fetchCol($query);
+
+        $jobId = uniqid();
+        \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->saveExportTmpData($jobId, [
+            'processIds' => $ids,
+            'exporter' => $request->get('exporter')
+        ]);
+
+        return $this->json([
+            'url' => $this->generateUrl('customermanagementframework_admin_customers_exportstep', ['jobId'=>$jobId]),
+            'jobId' => $jobId,
+            'exporter' => $request->get('exporter')
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @route("/export-step")
+     */
+    public function exportStepAction(Request $request)
+    {
+
+        $perRequest = $request->get('perRequest', 500);
+
+        try {
+            $data = \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->getExportTmpData($request);
+        } catch(\Exception $e) {
+            return $this->json([
+                "error" => true,
+                "message" => $e->getMessage()
+            ]);
+        }
+
+
+        //export finished
+        if(!sizeof($data['processIds'])) {
+            return $this->json([
+                'finished' => true,
+                'url' => $this->generateUrl('customermanagementframework_admin_customers_downloadfinishedexport', ['jobId'=>$request->get('jobId')]),
+                'jobId' => $request->get('jobId')
+            ]);
+        }
+
+        $ids = array_slice($data['processIds'], 0, $perRequest);
+        $processIds = array_slice($data['processIds'], $perRequest);
+
+        $listing = $this->buildListing();
+        $listing->addConditionParam("o_id in (" . implode(', ', $ids) . ")");
+
+
+        $exporter = $this->getExporter($request, $listing, $data['exporter']);
+        $exportData = $exporter->getExportData();
+
+        $totalExportData = isset($data['exportData']) ? $data['exportData'] : [];
+        $totalExportData = array_merge($totalExportData, $exportData);
+
+        $data['exportData'] = $totalExportData;
+        $data['processIds'] = $processIds;
+
+        \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->saveExportTmpData($request->get('jobId'), $data);
+
+
+        $notProcessedRecordsCount = sizeof($data['processIds']);
+        $totalRecordsCount = $notProcessedRecordsCount + sizeof($data['exportData']);
+
+        $percent = round(($totalRecordsCount - $notProcessedRecordsCount) * 100 / $totalRecordsCount, 0);
+
+        return $this->json([
+            'finished' => false,
+            'jobId' => $request->get('jobId'),
+            'notProcessedRecordsCount' => $notProcessedRecordsCount,
+            'totalRecordsCount' => $totalRecordsCount,
+            'percent' => $percent,
+            'progress' => sprintf('%s/%s (%s %%)', ($totalRecordsCount - $notProcessedRecordsCount), $totalRecordsCount, $percent)
+
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @route("/download-finished-export")
+     */
+    public function downloadFinishedExportAction(Request $request)
+    {
+        try {
+            $data = \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->getExportTmpData($request);
+        } catch(\Exception $e) {
+            return $this->json([
+                "error" => true,
+                "message" => $e->getMessage()
+            ]);
+        }
+
+
+        if(sizeof($data['processIds'])) {
+            return $this->json([
+                'error' => true,
+                'message' => 'export not finished yet'
+            ]);
+        }
+
+        $exportData = $data['exportData'];
+
+        $listing = $this->buildListing();
+        $exporter = $this->getExporter($request, $listing, $data['exporter']);
 
         $filename = sprintf(
             '%s-%s-segment-export.%s',
-            $exporterName,
+            $exporter->getName(),
             \Carbon\Carbon::now()->format('YmdHis'),
             $exporter->getExtension()
         );
 
-        $exportData = $exporter->getExportData();
 
         $response = new Response();
         $response
@@ -148,7 +246,28 @@ class CustomersController extends Admin
                 ]
             );
 
+        \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->deleteExportTmpData($request->get('jobId'));
+
         return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @return ExporterInterface
+     */
+    protected function getExporter(Request $request, Listing\Concrete $listing, $exporterName)
+    {
+        /**
+         * @var ExporterManagerInterface $exporterManager
+         */
+        $exporterManager = \Pimcore::getContainer()->get('cmf.customer_exporter_manager');
+
+        if (!$exporterManager->hasExporter($exporterName)) {
+            throw new \InvalidArgumentException('Exporter does not exist');
+        }
+
+        return $exporterManager->buildExporter($exporterName, $listing);
+
     }
 
     /**

@@ -2,6 +2,10 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerList\Exporter;
 
+use Box\Spout\Common\Type;
+use Box\Spout\Writer\Style\Style;
+use Box\Spout\Writer\WriterFactory;
+use Box\Spout\Writer\XLSX\Writer;
 use Pimcore\Model\Object\Customer;
 
 class Xlsx extends AbstractExporter
@@ -9,9 +13,9 @@ class Xlsx extends AbstractExporter
     const MIME_TYPE = 'text/csv';
 
     /**
-     * @var \PHPExcel
+     * @var Writer
      */
-    protected $xlsx;
+    protected $writer;
 
     /**
      * @var resource
@@ -53,16 +57,24 @@ class Xlsx extends AbstractExporter
 
     public function generateExportFile(array $exportData)
     {
-        $this->render($exportData);
 
-        $objWriter = \PHPExcel_IOFactory::createWriter($this->xlsx, 'Excel2007');
-        ob_start();
-        $objWriter->save('php://output');
-        $content = ob_get_contents();
-        ob_end_clean();
+        $this->stream = fopen('php://output', 'w+');
+        $writer = WriterFactory::create(Type::XLSX);
+        $file = tempnam(PIMCORE_SYSTEM_TEMP_DIRECTORY, 'cmf_customerexport_');
+
+        /**
+         * @var Writer $writer
+         */
+        $writer->openToFile($file);
+        $this->writer = $writer;
+
+        $this->render($exportData);
+        $writer->close();
+
+        $content = file_get_contents($file);
+        unlink($file);
 
         $this->generated = true;
-
         return $content;
 
     }
@@ -72,25 +84,14 @@ class Xlsx extends AbstractExporter
         return 'xlsx';
     }
 
-    /**
-     * @return $this
-     */
     protected function render(array $exportData)
     {
-        $this->stream = fopen('php://output', 'w+');
-
-        $this->xlsx = new \PHPExcel();
-        $this->xlsx->setActiveSheetIndex(0);
-        $this->xlsx->getActiveSheet()->getStyle('1:1')->getFont()->setBold(true);
-
         $this->renderHeader();
         $rowIndex = 1;
         foreach ($exportData as $exportRow) {
             $rowIndex++;
             $this->renderRow($exportRow, $rowIndex);
         }
-
-        return $this;
     }
 
     /**
@@ -108,12 +109,12 @@ class Xlsx extends AbstractExporter
             }
         }
 
-        foreach($titles as $index => $title) {
-            $this->xlsx->getActiveSheet()
-                ->setCellValueByColumnAndRow($index, 1, $title)
-                ->getColumnDimensionByColumn($index)
-                ->setAutoSize(true);
-        }
+        $style = new Style();
+        $style->setFontBold();
+        //$style->set
+
+
+        $this->writer->addRowWithStyle($titles, $style);
 
         return $this;
     }
@@ -124,11 +125,7 @@ class Xlsx extends AbstractExporter
      */
     protected function renderRow(array $row, $rowIndex)
     {
-
-        foreach($row as $columnIndex => $value) {
-            $this->xlsx->getActiveSheet()
-                ->setCellValueByColumnAndRow($columnIndex, $rowIndex, $value);
-        }
+        $this->writer->addRow($row);
 
         return $this;
     }

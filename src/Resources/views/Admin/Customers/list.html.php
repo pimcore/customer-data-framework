@@ -7,6 +7,8 @@
 
 $this->extend('PimcoreCustomerManagementFrameworkBundle::layout.html.php');
 
+$this->headScript()->appendFile('/bundles/pimcorecustomermanagementframework/js/CustomerView/frontend.js');
+
 /** @var \Zend\Paginator\Paginator|\CustomerManagementFrameworkBundle\Model\CustomerInterface[] $paginator */
 $paginator = $this->paginator;
 

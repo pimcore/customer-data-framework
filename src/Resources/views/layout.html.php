@@ -32,8 +32,8 @@
 <?= $this->jsConfig() ?>
 
 <?php
-$this->headScript()->appendFile($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/js/lib.js'));
-$this->headScript()->appendFile($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/js/cmf.js'));
+$this->headScript()->prependFile($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/js/cmf.js'));
+$this->headScript()->prependFile($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/js/lib.js'));
 ?>
 
 <?= $this->headScript() ?>

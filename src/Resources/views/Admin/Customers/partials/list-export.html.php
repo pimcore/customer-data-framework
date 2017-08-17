@@ -25,7 +25,7 @@ if (count($exporterConfigs) === 0) {
                     $exportUrl = $this->formQueryString($this->request, $this->url('customermanagementframework_admin_customers_export', $exportParams));
                     ?>
 
-                    <a href="<?= $exportUrl ?>" class="btn btn-default">
+                    <a href="#" data-href="<?= $exportUrl ?>" class="btn btn-default js-customer-export">
                         <i class="<?= isset($exporterConfig->icon) ? $exporterConfig->icon : 'fa fa-download' ?>"></i>
                         <?= $cv->translate('Export') ?>
                         <span class="label label-info"><?= $exporterConfig->name ?></span>
@@ -35,4 +35,22 @@ if (count($exporterConfigs) === 0) {
             </div>
         </div>
     </div>
+</div>
+
+<div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exportModalLabel"><i class="fa fa-clock-o"></i> <?=$this->customerView->translate('Generating export...')?></h4>
+            </div>
+            <div class="modal-body center-block">
+                <span class="js-progress-label"></span>
+                <div class="progress">
+                    <div class="progress-bar bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
 </div>

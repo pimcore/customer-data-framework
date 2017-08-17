@@ -5,6 +5,7 @@ namespace CustomerManagementFrameworkBundle\CustomerList;
 use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\CustomerList\Exporter\ExporterInterface;
 use Pimcore\Model\Object\Listing;
+use Symfony\Component\HttpFoundation\Request;
 
 class ExporterManager implements ExporterManagerInterface
 {
@@ -58,5 +59,61 @@ class ExporterManager implements ExporterManagerInterface
         }
 
         return $exporter;
+    }
+
+    /**
+     * @param Request $request
+     * @return []
+     * @throws \Exception
+     */
+    public function getExportTmpData(Request $request)
+    {
+        if(!$jobId = $request->get('jobId')){
+            throw new \Exception('no jobId given');
+        }
+
+        $tmpFile = $this->getExportTmpFile($jobId);
+
+        if(!file_exists($tmpFile)) {
+            throw new \Exception('job with given jobId not found');
+        }
+
+        return json_decode(file_get_contents($tmpFile), true);
+
+    }
+
+    /**
+     * @param $jobId
+     * @param array $data
+     */
+    public function saveExportTmpData($jobId, array $data)
+    {
+        $tmpFile = $this->getExportTmpFile($jobId);
+
+        file_put_contents($tmpFile, json_encode($data));
+    }
+
+    public function deleteExportTmpData($jobId)
+    {
+        $file = $this->getExportTmpFile($jobId);
+        if(file_exists($file)) {
+            unlink($file);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function cleanupExportTmpData()
+    {
+        exec("find " . PIMCORE_SYSTEM_TEMP_DIRECTORY . " -type f -atime +1 -iname 'cmf_customerexport*' -exec rm {} \;");
+    }
+    /**
+     * @param $jobId
+     * @return string
+     */
+    protected function getExportTmpFile($jobId)
+    {
+        return PIMCORE_SYSTEM_TEMP_DIRECTORY . '/cmf_customerexport_' . $jobId . '.json';
     }
 }
