@@ -1,9 +1,12 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: mmoser
- * Date: 05.12.2016
- * Time: 14:32
+ * Pimcore Customer Management Framework Bundle
+ * Full copyright and license information is available in
+ * License.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
+ * @license    GPLv3
  */
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Condition;
@@ -13,7 +16,6 @@ use Psr\Log\LoggerInterface;
 
 interface ConditionInterface
 {
-
     /**
      * ConditionInterface constructor.
      *

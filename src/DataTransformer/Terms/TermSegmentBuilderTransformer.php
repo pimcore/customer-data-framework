@@ -1,9 +1,12 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: mmoser
- * Date: 13.01.2017
- * Time: 16:23
+ * Pimcore Customer Management Framework Bundle
+ * Full copyright and license information is available in
+ * License.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
+ * @license    GPLv3
  */
 
 namespace CustomerManagementFrameworkBundle\DataTransformer\Terms;
@@ -19,7 +22,7 @@ class TermSegmentBuilderTransformer implements DataTransformerInterface
     public function transform($data, $options = [])
     {
         if (empty($options[self::OPTION_TERM_SEGMENT_BUILDER_DEFINITION]) || !($options[self::OPTION_TERM_SEGMENT_BUILDER_DEFINITION] instanceof TermSegmentBuilderDefinition)) {
-            throw new \Exception("no termSegmentBuilderDefinition option given");
+            throw new \Exception('no termSegmentBuilderDefinition option given');
         }
 
         /**
@@ -43,5 +46,4 @@ class TermSegmentBuilderTransformer implements DataTransformerInterface
 
         return false;
     }
-
 }

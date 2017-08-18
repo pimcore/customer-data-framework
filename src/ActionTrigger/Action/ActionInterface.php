@@ -1,9 +1,12 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: mmoser
- * Date: 22.11.2016
- * Time: 13:16
+ * Pimcore Customer Management Framework Bundle
+ * Full copyright and license information is available in
+ * License.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
+ * @license    GPLv3
  */
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Action;
@@ -13,7 +16,6 @@ use Psr\Log\LoggerInterface;
 
 interface ActionInterface
 {
-
     public function __construct(LoggerInterface $logger);
 
     public function process(ActionDefinitionInterface $actionDefinition, CustomerInterface $customer);

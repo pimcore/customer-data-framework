@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * Pimcore Customer Management Framework Bundle
+ * Full copyright and license information is available in
+ * License.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
+ * @license    GPLv3
+ */
+
 namespace CustomerManagementFrameworkBundle\EventListener\Frontend;
 
 use Pimcore\Bundle\CoreBundle\EventListener\Frontend\AbstractFrontendListener;
@@ -7,7 +16,6 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 class UrlActivityTracker extends AbstractFrontendListener
 {
-
     /**
      * Checks for request params cmfa + cmfc and tracks activity if needed
      *

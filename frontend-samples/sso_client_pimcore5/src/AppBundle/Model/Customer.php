@@ -1,9 +1,12 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: jraab
- * Date: 01.09.2016
- * Time: 16:28
+ * Pimcore Customer Management Framework Bundle
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
+ * @license    GPLv3
  */
 
 namespace AppBundle\Model;

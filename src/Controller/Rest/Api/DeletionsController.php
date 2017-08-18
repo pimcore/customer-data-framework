@@ -1,12 +1,21 @@
 <?php
 
+/**
+ * Pimcore Customer Management Framework Bundle
+ * Full copyright and license information is available in
+ * License.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
+ * @license    GPLv3
+ */
+
 namespace CustomerManagementFrameworkBundle\Controller\Rest\Api;
 
 use CustomerManagementFrameworkBundle\Controller\Rest\RestHandlerController;
 use CustomerManagementFrameworkBundle\RESTApi\Exception\ExceptionInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 /**
  * @Route("/deletions")

@@ -1,9 +1,12 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: mmoser
- * Date: 15.11.2016
- * Time: 16:01
+ * Pimcore Customer Management Framework Bundle
+ * Full copyright and license information is available in
+ * License.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
+ * @license    GPLv3
  */
 
 namespace CustomerManagementFrameworkBundle\SegmentBuilder;
@@ -14,7 +17,6 @@ use Psr\Log\LoggerInterface;
 
 interface SegmentBuilderInterface
 {
-
     public function __construct($config, LoggerInterface $logger);
 
     /**

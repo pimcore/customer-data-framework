@@ -1,9 +1,12 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: mmoser
- * Date: 30.11.2016
- * Time: 09:56
+ * Pimcore Customer Management Framework Bundle
+ * Full copyright and license information is available in
+ * License.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
+ * @license    GPLv3
  */
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
@@ -17,7 +20,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminController
 {
-
     /**
      * get list of customer fields for action trigger rules
      *

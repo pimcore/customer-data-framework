@@ -12,6 +12,15 @@ return PhpCsFixer\Config::create()
         '@PSR2'                               => true,
         'array_syntax'                        => ['syntax' => 'short'],
 
+        'header_comment'                      => ['commentType' => 'PHPDoc',
+                                                  'header' => 'Pimcore Customer Management Framework Bundle' . PHP_EOL .
+                                                              'Full copyright and license information is available in' . PHP_EOL .
+                                                              'License.md which is distributed with this source code.' . PHP_EOL .
+                                                              PHP_EOL .
+                                                              '@copyright  Copyright (C) Elements.at New Media Solutions GmbH' . PHP_EOL .
+                                                              '@license    GPLv3'
+                                                  ],
+
         // keep aligned = and => operators as they are: do not force aligning, but do not remove it
         'binary_operator_spaces'              => ['align_double_arrow' => null, 'align_equals' => null],
 

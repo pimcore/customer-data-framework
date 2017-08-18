@@ -1,20 +1,21 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: tengl
- * Date: 5/23/2017
- * Time: 2:02 PM
+ * Pimcore Customer Management Framework Bundle
+ * Full copyright and license information is available in
+ * License.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
+ * @license    GPLv3
  */
 
 namespace CustomerManagementFrameworkBundle\Pimcore\Model\Tool;
-
 
 use Zend\Paginator\Adapter\AdapterInterface;
 use Zend\Paginator\Adapter\ArrayAdapter;
 
 class ListingAdapter implements AdapterInterface
 {
-
     /** @var \Pimcore\Model\Object\Listing\Concrete */
     protected $listing;
 
@@ -23,6 +24,7 @@ class ListingAdapter implements AdapterInterface
 
     /**
      * ListingAdapter constructor.
+     *
      * @param \Pimcore\Model\Object\Listing\Concrete $listing
      */
     public function __construct(\Pimcore\Model\Object\Listing\Concrete $listing)
@@ -42,7 +44,6 @@ class ListingAdapter implements AdapterInterface
                 // create empty
                 $this->adapter = new ArrayAdapter([]);
             }
-
         }
 
         return $this->adapter;
@@ -56,6 +57,7 @@ class ListingAdapter implements AdapterInterface
     /**
      * @param int $offset
      * @param int $itemCountPerPage
+     *
      * @return \Pimcore\Model\Object\Concrete[]
      */
     public function getItems($offset, $itemCountPerPage)
@@ -66,8 +68,5 @@ class ListingAdapter implements AdapterInterface
             },
             $this->adapter()->getItems($offset, $itemCountPerPage)
         );
-
     }
-
-
 }

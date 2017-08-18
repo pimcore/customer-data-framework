@@ -1,9 +1,12 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: mmoser
- * Date: 2017-02-06
- * Time: 15:22
+ * Pimcore Customer Management Framework Bundle
+ * Full copyright and license information is available in
+ * License.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
+ * @license    GPLv3
  */
 
 namespace CustomerManagementFrameworkBundle\CustomerSaveValidator\Exception;
@@ -12,7 +15,6 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
 class DuplicateCustomerException extends \Pimcore\Model\Element\ValidationException
 {
-
     /**
      * @var CustomerInterface
      */

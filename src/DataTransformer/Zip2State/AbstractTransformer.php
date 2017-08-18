@@ -1,9 +1,12 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: mmoser
- * Date: 20.12.2016
- * Time: 14:01
+ * Pimcore Customer Management Framework Bundle
+ * Full copyright and license information is available in
+ * License.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
+ * @license    GPLv3
  */
 
 namespace CustomerManagementFrameworkBundle\DataTransformer\Zip2State;
@@ -16,7 +19,6 @@ abstract class AbstractTransformer implements DataTransformerInterface
 
     public function transform($data, $options = [])
     {
-
         foreach ($this->zipRegions as $state => $regions) {
             foreach ($regions as $region) {
                 $from = $region[0];

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * Pimcore Customer Management Framework Bundle
+ * Full copyright and license information is available in
+ * License.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
+ * @license    GPLv3
+ */
+
 namespace CustomerManagementFrameworkBundle\Controller\Report;
 
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
@@ -20,10 +29,10 @@ class TermSegmentBuilderController extends AdminController
         $list = new \Pimcore\Model\Object\TermSegmentBuilderDefinition\Listing;
         $list = $list->load();
 
-        $result = ["data" => []];
+        $result = ['data' => []];
 
         foreach ($list as $entry) {
-            $result["data"][] = [
+            $result['data'][] = [
                 'id' => $entry->getId(),
                 'name' => $entry->getName(),
             ];
