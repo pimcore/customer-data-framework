@@ -47,6 +47,7 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
 
     /**
      * @param string $value
+     *
      * @return string
      */
     protected function processValue($value)

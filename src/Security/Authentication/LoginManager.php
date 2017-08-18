@@ -63,8 +63,7 @@ class LoginManager implements LoginManagerInterface
         TokenStorageInterface $tokenStorage,
         UserCheckerInterface $defaultUserChecker,
         ContainerInterface $container
-    )
-    {
+    ) {
         $this->firewallMap        = $firewallMap;
         $this->requestHelper      = $requestHelper;
         $this->sessionStrategy    = $sessionStrategy;

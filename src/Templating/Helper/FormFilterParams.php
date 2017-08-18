@@ -5,7 +5,6 @@ namespace CustomerManagementFrameworkBundle\Templating\Helper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Templating\Helper\Helper;
 
-
 class FormFilterParams extends Helper
 {
     public function getName()
@@ -33,6 +32,7 @@ class FormFilterParams extends Helper
      * Get filter params with values
      *
      * @param Request $request
+     *
      * @return array
      */
     public function formFilterParams(Request $request)

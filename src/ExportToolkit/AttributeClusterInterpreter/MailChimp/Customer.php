@@ -5,7 +5,6 @@ namespace CustomerManagementFrameworkBundle\ExportToolkit\AttributeClusterInterp
 use CustomerManagementFrameworkBundle\ExportToolkit\AttributeClusterInterpreter\MailChimp\Customer\BatchExporter;
 use CustomerManagementFrameworkBundle\ExportToolkit\AttributeClusterInterpreter\MailChimp\Customer\SingleExporter;
 use CustomerManagementFrameworkBundle\ExportToolkit\Traits\MailChimp\ExportServiceAware;
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use ExportToolkit\ExportService\AttributeClusterInterpreter\AbstractAttributeClusterInterpreter;
@@ -104,6 +103,7 @@ class Customer extends AbstractAttributeClusterInterpreter
 
     /**
      * @param $id
+     *
      * @return array|null
      */
     public function getDataEntry($id)
@@ -113,6 +113,7 @@ class Customer extends AbstractAttributeClusterInterpreter
 
     /**
      * @param CustomerInterface $customer
+     *
      * @return array
      */
     public function buildEntry(CustomerInterface $customer)
@@ -134,6 +135,7 @@ class Customer extends AbstractAttributeClusterInterpreter
 
     /**
      * @param CustomerInterface $customer
+     *
      * @return array
      */
     public function buildCustomerSegmentData(CustomerInterface $customer)
@@ -180,6 +182,7 @@ class Customer extends AbstractAttributeClusterInterpreter
      * Transform configured merge fields into merge_fields property
      *
      * @param array $dataRow
+     *
      * @return array
      */
     public function transformMergeFields(array $dataRow)

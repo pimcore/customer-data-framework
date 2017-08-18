@@ -12,7 +12,6 @@ use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 
 class Standard implements DataTransformerInterface
 {
-
     public function transform($data, $options = [])
     {
         if ($data instanceof \DateTime) {
@@ -21,5 +20,4 @@ class Standard implements DataTransformerInterface
 
         return trim(strtolower(str_replace('  ', ' ', $data)));
     }
-
 }

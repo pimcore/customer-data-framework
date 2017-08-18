@@ -20,6 +20,7 @@ abstract class AbstractExporter implements ExporterInterface
 
     /**
      * Properties to export
+     *
      * @var array
      */
     protected $properties;
@@ -113,8 +114,7 @@ abstract class AbstractExporter implements ExporterInterface
 
         $rows = [];
         $allSegmentIds = [];
-        foreach($this->listing as $customer)
-        {
+        foreach ($this->listing as $customer) {
             $row = [self::COLUMNS => [], self::SEGMENT_IDS => []];
             foreach ($this->properties as $property) {
                 $getter = 'get'.ucfirst($property);
@@ -123,14 +123,13 @@ abstract class AbstractExporter implements ExporterInterface
                 $row[self::COLUMNS][] = (string) $value;
             }
 
-            if($this->getExportSegmentsAsColumns()) {
-                if($segments = $customer->getAllSegments()) {
-                    foreach($segments as $segment) {
+            if ($this->getExportSegmentsAsColumns()) {
+                if ($segments = $customer->getAllSegments()) {
+                    foreach ($segments as $segment) {
                         $row[self::SEGMENT_IDS][] = $segment->getId();
                         $allSegmentIds[] = $segment->getId();
                     }
                 }
-
             }
 
             $rows[] = $row;
@@ -141,7 +140,6 @@ abstract class AbstractExporter implements ExporterInterface
             self::SEGMENT_IDS => array_unique($allSegmentIds)
         ];
     }
-
 
     /**
      * @return bool
@@ -159,8 +157,6 @@ abstract class AbstractExporter implements ExporterInterface
         $this->exportSegmentsAsColumns = $exportSegmentsAsColumns;
     }
 
-
-
     /**
      * @return $this
      */
@@ -173,6 +169,7 @@ abstract class AbstractExporter implements ExporterInterface
 
     /**
      * @param array $exportData
+     *
      * @return array
      */
     protected function getHeaderTitles(array $exportData)
@@ -187,7 +184,7 @@ abstract class AbstractExporter implements ExporterInterface
             }
         }
 
-        if($this->getExportSegmentsAsColumns() && sizeof($exportData[self::SEGMENT_IDS])) {
+        if ($this->getExportSegmentsAsColumns() && sizeof($exportData[self::SEGMENT_IDS])) {
             $list = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegments();
             array_walk($exportData[self::SEGMENT_IDS], 'intval');
             $list->addConditionParam('o_id in(' . implode(', ', $exportData[self::SEGMENT_IDS]) .')');
@@ -197,9 +194,9 @@ abstract class AbstractExporter implements ExporterInterface
              * @var CustomerSegmentInterface $item;
              */
             $i = sizeof($titles);
-            foreach($list as $item) {
+            foreach ($list as $item) {
                 $segmentName = [];
-                if($group = $item->getGroup()) {
+                if ($group = $item->getGroup()) {
                     $segmentName[] = $group->getName() ?: $group->getReference();
                 }
                 $segmentName[] = $item->getName() ?: $item->getReference();
@@ -213,9 +210,9 @@ abstract class AbstractExporter implements ExporterInterface
         return $titles;
     }
 
-
     /**
      * @param array $exportData
+     *
      * @return array
      */
     protected function getExportRows(array $exportData)
@@ -227,11 +224,11 @@ abstract class AbstractExporter implements ExporterInterface
     {
         $columns = $exportRow[self::COLUMNS];
 
-        if(is_array($exportRow[self::SEGMENT_IDS])) {
-            foreach($this->segmentColumnOrder as $column) {
+        if (is_array($exportRow[self::SEGMENT_IDS])) {
+            foreach ($this->segmentColumnOrder as $column) {
                 $columns[$column] = 0;
             }
-            foreach($exportRow[self::SEGMENT_IDS] as $id) {
+            foreach ($exportRow[self::SEGMENT_IDS] as $id) {
                 $columns[$this->segmentColumnOrder[$id]] = '1';
             }
         }
@@ -246,6 +243,7 @@ abstract class AbstractExporter implements ExporterInterface
 
     /**
      * @param $property
+     *
      * @return ClassDefinition\Data
      */
     protected function getPropertyDefinition($property)

@@ -9,12 +9,11 @@
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Event;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\Trigger\TriggerDefinitionInterface;
-use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
+use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 
 class NewActivity extends AbstractSingleCustomerEvent
 {
-
     /**
      * @var ActivityInterface $activity
      */
@@ -57,10 +56,9 @@ class NewActivity extends AbstractSingleCustomerEvent
         $this->entry = $entry;
     }
 
-
     public function getName()
     {
-        return "plugin.cmf.new-activity";
+        return 'plugin.cmf.new-activity';
     }
 
     public function appliesToTrigger(TriggerDefinitionInterface $trigger)
@@ -79,6 +77,4 @@ class NewActivity extends AbstractSingleCustomerEvent
 
         return false;
     }
-
-
 }

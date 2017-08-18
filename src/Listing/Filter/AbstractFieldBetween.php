@@ -30,6 +30,7 @@ abstract class AbstractFieldBetween extends AbstractFilter implements OnCreateQu
 
     /**
      * @param bool $inclusive
+     *
      * @return $this
      */
     public function setInclusive($inclusive)
@@ -40,7 +41,7 @@ abstract class AbstractFieldBetween extends AbstractFilter implements OnCreateQu
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isInclusive()
     {
@@ -49,6 +50,7 @@ abstract class AbstractFieldBetween extends AbstractFilter implements OnCreateQu
 
     /**
      * @param string $type
+     *
      * @return string
      */
     protected function getOperator($type = self::TYPE_FROM)

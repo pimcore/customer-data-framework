@@ -4,16 +4,15 @@ namespace CustomerManagementFrameworkBundle\Controller\Rest\Api;
 
 use CustomerManagementFrameworkBundle\Controller\Rest\RestHandlerController;
 use CustomerManagementFrameworkBundle\RESTApi\Exception\ExceptionInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 /**
  * @Route("/segments-of-customers")
  */
 class SegmentsOfCustomersController extends RestHandlerController
 {
-
     /**
      * @param Request $request
      * @Route("")

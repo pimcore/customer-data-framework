@@ -17,7 +17,6 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
  */
 class RemoveBlacklistedEmails extends AbstractCustomerSaveHandler
 {
-
     /**
      * @param CustomerInterface $customer
      *
@@ -32,7 +31,6 @@ class RemoveBlacklistedEmails extends AbstractCustomerSaveHandler
 
     private function isBlacklisted($email)
     {
-
         $email = strtolower(trim($email));
 
         $validator = new \CustomerManagementFrameworkBundle\DataValidator\BlacklistValidator();

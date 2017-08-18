@@ -16,7 +16,6 @@ use Pimcore\Model\Element\Note;
 
 class DefaultSegmentMerger implements SegmentMergerInterface
 {
-
     use LoggerAware;
 
     protected $mergedSegmentsCustomerSaveQueue;
@@ -98,7 +97,6 @@ class DefaultSegmentMerger implements SegmentMergerInterface
         }
 
         if ($saveNeeded) {
-
             if ($calculated) {
                 $customer->setCalculatedSegments($currentSegments);
             } else {
@@ -131,7 +129,6 @@ class DefaultSegmentMerger implements SegmentMergerInterface
     public function saveMergedSegments(CustomerInterface $customer)
     {
         if (isset($this->mergedSegmentsCustomerSaveQueue[$customer->getId()])) {
-
             $queueEntry = $this->mergedSegmentsCustomerSaveQueue[$customer->getId()];
 
             \Pimcore::getContainer()->get('cmf.customer_save_manager')->saveDirty($customer);
@@ -145,10 +142,9 @@ class DefaultSegmentMerger implements SegmentMergerInterface
 
             unset($this->mergedSegmentsCustomerSaveQueue[$customer->getId()]);
 
-            $this->getLogger()->debug("merged segments saved for customer ".(string)$customer);
+            $this->getLogger()->debug('merged segments saved for customer '.(string)$customer);
         }
     }
-
 
     /**
      * Remembers customers + notes which need to be saved by saveMergedSegments()
@@ -162,22 +158,22 @@ class DefaultSegmentMerger implements SegmentMergerInterface
             isset($this->mergedSegmentsCustomerSaveQueue[$customer->getId()]) ?
                 $this->mergedSegmentsCustomerSaveQueue[$customer->getId()] :
                 [
-                    "customer" => $customer,
-                    "notes" => [],
+                    'customer' => $customer,
+                    'notes' => [],
                 ];
 
-        $this->mergedSegmentsCustomerSaveQueue[$customer->getId()]["notes"] = array_merge(
-            $this->mergedSegmentsCustomerSaveQueue[$customer->getId()]["notes"],
+        $this->mergedSegmentsCustomerSaveQueue[$customer->getId()]['notes'] = array_merge(
+            $this->mergedSegmentsCustomerSaveQueue[$customer->getId()]['notes'],
             $notes
         );
     }
-
 
     /**
      * @param CustomerInterface $customer
      * @param $segments
      * @param $title
      * @param $hintForNotes
+     *
      * @return array
      */
     protected function createNotes(CustomerInterface $customer, $segments, $title, $hintForNotes)
@@ -194,7 +190,7 @@ class DefaultSegmentMerger implements SegmentMergerInterface
         $i = 0;
         foreach ($segments as $segment) {
             $i++;
-            $note->addData("segment".$i, "object", $segment);
+            $note->addData('segment'.$i, 'object', $segment);
             $description[] = $segment;
         }
         $note->setDescription(implode(', ', $description));
@@ -203,5 +199,4 @@ class DefaultSegmentMerger implements SegmentMergerInterface
 
         return $notes;
     }
-
 }

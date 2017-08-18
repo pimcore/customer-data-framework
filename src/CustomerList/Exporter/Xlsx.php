@@ -6,7 +6,6 @@ use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Style;
 use Box\Spout\Writer\WriterFactory;
 use Box\Spout\Writer\XLSX\Writer;
-use Pimcore\Model\Object\Customer;
 
 class Xlsx extends AbstractExporter
 {
@@ -27,7 +26,6 @@ class Xlsx extends AbstractExporter
      */
     protected $generated;
 
-
     /**
      * Get file MIME type
      *
@@ -45,7 +43,7 @@ class Xlsx extends AbstractExporter
      */
     public function getFilesize()
     {
-        if(!$this->generated) {
+        if (!$this->generated) {
             throw new \Exception('Export fore not generated: call generateExportFile before');
         }
 
@@ -54,10 +52,8 @@ class Xlsx extends AbstractExporter
         return $stat['size'];
     }
 
-
     public function generateExportFile(array $exportData)
     {
-
         $this->stream = fopen('php://output', 'w+');
         $writer = WriterFactory::create(Type::XLSX);
         $file = tempnam(PIMCORE_SYSTEM_TEMP_DIRECTORY, 'cmf_customerexport_');
@@ -75,8 +71,8 @@ class Xlsx extends AbstractExporter
         unlink($file);
 
         $this->generated = true;
-        return $content;
 
+        return $content;
     }
 
     public function getExtension()
@@ -95,6 +91,7 @@ class Xlsx extends AbstractExporter
 
     /**
      * @param array $exportData
+     *
      * @return $this
      */
     protected function renderHeader(array $exportData)
@@ -111,6 +108,7 @@ class Xlsx extends AbstractExporter
 
     /**
      * @param [] $row
+     *
      * @return $this
      */
     protected function renderRow(array $row)

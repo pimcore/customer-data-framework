@@ -29,8 +29,7 @@ class OAuthAwareUserProvider implements UserProviderInterface, OAuthAwareUserPro
     public function __construct(
         UserProviderInterface $userProvider,
         SsoIdentityServiceInterface $ssoIdentityService
-    )
-    {
+    ) {
         $this->userProvider       = $userProvider;
         $this->ssoIdentityService = $ssoIdentityService;
     }

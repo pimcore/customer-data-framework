@@ -68,6 +68,7 @@ interface ExporterInterface
      * Generates the export file from given export data.
      *
      * @param array $exportData
+     *
      * @return mixed
      */
     public function generateExportFile(array $exportData);

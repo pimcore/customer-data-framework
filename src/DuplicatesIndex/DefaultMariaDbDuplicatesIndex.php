@@ -17,14 +17,12 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db;
 use Pimcore\Logger;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 use Zend\Paginator\Paginator;
 
 class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 {
-
     use LoggerAware;
 
     const DUPLICATESINDEX_TABLE = 'plugin_cmf_duplicatesindex';
@@ -41,7 +39,6 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         $this->config = Config::getConfig()->CustomerDuplicatesService->DuplicatesIndex;
         $this->duplicateCheckFields = $this->config->duplicateCheckFields ? $this->config->duplicateCheckFields->toArray(
         ) : [];
-
     }
 
     public function recreateIndex()
@@ -49,19 +46,18 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         $logger = $this->getLogger();
 
         $db = Db::get();
-        $db->query("truncate table ".self::DUPLICATESINDEX_TABLE);
-        $db->query("truncate table ".self::DUPLICATESINDEX_CUSTOMERS_TABLE);
+        $db->query('truncate table '.self::DUPLICATESINDEX_TABLE);
+        $db->query('truncate table '.self::DUPLICATESINDEX_CUSTOMERS_TABLE);
 
         if ($this->analyzeFalsePositives) {
             $db = Db::get();
-            $db->query("truncate table ".self::FALSE_POSITIVES_TABLE);
+            $db->query('truncate table '.self::FALSE_POSITIVES_TABLE);
         }
 
-        $logger->notice("tables truncated");
-
+        $logger->notice('tables truncated');
 
         $customerList = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
-        $customerList->setCondition("active = 1");
+        $customerList->setCondition('active = 1');
         $customerList->setOrderKey('o_id');
 
         $paginator = new Paginator($customerList);
@@ -69,21 +65,18 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
         $totalPages = $paginator->getPages()->pageCount;
         for ($pageNumber = 1; $pageNumber <= $totalPages; $pageNumber++) {
-            $logger->notice(sprintf("execute page %s of %s", $pageNumber, $totalPages));
+            $logger->notice(sprintf('execute page %s of %s', $pageNumber, $totalPages));
             $paginator->setCurrentPageNumber($pageNumber);
 
             foreach ($paginator as $customer) {
-
-                $logger->notice(sprintf("update index for %s", (string)$customer));
+                $logger->notice(sprintf('update index for %s', (string)$customer));
 
                 \Pimcore::getContainer()->get('cmf.customer_duplicates_service')->updateDuplicateIndexForCustomer(
                     $customer
                 );
-
             }
         }
     }
-
 
     public function updateDuplicateIndexForCustomer(CustomerInterface $customer)
     {
@@ -101,7 +94,6 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
                 $data[$field] = $this->transformDataForDuplicateIndex($customer->$getter(), $field);
             }
 
-
             $duplicateDataRows[] = $data;
         }
 
@@ -117,11 +109,11 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
     {
         $db = Db::get();
         $db->query(
-            sprintf("delete from %s where customer_id = ?", self::DUPLICATESINDEX_CUSTOMERS_TABLE),
+            sprintf('delete from %s where customer_id = ?', self::DUPLICATESINDEX_CUSTOMERS_TABLE),
             [$customer->getId()]
         );
         $db->query(
-            sprintf("delete from %s where FIND_IN_SET(?, duplicateCustomerIds)", self::POTENTIAL_DUPLICATES_TABLE),
+            sprintf('delete from %s where FIND_IN_SET(?, duplicateCustomerIds)', self::POTENTIAL_DUPLICATES_TABLE),
             [$customer->getId()]
         );
     }
@@ -130,39 +122,34 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
     {
         if ($this->analyzeFalsePositives) {
             $db = Db::get();
-            $db->query("truncate table ".self::FALSE_POSITIVES_TABLE);
+            $db->query('truncate table '.self::FALSE_POSITIVES_TABLE);
         }
 
-        $this->getLogger()->notice("start calculating exact duplicate matches");
+        $this->getLogger()->notice('start calculating exact duplicate matches');
         $exakt = $this->calculateExactDuplicateMatches();
 
-        $this->getLogger()->notice("start calculating fuzzy duplicate matches");
+        $this->getLogger()->notice('start calculating fuzzy duplicate matches');
         $fuzzy = $this->calculateFuzzyDuplicateMatches($output);
-
 
         $total = [];
 
         foreach ([$exakt, $fuzzy] as $dataSet) {
             foreach ($dataSet as $fieldCombination => $items) {
-
                 foreach ($items as $item) {
-
                     $item = is_array($item) ? implode(',', $item) : $item;
 
                     $total[$item] = isset($total[$item]) ? $total[$item] : [];
                     $total[$item][] = $fieldCombination;
-
                 }
             }
         }
 
-        $this->getLogger()->notice("update potential duplicates table");
+        $this->getLogger()->notice('update potential duplicates table');
 
         $totalIds = [-1];
         foreach ($total as $duplicateIds => $fieldCombinations) {
-
             if (!$id = Db::get()->fetchOne(
-                "select id from ".self::POTENTIAL_DUPLICATES_TABLE." where duplicateCustomerIds = ?",
+                'select id from '.self::POTENTIAL_DUPLICATES_TABLE.' where duplicateCustomerIds = ?',
                 $duplicateIds
             )
             ) {
@@ -181,10 +168,9 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
             $totalIds[] = $id;
         }
 
-
-        $this->getLogger()->notice("delete potential duplicates which are not valid anymore");
+        $this->getLogger()->notice('delete potential duplicates which are not valid anymore');
         Db::get()->query(
-            "delete from ".self::POTENTIAL_DUPLICATES_TABLE." where id not in(".implode(',', $totalIds).")"
+            'delete from '.self::POTENTIAL_DUPLICATES_TABLE.' where id not in('.implode(',', $totalIds).')'
         );
     }
 
@@ -205,7 +191,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
                     'modificationDate',
                 ]
             )
-            ->order("id asc");
+            ->order('id asc');
 
         if ($declined) {
             $select->where('(declined = 1)');
@@ -216,7 +202,6 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         $paginator = new Paginator(new Db\ZendCompatibility\QueryBuilder\PaginationAdapter($select));
         $paginator->setItemCountPerPage($pageSize);
         $paginator->setCurrentPageNumber($page ?: 0);
-
 
         foreach ($paginator as &$row) {
 
@@ -249,7 +234,6 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
             $item->setFieldCombinations($fieldCombinations);
 
             $row = $item;
-
         }
 
         return $paginator;
@@ -270,7 +254,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
                     'row2Details',
                 ]
             )
-            ->order("row1 asc");
+            ->order('row1 asc');
 
         $paginator = new Paginator(new Db\ZendCompatibility\QueryBuilder\PaginationAdapter($select));
         $paginator->setItemCountPerPage($pageSize);
@@ -297,32 +281,32 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
     /**
      * @param int $id
+     *
      * @return bool
      */
     public function declinePotentialDuplicate($id)
     {
         $db = Db::get();
-        $db->query(sprintf("update %s set declined = 1 where id = ?", self::POTENTIAL_DUPLICATES_TABLE), [$id]);
+        $db->query(sprintf('update %s set declined = 1 where id = ?', self::POTENTIAL_DUPLICATES_TABLE), [$id]);
     }
-
 
     protected function calculateExactDuplicateMatches()
     {
         $db = Db::get();
 
         $duplicateIds = $db->fetchCol(
-            "select duplicate_id from ".self::DUPLICATESINDEX_CUSTOMERS_TABLE." group by duplicate_id having count(*) > 1 order by count(*) desc"
+            'select duplicate_id from '.self::DUPLICATESINDEX_CUSTOMERS_TABLE.' group by duplicate_id having count(*) > 1 order by count(*) desc'
         );
 
         $result = [];
 
         foreach ($duplicateIds as $duplicateId) {
             $customerIds = $db->fetchCol(
-                "select customer_id from ".self::DUPLICATESINDEX_CUSTOMERS_TABLE." where duplicate_id = ? order by customer_id",
+                'select customer_id from '.self::DUPLICATESINDEX_CUSTOMERS_TABLE.' where duplicate_id = ? order by customer_id',
                 $duplicateId
             );
             $fieldCombination = $db->fetchOne(
-                "select fieldCombination from ".self::DUPLICATESINDEX_TABLE." where id = ?",
+                'select fieldCombination from '.self::DUPLICATESINDEX_TABLE.' where id = ?',
                 $duplicateId
             );
 
@@ -338,9 +322,8 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
     protected function calculateFuzzyDuplicateMatches(OutputInterface $output)
     {
-
-        $metaphone = $this->calculateFuzzyDuplicateMatchesByAlgorithm("metaphone", $output);
-        $soundex = $this->calculateFuzzyDuplicateMatchesByAlgorithm("soundex", $output);
+        $metaphone = $this->calculateFuzzyDuplicateMatchesByAlgorithm('metaphone', $output);
+        $soundex = $this->calculateFuzzyDuplicateMatchesByAlgorithm('soundex', $output);
 
         $resultSets = [$metaphone, $soundex];
 
@@ -361,7 +344,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         $db = Db::get();
 
         $phoneticDuplicates = $db->fetchCol(
-            "select `".$algorithm."` from ".self::DUPLICATESINDEX_TABLE." where `".$algorithm."` is not null and `".$algorithm."` != '' group by `".$algorithm."` having count(*) > 1"
+            'select `'.$algorithm.'` from '.self::DUPLICATESINDEX_TABLE.' where `'.$algorithm.'` is not null and `'.$algorithm."` != '' group by `".$algorithm.'` having count(*) > 1'
         );
 
         $result = [];
@@ -369,17 +352,16 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         $totalCount = sizeof($phoneticDuplicates);
 
         $output->writeln('');
-        $this->getLogger()->notice(sprintf("calculate potential duplicates for %s", $algorithm));
+        $this->getLogger()->notice(sprintf('calculate potential duplicates for %s', $algorithm));
 
         $progress = new ProgressBar($output, $totalCount);
         $progress->setFormat('verbose');
 
         foreach ($phoneticDuplicates as $phoneticDuplicate) {
-
             $progress->advance();
 
             $rows = $db->fetchAll(
-                "select * from ".self::DUPLICATESINDEX_CUSTOMERS_TABLE." c, ".self::DUPLICATESINDEX_TABLE." i where i.id = c.duplicate_id and `".$algorithm."` = ?  order by customer_id",
+                'select * from '.self::DUPLICATESINDEX_CUSTOMERS_TABLE.' c, '.self::DUPLICATESINDEX_TABLE.' i where i.id = c.duplicate_id and `'.$algorithm.'` = ?  order by customer_id',
                 [$phoneticDuplicate]
             );
 
@@ -401,7 +383,6 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
     protected function extractSimilarCustomerIdClustersGroupedByFieldCombinations($rows)
     {
-
         $groupedByFieldCombination = [];
         foreach ($rows as $row) {
             $groupedByFieldCombination[$row['fieldCombination']] = isset($groupedByFieldCombination[$row['fieldCombination']]) ? $groupedByFieldCombination[$row['fieldCombination']] : [];
@@ -413,13 +394,11 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
             $result[$fieldCombination] = $this->extractSimilarCustomerIdClusters($fieldCombinationRows);
         }
 
-
         return $result;
     }
 
     private function extractSimilarCustomerIdClusters($rows)
     {
-
         $result = [];
 
         foreach ($this->getCombinations($rows, 2) as $combination) {
@@ -437,15 +416,14 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
     protected function getCombinations($base, $n)
     {
-
         $baselen = count($base);
         if ($baselen == 0) {
             return;
         }
         if ($n == 1) {
-            $return = array();
+            $return = [];
             foreach ($base as $b) {
-                $return[] = array($b);
+                $return[] = [$b];
             }
 
             return $return;
@@ -454,10 +432,9 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
             $oneLevelLower = $this->getCombinations($base, $n - 1);
 
             //for every one level lower combinations add one element to them that the last element of a combination is preceeded by the element which follows it in base array if there is none, does not add
-            $newCombs = array();
+            $newCombs = [];
 
             foreach ($oneLevelLower as $oll) {
-
                 $lastEl = $oll[$n - 2];
                 $found = false;
                 foreach ($base as $key => $b) {
@@ -465,28 +442,21 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
                         $found = true;
                         continue;
                         //last element found
-
                     }
                     if ($found == true) {
                         //add to combinations with last element
                         if ($key < $baselen) {
-
                             $tmp = $oll;
                             $newCombination = array_slice($tmp, 0);
                             $newCombination[] = $b;
                             $newCombs[] = array_slice($newCombination, 0);
                         }
-
                     }
                 }
-
             }
-
         }
 
         return $newCombs;
-
-
     }
 
     /**
@@ -496,7 +466,6 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
      */
     protected function rowsAreSimilar(array $rows)
     {
-
         if (sizeof($rows) < 2) {
             return false;
         }
@@ -509,32 +478,29 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
         foreach ($rows as $row) {
             if (!$this->twoRowsAreSimilar($firstRow, $row, $fieldCombinationConfig)) {
-
                 $this->getLogger()->debug(
-                    "false positive: ".json_encode($firstRow['duplicateData']).' | '.json_encode($row['duplicateData'])
+                    'false positive: '.json_encode($firstRow['duplicateData']).' | '.json_encode($row['duplicateData'])
                 );
 
                 if ($this->analyzeFalsePositives) {
                     Db::get()->insert(
                         self::FALSE_POSITIVES_TABLE,
                         [
-                            "row1" => $firstRow['duplicateData'],
-                            "row2" => $row['duplicateData'],
-                            "row1Details" => json_encode($firstRow),
-                            "row2Details" => json_encode($row),
+                            'row1' => $firstRow['duplicateData'],
+                            'row2' => $row['duplicateData'],
+                            'row1Details' => json_encode($firstRow),
+                            'row2Details' => json_encode($row),
                         ]
                     );
                 }
 
                 return false;
             } else {
-
                 $this->getLogger()->debug(
-                    "potential duplicate found: ".$firstRow['duplicate_id'].' | '.$row['duplicate_id']
+                    'potential duplicate found: '.$firstRow['duplicate_id'].' | '.$row['duplicate_id']
                 );
             }
         }
-
 
         return true;
     }
@@ -557,7 +523,6 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
         foreach ($fieldCombinationConfig as $field => $options) {
             if ($options['similarity']) {
-
                 $similarityMatcher = $this->getSimilarityMatcher($options['similarity']);
 
                 $dataRow1 = json_decode($row1['duplicateData'], true);
@@ -578,6 +543,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
     /**
      * @param string $similiarity
+     *
      * @return DataSimilarityMatcherInterface
      */
     protected function getSimilarityMatcher($similiarity)
@@ -596,11 +562,11 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
     /**
      * @param string $fieldCombinationCommaSeparated
+     *
      * @return array
      */
     protected function getFieldCombinationConfig($fieldCombinationCommaSeparated)
     {
-
         if (!isset($this->fieldCombinationConfig[$fieldCombinationCommaSeparated])) {
             $this->fieldCombinationConfig[$fieldCombinationCommaSeparated] = [];
             foreach ($this->duplicateCheckFields as $fields) {
@@ -639,8 +605,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         $db = Db::get();
         $db->beginTransaction();
         try {
-
-            $db->query("delete from ".self::DUPLICATESINDEX_CUSTOMERS_TABLE." where customer_id = ?", [$customerId]);
+            $db->query('delete from '.self::DUPLICATESINDEX_CUSTOMERS_TABLE.' where customer_id = ?', [$customerId]);
 
             foreach ($duplicateDataRows as $index => $duplicateDataRow) {
                 $valid = true;
@@ -662,11 +627,10 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
                 $fieldCombinationCrc = crc32($fieldCombination);
 
                 if (!$duplicateId = $db->fetchOne(
-                    "select id from ".self::DUPLICATESINDEX_TABLE." WHERE duplicateDataMd5 = ? and fieldCombinationCrc = ?",
+                    'select id from '.self::DUPLICATESINDEX_TABLE.' WHERE duplicateDataMd5 = ? and fieldCombinationCrc = ?',
                     [$dataMd5, $fieldCombinationCrc]
                 )
                 ) {
-
                     $db->insert(
                         self::DUPLICATESINDEX_TABLE,
                         [
@@ -698,12 +662,9 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
                         'duplicate_id' => $duplicateId,
                     ]
                 );
-
-
             }
 
             $db->commit();
-
         } catch (\Exception $e) {
             $db->rollBack();
             Logger::error($e->getMessage());
@@ -733,10 +694,8 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         return implode('', $data);
     }
 
-
     protected function transformDataForDuplicateIndex($data, $field)
     {
-
         if (!$class = $this->config->dataTransformers->{$field}) {
             $class = Standard::class;
         }

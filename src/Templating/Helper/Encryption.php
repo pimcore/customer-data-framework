@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Templating\Helper;
 
-
 use CustomerManagementFrameworkBundle\Encryption\EncryptionServiceInterface;
-use Defuse\Crypto\Key;
 use Symfony\Component\Templating\Helper\Helper;
 
 class Encryption extends Helper

@@ -10,7 +10,6 @@ namespace CustomerManagementFrameworkBundle\Testing\DataTransformer;
 
 class ZipTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testCorrectTransformationsDe()
     {
         $transfomer = new \CustomerManagementFrameworkBundle\DataTransformer\Zip\De();
@@ -24,8 +23,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
             '123456' => '123456',
         ];
 
-        foreach($tests as $from => $to) {
-
+        foreach ($tests as $from => $to) {
             $result = $transfomer->transform($from, []);
 
             $this->assertEquals($to, $result);
@@ -43,8 +41,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
             '1234t' => '1234T',
         ];
 
-        foreach($tests as $from => $to) {
-
+        foreach ($tests as $from => $to) {
             $result = $transfomer->transform($from, []);
 
             $this->assertEquals($to, $result);
@@ -62,8 +59,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
             '5733 Mühlbach 1' => '5733',
         ];
 
-        foreach($tests as $from => $to) {
-
+        foreach ($tests as $from => $to) {
             $result = $transfomer->transform($from, []);
 
             $this->assertEquals($to, $result);
@@ -81,8 +77,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
             '1234 Test 1' => '1234',
         ];
 
-        foreach($tests as $from => $to) {
-
+        foreach ($tests as $from => $to) {
             $result = $transfomer->transform($from, []);
 
             $this->assertEquals($to, $result);
@@ -100,8 +95,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
             '1234 Test 1' => '1234',
         ];
 
-        foreach($tests as $from => $to) {
-
+        foreach ($tests as $from => $to) {
             $result = $transfomer->transform($from, []);
 
             $this->assertEquals($to, $result);
@@ -119,8 +113,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
             '1234 Test 1' => '1234',
         ];
 
-        foreach($tests as $from => $to) {
-
+        foreach ($tests as $from => $to) {
             $result = $transfomer->transform($from, []);
 
             $this->assertEquals($to, $result);
@@ -138,8 +131,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
             '123456 Test 1' => '123456',
         ];
 
-        foreach($tests as $from => $to) {
-
+        foreach ($tests as $from => $to) {
             $result = $transfomer->transform($from, []);
 
             $this->assertEquals($to, $result);
@@ -157,8 +149,7 @@ class ZipTest extends \PHPUnit_Framework_TestCase
             'SE-123 45' => '123 45',
         ];
 
-        foreach($tests as $from => $to) {
-
+        foreach ($tests as $from => $to) {
             $result = $transfomer->transform($from, []);
 
             $this->assertEquals($to, $result);
@@ -176,12 +167,10 @@ class ZipTest extends \PHPUnit_Framework_TestCase
             'london rm11AA' => 'RM1 1AA',
         ];
 
-        foreach($tests as $from => $to) {
-
+        foreach ($tests as $from => $to) {
             $result = $transfomer->transform($from, []);
 
             $this->assertEquals($to, $result);
         }
     }
-
 }

@@ -10,7 +10,6 @@ namespace CustomerManagementFrameworkBundle\Testing\DataTransformer;
 
 class Zip2StateTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testCorrectTransformationsAt()
     {
         $transfomer = new \CustomerManagementFrameworkBundle\DataTransformer\Zip2State\At;
@@ -24,8 +23,7 @@ class Zip2StateTest extends \PHPUnit_Framework_TestCase
             '2475' =>  'Burgenland',
         ];
 
-        foreach($tests as $from => $to) {
-
+        foreach ($tests as $from => $to) {
             $result = $transfomer->transform($from, []);
 
             $this->assertEquals($to, $result);
@@ -41,8 +39,7 @@ class Zip2StateTest extends \PHPUnit_Framework_TestCase
             '9553' => null,
         ];
 
-        foreach($tests as $from => $to) {
-
+        foreach ($tests as $from => $to) {
             $result = $transfomer->transform($from, []);
 
             $this->assertEquals($to, $result);
@@ -58,12 +55,10 @@ class Zip2StateTest extends \PHPUnit_Framework_TestCase
             '9553' => 'Ostschweiz',
         ];
 
-        foreach($tests as $from => $to) {
-
+        foreach ($tests as $from => $to) {
             $result = $transfomer->transform($from, []);
 
             $this->assertEquals($to, $result);
         }
     }
-
 }

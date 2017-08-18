@@ -9,11 +9,9 @@
 namespace CustomerManagementFrameworkBundle\CustomerMerger;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use Psr\Log\LoggerInterface;
 
 interface CustomerMergerInterface
 {
-
     /**
      * Adds all values from source customer to target customer and returns merged target customer instance.
      * Afterwards the source customer will be set to inactive and unpublished.
@@ -21,6 +19,7 @@ interface CustomerMergerInterface
      * @param CustomerInterface $sourceCustomer
      * @param CustomerInterface $targetCustomer
      * @param bool $mergeAttributes
+     *
      * @return CustomerInterface
      */
     public function mergeCustomers(

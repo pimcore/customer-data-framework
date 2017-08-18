@@ -8,23 +8,18 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Queue;
 
-use CustomerManagementFrameworkBundle\Model\ActionTrigger\ActionDefinition;
 use CustomerManagementFrameworkBundle\ActionTrigger\Action\ActionDefinitionInterface;
-use CustomerManagementFrameworkBundle\Factory;
+use CustomerManagementFrameworkBundle\Model\ActionTrigger\ActionDefinition;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db;
 use Pimcore\Model\Object\Customer;
-use Psr\Log\LoggerInterface;
-use Zend\Paginator\Adapter\ArrayAdapter;
-use Zend\Paginator\Paginator;
 
 class DefaultQueue implements QueueInterface
 {
     use LoggerAware;
 
     const QUEUE_TABLE = 'plugin_cmf_actiontrigger_queue';
-
 
     public function addToQueue(ActionDefinitionInterface $action, CustomerInterface $customer)
     {
@@ -33,7 +28,7 @@ class DefaultQueue implements QueueInterface
         $time = time();
 
         $this->logger->debug(
-            sprintf("add action id %s for customer %s to queue", $action->getId(), $customer->getId())
+            sprintf('add action id %s for customer %s to queue', $action->getId(), $customer->getId())
         );
 
         $actionDateTimestamp = time() + $action->getActionDelay();
@@ -59,7 +54,7 @@ class DefaultQueue implements QueueInterface
             ->from(
                 self::QUEUE_TABLE
             )
-            ->order("id asc")
+            ->order('id asc')
             ->where('actionDate <= ?', time());
 
         $items = $db->fetchAll($select);
@@ -72,7 +67,7 @@ class DefaultQueue implements QueueInterface
     private function processQueueItem(array $item)
     {
         $logger = $this->logger;
-        $logger->notice(sprintf("proccess entry ID %s", $item['id']));
+        $logger->notice(sprintf('proccess entry ID %s', $item['id']));
 
         $action = ActionDefinition::getById($item['actionId']);
         $customer = Customer::getById($item['customerId']);

@@ -19,13 +19,13 @@ class SequenceNumber
      *
      * @param $sequenceName
      * @param int $startingNumber
+     *
      * @return int
      */
     public static function getCurrent($sequenceName, $startingNumber = 10000)
     {
-
         $db = Db::get();
-        $number = $db->fetchOne("select number from ".self::TABLE_NAME." where name = ?", $sequenceName);
+        $number = $db->fetchOne('select number from '.self::TABLE_NAME.' where name = ?', $sequenceName);
 
         return intval($number) ?: $startingNumber;
     }
@@ -35,6 +35,7 @@ class SequenceNumber
      *
      * @param $sequenceName
      * @param int $sequenceValue
+     *
      * @return int
      */
     public static function setCurrent($sequenceName, $sequenceValue = 10000)
@@ -51,11 +52,11 @@ class SequenceNumber
                 );
             }
             Db::get()->query(
-                "insert into ".self::TABLE_NAME." (name, number) values (?,?) on duplicate key update number = ?",
+                'insert into '.self::TABLE_NAME.' (name, number) values (?,?) on duplicate key update number = ?',
                 [$sequenceName, $sequenceValue, $sequenceValue]
             );
 
-            $logger = \Pimcore::getContainer()->get("cmf.logger");
+            $logger = \Pimcore::getContainer()->get('cmf.logger');
 
             $logger->info(
                 sprintf(
@@ -71,8 +72,6 @@ class SequenceNumber
         } finally {
             self::SemaphoreSignal($handle);
         }
-
-
     }
 
     /**
@@ -80,6 +79,7 @@ class SequenceNumber
      *
      * @param $sequenceName
      * @param int $startingNumber
+     *
      * @return int
      */
     public static function getNext($sequenceName, $startingNumber = 10000)
@@ -92,23 +92,22 @@ class SequenceNumber
         $number += 1;
 
         $db->query(
-            "insert into ".self::TABLE_NAME." (name, number) values (?,?) on duplicate key update number = ?",
+            'insert into '.self::TABLE_NAME.' (name, number) values (?,?) on duplicate key update number = ?',
             [$sequenceName, $number, $number]
         );
 
         self::SemaphoreSignal($handle);
 
-        $logger = \Pimcore::getContainer()->get("cmf.logger");
+        $logger = \Pimcore::getContainer()->get('cmf.logger');
 
-        $logger->info("Generated Sequence Number ".$sequenceName." ".$number." (pid : ".getmypid().")");
-
+        $logger->info('Generated Sequence Number '.$sequenceName.' '.$number.' (pid : '.getmypid().')');
 
         return $number;
     }
 
     protected static function getLockFilename()
     {
-        $lockFilename = PIMCORE_SYSTEM_TEMP_DIRECTORY."/cmf-sequence-number.pid";
+        $lockFilename = PIMCORE_SYSTEM_TEMP_DIRECTORY.'/cmf-sequence-number.pid';
 
         return $lockFilename;
     }
@@ -117,11 +116,11 @@ class SequenceNumber
     {
         $filename = self::getLockFilename();
 
-        $handle = fopen($filename, 'w') or die("Error opening file.");
+        $handle = fopen($filename, 'w') or die('Error opening file.');
         if (flock($handle, LOCK_EX)) {
             //nothing...
         } else {
-            die("Could not lock file.");
+            die('Could not lock file.');
         }
 
         return $handle;

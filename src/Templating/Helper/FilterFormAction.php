@@ -9,8 +9,6 @@ use Zend\Paginator\Paginator;
 
 class FilterFormAction extends Helper
 {
-
-
     public function getName()
     {
         return 'FilterFormAction';
@@ -18,6 +16,7 @@ class FilterFormAction extends Helper
 
     /**
      * @param Paginator|null $paginator
+     *
      * @return string
      */
     public function get(Paginator $paginator)
@@ -41,10 +40,8 @@ class FilterFormAction extends Helper
          */
         $request = \Pimcore::getContainer()->get('request_stack')->getMasterRequest();
 
-
         $formAction = $router->generate($request->get('_route'), $formActionParams);
 
         return $formAction;
     }
-
 }

@@ -12,7 +12,6 @@ use Pimcore\Model\Object\CustomerSegmentGroup;
 
 interface CustomerSegmentInterface
 {
-
     /**
      * @return int
      */
@@ -25,6 +24,7 @@ interface CustomerSegmentInterface
 
     /**
      * @param $name
+     *
      * @return string
      */
     public function setName($name);
@@ -36,6 +36,7 @@ interface CustomerSegmentInterface
 
     /**
      * @param string $reference
+     *
      * @return void
      */
     public function setReference($reference);
@@ -47,6 +48,7 @@ interface CustomerSegmentInterface
 
     /**
      * @param CustomerSegmentGroup $group
+     *
      * @return void
      */
     public function setGroup($group);
@@ -58,6 +60,7 @@ interface CustomerSegmentInterface
 
     /**
      * @param bool $calculated
+     *
      * @return void
      */
     public function setCalculated($calculated);

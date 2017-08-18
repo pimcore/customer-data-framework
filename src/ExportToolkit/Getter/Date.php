@@ -14,6 +14,7 @@ class Date implements IGetter
     /**
      * @param ElementInterface $object
      * @param null $config
+     *
      * @return \DateTime|null
      */
     public static function get($object, $config = null)

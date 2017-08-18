@@ -2,7 +2,6 @@
 
 namespace CustomerManagementFrameworkBundle\ExportToolkit\AttributeClusterInterpreter\MailChimp\Customer;
 
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use DrewM\MailChimp\Batch;
 use Pimcore\Model\Element\ElementInterface;
@@ -164,6 +163,7 @@ class BatchExporter extends AbstractExporter
      *
      * @param Batch $batch
      * @param int $iteration
+     *
      * @return array|bool
      */
     protected function checkBatchStatus(Batch $batch, $iteration = 0)

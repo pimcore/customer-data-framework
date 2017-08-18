@@ -16,7 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminController
 {
-
     /**
      * get saved action trigger rules
      *
@@ -29,9 +28,8 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
         $rules->setOrderKey('name');
         $rules->setOrder('ASC');
 
-        $json = array();
+        $json = [];
         foreach ($rules->load() as $rule) {
-
             if ($rule->getActive()) {
                 $icon = 'plugin_cmf_icon_rule_enabled';
                 $title = 'active';
@@ -40,16 +38,16 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
                 $title = 'inactive';
             }
 
-            $json[] = array(
+            $json[] = [
                 'iconCls' => $icon,
                 'id' => $rule->getId(),
                 'text' => $rule->getName(),
                 'leaf' => true,
-                'qtipCfg' => array(
+                'qtipCfg' => [
                     'title' => $title,
                     'text' => $rule->getDescription(),
-                ),
-            );
+                ],
+            ];
         }
 
         return $this->json($json);
@@ -66,7 +64,7 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
         $rule = \CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule::getById((int)$request->get('id'));
         if ($rule) {
             // create json config
-            $json = array(
+            $json = [
                 'id' => $rule->getId(),
                 'name' => $rule->getName(),
                 'description' => $rule->getDescription(),
@@ -74,16 +72,13 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
                 'trigger' => [],
                 'condition' => [],
                 'actions' => [],
-            );
-
+            ];
 
             foreach ($rule->getTrigger() as $trigger) {
                 $json['trigger'][] = $trigger->toArray();
             }
 
-
             foreach ($rule->getAction() as $action) {
-
                 if (class_exists($action->getImplementationClass())) {
                     $actionData = call_user_func([$action->getImplementationClass(), 'getDataForEditmode'], $action);
                 } else {
@@ -121,10 +116,10 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
     public function saveAction(Request $request)
     {
         // send json response
-        $return = array(
+        $return = [
             'success' => false,
             'message' => '',
-        );
+        ];
 
         // save rule config
         try {
@@ -136,16 +131,14 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
             $rule->setDescription($data->settings->description);
             $rule->setActive((bool)$data->settings->active);
 
-
             // save trigger
-            $arrTrigger = array();
+            $arrTrigger = [];
             foreach ($data->trigger as $setting) {
                 $setting = json_decode(json_encode($setting), true);
                 $trigger = new \CustomerManagementFrameworkBundle\Model\ActionTrigger\TriggerDefinition($setting);
                 $arrTrigger[] = $trigger;
             }
             $rule->setTrigger($arrTrigger);
-
 
             // create a tree from the flat structure
             $arrCondition = [];
@@ -161,14 +154,11 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
                 $arrCondition[] = $condition;
             }
 
-
             $rule->setCondition($arrCondition);
 
-
             // save action
-            $arrActions = array();
+            $arrActions = [];
             foreach ($data->actions as $setting) {
-
                 if (class_exists($setting->implementationClass)) {
                     $action = call_user_func(
                         [$setting->implementationClass, 'createActionDefinitionFromEditmode'],
@@ -182,7 +172,6 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
             }
 
             $rule->setAction($arrActions);
-
 
             // save rule
             $rule->save();
@@ -207,21 +196,19 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
     public function addAction(Request $request)
     {
         // send json response
-        $return = array(
+        $return = [
             'success' => false,
             'message' => '',
-        );
+        ];
 
         // save rule
         try {
             $rule = new \CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule();
             $rule->setName($request->get('name'));
             if ($rule->save()) {
-
                 $return['success'] = true;
                 $return['id'] = $rule->getId();
             }
-
         } catch (\Exception $e) {
             $return['message'] = $e->getMessage();
             $return['success'] = false;
@@ -240,10 +227,10 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
     public function deleteAction(Request $request)
     {
         // send json response
-        $return = array(
+        $return = [
             'success' => false,
             'message' => '',
-        );
+        ];
 
         // delete rule
         try {

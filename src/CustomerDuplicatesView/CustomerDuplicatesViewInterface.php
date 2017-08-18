@@ -15,8 +15,8 @@ interface CustomerDuplicatesViewInterface extends TranslatorInterface
 
     /**
      * @param CustomerInterface $customer
+     *
      * @return array
      */
     public function getListData(CustomerInterface $customer);
-
 }

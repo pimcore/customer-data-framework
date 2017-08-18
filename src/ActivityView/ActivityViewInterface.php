@@ -10,11 +10,9 @@ namespace CustomerManagementFrameworkBundle\ActivityView;
 
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Translate\TranslatorInterface;
-use Pimcore\Model\Object\ClassDefinition\Data;
 
 interface ActivityViewInterface extends TranslatorInterface
 {
-
     /**
      * @param ActivityStoreEntryInterface $activityEntry
      *

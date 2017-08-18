@@ -3,7 +3,6 @@
 namespace CustomerManagementFrameworkBundle\Encryption;
 
 use CustomerManagementFrameworkBundle\Config;
-use CustomerManagementFrameworkBundle\Plugin;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Defuse\Crypto\Crypto;
 use Defuse\Crypto\Key;
@@ -42,6 +41,7 @@ class DefaultEncryptionService implements EncryptionServiceInterface
      * @param string $plaintext
      * @param Key|null $key
      * @param bool $rawBinary
+     *
      * @return string
      */
     public function encrypt($plaintext, Key $key = null, $rawBinary = false)
@@ -65,6 +65,7 @@ class DefaultEncryptionService implements EncryptionServiceInterface
      * @param string $ciphertext
      * @param Key|null $key
      * @param bool $rawBinary
+     *
      * @return string
      */
     public function decrypt($ciphertext, Key $key = null, $rawBinary = false)
@@ -84,6 +85,7 @@ class DefaultEncryptionService implements EncryptionServiceInterface
 
     /**
      * @return array|null
+     *
      * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.sleep
      */
     public function __sleep()

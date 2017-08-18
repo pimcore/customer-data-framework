@@ -13,6 +13,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
 {
     /**
      * Counter to build distinct identifiers across different segment filters
+     *
      * @var int
      */
     protected static $index = 0;
@@ -39,6 +40,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
 
     /**
      * Relations to operate on
+     *
      * @var array
      */
     protected $relationNames = [
@@ -71,6 +73,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
 
     /**
      * @param array $relationNames
+     *
      * @return $this
      */
     public function setRelationNames(array $relationNames)
@@ -85,6 +88,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      * same segment group are applied.
      *
      * @param Object\CustomerSegmentGroup $segmentGroup
+     *
      * @return string
      */
     protected function buildIdentifier(Object\CustomerSegmentGroup $segmentGroup = null)
@@ -98,6 +102,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
 
     /**
      * @param Object\CustomerSegment $segment
+     *
      * @return $this
      */
     protected function addCustomerSegment(Object\CustomerSegment $segment)
@@ -226,7 +231,6 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
                 $joinName,
                 $conditionValue
             );
-
         }
 
         $query->join(

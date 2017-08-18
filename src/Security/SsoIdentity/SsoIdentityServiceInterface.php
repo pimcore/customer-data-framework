@@ -9,6 +9,7 @@ interface SsoIdentityServiceInterface
 {
     /**
      * @param CustomerInterface $customer
+     *
      * @return SsoIdentityInterface[]
      */
     public function getSsoIdentities(CustomerInterface $customer);
@@ -16,6 +17,7 @@ interface SsoIdentityServiceInterface
     /**
      * @param string $provider
      * @param string $identifier
+     *
      * @return CustomerInterface|null
      */
     public function getCustomerBySsoIdentity($provider, $identifier);
@@ -24,6 +26,7 @@ interface SsoIdentityServiceInterface
      * @param CustomerInterface $customer
      * @param string $provider
      * @param string $identifier
+     *
      * @return SsoIdentityInterface|null
      */
     public function getSsoIdentity(CustomerInterface $customer, $provider, $identifier);
@@ -31,6 +34,7 @@ interface SsoIdentityServiceInterface
     /**
      * @param CustomerInterface $customer
      * @param SsoIdentityInterface $ssoIdentity
+     *
      * @return $this
      */
     public function addSsoIdentity(CustomerInterface $customer, SsoIdentityInterface $ssoIdentity);
@@ -40,6 +44,7 @@ interface SsoIdentityServiceInterface
      * @param string $provider
      * @param string $identifier
      * @param mixed $profileData
+     *
      * @return SsoIdentityInterface
      */
     public function createSsoIdentity(CustomerInterface $customer, $provider, $identifier, $profileData);

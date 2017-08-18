@@ -36,6 +36,7 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
      * GET /customers
      *
      * @param Request $request
+     *
      * @return Response
      */
     public function listRecords(Request $request)
@@ -78,6 +79,7 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
      * GET /customers/{id}
      *
      * @param Request $request
+     *
      * @return Response
      */
     public function readRecord(Request $request)
@@ -92,6 +94,7 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
      *
      * @param Request $request
      * @param array $params
+     *
      * @return Response
      */
     public function createRecord(Request $request)
@@ -118,6 +121,7 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
      * TODO support partial updates as we do now or demand whole object in PUT? Use PATCH for partial requests?
      *
      * @param Request $request
+     *
      * @return Response
      */
     public function updateRecord(Request $request)
@@ -128,7 +132,6 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
         try {
             $this->customerProvider->update($customer, $data);
             $customer->save();
-
         } catch (\Exception $e) {
             return $this->createErrorResponse($e->getMessage());
         }
@@ -141,6 +144,7 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
      *
      * @param Request $request
      * @param array $params
+     *
      * @return Response
      */
     public function deleteRecord(Request $request)
@@ -160,6 +164,7 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
      * Load a customer from ID/params array. If an array is passed, it tries to resolve the id from the 'id' property
      *
      * @param int|array $id
+     *
      * @return CustomerInterface|Concrete
      */
     protected function loadCustomer($id)
@@ -185,13 +190,13 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
         return $customer;
     }
 
-
     /**
      * Create customer response with hydrated customer data
      *
      * @param CustomerInterface $customer
      * @param Request $request
      * @param ExportCustomersFilterParams $params
+     *
      * @return Response
      */
     protected function createCustomerResponse(
@@ -213,6 +218,7 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
     /**
      * @param CustomerInterface $customer
      * @param ExportCustomersFilterParams $params
+     *
      * @return array
      */
     protected function hydrateCustomer(CustomerInterface $customer, ExportCustomersFilterParams $params)
@@ -239,5 +245,4 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
 
         return $data;
     }
-
 }

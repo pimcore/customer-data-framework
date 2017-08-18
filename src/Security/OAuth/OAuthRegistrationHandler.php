@@ -45,8 +45,7 @@ class OAuthRegistrationHandler
         TokenStorageInterface $tokenStorage,
         SsoIdentityServiceInterface $ssoIdentityService,
         AccountConnectorInterface $accountConnector
-    )
-    {
+    ) {
         $this->oAuthUtils         = $oAuthUtils;
         $this->tokenStorage       = $tokenStorage;
         $this->ssoIdentityService = $ssoIdentityService;

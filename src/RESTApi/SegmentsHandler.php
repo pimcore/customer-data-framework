@@ -2,7 +2,6 @@
 
 namespace CustomerManagementFrameworkBundle\RESTApi;
 
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\RESTApi\Exception\ResourceNotFoundException;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResourceUrlGenerator;
@@ -20,11 +19,11 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
     use ResponseGenerator;
     use ResourceUrlGenerator;
 
-
     /**
      * GET /segments
      *
      * @param Request $request
+     *
      * @return Response
      */
     public function listRecords(Request $request)
@@ -59,6 +58,7 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
      * GET /segments/{id}
      *
      * @param Request $request
+     *
      * @return Response
      */
     public function readRecord(Request $request)
@@ -72,6 +72,7 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
      * POST /segments
      *
      * @param Request $request
+     *
      * @return Response
      */
     public function createRecord(Request $request)
@@ -82,16 +83,18 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
             return new Response(
                 [
                     'success' => false,
-                    'msg' => "group required",
-                ], Response::RESPONSE_CODE_BAD_REQUEST
+                    'msg' => 'group required',
+                ],
+                Response::RESPONSE_CODE_BAD_REQUEST
             );
         }
         if (!$segmentGroup = CustomerSegmentGroup::getById($data['group'])) {
             return new Response(
                 [
                     'success' => false,
-                    'msg' => "group not found",
-                ], Response::RESPONSE_CODE_BAD_REQUEST
+                    'msg' => 'group not found',
+                ],
+                Response::RESPONSE_CODE_BAD_REQUEST
             );
         }
 
@@ -99,8 +102,9 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
             return new Response(
                 [
                     'success' => false,
-                    'msg' => "name required",
-                ], Response::RESPONSE_CODE_BAD_REQUEST
+                    'msg' => 'name required',
+                ],
+                Response::RESPONSE_CODE_BAD_REQUEST
             );
         }
 
@@ -116,7 +120,8 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
                         "duplicate segment - segment with reference '%s' already exists in this group",
                         $data['reference']
                     ),
-                ], Response::RESPONSE_CODE_BAD_REQUEST
+                ],
+                Response::RESPONSE_CODE_BAD_REQUEST
             );
         }
 
@@ -142,6 +147,7 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
      * TODO support partial updates as we do now or demand whole object in PUT? Use PATCH for partial requests?
      *
      * @param Request $request
+     *
      * @return Response
      */
     public function updateRecord(Request $request)
@@ -153,7 +159,8 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
                 [
                     'success' => false,
                     'msg' => 'id required',
-                ], Response::RESPONSE_CODE_BAD_REQUEST
+                ],
+                Response::RESPONSE_CODE_BAD_REQUEST
             );
         }
 
@@ -162,7 +169,8 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
                 [
                     'success' => false,
                     'msg' => sprintf('segment with id %s not found', $request->get('id')),
-                ], Response::RESPONSE_CODE_NOT_FOUND
+                ],
+                Response::RESPONSE_CODE_NOT_FOUND
             );
         }
 
@@ -178,6 +186,7 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
      * DELETE /segments/{id}
      *
      * @param Request $request
+     *
      * @return Response
      */
     public function deleteRecord(Request $request)
@@ -197,6 +206,7 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
      * Load a customer segment from ID.
      *
      * @param int|array $id
+     *
      * @return CustomerSegmentInterface|Concrete
      */
     protected function loadSegment($id)
@@ -231,7 +241,6 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
      */
     protected function createSegmentResponse(CustomerSegmentInterface $segment)
     {
-
         $response = $this->createResponse(
             $this->hydrateSegment($segment)
         );
@@ -241,6 +250,7 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
 
     /**
      * @param CustomerSegmentInterface $customerSegment
+     *
      * @return array
      */
     protected function hydrateSegment(CustomerSegmentInterface $customerSegment)

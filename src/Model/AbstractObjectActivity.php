@@ -10,12 +10,9 @@ namespace CustomerManagementFrameworkBundle\Model;
 
 use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
-use CustomerManagementFrameworkBundle\Factory;
 
 abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete implements PersistentActivityInterface
 {
-
-
     public function cmfIsActive()
     {
         return $this->getPublished() && ($this->getCustomer() instanceof CustomerInterface);
@@ -64,7 +61,6 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete imp
         return false;
     }
 
-
     public function cmfUpdateData(array $data)
     {
         throw new \Exception('update of pimcore object activities not allowed');
@@ -77,18 +73,16 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete imp
 
             if (!$object) {
                 throw new \Exception(sprintf('object with o_id %s not found', $data['o_id']));
-
             }
         } else {
             $object = new static;
         }
 
         if ($fromWebservice) {
-            $object->setValues($data["attributes"]);
+            $object->setValues($data['attributes']);
         } else {
             $object->setValues($data);
         }
-
 
         return $object;
     }
@@ -117,6 +111,4 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete imp
     {
         return false;
     }
-
-
 }

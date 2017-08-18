@@ -13,10 +13,9 @@ use CustomerManagementFrameworkBundle\ActionTrigger\Trigger\TriggerDefinitionInt
 
 class Cron implements CustomerListEventInterface
 {
-
     public function getName()
     {
-        return "plugin.cmf.cron-trigger";
+        return 'plugin.cmf.cron-trigger';
     }
 
     public function appliesToTrigger(TriggerDefinitionInterface $trigger)
@@ -31,6 +30,4 @@ class Cron implements CustomerListEventInterface
 
         return $cron->isDue();
     }
-
-
 }

@@ -3,9 +3,7 @@
 namespace CustomerManagementFrameworkBundle\CustomerProvider;
 
 use CustomerManagementFrameworkBundle\Config;
-use CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use CustomerManagementFrameworkBundle\Plugin;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Object\Concrete;
 use Pimcore\Model\Object\Folder;
@@ -92,6 +90,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      * Create a customer instance
      *
      * @param array $data
+     *
      * @return CustomerInterface
      */
     public function create(array $data = [])
@@ -110,6 +109,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     /**
      * @param CustomerInterface|ElementInterface|Concrete $customer
      * @param array $data
+     *
      * @return CustomerInterface
      */
     public function update(CustomerInterface $customer, array $data = [])
@@ -122,6 +122,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
 
     /**
      * @param CustomerInterface|ElementInterface|Concrete $customer
+     *
      * @return $this
      */
     public function delete(CustomerInterface $customer)
@@ -136,6 +137,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      *
      * @param int $id
      * @param bool $force
+     *
      * @return CustomerInterface|null
      */
     public function getById($id, $force = false)
@@ -147,6 +149,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      * Sets the correct parent folder and object key for the given customer.
      *
      * @param CustomerInterface $customer
+     *
      * @return void
      */
     public function applyObjectNamingScheme(CustomerInterface $customer)
@@ -158,6 +161,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     /**
      * @param string $method
      * @param array $arguments
+     *
      * @return mixed
      */
     protected function callStatic($method, array $arguments = [])

@@ -2,7 +2,6 @@
 
 namespace Website\Auth;
 
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Tool\HybridAuth;
 
@@ -47,6 +46,7 @@ class AuthService
 
     /**
      * @param CustomerInterface $customer
+     *
      * @return $this
      */
     public function login(CustomerInterface $customer)

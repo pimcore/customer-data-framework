@@ -17,7 +17,6 @@ use Pimcore\Model\AbstractModel;
 
 class Rule extends AbstractModel
 {
-
     /**
      * @var int $id
      */
@@ -63,7 +62,6 @@ class Rule extends AbstractModel
      */
     private $modificationDate;
 
-
     public function __construct()
     {
         $this->trigger = [];
@@ -73,7 +71,9 @@ class Rule extends AbstractModel
 
     /**
      * @param $id
+     *
      * @return Rule
+     *
      * @throws \Exception
      */
     public static function getById($id = null)
@@ -82,12 +82,12 @@ class Rule extends AbstractModel
             return null;
         }
 
-        $cacheKey = "cmf_plugin_actiontrigger_rule".$id;
+        $cacheKey = 'cmf_plugin_actiontrigger_rule'.$id;
 
         try {
             $rule = Runtime::load($cacheKey);
             if (!$rule) {
-                throw new \Exception("Action trigger rule in runtime cache is null");
+                throw new \Exception('Action trigger rule in runtime cache is null');
             }
         } catch (\Exception $e) {
             try {
@@ -95,7 +95,6 @@ class Rule extends AbstractModel
                 $rule->getDao()->getById($id);
                 Runtime::save($rule, $cacheKey);
             } catch (\Exception $e) {
-
                 Logger::error($e->getMessage());
 
                 return null;
@@ -137,7 +136,6 @@ class Rule extends AbstractModel
         $this->name = $name;
     }
 
-
     /**
      * @return string
      */
@@ -154,9 +152,8 @@ class Rule extends AbstractModel
         $this->description = $description;
     }
 
-
     /**
-     * @return boolean
+     * @return bool
      */
     public function getActive()
     {
@@ -164,7 +161,7 @@ class Rule extends AbstractModel
     }
 
     /**
-     * @param boolean $active
+     * @param bool $active
      */
     public function setActive($active)
     {
@@ -250,6 +247,4 @@ class Rule extends AbstractModel
     {
         $this->creationDate = $creationDate;
     }
-
-
 }

@@ -10,6 +10,7 @@ class Address implements IGetter
     /**
      * @param CustomerInterface $object
      * @param null $config
+     *
      * @return array
      */
     public static function get($object, $config = null)

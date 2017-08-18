@@ -20,6 +20,7 @@ class DefaultActivityUrlTracker implements ActivityUrlTrackerInterface
      * @param $customerIdEncoded
      * @param $activityCode
      * @param array $params
+     *
      * @return void
      */
     public function trackActivity($customerIdEncoded, $activityCode, array $params)
@@ -38,5 +39,4 @@ class DefaultActivityUrlTracker implements ActivityUrlTrackerInterface
             }
         }
     }
-
 }

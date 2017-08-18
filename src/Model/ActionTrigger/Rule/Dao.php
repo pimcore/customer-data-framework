@@ -2,11 +2,11 @@
 
 namespace CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
 
-use CustomerManagementFrameworkBundle\Model\ActionTrigger\ActionDefinition;
 use CustomerManagementFrameworkBundle\ActionTrigger\Condition\ConditionDefinitionInterface;
+use CustomerManagementFrameworkBundle\ActionTrigger\Trigger\TriggerDefinitionInterface;
+use CustomerManagementFrameworkBundle\Model\ActionTrigger\ActionDefinition;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\ConditionDefinition;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\TriggerDefinition;
-use CustomerManagementFrameworkBundle\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use Pimcore\Model;
 
 class Dao extends Model\Dao\AbstractDao
@@ -15,12 +15,9 @@ class Dao extends Model\Dao\AbstractDao
 
     public function getById($id)
     {
-
-        $raw = $this->db->fetchRow("SELECT * FROM ".self::TABLE_NAME." WHERE id = ?", $id);
-
+        $raw = $this->db->fetchRow('SELECT * FROM '.self::TABLE_NAME.' WHERE id = ?', $id);
 
         if ($raw['trigger']) {
-
             $triggers = [];
             $triggerData = json_decode($raw['trigger'], true);
             foreach ($triggerData as $triggerDefinitionData) {
@@ -33,7 +30,6 @@ class Dao extends Model\Dao\AbstractDao
         }
 
         if ($raw['condition']) {
-
             $conditions = [];
             $conditionData = json_decode($raw['condition'], true);
             foreach ($conditionData as $conditionDefinitionData) {
@@ -45,11 +41,11 @@ class Dao extends Model\Dao\AbstractDao
             $raw['condition'] = [];
         }
 
-        if ($raw["id"]) {
+        if ($raw['id']) {
             $this->assignVariablesToModel($raw);
 
             $actionIds = $this->db->fetchCol(
-                "select id from ".ActionDefinition\Dao::TABLE_NAME." where ruleId = ?",
+                'select id from '.ActionDefinition\Dao::TABLE_NAME.' where ruleId = ?',
                 $raw['id']
             );
 
@@ -59,9 +55,8 @@ class Dao extends Model\Dao\AbstractDao
             }
 
             $this->model->setAction($actions);
-
         } else {
-            throw new \Exception("Action trigger rule with ID ".$id." doesn't exist");
+            throw new \Exception('Action trigger rule with ID '.$id." doesn't exist");
         }
     }
 
@@ -69,7 +64,6 @@ class Dao extends Model\Dao\AbstractDao
 
     public function save()
     {
-
         $triggerData = [];
         if ($triggers = $this->model->getTrigger()) {
             foreach ($triggers as $trigger) {
@@ -99,17 +93,14 @@ class Dao extends Model\Dao\AbstractDao
             'modificationDate' => time(),
         ];
 
-
         if ($this->model->getId()) {
             $this->db->beginTransaction();
             try {
-
                 $this->saveActions();
 
-                $this->db->updateWhere(self::TABLE_NAME, $data, $this->db->quoteInto("id = ?", $this->model->getId()));
+                $this->db->updateWhere(self::TABLE_NAME, $data, $this->db->quoteInto('id = ?', $this->model->getId()));
                 $this->db->commit();
             } catch (\Exception $e) {
-
                 $this->db->rollBack();
                 $this->lastErrorCode = $e->getCode();
 
@@ -121,11 +112,10 @@ class Dao extends Model\Dao\AbstractDao
             $this->db->beginTransaction();
             try {
                 $this->db->insert(self::TABLE_NAME, $data);
-                $this->model->setId($this->db->fetchOne("SELECT LAST_INSERT_ID();"));
+                $this->model->setId($this->db->fetchOne('SELECT LAST_INSERT_ID();'));
                 $this->model->setCreationDate($data['creationDate']);
                 $this->saveActions();
                 $this->db->commit();
-
             } catch (\Exception $e) {
                 $this->db->rollBack();
                 $this->lastErrorCode = $e->getCode();
@@ -134,13 +124,11 @@ class Dao extends Model\Dao\AbstractDao
             }
         }
 
-
         return true;
     }
 
     private function saveActions()
     {
-
         $savedActionIds = [-1];
 
         if ($actions = $this->model->getAction()) {
@@ -153,17 +141,15 @@ class Dao extends Model\Dao\AbstractDao
 
         $this->db->deleteWhere(
             ActionDefinition\Dao::TABLE_NAME,
-            "ruleId = ".$this->model->getId()." and id not in(".implode(',', $savedActionIds).")"
+            'ruleId = '.$this->model->getId().' and id not in('.implode(',', $savedActionIds).')'
         );
     }
 
     public function delete()
     {
-
         $this->db->beginTransaction();
         try {
-
-            $this->db->deleteWhere(self::TABLE_NAME, $this->db->quoteInto("id = ?", $this->model->getId()));
+            $this->db->deleteWhere(self::TABLE_NAME, $this->db->quoteInto('id = ?', $this->model->getId()));
 
             $this->db->commit();
         } catch (\Exception $e) {
@@ -177,4 +163,3 @@ class Dao extends Model\Dao\AbstractDao
         return $this->lastErrorCode;
     }
 }
-

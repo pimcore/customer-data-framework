@@ -19,17 +19,14 @@ use Zend\Paginator\Paginator;
 
 class DefaultEventHandler implements EventHandlerInterface
 {
-
     use LoggerAware;
 
     private $rulesGroupedByEvents;
 
-
     public function __construct()
     {
-
         $rules = new Rule\Listing();
-        $rules->setCondition("active = 1");
+        $rules->setCondition('active = 1');
         $rules = $rules->load();
 
         $rulesGroupedByEvents = [];
@@ -56,8 +53,7 @@ class DefaultEventHandler implements EventHandlerInterface
 
     public function handleSingleCustomerEvent(SingleCustomerEventInterface $event)
     {
-
-        $this->getLogger()->debug(sprintf("handle single customer event: %s", $event->getName()));
+        $this->getLogger()->debug(sprintf('handle single customer event: %s', $event->getName()));
 
         $appliedRules = $this->getAppliedRules($event);
         foreach ($appliedRules as $rule) {
@@ -69,7 +65,6 @@ class DefaultEventHandler implements EventHandlerInterface
     {
         // var_dump($this->getAppliedRules($event, false) );
         foreach ($this->getAppliedRules($event, false) as $rule) {
-
             if ($conditions = $rule->getCondition()) {
                 $where = Checker::getDbConditionForRule($rule);
 
@@ -82,7 +77,7 @@ class DefaultEventHandler implements EventHandlerInterface
                 $paginator->setItemCountPerPage(100);
 
                 $this->getLogger()->info(
-                    sprintf("handleCustomerListEvent: found %s matching customers", $paginator->getTotalItemCount())
+                    sprintf('handleCustomerListEvent: found %s matching customers', $paginator->getTotalItemCount())
                 );
 
                 $totalPages = $paginator->getPages()->pageCount;
@@ -101,7 +96,6 @@ class DefaultEventHandler implements EventHandlerInterface
 
     private function handleActionsForCustomer(Rule $rule, CustomerInterface $customer)
     {
-
         if ($actions = $rule->getAction()) {
             foreach ($actions as $action) {
                 if ($action->getActionDelay()) {
@@ -124,24 +118,20 @@ class DefaultEventHandler implements EventHandlerInterface
      */
     private function getAppliedRules(EventInterface $event, $checkConditions = true)
     {
-
         $appliedRules = [];
 
         if (isset($this->rulesGroupedByEvents[$event->getName()]) && sizeof(
                 $this->rulesGroupedByEvents[$event->getName()]
             )
         ) {
-
             $rules = $this->rulesGroupedByEvents[$event->getName()];
 
             foreach ($rules as $rule) {
                 /**
                  * @var Rule $rule ;
                  */
-
                 foreach ($rule->getTrigger() as $trigger) {
                     if ($event->appliesToTrigger($trigger)) {
-
                         if ($checkConditions) {
                             if ($this->checkConditions($rule, $event)) {
                                 $appliedRules[] = $rule;
@@ -149,7 +139,6 @@ class DefaultEventHandler implements EventHandlerInterface
                         } else {
                             $appliedRules[] = $rule;
                         }
-
 
                         break;
                     }
@@ -162,7 +151,6 @@ class DefaultEventHandler implements EventHandlerInterface
 
     protected function checkConditions(Rule $rule, SingleCustomerEventInterface $event)
     {
-
         return Checker::checkConditionsForRuleAndEvent($rule, $event);
     }
 }

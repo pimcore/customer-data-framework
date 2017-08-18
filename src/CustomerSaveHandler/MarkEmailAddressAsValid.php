@@ -19,8 +19,6 @@ use Psr\Log\LoggerInterface;
  */
 class MarkEmailAddressAsValid extends AbstractCustomerSaveHandler
 {
-
-
     private $markValidField;
 
     public function __construct($config, LoggerInterface $logger)
@@ -29,7 +27,6 @@ class MarkEmailAddressAsValid extends AbstractCustomerSaveHandler
 
         $this->markValidField = $this->config->markValidField ?: 'emailOk';
     }
-
 
     /**
      * @param CustomerInterface $customer

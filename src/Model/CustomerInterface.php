@@ -7,7 +7,6 @@ use Pimcore\Model\Object\CustomerSegment;
 
 interface CustomerInterface extends ElementInterface
 {
-
     /**
      * @return int
      */
@@ -21,17 +20,18 @@ interface CustomerInterface extends ElementInterface
     public function save();
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getPublished();
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getActive();
 
     /**
      * @param bool $active
+     *
      * @return void
      */
     public function setActive($active);
@@ -108,7 +108,6 @@ interface CustomerInterface extends ElementInterface
      */
     public function setCity($city);
 
-
     /**
      * @return string
      */
@@ -120,7 +119,6 @@ interface CustomerInterface extends ElementInterface
      * @return void
      */
     public function setCountryCode($countryCode);
-
 
     /**
      * @return string

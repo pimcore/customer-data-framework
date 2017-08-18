@@ -18,11 +18,11 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
      * @param CustomerInterface $customer
      * @param string $parentPath
      * @param string $namingScheme
+     *
      * @return void
      */
     public function apply(CustomerInterface $customer, $parentPath, $namingScheme)
     {
-
         if ($namingScheme) {
             $namingScheme = $this->extractNamingScheme($customer, $namingScheme);
 
@@ -51,6 +51,7 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
     /**
      * @param CustomerInterface $customer
      * @param $namingScheme
+     *
      * @return array
      */
     private function extractNamingScheme(CustomerInterface $customer, $namingScheme)

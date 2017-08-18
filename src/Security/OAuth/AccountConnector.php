@@ -35,8 +35,7 @@ class AccountConnector implements AccountConnectorInterface
     public function __construct(
         SsoIdentityServiceInterface $ssoIdentityService,
         EncryptionServiceInterface $encryptionService
-    )
-    {
+    ) {
         $this->ssoIdentityService = $ssoIdentityService;
         $this->encryptionService  = $encryptionService;
     }
@@ -182,14 +181,16 @@ class AccountConnector implements AccountConnectorInterface
             if (!method_exists($responseToken, $getter)) {
                 throw new \RuntimeException(sprintf(
                     'Can\'t read property "%s" from token as method "%s" does not exist.',
-                    $fromProperty, $getter
+                    $fromProperty,
+                    $getter
                 ));
             }
 
             if (!method_exists($token, $setter)) {
                 throw new \RuntimeException(sprintf(
                     'Can\'t apply property "%s" on token as method "%s" does not exist.',
-                    $toProperty, $setter
+                    $toProperty,
+                    $setter
                 ));
             }
 
@@ -240,6 +241,7 @@ class AccountConnector implements AccountConnectorInterface
      * @param CustomerInterface $customer
      * @param string $property
      * @param mixed $value
+     *
      * @return $this
      */
     protected function setIfEmpty(CustomerInterface $customer, $property, $value = null)

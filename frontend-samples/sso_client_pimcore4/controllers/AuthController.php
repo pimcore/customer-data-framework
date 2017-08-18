@@ -59,6 +59,7 @@ class AuthController extends Action
         // redirect to secure action if already logged in
         if ($this->authService->isLoggedIn()) {
             $redirect();
+
             return;
         }
 
@@ -279,6 +280,7 @@ class AuthController extends Action
     /**
      * @param array $errors
      * @param Zend_Form $form
+     *
      * @return array
      */
     protected function addFormErrors(array $errors, Zend_Form $form)
@@ -294,6 +296,7 @@ class AuthController extends Action
 
     /**
      * @return Zend_Form
+     *
      * @throws Zend_Form_Exception
      */
     protected function buildLoginForm()

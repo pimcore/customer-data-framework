@@ -37,13 +37,12 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     public function __construct()
     {
-
         $config = Config::getConfig();
         $this->config = $config->CustomerSaveManager;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getSegmentBuildingHookEnabled()
     {
@@ -51,7 +50,8 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     }
 
     /**
-     * @param boolean $segmentBuildingHookEnabled
+     * @param bool $segmentBuildingHookEnabled
+     *
      * @return $this
      */
     public function setSegmentBuildingHookEnabled($segmentBuildingHookEnabled)
@@ -71,6 +71,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     /**
      * @param bool $customerSaveValidatorEnabled
+     *
      * @return $this
      */
     public function setCustomerSaveValidatorEnabled($customerSaveValidatorEnabled)
@@ -90,6 +91,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     /**
      * @param bool $disableSaveHandlers
+     *
      * @return $this
      */
     public function setDisableSaveHandlers($disableSaveHandlers)
@@ -109,6 +111,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     /**
      * @param bool $disableDuplicateIndex
+     *
      * @return $this
      */
     public function setDisableDuplicateIndex($disableDuplicateIndex)
@@ -128,6 +131,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     /**
      * @param bool $disableQueue
+     *
      * @return $this
      */
     public function setDisableQueue($disableQueue)
@@ -137,14 +141,12 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         return $this;
     }
 
-
     protected function applyNamingScheme(CustomerInterface $customer)
     {
         if ($this->config->enableAutomaticObjectNamingScheme) {
             \Pimcore::getContainer()->get('cmf.customer_provider')->applyObjectNamingScheme($customer);
         }
     }
-
 
     public function preAdd(CustomerInterface $customer)
     {
@@ -157,7 +159,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
         $this->applyNamingScheme($customer);
     }
-
 
     public function preUpdate(CustomerInterface $customer)
     {
@@ -191,7 +192,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
                 $customer
             );
         }
-
     }
 
     public function preDelete(CustomerInterface $customer)
@@ -212,7 +212,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     public function validateOnSave(CustomerInterface $customer, $withDuplicatesCheck = true)
     {
-
         if (!$this->getCustomerSaveValidatorEnabled()) {
             return false;
         }
@@ -229,7 +228,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     {
         $db = Db::get();
         $db->insertOrUpdate(
-            "plugin_cmf_deletions",
+            'plugin_cmf_deletions',
             [
                 'id' => $customer->getId(),
                 'creationDate' => time(),
@@ -246,11 +245,10 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
             $this->reinitSaveHandlers($saveHandlers, $customer);
         }
 
-
         foreach ($saveHandlers as $handler) {
             $this->getLogger()->debug(
                 sprintf(
-                    "apply save handler %s %s method to customer %s",
+                    'apply save handler %s %s method to customer %s',
                     get_class($handler),
                     $saveHandlerMethod,
                     (string)$customer
@@ -260,22 +258,17 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
             if ($saveHandlerMethod == 'preAdd') {
                 $handler->preAdd($customer);
                 $handler->preSave($customer);
-
             } elseif ($saveHandlerMethod == 'preUpdate') {
                 $handler->preUpdate($customer);
                 $handler->preSave($customer);
-
             } elseif ($saveHandlerMethod == 'postUpdate') {
                 $handler->postUpdate($customer);
                 $handler->postSave($customer);
-
             } elseif ($saveHandlerMethod == 'postAdd') {
                 $handler->postAdd($customer);
                 $handler->postSave($customer);
-
             } elseif ($saveHandlerMethod == 'preDelete') {
                 $handler->preDelete($customer);
-
             } elseif ($saveHandlerMethod == 'postDelete') {
                 $handler->postDelete($customer);
             }
@@ -314,7 +307,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         if (is_null($this->saveHandlers)) {
             $saveHandlers = [];
             foreach ($this->config->saveHandlers as $saveHandlerConfig) {
-
                 $class = (string)$saveHandlerConfig->saveHandler;
 
                 /**
@@ -323,7 +315,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
                 $saveHandler = Factory::getInstance()->createObject(
                     $class,
                     CustomerSaveHandlerInterface::class,
-                    ["config" => $saveHandlerConfig, "logger" => $this->getLogger()]
+                    ['config' => $saveHandlerConfig, 'logger' => $this->getLogger()]
                 );
                 $saveHandlers[] = $saveHandler;
             }
@@ -337,6 +329,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     /**
      * @param CustomerInterface $customer
      * @param bool $disableVersions
+     *
      * @return mixed
      */
     public function saveWithDisabledHooks(CustomerInterface $customer, $disableVersions = false)
@@ -350,15 +343,17 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     /**
      * @param CustomerInterface $customer
+     *
      * @return mixed
      */
-    function saveDirty(CustomerInterface $customer)
+    public function saveDirty(CustomerInterface $customer)
     {
         return $this->saveWithOptions($customer, $this->createDirtyOptions(), true);
     }
 
     /**
      * Disable all
+     *
      * @return \stdClass
      */
     protected function createDirtyOptions()
@@ -371,13 +366,13 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         $options->disableQueue = true;
 
         return $options;
-
     }
 
     /**
      * @param CustomerInterface $customer
      * @param \stdClass $options
      * @param bool $disableVersions
+     *
      * @return mixed
      */
     protected function saveWithOptions(CustomerInterface $customer, \stdClass $options, $disableVersions = false)
@@ -408,6 +403,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     /**
      * Backup options for later restore
+     *
      * @return \stdClass
      */
     protected function getSaveOptions()
@@ -424,6 +420,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     /**
      * Restore options
+     *
      * @param \stdClass $options
      */
     protected function applySaveOptions(\stdClass $options)
@@ -450,6 +447,4 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
             $this->setDisableQueue($options->disableQueue);
         }
     }
-
-
 }

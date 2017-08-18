@@ -9,9 +9,7 @@
 namespace CustomerManagementFrameworkBundle\SegmentBuilder;
 
 use CustomerManagementFrameworkBundle\DataTransformer\Date\TimestampToAge;
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Model\Tool\TmpStore;
 use Psr\Log\LoggerInterface;
@@ -19,7 +17,6 @@ use Zend\Paginator\Paginator;
 
 class AgeSegmentBuilder extends AbstractSegmentBuilder
 {
-
     private $config;
     private $logger;
 
@@ -62,7 +59,6 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder
      */
     public function prepare(SegmentManagerInterface $segmentManager)
     {
-
         $this->segmentGroup = $segmentManager->createSegmentGroup($this->groupName, $this->groupName, true);
     }
 
@@ -85,7 +81,7 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder
             $transformer = new TimestampToAge();
             $age = $transformer->transform($timestamp, []);
 
-            $this->logger->debug(sprintf("age of customer ID %s: %s years", $customer->getId(), $age));
+            $this->logger->debug(sprintf('age of customer ID %s: %s years', $customer->getId(), $age));
 
             foreach ($this->ageGroups as $ageGroup) {
                 $from = $ageGroup[0];
@@ -106,7 +102,7 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder
             $customer,
             $segments,
             $segmentManager->getSegmentsFromSegmentGroup($this->segmentGroup, $segments),
-            "AgeSegmentBuilder"
+            'AgeSegmentBuilder'
         );
     }
 
@@ -117,7 +113,7 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder
      */
     public function getName()
     {
-        return "AgeSegmentBuilder";
+        return 'AgeSegmentBuilder';
     }
 
     public function executeOnCustomerSave()
@@ -133,7 +129,7 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder
             return;
         }
 
-        $this->logger->info("execute maintenance of AgeSegmentBuilder");
+        $this->logger->info('execute maintenance of AgeSegmentBuilder');
 
         TmpStore::add($tmpStoreKey, 1, null, (60 * 60 * 24)); // only execute it once per day
 
@@ -141,7 +137,7 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder
 
         $list = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
         $list->setCondition(
-            "DATE_FORMAT(FROM_UNIXTIME(".$this->birthDayField."),'%m-%d') = DATE_FORMAT(NOW(),'%m-%d')"
+            'DATE_FORMAT(FROM_UNIXTIME('.$this->birthDayField."),'%m-%d') = DATE_FORMAT(NOW(),'%m-%d')"
         );
 
         $paginator = new Paginator($list);
@@ -156,5 +152,4 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder
             }
         }
     }
-
 }

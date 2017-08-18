@@ -4,19 +4,12 @@ namespace CustomerManagementFrameworkBundle\Controller\Rest;
 
 use CustomerManagementFrameworkBundle\RESTApi\CrudHandlerInterface;
 use CustomerManagementFrameworkBundle\RESTApi\Exception\ExceptionInterface;
-use CustomerManagementFrameworkBundle\RESTApi\Exception\ResourceNotFoundException;
-use CustomerManagementFrameworkBundle\RESTApi\HandlerInterface;
-use CustomerManagementFrameworkBundle\RESTApi\Response;
-use CustomerManagementFrameworkBundle\RESTApi\Traits\ResponseGenerator;
-use Pimcore\Bundle\AdminBundle\Controller\Rest\AbstractRestController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-
 
 abstract class CrudHandlerController extends RestHandlerController
 {
-
     /**
      * @return CrudHandlerInterface
      */
@@ -57,7 +50,6 @@ abstract class CrudHandlerController extends RestHandlerController
         try {
             $response = $handler->readRecord($request);
         } catch (ExceptionInterface $e) {
-
             $response = $this->createErrorResponse(
                 $e->getMessage(),
                 $e->getResponseCode() > 0 ? $e->getResponseCode() : 400
@@ -80,7 +72,6 @@ abstract class CrudHandlerController extends RestHandlerController
         try {
             $response = $handler->deleteRecord($request);
         } catch (ExceptionInterface $e) {
-
             $response = $this->createErrorResponse(
                 $e->getMessage(),
                 $e->getResponseCode() > 0 ? $e->getResponseCode() : 400
@@ -125,7 +116,6 @@ abstract class CrudHandlerController extends RestHandlerController
         try {
             $response = $handler->createRecord($request);
         } catch (ExceptionInterface $e) {
-
             $response = $this->createErrorResponse(
                 $e->getMessage(),
                 $e->getResponseCode() > 0 ? $e->getResponseCode() : 400

@@ -8,14 +8,10 @@
 
 namespace CustomerManagementFrameworkBundle\Model;
 
-use Carbon\Carbon;
-use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
-use CustomerManagementFrameworkBundle\Factory;
 use Pimcore\Model\Object\CustomerSegmentGroup;
 
 abstract class AbstractTermSegmentBuilderDefinition extends \Pimcore\Model\Object\Concrete
 {
-
     /**
      * @return array
      */
@@ -78,7 +74,6 @@ abstract class AbstractTermSegmentBuilderDefinition extends \Pimcore\Model\Objec
 
         foreach ($phrases as $term) {
             foreach ($allPhrases as $_term) {
-
                 if ($term == $_term) {
                     $result[] = $term;
                     break;
@@ -100,6 +95,7 @@ abstract class AbstractTermSegmentBuilderDefinition extends \Pimcore\Model\Objec
      * Adds/deletes CustomerSegment objects within given $customerSegmentGroup depending on defined terms within this TermSegmentBuilderDefinition.
      *
      * @param CustomerSegmentGroup $customerSegmentGroup
+     *
      * @return void;
      */
     public function updateCustomerSegments(CustomerSegmentGroup $customerSegmentGroup)
@@ -134,6 +130,4 @@ abstract class AbstractTermSegmentBuilderDefinition extends \Pimcore\Model\Objec
             $currentSegment->delete();
         }
     }
-
-
 }

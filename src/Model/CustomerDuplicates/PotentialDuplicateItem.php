@@ -8,8 +8,6 @@
 
 namespace CustomerManagementFrameworkBundle\Model\CustomerDuplicates;
 
-use CustomerManagementFrameworkBundle\Model\CustomerDuplicates\PotentialDuplicateItemInterface;
-
 class PotentialDuplicateItem implements PotentialDuplicateItemInterface
 {
     private $id;
@@ -78,6 +76,4 @@ class PotentialDuplicateItem implements PotentialDuplicateItemInterface
     {
         $this->creationDate = $creationDate;
     }
-
-
 }

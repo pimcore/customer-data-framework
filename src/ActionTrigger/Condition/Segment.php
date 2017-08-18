@@ -8,7 +8,6 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Condition;
 
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\Object\CustomerSegment;
 
@@ -20,7 +19,6 @@ class Segment extends AbstractCondition
 
     public function check(ConditionDefinitionInterface $conditionDefinition, CustomerInterface $customer)
     {
-
         $options = $conditionDefinition->getOptions();
 
         if (isset($options[self::OPTION_SEGMENT_ID])) {
@@ -51,7 +49,7 @@ class Segment extends AbstractCondition
         $not = $options[self::OPTION_NOT];
 
         $condition = sprintf(
-            "FIND_IN_SET(%s, manualSegments) or FIND_IN_SET(%s, calculatedSegments)",
+            'FIND_IN_SET(%s, manualSegments) or FIND_IN_SET(%s, calculatedSegments)',
             $segmentId,
             $segmentId
         );
@@ -81,7 +79,6 @@ class Segment extends AbstractCondition
 
     public static function getDataForEditmode(ConditionDefinitionInterface $conditionDefinition)
     {
-
         $options = $conditionDefinition->getOptions();
 
         if (isset($options['segmentId'])) {

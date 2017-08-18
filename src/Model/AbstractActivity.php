@@ -13,7 +13,6 @@ use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntr
 
 abstract class AbstractActivity implements ActivityInterface
 {
-
     protected $customer;
 
     /**
@@ -119,6 +118,4 @@ abstract class AbstractActivity implements ActivityInterface
     {
         $this->customer = $customer;
     }
-
-
 }

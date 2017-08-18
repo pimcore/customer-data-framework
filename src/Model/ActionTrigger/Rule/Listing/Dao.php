@@ -7,13 +7,12 @@ use Pimcore\Model;
 
 class Dao extends Model\Listing\Dao\AbstractDao
 {
-
     public function load()
     {
         $rules = [];
 
         $ids = $this->db->fetchCol(
-            "SELECT id FROM ".Rule\Dao::TABLE_NAME." ".$this->getCondition().$this->getOrder().$this->getOffsetLimit(),
+            'SELECT id FROM '.Rule\Dao::TABLE_NAME.' '.$this->getCondition().$this->getOrder().$this->getOffsetLimit(),
             $this->model->getConditionVariables()
         );
 
@@ -30,9 +29,8 @@ class Dao extends Model\Listing\Dao\AbstractDao
     public function getTotalCount()
     {
         return (int)$this->db->fetchOne(
-            "SELECT COUNT(*) as amount FROM ".Rule\Dao::TABLE_NAME." ".$this->getCondition(),
+            'SELECT COUNT(*) as amount FROM '.Rule\Dao::TABLE_NAME.' '.$this->getCondition(),
             $this->model->getConditionVariables()
         );
     }
-
 }

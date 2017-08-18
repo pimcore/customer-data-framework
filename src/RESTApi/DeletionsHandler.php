@@ -2,15 +2,12 @@
 
 namespace CustomerManagementFrameworkBundle\RESTApi;
 
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\RouteCollection;
 
 class DeletionsHandler extends AbstractHandler
 {
     use LoggerAware;
-
 
     /**
      * GET /deletions
@@ -19,7 +16,6 @@ class DeletionsHandler extends AbstractHandler
      */
     public function listRecords(Request $request)
     {
-
         $entityType = $request->get('entityType');
         $deletionsSinceTimestamp = $request->get('deletionsSinceTimestamp');
 
@@ -30,7 +26,8 @@ class DeletionsHandler extends AbstractHandler
                 [
                     'success' => false,
                     'msg' => 'parameter entityType is required',
-                ], Response::RESPONSE_CODE_BAD_REQUEST
+                ],
+                Response::RESPONSE_CODE_BAD_REQUEST
             );
         }
 
@@ -39,7 +36,8 @@ class DeletionsHandler extends AbstractHandler
                 [
                     'success' => false,
                     'msg' => 'entityType must be activities or customers',
-                ], Response::RESPONSE_CODE_BAD_REQUEST
+                ],
+                Response::RESPONSE_CODE_BAD_REQUEST
             );
         }
 
@@ -52,6 +50,4 @@ class DeletionsHandler extends AbstractHandler
 
         return new Response($result);
     }
-
-
 }

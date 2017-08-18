@@ -19,7 +19,6 @@ class Customer extends AbstractCondition
 
     public function check(ConditionDefinitionInterface $conditionDefinition, CustomerInterface $customer)
     {
-
         $options = $conditionDefinition->getOptions();
 
         if (isset($options[self::OPTION_CUSTOMER_ID])) {
@@ -47,7 +46,7 @@ class Customer extends AbstractCondition
 
         $customerId = intval($options[self::OPTION_CUSTOMER_ID]);
 
-        $condition = sprintf("o_id = %s", $customerId);
+        $condition = sprintf('o_id = %s', $customerId);
 
         $not = $options[self::OPTION_NOT];
 
@@ -76,7 +75,6 @@ class Customer extends AbstractCondition
 
     public static function getDataForEditmode(ConditionDefinitionInterface $conditionDefinition)
     {
-
         $options = $conditionDefinition->getOptions();
 
         if (isset($options[self::OPTION_CUSTOMER_ID])) {

@@ -5,7 +5,6 @@ namespace CustomerManagementFrameworkBundle\Templating\Helper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Templating\Helper\Helper;
 
-
 class FormQueryString extends Helper
 {
     public function getName()
@@ -36,6 +35,7 @@ class FormQueryString extends Helper
      * @param $url
      * @param bool $includeOrder
      * @param bool $includeFilters
+     *
      * @return string
      */
     public function formQueryString(Request $request, $url, $includeOrder = true, $includeFilters = true)
@@ -49,6 +49,7 @@ class FormQueryString extends Helper
      * @param Request $request
      * @param bool $includeOrder
      * @param bool $includeFilters
+     *
      * @return array
      */
     public function getQueryParams(Request $request, $includeOrder = true, $includeFilters = true)
@@ -68,6 +69,7 @@ class FormQueryString extends Helper
 
     /**
      * @param Request $request
+     *
      * @return array
      */
     public function getFilterParams(Request $request)
@@ -81,6 +83,7 @@ class FormQueryString extends Helper
 
     /**
      * @param Request $request
+     *
      * @return array
      */
     public function getOrderParams(Request $request)
@@ -97,6 +100,7 @@ class FormQueryString extends Helper
      *
      * @param $url
      * @param array $params
+     *
      * @return string
      */
     public function addQueryStringToUrl($url, array $params = [])

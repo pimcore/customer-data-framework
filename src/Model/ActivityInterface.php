@@ -7,7 +7,6 @@ use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntr
 
 interface ActivityInterface
 {
-
     const DATATYPE_STRING = 'string';
     const DATATYPE_INTEGER = 'integer';
     const DATATYPE_DOUBLE = 'double';
@@ -73,7 +72,6 @@ interface ActivityInterface
      * @return bool
      */
     public function cmfWebserviceUpdateAllowed();
-
 
     /**
      * Get the customer of the activity. A customer is required.

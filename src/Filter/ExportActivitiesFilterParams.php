@@ -12,14 +12,14 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ExportActivitiesFilterParams
 {
-
     /**
-     * @var string|boolean
+     * @var string|bool
      */
     private $type;
 
     /**
      * @param Request $request
+     *
      * @return static
      */
     public static function fromRequest(Request $request)
@@ -43,7 +43,7 @@ class ExportActivitiesFilterParams
     private $allParams;
 
     /**
-     * @return string|boolean
+     * @return string|bool
      */
     public function getType()
     {
@@ -89,6 +89,4 @@ class ExportActivitiesFilterParams
     {
         $this->allParams = $allParams;
     }
-
-
 }

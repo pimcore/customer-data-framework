@@ -12,10 +12,8 @@ use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 
 class NoTransformation implements DataTransformerInterface
 {
-
     public function transform($data, $options = [])
     {
         return $data;
     }
-
 }

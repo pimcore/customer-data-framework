@@ -8,13 +8,12 @@
 
 namespace CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList;
 
-use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList;
 use CustomerManagementFrameworkBundle\ActivityStore\MariaDb;
+use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList;
 use Pimcore\Db;
 
 class Dao
 {
-
     /**
      * @var DefaultMariaDbActivityList
      */
@@ -33,6 +32,7 @@ class Dao
      * @param bool $clone
      *
      * @return Db\ZendCompatibility\QueryBuilder
+     *
      * @throws \Exception
      */
     public function getQuery($clone = true)
@@ -68,12 +68,11 @@ class Dao
             // limit
             $this->addLimit($select);
 
-
             $this->query = $select;
         }
 
         if ($clone) {
-            return clone($this->query);
+            return clone $this->query;
         }
 
         return $this->query;
@@ -95,12 +94,12 @@ class Dao
     {
         $query = $this->getQuery();
         $query->limit(null, null);
-        $query->reset("from");
+        $query->reset('from');
 
         $query->from(
             MariaDb::ACTIVITIES_TABLE,
             [
-                "totalCount" => "count(*)",
+                'totalCount' => 'count(*)',
             ]
         );
 
@@ -138,8 +137,7 @@ class Dao
         $order = $this->model->getOrder();
 
         foreach ($orderKey as $i => $key) {
-
-            $orderString = str_replace("`", "", trim($key));
+            $orderString = str_replace('`', '', trim($key));
             if ($order[$i]) {
                 $orderString .= ' '.$order[$i];
             }

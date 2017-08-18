@@ -11,13 +11,10 @@ namespace CustomerManagementFrameworkBundle\Model\Activity;
 use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\ActivityExternalIdInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
-use CustomerManagementFrameworkBundle\Factory;
-use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
 class GenericActivity implements ActivityExternalIdInterface
 {
-
     protected $customer;
 
     /**
@@ -129,8 +126,5 @@ class GenericActivity implements ActivityExternalIdInterface
         } else {
             throw new \Exception('invalid customer');
         }
-
     }
-
-
 }

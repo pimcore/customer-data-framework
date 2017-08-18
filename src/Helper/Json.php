@@ -10,7 +10,6 @@ namespace CustomerManagementFrameworkBundle\Helper;
 
 class Json
 {
-
     /**
      * @param string $json
      *
@@ -18,8 +17,8 @@ class Json
      */
     public static function cleanUpJson($json)
     {
-        $search = array("\n", "\r", "\u", "\t", "\f", "\b", "/", '"');
-        $replace = array("\\n", "\\r", "\\u", "\\t", "\\f", "\\b", "\/", "\"");
+        $search = ["\n", "\r", "\u", "\t", "\f", "\b", '/', '"'];
+        $replace = ['\\n', '\\r', '\\u', '\\t', '\\f', '\\b', "\/", '"'];
 
         return str_replace($search, $replace, $json);
     }

@@ -13,25 +13,21 @@ use Pimcore\Model\Object\CustomerSegment;
 
 class AddSegment extends AbstractAction
 {
-
     const OPTION_SEGMENT_ID = 'segmentId';
     const OPTION_REMOVE_OTHER_SEGMENTS_FROM_SEGMENT_GROUP = 'removeOtherSegmentsFromGroup';
 
     public function process(ActionDefinitionInterface $actionDefinition, CustomerInterface $customer)
     {
-
         $options = $actionDefinition->getOptions();
 
         if (empty($options[self::OPTION_SEGMENT_ID])) {
-            $this->logger->error("AddSegment action: segmentId option not set");
+            $this->logger->error('AddSegment action: segmentId option not set');
         }
 
-
         if ($segment = CustomerSegment::getById(intval($options[self::OPTION_SEGMENT_ID]))) {
-
             $this->logger->info(
                 sprintf(
-                    "AddSegment action: add segment %s (%s) to customer %s (%s)",
+                    'AddSegment action: add segment %s (%s) to customer %s (%s)',
                     (string)$segment,
                     $segment->getId(),
                     (string)$customer,
@@ -54,13 +50,12 @@ class AddSegment extends AbstractAction
                 $customer,
                 [$segment],
                 $deleteSegments,
-                "AddSegment action trigger action"
+                'AddSegment action trigger action'
             );
             \Pimcore::getContainer()->get('cmf.segment_manager')->saveMergedSegments($customer);
-
         } else {
             $this->logger->error(
-                sprintf("AddSegment action: segment with ID %s not found", $options[self::OPTION_SEGMENT_ID])
+                sprintf('AddSegment action: segment with ID %s not found', $options[self::OPTION_SEGMENT_ID])
             );
         }
     }
@@ -84,7 +79,6 @@ class AddSegment extends AbstractAction
 
     public static function getDataForEditmode(ActionDefinitionInterface $actionDefinition)
     {
-
         $options = $actionDefinition->getOptions();
 
         if (isset($options['segmentId'])) {
@@ -97,5 +91,4 @@ class AddSegment extends AbstractAction
 
         return $actionDefinition->toArray();
     }
-
 }

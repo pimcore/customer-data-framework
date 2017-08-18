@@ -8,12 +8,10 @@
 
 namespace CustomerManagementFrameworkBundle\Helper;
 
-
 use Pimcore\Model\Element\ElementInterface;
 
 class Notes
 {
-
     /**
      * @param ElementInterface $element
      * @param                  $type
@@ -24,7 +22,6 @@ class Notes
      */
     public static function createNote(ElementInterface $element, $type, $title, $description = null)
     {
-
         $note = new \Pimcore\Model\Element\Note();
         $note->setElement($element);
         $note->setDate(time());

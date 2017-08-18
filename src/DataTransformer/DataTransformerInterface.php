@@ -8,12 +8,10 @@
 
 namespace CustomerManagementFrameworkBundle\DataTransformer;
 
-
 interface DataTransformerInterface
 {
     /**
      * @param mixed $data
-     *
      * @param array $options
      *
      * @return mixed

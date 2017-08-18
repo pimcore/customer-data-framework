@@ -12,15 +12,13 @@ use Pimcore\Db;
 
 class MariaDb
 {
-
-    CONST DYNAMIC_COLUMN_DATA_TYPE_CHAR = 'char';
-    CONST DYNAMIC_COLUMN_DATA_TYPE_DOUBLE = 'double';
-    CONST DYNAMIC_COLUMN_DATA_TYPE_INTEGER = 'integer';
-    CONST DYNAMIC_COLUMN_DATA_TYPE_BOOLEAN = 'boolean';
+    const DYNAMIC_COLUMN_DATA_TYPE_CHAR = 'char';
+    const DYNAMIC_COLUMN_DATA_TYPE_DOUBLE = 'double';
+    const DYNAMIC_COLUMN_DATA_TYPE_INTEGER = 'integer';
+    const DYNAMIC_COLUMN_DATA_TYPE_BOOLEAN = 'boolean';
 
     private function __construct()
     {
-
     }
 
     /**
@@ -37,7 +35,6 @@ class MariaDb
         return self::$instance;
     }
 
-
     /**
      * Generates insert SQL statement for MariaDBs dynamic column feature.
      *
@@ -47,13 +44,11 @@ class MariaDb
      */
     public function createDynamicColumnInsert(array $data, array $dataTypes = [])
     {
-
         $insert = '';
         $i = 0;
         foreach ($data as $key => $value) {
             $i++;
             if (!is_array($value)) {
-
                 $dataType = isset($dataTypes[$key]) ? $dataTypes[$key] : false;
 
                 $insert .= "'".$key."'".','.$this->convertDynamicColumnValueAccordingToDataType($value, $dataType);
@@ -61,9 +56,8 @@ class MariaDb
                 $dataType = $this->castDynamicColumnDatatype($dataType);
 
                 if ($dataType) {
-                    $insert .= " as ".$dataType;
+                    $insert .= ' as '.$dataType;
                 }
-
             } else {
                 $insert .= "'".$key."'".','.$this->createDynamicColumnInsert($value, $dataTypes);
             }
@@ -73,12 +67,11 @@ class MariaDb
             }
         }
 
-        return "COLUMN_CREATE(".$insert.")";
+        return 'COLUMN_CREATE('.$insert.')';
     }
 
     private function castDynamicColumnDatatype($dataType)
     {
-
         if ($dataType == self::DYNAMIC_COLUMN_DATA_TYPE_BOOLEAN) {
             return self::DYNAMIC_COLUMN_DATA_TYPE_INTEGER;
         }
@@ -88,7 +81,6 @@ class MariaDb
 
     private function convertDynamicColumnValueAccordingToDataType($value, $dataType)
     {
-
         $db = Db::get();
 
         if (is_null($value)) {
@@ -112,7 +104,6 @@ class MariaDb
      */
     public function insert($tableName, array $data)
     {
-
         $db = Db::get();
 
         foreach ($data as $key => $value) {
@@ -122,7 +113,7 @@ class MariaDb
         }
 
         $sql = sprintf(
-            "INSERT INTO %s (%s) VALUES (%s)",
+            'INSERT INTO %s (%s) VALUES (%s)',
             $tableName,
             implode(',', array_keys($data)),
             implode(',', array_values($data))
@@ -146,7 +137,7 @@ class MariaDb
     {
         $db = Db::get();
 
-        $sql = "UPDATE ".$tableName." SET ";
+        $sql = 'UPDATE '.$tableName.' SET ';
 
         $set = [];
         foreach ($data as $key => $value) {
@@ -155,11 +146,10 @@ class MariaDb
             } else {
                 $set[] = $key.' = '.$value;
             }
-
         }
 
         $sql .= implode(', ', $set);
-        $sql .= " WHERE ".$where;
+        $sql .= ' WHERE '.$where;
 
         $db->query($sql);
     }
@@ -168,6 +158,7 @@ class MariaDb
      * quotes each single item of given array
      *
      * @param array $data
+     *
      * @return array
      */
     public function quoteArray(array $data)

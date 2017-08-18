@@ -5,7 +5,6 @@ namespace CustomerManagementFrameworkBundle\Templating\Helper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Templating\Helper\Helper;
 
-
 class EscapeFormValue extends Helper
 {
     public function getName()
@@ -32,6 +31,7 @@ class EscapeFormValue extends Helper
      * @param $url
      * @param bool $includeOrder
      * @param bool $includeFilters
+     *
      * @return string
      */
     public function escapeFormValue($value)
@@ -40,6 +40,4 @@ class EscapeFormValue extends Helper
 
         return str_replace('"', '\"', $engine->escape($value));
     }
-
-
 }

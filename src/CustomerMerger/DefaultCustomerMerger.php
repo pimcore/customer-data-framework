@@ -10,28 +10,22 @@ namespace CustomerManagementFrameworkBundle\CustomerMerger;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\Condition\Customer;
 use CustomerManagementFrameworkBundle\Config;
-use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Helper\Notes;
 use CustomerManagementFrameworkBundle\Helper\Objects;
+use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use CustomerManagementFrameworkBundle\Plugin;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Model\Object\ClassDefinition;
 use Pimcore\Model\Object\Service;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
 
 class DefaultCustomerMerger implements CustomerMergerInterface
 {
-
     use LoggerAware;
 
     protected $config;
 
     public function __construct()
     {
-
         $config = Config::getConfig();
         $this->config = $config->CustomerMerger;
     }
@@ -43,6 +37,7 @@ class DefaultCustomerMerger implements CustomerMergerInterface
      * @param CustomerInterface $sourceCustomer
      * @param CustomerInterface $targetCustomer
      * @param bool $mergeAttributes
+     *
      * @return CustomerInterface
      */
     public function mergeCustomers(
@@ -64,13 +59,13 @@ class DefaultCustomerMerger implements CustomerMergerInterface
         $targetCustomer->save();
 
         if (!$sourceCustomer->getId()) {
-            $note = Notes::createNote($targetCustomer, 'cmf.CustomerMerger', "customer merged");
-            $note->setDescription("merged with new customer instance");
+            $note = Notes::createNote($targetCustomer, 'cmf.CustomerMerger', 'customer merged');
+            $note->setDescription('merged with new customer instance');
             $note->save();
         } else {
-            $note = Notes::createNote($targetCustomer, 'cmf.CustomerMerger', "customer merged");
-            $note->setDescription("merged with existing customer instance");
-            $note->addData("mergedCustomer", "object", $sourceCustomer);
+            $note = Notes::createNote($targetCustomer, 'cmf.CustomerMerger', 'customer merged');
+            $note->setDescription('merged with existing customer instance');
+            $note->addData('mergedCustomer', 'object', $sourceCustomer);
             $note->save();
 
             $sourceCustomer->setParent(
@@ -83,8 +78,8 @@ class DefaultCustomerMerger implements CustomerMergerInterface
             $sourceCustomer->setKey($sourceCustomer->getId());
             $sourceCustomer->save();
 
-            $note = Notes::createNote($sourceCustomer, 'cmf.CustomerMerger', "customer merged + deactivated");
-            $note->addData("mergedTargetCustomer", "object", $targetCustomer);
+            $note = Notes::createNote($sourceCustomer, 'cmf.CustomerMerger', 'customer merged + deactivated');
+            $note->addData('mergedTargetCustomer', 'object', $targetCustomer);
             $note->save();
         }
 
@@ -100,7 +95,7 @@ class DefaultCustomerMerger implements CustomerMergerInterface
             $logAddon .= ' (attributes merged manually)';
         }
 
-        $this->getLogger()->notice("merge customer ".$sourceCustomer." with ".$targetCustomer.$logAddon);
+        $this->getLogger()->notice('merge customer '.$sourceCustomer.' with '.$targetCustomer.$logAddon);
 
         return $targetCustomer;
     }
@@ -148,7 +143,7 @@ class DefaultCustomerMerger implements CustomerMergerInterface
     private function mergeActivities(CustomerInterface $sourceCustomer, CustomerInterface $targetCustomer)
     {
         $list = \Pimcore::getContainer()->get('cmf.activity_store')->getActivityList();
-        $list->setCondition("customerId=".$sourceCustomer->getId());
+        $list->setCondition('customerId='.$sourceCustomer->getId());
         $list->setOrderKey('activityDate');
         $list->setOrder('desc');
 

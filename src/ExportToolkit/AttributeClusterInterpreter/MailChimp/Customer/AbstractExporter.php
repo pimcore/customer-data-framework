@@ -4,7 +4,6 @@ namespace CustomerManagementFrameworkBundle\ExportToolkit\AttributeClusterInterp
 
 use CustomerManagementFrameworkBundle\ExportToolkit\AttributeClusterInterpreter\MailChimp\Customer;
 use CustomerManagementFrameworkBundle\ExportToolkit\ExportService\MailChimpExportService;
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use DrewM\MailChimp\MailChimp;
 use Pimcore\Model\Element\ElementInterface;
@@ -33,6 +32,7 @@ abstract class AbstractExporter
 
     /**
      * AbstractExporter constructor.
+     *
      * @param Customer $interpreter
      */
     public function __construct(Customer $interpreter)
@@ -45,6 +45,7 @@ abstract class AbstractExporter
 
     /**
      * @param MailChimpExportService $exportService
+     *
      * @return $this
      */
     public function setExportService(MailChimpExportService $exportService)
@@ -57,6 +58,7 @@ abstract class AbstractExporter
 
     /**
      * @param int $id
+     *
      * @return CustomerInterface|ElementInterface|null
      */
     protected function getCustomer($id)

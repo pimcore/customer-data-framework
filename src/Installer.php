@@ -13,36 +13,31 @@ use Pimcore\Logger;
 
 class Installer extends AbstractInstaller
 {
-
     const CONFIG_FILE_NAME = 'config.php';
     const CONFIG_FILE_LOCATION = '/plugins/CustomerManagementFramework';
 
-
     protected $preferCustomConfiguration = true;
-
 
     public function install()
     {
-
         $this->installPermissions();
         $this->installDatabaseTables();
         $this->installClasses();
-        $this->installConfig( $this->preferCustomConfiguration );
-
+        $this->installConfig($this->preferCustomConfiguration);
 
         return true;
     }
 
     public function isInstalled()
     {
-
         $configFile = self::CONFIG_FILE_LOCATION . '/' . self::CONFIG_FILE_NAME;
-        if( file_exists( PIMCORE_CUSTOM_CONFIGURATION_DIRECTORY . $configFile ) ) {
+        if (file_exists(PIMCORE_CUSTOM_CONFIGURATION_DIRECTORY . $configFile)) {
             return true;
         }
-        if( file_exists( PIMCORE_CONFIGURATION_DIRECTORY . $configFile ) ) {
+        if (file_exists(PIMCORE_CONFIGURATION_DIRECTORY . $configFile)) {
             return true;
         }
+
         return false;
     }
 
@@ -61,10 +56,9 @@ class Installer extends AbstractInstaller
 
     public function installPermissions()
     {
-
         $permissions = [
-            "plugin_customermanagementframework_activityview",
-            "plugin_customermanagementframework_customerview",
+            'plugin_customermanagementframework_activityview',
+            'plugin_customermanagementframework_customerview',
         ];
 
         foreach ($permissions as $key) {
@@ -81,7 +75,7 @@ class Installer extends AbstractInstaller
     public function installDatabaseTables()
     {
         \Pimcore\Db::get()->query(
-            "CREATE TABLE IF NOT EXISTS `plugin_cmf_activities` (
+            'CREATE TABLE IF NOT EXISTS `plugin_cmf_activities` (
               `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
               `customerId` int(11) unsigned NOT NULL,
               `activityDate` bigint(20) unsigned DEFAULT NULL,
@@ -97,28 +91,28 @@ class Installer extends AbstractInstaller
               KEY `customerId` (`customerId`),
               KEY `o_id` (`o_id`),
               KEY `a_id` (`a_id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
         );
 
         \Pimcore\Db::get()->query(
-            "CREATE TABLE IF NOT EXISTS `plugin_cmf_deletions` (
+            'CREATE TABLE IF NOT EXISTS `plugin_cmf_deletions` (
               `id` int(11) unsigned NOT NULL,
               `entityType` char(20) NOT NULL,
               `type` varchar(255) NOT NULL,
               `creationDate` bigint(20) unsigned DEFAULT NULL,
               KEY `type` (`entityType`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
         );
 
         \Pimcore\Db::get()->query(
-            "CREATE TABLE IF NOT EXISTS `plugin_cmf_segmentbuilder_changes_queue` (
+            'CREATE TABLE IF NOT EXISTS `plugin_cmf_segmentbuilder_changes_queue` (
               `customerId` int(11) unsigned NOT NULL,
               UNIQUE KEY `customerId` (`customerId`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
         );
 
         \Pimcore\Db::get()->query(
-            "CREATE TABLE IF NOT EXISTS `plugin_cmf_actiontrigger_actions` (
+            'CREATE TABLE IF NOT EXISTS `plugin_cmf_actiontrigger_actions` (
               `id` int(20) unsigned NOT NULL AUTO_INCREMENT,
               `ruleId` int(20) unsigned NOT NULL,
               `actionDelay` int(20) unsigned NOT NULL,
@@ -128,7 +122,7 @@ class Installer extends AbstractInstaller
               `modificationDate` bigint(20) NOT NULL,
               PRIMARY KEY (`id`),
               KEY `ruleId` (`ruleId`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
         );
 
         \Pimcore\Db::get()->query(
@@ -148,7 +142,7 @@ class Installer extends AbstractInstaller
         );
 
         \Pimcore\Db::get()->query(
-            "CREATE TABLE IF NOT EXISTS `plugin_cmf_actiontrigger_queue` (
+            'CREATE TABLE IF NOT EXISTS `plugin_cmf_actiontrigger_queue` (
               `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
               `customerId` int(11) unsigned NOT NULL,
               `actionDate` bigint(20) unsigned DEFAULT NULL,
@@ -158,7 +152,7 @@ class Installer extends AbstractInstaller
               PRIMARY KEY (`id`),
               KEY `customerId` (`customerId`),
               KEY `actionId` (`actionId`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
         );
 
         \Pimcore\Db::get()->query(
@@ -188,21 +182,21 @@ class Installer extends AbstractInstaller
         );
 
         \Pimcore\Db::get()->query(
-            "CREATE TABLE IF NOT EXISTS `plugin_cmf_duplicatesindex_customers` (
+            'CREATE TABLE IF NOT EXISTS `plugin_cmf_duplicatesindex_customers` (
               `duplicate_id` int(11) unsigned NOT NULL,
               `customer_id` int(11) unsigned NOT NULL,
               KEY `duplicate_id` (`duplicate_id`),
               KEY `customer_id` (`customer_id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
         );
 
         \Pimcore\Db::get()->query(
-            "CREATE TABLE IF NOT EXISTS `plugin_cmf_duplicates_false_positives` (
+            'CREATE TABLE IF NOT EXISTS `plugin_cmf_duplicates_false_positives` (
               `row1` text NOT NULL,
               `row2` text NOT NULL,
               `row1Details` text NOT NULL,
               `row2Details` text NOT NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
         );
 
         \Pimcore\Db::get()->query(
@@ -224,12 +218,12 @@ class Installer extends AbstractInstaller
     {
         $sourcePath = __DIR__.'/../install/class_source';
 
-        self::installClass("CustomerSegmentGroup", $sourcePath.'/class_CustomerSegmentGroup_export.json');
-        self::installClass("CustomerSegment", $sourcePath.'/class_CustomerSegment_export.json');
-        self::installClass("ActivityDefinition", $sourcePath.'/class_ActivityDefinition_export.json');
-        self::installClass("SsoIdentity", $sourcePath.'/class_SsoIdentity_export.json');
+        self::installClass('CustomerSegmentGroup', $sourcePath.'/class_CustomerSegmentGroup_export.json');
+        self::installClass('CustomerSegment', $sourcePath.'/class_CustomerSegment_export.json');
+        self::installClass('ActivityDefinition', $sourcePath.'/class_ActivityDefinition_export.json');
+        self::installClass('SsoIdentity', $sourcePath.'/class_SsoIdentity_export.json');
         self::installClass(
-            "TermSegmentBuilderDefinition",
+            'TermSegmentBuilderDefinition',
             $sourcePath.'/class_TermSegmentBuilderDefinition_export.json'
         );
     }
@@ -240,7 +234,7 @@ class Installer extends AbstractInstaller
         if (!$class) {
             $class = new \Pimcore\Model\Object\ClassDefinition();
             $class->setName($classname);
-            $class->setGroup("CustomerManagement");
+            $class->setGroup('CustomerManagement');
         }
         $json = file_get_contents($filepath);
 
@@ -250,8 +244,8 @@ class Installer extends AbstractInstaller
         }
     }
 
-    public static function installConfig( $preferCustomConfiguration = false ) {
-
+    public static function installConfig($preferCustomConfiguration = false)
+    {
         $baseDir = $preferCustomConfiguration ? PIMCORE_CUSTOM_CONFIGURATION_DIRECTORY : PIMCORE_CONFIGURATION_DIRECTORY;
 
         $dir = $baseDir . self::CONFIG_FILE_LOCATION;
@@ -260,14 +254,12 @@ class Installer extends AbstractInstaller
             mkdir($dir, 0775, true);
         }
 
-        foreach (["config.php"] as $file) {
-
+        foreach (['config.php'] as $file) {
             $target = $dir .'/'.$file;
 
             if (!is_file($target)) {
-
                 copy(
-                    realpath(__DIR__."/../install/config/").'/'.$file,
+                    realpath(__DIR__.'/../install/config/').'/'.$file,
                     $target
                 );
             }

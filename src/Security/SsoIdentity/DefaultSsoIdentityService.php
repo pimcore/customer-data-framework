@@ -32,6 +32,7 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
     /**
      * @param string $provider
      * @param string $identifier
+     *
      * @return CustomerInterface|null
      */
     public function getCustomerBySsoIdentity($provider, $identifier)
@@ -45,6 +46,7 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
     /**
      * @param $provider
      * @param $identifier
+     *
      * @return SsoIdentityInterface
      */
     protected function findSsoIdentity($provider, $identifier)
@@ -69,6 +71,7 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
 
     /**
      * @param SsoIdentityInterface $ssoIdentity
+     *
      * @return CustomerInterface|null
      */
     protected function findCustomerBySsoIdentity(SsoIdentityInterface $ssoIdentity)
@@ -89,6 +92,7 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
 
     /**
      * @param CustomerInterface|SsoAwareCustomerInterface $customer
+     *
      * @return SsoIdentityInterface[]
      */
     public function getSsoIdentities(CustomerInterface $customer)
@@ -106,6 +110,7 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
      * @param CustomerInterface $customer
      * @param string $provider
      * @param string $identifier
+     *
      * @return SsoIdentityInterface|null
      */
     public function getSsoIdentity(CustomerInterface $customer, $provider, $identifier)
@@ -120,6 +125,7 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
     /**
      * @param CustomerInterface|SsoAwareCustomerInterface $customer
      * @param SsoIdentityInterface $ssoIdentity
+     *
      * @return $this
      */
     public function addSsoIdentity(CustomerInterface $customer, SsoIdentityInterface $ssoIdentity)
@@ -137,6 +143,7 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
      * @param string $provider
      * @param string $identifier
      * @param mixed $profileData
+     *
      * @return SsoIdentityInterface
      */
     public function createSsoIdentity(CustomerInterface $customer, $provider, $identifier, $profileData)

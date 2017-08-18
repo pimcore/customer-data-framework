@@ -3,12 +3,8 @@
 namespace CustomerManagementFrameworkBundle\RESTApi;
 
 use CustomerManagementFrameworkBundle\RESTApi\Exception\MissingRequestBodyException;
-use CustomerManagementFrameworkBundle\RESTApi\Exception\ResourceNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
-use Symfony\Component\Routing\RouteCollection;
 use Zend\Paginator\Paginator;
 
 /**
@@ -18,7 +14,6 @@ use Zend\Paginator\Paginator;
  */
 abstract class AbstractHandler implements HandlerInterface
 {
-
     /**
      * @param Paginator $paginator
      * @param Request $request
@@ -42,6 +37,7 @@ abstract class AbstractHandler implements HandlerInterface
      * Parse request body JSON
      *
      * @param Request $request
+     *
      * @return array
      */
     protected function getRequestData(Request $request)
@@ -58,5 +54,4 @@ abstract class AbstractHandler implements HandlerInterface
 
         return $data;
     }
-
 }

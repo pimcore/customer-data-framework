@@ -9,27 +9,26 @@
 namespace CustomerManagementFrameworkBundle\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class BuildSegmentsCommand extends AbstractCommand
 {
-
     protected function configure()
     {
-        $this->setName("cmf:build-segments")
-            ->setDescription("Build automatically calculated segments")
+        $this->setName('cmf:build-segments')
+            ->setDescription('Build automatically calculated segments')
             ->addOption(
-                "force",
-                "f",
+                'force',
+                'f',
                 null,
-                "force all customers (otherwise only entries from the changes queue will be processed)"
+                'force all customers (otherwise only entries from the changes queue will be processed)'
             )
             ->addOption(
-                "segmentBuilder",
-                "s",
+                'segmentBuilder',
+                's',
                 InputOption::VALUE_OPTIONAL,
-                "execute segment builder class only (php class name of segment builder)"
+                'execute segment builder class only (php class name of segment builder)'
             )
             ->addOption(
                 'customer',
@@ -100,8 +99,8 @@ class BuildSegmentsCommand extends AbstractCommand
         $segmentManager = \Pimcore::getContainer()->get('cmf.segment_manager');
 
         $segmentManager->buildCalculatedSegments(
-            !$input->getOption("force"),
-            $input->getOption("segmentBuilder"),
+            !$input->getOption('force'),
+            $input->getOption('segmentBuilder'),
             $customQueue,
             $activeState,
             $options,
@@ -109,5 +108,4 @@ class BuildSegmentsCommand extends AbstractCommand
             true
         );
     }
-
 }

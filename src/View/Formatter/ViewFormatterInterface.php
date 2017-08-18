@@ -10,6 +10,7 @@ interface ViewFormatterInterface extends TranslatorInterface
 {
     /**
      * @param Data $fd
+     *
      * @return string
      */
     public function getLabelByFieldDefinition(Data $fd);
@@ -17,24 +18,28 @@ interface ViewFormatterInterface extends TranslatorInterface
     /**
      * @param ClassDefinition $class
      * @param string $fieldName
+     *
      * @return string
      */
     public function getLabelByFieldName(ClassDefinition $class, $fieldName);
 
     /**
      * @param mixed $value
+     *
      * @return string
      */
     public function formatValue($value);
 
     /**
      * @param mixed $value
+     *
      * @return mixed
      */
     public function formatBooleanValue($value);
 
     /**
      * @param $value
+     *
      * @return string
      */
     public function formatDatetimeValue($value);
@@ -42,12 +47,14 @@ interface ViewFormatterInterface extends TranslatorInterface
     /**
      * @param Data $fd
      * @param $value
+     *
      * @return string
      */
     public function formatValueByFieldDefinition(Data $fd, $value);
 
     /**
      * @param string $locale
+     *
      * @return void
      */
     public function setLocale($locale);

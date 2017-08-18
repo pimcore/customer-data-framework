@@ -2,16 +2,16 @@
 
 namespace CustomerManagementFrameworkBundle\RESTApi;
 
-use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Filter\ExportActivitiesFilterParams;
 use CustomerManagementFrameworkBundle\Model\Activity\GenericActivity;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
+use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\PersistentActivityInterface;
 use CustomerManagementFrameworkBundle\RESTApi\Exception\ResourceNotFoundException;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResourceUrlGenerator;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResponseGenerator;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use \Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Request;
 
 class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
 {
@@ -23,6 +23,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
      * GET /activities
      *
      * @param Request $request
+     *
      * @return Response
      */
     public function listRecords(Request $request)
@@ -39,7 +40,6 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
             $page,
             $param
         );
-
 
         $result = [
             'page' => $page,
@@ -64,6 +64,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
      *
      * @param Request $request
      * @param array $params
+     *
      * @return Response
      */
     public function readRecord(Request $request)
@@ -77,6 +78,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
      * POST /activities
      *
      * @param Request $request
+     *
      * @return Response
      */
     public function createRecord(Request $request)
@@ -107,15 +109,13 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
              */
             $activity = $implementationClass::cmfCreate($data);
 
-
             if ($activity && $activity->cmfWebserviceUpdateAllowed()) {
-
                 if (!$activity->getCustomer()) {
                     if (!$customer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById(
                         $data['customerId']
                     )
                     ) {
-                        return $this->createErrorResponse(sprintf("customer %s not found", $data['customerId']));
+                        return $this->createErrorResponse(sprintf('customer %s not found', $data['customerId']));
                     }
 
                     $activity->setCustomer($customer);
@@ -127,11 +127,10 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
 
                 $entry = \Pimcore::getContainer()->get('cmf.activity_store')->insertActivityIntoStore($activity);
                 $entry = \Pimcore::getContainer()->get('cmf.activity_store')->getEntryById($entry->getId());
-
             } else {
                 return $this->createErrorResponse(
                     sprintf(
-                        "creation of activities with implementation class %s not allowed via REST webservice",
+                        'creation of activities with implementation class %s not allowed via REST webservice',
                         $implementationClass
                     )
                 );
@@ -152,6 +151,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
      * TODO support partial updates as we do now or demand whole object in PUT? Use PATCH for partial requests?
      *
      * @param array $params
+     *
      * @return Response
      */
     public function updateRecord(Request $request)
@@ -160,11 +160,10 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
         $data = $this->getRequestData($request);
 
         if (isset($data['implementationClass']) && $data['implementationClass'] != $entry->getImplementationClass()) {
-            return $this->createErrorResponse("changing of the implementationClass not allowed via REST webservice");
+            return $this->createErrorResponse('changing of the implementationClass not allowed via REST webservice');
         }
 
         try {
-
             $activity = $entry->getRelatedItem();
 
             if ($activity && $activity->cmfWebserviceUpdateAllowed()) {
@@ -178,12 +177,11 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
             } else {
                 return $this->createErrorResponse(
                     sprintf(
-                        "update of activities with implementation class %s not allowed via REST webservice",
+                        'update of activities with implementation class %s not allowed via REST webservice',
                         $entry->getImplementationClass()
                     )
                 );
             }
-
         } catch (\Exception $e) {
             return $this->createErrorResponse($e->getMessage());
         }
@@ -195,6 +193,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
      * DELETE /{id}
      *
      * @param Request $request
+     *
      * @return Response
      */
     public function deleteRecord(Request $request)
@@ -204,19 +203,16 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
         try {
             $activity = $entry->getRelatedItem();
 
-
             if ($activity && $activity->cmfWebserviceUpdateAllowed()) {
-
                 if ($activity instanceof PersistentActivityInterface) {
                     $activity->delete();
                 }
 
                 \Pimcore::getContainer()->get('cmf.activity_store')->deleteEntry($entry);
-
             } else {
                 return $this->createErrorResponse(
                     sprintf(
-                        "deletion of activities with implementation class %s not allowed via REST webservice",
+                        'deletion of activities with implementation class %s not allowed via REST webservice',
                         $entry->getImplementationClass()
                     )
                 );
@@ -232,6 +228,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
      * Load a customer from ID/params array. If an array is passed, it tries to resolve the id from the 'id' property
      *
      * @param int|array $id
+     *
      * @return ActivityStoreEntryInterface
      */
     protected function loadActivityStoreEntry($id)
@@ -257,11 +254,11 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
         return $entry;
     }
 
-
     /**
      * Create customer response with hydrated customer data
      *
      * @param ActivityStoreEntryInterface $activityStoreEntry
+     *
      * @return Response
      */
     protected function createActivityEntryResponse(ActivityStoreEntryInterface $activityStoreEntry)
@@ -275,6 +272,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
 
     /**
      * @param ActivityStoreEntryInterface $activityStoreEntry
+     *
      * @return array
      */
     protected function hydrateActivityStoreEntry(ActivityStoreEntryInterface $activityStoreEntry)
@@ -302,5 +300,4 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
 
         return $activityRow;
     }
-
 }

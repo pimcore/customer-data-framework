@@ -2,7 +2,6 @@
 
 namespace Website\Auth\Adapter;
 
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\Object\ClassDefinition\Data\Password;
 use Pimcore\Model\Object\Customer as CustomerModel;
@@ -38,6 +37,7 @@ class Customer implements \Zend_Auth_Adapter_Interface
      * Performs an authentication attempt
      *
      * @throws Zend_Auth_Adapter_Exception If authentication cannot be performed
+     *
      * @return Zend_Auth_Result
      */
     public function authenticate()
@@ -82,11 +82,11 @@ class Customer implements \Zend_Auth_Adapter_Interface
         );
     }
 
-
     /**
      * Check supplied password
      *
      * @param CustomerModel $customer
+     *
      * @return bool
      */
     protected function verifyPassword(CustomerModel $customer)

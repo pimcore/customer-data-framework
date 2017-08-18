@@ -12,7 +12,6 @@ use Psr\Log\LoggerInterface;
 
 abstract class AbstractAction implements ActionInterface
 {
-
     protected $logger;
 
     protected static $actionDelayMultiplier = [
@@ -25,7 +24,6 @@ abstract class AbstractAction implements ActionInterface
     {
         $this->logger = $logger;
     }
-
 
     public static function createActionDefinitionFromEditmode(\stdClass $setting)
     {

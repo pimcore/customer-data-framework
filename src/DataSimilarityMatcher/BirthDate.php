@@ -10,12 +10,12 @@ namespace CustomerManagementFrameworkBundle\DataSimilarityMatcher;
 
 class BirthDate implements DataSimilarityMatcherInterface
 {
-
     protected $defaultTreshold = 50;
 
     /**
      * @param int $value1
      * @param int $value2
+     *
      * @return int
      */
     public function calculateSimilarity($value1, $value2)
@@ -64,5 +64,4 @@ class BirthDate implements DataSimilarityMatcherInterface
 
         return $similarity >= $treshold;
     }
-
 }

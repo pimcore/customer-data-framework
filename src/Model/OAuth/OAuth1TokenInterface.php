@@ -20,6 +20,7 @@ interface OAuth1TokenInterface extends OAuthTokenInterface
      * Set token
      *
      * @param string $token
+     *
      * @return $this
      */
     public function setToken($token);
@@ -35,6 +36,7 @@ interface OAuth1TokenInterface extends OAuthTokenInterface
      * Set token secret
      *
      * @param string $tokenSecret
+     *
      * @return $this
      */
     public function setTokenSecret($tokenSecret);

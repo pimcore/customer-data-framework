@@ -12,7 +12,6 @@ use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 
 abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implements CustomerInterface
 {
-
     public function cmfToArray()
     {
         $result = ObjectToArray::getInstance()->toArray($this);

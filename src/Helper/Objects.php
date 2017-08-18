@@ -8,14 +8,12 @@
 
 namespace CustomerManagementFrameworkBundle\Helper;
 
-
 use Pimcore\File;
 use Pimcore\Model\Element\Service;
 use Pimcore\Model\Object\Concrete;
 
 class Objects
 {
-
     public static function getValidKey($key)
     {
         if (!method_exists('Pimcore\Model\Element\Service', 'getValidKey')) {
@@ -105,7 +103,6 @@ class Objects
 
         foreach ($array as $key => $object) {
             foreach ($removeObjects as $removeObject) {
-
                 if (!method_exists($removeObject, 'getId')) {
                     continue;
                 }
@@ -120,7 +117,6 @@ class Objects
         if (sizeof($removed)) {
             $array = array_values($array);
         }
-
 
         return sizeof($removed) ? $removed : false;
     }

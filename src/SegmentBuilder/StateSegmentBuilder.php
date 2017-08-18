@@ -17,7 +17,6 @@ use Psr\Log\LoggerInterface;
 
 class StateSegmentBuilder extends AbstractSegmentBuilder
 {
-
     private $config;
     private $logger;
     private $countryTransformers;
@@ -48,7 +47,6 @@ class StateSegmentBuilder extends AbstractSegmentBuilder
      */
     public function prepare(SegmentManagerInterface $segmentManager)
     {
-
         $this->segmentGroup = $segmentManager->createSegmentGroup($this->groupName, $this->groupName, true);
 
         foreach ($this->countryTransformers as $key => $transformer) {
@@ -76,9 +74,9 @@ class StateSegmentBuilder extends AbstractSegmentBuilder
 
             if ($state = $transformer->transform($customer->getZip())) {
                 $stateSegment = $segmentManager->createCalculatedSegment(
-                    $countryCode." - ".$state,
+                    $countryCode.' - '.$state,
                     $this->groupName,
-                    $countryCode." - ".$state,
+                    $countryCode.' - '.$state,
                     $countryCode
                 );
             }
@@ -93,7 +91,7 @@ class StateSegmentBuilder extends AbstractSegmentBuilder
             $customer,
             $segments,
             $segmentManager->getSegmentsFromSegmentGroup($this->segmentGroup, $segments),
-            "StateSegmentBuilder"
+            'StateSegmentBuilder'
         );
     }
 
@@ -104,13 +102,11 @@ class StateSegmentBuilder extends AbstractSegmentBuilder
      */
     public function getName()
     {
-        return "StateSegmentBuilder";
+        return 'StateSegmentBuilder';
     }
 
     public function executeOnCustomerSave()
     {
         return true;
     }
-
-
 }

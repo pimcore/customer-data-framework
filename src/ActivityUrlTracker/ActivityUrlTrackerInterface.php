@@ -14,6 +14,7 @@ interface ActivityUrlTrackerInterface
      * @param $customerIdEncoded
      * @param $activityCode
      * @param array $params
+     *
      * @return void
      */
     public function trackActivity($customerIdEncoded, $activityCode, array $params);

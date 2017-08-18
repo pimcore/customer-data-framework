@@ -10,7 +10,6 @@ namespace CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex;
 
 class Street extends Simplify
 {
-
     public function transform($data, $options = [])
     {
         $data = parent::transform($data, $options);
@@ -18,5 +17,4 @@ class Street extends Simplify
 
         return preg_replace('/\str$/', 'str.', $data);
     }
-
 }

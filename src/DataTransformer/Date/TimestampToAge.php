@@ -13,7 +13,6 @@ use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 
 class TimestampToAge implements DataTransformerInterface
 {
-
     public function transform($data, $options = [])
     {
         $date = Carbon::createFromTimestamp(strtotime(date('Y-m-d', $data)));
@@ -21,5 +20,4 @@ class TimestampToAge implements DataTransformerInterface
 
         return $today->diffInYears($date);
     }
-
 }

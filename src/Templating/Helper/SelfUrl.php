@@ -20,6 +20,7 @@ class SelfUrl extends Helper
      * @param bool $reset
      * @param array $params
      * @param bool $includeModule
+     *
      * @return mixed
      */
     public function get($reset = true, array $params = [])

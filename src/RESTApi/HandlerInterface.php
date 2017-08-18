@@ -4,5 +4,4 @@ namespace CustomerManagementFrameworkBundle\RESTApi;
 
 interface HandlerInterface
 {
-
 }

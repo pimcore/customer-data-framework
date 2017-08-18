@@ -34,6 +34,7 @@ interface CustomerSaveHandlerInterface
      * setter for the originalCustomer property
      *
      * @param CustomerInterface $originalCustomer
+     *
      * @return void
      */
     public function setOriginalCustomer(CustomerInterface $originalCustomer);
@@ -42,6 +43,7 @@ interface CustomerSaveHandlerInterface
      * called in preAdd and preUpdate hook of customer objects
      *
      * @param CustomerInterface $customer
+     *
      * @return void
      */
     public function preSave(CustomerInterface $customer);
@@ -50,6 +52,7 @@ interface CustomerSaveHandlerInterface
      * called in postAdd and postUpdate hook of customer objects
      *
      * @param CustomerInterface $customer
+     *
      * @return void
      */
     public function postSave(CustomerInterface $customer);
@@ -58,6 +61,7 @@ interface CustomerSaveHandlerInterface
      * called in preAdd hook of customer objects
      *
      * @param CustomerInterface $customer
+     *
      * @return void
      */
     public function preAdd(CustomerInterface $customer);
@@ -66,6 +70,7 @@ interface CustomerSaveHandlerInterface
      * called in postAdd hook of customer objects
      *
      * @param CustomerInterface $customer
+     *
      * @return void
      */
     public function postAdd(CustomerInterface $customer);
@@ -74,6 +79,7 @@ interface CustomerSaveHandlerInterface
      * called in preUpdate hook of customer objects
      *
      * @param CustomerInterface $customer
+     *
      * @return void
      */
     public function preUpdate(CustomerInterface $customer);
@@ -82,6 +88,7 @@ interface CustomerSaveHandlerInterface
      * called in postUpdate hook of customer objects
      *
      * @param CustomerInterface $customer
+     *
      * @return void
      */
     public function postUpdate(CustomerInterface $customer);
@@ -90,6 +97,7 @@ interface CustomerSaveHandlerInterface
      * called in preDelete hook of customer objects
      *
      * @param CustomerInterface $customer
+     *
      * @return void
      */
     public function preDelete(CustomerInterface $customer);
@@ -98,8 +106,8 @@ interface CustomerSaveHandlerInterface
      * called in postDelete hook of customer objects
      *
      * @param CustomerInterface $customer
+     *
      * @return void
      */
     public function postDelete(CustomerInterface $customer);
-
 }

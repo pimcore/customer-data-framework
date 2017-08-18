@@ -9,6 +9,7 @@ interface TranslatorInterface
      *
      * @param string $messageId
      * @param array|mixed $parameters
+     *
      * @return string
      */
     public function translate($messageId, $parameters = []);

@@ -8,14 +8,13 @@
 
 namespace CustomerManagementFrameworkBundle\ActivityView;
 
-use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
+use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\View\Formatter\ViewFormatterInterface;
 use Pimcore\Model\Object\ClassDefinition;
 
 class DefaultActivityView implements ActivityViewInterface
 {
-
     /**
      * @var ViewFormatterInterface
      */
@@ -36,7 +35,6 @@ class DefaultActivityView implements ActivityViewInterface
      */
     public function getOverviewAdditionalData(ActivityStoreEntryInterface $activityEntry)
     {
-
         $implementationClass = $activityEntry->getImplementationClass();
         if (class_exists($implementationClass)) {
             if (method_exists($implementationClass, 'cmfGetOverviewData')) {
@@ -54,7 +52,6 @@ class DefaultActivityView implements ActivityViewInterface
      */
     public function getDetailviewData(ActivityStoreEntryInterface $activityEntry)
     {
-
         $implementationClass = $activityEntry->getImplementationClass();
         if (class_exists($implementationClass)) {
             if (method_exists($implementationClass, 'cmfGetDetailviewData')) {
@@ -101,7 +98,6 @@ class DefaultActivityView implements ActivityViewInterface
      */
     public function formatAttributes($implementationClass, array $attributes, array $visibleKeys = [])
     {
-
         $class = false;
         if ($implementationClass) {
             if (method_exists($implementationClass, 'classId')) {
@@ -142,6 +138,7 @@ class DefaultActivityView implements ActivityViewInterface
     /**
      * @param array $attributes
      * @param array $visibleKeys
+     *
      * @return array
      */
     private function extractVisibleAttributes(array $attributes, array $visibleKeys)

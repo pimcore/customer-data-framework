@@ -5,7 +5,6 @@
  * Date: 15.11.2016
  * Time: 11:15
  */
-
 declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Templating\Helper;

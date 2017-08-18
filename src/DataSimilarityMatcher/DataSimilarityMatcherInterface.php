@@ -10,10 +10,10 @@ namespace CustomerManagementFrameworkBundle\DataSimilarityMatcher;
 
 interface DataSimilarityMatcherInterface
 {
-
     /**
      * @param $value1
      * @param $value2
+     *
      * @return int
      */
     public function calculateSimilarity($value1, $value2);
@@ -22,6 +22,7 @@ interface DataSimilarityMatcherInterface
      * @param $value1
      * @param $value2
      * @param int $treshold
+     *
      * @return bool
      */
     public function isSimilar($value1, $value2, $treshold = null);

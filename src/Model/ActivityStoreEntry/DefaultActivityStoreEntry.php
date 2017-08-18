@@ -9,20 +9,16 @@
 namespace CustomerManagementFrameworkBundle\Model\ActivityStoreEntry;
 
 use Carbon\Carbon;
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Helper\Json;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
-use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
 class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
 {
-
     /**
      * @var array $data
      */
     private $data;
-
 
     /**
      * @var int;
@@ -84,7 +80,6 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
      */
     private $implementationClass;
 
-
     /**
      * @var $attributes
      */
@@ -92,7 +87,6 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
 
     public function setData($data)
     {
-
         $this->data = $data;
 
         $this->setId($data['id']);
@@ -325,5 +319,4 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
         $relatedItem->setCustomer($this->getCustomer());
         \Pimcore::getContainer()->get('cmf.activity_store')->updateActivityStoreEntry($this, $updateAttributes);
     }
-
 }

@@ -10,5 +10,4 @@ class MissingRequestBodyException extends \RuntimeException implements Exception
     {
         return Response::HTTP_BAD_REQUEST;
     }
-
 }

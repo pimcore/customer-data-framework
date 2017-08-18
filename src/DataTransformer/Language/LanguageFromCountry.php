@@ -12,12 +12,12 @@ use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 
 class LanguageFromCountry implements DataTransformerInterface
 {
-
     /**
      * Tries to determine language based on country code (approximate -> warn will in many be wrong).
      *
      * @param mixed $data
      * @param array $options
+     *
      * @return string|false
      */
     public function transform($data, $options = [])
@@ -31,18 +31,14 @@ class LanguageFromCountry implements DataTransformerInterface
         $localelist = \Pimcore::getContainer()->get('pimcore.locale')->getLocaleList();
 
         foreach ($localelist as $locale) {
-
             $locale = explode('_', $locale);
             if (isset($locale[1])) {
-
                 if (strtolower($locale[1]) == strtolower($countryCode)) {
                     return $locale[0];
                 }
-
             }
         }
 
         return false;
     }
-
 }

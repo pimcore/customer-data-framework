@@ -13,11 +13,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CronTriggerCommand extends AbstractCommand
 {
-
     protected function configure()
     {
-        $this->setName("cmf:handle-cron-triggers")
-            ->setDescription("Handle cron triggers cronjob - needs to run once per minute");
+        $this->setName('cmf:handle-cron-triggers')
+            ->setDescription('Handle cron triggers cronjob - needs to run once per minute');
     }
 
     /**
@@ -34,5 +33,4 @@ class CronTriggerCommand extends AbstractCommand
 
         \Pimcore::getContainer()->get('cmf.event_listener.action_trigger')->handleCustomerListEvent($event);
     }
-
 }

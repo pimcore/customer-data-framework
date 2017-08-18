@@ -8,8 +8,8 @@
 
 namespace CustomerManagementFrameworkBundle\Model\Activity;
 
-use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\AbstractActivity;
+use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\Object\ActivityDefinition;
 
@@ -24,12 +24,10 @@ class TrackedUrlActivity extends AbstractActivity
         $this->activityDefinition = $activityDefinition;
     }
 
-
     public function cmfGetType()
     {
         return $this->activityDefinition->getAttributeType();
     }
-
 
     public function cmfToArray()
     {
@@ -43,9 +41,7 @@ class TrackedUrlActivity extends AbstractActivity
                 $attributes[$additionalAttribute['attribute']->getData(
                 )] = $additionalAttribute['attributeValue']->getData();
             }
-
         }
-
 
         return $attributes;
     }

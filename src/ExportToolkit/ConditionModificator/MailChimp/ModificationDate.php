@@ -3,7 +3,6 @@
 namespace CustomerManagementFrameworkBundle\ExportToolkit\ConditionModificator\MailChimp;
 
 use CustomerManagementFrameworkBundle\ExportToolkit\ConditionModificator\AbstractModificationDate;
-use CustomerManagementFrameworkBundle\ExportToolkit\ExportService\MailChimpExportService;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
 
 class ModificationDate extends AbstractModificationDate

@@ -9,10 +9,6 @@
 namespace CustomerManagementFrameworkBundle\Security\UserProvider;
 
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
-use CustomerManagementFrameworkBundle\Security\OAuth\Exception\AccountNotLinkedException;
-use CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface;
-use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
-use HWI\Bundle\OAuthBundle\Security\Core\User\OAuthAwareUserProviderInterface;
 use Pimcore\Model\Object\AbstractObject;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
@@ -34,8 +30,7 @@ class CustomerObjectUserProvider implements UserProviderInterface
     public function __construct(
         CustomerProviderInterface $customerProvider,
         string $usernameField = 'email'
-    )
-    {
+    ) {
         $this->customerProvider = $customerProvider;
         $this->usernameField = $usernameField;
     }

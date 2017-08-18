@@ -14,7 +14,6 @@ use Symfony\Component\EventDispatcher\Event;
 
 abstract class AbstractSingleCustomerEvent extends Event implements SingleCustomerEventInterface
 {
-
     private $customer;
 
     public function __construct(CustomerInterface $customer)
@@ -31,5 +30,4 @@ abstract class AbstractSingleCustomerEvent extends Event implements SingleCustom
     {
         return false;
     }
-
 }

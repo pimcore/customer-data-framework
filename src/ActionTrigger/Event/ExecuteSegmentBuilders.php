@@ -12,11 +12,9 @@ use CustomerManagementFrameworkBundle\ActionTrigger\Trigger\TriggerDefinitionInt
 
 class ExecuteSegmentBuilders extends AbstractSingleCustomerEvent
 {
-
-
     public function getName()
     {
-        return "plugin.cmf.execute-segment-builders";
+        return 'plugin.cmf.execute-segment-builders';
     }
 
     public function appliesToTrigger(TriggerDefinitionInterface $trigger)
@@ -27,6 +25,4 @@ class ExecuteSegmentBuilders extends AbstractSingleCustomerEvent
 
         return true;
     }
-
-
 }

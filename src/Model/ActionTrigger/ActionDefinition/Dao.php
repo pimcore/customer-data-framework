@@ -10,15 +10,13 @@ class Dao extends Model\Dao\AbstractDao
 
     public function getById($id)
     {
+        $raw = $this->db->fetchRow('SELECT * FROM '.self::TABLE_NAME.' WHERE id = ?', $id);
 
-        $raw = $this->db->fetchRow("SELECT * FROM ".self::TABLE_NAME." WHERE id = ?", $id);
-
-        if ($raw["id"]) {
+        if ($raw['id']) {
             $raw['options'] = json_decode($raw['options'], true);
             $this->assignVariablesToModel($raw);
-
         } else {
-            throw new \Exception("Action trigger rule with ID ".$id." doesn't exist");
+            throw new \Exception('Action trigger rule with ID '.$id." doesn't exist");
         }
     }
 
@@ -26,8 +24,6 @@ class Dao extends Model\Dao\AbstractDao
 
     public function save()
     {
-
-
         $data = [
             'id' => $this->model->getId(),
             'ruleId' => $this->model->getRuleId(),
@@ -36,30 +32,26 @@ class Dao extends Model\Dao\AbstractDao
             'options' => json_encode($this->model->getOptions()),
         ];
 
-
         if ($this->model->getId()) {
-            $this->db->updateWhere(self::TABLE_NAME, $data, $this->db->quoteInto("id = ?", $this->model->getId()));
+            $this->db->updateWhere(self::TABLE_NAME, $data, $this->db->quoteInto('id = ?', $this->model->getId()));
         } else {
             $data['creationDate'] = time();
             unset($data['id']);
 
             $this->db->insert(self::TABLE_NAME, $data);
 
-            $this->model->setId($this->db->fetchOne("SELECT LAST_INSERT_ID();"));
+            $this->model->setId($this->db->fetchOne('SELECT LAST_INSERT_ID();'));
             $this->model->setCreationDate($data['creationDate']);
         }
-
 
         return true;
     }
 
     public function delete()
     {
-
         $this->db->beginTransaction();
         try {
-
-            $this->db->deleteWhere(self::TABLE_NAME, $this->db->quoteInto("id = ?", $this->model->getId()));
+            $this->db->deleteWhere(self::TABLE_NAME, $this->db->quoteInto('id = ?', $this->model->getId()));
 
             $this->db->commit();
         } catch (\Exception $e) {
@@ -73,4 +65,3 @@ class Dao extends Model\Dao\AbstractDao
         return $this->lastErrorCode;
     }
 }
-

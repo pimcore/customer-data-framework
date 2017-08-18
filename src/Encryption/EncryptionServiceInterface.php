@@ -19,6 +19,7 @@ interface EncryptionServiceInterface
      * @param string $plaintext
      * @param Key|null $key
      * @param bool $rawBinary
+     *
      * @return string
      */
     public function encrypt($plaintext, Key $key = null, $rawBinary = false);
@@ -29,6 +30,7 @@ interface EncryptionServiceInterface
      * @param string $ciphertext
      * @param Key|null $key
      * @param bool $rawBinary
+     *
      * @return string
      */
     public function decrypt($ciphertext, Key $key = null, $rawBinary = false);

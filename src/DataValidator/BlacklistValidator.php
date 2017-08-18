@@ -9,15 +9,14 @@
 namespace CustomerManagementFrameworkBundle\DataValidator;
 
 use CustomerManagementFrameworkBundle\Config;
-use CustomerManagementFrameworkBundle\Plugin;
 
 class BlacklistValidator implements DataValidatorInterface
 {
-
     /**
      * returns false if given email is on the blacklist
      *
      * @param $item
+     *
      * @return bool
      */
     public function isValid($data)

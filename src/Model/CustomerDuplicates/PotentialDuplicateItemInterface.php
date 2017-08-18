@@ -19,6 +19,7 @@ interface PotentialDuplicateItemInterface
 
     /**
      * @param int $id
+     *
      * @return void
      */
     public function setId($id);
@@ -30,6 +31,7 @@ interface PotentialDuplicateItemInterface
 
     /**
      * @param CustomerInterface[] $duplicateCustomers
+     *
      * @return void
      */
     public function setDuplicateCustomers(array $duplicateCustomers);
@@ -41,6 +43,7 @@ interface PotentialDuplicateItemInterface
 
     /**
      * @param array $fieldCombinations
+     *
      * @return void
      */
     public function setFieldCombinations(array $fieldCombinations);
@@ -52,6 +55,7 @@ interface PotentialDuplicateItemInterface
 
     /**
      * @param bool $declined
+     *
      * @return void
      */
     public function setDeclined($declined);
@@ -63,6 +67,7 @@ interface PotentialDuplicateItemInterface
 
     /**
      * @param int $modificationDate
+     *
      * @return void
      */
     public function setModificationDate($modificationDate);
@@ -74,8 +79,8 @@ interface PotentialDuplicateItemInterface
 
     /**
      * @param int $creationDate
+     *
      * @return void
      */
     public function setCreationDate($creationDate);
-
 }

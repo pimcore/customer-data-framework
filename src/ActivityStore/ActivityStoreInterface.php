@@ -8,10 +8,10 @@
 
 namespace CustomerManagementFrameworkBundle\ActivityStore;
 
-use CustomerManagementFrameworkBundle\Model\ActivityList\ActivityListInterface;
-use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Filter\ExportActivitiesFilterParams;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
+use CustomerManagementFrameworkBundle\Model\ActivityList\ActivityListInterface;
+use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Zend\Paginator\Paginator;
 
@@ -22,7 +22,6 @@ use Zend\Paginator\Paginator;
  */
 interface ActivityStoreInterface
 {
-
     /**
      * @param ActivityInterface $activity
      *
@@ -112,7 +111,6 @@ interface ActivityStoreInterface
      */
     public function getDeletionsData($type, $deletionsSinceTimestamp);
 
-
     /**
      * @param CustomerInterface $customer
      * @param null $activityType
@@ -138,6 +136,7 @@ interface ActivityStoreInterface
 
     /**
      * @param array $data
+     *
      * @return ActivityStoreEntryInterface
      */
     public function createEntryInstance(array $data);

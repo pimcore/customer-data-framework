@@ -8,14 +8,11 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\EventHandler;
 
-
 use CustomerManagementFrameworkBundle\ActionTrigger\Event\CustomerListEventInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\Event\SingleCustomerEventInterface;
-use Psr\Log\LoggerInterface;
 
 interface EventHandlerInterface
 {
-
     public function handleEvent($event);
 
     public function handleSingleCustomerEvent(SingleCustomerEventInterface $event);

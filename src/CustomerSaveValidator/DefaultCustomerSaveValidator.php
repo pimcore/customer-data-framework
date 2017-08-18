@@ -10,13 +10,11 @@ namespace CustomerManagementFrameworkBundle\CustomerSaveValidator;
 
 use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\Exception\DuplicateCustomerException;
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\Element\ValidationException;
 
 class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
 {
-
     private $config;
 
     /**
@@ -34,7 +32,6 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
 
     public function validate(CustomerInterface $customer, $withDuplicatesCheck = true)
     {
-
         $validRequiredFields = $this->validateRequiredFields($customer);
 
         $validDuplicates = true;
@@ -47,7 +44,6 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
 
     protected function validateRequiredFields(CustomerInterface $customer)
     {
-
         $valid = false;
         foreach ($this->requiredFields as $requiredFields) {
             if (is_array($requiredFields)) {
@@ -61,7 +57,6 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
                 if ($valid) {
                     return true;
                 }
-
             } else {
                 $this->validateField($customer, $requiredFields, true);
             }
@@ -75,7 +70,7 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
             }
 
             throw new ValidationException(
-                "Not all required fields are set. Please fill-up one of the following field combinations: ".implode(
+                'Not all required fields are set. Please fill-up one of the following field combinations: '.implode(
                     ' or ',
                     $combinations
                 )
@@ -87,14 +82,12 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
 
     protected function validateDuplicates(CustomerInterface $customer)
     {
-
         if ($this->config->checkForDuplicates) {
-
             $duplicates = \Pimcore::getContainer()->get('cmf.customer_duplicates_service')->getDuplicatesOfCustomer(
                 $customer
             );
             if (!is_null($duplicates) && $duplicates->getCount()) {
-                $ex = new DuplicateCustomerException("Duplicate customer found: ID ".$duplicates->current());
+                $ex = new DuplicateCustomerException('Duplicate customer found: ID '.$duplicates->current());
 
                 $ex->setDuplicateCustomer($duplicates->current());
                 $ex->setMatchedDuplicateFields(
@@ -117,7 +110,7 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
         if (is_null($value) || $value === '') {
             if ($throwException) {
                 throw new ValidationException(
-                    sprintf("Please enter a value for the following required field: %s", $field)
+                    sprintf('Please enter a value for the following required field: %s', $field)
                 );
             }
 

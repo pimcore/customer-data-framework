@@ -14,13 +14,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ActionTriggerQueueCommand extends AbstractCommand
 {
-
     const LOCK_KEY = 'cmf_actiontrigger_queue';
 
     protected function configure()
     {
-        $this->setName("cmf:process-actiontrigger-queue")
-            ->setDescription("Process entries from action trigger queue");
+        $this->setName('cmf:process-actiontrigger-queue')
+            ->setDescription('Process entries from action trigger queue');
     }
 
     /**
@@ -29,10 +28,8 @@ class ActionTriggerQueueCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         if (Lock::isLocked(self::LOCK_KEY)) {
-              die('locked - not starting now');
-
+            die('locked - not starting now');
         }
 
         Lock::lock(self::LOCK_KEY);
@@ -44,7 +41,5 @@ class ActionTriggerQueueCommand extends AbstractCommand
         }
 
         Lock::release(self::LOCK_KEY);
-
     }
-
 }

@@ -29,6 +29,7 @@ class DateBetween extends AbstractFieldBetween
 
     /**
      * @param \DateTime|null $from
+     *
      * @return $this
      */
     public function setFrom(\DateTime $from = null)
@@ -45,6 +46,7 @@ class DateBetween extends AbstractFieldBetween
 
     /**
      * @param \DateTime|null $to
+     *
      * @return $this
      */
     public function setTo(\DateTime $to = null)

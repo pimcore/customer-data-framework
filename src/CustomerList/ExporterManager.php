@@ -29,6 +29,7 @@ class ExporterManager implements ExporterManagerInterface
 
     /**
      * @param $key
+     *
      * @return bool
      */
     public function hasExporter($key)
@@ -39,6 +40,7 @@ class ExporterManager implements ExporterManagerInterface
     /**
      * @param $key
      * @param Listing\Concrete $listing
+     *
      * @return ExporterInterface
      */
     public function buildExporter($key, Listing\Concrete $listing = null)
@@ -53,7 +55,6 @@ class ExporterManager implements ExporterManagerInterface
         /** @var ExporterInterface $exporter */
         $exporter = new $exporter($config->name, $config->properties->toArray(), (bool) $config->exportSegmentsAsColumns);
 
-
         if (null !== $listing) {
             $exporter->setListing($listing);
         }
@@ -63,23 +64,24 @@ class ExporterManager implements ExporterManagerInterface
 
     /**
      * @param Request $request
+     *
      * @return []
+     *
      * @throws \Exception
      */
     public function getExportTmpData(Request $request)
     {
-        if(!$jobId = $request->get('jobId')){
+        if (!$jobId = $request->get('jobId')) {
             throw new \Exception('no jobId given');
         }
 
         $tmpFile = $this->getExportTmpFile($jobId);
 
-        if(!file_exists($tmpFile)) {
+        if (!file_exists($tmpFile)) {
             throw new \Exception('job with given jobId not found');
         }
 
         return json_decode(file_get_contents($tmpFile), true);
-
     }
 
     /**
@@ -96,7 +98,7 @@ class ExporterManager implements ExporterManagerInterface
     public function deleteExportTmpData($jobId)
     {
         $file = $this->getExportTmpFile($jobId);
-        if(file_exists($file)) {
+        if (file_exists($file)) {
             unlink($file);
         }
     }
@@ -106,10 +108,12 @@ class ExporterManager implements ExporterManagerInterface
      */
     public function cleanupExportTmpData()
     {
-        exec("find " . PIMCORE_SYSTEM_TEMP_DIRECTORY . " -type f -atime +1 -iname 'cmf_customerexport*' -exec rm {} \;");
+        exec('find ' . PIMCORE_SYSTEM_TEMP_DIRECTORY . " -type f -atime +1 -iname 'cmf_customerexport*' -exec rm {} \;");
     }
+
     /**
      * @param $jobId
+     *
      * @return string
      */
     protected function getExportTmpFile($jobId)

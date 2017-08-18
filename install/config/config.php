@@ -162,7 +162,6 @@ return [
             ],
         ]
 
-
     ],
 
     'CustomerMerger' => [

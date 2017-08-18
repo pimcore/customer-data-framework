@@ -17,6 +17,7 @@ class FormOrderParams extends Helper
      * Get order params
      *
      * @param Request $request
+     *
      * @return array
      */
     public function formOrderParams(Request $request)

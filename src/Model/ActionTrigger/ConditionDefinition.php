@@ -58,7 +58,7 @@ class ConditionDefinition implements ConditionDefinitionInterface
             return Factory::getInstance()->createObject(
                 $class,
                 ConditionInterface::class,
-                ["logger" => \Pimcore::getContainer()->get('cmf.logger')]
+                ['logger' => \Pimcore::getContainer()->get('cmf.logger')]
             );
         }
 
@@ -87,7 +87,7 @@ class ConditionDefinition implements ConditionDefinitionInterface
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getBracketLeft()
     {
@@ -95,7 +95,7 @@ class ConditionDefinition implements ConditionDefinitionInterface
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getBracketRight()
     {
@@ -109,6 +109,4 @@ class ConditionDefinition implements ConditionDefinitionInterface
     {
         return $this->operator;
     }
-
-
 }

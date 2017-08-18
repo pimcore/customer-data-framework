@@ -9,13 +9,11 @@
 namespace CustomerManagementFrameworkBundle\SegmentBuilder;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Psr\Log\LoggerInterface;
 
 class GenderSegmentBuilder extends AbstractSegmentBuilder
 {
-
     const MALE = 'male';
     const FEMALE = 'female';
     const NOT_SET = 'not-set';
@@ -86,7 +84,7 @@ class GenderSegmentBuilder extends AbstractSegmentBuilder
             $customer,
             [$segment],
             $segmentManager->getSegmentsFromSegmentGroup($this->segmentGroup, [$segment]),
-            "GenderSegmentBuilder"
+            'GenderSegmentBuilder'
         );
     }
 
@@ -97,13 +95,11 @@ class GenderSegmentBuilder extends AbstractSegmentBuilder
      */
     public function getName()
     {
-        return "GenderSegmentBuilder";
+        return 'GenderSegmentBuilder';
     }
 
     public function executeOnCustomerSave()
     {
         return true;
     }
-
-
 }

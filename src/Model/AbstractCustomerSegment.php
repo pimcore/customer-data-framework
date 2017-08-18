@@ -8,12 +8,10 @@
 
 namespace CustomerManagementFrameworkBundle\Model;
 
-
 use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 
 abstract class AbstractCustomerSegment extends \Pimcore\Model\Object\Concrete implements CustomerSegmentInterface
 {
-
     public function getDataForWebserviceExport()
     {
         $data = ObjectToArray::getInstance()->toArray($this);

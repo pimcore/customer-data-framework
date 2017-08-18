@@ -3,7 +3,6 @@
 namespace CustomerManagementFrameworkBundle\ExportToolkit\AttributeClusterInterpreter\MailChimp;
 
 use CustomerManagementFrameworkBundle\ExportToolkit\Traits\MailChimp\ExportServiceAware;
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use ExportToolkit\ExportService\AttributeClusterInterpreter\AbstractAttributeClusterInterpreter;
 use Pimcore\Model\Object\AbstractObject;
@@ -107,6 +106,7 @@ class Segment extends AbstractAttributeClusterInterpreter
      *
      * @param CustomerSegmentGroup $group
      * @param bool $forceCreate
+     *
      * @return null|string
      */
     protected function exportGroup(CustomerSegmentGroup $group, $forceCreate = false)
@@ -222,6 +222,7 @@ class Segment extends AbstractAttributeClusterInterpreter
      * @param CustomerSegment $segment
      * @param $remoteGroupId
      * @param bool $forceCreate
+     *
      * @return null|string
      */
     protected function exportSegment(CustomerSegment $segment, $remoteGroupId, $forceCreate = false)

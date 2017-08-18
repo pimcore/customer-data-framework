@@ -2,7 +2,6 @@
 
 namespace CustomerManagementFrameworkBundle\RESTApi;
 
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouteCollection;
@@ -30,7 +29,6 @@ class SegmentsOfCustomerHandler extends AbstractHandler
      */
     public function updateRecords(Request $request)
     {
-
         $data = $this->getRequestData($request);
 
         if (empty($data['customerId'])) {
@@ -38,7 +36,8 @@ class SegmentsOfCustomerHandler extends AbstractHandler
                 [
                     'success' => false,
                     'msg' => 'customerId required',
-                ], Response::RESPONSE_CODE_BAD_REQUEST
+                ],
+                Response::RESPONSE_CODE_BAD_REQUEST
             );
         }
 
@@ -47,7 +46,8 @@ class SegmentsOfCustomerHandler extends AbstractHandler
                 [
                     'success' => false,
                     'msg' => sprintf('customer with id %s not found', $data['customerId']),
-                ], Response::RESPONSE_CODE_BAD_REQUEST
+                ],
+                Response::RESPONSE_CODE_BAD_REQUEST
             );
         }
 
@@ -73,13 +73,10 @@ class SegmentsOfCustomerHandler extends AbstractHandler
             $customer,
             $addSegments,
             $deleteSegments,
-            "REST update API: segments-of-customer action"
+            'REST update API: segments-of-customer action'
         );
         \Pimcore::getContainer()->get('cmf.segment_manager')->saveMergedSegments($customer);
 
-
         return new Response(['success' => true], Response::RESPONSE_CODE_OK);
     }
-
-
 }

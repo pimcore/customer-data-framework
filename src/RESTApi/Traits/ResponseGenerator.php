@@ -1,8 +1,6 @@
 <?php
 
-
 namespace CustomerManagementFrameworkBundle\RESTApi\Traits;
-
 
 use CustomerManagementFrameworkBundle\RESTApi\Response;
 
@@ -13,6 +11,7 @@ trait ResponseGenerator
      *
      * @param array|null $data
      * @param $code
+     *
      * @return Response
      */
     protected function createResponse(array $data = null, $code = Response::HTTP_OK)
@@ -34,6 +33,7 @@ trait ResponseGenerator
      *
      * @param $errors
      * @param int $code
+     *
      * @return Response
      */
     protected function createErrorResponse($errors, $code = Response::HTTP_BAD_REQUEST)
@@ -46,7 +46,8 @@ trait ResponseGenerator
             [
                 'success' => false,
                 'errors' => $errors,
-            ], $code
+            ],
+            $code
         );
 
         return $response;

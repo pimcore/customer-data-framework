@@ -54,8 +54,7 @@ class AuthController extends FrontendController
         AuthenticationUtils $authenticationUtils,
         OAuthRegistrationHandler $oAuthHandler,
         UserInterface $user = null
-    )
-    {
+    ) {
         // redirect to index action if already logged in
         if ($user && $this->isGranted('ROLE_USER')) {
             return $this->buildUserRedirect($user);
@@ -120,8 +119,7 @@ class AuthController extends FrontendController
         RegistrationFormHandler $registrationFormHandler,
         string $registrationKey = null,
         UserInterface $user = null
-    )
-    {
+    ) {
         // redirect to secure page if we have a user
         if ($user) {
             return $this->buildUserRedirect($user);
@@ -186,7 +184,7 @@ class AuthController extends FrontendController
 
                 return $response;
             } catch (DuplicateCustomerException $e) {
-                $errors[] = "Customer already exists";
+                $errors[] = 'Customer already exists';
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
             }
@@ -221,14 +219,12 @@ class AuthController extends FrontendController
         OAuthRegistrationHandler $oAuthHandler,
         UserInterface $user,
         string $service
-    )
-    {
+    ) {
         $resourceOwner = $oAuthHandler->getResourceOwner($service);
 
         $redirectUrl = $this->generateUrl('app_auth_oauth_connect', [
             'service' => $service
         ], UrlGeneratorInterface::ABSOLUTE_URL);
-
 
         // redirect to authorization
         if (!$resourceOwner->handles($request)) {
@@ -271,8 +267,7 @@ class AuthController extends FrontendController
     private function mergeOAuthFormData(
         array $formData,
         UserResponseInterface $userInformation
-    ): array
-    {
+    ): array {
         return array_replace([
             'firstname' => $userInformation->getFirstName(),
             'lastname'  => $userInformation->getLastName(),

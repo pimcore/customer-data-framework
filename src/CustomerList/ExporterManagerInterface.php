@@ -15,6 +15,7 @@ interface ExporterManagerInterface
 
     /**
      * @param $key
+     *
      * @return bool
      */
     public function hasExporter($key);
@@ -22,13 +23,16 @@ interface ExporterManagerInterface
     /**
      * @param $key
      * @param Listing\Concrete $listing
+     *
      * @return ExporterInterface
      */
     public function buildExporter($key, Listing\Concrete $listing = null);
 
     /**
      * @param Request $request
+     *
      * @return []
+     *
      * @throws \Exception
      */
     public function getExportTmpData(Request $request);
@@ -36,12 +40,14 @@ interface ExporterManagerInterface
     /**
      * @param $jobId
      * @param array $data
+     *
      * @return void
      */
     public function saveExportTmpData($jobId, array $data);
 
     /**
      * @param $jobId
+     *
      * @return void
      */
     public function deleteExportTmpData($jobId);

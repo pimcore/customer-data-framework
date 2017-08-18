@@ -7,7 +7,6 @@ use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use Pimcore\Model\Object\ClassDefinition;
 use Pimcore\Model\Object\ClassDefinition\Data;
 use Pimcore\Model\Translation\TranslationInterface;
-use Pimcore\Translate\Admin;
 
 class DefaultViewFormatter implements ViewFormatterInterface
 {
@@ -17,10 +16,10 @@ class DefaultViewFormatter implements ViewFormatterInterface
     protected $translate = [];
     protected $locale;
 
-
     /**
      * @param string $messageId
      * @param array|mixed $parameters
+     *
      * @return string
      */
     public function translate($messageId, $parameters = [])
@@ -50,6 +49,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
 
     /**
      * @param Data $fd
+     *
      * @return array|string
      */
     public function getLabelByFieldDefinition(Data $fd)
@@ -68,10 +68,10 @@ class DefaultViewFormatter implements ViewFormatterInterface
         return $this->getLabelByFieldDefinition($fd);
     }
 
-
     /**
      * @param Data $fd
      * @param $value
+     *
      * @return string
      */
     public function formatValueByFieldDefinition(Data $fd, $value)
@@ -102,6 +102,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
 
     /**
      * @param mixed $value
+     *
      * @return mixed
      */
     public function formatValue($value)
@@ -115,6 +116,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
 
     /**
      * @param $value
+     *
      * @return string
      */
     public function formatBooleanValue($value)
@@ -128,6 +130,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
 
     /**
      * @param $value
+     *
      * @return string
      */
     public function formatDatetimeValue($value, $dateOnly = false)
@@ -141,10 +144,10 @@ class DefaultViewFormatter implements ViewFormatterInterface
         $date = Carbon::parse($value);
 
         if ($dateOnly) {
-            return $date->formatLocalized("%x");
+            return $date->formatLocalized('%x');
         }
 
-        return $date->formatLocalized("%x %X");
+        return $date->formatLocalized('%x %X');
     }
 
     /**
@@ -165,6 +168,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
 
     /**
      * @param CustomerSegmentInterface $segment
+     *
      * @return string
      */
     protected function formatSegmentValue(CustomerSegmentInterface $segment)
@@ -188,7 +192,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
             'de' => 'de_AT',
         ];
 
-        setLocale(LC_TIME, isset($dateLocaleMap[$locale]) ? $dateLocaleMap[$locale] : $locale);
+        setlocale(LC_TIME, isset($dateLocaleMap[$locale]) ? $dateLocaleMap[$locale] : $locale);
         Carbon::setLocale($this->getLanguageFromLocale($locale));
 
         return $locale;

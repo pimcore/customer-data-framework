@@ -13,7 +13,5 @@ use Zend\Paginator\AdapterAggregateInterface;
 
 interface ActivityListInterface extends AdapterInterface, AdapterAggregateInterface, \Iterator
 {
-
     public function setCondition($condition, $conditionVariables = null);
-
 }

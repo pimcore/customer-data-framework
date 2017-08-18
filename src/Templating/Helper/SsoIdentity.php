@@ -28,6 +28,7 @@ class SsoIdentity extends Helper
 
     /**
      * @param CustomerInterface $customer
+     *
      * @return SsoIdentityInterface[]
      */
     public function getSsoIdentities(CustomerInterface $customer): array

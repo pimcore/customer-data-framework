@@ -8,24 +8,20 @@
 
 namespace CustomerManagementFrameworkBundle\Model\ActivityList;
 
-use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList\Dao;
-use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
-use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\DefaultActivityStoreEntry;
+use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList\Dao;
 use Pimcore\Model\Listing\AbstractListing;
 use Zend\Paginator\Adapter\AdapterInterface;
 
 class DefaultMariaDbActivityList extends AbstractListing implements ActivityListInterface
 {
-
     /**
-     * @var integer
+     * @var int
      */
     protected $limit;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $offset;
 
@@ -87,12 +83,12 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         return $this->offset;
     }
 
-
     /**
      * Returns an collection of items for a page.
      *
-     * @param  integer $offset Page offset
-     * @param  integer $itemCountPerPage Number of items per page
+     * @param  int $offset Page offset
+     * @param  int $itemCountPerPage Number of items per page
+     *
      * @return array
      */
     public function getItems($offset, $itemCountPerPage)
@@ -106,7 +102,9 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Count elements of an object
+     *
      * @link http://php.net/manual/en/countable.count.php
+     *
      * @return int The custom count as an integer.
      * </p>
      * <p>
@@ -121,7 +119,6 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         return $this->totalCount;
     }
 
-
     /**
      * Return a fully configured Paginator Adapter from this method.
      *
@@ -132,11 +129,12 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         return $this;
     }
 
-
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Return the current element
+     *
      * @link http://php.net/manual/en/iterator.current.php
+     *
      * @return mixed Can return any type.
      */
     public function current()
@@ -150,7 +148,9 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Move forward to next element
+     *
      * @link http://php.net/manual/en/iterator.next.php
+     *
      * @return void Any returned value is ignored.
      */
     public function next()
@@ -162,7 +162,9 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Return the key of the current element
+     *
      * @link http://php.net/manual/en/iterator.key.php
+     *
      * @return \scalar scalar on success, integer
      * 0 on failure.
      */
@@ -177,8 +179,10 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Checks if current position is valid
+     *
      * @link http://php.net/manual/en/iterator.valid.php
-     * @return boolean The return value will be casted to boolean and then evaluated.
+     *
+     * @return bool The return value will be casted to boolean and then evaluated.
      * Returns true on success or false on failure.
      */
     public function valid()
@@ -191,7 +195,9 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Rewind the Iterator to the first element
+     *
      * @link http://php.net/manual/en/iterator.rewind.php
+     *
      * @return void Any returned value is ignored.
      */
     public function rewind()
@@ -208,7 +214,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
 
         $activities = [];
         foreach ($raw as $row) {
-            $entry = \Pimcore::getContainer()->get("cmf.activity_store")->createEntryInstance($row);
+            $entry = \Pimcore::getContainer()->get('cmf.activity_store')->createEntryInstance($row);
             $activities[] = $entry;
         }
 

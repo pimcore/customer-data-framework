@@ -12,6 +12,7 @@ abstract class AbstractFilter
     /**
      * @param int $classId
      * @param string $prefix
+     *
      * @return string
      */
     protected function getTableName($classId, $prefix = 'object_')
@@ -25,6 +26,7 @@ abstract class AbstractFilter
 
     /**
      * @param string $tableName
+     *
      * @return $this
      */
     public function setTableName($tableName)

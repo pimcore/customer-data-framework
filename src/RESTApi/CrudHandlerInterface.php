@@ -10,6 +10,7 @@ interface CrudHandlerInterface
      * GET /
      *
      * @param Request $request
+     *
      * @return Response
      */
     public function listRecords(Request $request);
@@ -19,6 +20,7 @@ interface CrudHandlerInterface
      *
      * @param Request $request
      * @param array $params
+     *
      * @return Response
      */
     public function readRecord(Request $request);
@@ -27,6 +29,7 @@ interface CrudHandlerInterface
      * POST /
      *
      * @param Request $request
+     *
      * @return Response
      */
     public function createRecord(Request $request);
@@ -38,6 +41,7 @@ interface CrudHandlerInterface
      *
      * @param Request $request
      * @param array $params
+     *
      * @return Response
      */
     public function updateRecord(Request $request);
@@ -46,6 +50,7 @@ interface CrudHandlerInterface
      * DELETE /{id}
      *
      * @param Request $request
+     *
      * @return Response
      */
     public function deleteRecord(Request $request);

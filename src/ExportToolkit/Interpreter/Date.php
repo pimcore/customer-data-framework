@@ -14,6 +14,7 @@ class Date implements IInterpreter
     /**
      * @param $value
      * @param null $config
+     *
      * @return string
      */
     public static function interpret($value, $config = null)

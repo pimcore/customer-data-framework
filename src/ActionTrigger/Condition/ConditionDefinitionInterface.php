@@ -54,10 +54,8 @@ interface ConditionDefinitionInterface
      */
     public function getOperator();
 
-
     /**
      * @return array
      */
     public function toArray();
-
 }

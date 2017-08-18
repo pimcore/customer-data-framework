@@ -16,7 +16,6 @@ use Pimcore\Model\Object\CustomerSegmentGroup;
 
 interface SegmentManagerInterface
 {
-
     const CONDITION_AND = 'and';
     const CONDITION_OR = 'or';
 
@@ -34,6 +33,7 @@ interface SegmentManagerInterface
      * Returns the CustomerSegment with the given ID.
      *
      * @param int $id
+     *
      * @return CustomerSegmentInterface
      */
     public function getSegmentById($id);
@@ -42,6 +42,7 @@ interface SegmentManagerInterface
      * Returns the CustomerSegmentGroup with the given ID.
      *
      * @param int $id
+     *
      * @return CustomerSegmentGroup
      */
     public function getSegmentGroupById($id);
@@ -70,10 +71,10 @@ interface SegmentManagerInterface
      *
      * @param bool $changesQueueOnly
      * @param string $segmentBuilderClass
-     *
      * @param int[]|null $customQueue Process only customer from given queue
-     * @param boolean|null $activeState Consider active-state, null : ignore, false -> inactive only, true -> active only
+     * @param bool|null $activeState Consider active-state, null : ignore, false -> inactive only, true -> active only
      * @param array $options
+     *
      * @return void
      */
     public function buildCalculatedSegments(
@@ -88,6 +89,7 @@ interface SegmentManagerInterface
      * Returns a segment builder instance of given class.
      *
      * @param $segmentBuilderClass
+     *
      * @return SegmentBuilderInterface|null
      */
     public function createSegmentBuilder($segmentBuilderClass);
@@ -121,10 +123,10 @@ interface SegmentManagerInterface
      * Needs to be called after segments are merged with mergeSegments() in order to persist the segments in the customer object
      *
      * @param CustomerInterface $customer
+     *
      * @return void
      */
     public function saveMergedSegments(CustomerInterface $customer);
-
 
     /**
      * Create a calculated segment within the given $segmentGroup. The $segmentGroup needs to be either a CustomerSegmentGroup object or a reference to a calculated CustomerSegmentGroup object.
@@ -245,6 +247,7 @@ interface SegmentManagerInterface
      *
      * @param CustomerInterface $customer
      * @param CustomerSegmentGroup|string $group
+     *
      * @return CustomerSegmentInterface[]
      */
     public function getCustomersSegmentsFromGroup(CustomerInterface $customer, $group);
@@ -264,6 +267,4 @@ interface SegmentManagerInterface
      * @return void
      */
     public function preSegmentUpdate(CustomerSegmentInterface $segment);
-
-
 }

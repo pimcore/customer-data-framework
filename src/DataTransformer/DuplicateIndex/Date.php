@@ -12,10 +12,8 @@ use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 
 class Date implements DataTransformerInterface
 {
-
     public function transform($data, $options = [])
     {
         return $data ? $data->getTimestamp() : null;
     }
-
 }

@@ -14,7 +14,6 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
 class DefaultActivityManager implements ActivityManagerInterface
 {
-
     protected $disableEvents = false;
 
     /**
@@ -29,6 +28,7 @@ class DefaultActivityManager implements ActivityManagerInterface
      * Disable dispatching of php events.
      *
      * @param bool $disableEvents
+     *
      * @return $this
      */
     public function setDisableEvents($disableEvents)
@@ -38,17 +38,16 @@ class DefaultActivityManager implements ActivityManagerInterface
         return $this;
     }
 
-
     /**
      * Add/update activity in activity store.
      * Each activity is only saved once. The activity will be updated if it already exists in the store.
      *
      * @param ActivityInterface $activity
+     *
      * @return void
      *
      * @throws \Exception
      */
-
     public function trackActivity(ActivityInterface $activity)
     {
         $store = \Pimcore::getContainer()->get('cmf.activity_store');
@@ -64,7 +63,6 @@ class DefaultActivityManager implements ActivityManagerInterface
 
             return;
         }
-
 
         \Pimcore::getContainer()->get('cmf.segment_manager')->addCustomerToChangesQueue($activity->getCustomer());
 
@@ -106,10 +104,8 @@ class DefaultActivityManager implements ActivityManagerInterface
      *
      * @return void
      */
-
     public function deleteActivity(ActivityInterface $activity)
     {
-
         $store = \Pimcore::getContainer()->get('cmf.activity_store');
 
         $store->deleteActivity($activity);

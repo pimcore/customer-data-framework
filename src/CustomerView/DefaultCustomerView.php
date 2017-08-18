@@ -33,6 +33,7 @@ class DefaultCustomerView implements CustomerViewInterface
 
     /**
      * @param CustomerInterface $customer
+     *
      * @return string|null
      */
     public function getOverviewTemplate(CustomerInterface $customer)
@@ -44,6 +45,7 @@ class DefaultCustomerView implements CustomerViewInterface
      * Determines if customer has a detail view or if pimcore object should be openend directly
      *
      * @param CustomerInterface $customer
+     *
      * @return bool
      */
     public function hasDetailView(CustomerInterface $customer)
@@ -53,6 +55,7 @@ class DefaultCustomerView implements CustomerViewInterface
 
     /**
      * @param CustomerInterface $customer
+     *
      * @return string|null
      */
     public function getDetailviewTemplate(CustomerInterface $customer)
@@ -62,6 +65,7 @@ class DefaultCustomerView implements CustomerViewInterface
 
     /**
      * @param CustomerInterface|ElementInterface|Concrete $customer
+     *
      * @return array
      */
     public function getDetailviewData(CustomerInterface $customer)
@@ -93,6 +97,7 @@ class DefaultCustomerView implements CustomerViewInterface
      * Wrap object in a object implementing a __toString method
      *
      * @param $object
+     *
      * @return ObjectWrapper
      */
     protected function wrapObject($object)

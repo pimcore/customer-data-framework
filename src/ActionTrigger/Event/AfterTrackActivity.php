@@ -8,13 +8,11 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Event;
 
-use CustomerManagementFrameworkBundle\ActionTrigger\Trigger\TriggerDefinitionInterface;
-use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
+use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 
 class AfterTrackActivity extends AbstractSingleCustomerEvent
 {
-
     /**
      * @var ActivityInterface $activity
      */
@@ -55,11 +53,8 @@ class AfterTrackActivity extends AbstractSingleCustomerEvent
         $this->entry = $entry;
     }
 
-
     public function getName()
     {
-        return "plugin.cmf.after-track-activity";
+        return 'plugin.cmf.after-track-activity';
     }
-
-
 }

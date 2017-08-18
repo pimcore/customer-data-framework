@@ -15,7 +15,6 @@ use Pimcore\Model\AbstractModel;
 
 class ActionDefinition extends AbstractModel implements ActionDefinitionInterface
 {
-
     /**
      * @var int
      */
@@ -53,7 +52,9 @@ class ActionDefinition extends AbstractModel implements ActionDefinitionInterfac
 
     /**
      * @param $id
+     *
      * @return self
+     *
      * @throws \Exception
      */
     public static function getById($id)
@@ -62,12 +63,12 @@ class ActionDefinition extends AbstractModel implements ActionDefinitionInterfac
             return null;
         }
 
-        $cacheKey = "cmf_plugin_actiontrigger_action".$id;
+        $cacheKey = 'cmf_plugin_actiontrigger_action'.$id;
 
         try {
             $rule = Runtime::load($cacheKey);
             if (!$rule) {
-                throw new \Exception("Action trigger action in runtime cache is null");
+                throw new \Exception('Action trigger action in runtime cache is null');
             }
         } catch (\Exception $e) {
             try {
@@ -75,7 +76,6 @@ class ActionDefinition extends AbstractModel implements ActionDefinitionInterfac
                 $rule->getDao()->getById($id);
                 Runtime::save($rule, $cacheKey);
             } catch (\Exception $e) {
-
                 Logger::error($e->getMessage());
 
                 return null;
@@ -209,5 +209,4 @@ class ActionDefinition extends AbstractModel implements ActionDefinitionInterfac
             'modifictaionDate' => $this->getModificationDate(),
         ];
     }
-
 }

@@ -2,8 +2,6 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerList\Exporter;
 
-use Pimcore\Model\Object\Customer;
-
 class Csv extends AbstractExporter
 {
     const MIME_TYPE = 'text/csv';
@@ -35,7 +33,7 @@ class Csv extends AbstractExporter
      */
     public function getFilesize()
     {
-        if(!$this->generated) {
+        if (!$this->generated) {
             throw new \Exception('Export fore not generated: call generateExportFile before');
         }
 
@@ -43,7 +41,6 @@ class Csv extends AbstractExporter
 
         return $stat['size'];
     }
-
 
     public function getExtension()
     {
@@ -76,6 +73,7 @@ class Csv extends AbstractExporter
 
     /**
      * @param array $exportData
+     *
      * @return $this
      */
     protected function renderHeader(array $exportData)
@@ -89,6 +87,7 @@ class Csv extends AbstractExporter
 
     /**
      * @param [] $row
+     *
      * @return $this
      */
     protected function renderRow(array $row)

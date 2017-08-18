@@ -10,10 +10,9 @@ namespace CustomerManagementFrameworkBundle;
 
 class Config
 {
-
     private static function getConfigFile()
     {
-        return \Pimcore\Config::locateConfigFile("plugins/CustomerManagementFramework/config.php");
+        return \Pimcore\Config::locateConfigFile('plugins/CustomerManagementFramework/config.php');
     }
 
     protected static $config = null;
@@ -24,13 +23,11 @@ class Config
             $file = self::getConfigFile();
 
             if (file_exists($file)) {
-                self::$config = new \Pimcore\Config\Config(require($file), true);;
-
+                self::$config = new \Pimcore\Config\Config(require($file), true);
             } else {
                 throw new \Exception($file." doesn't exist");
             }
         }
-
 
         return self::$config;
     }

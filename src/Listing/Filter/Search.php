@@ -8,6 +8,7 @@ class Search extends AbstractFieldValue
      * Wrap value in %
      *
      * @param string $value
+     *
      * @return string
      */
     protected function processValue($value)

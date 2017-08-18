@@ -20,9 +20,7 @@ use Psr\Log\LoggerInterface;
  */
 class NormalizeZip extends AbstractCustomerSaveHandler
 {
-
     private $countryTransformers;
-
 
     public function __construct($config, LoggerInterface $logger)
     {
@@ -41,7 +39,6 @@ class NormalizeZip extends AbstractCustomerSaveHandler
         ];
     }
 
-
     /**
      * @param CustomerInterface $customer
      *
@@ -49,7 +46,6 @@ class NormalizeZip extends AbstractCustomerSaveHandler
      */
     public function preSave(CustomerInterface $customer)
     {
-
         $countryCode = $customer->getCountryCode();
 
         if (!empty($this->countryTransformers[$countryCode])) {
@@ -60,8 +56,7 @@ class NormalizeZip extends AbstractCustomerSaveHandler
 
             $customer->setZip($transformer->transform($customer->getZip()));
         } else {
-            $this->logger->debug(sprintf("no zip transformer for country code %s defined", $countryCode));
+            $this->logger->debug(sprintf('no zip transformer for country code %s defined', $countryCode));
         }
-
     }
 }

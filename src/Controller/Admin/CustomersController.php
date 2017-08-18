@@ -3,15 +3,15 @@
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\Config;
+use CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\CustomerList\Exporter\AbstractExporter;
 use CustomerManagementFrameworkBundle\CustomerList\Exporter\ExporterInterface;
 use CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface;
-use CustomerManagementFrameworkBundle\Listing\Filter;
-use CustomerManagementFrameworkBundle\Listing\FilterHandler;
-use CustomerManagementFrameworkBundle\Controller\Admin;
+use CustomerManagementFrameworkBundle\CustomerList\Filter\CustomerSegment as CustomerSegmentFilter;
 use CustomerManagementFrameworkBundle\CustomerList\Filter\Exception\SearchQueryException;
 use CustomerManagementFrameworkBundle\CustomerList\Filter\SearchQuery;
-use CustomerManagementFrameworkBundle\CustomerList\Filter\CustomerSegment as CustomerSegmentFilter;
+use CustomerManagementFrameworkBundle\Listing\Filter;
+use CustomerManagementFrameworkBundle\Listing\FilterHandler;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use Pimcore\Db;
@@ -22,7 +22,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\Routing\Annotation\Route;
-use Pimcore\Controller\Configuration\TemplatePhp;
 use Zend\Paginator\Adapter\ArrayAdapter;
 
 /**
@@ -47,7 +46,6 @@ class CustomersController extends Admin
      */
     public function listAction(Request $request)
     {
-
         $filters = $this->fetchListFilters($request);
 
         $errors = [];
@@ -89,7 +87,6 @@ class CustomersController extends Admin
      */
     public function detailAction(Request $request)
     {
-
         $customer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById((int)$request->get('id'));
         if ($customer && $customer instanceof CustomerInterface) {
             $customerView = \Pimcore::getContainer()->get('cmf.customer_view');
@@ -143,21 +140,19 @@ class CustomersController extends Admin
      */
     public function exportStepAction(Request $request)
     {
-
         $perRequest = $request->get('perRequest', \Pimcore::getContainer()->getParameter('cmf.customer_export.items_per_request'));
 
         try {
             $data = \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->getExportTmpData($request);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return $this->json([
-                "error" => true,
-                "message" => $e->getMessage()
+                'error' => true,
+                'message' => $e->getMessage()
             ]);
         }
 
-
         //export finished
-        if(!sizeof($data['processIds'])) {
+        if (!sizeof($data['processIds'])) {
             return $this->json([
                 'finished' => true,
                 'url' => $this->generateUrl('customermanagementframework_admin_customers_downloadfinishedexport', ['jobId'=>$request->get('jobId')]),
@@ -169,8 +164,7 @@ class CustomersController extends Admin
         $processIds = array_slice($data['processIds'], $perRequest);
 
         $listing = $this->buildListing();
-        $listing->addConditionParam("o_id in (" . implode(', ', $ids) . ")");
-
+        $listing->addConditionParam('o_id in (' . implode(', ', $ids) . ')');
 
         $exporter = $this->getExporter($request, $listing, $data['exporter']);
         $exportData = $exporter->getExportData();
@@ -182,7 +176,6 @@ class CustomersController extends Admin
         $data['processIds'] = $processIds;
 
         \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->saveExportTmpData($request->get('jobId'), $data);
-
 
         $notProcessedRecordsCount = sizeof($data['processIds']);
         $totalRecordsCount = $notProcessedRecordsCount + sizeof($data['exportData'][AbstractExporter::ROWS]);
@@ -208,15 +201,14 @@ class CustomersController extends Admin
     {
         try {
             $data = \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->getExportTmpData($request);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return $this->json([
-                "error" => true,
-                "message" => $e->getMessage()
+                'error' => true,
+                'message' => $e->getMessage()
             ]);
         }
 
-
-        if(sizeof($data['processIds'])) {
+        if (sizeof($data['processIds'])) {
             return $this->json([
                 'error' => true,
                 'message' => 'export not finished yet'
@@ -234,7 +226,6 @@ class CustomersController extends Admin
             \Carbon\Carbon::now()->format('YmdHis'),
             $exporter->getExtension()
         );
-
 
         $response = new Response();
         $response
@@ -254,6 +245,7 @@ class CustomersController extends Admin
 
     /**
      * @param Request $request
+     *
      * @return ExporterInterface
      */
     protected function getExporter(Request $request, Listing\Concrete $listing, $exporterName)
@@ -268,7 +260,6 @@ class CustomersController extends Admin
         }
 
         return $exporterManager->buildExporter($exporterName, $listing);
-
     }
 
     /**
@@ -286,6 +277,7 @@ class CustomersController extends Admin
 
     /**
      * @param array $filters
+     *
      * @return Listing\Concrete
      */
     protected function buildListing(array $filters = [])
@@ -359,6 +351,7 @@ class CustomersController extends Admin
      * Fetch filters and set them on view
      *
      * @param Request $request
+     *
      * @return array
      */
     protected function fetchListFilters(Request $request)
@@ -371,6 +364,7 @@ class CustomersController extends Admin
 
     /**
      * @param array $filters
+     *
      * @return array
      */
     protected function addPrefilteredSegmentToFilters(Request $request, array $filters)
@@ -400,6 +394,7 @@ class CustomersController extends Admin
 
     /**
      * @param Request $request
+     *
      * @return CustomerSegmentInterface|null
      */
     protected function fetchPrefilteredSegment(Request $request)

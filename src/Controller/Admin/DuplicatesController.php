@@ -7,15 +7,12 @@ use CustomerManagementFrameworkBundle\Factory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Pimcore\Controller\Configuration\TemplatePhp;
 
 /**
  * @Route("/duplicates")
  */
 class DuplicatesController extends Admin
 {
-
-
     public function init()
     {
         parent::init();
@@ -29,7 +26,6 @@ class DuplicatesController extends Admin
      */
     public function listAction(Request $request)
     {
-
         $paginator = \Pimcore::getContainer()->get('cmf.customer_duplicates_index')->getPotentialDuplicates(
             $request->get('page', 1),
             100,
@@ -66,9 +62,9 @@ class DuplicatesController extends Admin
                 $request->get('id')
             );
 
-            return new JsonResponse(["success" => true]);
+            return new JsonResponse(['success' => true]);
         } catch (\Exception $e) {
-            return new JsonResponse(["success" => false, "msg" => $e->getMessage()]);
+            return new JsonResponse(['success' => false, 'msg' => $e->getMessage()]);
         }
     }
 }

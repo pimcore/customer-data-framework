@@ -20,6 +20,7 @@ interface OAuth2TokenInterface extends OAuthTokenInterface
      * Set access token
      *
      * @param string $accessToken
+     *
      * @return $this
      */
     public function setAccessToken($accessToken);
@@ -33,7 +34,9 @@ interface OAuth2TokenInterface extends OAuthTokenInterface
 
     /**
      * Set refresh token
+     *
      * @param string $refreshToken
+     *
      * @return $this
      */
     public function setRefreshToken($refreshToken);
@@ -49,6 +52,7 @@ interface OAuth2TokenInterface extends OAuthTokenInterface
      * Set token type
      *
      * @param string $tokenType
+     *
      * @return $this
      */
     public function setTokenType($tokenType);
@@ -64,6 +68,7 @@ interface OAuth2TokenInterface extends OAuthTokenInterface
      * Set scope
      *
      * @param string $scope
+     *
      * @return $this
      */
     public function setScope($scope);
@@ -79,6 +84,7 @@ interface OAuth2TokenInterface extends OAuthTokenInterface
      * Set expires at
      *
      * @param int $expiresAt
+     *
      * @return $this
      */
     public function setExpiresAt($expiresAt);

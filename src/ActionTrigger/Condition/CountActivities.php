@@ -8,7 +8,6 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Condition;
 
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
 class CountActivities extends AbstractCondition
@@ -19,7 +18,6 @@ class CountActivities extends AbstractCondition
 
     public function check(ConditionDefinitionInterface $conditionDefinition, CustomerInterface $customer)
     {
-
         $options = $conditionDefinition->getOptions();
 
         $countActivities = \Pimcore::getContainer()->get('cmf.activity_store')->countActivitiesOfCustomer(
@@ -39,16 +37,15 @@ class CountActivities extends AbstractCondition
         $operator = $options[self::OPTION_OPERATOR];
 
         if ($count = $options[self::OPTION_COUNT]) {
-
-            if ($operator == ">" && ($countActivities > $count)) {
+            if ($operator == '>' && ($countActivities > $count)) {
                 return true;
             }
 
-            if ($operator == "<" && ($countActivities < $count)) {
+            if ($operator == '<' && ($countActivities < $count)) {
                 return true;
             }
 
-            if ($operator == "=" && ($countActivities == $count)) {
+            if ($operator == '=' && ($countActivities == $count)) {
                 return true;
             }
 
@@ -60,7 +57,6 @@ class CountActivities extends AbstractCondition
 
     public function getDbCondition(ConditionDefinitionInterface $conditionDefinition)
     {
-
         $options = $conditionDefinition->getOptions();
 
         $operator = $options[self::OPTION_OPERATOR];
@@ -74,9 +70,9 @@ class CountActivities extends AbstractCondition
         );
 
         if (!sizeof($ids)) {
-            return "-1";
+            return '-1';
         }
 
-        return "o_id in (".implode(',', $ids).")";
+        return 'o_id in ('.implode(',', $ids).')';
     }
 }

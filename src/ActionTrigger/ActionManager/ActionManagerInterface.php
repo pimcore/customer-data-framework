@@ -10,7 +10,6 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger\ActionManager;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\Action\ActionDefinitionInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use Psr\Log\LoggerInterface;
 
 interface ActionManagerInterface
 {

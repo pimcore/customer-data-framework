@@ -9,7 +9,7 @@ class AddPerPageParam extends Helper
 {
     public function getName()
     {
-        return "addPerPageParam";
+        return 'addPerPageParam';
     }
 
     /**
@@ -17,6 +17,7 @@ class AddPerPageParam extends Helper
      *
      * @param array $params
      * @param int $defaultPageSize
+     *
      * @return array
      */
     public function add(array $params = [], $defaultPageSize = null)

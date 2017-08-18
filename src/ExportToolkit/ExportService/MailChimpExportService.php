@@ -55,6 +55,7 @@ class MailChimpExportService
 
     /**
      * @param null|string $subResource
+     *
      * @return string
      */
     public function getListResourceUrl($subResource = null)
@@ -72,6 +73,7 @@ class MailChimpExportService
      * Get remote mailchimp ID as stored in export notes
      *
      * @param ElementInterface $object
+     *
      * @return string|null
      */
     public function getRemoteId(ElementInterface $object)
@@ -88,6 +90,7 @@ class MailChimpExportService
 
     /**
      * @param ElementInterface $object
+     *
      * @return bool
      */
     public function wasExported(ElementInterface $object)
@@ -97,6 +100,7 @@ class MailChimpExportService
 
     /**
      * @param ElementInterface|Concrete $object
+     *
      * @return bool
      */
     public function needsUpdate(ElementInterface $object)
@@ -134,6 +138,7 @@ class MailChimpExportService
      * @param ElementInterface $object
      * @param string $remoteId
      * @param \DateTime|null $date
+     *
      * @return Note
      */
     public function createExportNote(ElementInterface $object, $remoteId, \DateTime $date = null)
@@ -157,6 +162,7 @@ class MailChimpExportService
     /**
      * @param ElementInterface $object
      * @param bool $refresh
+     *
      * @return Note[]|Note\Listing|\Pimcore\Model\Object\Listing\Dao
      */
     public function getExportNotes(ElementInterface $object, $refresh = false)
@@ -179,6 +185,7 @@ class MailChimpExportService
     /**
      * @param ElementInterface $object
      * @param bool $refresh
+     *
      * @return Note|null
      */
     public function getLastExportNote(ElementInterface $object, $refresh = false)
@@ -192,6 +199,7 @@ class MailChimpExportService
 
     /**
      * @param ElementInterface $object
+     *
      * @return \DateTime|null
      */
     public function getLastExportDateTime(ElementInterface $object)
@@ -204,6 +212,7 @@ class MailChimpExportService
 
     /**
      * @param Note $note
+     *
      * @return \DateTime
      */
     protected function getNoteDateTime(Note $note)

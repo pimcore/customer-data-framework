@@ -12,10 +12,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ExportCustomersFilterParams
 {
-
-
     /**
-     * @var boolean
+     * @var bool
      */
     private $includeActivities;
 
@@ -31,6 +29,7 @@ class ExportCustomersFilterParams
 
     /**
      * @param Request $request
+     *
      * @return static
      */
     public static function fromRequest(Request $request)
@@ -44,7 +43,7 @@ class ExportCustomersFilterParams
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIncludeActivities()
     {
@@ -52,7 +51,7 @@ class ExportCustomersFilterParams
     }
 
     /**
-     * @param boolean $includeActivities
+     * @param bool $includeActivities
      */
     public function setIncludeActivities($includeActivities)
     {
@@ -95,7 +94,5 @@ class ExportCustomersFilterParams
         } else {
             $this->segments = [];
         }
-
     }
-
 }

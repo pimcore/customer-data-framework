@@ -19,6 +19,7 @@ abstract class AbstractModificationDate implements IConditionModificator, IListM
      *
      * @param $configName
      * @param Listing|Listing\Dao $list
+     *
      * @return $this
      */
     public static function modifyList($configName, Listing $list)

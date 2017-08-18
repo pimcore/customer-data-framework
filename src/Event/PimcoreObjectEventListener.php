@@ -17,7 +17,6 @@ use Pimcore\Model\Object\ActivityDefinition;
 
 class PimcoreObjectEventListener
 {
-
     public function onPreUpdate(ElementEventInterface $e)
     {
         if (!$e instanceof ObjectEvent) {
@@ -52,7 +51,6 @@ class PimcoreObjectEventListener
             if ($trackIt) {
                 \Pimcore::getContainer()->get('cmf.activity_manager')->trackActivity($object);
             }
-
         }
     }
 

@@ -14,7 +14,6 @@ class ObjectToArray
 {
     private function __construct()
     {
-
     }
 
     /**
@@ -37,14 +36,12 @@ class ObjectToArray
 
         $result = [];
 
-
         $result['id'] = $object->getId();
 
         foreach ($fieldDefintions as $fd) {
             $fieldName = $fd->getName();
             $result[$fieldName] = $fd->getForWebserviceExport($object);
         }
-
 
         $result['modificationDate'] = $object->getModificationDate();
         $result['creationDate'] = $object->getCreationDate();

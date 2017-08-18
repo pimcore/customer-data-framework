@@ -18,12 +18,10 @@ class Admin extends AdminController implements EventedControllerInterface
     public function onKernelController(FilterControllerEvent $event)
     {
         $this->initJsConfig();
-
     }
 
     public function onKernelResponse(FilterResponseEvent $event)
     {
-
     }
 
     /**
@@ -80,6 +78,7 @@ class Admin extends AdminController implements EventedControllerInterface
      * @param Request $request
      * @param mixed $data
      * @param int $defaultPageSize
+     *
      * @return Paginator
      */
     protected function buildPaginator(Request $request, $data, $defaultPageSize = null)

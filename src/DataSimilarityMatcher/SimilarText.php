@@ -10,7 +10,6 @@ namespace CustomerManagementFrameworkBundle\DataSimilarityMatcher;
 
 class SimilarText implements DataSimilarityMatcherInterface
 {
-
     protected $defaultTreshold = 80;
 
     public function calculateSimilarity($value1, $value2)
@@ -29,5 +28,4 @@ class SimilarText implements DataSimilarityMatcherInterface
 
         return $similarity >= $treshold;
     }
-
 }

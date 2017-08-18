@@ -8,7 +8,6 @@
 
 namespace CustomerManagementFrameworkBundle\SegmentManager;
 
-
 use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Helper\Objects;
@@ -25,10 +24,9 @@ use Zend\Paginator\Paginator;
 
 class DefaultSegmentManager implements SegmentManagerInterface
 {
-
     use LoggerAware;
 
-    CONST CHANGES_QUEUE_TABLE = 'plugin_cmf_segmentbuilder_changes_queue';
+    const CHANGES_QUEUE_TABLE = 'plugin_cmf_segmentbuilder_changes_queue';
 
     private $config;
 
@@ -41,6 +39,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
     /**
      * @param int $id
+     *
      * @return CustomerSegmentInterface
      */
     public function getSegmentById($id)
@@ -50,6 +49,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
     /**
      * @param int $id
+     *
      * @return CustomerSegmentGroup
      */
     public function getSegmentGroupById($id)
@@ -70,15 +70,14 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
         $conditions = [];
         foreach ($segmentIds as $segmentId) {
-            $conditions[] = "(o_id in (select src_id from object_relations_1 where dest_id = ".$list->quote(
+            $conditions[] = '(o_id in (select src_id from object_relations_1 where dest_id = '.$list->quote(
                     $segmentId
-                )."))";
+                ).'))';
         }
 
         if (sizeof($conditions)) {
-            $list->setCondition("(".implode(' '.$conditionMode.' ', $conditions).")");
+            $list->setCondition('('.implode(' '.$conditionMode.' ', $conditions).')');
         }
-
 
         return $list;
     }
@@ -116,8 +115,9 @@ class DefaultSegmentManager implements SegmentManagerInterface
      * @param bool $changesQueueOnly
      * @param null $segmentBuilderClass
      * @param int[]|null $customQueue
-     * @param boolean|null $activeState
+     * @param bool|null $activeState
      * @param array $options
+     *
      * @return void
      */
     public function buildCalculatedSegments(
@@ -129,7 +129,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
         $captureSignals = false
     ) {
         $logger = $this->getLogger();
-        $logger->notice("start segment building");
+        $logger->notice('start segment building');
 
         $backup = \Pimcore::getContainer()->get('cmf.customer_save_manager')->getSegmentBuildingHookEnabled();
         \Pimcore::getContainer()->get('cmf.customer_save_manager')->setSegmentBuildingHookEnabled(false);
@@ -148,17 +148,15 @@ class DefaultSegmentManager implements SegmentManagerInterface
             // restrict to given customer
             $customerIds = array_filter($customQueue, 'is_numeric');
             if (!empty($customerIds)) {
-                $conditionParts[] = sprintf("o_id in (%s)", implode(',', $customQueue));
-
+                $conditionParts[] = sprintf('o_id in (%s)', implode(',', $customQueue));
             } else {
                 // capture empty
                 $conditionParts[] = '0 = 1';
             }
             // don't modify queue
             $removeCustomerFromQueue = false;
-
         } elseif ($changesQueueOnly) {
-            $conditionParts[] = sprintf("o_id in (select customerId from %s)", self::CHANGES_QUEUE_TABLE);
+            $conditionParts[] = sprintf('o_id in (select customerId from %s)', self::CHANGES_QUEUE_TABLE);
         }
 
         if ($activeState !== null) {
@@ -169,7 +167,6 @@ class DefaultSegmentManager implements SegmentManagerInterface
                 // inactive only
                 $conditionParts[] = '(active IS NULL OR active != 1)';
             }
-
         }
 
         if (!empty($conditionParts)) {
@@ -191,7 +188,6 @@ class DefaultSegmentManager implements SegmentManagerInterface
                 $options['pages']
             )) ? (int)$options['pages'] : null;
 
-
         $logger->notice(
             sprintf(
                 'Pre-fetching all ids via adapter for speedup and coherent paging '
@@ -201,7 +197,6 @@ class DefaultSegmentManager implements SegmentManagerInterface
         $paginator = new Paginator(
             new \CustomerManagementFrameworkBundle\Pimcore\Model\Tool\ListingAdapter($customerList)
         );
-
 
         $pageSize = $desiredPageSize !== null && $desiredPageSize > 0 ? $desiredPageSize : 250;
         $paginator->setItemCountPerPage($pageSize);
@@ -232,7 +227,6 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
                 foreach (array_chunk($queue, 50) as $nextChunk) {
                     try {
-
                         $removedAmount = Db::get()->deleteWhere(
                             self::CHANGES_QUEUE_TABLE,
                             sprintf('customerId IN (%s)', implode(',', $nextChunk))
@@ -271,19 +265,16 @@ class DefaultSegmentManager implements SegmentManagerInterface
             @pcntl_signal(SIGTERM, $stopProcessingHook);
             // capture ctrl+c
             @pcntl_signal(SIGINT, $stopProcessingHook);
-
         }
-
 
         $progressCount = max((int)($pageSize / 10), 1);
         $progressTime = $startTime = time();
         $itemCount = 1;
         try {
             for ($pageNumber = $startPage; $pageNumber <= $endPage && $pageNumber <= $totalPages && !$stopFurtherProcessing; $pageNumber++) {
-
                 $logger->notice(
                     sprintf(
-                        "Building segments for %d / %d customers in total, currently at page %d / %d out of %d total pages",
+                        'Building segments for %d / %d customers in total, currently at page %d / %d out of %d total pages',
                         $taskTotalAmount,
                         $totalAmount,
                         $pageNumber,
@@ -295,9 +286,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
                 $paginator->setCurrentPageNumber($pageNumber);
                 /** @var CustomerInterface $customer */
                 foreach ($paginator as $customer) {
-
                     if ($itemCount % $progressCount === 0) {
-
                         $remaining = $totalAmount - $itemCount;
                         $taskRemaining = $taskTotalAmount - $itemCount;
 
@@ -331,7 +320,6 @@ class DefaultSegmentManager implements SegmentManagerInterface
                         );
 
                         $progressTime = $currentTime;
-
                     }
 
                     foreach ($segmentBuilders as $segmentBuilder) {
@@ -340,11 +328,9 @@ class DefaultSegmentManager implements SegmentManagerInterface
                         } catch (\Exception $e) {
                             $this->getLogger()->error($e);
                         }
-
                     }
 
                     $this->saveMergedSegments($customer);
-
 
                     $event = new \CustomerManagementFrameworkBundle\ActionTrigger\Event\ExecuteSegmentBuilders(
                         $customer
@@ -372,17 +358,14 @@ class DefaultSegmentManager implements SegmentManagerInterface
                     @pcntl_signal_dispatch();
                 }
 
-
                 if (!$stopFurtherProcessing) {
                     $customerQueueRemoval = $flushQueue($customerQueueRemoval);
                     \Pimcore::collectGarbage();
                 }
-
             }
         } finally {
             $flushQueue($customerQueueRemoval);
         }
-
 
         \Pimcore::getContainer()->get('cmf.customer_save_manager')->setSegmentBuildingHookEnabled($backup);
     }
@@ -396,7 +379,6 @@ class DefaultSegmentManager implements SegmentManagerInterface
         self::prepareSegmentBuilders($segmentBuilders, true);
 
         foreach ($segmentBuilders as $segmentBuilder) {
-
             if (!$segmentBuilder->executeOnCustomerSave()) {
                 continue;
             }
@@ -407,9 +389,6 @@ class DefaultSegmentManager implements SegmentManagerInterface
         $this->saveMergedSegments($customer);
     }
 
-    /**
-     *
-     */
     public function executeSegmentBuilderMaintenance()
     {
         $segmentBuilders = self::createSegmentBuilders();
@@ -428,11 +407,10 @@ class DefaultSegmentManager implements SegmentManagerInterface
         SegmentBuilderInterface $segmentBuilder
     ) {
         $this->getLogger()->info(
-            sprintf("apply segment builder %s to customer %s", $segmentBuilder->getName(), (string)$customer)
+            sprintf('apply segment builder %s to customer %s', $segmentBuilder->getName(), (string)$customer)
         );
         $segmentBuilder->calculateSegments($customer, $this);
     }
-
 
     /**
      * @param                      $segmentReference
@@ -443,20 +421,18 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     public function getSegmentByReference($segmentReference, CustomerSegmentGroup $segmentGroup, $calculated = null)
     {
-
-
         $list = new \Pimcore\Model\Object\CustomerSegment\Listing;
 
         $calculatedCondition = '';
         if (!is_null($calculated)) {
-            $calculatedCondition = "and calculated = 1";
+            $calculatedCondition = 'and calculated = 1';
             if (!$calculated) {
-                $calculatedCondition = "and (calculated is null or calculated = 0)";
+                $calculatedCondition = 'and (calculated is null or calculated = 0)';
             }
         }
 
         $list->setCondition(
-            "reference = ? and group__id = ? ".$calculatedCondition,
+            'reference = ? and group__id = ? '.$calculatedCondition,
             [$segmentReference, $segmentGroup->getId()]
         );
         $list->setUnpublished(true);
@@ -476,6 +452,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
      * @param null $subFolder
      *
      * @return mixed|CustomerSegment
+     *
      * @throws \Exception
      */
     public function createSegment(
@@ -485,7 +462,6 @@ class DefaultSegmentManager implements SegmentManagerInterface
         $calculated = true,
         $subFolder = null
     ) {
-
         if ($segmentGroup instanceof CustomerSegmentGroup && $segmentGroup->getCalculated() != $calculated) {
             throw new \Exception(
                 sprintf(
@@ -529,7 +505,6 @@ class DefaultSegmentManager implements SegmentManagerInterface
         $segment->setGroup($segmentGroup);
         Objects::checkObjectKey($segment);
         $segment->save();
-
 
         return $segment;
     }
@@ -634,13 +609,11 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     public function updateSegment(CustomerSegment $segment, array $values = [])
     {
-
-
         $segment->setValues($values);
 
         if (!empty($values['group'])) {
             if (!$segmentGroup = CustomerSegmentGroup::getById($values['group'])) {
-                throw new \Exception("SegmentGroup with id %s not found", $values['group']);
+                throw new \Exception('SegmentGroup with id %s not found', $values['group']);
             }
 
             $segment->setGroup($segmentGroup);
@@ -668,11 +641,10 @@ class DefaultSegmentManager implements SegmentManagerInterface
     public function getSegmentGroupByReference($segmentGroupReference, $calculated)
     {
         if (!is_null($segmentGroupReference)) {
-
             $list = new \Pimcore\Model\Object\CustomerSegmentGroup\Listing;
             $list->setUnpublished(true);
             $list->setCondition(
-                "reference = ? and ".($calculated ? '(calculated = 1)' : '(calculated is null or calculated = 0)'),
+                'reference = ? and '.($calculated ? '(calculated = 1)' : '(calculated is null or calculated = 0)'),
                 $segmentGroupReference
             );
             $list->setUnpublished(true);
@@ -698,12 +670,12 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
         $ignoreCondition = '';
         if (sizeof($ignoreIds)) {
-            $ignoreCondition = " and o_id not in(".implode(',', $ignoreIds).")";
+            $ignoreCondition = ' and o_id not in('.implode(',', $ignoreIds).')';
         }
 
         $list = new CustomerSegment\Listing;
         $list->setUnpublished(true);
-        $list->setCondition("group__id = ?".$ignoreCondition, $segmentGroup->getId());
+        $list->setCondition('group__id = ?'.$ignoreCondition, $segmentGroup->getId());
         $list->setOrderKey('name');
         $result = $list->load();
 
@@ -716,10 +688,9 @@ class DefaultSegmentManager implements SegmentManagerInterface
     public function addCustomerToChangesQueue(CustomerInterface $customer)
     {
         Db::get()->query(
-            sprintf("insert ignore into %s set customerId = %d", self::CHANGES_QUEUE_TABLE, $customer->getId())
+            sprintf('insert ignore into %s set customerId = %d', self::CHANGES_QUEUE_TABLE, $customer->getId())
         );
     }
-
 
     /**
      * @param CustomerSegmentInterface $segment
@@ -727,7 +698,6 @@ class DefaultSegmentManager implements SegmentManagerInterface
     public function preSegmentUpdate(CustomerSegmentInterface $segment)
     {
         if ($segment instanceof Concrete) {
-
             $parent = $segment;
 
             $group = null;
@@ -772,6 +742,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
      *
      * @param CustomerInterface $customer
      * @param CustomerSegmentGroup|string $group
+     *
      * @return CustomerSegmentInterface[]
      */
     public function getCustomersSegmentsFromGroup(CustomerInterface $customer, $group)
@@ -803,16 +774,14 @@ class DefaultSegmentManager implements SegmentManagerInterface
     protected function prepareSegmentBuilders(array $segmentBuilders, $ignoreAsyncSegmentBuilders = false)
     {
         foreach ($segmentBuilders as $segmentBuilder) {
-
             if ($ignoreAsyncSegmentBuilders && !$segmentBuilder->executeOnCustomerSave()) {
                 continue;
             }
 
-            $this->getLogger()->notice(sprintf("prepare segment builder %s", $segmentBuilder->getName()));
+            $this->getLogger()->notice(sprintf('prepare segment builder %s', $segmentBuilder->getName()));
             $segmentBuilder->prepare($this);
         }
     }
-
 
     /**
      * @inheritdoc
@@ -839,11 +808,11 @@ class DefaultSegmentManager implements SegmentManagerInterface
         \Pimcore::getContainer()->get('cmf.segment_manager.segment_merger')->saveMergedSegments($customer);
     }
 
-
     /**
      * Returns a segment builder instance of given class.
      *
      * @param $segmentBuilderClass
+     *
      * @return SegmentBuilderInterface|null
      */
     public function createSegmentBuilder($segmentBuilderClass)
@@ -862,25 +831,22 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     protected function createSegmentBuilders($segmentBuilderClass = null)
     {
-
-
         $config = $this->config->segmentBuilders;
 
         if (is_null($config)) {
-            $this->getLogger()->alert("no segmentBuilders section found in plugin config file");
+            $this->getLogger()->alert('no segmentBuilders section found in plugin config file');
 
             return [];
         }
 
         if (!sizeof($config)) {
-            $this->getLogger()->alert("no segment builders defined in plugin config file");
+            $this->getLogger()->alert('no segment builders defined in plugin config file');
 
             return [];
         }
 
         $segmentBuilders = [];
         foreach ($config as $segmentBuilderConfig) {
-
             if (is_null($segmentBuilderClass) || ltrim($segmentBuilderClass, '\\') == ltrim(
                     (string)$segmentBuilderConfig->segmentBuilder,
                     '\\'
@@ -889,7 +855,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
                 $segmentBuilders[] = Factory::getInstance()->createObject(
                     (string)$segmentBuilderConfig->segmentBuilder,
                     SegmentBuilderInterface::class,
-                    ["config" => $segmentBuilderConfig, "logger" => $this->getLogger()]
+                    ['config' => $segmentBuilderConfig, 'logger' => $this->getLogger()]
                 );
             }
         }

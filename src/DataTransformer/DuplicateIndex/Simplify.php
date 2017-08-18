@@ -12,12 +12,10 @@ use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 
 class Simplify implements DataTransformerInterface
 {
-
     public function transform($data, $options = [])
     {
         return $this->simplify((string)$data);
     }
-
 
     protected function simplify($text)
     {
@@ -26,7 +24,6 @@ class Simplify implements DataTransformerInterface
 
     protected function translit($text)
     {
-
         $search = [
             '?',
             '\'',
@@ -129,8 +126,8 @@ class Simplify implements DataTransformerInterface
             '¿',
             'Ÿ',
             'ÿ',
-            "_",
-            ":",
+            '_',
+            ':',
         ];
         $replace = [
             '',
@@ -234,8 +231,8 @@ class Simplify implements DataTransformerInterface
             '',
             'Y',
             'y',
-            "-",
-            "-",
+            '-',
+            '-',
         ];
 
         return str_replace($search, $replace, $text);
