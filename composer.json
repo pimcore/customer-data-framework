@@ -20,7 +20,8 @@
     },
     "autoload": {
         "psr-4": {
-            "CustomerManagementFrameworkBundle\\": "src/"
+            "CustomerManagementFrameworkBundle\\": "src/",
+            "Pimcore\\": "core-extension/Pimcore/"
         },
         "exclude-from-classmap": [
             "frontend/",
