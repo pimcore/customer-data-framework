@@ -3,6 +3,8 @@ services:
         autowire: true
         autoconfigure: true
 
+    CustomerManagementFrameworkBundle\Security\OAuth\OauthUtils: ~
+
     CustomerManagementFrameworkBundle\Security\OAuth\AccountConnector: ~
 
     CustomerManagementFrameworkBundle\Security\OAuth\OAuthRegistrationHandler: ~
