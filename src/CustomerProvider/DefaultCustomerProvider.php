@@ -163,6 +163,9 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     public function applyObjectNamingScheme(CustomerInterface $customer)
     {
+        if(!$this->namingScheme) {
+            return;
+        }
         $namingScheme = \Pimcore::getContainer()->get('cmf.customer_provider.object_naming_scheme');
         $namingScheme->apply($customer, $this->parentPath, $this->namingScheme);
     }
