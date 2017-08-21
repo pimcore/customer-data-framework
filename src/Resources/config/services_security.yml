@@ -3,12 +3,6 @@ services:
         autowire: true
         autoconfigure: true
 
-    CustomerManagementFrameworkBundle\Security\OAuth\AccountConnector: ~
-
-    CustomerManagementFrameworkBundle\Security\OAuth\OAuthRegistrationHandler: ~
-
-    CustomerManagementFrameworkBundle\Security\OAuth\SessionTokenStorage: ~
-
     CustomerManagementFrameworkBundle\Security\Authentication\LoginManager:
         arguments:
             $defaultUserChecker: '@security.user_checker'
@@ -22,13 +16,6 @@ services:
         arguments:
             - '@cmf.customer_provider'
             - 'email'
-
-    # OAuth user provider
-    cmf.security.user_provider.oauth:
-        class: CustomerManagementFrameworkBundle\Security\UserProvider\OAuthAwareUserProvider
-        arguments:
-            - '@cmf.security.user_provider'
-            - '@cmf.security.sso.identity_service'
 
     # The encoder factory is responsible for verifying the password hash for a given user. As we need some special
     # handling to be able to work with the password field, we use the UserAwareEncoderFactory to buiild a dedicated

@@ -1,6 +1,10 @@
 imports:
     - { resource: security.yml }
 
+pimcore_customer_management_framework:
+    oauth_client:
+        enabled: true
+
 # Configure the HWIOAuth bundle
 hwi_oauth:
     firewall_names: [main]

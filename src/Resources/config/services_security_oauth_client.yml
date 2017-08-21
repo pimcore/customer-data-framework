@@ -1,0 +1,17 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    CustomerManagementFrameworkBundle\Security\OAuth\AccountConnector: ~
+
+    CustomerManagementFrameworkBundle\Security\OAuth\OAuthRegistrationHandler: ~
+
+    CustomerManagementFrameworkBundle\Security\OAuth\SessionTokenStorage: ~
+
+    # OAuth user provider
+    cmf.security.user_provider.oauth:
+        class: CustomerManagementFrameworkBundle\Security\UserProvider\OAuthAwareUserProvider
+        arguments:
+            - '@cmf.security.user_provider'
+            - '@cmf.security.sso.identity_service'

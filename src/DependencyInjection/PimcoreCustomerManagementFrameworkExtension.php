@@ -17,13 +17,11 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
-class PimcoreCustomerManagementFrameworkExtension extends Extension
+class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function load(array $configs, ContainerBuilder $container)
+    protected function loadInternal(array $config, ContainerBuilder $container)
     {
         $loader = new YamlFileLoader(
             $container,
@@ -31,8 +29,13 @@ class PimcoreCustomerManagementFrameworkExtension extends Extension
         );
 
         $loader->load('services.yml');
-        $loader->load('services_security.yml');
         $loader->load('services_templating.yml');
         $loader->load('services_events.yml');
+
+        $loader->load('services_security.yml');
+
+        if ($config['oauth_client']['enabled']) {
+            $loader->load('services_security_oauth_client.yml');
+        }
     }
 }
