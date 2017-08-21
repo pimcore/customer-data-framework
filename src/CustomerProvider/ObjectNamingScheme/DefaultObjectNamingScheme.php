@@ -11,12 +11,18 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme;
 
+use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\Helper\Objects;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use Pimcore\Model\Object\Folder;
+use Pimcore\Model\Object\Listing;
 use Pimcore\Model\Object\Service;
 
 class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
 {
+    use LoggerAware;
+
     /**
      * @param CustomerInterface $customer
      * @param string $parentPath
@@ -45,6 +51,39 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
         }
         Objects::checkObjectKey($customer);
     }
+
+    public function cleanupEmptyFolders()
+    {
+        $config = Config::getConfig()->CustomerProvider;
+        if(!$config->parentPath) {
+            return;
+        }
+
+        if(!$config->namingScheme) {
+            return;
+        }
+
+        $folders = new Listing;
+
+        // apply it for folders older then 10 minutes only
+        $timestamp = time() - 60*10;
+
+        $folders->setCondition(
+            "o_id in (select o_id from (select o_id, o_path, o_key, o_type, (select count(*) from objects where o_parentId = o.o_id) as counter from objects o) as temp where counter=0 and o_type = 'folder' and o_path like ?  and o_creationDate < ?)",
+            [
+                str_replace('//', '/', $config->parentPath.'/%'),
+                $timestamp
+            ]
+        );
+
+        foreach($folders as $folder) {
+            if($folder instanceof Folder) {
+                $folder->delete();
+                $this->getLogger()->error("delete empty folder ". (string) $folder);
+            }
+        }
+    }
+
 
     private function correctPath($path)
     {

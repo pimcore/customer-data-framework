@@ -23,4 +23,11 @@ interface ObjectNamingSchemeInterface
      * @return void
      */
     public function apply(CustomerInterface $customer, $parentPath, $namingScheme);
+
+    /**
+     * deletes empty subfolders of the customers folder
+     *
+     * @return void
+     */
+    public function cleanupEmptyFolders();
 }
