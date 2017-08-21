@@ -47,6 +47,10 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
 
     protected function validateRequiredFields(CustomerInterface $customer)
     {
+        if(!sizeof($this->requiredFields)) {
+            return true;
+        }
+
         $valid = false;
         foreach ($this->requiredFields as $requiredFields) {
             if (is_array($requiredFields)) {
