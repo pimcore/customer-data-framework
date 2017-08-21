@@ -61,19 +61,21 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
     {
         $namingScheme = explode('/', $namingScheme);
         foreach ($namingScheme as $i => $namingSchemeItem) {
-            preg_match('/{([a-zA-Z0-9]*)}/', $namingSchemeItem, $matchedPlaceholder);
+            preg_match_all('/{([a-zA-Z0-9]*)}/', $namingSchemeItem, $matchedPlaceholder);
 
             if (sizeof($matchedPlaceholder)) {
-                $placeholder = $matchedPlaceholder[0];
-                $field = $matchedPlaceholder[1];
+                foreach($matchedPlaceholder[0] as $j => $placeholder) {
+                    $field = $matchedPlaceholder[1][$j];
 
-                $getter = 'get'.ucfirst($field);
-                if (method_exists($customer, $getter)) {
-                    $value = (string)$customer->$getter();
-                    $value = $value ?: '--';
-                    $namingScheme[$i] = Objects::getValidKey(str_replace($placeholder, $value, $namingSchemeItem));
+                    $getter = 'get'.ucfirst($field);
+                    if (method_exists($customer, $getter)) {
+                        $value = (string)$customer->$getter();
+                        $value = $value ?: '--';
+                        $namingScheme[$i] = str_replace($placeholder, $value, $namingScheme[$i]);
+                    }
                 }
             }
+            $namingScheme[$i] = Objects::getValidKey($namingScheme[$i]);
         }
 
         return $namingScheme;
