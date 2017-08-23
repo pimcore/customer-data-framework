@@ -14,6 +14,11 @@ services:
     CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface:
         class: CustomerManagementFrameworkBundle\CustomerSaveManager\DefaultCustomerSaveManager
 
+
+    CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface:
+         class: CustomerManagementFrameworkBundle\CustomerProvider\DefaultCustomerProvider
+
+
     cmf.logger:
         alias: logger
 
@@ -95,10 +100,6 @@ services:
             lazy: true
             calls:
                 - [setLogger, ['@cmf.logger']]
-
-    cmf.customer_provider:
-         class: CustomerManagementFrameworkBundle\CustomerProvider\DefaultCustomerProvider
-         lazy: true
 
     cmf.customer_exporter_manager:
          class: CustomerManagementFrameworkBundle\CustomerList\ExporterManager

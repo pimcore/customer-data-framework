@@ -63,11 +63,6 @@ return [
         ]
     ],
 
-    'CustomerProvider' => [
-        'parentPath' => '/customers',
-        //'namingScheme' => '{countryCode}/{zip}/{firstname}-{lastname}' //naming scheme relative to the parentPath (incl. object key)
-    ],
-
 
     'CustomerSaveValidator' => [
         'requiredFields' => [

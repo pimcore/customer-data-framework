@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\DependencyInjection;
 
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -39,6 +40,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         }
 
         $this->registerCustomerSaveManagerConfiguration($container, $config['customer_save_manager']);
+        $this->registerCustomerProviderConfiguration($container, $config['customer_provider'], $config);
     }
 
     private function registerCustomerSaveManagerConfiguration(ContainerBuilder $container, array $config)
@@ -46,5 +48,14 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $container->setAlias('cmf.customer_save_manager', CustomerSaveManagerInterface::class);
         $definition = $container->getDefinition(CustomerSaveManagerInterface::class);
         $definition->addArgument($config['enableAutomaticObjectNamingScheme']);
+    }
+
+    private function registerCustomerProviderConfiguration(ContainerBuilder $container, array $config, array $totalConfig)
+    {
+        $container->setAlias('cmf.customer_provider', CustomerProviderInterface::class);
+        $definition = $container->getDefinition(CustomerProviderInterface::class);
+        $definition->addArgument($totalConfig['general']['customerPimcoreClass']);
+        $definition->addArgument($config['parentPath']);
+        $definition->addArgument($config['namingScheme']);
     }
 }

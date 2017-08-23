@@ -31,21 +31,26 @@ class DefaultCustomerProvider implements CustomerProviderInterface
 
     protected $namingScheme;
 
-    public function __construct()
+    /**
+     * DefaultCustomerProvider constructor.
+     * @param $pimcoreClass
+     * @param $parentPath
+     * @param $namingScheme
+     */
+    public function __construct($pimcoreClass, $parentPath, $namingScheme)
     {
-        $this->pimcoreClass = Config::getConfig()->General->CustomerPimcoreClass;
+        $this->pimcoreClass = $pimcoreClass;
         if (empty($this->pimcoreClass)) {
             throw new \RuntimeException('Customer class is not defined');
         }
 
-        $config = Config::getConfig()->CustomerProvider;
-        $this->parentPath = $config->parentPath;
+        $this->parentPath = $parentPath;
 
         if (empty($this->parentPath)) {
             throw new \RuntimeException('Customer save path is not defined');
         }
 
-        $this->namingScheme = $config->namingScheme;
+        $this->namingScheme = $namingScheme;
     }
 
     /**
@@ -163,7 +168,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     public function applyObjectNamingScheme(CustomerInterface $customer)
     {
-        if(!$this->namingScheme) {
+        if (!$this->namingScheme) {
             return;
         }
         $namingScheme = \Pimcore::getContainer()->get('cmf.customer_provider.object_naming_scheme');

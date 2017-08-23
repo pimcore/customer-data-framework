@@ -32,9 +32,31 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end();
 
+        $rootNode->append($this->buildGeneralNode());
         $rootNode->append($this->buildCustomerSaveManagerNode());
+        $rootNode->append($this->buildCustomerProviderNode());
 
         return $treeBuilder;
+    }
+
+    private function buildGeneralNode()
+    {
+        $treeBuilder = new TreeBuilder();
+
+        $general = $treeBuilder->root('general');
+
+        $general
+            ->addDefaultsIfNotSet()
+            ->info('Configuration of general settings');
+
+        $general
+            ->children()
+                ->scalarNode('customerPimcoreClass')
+                    ->defaultValue('Customer')
+                ->end()
+        ;
+
+        return $general;
     }
 
     private function buildCustomerSaveManagerNode()
@@ -55,5 +77,28 @@ class Configuration implements ConfigurationInterface
         ;
 
         return $customerSaveManager;
+    }
+
+    private function buildCustomerProviderNode()
+    {
+        $treeBuilder = new TreeBuilder();
+
+        $customerProvider = $treeBuilder->root('customer_provider');
+
+        $customerProvider
+            ->addDefaultsIfNotSet()
+            ->info('Configuration of customer provider');
+
+        $customerProvider
+            ->children()
+                ->scalarNode('parentPath')
+                    ->defaultValue('/customers')
+                ->end()
+                ->scalarNode('namingScheme')
+                    ->defaultNull()
+                ->end()
+        ;
+
+        return $customerProvider;
     }
 }
