@@ -177,7 +177,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
      */
     protected function addNormalizedMysqlCompareCondition(Concrete &$list, $field, $value)
     {
-        $class = ClassDefinition::getByName(Config::getConfig()->General->CustomerPimcoreClass);
+        $class = ClassDefinition::getById(\Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassId());
         $fd = $class->getFieldDefinition($field);
 
         if (!$fd) {

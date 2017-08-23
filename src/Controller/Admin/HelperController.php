@@ -28,7 +28,7 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
      */
     public function customerFieldListAction(Request $request)
     {
-        $class = \Pimcore\Model\Object\ClassDefinition::getByName(Config::getConfig()->General->CustomerPimcoreClass);
+        $class = \Pimcore\Model\Object\ClassDefinition::getById(\Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassId());
 
         $result = [];
 

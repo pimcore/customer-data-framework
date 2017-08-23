@@ -11,7 +11,6 @@
 
 return [
     'General' => [
-        'CustomerPimcoreClass' => 'Customer',
         'mailBlackListFile' => PIMCORE_WEBSITE_PATH . '/config/plugins/CustomerManagementFramework/mail-blacklist.txt'
     ],
 
