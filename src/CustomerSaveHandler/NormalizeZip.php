@@ -14,7 +14,7 @@ namespace CustomerManagementFrameworkBundle\CustomerSaveHandler;
 use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use Psr\Log\LoggerInterface;
+use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 
 /**
  * normalizes the zip field of a given customer according to several country zip formats
@@ -25,20 +25,20 @@ class NormalizeZip extends AbstractCustomerSaveHandler
 {
     private $countryTransformers;
 
-    public function __construct($config, LoggerInterface $logger)
-    {
-        parent::__construct($config, $logger);
+    use LoggerAware;
 
-        $this->countryTransformers = $config->countryTransformers ? $config->countryTransformers->toArray() : [
-            'AT' => 'CustomerManagementFramework\DataTransformer\Zip\At',
-            'DE' => 'CustomerManagementFramework\DataTransformer\Zip\De',
-            'NL' => 'CustomerManagementFramework\DataTransformer\Zip\Nl',
-            'DK' => 'CustomerManagementFramework\DataTransformer\Zip\Dk',
-            'BE' => 'CustomerManagementFramework\DataTransformer\Zip\Be',
-            'RU' => 'CustomerManagementFramework\DataTransformer\Zip\Ru',
-            'CH' => 'CustomerManagementFramework\DataTransformer\Zip\Ch',
-            'SE' => 'CustomerManagementFramework\DataTransformer\Zip\Se',
-            'GB' => 'CustomerManagementFramework\DataTransformer\Zip\Gb',
+    public function __construct(array $countryTransformers = [])
+    {
+        $this->countryTransformers = sizeof($countryTransformers) ? $countryTransformers : [
+            'AT' => 'CustomerManagementFrameworkBundle\DataTransformer\Zip\At',
+            'DE' => 'CustomerManagementFrameworkBundle\DataTransformer\Zip\De',
+            'NL' => 'CustomerManagementFrameworkBundle\DataTransformer\Zip\Nl',
+            'DK' => 'CustomerManagementFrameworkBundle\DataTransformer\Zip\Dk',
+            'BE' => 'CustomerManagementFrameworkBundle\DataTransformer\Zip\Be',
+            'RU' => 'CustomerManagementFrameworkBundle\DataTransformer\Zip\Ru',
+            'CH' => 'CustomerManagementFrameworkBundle\DataTransformer\Zip\Ch',
+            'SE' => 'CustomerManagementFrameworkBundle\DataTransformer\Zip\Se',
+            'GB' => 'CustomerManagementFrameworkBundle\DataTransformer\Zip\Gb',
         ];
     }
 
@@ -59,7 +59,7 @@ class NormalizeZip extends AbstractCustomerSaveHandler
 
             $customer->setZip($transformer->transform($customer->getZip()));
         } else {
-            $this->logger->debug(sprintf('no zip transformer for country code %s defined', $countryCode));
+            $this->getLogger()->debug(sprintf('no zip transformer for country code %s defined', $countryCode));
         }
     }
 }

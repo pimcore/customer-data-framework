@@ -22,13 +22,14 @@ use Psr\Log\LoggerInterface;
  */
 class MarkEmailAddressAsValid extends AbstractCustomerSaveHandler
 {
+    /**
+     * @var string
+     */
     private $markValidField;
 
-    public function __construct($config, LoggerInterface $logger)
+    public function __construct($markValidField = 'emailOk')
     {
-        parent::__construct($config, $logger);
-
-        $this->markValidField = $this->config->markValidField ?: 'emailOk';
+        $this->markValidField = $markValidField;
     }
 
     /**
