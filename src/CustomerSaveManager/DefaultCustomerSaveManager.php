@@ -11,10 +11,8 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerSaveManager;
 
-use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\CustomerSaveHandler\CustomerSaveHandlerInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface;
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db;
@@ -31,18 +29,42 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     private $disableDuplicateIndex = false;
     private $disableQueue = false;
 
-    protected $config;
-
     /**
      * @var CustomerSaveHandlerInterface[]
      */
-    protected $saveHandlers;
+    protected $saveHandlers = [];
 
-    public function __construct()
+    /**
+     * @var bool
+     */
+    private $enableAutomaticObjectNamingScheme;
+
+    /**
+     * DefaultCustomerSaveManager constructor.
+     * @param bool $enableAutomaticObjectNamingScheme
+     */
+    public function __construct($enableAutomaticObjectNamingScheme = false)
     {
-        $config = Config::getConfig();
-        $this->config = $config->CustomerSaveManager;
+        $this->enableAutomaticObjectNamingScheme = $enableAutomaticObjectNamingScheme;
     }
+
+    /**
+     * @return bool
+     */
+    public function getEnableAutomaticObjectNamingScheme()
+    {
+        return $this->enableAutomaticObjectNamingScheme;
+    }
+
+    /**
+     * @param bool $enableAutomaticObjectNamingScheme
+     */
+    public function setEnableAutomaticObjectNamingScheme($enableAutomaticObjectNamingScheme)
+    {
+        $this->enableAutomaticObjectNamingScheme = $enableAutomaticObjectNamingScheme;
+    }
+
+
 
     /**
      * @return bool
@@ -146,7 +168,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     protected function applyNamingScheme(CustomerInterface $customer)
     {
-        if ($this->config->enableAutomaticObjectNamingScheme) {
+        if ($this->enableAutomaticObjectNamingScheme) {
             \Pimcore::getContainer()->get('cmf.customer_provider')->applyObjectNamingScheme($customer);
         }
     }
@@ -242,7 +264,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     protected function applySaveHandlers(CustomerInterface $customer, $saveHandlerMethod, $reinitSaveHandlers = false)
     {
-        $saveHandlers = $this->createSaveHandlers();
+        $saveHandlers = $this->getSaveHandlers();
 
         if ($reinitSaveHandlers) {
             $this->reinitSaveHandlers($saveHandlers, $customer);
@@ -303,33 +325,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     }
 
     /**
-     * @return CustomerSaveHandlerInterface[]
-     */
-    protected function createSaveHandlers()
-    {
-        if (is_null($this->saveHandlers)) {
-            $saveHandlers = [];
-            foreach ($this->config->saveHandlers as $saveHandlerConfig) {
-                $class = (string)$saveHandlerConfig->saveHandler;
-
-                /**
-                 * @var CustomerSaveHandlerInterface $saveHandler
-                 */
-                $saveHandler = Factory::getInstance()->createObject(
-                    $class,
-                    CustomerSaveHandlerInterface::class,
-                    ['config' => $saveHandlerConfig, 'logger' => $this->getLogger()]
-                );
-                $saveHandlers[] = $saveHandler;
-            }
-
-            $this->saveHandlers = $saveHandlers;
-        }
-
-        return $this->saveHandlers;
-    }
-
-    /**
      * @param CustomerInterface $customer
      * @param bool $disableVersions
      *
@@ -352,6 +347,27 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     public function saveDirty(CustomerInterface $customer)
     {
         return $this->saveWithOptions($customer, $this->createDirtyOptions(), true);
+    }
+
+    /**
+     * @return CustomerSaveHandlerInterface[]
+     */
+    public function getSaveHandlers()
+    {
+        return $this->saveHandlers;
+    }
+
+    /**
+     * @param CustomerSaveHandlerInterface[] $saveHandlers
+     */
+    public function setSaveHandlers(array $saveHandlers)
+    {
+        $this->saveHandlers = $saveHandlers;
+    }
+
+    public function addSaveHandler(CustomerSaveHandlerInterface $saveHandler)
+    {
+        $this->saveHandlers[] = $saveHandler;
     }
 
     /**

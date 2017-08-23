@@ -3,16 +3,12 @@
 declare(strict_types=1);
 
 /**
- * Pimcore
- *
- * This source file is available under two different licenses:
- * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * Pimcore Customer Management Framework Bundle
  * Full copyright and license information is available in
- * LICENSE.md which is distributed with this source code.
+ * License.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
+ * @license    GPLv3
  */
 
 namespace CustomerManagementFrameworkBundle\DependencyInjection;
@@ -36,6 +32,28 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end();
 
+        $rootNode->append($this->buildCustomerSaveManagerNode());
+
         return $treeBuilder;
+    }
+
+    private function buildCustomerSaveManagerNode()
+    {
+        $treeBuilder = new TreeBuilder();
+
+        $customerSaveManager = $treeBuilder->root('customer_save_manager');
+
+        $customerSaveManager
+            ->addDefaultsIfNotSet()
+            ->info('Configuration of customer save manager');
+
+        $customerSaveManager
+            ->children()
+                ->booleanNode('enableAutomaticObjectNamingScheme')
+                    ->defaultFalse()
+                ->end()
+        ;
+
+        return $customerSaveManager;
     }
 }

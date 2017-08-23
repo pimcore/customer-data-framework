@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\DependencyInjection;
 
+use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
@@ -37,5 +37,14 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         if ($config['oauth_client']['enabled']) {
             $loader->load('services_security_oauth_client.yml');
         }
+
+        $this->registerCustomerSaveManagerConfiguration($container, $config['customer_save_manager']);
+    }
+
+    private function registerCustomerSaveManagerConfiguration(ContainerBuilder $container, array $config)
+    {
+        $container->setAlias('cmf.customer_save_manager', CustomerSaveManagerInterface::class);
+        $definition = $container->getDefinition(CustomerSaveManagerInterface::class);
+        $definition->addArgument($config['enableAutomaticObjectNamingScheme']);
     }
 }

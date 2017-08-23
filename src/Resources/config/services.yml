@@ -1,8 +1,19 @@
 parameters:
     cmf.mailchimp.client.apikey:
     cmf.customer_export.items_per_request: 500
+    cmf.customer_export.items_per_request: 500
+
+
 
 services:
+    _defaults:
+        public: true
+        autowire: true
+        autoconfigure: true
+
+    CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface:
+        class: CustomerManagementFrameworkBundle\CustomerSaveManager\DefaultCustomerSaveManager
+
     cmf.logger:
         alias: logger
 
@@ -33,10 +44,6 @@ services:
         lazy: true
         calls:
             - [setLogger, ['@cmf.logger']]
-
-    cmf.customer_save_manager:
-        class: CustomerManagementFrameworkBundle\CustomerSaveManager\DefaultCustomerSaveManager
-        lazy: true
 
     cmf.customer_save_validator:
         class: CustomerManagementFrameworkBundle\CustomerSaveValidator\DefaultCustomerSaveValidator
@@ -160,13 +167,3 @@ services:
         class: CustomerManagementFrameworkBundle\Encryption\DefaultEncryptionService
         calls:
              - [setLogger, ['@cmf.logger']]
-
-    cmf.mailchimp.client:
-        class: DrewM\MailChimp\MailChimp
-        lazy: true
-        arguments: ['%cmf.mailchimp.client.apikey%']
-
-    cmf.mailchimp.export_service:
-        class: CustomerManagementFrameworkBundle\ExportToolkit\ExportService\MailChimpExportService
-        lazy: true
-        arguments: ['@cmf.mailchimp.client']
