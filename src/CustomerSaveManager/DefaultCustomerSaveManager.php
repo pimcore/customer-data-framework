@@ -11,6 +11,7 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerSaveManager;
 
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveHandler\CustomerSaveHandlerInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
@@ -37,15 +38,21 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     /**
      * @var bool
      */
-    private $enableAutomaticObjectNamingScheme;
+    protected $enableAutomaticObjectNamingScheme;
+
+    /**
+     * @var CustomerProviderInterface
+     */
+    private $customerProvider;
 
     /**
      * DefaultCustomerSaveManager constructor.
      * @param bool $enableAutomaticObjectNamingScheme
      */
-    public function __construct($enableAutomaticObjectNamingScheme = false)
+    public function __construct($enableAutomaticObjectNamingScheme = false, CustomerProviderInterface $customerProvider)
     {
         $this->enableAutomaticObjectNamingScheme = $enableAutomaticObjectNamingScheme;
+        $this->customerProvider = $customerProvider;
     }
 
     /**
@@ -169,7 +176,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     protected function applyNamingScheme(CustomerInterface $customer)
     {
         if ($this->enableAutomaticObjectNamingScheme) {
-            \Pimcore::getContainer()->get('cmf.customer_provider')->applyObjectNamingScheme($customer);
+            $this->customerProvider->applyObjectNamingScheme($customer);
         }
     }
 
@@ -310,7 +317,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         foreach ($saveHandlers as $handler) {
             if ($handler->isOriginalCustomerNeeded()) {
                 \Pimcore::collectGarbage();
-                $originalCustomer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById($customer->getId());
+                $originalCustomer = $this->customerProvider->getById($customer->getId());
                 break;
             }
         }

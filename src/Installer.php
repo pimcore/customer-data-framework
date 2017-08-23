@@ -215,6 +215,17 @@ class Installer extends AbstractInstaller
               KEY `declined` (`declined`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
         );
+
+        \Pimcore\Db::get()->query(
+            "CREATE TABLE `plugin_cmf_newsletter_queue` (
+              `customerId` int(11) unsigned NOT NULL,
+              `email` varchar(255) DEFAULT NULL,
+              `operation` varchar(20) DEFAULT NULL,
+              `modificationDate` bigint(20) DEFAULT NULL,
+              UNIQUE KEY `customerId` (`customerId`),
+              KEY `operation` (`operation`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+        );
     }
 
     public static function installClasses()

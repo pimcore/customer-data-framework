@@ -12,6 +12,7 @@
 namespace CustomerManagementFrameworkBundle\SegmentManager;
 
 use CustomerManagementFrameworkBundle\Config;
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Helper\Objects;
@@ -36,11 +37,20 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
     protected $mergedSegmentsCustomerSaveQueue;
 
+    /**
+     * @var CustomerSaveManagerInterface
+     */
     protected $customerSaveManager;
 
-    public function __construct(CustomerSaveManagerInterface $customerSaveManager)
+    /**
+     * @var CustomerProviderInterface
+     */
+    protected $customerProvider;
+
+    public function __construct(CustomerSaveManagerInterface $customerSaveManager, CustomerProviderInterface $customerProvider)
     {
         $this->customerSaveManager = $customerSaveManager;
+        $this->customerProvider = $customerProvider;
 
         $this->config = $config = Config::getConfig()->SegmentManager;
     }
@@ -73,7 +83,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     public function getCustomersBySegmentIds(array $segmentIds, $conditionMode = self::CONDITION_AND)
     {
-        $list = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
+        $list = $this->customerProvider->getList();
         $list->setUnpublished(false);
 
         $conditions = [];
@@ -145,7 +155,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
         $segmentBuilders = self::createSegmentBuilders($segmentBuilderClass);
         self::prepareSegmentBuilders($segmentBuilders);
 
-        $customerList = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
+        $customerList = $this->customerProvider->getList();
         // don't modify queue
         $removeCustomerFromQueue = is_null($segmentBuilderClass);
 
