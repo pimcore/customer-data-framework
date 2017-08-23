@@ -133,7 +133,6 @@ services:
     cmf.rest.customers_handler:
         class: CustomerManagementFrameworkBundle\RESTApi\CustomersHandler
         lazy: true
-        arguments: ['@cmf.customer_provider']
         calls:
             - [setApiResourceRoute, ['customermanagementframework_rest_api_customers_readrecord']]
             - [setLogger, ['@cmf.logger']]
