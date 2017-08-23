@@ -68,40 +68,6 @@ return [
         //'namingScheme' => '{countryCode}/{zip}/{firstname}-{lastname}' //naming scheme relative to the parentPath (incl. object key)
     ],
 
-    'CustomerSaveManager' => [
-        'enableAutomaticObjectNamingScheme' => true,
-
-        'saveHandlers' => [
-            /*[
-                'saveHandler' => '\CustomerManagementFramework\CustomerSaveHandler\NormalizeZip',
-                'countryTransformers' =>
-                    [
-                        'A' => 'CustomerManagementFramework\DataTransformer\Zip\At',
-                        'AT' => 'CustomerManagementFramework\DataTransformer\Zip\At',
-                        'D' => 'CustomerManagementFramework\DataTransformer\Zip\De',
-                        'DE' => 'CustomerManagementFramework\DataTransformer\Zip\De',
-                        'NL' => 'CustomerManagementFramework\DataTransformer\Zip\Nl',
-                        'DK' => 'CustomerManagementFramework\DataTransformer\Zip\Dk',
-                        'BE' => 'CustomerManagementFramework\DataTransformer\Zip\Be',
-                        'RU' => 'CustomerManagementFramework\DataTransformer\Zip\Ru',
-                        'CH' => 'CustomerManagementFramework\DataTransformer\Zip\Ch',
-                        'SE' => 'CustomerManagementFramework\DataTransformer\Zip\Se',
-                        'GB' => 'CustomerManagementFramework\DataTransformer\Zip\Gb',
-                    ]
-            ],
-            [
-                'saveHandler' => '\CustomerManagementFramework\CustomerSaveHandler\RemoveBlacklistedEmails',
-                'blackListFile' => PIMCORE_WEBSITE_PATH . '/config/plugins/CustomerManagementFramework/mail-blacklist.txt'
-            ],
-            [
-                'saveHandler' => '\CustomerManagementFramework\CustomerSaveHandler\MarkEmailAddressAsValid',
-                'markValidField' => 'emailOk'
-            ],
-            [
-                'saveHandler' => '\Website\CustomerManagementFramework\CustomerSaveHandler\CustomerId'
-            ]*/
-        ],
-    ],
 
     'CustomerSaveValidator' => [
         'requiredFields' => [
