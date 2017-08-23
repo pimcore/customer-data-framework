@@ -12,6 +12,7 @@
 namespace CustomerManagementFrameworkBundle\SegmentManager;
 
 use CustomerManagementFrameworkBundle\Config;
+use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Helper\Objects;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
@@ -35,8 +36,12 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
     protected $mergedSegmentsCustomerSaveQueue;
 
-    public function __construct()
+    protected $customerSaveManager;
+
+    public function __construct(CustomerSaveManagerInterface $customerSaveManager)
     {
+        $this->customerSaveManager = $customerSaveManager;
+
         $this->config = $config = Config::getConfig()->SegmentManager;
     }
 
@@ -134,8 +139,8 @@ class DefaultSegmentManager implements SegmentManagerInterface
         $logger = $this->getLogger();
         $logger->notice('start segment building');
 
-        $backup = \Pimcore::getContainer()->get('cmf.customer_save_manager')->getSegmentBuildingHookEnabled();
-        \Pimcore::getContainer()->get('cmf.customer_save_manager')->setSegmentBuildingHookEnabled(false);
+        $backup = $this->customerSaveManager->getSegmentBuildingHookEnabled();
+        $this->customerSaveManager->setSegmentBuildingHookEnabled(false);
 
         $segmentBuilders = self::createSegmentBuilders($segmentBuilderClass);
         self::prepareSegmentBuilders($segmentBuilders);
@@ -370,7 +375,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
             $flushQueue($customerQueueRemoval);
         }
 
-        \Pimcore::getContainer()->get('cmf.customer_save_manager')->setSegmentBuildingHookEnabled($backup);
+        $this->customerSaveManager->setSegmentBuildingHookEnabled($backup);
     }
 
     /**
