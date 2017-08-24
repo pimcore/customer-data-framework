@@ -119,6 +119,6 @@ class GenderSegmentBuilder extends AbstractSegmentBuilder
 
     public function executeOnCustomerSave()
     {
-        return false;
+        return true;
     }
 }
