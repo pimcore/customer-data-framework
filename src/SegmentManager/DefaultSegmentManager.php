@@ -11,10 +11,8 @@
 
 namespace CustomerManagementFrameworkBundle\SegmentManager;
 
-use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
-use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Helper\Objects;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
@@ -33,8 +31,6 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
     const CHANGES_QUEUE_TABLE = 'plugin_cmf_segmentbuilder_changes_queue';
 
-    private $config;
-
     protected $mergedSegmentsCustomerSaveQueue;
 
     protected $segmentFolderCalculated;
@@ -44,6 +40,11 @@ class DefaultSegmentManager implements SegmentManagerInterface
      * @var CustomerSaveManagerInterface
      */
     protected $customerSaveManager;
+
+    /**
+     * @var SegmentBuilderInterface
+     */
+    protected $segmentBuilders = [];
 
     /**
      * @var CustomerProviderInterface
@@ -57,8 +58,6 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
         $this->customerSaveManager = $customerSaveManager;
         $this->customerProvider = $customerProvider;
-
-        $this->config = $config = Config::getConfig()->SegmentManager;
     }
 
     /**
@@ -137,7 +136,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
     /**
      * @param bool $changesQueueOnly
-     * @param null $segmentBuilderClass
+     * @param string|null $segmentBuilderServiceId
      * @param int[]|null $customQueue
      * @param bool|null $activeState
      * @param array $options
@@ -146,7 +145,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     public function buildCalculatedSegments(
         $changesQueueOnly = true,
-        $segmentBuilderClass = null,
+        $segmentBuilderServiceId = null,
         array $customQueue = null,
         $activeState = null,
         $options = [],
@@ -158,12 +157,17 @@ class DefaultSegmentManager implements SegmentManagerInterface
         $backup = $this->customerSaveManager->getSegmentBuildingHookEnabled();
         $this->customerSaveManager->setSegmentBuildingHookEnabled(false);
 
-        $segmentBuilders = self::createSegmentBuilders($segmentBuilderClass);
+        if(!is_null($segmentBuilderServiceId)) {
+            $segmentBuilders = [\Pimcore::getContainer()->get($segmentBuilderServiceId)];
+        } else {
+            $segmentBuilders = $this->segmentBuilders;
+        }
+
         self::prepareSegmentBuilders($segmentBuilders);
 
         $customerList = $this->customerProvider->getList();
         // don't modify queue
-        $removeCustomerFromQueue = is_null($segmentBuilderClass);
+        $removeCustomerFromQueue = is_null($segmentBuilderServiceId);
 
         $conditionParts = [];
         $conditionVariables = null;
@@ -399,7 +403,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     public function buildCalculatedSegmentsOnCustomerSave(CustomerInterface $customer)
     {
-        $segmentBuilders = self::createSegmentBuilders();
+        $segmentBuilders = $this->segmentBuilders;
         self::prepareSegmentBuilders($segmentBuilders, true);
 
         foreach ($segmentBuilders as $segmentBuilder) {
@@ -415,9 +419,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
     public function executeSegmentBuilderMaintenance()
     {
-        $segmentBuilders = self::createSegmentBuilders();
-
-        foreach ($segmentBuilders as $segmentBuilder) {
+        foreach ($this->segmentBuilders as $segmentBuilder) {
             $segmentBuilder->maintenance($this);
         }
     }
@@ -616,7 +618,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
                 $segmentGroup->setParent(
                     Service::createFolderByPath(
-                        (bool)$values['calculated'] ? $this->config->segmentsFolder->calculated : $this->config->segmentsFolder->manual
+                        (bool)$values['calculated'] ? $this->segmentFolderCalculated : $this->segmentFolderManual
                     )
                 );
             }
@@ -832,58 +834,10 @@ class DefaultSegmentManager implements SegmentManagerInterface
         \Pimcore::getContainer()->get('cmf.segment_manager.segment_merger')->saveMergedSegments($customer);
     }
 
-    /**
-     * Returns a segment builder instance of given class.
-     *
-     * @param $segmentBuilderClass
-     *
-     * @return SegmentBuilderInterface|null
-     */
-    public function createSegmentBuilder($segmentBuilderClass)
+
+    public function addSegmentBuilder(SegmentBuilderInterface $segmentBuilder)
     {
-        $builders = $this->createSegmentBuilders($segmentBuilderClass);
-
-        if (sizeof($builders)) {
-            return $builders[0];
-        }
-
-        return null;
+        $this->segmentBuilders[] = $segmentBuilder;
     }
 
-    /**
-     * @return SegmentBuilderInterface[]
-     */
-    protected function createSegmentBuilders($segmentBuilderClass = null)
-    {
-        $config = $this->config->segmentBuilders;
-
-        if (is_null($config)) {
-            $this->getLogger()->debug('no segmentBuilders section found in plugin config file');
-
-            return [];
-        }
-
-        if (!sizeof($config)) {
-            $this->getLogger()->debug('no segment builders defined in plugin config file');
-
-            return [];
-        }
-
-        $segmentBuilders = [];
-        foreach ($config as $segmentBuilderConfig) {
-            if (is_null($segmentBuilderClass) || ltrim($segmentBuilderClass, '\\') == ltrim(
-                    (string)$segmentBuilderConfig->segmentBuilder,
-                    '\\'
-                )
-            ) {
-                $segmentBuilders[] = Factory::getInstance()->createObject(
-                    (string)$segmentBuilderConfig->segmentBuilder,
-                    SegmentBuilderInterface::class,
-                    ['config' => $segmentBuilderConfig, 'logger' => $this->getLogger()]
-                );
-            }
-        }
-
-        return $segmentBuilders;
-    }
 }

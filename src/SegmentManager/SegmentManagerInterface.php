@@ -70,10 +70,10 @@ interface SegmentManagerInterface
 
     /**
      * Applies all SegmentBuilders to customers. If the param $changesQueue only is set to true this is done only for customers which where changed since the last run.
-     * If $segmentBuilderClass is given (php class name) then only this SegmentBuilder will be executed.
+     * If $segmentBuilderServiceId is given (php class name) then only this SegmentBuilder will be executed.
      *
      * @param bool $changesQueueOnly
-     * @param string $segmentBuilderClass
+     * @param string|null $segmentBuilderServiceId
      * @param int[]|null $customQueue Process only customer from given queue
      * @param bool|null $activeState Consider active-state, null : ignore, false -> inactive only, true -> active only
      * @param array $options
@@ -82,20 +82,17 @@ interface SegmentManagerInterface
      */
     public function buildCalculatedSegments(
         $changesQueueOnly = true,
-        $segmentBuilderClass = null,
+        $segmentBuilderServiceId = null,
         array $customQueue = null,
         $activeState = null,
         $options = []
     );
 
     /**
-     * Returns a segment builder instance of given class.
-     *
-     * @param $segmentBuilderClass
-     *
-     * @return SegmentBuilderInterface|null
+     * @param SegmentBuilderInterface $segmentBuilder
+     * @return void
      */
-    public function createSegmentBuilder($segmentBuilderClass);
+    public function addSegmentBuilder(SegmentBuilderInterface $segmentBuilder);
 
     /**
      * Calls all maintenance methods of all SegmentBuilders

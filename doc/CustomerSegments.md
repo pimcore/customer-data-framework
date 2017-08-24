@@ -95,7 +95,7 @@ build segments for all customers:
 php pimcore/cli/console.php cmf:build-segments -f
 ```
 
-build segment x for all customers: 
+build segment x for all customers (provide symfony service id of segment builder): 
 ```
-php pimcore/cli/console.php cmf:build-segments --segmentBuilder='\Website\CustomerManagementFrameworkBundle\SegmentBuilder\Brand'
+php pimcore/cli/console.php cmf:build-segments --segmentBuilder='Website\CustomerManagementFrameworkBundle\SegmentBuilder\Brand'
 ```

@@ -16,14 +16,7 @@ use Psr\Log\LoggerInterface;
 
 abstract class AbstractSegmentBuilder implements SegmentBuilderInterface
 {
-    private $config;
-    private $logger;
 
-    public function __construct($config, LoggerInterface $logger)
-    {
-        $this->config = $config;
-        $this->logger = $logger;
-    }
 
     /**
      * return the name of the segment builder
