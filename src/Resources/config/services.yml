@@ -32,6 +32,13 @@ services:
          calls:
             - [setLogger, ['@cmf.logger']]
 
+
+    CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface:
+        class: CustomerManagementFrameworkBundle\CustomerSaveValidator\DefaultCustomerSaveValidator
+        arguments:
+            - '%pimcore_customer_management_framework.customer_save_validator.requiredFields%'
+            - '%pimcore_customer_management_framework.customer_save_validator.checkForDuplicates%'
+
     cmf.logger:
         alias: logger
 
@@ -63,9 +70,6 @@ services:
         calls:
             - [setLogger, ['@cmf.logger']]
 
-    cmf.customer_save_validator:
-        class: CustomerManagementFrameworkBundle\CustomerSaveValidator\DefaultCustomerSaveValidator
-        lazy: true
 
     cmf.segment_manager:
         class: CustomerManagementFrameworkBundle\SegmentManager\DefaultSegmentManager

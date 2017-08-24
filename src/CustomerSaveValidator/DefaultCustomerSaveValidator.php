@@ -11,26 +11,31 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerSaveValidator;
 
-use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\Exception\DuplicateCustomerException;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\Element\ValidationException;
 
 class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
 {
-    private $config;
-
     /**
      * @var array
      */
     private $requiredFields;
 
-    public function __construct()
-    {
-        $config = Config::getConfig();
-        $this->config = $config->CustomerSaveValidator;
+    /**
+     * @var bool
+     */
+    private $checkForDuplicates;
 
-        $this->requiredFields = $this->config->requiredFields ? $this->config->requiredFields->toArray() : [];
+    /**
+     * DefaultCustomerSaveValidator constructor.
+     * @param array $requiredFields
+     * @param bool $checkForDuplicates
+     */
+    public function __construct(array $requiredFields, $checkForDuplicates)
+    {
+        $this->requiredFields = $requiredFields;
+        $this->checkForDuplicates = $checkForDuplicates;
     }
 
     public function validate(CustomerInterface $customer, $withDuplicatesCheck = true)
@@ -89,7 +94,7 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
 
     protected function validateDuplicates(CustomerInterface $customer)
     {
-        if ($this->config->checkForDuplicates) {
+        if ($this->checkForDuplicates) {
             $duplicates = \Pimcore::getContainer()->get('cmf.customer_duplicates_service')->getDuplicatesOfCustomer(
                 $customer
             );

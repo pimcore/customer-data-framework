@@ -15,6 +15,7 @@ namespace CustomerManagementFrameworkBundle\DependencyInjection;
 
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
+use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -41,6 +42,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
 
         $this->registerGeneralConfiguration($container, $config['general']);
         $this->registerCustomerSaveManagerConfiguration($container, $config['customer_save_manager']);
+        $this->registerCustomerSaveValidatorConfiguration($container, $config['customer_save_validator']);
         $this->registerCustomerProviderConfiguration($container, $config['customer_provider']);
     }
 
@@ -54,6 +56,14 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $container->setAlias('cmf.customer_save_manager', CustomerSaveManagerInterface::class);
 
         $container->setParameter('pimcore_customer_management_framework.customer_save_manager.enableAutomaticObjectNamingScheme', $config['enableAutomaticObjectNamingScheme']);
+    }
+
+    private function registerCustomerSaveValidatorConfiguration(ContainerBuilder $container, array $config)
+    {
+        $container->setAlias('cmf.customer_save_validator', CustomerSaveValidatorInterface::class);
+
+        $container->setParameter('pimcore_customer_management_framework.customer_save_validator.requiredFields', is_array($config['requiredFields']) ? $config['requiredFields'] : []);
+        $container->setParameter('pimcore_customer_management_framework.customer_save_validator.checkForDuplicates', $config['checkForDuplicates']);
     }
 
     private function registerCustomerProviderConfiguration(ContainerBuilder $container, array $config)

@@ -34,6 +34,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode->append($this->buildGeneralNode());
         $rootNode->append($this->buildCustomerSaveManagerNode());
+        $rootNode->append($this->buildCustomerSaveValidatorNode());
         $rootNode->append($this->buildCustomerProviderNode());
 
         return $treeBuilder;
@@ -77,6 +78,31 @@ class Configuration implements ConfigurationInterface
         ;
 
         return $customerSaveManager;
+    }
+
+    private function buildCustomerSaveValidatorNode()
+    {
+        $treeBuilder = new TreeBuilder();
+
+        $customerSaveValidator = $treeBuilder->root('customer_save_validator');
+
+        $customerSaveValidator
+            ->addDefaultsIfNotSet()
+            ->info('Configuration of customer save manager');
+
+        $customerSaveValidator
+            ->children()
+                ->booleanNode('checkForDuplicates')
+                ->info('If enabled an exception will be thrown when saving a customer object if duplicate customers exist. Caution: this is only applied to new customer instances and not when a customer get\'s updated.')
+                    ->defaultFalse()
+                ->end()
+                ->arrayNode('requiredFields')
+                        ->prototype('array')
+                            ->prototype('scalar')
+                ->end()
+        ;
+
+        return $customerSaveValidator;
     }
 
     private function buildCustomerProviderNode()
