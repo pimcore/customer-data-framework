@@ -12,6 +12,7 @@
 namespace CustomerManagementFrameworkBundle\CustomerProvider;
 
 use CustomerManagementFrameworkBundle\Config;
+use CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Object\Concrete;
@@ -29,6 +30,9 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     protected $parentPath;
 
+    /**
+     * @var ObjectNamingSchemeInterface
+     */
     protected $namingScheme;
 
     /**
@@ -37,7 +41,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      * @param $parentPath
      * @param $namingScheme
      */
-    public function __construct($pimcoreClass, $parentPath, $namingScheme)
+    public function __construct($pimcoreClass, $parentPath, ObjectNamingSchemeInterface $namingScheme)
     {
         $this->pimcoreClass = $pimcoreClass;
         if (empty($this->pimcoreClass)) {
@@ -168,12 +172,19 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     public function applyObjectNamingScheme(CustomerInterface $customer)
     {
-        if (!$this->namingScheme) {
-            return;
-        }
-        $namingScheme = \Pimcore::getContainer()->get('cmf.customer_provider.object_naming_scheme');
-        $namingScheme->apply($customer, $this->parentPath, $this->namingScheme);
+        $this->namingScheme->apply($customer);
     }
+
+    public function getParentParentPath()
+    {
+        return $this->parentPath;
+    }
+
+    public function setParentPath($parentPath)
+    {
+        $this->parentPath = $parentPath;
+    }
+
 
     /**
      * @param string $method

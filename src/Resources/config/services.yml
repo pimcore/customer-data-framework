@@ -17,7 +17,18 @@ services:
 
     CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface:
          class: CustomerManagementFrameworkBundle\CustomerProvider\DefaultCustomerProvider
+         arguments:
+            - '%pimcore_customer_management_framework.general.customerPimcoreClass%'
+            - '%pimcore_customer_management_framework.customer_provider.parentPath%'
 
+
+    CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface:
+         class: CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\DefaultObjectNamingScheme
+         arguments:
+            - '%pimcore_customer_management_framework.customer_provider.namingScheme%'
+            - '%pimcore_customer_management_framework.customer_provider.parentPath%'
+         calls:
+            - [setLogger, ['@cmf.logger']]
 
     cmf.logger:
         alias: logger
@@ -105,11 +116,6 @@ services:
          class: CustomerManagementFrameworkBundle\CustomerList\ExporterManager
          lazy: true
 
-    cmf.customer_provider.object_naming_scheme:
-         class: CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\DefaultObjectNamingScheme
-         lazy: true
-         calls:
-            - [setLogger, ['@cmf.logger']]
 
     cmf.action_trigger.queue:
         class: CustomerManagementFrameworkBundle\ActionTrigger\Queue\DefaultQueue

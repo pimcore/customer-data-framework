@@ -39,8 +39,14 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
             $loader->load('services_security_oauth_client.yml');
         }
 
+        $this->registerGeneralConfiguration($container, $config['general']);
         $this->registerCustomerSaveManagerConfiguration($container, $config['customer_save_manager']);
-        $this->registerCustomerProviderConfiguration($container, $config['customer_provider'], $config);
+        $this->registerCustomerProviderConfiguration($container, $config['customer_provider']);
+    }
+
+    private function registerGeneralConfiguration(ContainerBuilder $container, array $config)
+    {
+        $container->setParameter('pimcore_customer_management_framework.general.customerPimcoreClass', $config['customerPimcoreClass']);
     }
 
     private function registerCustomerSaveManagerConfiguration(ContainerBuilder $container, array $config)
@@ -50,12 +56,11 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $definition->addArgument($config['enableAutomaticObjectNamingScheme']);
     }
 
-    private function registerCustomerProviderConfiguration(ContainerBuilder $container, array $config, array $totalConfig)
+    private function registerCustomerProviderConfiguration(ContainerBuilder $container, array $config)
     {
         $container->setAlias('cmf.customer_provider', CustomerProviderInterface::class);
-        $definition = $container->getDefinition(CustomerProviderInterface::class);
-        $definition->addArgument($totalConfig['general']['customerPimcoreClass']);
-        $definition->addArgument($config['parentPath']);
-        $definition->addArgument($config['namingScheme']);
+
+        $container->setParameter('pimcore_customer_management_framework.customer_provider.namingScheme', $config['namingScheme']);
+        $container->setParameter('pimcore_customer_management_framework.customer_provider.parentPath', $config['parentPath']);
     }
 }
