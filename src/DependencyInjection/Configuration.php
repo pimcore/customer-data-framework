@@ -36,6 +36,7 @@ class Configuration implements ConfigurationInterface
         $rootNode->append($this->buildEncryptionNode());
         $rootNode->append($this->buildCustomerSaveManagerNode());
         $rootNode->append($this->buildCustomerSaveValidatorNode());
+        $rootNode->append($this->buildSegmentManagerNode());
         $rootNode->append($this->buildCustomerProviderNode());
 
         return $treeBuilder;
@@ -128,6 +129,32 @@ class Configuration implements ConfigurationInterface
         ;
 
         return $customerSaveValidator;
+    }
+
+    private function buildSegmentManagerNode()
+    {
+        $treeBuilder = new TreeBuilder();
+
+        $segmentManager = $treeBuilder->root('segment_manager');
+
+        $segmentManager
+            ->addDefaultsIfNotSet()
+            ->info('Configuration of segment manager');
+
+        $segmentManager
+            ->children()
+                ->arrayNode('segmentFolder')
+                    ->children()
+                        ->scalarNode('manual')
+                            ->defaultValue('/segments/manual')
+                        ->end()
+                        ->scalarNode('calculated')
+                            ->defaultValue('/segments/calculated')
+                        ->end()
+                ->end()
+        ;
+
+        return $segmentManager;
     }
 
     private function buildCustomerProviderNode()

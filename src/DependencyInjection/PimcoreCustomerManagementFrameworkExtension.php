@@ -16,6 +16,7 @@ namespace CustomerManagementFrameworkBundle\DependencyInjection;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -44,6 +45,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $this->registerEncryptionConfiguration($container, $config['encryption']);
         $this->registerCustomerSaveManagerConfiguration($container, $config['customer_save_manager']);
         $this->registerCustomerSaveValidatorConfiguration($container, $config['customer_save_validator']);
+        $this->registerSegmentManagerConfiguration($container, $config['segment_manager']);
         $this->registerCustomerProviderConfiguration($container, $config['customer_provider']);
     }
 
@@ -70,6 +72,14 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
 
         $container->setParameter('pimcore_customer_management_framework.customer_save_validator.requiredFields', is_array($config['requiredFields']) ? $config['requiredFields'] : []);
         $container->setParameter('pimcore_customer_management_framework.customer_save_validator.checkForDuplicates', $config['checkForDuplicates']);
+    }
+
+    private function registerSegmentManagerConfiguration(ContainerBuilder $container, array $config)
+    {
+        $container->setAlias('cmf.segment_manager', SegmentManagerInterface::class);
+
+        $container->setParameter('pimcore_customer_management_framework.segment_manager.segmentFolder.calculated', $config['segmentFolder']['calculated']);
+        $container->setParameter('pimcore_customer_management_framework.segment_manager.segmentFolder.manual', $config['segmentFolder']['manual']);
     }
 
     private function registerCustomerProviderConfiguration(ContainerBuilder $container, array $config)

@@ -37,6 +37,9 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
     protected $mergedSegmentsCustomerSaveQueue;
 
+    protected $segmentFolderCalculated;
+    protected $segmentFolderManual;
+
     /**
      * @var CustomerSaveManagerInterface
      */
@@ -47,8 +50,11 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     protected $customerProvider;
 
-    public function __construct(CustomerSaveManagerInterface $customerSaveManager, CustomerProviderInterface $customerProvider)
+    public function __construct($segmentFolderCalculated, $segmentFolderManual, CustomerSaveManagerInterface $customerSaveManager, CustomerProviderInterface $customerProvider)
     {
+        $this->segmentFolderCalculated = $segmentFolderCalculated;
+        $this->segmentFolderManual = $segmentFolderManual;
+
         $this->customerSaveManager = $customerSaveManager;
         $this->customerProvider = $customerProvider;
 
@@ -569,7 +575,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
         }
 
         $segmentFolder = Service::createFolderByPath(
-            $calculated ? $this->config->segmentsFolder->calculated : $this->config->segmentsFolder->manual
+            $calculated ? $this->segmentFolderCalculated : $this->segmentFolderManual
         );
 
         $segmentGroup = new CustomerSegmentGroup();

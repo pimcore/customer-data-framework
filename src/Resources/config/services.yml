@@ -39,6 +39,15 @@ services:
             - '%pimcore_customer_management_framework.customer_save_validator.requiredFields%'
             - '%pimcore_customer_management_framework.customer_save_validator.checkForDuplicates%'
 
+
+    CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface:
+        class: CustomerManagementFrameworkBundle\SegmentManager\DefaultSegmentManager
+        arguments:
+            - '%pimcore_customer_management_framework.segment_manager.segmentFolder.calculated%'
+            - '%pimcore_customer_management_framework.segment_manager.segmentFolder.manual%'
+        calls:
+            - [setLogger, ['@cmf.logger']]
+
     cmf.logger:
         alias: logger
 
@@ -71,11 +80,6 @@ services:
             - [setLogger, ['@cmf.logger']]
 
 
-    cmf.segment_manager:
-        class: CustomerManagementFrameworkBundle\SegmentManager\DefaultSegmentManager
-        lazy: true
-        calls:
-            - [setLogger, ['@cmf.logger']]
 
     cmf.segment_manager.segment_merger:
         class: CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\DefaultSegmentMerger
