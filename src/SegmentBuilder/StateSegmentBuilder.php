@@ -16,29 +16,25 @@ use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
-use Psr\Log\LoggerInterface;
 
 class StateSegmentBuilder extends AbstractSegmentBuilder
 {
-    private $config;
-    private $logger;
+
     private $countryTransformers;
     private $groupName;
     private $segmentGroup;
 
-    public function __construct($config, LoggerInterface $logger)
+    public function __construct($groupName = 'State', array $countryTransformers = [])
     {
-        $this->config = $config;
 
-        $this->countryTransformers = $config->countryTransformers ? $config->countryTransformers->toArray() : [
-            'AT' => 'CustomerManagementFramework\DataTransformer\Zip2State\At',
-            'DE' => 'CustomerManagementFramework\DataTransformer\Zip2State\De',
-            'CH' => 'CustomerManagementFramework\DataTransformer\Zip2State\Ch',
+        $this->countryTransformers = sizeof($countryTransformers) ? $countryTransformers : [
+            'AT' => \CustomerManagementFrameworkBundle\DataTransformer\Zip2State\At::class,
+            'DE' => \CustomerManagementFrameworkBundle\DataTransformer\Zip2State\De::class,
+            'CH' => \CustomerManagementFrameworkBundle\DataTransformer\Zip2State\Ch::class,
         ];
 
-        $this->logger = $logger;
 
-        $this->groupName = (string)$config->segmentGroup ?: 'State';
+        $this->groupName = $groupName ?: 'State';
     }
 
     /**
