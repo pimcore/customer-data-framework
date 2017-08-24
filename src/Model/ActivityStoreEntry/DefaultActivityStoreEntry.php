@@ -319,7 +319,10 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     public function save($updateAttributes = false)
     {
         $relatedItem = $this->getRelatedItem();
-        $relatedItem->setCustomer($this->getCustomer());
-        \Pimcore::getContainer()->get('cmf.activity_store')->updateActivityStoreEntry($this, $updateAttributes);
+        if($relatedItem) {
+            $relatedItem->setCustomer($this->getCustomer());
+        }
+
+        \Pimcore::getContainer()->get('cmf.activity_store')->updateActivityStoreEntry($this, $relatedItem ? $updateAttributes : false);
     }
 }

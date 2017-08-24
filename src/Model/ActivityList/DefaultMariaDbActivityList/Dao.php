@@ -128,7 +128,11 @@ class Dao
         $condition = $this->model->getCondition();
 
         if ($condition) {
-            $select->where($condition, $this->model->getConditionVariables());
+            if($conditionVariables = $this->model->getConditionVariables()) {
+                $select->where($condition, $conditionVariables);
+            } else {
+                $select->where($condition);
+            }
         }
 
         return $this;

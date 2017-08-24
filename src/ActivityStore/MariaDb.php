@@ -87,7 +87,7 @@ class MariaDb implements ActivityStoreInterface
             $this->saveActivityStoreEntry($entry, $activity);
         }
 
-        throw new \Exception('related activity not found - updating attributes failed');
+        $this->saveActivityStoreEntry($entry);
     }
 
     protected function saveActivityStoreEntry(ActivityStoreEntryInterface $entry, ActivityInterface $activity = null)
@@ -99,18 +99,23 @@ class MariaDb implements ActivityStoreInterface
         unset($data['attributes']);
         if (!is_null($activity)) {
             $data['attributes'] = $this->getActivityAttributeDataAsDynamicColumnInsert($activity);
+            $data['type'] = $db->quote($activity->cmfGetType());
+            $data['implementationClass'] = $db->quote(get_class($activity));
+        } else {
+            $data['type'] = $db->quote($data['type']);
+            $data['implementationClass'] = $db->quote($data['implementationClass']);
         }
 
-        $data['type'] = $db->quote($activity->cmfGetType());
-        $data['implementationClass'] = $db->quote(get_class($activity));
         $data['a_id'] = $db->quote($data['a_id']);
 
         if ($activity instanceof ActivityExternalIdInterface) {
             $data['a_id'] = $db->quote($activity->getId());
         }
 
+        $data['customerId'] = !is_null($activity) ? $activity->getCustomer()->getId() : $entry->getCustomerId();
+
         $md5Data = [
-            'customerId' => $activity->getCustomer()->getId(),
+            'customerId' => $data['customerId'],
             'type' => $data['type'],
             'implementationClass' => $data['implementationClass'],
             'o_id' => $data['o_id'],
