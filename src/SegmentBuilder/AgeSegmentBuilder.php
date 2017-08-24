@@ -33,7 +33,7 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder
 
         $this->groupName = $groupName;
 
-        $this->ageGroups = sizeof($ageGroups) ?: [
+        $this->ageGroups = sizeof($ageGroups) ? $ageGroups: [
             [0, 10],
             [11, 15],
             [16, 18],
