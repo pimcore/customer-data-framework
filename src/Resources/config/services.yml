@@ -13,6 +13,8 @@ services:
 
     CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface:
         class: CustomerManagementFrameworkBundle\CustomerSaveManager\DefaultCustomerSaveManager
+        arguments:
+            - '%pimcore_customer_management_framework.customer_save_manager.enableAutomaticObjectNamingScheme%'
 
 
     CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface:

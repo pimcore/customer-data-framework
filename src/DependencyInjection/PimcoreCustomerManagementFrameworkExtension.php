@@ -52,8 +52,8 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
     private function registerCustomerSaveManagerConfiguration(ContainerBuilder $container, array $config)
     {
         $container->setAlias('cmf.customer_save_manager', CustomerSaveManagerInterface::class);
-        $definition = $container->getDefinition(CustomerSaveManagerInterface::class);
-        $definition->addArgument($config['enableAutomaticObjectNamingScheme']);
+
+        $container->setParameter('pimcore_customer_management_framework.customer_save_manager.enableAutomaticObjectNamingScheme', $config['enableAutomaticObjectNamingScheme']);
     }
 
     private function registerCustomerProviderConfiguration(ContainerBuilder $container, array $config)
