@@ -177,5 +177,7 @@ services:
 
     cmf.encryption_service:
         class: CustomerManagementFrameworkBundle\Encryption\DefaultEncryptionService
+        arguments:
+            - '%pimcore_customer_management_framework.encryption.secret%'
         calls:
              - [setLogger, ['@cmf.logger']]

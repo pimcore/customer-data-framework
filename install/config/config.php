@@ -63,13 +63,6 @@ return [
     ],
 
 
-    'CustomerSaveValidator' => [
-        'requiredFields' => [
-            /*['email'],
-            ['firstname', 'name', 'zip', 'birthday'],*/
-        ],
-        'checkForDuplicates' => true
-    ],
 
     'CustomerDuplicatesService' => [
         'duplicateCheckFields' => [
@@ -127,9 +120,6 @@ return [
 
     ],
 
-    'CustomerMerger' => [
-        'archiveDir' => '/customers/__archive'
-    ],
 
     'CustomerList' => [
         'filterProperties' => [

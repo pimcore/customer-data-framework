@@ -41,6 +41,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         }
 
         $this->registerGeneralConfiguration($container, $config['general']);
+        $this->registerEncryptionConfiguration($container, $config['encryption']);
         $this->registerCustomerSaveManagerConfiguration($container, $config['customer_save_manager']);
         $this->registerCustomerSaveValidatorConfiguration($container, $config['customer_save_validator']);
         $this->registerCustomerProviderConfiguration($container, $config['customer_provider']);
@@ -49,6 +50,11 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
     private function registerGeneralConfiguration(ContainerBuilder $container, array $config)
     {
         $container->setParameter('pimcore_customer_management_framework.general.customerPimcoreClass', $config['customerPimcoreClass']);
+    }
+
+    private function registerEncryptionConfiguration(ContainerBuilder $container, array $config)
+    {
+        $container->setParameter('pimcore_customer_management_framework.encryption.secret', $config['secret']);
     }
 
     private function registerCustomerSaveManagerConfiguration(ContainerBuilder $container, array $config)

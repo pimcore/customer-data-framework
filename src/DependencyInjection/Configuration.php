@@ -33,6 +33,7 @@ class Configuration implements ConfigurationInterface
             ->end();
 
         $rootNode->append($this->buildGeneralNode());
+        $rootNode->append($this->buildEncryptionNode());
         $rootNode->append($this->buildCustomerSaveManagerNode());
         $rootNode->append($this->buildCustomerSaveValidatorNode());
         $rootNode->append($this->buildCustomerProviderNode());
@@ -55,6 +56,30 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('customerPimcoreClass')
                     ->defaultValue('Customer')
                 ->end()
+        ;
+
+        return $general;
+    }
+
+    private function buildEncryptionNode()
+    {
+        $treeBuilder = new TreeBuilder();
+
+        $general = $treeBuilder->root('encryption');
+
+        $general
+            ->addDefaultsIfNotSet()
+            ->info('Configuration of EncryptionService');
+
+        $general
+            ->children()
+            ->scalarNode('secret')
+                ->info('
+                    echo \Defuse\Crypto\Key::createNewRandomKey()->saveToAsciiSafeString();
+                    keep it secret
+                ')
+                ->defaultValue('')
+            ->end()
         ;
 
         return $general;
