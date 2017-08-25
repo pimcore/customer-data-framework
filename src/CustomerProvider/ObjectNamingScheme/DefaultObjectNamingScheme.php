@@ -28,21 +28,29 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
      * @var string
      */
     private $namingScheme;
+
     /**
      * @var string
      */
     private $parentPath;
+
+    /**
+     * @var string
+     */
+    private $archiveDir;
 
 
     /**
      * DefaultObjectNamingScheme constructor.
      * @param string $namingScheme
      * @param string $parentPath
+     * @param string $archiveDir
      */
-    public function __construct($namingScheme, $parentPath)
+    public function __construct($namingScheme, $parentPath, $archiveDir)
     {
         $this->namingScheme = $namingScheme;
         $this->parentPath = $parentPath;
+        $this->archiveDir = $archiveDir;
     }
 
     /**
@@ -55,7 +63,7 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
     public function apply(CustomerInterface $customer)
     {
         $namingScheme = $this->namingScheme;
-        $parentPath = $this->parentPath;
+        $parentPath = $customer->getPublished() && $customer->getActive() ? $this->parentPath : $this->archiveDir;
 
         if ($namingScheme) {
             $namingScheme = $this->extractNamingScheme($customer, $namingScheme);

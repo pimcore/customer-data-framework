@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\DependencyInjection;
 
+use CustomerManagementFrameworkBundle\CustomerMerger\CustomerMergerInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface;
@@ -88,5 +89,6 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
 
         $container->setParameter('pimcore_customer_management_framework.customer_provider.namingScheme', $config['namingScheme']);
         $container->setParameter('pimcore_customer_management_framework.customer_provider.parentPath', $config['parentPath']);
+        $container->setParameter('pimcore_customer_management_framework.customer_provider.archiveDir', $config['archiveDir']);
     }
 }

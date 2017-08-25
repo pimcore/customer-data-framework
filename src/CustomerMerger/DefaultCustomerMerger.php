@@ -11,7 +11,6 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerMerger;
 
-use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\Helper\Notes;
 use CustomerManagementFrameworkBundle\Helper\Objects;
@@ -25,7 +24,6 @@ class DefaultCustomerMerger implements CustomerMergerInterface
 {
     use LoggerAware;
 
-    protected $config;
 
     /**
      * @var CustomerSaveManagerInterface
@@ -34,10 +32,8 @@ class DefaultCustomerMerger implements CustomerMergerInterface
 
     public function __construct(CustomerSaveManagerInterface $customerSaveManager)
     {
-        $this->customerSaveManager = $customerSaveManager;
 
-        $config = Config::getConfig();
-        $this->config = $config->CustomerMerger;
+        $this->customerSaveManager = $customerSaveManager;
     }
 
     /**
@@ -64,6 +60,8 @@ class DefaultCustomerMerger implements CustomerMergerInterface
         $this->mergeCustomerValues($sourceCustomer, $targetCustomer, $mergeAttributes);
         $targetCustomer->save();
 
+        $this->customerSaveManager->setEnableAutomaticObjectNamingScheme(false);
+
         if (!$sourceCustomer->getId()) {
             $note = Notes::createNote($targetCustomer, 'cmf.CustomerMerger', 'customer merged');
             $note->setDescription('merged with new customer instance');
@@ -74,14 +72,11 @@ class DefaultCustomerMerger implements CustomerMergerInterface
             $note->addData('mergedCustomer', 'object', $sourceCustomer);
             $note->save();
 
-            $sourceCustomer->setParent(
-                Service::createFolderByPath(
-                    (string)$this->config->archiveDir ? (string)$this->config->archiveDir : '/customers/_archive'
-                )
-            );
+
             $sourceCustomer->setPublished(false);
             $sourceCustomer->setActive(false);
             $sourceCustomer->setKey($sourceCustomer->getId());
+
             $sourceCustomer->save();
 
             $note = Notes::createNote($sourceCustomer, 'cmf.CustomerMerger', 'customer merged + deactivated');

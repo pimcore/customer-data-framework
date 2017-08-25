@@ -29,6 +29,7 @@ services:
          arguments:
             - '%pimcore_customer_management_framework.customer_provider.namingScheme%'
             - '%pimcore_customer_management_framework.customer_provider.parentPath%'
+            - '%pimcore_customer_management_framework.customer_provider.archiveDir%'
          calls:
             - [setLogger, ['@cmf.logger']]
 
@@ -45,6 +46,12 @@ services:
         arguments:
             - '%pimcore_customer_management_framework.segment_manager.segmentFolder.calculated%'
             - '%pimcore_customer_management_framework.segment_manager.segmentFolder.manual%'
+        calls:
+            - [setLogger, ['@cmf.logger']]
+
+
+    CustomerManagementFrameworkBundle\CustomerMerger\CustomerMergerInterface:
+        class: CustomerManagementFrameworkBundle\CustomerMerger\DefaultCustomerMerger
         calls:
             - [setLogger, ['@cmf.logger']]
 
@@ -116,11 +123,6 @@ services:
         lazy: true
         shared: false
 
-    cmf.customer_merger:
-            class: CustomerManagementFrameworkBundle\CustomerMerger\DefaultCustomerMerger
-            lazy: true
-            calls:
-                - [setLogger, ['@cmf.logger']]
 
     cmf.customer_exporter_manager:
          class: CustomerManagementFrameworkBundle\CustomerList\ExporterManager
