@@ -47,6 +47,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $this->registerCustomerSaveValidatorConfiguration($container, $config['customer_save_validator']);
         $this->registerSegmentManagerConfiguration($container, $config['segment_manager']);
         $this->registerCustomerProviderConfiguration($container, $config['customer_provider']);
+        $this->registerCustomerListConfiguration($container, $config['customer_list']);
     }
 
     private function registerGeneralConfiguration(ContainerBuilder $container, array $config)
@@ -89,5 +90,11 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $container->setParameter('pimcore_customer_management_framework.customer_provider.namingScheme', $config['namingScheme']);
         $container->setParameter('pimcore_customer_management_framework.customer_provider.parentPath', $config['parentPath']);
         $container->setParameter('pimcore_customer_management_framework.customer_provider.archiveDir', $config['archiveDir']);
+    }
+
+
+    private function registerCustomerListConfiguration(ContainerBuilder $container, array $config)
+    {
+        $container->setParameter('pimcore_customer_management_framework.customer_list.exporters', $config['exporters'] ?: []);
     }
 }

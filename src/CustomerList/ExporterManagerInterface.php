@@ -18,9 +18,9 @@ use Symfony\Component\HttpFoundation\Request;
 interface ExporterManagerInterface
 {
     /**
-     * @return \Pimcore\Config
+     * @return []
      */
-    public function getConfig();
+    public function getExporterConfig();
 
     /**
      * @param $key

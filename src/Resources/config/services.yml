@@ -115,9 +115,6 @@ services:
         lazy: true
         arguments: ['@cmf.view_formatter']
 
-    cmf.customer_export_manager:
-        class: CustomerManagementFrameworkBundle\CustomerList\ExporterManager
-
     cmf.potential_duplicate_item:
         class: CustomerManagementFrameworkBundle\Model\CustomerDuplicates\PotentialDuplicateItem
         lazy: true
@@ -126,7 +123,8 @@ services:
 
     cmf.customer_exporter_manager:
          class: CustomerManagementFrameworkBundle\CustomerList\ExporterManager
-         lazy: true
+         arguments:
+              - '%pimcore_customer_management_framework.customer_list.exporters%'
 
 
     cmf.action_trigger.queue:

@@ -38,6 +38,7 @@ class Configuration implements ConfigurationInterface
         $rootNode->append($this->buildCustomerSaveValidatorNode());
         $rootNode->append($this->buildSegmentManagerNode());
         $rootNode->append($this->buildCustomerProviderNode());
+        $rootNode->append($this->buildCustomerListNode());
 
         return $treeBuilder;
     }
@@ -181,5 +182,78 @@ class Configuration implements ConfigurationInterface
         ;
 
         return $customerProvider;
+    }
+
+    private function buildCustomerListNode()
+    {
+        $treeBuilder = new TreeBuilder();
+
+        $customerList = $treeBuilder->root('customer_list');
+
+        $customerList
+            ->addDefaultsIfNotSet()
+            ->info('Configuration of customer list view');
+
+        $defaultExporters = [
+            'csv' => [
+                'name'       => 'CSV',
+                'icon'       => 'fa fa-file-text-o',
+                'exporter'   => \CustomerManagementFrameworkBundle\CustomerList\Exporter\Csv::class,
+                'properties' => [
+                    'id',
+                    'active',
+                    'gender',
+                    'email',
+                    'phone',
+                    'firstname',
+                    'lastname',
+                    'street',
+                    'zip',
+                    'city',
+                    'countryCode',
+                    'idEncoded',
+                ],
+                'exportSegmentsAsColumns' => true
+            ],
+
+            'xlsx' => [
+                'name'       => 'XLSX',
+                'icon'       => 'fa fa-file-excel-o',
+                'exporter'   => \CustomerManagementFrameworkBundle\CustomerList\Exporter\Xlsx::class,
+                'properties' => [
+                    'id',
+                    'active',
+                    'gender',
+                    'email',
+                    'phone',
+                    'firstname',
+                    'lastname',
+                    'street',
+                    'zip',
+                    'city',
+                    'countryCode',
+                    'idEncoded',
+                ],
+                'exportSegmentsAsColumns' => true
+            ],
+        ];
+
+        $customerList
+            ->children()
+            ->arrayNode('exporters')
+                ->prototype('array')
+                    ->children()
+                        ->scalarNode('name')->isRequired()->end()
+                        ->scalarNode('icon')->isRequired()->end()
+                        ->scalarNode('exporter')->isRequired()->end()
+                        ->booleanNode('exportSegmentsAsColumns')->defaultFalse()->end()
+                        ->arrayNode('properties')->isRequired()->prototype('scalar')->end()
+                    ->end()
+                ->end()
+            ->end()
+            ->defaultValue($defaultExporters)
+        ;
+
+        return $customerList;
     }
 }

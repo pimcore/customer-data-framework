@@ -175,7 +175,7 @@ class CustomersController extends Admin
         $listing = $this->buildListing();
         $listing->addConditionParam('o_id in (' . implode(', ', $ids) . ')');
 
-        $exporter = $this->getExporter($request, $listing, $data['exporter']);
+        $exporter = $this->getExporter($listing, $data['exporter']);
         $exportData = $exporter->getExportData();
 
         $totalExportData = isset($data['exportData']) ? $data['exportData'] : [];
@@ -227,7 +227,7 @@ class CustomersController extends Admin
         $exportData = $data['exportData'];
 
         $listing = $this->buildListing();
-        $exporter = $this->getExporter($request, $listing, $data['exporter']);
+        $exporter = $this->getExporter($listing, $data['exporter']);
 
         $filename = sprintf(
             '%s-%s-segment-export.%s',
@@ -257,7 +257,7 @@ class CustomersController extends Admin
      *
      * @return ExporterInterface
      */
-    protected function getExporter(Request $request, Listing\Concrete $listing, $exporterName)
+    protected function getExporter(Listing\Concrete $listing, $exporterName)
     {
         /**
          * @var ExporterManagerInterface $exporterManager
