@@ -53,6 +53,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
     private function registerGeneralConfiguration(ContainerBuilder $container, array $config)
     {
         $container->setParameter('pimcore_customer_management_framework.general.customerPimcoreClass', $config['customerPimcoreClass']);
+        $container->setParameter('pimcore_customer_management_framework.general.mailBlackListFile', $config['mailBlackListFile']);
     }
 
     private function registerEncryptionConfiguration(ContainerBuilder $container, array $config)

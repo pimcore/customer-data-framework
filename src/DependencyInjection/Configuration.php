@@ -58,6 +58,10 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('customerPimcoreClass')
                     ->defaultValue('Customer')
                 ->end()
+                ->scalarNode('mailBlackListFile')
+                    ->defaultValue(PIMCORE_CONFIGURATION_DIRECTORY . '/cmf/mail-blacklist.txt')
+                ->end()
+            ->end()
         ;
 
         return $general;
