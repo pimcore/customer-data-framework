@@ -125,7 +125,7 @@ class Configuration implements ConfigurationInterface
         $customerSaveValidator
             ->children()
                 ->booleanNode('checkForDuplicates')
-                ->info('If enabled an exception will be thrown when saving a customer object if duplicate customers exist. Caution: this is only applied to new customer instances and not when a customer get\'s updated.')
+                ->info('If enabled an exception will be thrown when saving a customer object if duplicate customers exist.')
                     ->defaultFalse()
                 ->end()
                 ->arrayNode('requiredFields')
