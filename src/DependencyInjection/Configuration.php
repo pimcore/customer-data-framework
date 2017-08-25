@@ -344,6 +344,34 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+
+                ->arrayNode('duplicates_index')
+                    ->children()
+                        ->booleanNode('enableDuplicatesIndex')
+                            ->defaultFalse()
+                        ->end()
+
+                        ->arrayNode('duplicateCheckFields')
+
+                            ->prototype('array')
+                                ->prototype('array')
+                                    ->children()
+                                        ->booleanNode('soundex')->defaultFalse()->end()
+                                        ->booleanNode('metaphone')->defaultFalse()->end()
+                                        ->scalarNode('similarity')->defaultValue('\CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText')->end()
+                                        ->scalarNode('similarityTreshold')->defaultNull()->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+
+                        ->arrayNode('dataTransformers')
+                            ->prototype('scalar')->end()
+                        ->end()
+
+                    ->end()
+                ->end()
+
             ->end()
         ;
 

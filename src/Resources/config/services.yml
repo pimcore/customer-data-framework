@@ -61,6 +61,15 @@ services:
         arguments:
             - '%pimcore_customer_management_framework.customer_duplicates_services.duplicateCheckFields%'
 
+    CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface:
+        class: CustomerManagementFrameworkBundle\DuplicatesIndex\DefaultMariaDbDuplicatesIndex
+        arguments:
+            - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.enableDuplicatesIndex%'
+            - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.duplicateCheckFields%'
+            - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.dataTransformers%'
+        calls:
+            - [setLogger, ['@cmf.logger']]
+
     cmf.logger:
         alias: logger
 
@@ -107,12 +116,6 @@ services:
             - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.listFields%'
             - '@cmf.view_formatter'
 
-
-    cmf.customer_duplicates_index:
-        class: CustomerManagementFrameworkBundle\DuplicatesIndex\DefaultMariaDbDuplicatesIndex
-        lazy: true
-        calls:
-            - [setLogger, ['@cmf.logger']]
 
     cmf.customer_view:
         class: CustomerManagementFrameworkBundle\CustomerView\DefaultCustomerView

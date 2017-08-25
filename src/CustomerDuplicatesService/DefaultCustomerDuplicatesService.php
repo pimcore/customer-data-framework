@@ -155,10 +155,6 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
      */
     public function updateDuplicateIndexForCustomer(CustomerInterface $customer)
     {
-        if ((bool)$this->config->DuplicatesIndex->enableDuplicatesIndex === false) {
-            return;
-        }
-
         $duplicatesIndex = \Pimcore::getContainer()->get('cmf.customer_duplicates_index');
         $duplicatesIndex->updateDuplicateIndexForCustomer($customer);
     }
