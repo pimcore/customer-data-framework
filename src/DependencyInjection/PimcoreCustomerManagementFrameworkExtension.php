@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\DependencyInjection;
 
-use CustomerManagementFrameworkBundle\CustomerMerger\CustomerMergerInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface;
