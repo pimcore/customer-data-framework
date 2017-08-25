@@ -13,7 +13,6 @@ namespace CustomerManagementFrameworkBundle\CustomerDuplicatesService;
 
 use Carbon\Carbon;
 
-use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Object\ClassDefinition;
@@ -21,8 +20,6 @@ use Pimcore\Model\Object\Listing\Concrete;
 
 class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInterface
 {
-    private $config;
-
     /**
      * @var array
      */
@@ -33,11 +30,9 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
      */
     protected $matchedDuplicateFields;
 
-    public function __construct()
+    public function __construct(array $duplicateCheckFields = [])
     {
-        $this->config = Config::getConfig()->CustomerDuplicatesService;
-        $this->duplicateCheckFields = $this->config->duplicateCheckFields ? $this->config->duplicateCheckFields->toArray(
-        ) : [];
+        $this->duplicateCheckFields = $duplicateCheckFields;
     }
 
     /**

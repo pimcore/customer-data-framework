@@ -325,6 +325,14 @@ class Configuration implements ConfigurationInterface
 
         $customerList
             ->children()
+                ->arrayNode('duplicateCheckFields')
+                    ->defaultValue([])
+
+                    ->prototype('array')
+                        ->prototype('scalar')->end()
+                    ->end()
+                ->end()
+
                 ->arrayNode('duplicates_view')
                     ->children()
                         ->arrayNode('listFields')
@@ -336,6 +344,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+            ->end()
         ;
 
         return $customerList;

@@ -55,6 +55,12 @@ services:
         calls:
             - [setLogger, ['@cmf.logger']]
 
+
+    CustomerManagementFrameworkBundle\CustomerDuplicatesService\CustomerDuplicatesServiceInterface:
+        class: CustomerManagementFrameworkBundle\CustomerDuplicatesService\DefaultCustomerDuplicatesService
+        arguments:
+            - '%pimcore_customer_management_framework.customer_duplicates_services.duplicateCheckFields%'
+
     cmf.logger:
         alias: logger
 
@@ -94,9 +100,6 @@ services:
         calls:
              - [setLogger, ['@cmf.logger']]
 
-    cmf.customer_duplicates_service:
-        class: CustomerManagementFrameworkBundle\CustomerDuplicatesService\DefaultCustomerDuplicatesService
-        lazy: true
 
     cmf.customer_duplicates_view:
         class: CustomerManagementFrameworkBundle\CustomerDuplicatesView\DefaultCustomerDuplicatesView
