@@ -100,8 +100,9 @@ services:
 
     cmf.customer_duplicates_view:
         class: CustomerManagementFrameworkBundle\CustomerDuplicatesView\DefaultCustomerDuplicatesView
-        lazy: true
-        arguments: ['@cmf.view_formatter']
+        arguments:
+            - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.listFields%'
+            - '@cmf.view_formatter'
 
 
     cmf.customer_duplicates_index:

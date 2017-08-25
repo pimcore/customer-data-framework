@@ -39,6 +39,7 @@ class Configuration implements ConfigurationInterface
         $rootNode->append($this->buildSegmentManagerNode());
         $rootNode->append($this->buildCustomerProviderNode());
         $rootNode->append($this->buildCustomerListNode());
+        $rootNode->append($this->buildCustomerDuplicatesServicesNode());
 
         return $treeBuilder;
     }
@@ -256,6 +257,42 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
             ->defaultValue($defaultExporters)
+        ;
+
+        return $customerList;
+    }
+
+    private function buildCustomerDuplicatesServicesNode()
+    {
+        $treeBuilder = new TreeBuilder();
+
+        $customerList = $treeBuilder->root('customer_duplicates_services');
+
+        $customerList
+            ->addDefaultsIfNotSet()
+            ->info('Configuration of customer duplicates services');
+
+        $defaultListFields = [
+            ['id'],
+            ['email'],
+            ['firstname', 'lastname'],
+            ['street'],
+            ['zip', 'city']
+        ];
+
+        $customerList
+            ->children()
+                ->arrayNode('duplicates_view')
+                    ->children()
+                        ->arrayNode('listFields')
+                            ->prototype('array')
+                                ->prototype('scalar')
+                                ->end()
+                            ->end()
+                            ->defaultValue($defaultListFields)
+                        ->end()
+                    ->end()
+                ->end()
         ;
 
         return $customerList;

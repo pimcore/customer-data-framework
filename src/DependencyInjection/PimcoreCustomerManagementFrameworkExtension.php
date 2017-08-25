@@ -48,6 +48,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $this->registerSegmentManagerConfiguration($container, $config['segment_manager']);
         $this->registerCustomerProviderConfiguration($container, $config['customer_provider']);
         $this->registerCustomerListConfiguration($container, $config['customer_list']);
+        $this->registerCustomerDuplicatesServicesConfiguration($container, $config['customer_duplicates_services']);
     }
 
     private function registerGeneralConfiguration(ContainerBuilder $container, array $config)
@@ -97,5 +98,11 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
     private function registerCustomerListConfiguration(ContainerBuilder $container, array $config)
     {
         $container->setParameter('pimcore_customer_management_framework.customer_list.exporters', $config['exporters'] ?: []);
+    }
+
+
+    private function registerCustomerDuplicatesServicesConfiguration(ContainerBuilder $container, array $config)
+    {
+        $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.listFields', $config['duplicates_view']['listFields'] ?: []);
     }
 }

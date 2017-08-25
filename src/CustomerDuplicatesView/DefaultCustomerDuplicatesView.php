@@ -11,13 +11,17 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerDuplicatesView;
 
-use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\View\Formatter\ViewFormatterInterface;
 use Pimcore\Model\Object\ClassDefinition;
 
 class DefaultCustomerDuplicatesView implements CustomerDuplicatesViewInterface
 {
+    /**
+     * @var array
+     */
+    protected $listFields;
+
     /**
      * @var ViewFormatterInterface
      */
@@ -26,8 +30,9 @@ class DefaultCustomerDuplicatesView implements CustomerDuplicatesViewInterface
     /**
      * @param ViewFormatterInterface $viewFormatter
      */
-    public function __construct(ViewFormatterInterface $viewFormatter)
+    public function __construct(array $listFields, ViewFormatterInterface $viewFormatter)
     {
+        $this->listFields = $listFields;
         $this->viewFormatter = $viewFormatter;
     }
 
@@ -41,15 +46,9 @@ class DefaultCustomerDuplicatesView implements CustomerDuplicatesViewInterface
 
     public function getListData(CustomerInterface $customer)
     {
-        if (!sizeof(Config::getConfig()->CustomerDuplicatesService->DuplicatesView->listFields)) {
-            throw new \Exception(
-                'CustomerDuplicatesService->DuplicatesView->listFields not defined in CMF config file'
-            );
-        }
-
         $class = ClassDefinition::getById($customer::classId());
 
-        $fields = Config::getConfig()->CustomerDuplicatesService->DuplicatesView->listFields->toArray();
+        $fields = $this->listFields;
         $listData = [];
 
         foreach ($fields as $field) {
