@@ -243,20 +243,63 @@ class Configuration implements ConfigurationInterface
             ],
         ];
 
+        $defaultFilterPropertiesEquals = [
+            'id'     => 'o_id',
+            'active' => 'active',
+        ];
+
+        $defaultFilterPropertiesSearch = [
+            'email' => [
+                'email'
+            ],
+            'name'  => [
+                'firstname',
+                'lastname'
+            ],
+            'search' => [
+                'o_id',
+                'idEncoded',
+                'firstname',
+                'lastname',
+                'email',
+                'zip',
+                'city'
+            ]
+        ];
+
         $customerList
             ->children()
-            ->arrayNode('exporters')
-                ->prototype('array')
-                    ->children()
-                        ->scalarNode('name')->isRequired()->end()
-                        ->scalarNode('icon')->isRequired()->end()
-                        ->scalarNode('exporter')->isRequired()->end()
-                        ->booleanNode('exportSegmentsAsColumns')->defaultFalse()->end()
-                        ->arrayNode('properties')->isRequired()->prototype('scalar')->end()
+                ->arrayNode('exporters')
+                    ->prototype('array')
+                        ->children()
+                            ->scalarNode('name')->isRequired()->end()
+                            ->scalarNode('icon')->isRequired()->end()
+                            ->scalarNode('exporter')->isRequired()->end()
+                            ->booleanNode('exportSegmentsAsColumns')->defaultFalse()->end()
+                            ->arrayNode('properties')->isRequired()->prototype('scalar')->end()
+                        ->end()
                     ->end()
                 ->end()
-            ->end()
-            ->defaultValue($defaultExporters)
+                ->defaultValue($defaultExporters)
+                ->end()
+
+                ->arrayNode('filter_properties')
+                    ->addDefaultsIfNotSet()
+
+                    ->children()
+                        ->arrayNode('equals')
+                            ->defaultValue($defaultFilterPropertiesEquals)
+
+                            ->prototype('scalar')->end()
+                        ->end()
+                        ->arrayNode('search')
+                            ->defaultValue($defaultFilterPropertiesSearch)
+
+                            ->prototype('array')
+                                ->prototype('scalar')
+                    ->end()
+                ->end()
+                ->end()
         ;
 
         return $customerList;
