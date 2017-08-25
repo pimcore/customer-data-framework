@@ -11,37 +11,32 @@
 
 namespace CustomerManagementFrameworkBundle;
 
+use Pimcore\Db;
 use Pimcore\Extension\Bundle\Installer\AbstractInstaller;
 use Pimcore\Logger;
 
 class Installer extends AbstractInstaller
 {
-    const CONFIG_FILE_NAME = 'config.php';
-    const CONFIG_FILE_LOCATION = '/plugins/CustomerManagementFramework';
-
-    protected $preferCustomConfiguration = true;
-
     public function install()
     {
         $this->installPermissions();
-        $this->installDatabaseTables();
         $this->installClasses();
-        $this->installConfig($this->preferCustomConfiguration);
+        $this->installDatabaseTables();
 
         return true;
     }
 
     public function isInstalled()
     {
-        $configFile = self::CONFIG_FILE_LOCATION . '/' . self::CONFIG_FILE_NAME;
-        if (file_exists(PIMCORE_CUSTOM_CONFIGURATION_DIRECTORY . $configFile)) {
-            return true;
-        }
-        if (file_exists(PIMCORE_CONFIGURATION_DIRECTORY . $configFile)) {
-            return true;
-        }
 
-        return false;
+        $db = Db::get();
+        try {
+            $db->fetchOne("select customerId from plugin_cmf_newsletter_queue limit 1");
+
+            return true;
+        } catch(\Exception $e) {
+            return false;
+        }
     }
 
     public function canBeInstalled()
@@ -258,25 +253,4 @@ class Installer extends AbstractInstaller
         }
     }
 
-    public static function installConfig($preferCustomConfiguration = false)
-    {
-        $baseDir = $preferCustomConfiguration ? PIMCORE_CUSTOM_CONFIGURATION_DIRECTORY : PIMCORE_CONFIGURATION_DIRECTORY;
-
-        $dir = $baseDir . self::CONFIG_FILE_LOCATION;
-
-        if (!is_dir($dir)) {
-            mkdir($dir, 0775, true);
-        }
-
-        foreach (['config.php'] as $file) {
-            $target = $dir .'/'.$file;
-
-            if (!is_file($target)) {
-                copy(
-                    realpath(__DIR__.'/../install/config/').'/'.$file,
-                    $target
-                );
-            }
-        }
-    }
 }
