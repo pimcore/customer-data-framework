@@ -50,7 +50,7 @@ If the CMF is configured like this example all customer objects would be automat
  
 There are two customer folders which could be configured. "parentPath" is the regular customer folder and "archiveDir" will be applied for customers which are unpublished and inactive.
 
-### Customer save validator
+## Customer save validator
 If enabled the customer save validator will throw exceptions if the customer is invalid according to it's implementation. These exception could be used in the could within try/catch blocks in order to check if the customer is valid. In the pimcore backend an error message will alert if somebody tries to save an invalid customer.
 
 ###### Example configuration
