@@ -71,6 +71,11 @@ pimcore_customer_management_framework:
 
 In this example a customer will be validated on save by 2 different ways. 
 First it would be checked if either the email adress or the field combination "firstname+name+zip" is filled up. It's possible to define 1 to x field combinations here.
-Second the CMF also searches for duplicate customers and declines saving the customer if duplicates exist. Here again the applied field combinations could be configured. 
+Second the CMF also searches for duplicate customers and declines saving the customer if duplicates exist. Here again the applied field combinations could be configured.
+ 
+## Save customer with disabled hooks
+
+Sometimes it's needed to save a customer without validaton or without appling for example customer save handlers or segment builders. Take a look at the CustomerSaveManagerInterface for methods to save the customer with disabled hooks.
+
 
 
