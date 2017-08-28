@@ -16,7 +16,7 @@ services:
    appbundle.cmf.customer_save_handler.normalize_zip:
        class: CustomerManagementFrameworkBundle\CustomerSaveHandler\NormalizeZip
        tags: [cmf.customer_save_handler]
-´´´
+```
 
 ### Built in customer save handlers
 
