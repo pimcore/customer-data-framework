@@ -9,6 +9,7 @@
 * [Webservice](./doc/Webservice.md)
 * [Cronjobs](./doc/Cronjobs.md)
 * [Single Sign On](./doc/Single_Sign_On.md)
+* [Example configuration](./doc/ExampleConfiguraation.md)
 
 
 ## Development

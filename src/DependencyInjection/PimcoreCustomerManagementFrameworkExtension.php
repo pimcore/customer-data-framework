@@ -102,6 +102,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
     {
         $container->setParameter('pimcore_customer_management_framework.customer_list.exporters', $config['exporters'] ?: []);
         $container->setParameter('pimcore_customer_management_framework.customer_list.filter_properties', $config['filter_properties'] ?: []);
+
     }
 
 

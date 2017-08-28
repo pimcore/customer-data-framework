@@ -35,9 +35,9 @@ class Configuration implements ConfigurationInterface
         $rootNode->append($this->buildGeneralNode());
         $rootNode->append($this->buildEncryptionNode());
         $rootNode->append($this->buildCustomerSaveManagerNode());
+        $rootNode->append($this->buildCustomerProviderNode());
         $rootNode->append($this->buildCustomerSaveValidatorNode());
         $rootNode->append($this->buildSegmentManagerNode());
-        $rootNode->append($this->buildCustomerProviderNode());
         $rootNode->append($this->buildCustomerListNode());
         $rootNode->append($this->buildCustomerDuplicatesServicesNode());
 
@@ -81,10 +81,9 @@ class Configuration implements ConfigurationInterface
         $general
             ->children()
             ->scalarNode('secret')
-                ->info('
-                    echo \Defuse\Crypto\Key::createNewRandomKey()->saveToAsciiSafeString();
-                    keep it secret
-                ')
+                ->info('echo \Defuse\Crypto\Key::createNewRandomKey()->saveToAsciiSafeString();' . PHP_EOL .
+                    'keep it secret'
+                )
                 ->defaultValue('')
             ->end()
         ;
@@ -106,6 +105,7 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->booleanNode('enableAutomaticObjectNamingScheme')
                     ->defaultFalse()
+                    ->info('If enabled the automatic object naming scheme will be applied on each customer save. See: customer_provider -> namingScheme option')
                 ->end()
         ;
 
@@ -130,7 +130,12 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->arrayNode('requiredFields')
                         ->prototype('array')
-                            ->prototype('scalar')
+                            ->prototype('scalar')->end()
+                        ->info('Provide valid field combinations. The customer object then is valid as soon as at least one of these field combinations is filled up.')
+                        ->example([
+                            ['email'],
+                            ['firstname', 'lastname', 'zip', 'city'],
+                        ])
                 ->end()
         ;
 
@@ -153,9 +158,11 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->scalarNode('manual')
                             ->defaultValue('/segments/manual')
+                            ->info('parent folder of manual segments + segment groups')
                         ->end()
                         ->scalarNode('calculated')
                             ->defaultValue('/segments/calculated')
+                            ->info('parent folder of calculated segments + segment groups')
                         ->end()
                 ->end()
         ;
@@ -177,12 +184,16 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('parentPath')
                     ->defaultValue('/customers')
+                    ->info('parent folder for active customers')
                 ->end()
                 ->scalarNode('archiveDir')
                     ->defaultValue('/customers/_archive')
+                    ->info('parent folder for customers which are unpublished and inactive')
                 ->end()
                 ->scalarNode('namingScheme')
                     ->defaultNull()
+                    ->example('{countryCode}/{zip}/{firstname}-{lastname}')
+                    ->info('If a naming scheme is configured customer objects will be automatically renamend and moved to the configured folder structure as soon as the naming scheme gets applied.')
                 ->end()
         ;
 
