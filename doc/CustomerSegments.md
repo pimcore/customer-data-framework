@@ -62,10 +62,10 @@ services:
     appbundle.cmf.segment_builder.gender:
        class: CustomerManagementFrameworkBundle\SegmentBuilder\GenderSegmentBuilder
        arguments:
-          - 'Geschlecht'
-          - 'maennlich'
-          - 'weiblich'
-          - 'Geschlecht unbekannt'
+          - 'Gender'
+          - 'male'
+          - 'female'
+          - 'gender unknown'
     
        tags: [cmf.segment_builder]
 ```
