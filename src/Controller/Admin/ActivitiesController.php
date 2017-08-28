@@ -40,11 +40,9 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
 
         if ($customer = \Pimcore\Model\Object\Customer::getById($request->get('customerId'))) {
             $list = \Pimcore::getContainer()->get('cmf.activity_store')->getActivityList();
+            $list->setCondition('customerId = ' . $customer->getId());
             $list->setOrderKey('activityDate');
             $list->setOrder('desc');
-
-            $select = $list->getQuery(false);
-            $select->where('customerId = ?', $customer->getId());
 
             $select = $list->getQuery();
             $select->reset(QueryBuilder::COLUMNS);
