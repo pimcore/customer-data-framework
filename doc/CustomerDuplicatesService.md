@@ -50,37 +50,63 @@ The duplicates index is used for searching globally for (fuzzy matching) duplica
  
 ### example config
 
-```php
-'DuplicatesIndex' => [
-    'enableDuplicatesIndex' => true,
-    'duplicateCheckFields' => [
+```yaml
+pimcore_customer_management_framework:
+duplicates_index:
+    enableDuplicatesIndex: true
 
-        [
-            'firstname' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class],
-            'zip' => ['similarity' => \CustomerManagementFramework\DataSimilarityMatcher\Zip::class],
-            'street' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class],
-            'birthDate' => ['similarity' => \CustomerManagementFramework\DataSimilarityMatcher\BirthDate::class],
+    duplicateCheckFields:
+      - firstname:
+          soundex: true
+          metaphone: true
+          similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
 
-        ],
-        [
-            'lastname' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class],
-            'firstname' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class],
-            'zip' => ['similarity' => \CustomerManagementFramework\DataSimilarityMatcher\Zip::class],
-            'city' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class],
-            'street' => ['soundex' => true, 'metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class]
-        ],
-        [
-            'email' => ['metaphone' => true, 'similarity' => \CustomerManagementFramework\DataSimilarityMatcher\SimilarText::class, 'similarityTreshold' => 90]
-        ]
-    ],
-    'dataTransformers' => [
-        'street' => \CustomerManagementFramework\DataTransformer\DuplicateIndex\Street::class,
-        'firstname' => \CustomerManagementFramework\DataTransformer\DuplicateIndex\Simplify::class,
-        'city' => \CustomerManagementFramework\DataTransformer\DuplicateIndex\Simplify::class,
-        'lastname' => \CustomerManagementFramework\DataTransformer\DuplicateIndex\Simplify::class,
-        'birthDate' => \CustomerManagementFramework\DataTransformer\DuplicateIndex\Date::class,
-    ],
-]
+        zip:
+          similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\Zip
+
+        street:
+          soundex: true
+          metaphone: true
+          similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
+
+        birthDate:
+          similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\BirthDate::class
+
+      - lastname:
+          soundex: true
+          metaphone: true
+          similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
+
+        firstname:
+          soundex: true
+          metaphone: true
+          similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
+
+        zip:
+          similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\Zip
+
+        city:
+          soundex: true
+          metaphone: true
+          similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
+
+        street:
+          soundex: true
+          metaphone: true
+          similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
+
+
+      - email:
+          metaphone: true
+          similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
+          similarityTreshold: 90
+
+    dataTransformers:
+      street: \CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Street
+      firstname: \CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Simplify
+      city: \CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Simplify
+      lastname: \CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Simplify
+      birthDate: \CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Date
 ```
 
 In the CMF config the data/logic how duplicates should be stored in the index is defined like in the example above. It's possible to define the field combinations which should match within the DuplicatesIndex->duplicateCheckFields section.
@@ -93,7 +119,7 @@ If set to true the field should be relevant for soundex matching. This should be
 Same like soundex but another phonetic algorithmn (metaphone). It's possible to combine soundex + metaphone but sometimes it could be useless and a waste of resources to enable both. If you are not sure just enable both. 
   
 ##### similarity
-Searching duplicates by soundex/metaphone will produce a lot of false positive matches. Especially if there are fields like zip where soundex + metaphone should be disabled a mechanism for excluding these false positives is needed. But also the soundex/metaphone algorithmn itself will produce many false positives. In the similarity field it's possible to configure a so called SimilarityMatcher (DataSimiliarityMatcherInterface). All potentially found duplicates by soundex/metaphone search will be compared by these SimilarityMatches. Only if all fields are similar according to the SimilarityMatchers the found duplicate will be handled as "real" duplicate otherwise it's a false positive.
+Searching duplicates by soundex/metaphone will produce a lot of false positive matches. Especially if there are fields like zip where soundex + metaphone should be disabled a mechanism for excluding these false positives is needed. But also the soundex/metaphone algorithmn itself will produce many false positives. In the similarity field it's possible to configure a so called SimilarityMatcher (DataSimiliarityMatcherInterface). All potentially found duplicates by soundex/metaphone search will be compared by these SimilarityMatchers. Only if all fields are similar according to the SimilarityMatchers the found duplicate will be handled as "real" duplicate otherwise it's a false positive.
 
 ##### treshold
 Each SimilarityMatcher has a default treshold - but it's possbile to (optionally) define a custom treshold which will be handed over to the SimilarityMatcher.

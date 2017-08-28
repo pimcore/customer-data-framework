@@ -5,6 +5,7 @@
 * [Activities (ActivityManager, ActivityStore, ActivityView)](./doc/Activities.md)
 * [Customer Segments](./doc/CustomerSegments.md)
 * [Customer Duplicates Service](./doc/CustomerDuplicatesService.md)
+* [Customer Save Manager](./doc/CustomerSaveManager.md)
 * [Webservice](./doc/Webservice.md)
 * [Cronjobs](./doc/Cronjobs.md)
 * [Single Sign On](./doc/Single_Sign_On.md)
