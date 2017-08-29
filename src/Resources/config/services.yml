@@ -1,6 +1,4 @@
 parameters:
-    cmf.mailchimp.client.apikey:
-    cmf.customer_export.items_per_request: 500
     cmf.customer_export.items_per_request: 500
 
 
