@@ -14,29 +14,26 @@ namespace CustomerManagementFrameworkBundle\SegmentBuilder;
 use CustomerManagementFrameworkBundle\DataTransformer\Date\TimestampToAge;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
+use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Model\Tool\TmpStore;
 use Psr\Log\LoggerInterface;
 use Zend\Paginator\Paginator;
 
 class AgeSegmentBuilder extends AbstractSegmentBuilder
 {
-    private $config;
-    private $logger;
+    use LoggerAware;
 
     private $groupName;
     private $segmentGroup;
     private $ageGroups;
     private $birthDayField;
 
-    public function __construct($config, LoggerInterface $logger)
+    public function __construct($groupName = 'Age', $ageGroups = [], $birthDayField = 'birthDate')
     {
-        $this->config = $config;
 
-        $this->logger = $logger;
+        $this->groupName = $groupName;
 
-        $this->groupName = (string)$config->segmentGroup ?: 'Age';
-
-        $this->ageGroups = $config->ageGroups ?: [
+        $this->ageGroups = sizeof($ageGroups) ? $ageGroups: [
             [0, 10],
             [11, 15],
             [16, 18],
@@ -50,7 +47,7 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder
             [81, 120],
         ];
 
-        $this->birthDayField = (string)$config->birthDayField ?: 'birthday';
+        $this->birthDayField = $birthDayField;
     }
 
     /**
@@ -84,7 +81,7 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder
             $transformer = new TimestampToAge();
             $age = $transformer->transform($timestamp, []);
 
-            $this->logger->debug(sprintf('age of customer ID %s: %s years', $customer->getId(), $age));
+            $this->getLogger()->debug(sprintf('age of customer ID %s: %s years', $customer->getId(), $age));
 
             foreach ($this->ageGroups as $ageGroup) {
                 $from = $ageGroup[0];

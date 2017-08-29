@@ -28,12 +28,6 @@ abstract class AbstractCustomerSaveHandler implements CustomerSaveHandlerInterfa
      */
     protected $orginalCustomer;
 
-    public function __construct($config, LoggerInterface $logger)
-    {
-        $this->config = $config;
-        $this->logger = $logger;
-    }
-
     /**
      * If this returns true, the CustomerSaveHandler is provided with an original instance of the customer how it looks like in the database.
      * This could be useful i.e. to compare if a field has changed. If the original customer is not needed this should return false to improve performance.

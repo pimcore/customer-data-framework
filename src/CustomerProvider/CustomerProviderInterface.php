@@ -78,4 +78,15 @@ interface CustomerProviderInterface
      * @return void
      */
     public function applyObjectNamingScheme(CustomerInterface $customer);
+
+    /**
+     * @return string
+     */
+    public function getParentParentPath();
+
+    /**
+     * @param string $parentPath
+     * @return void
+     */
+    public function setParentPath($parentPath);
 }

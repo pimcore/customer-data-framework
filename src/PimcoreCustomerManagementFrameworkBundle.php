@@ -11,7 +11,9 @@
 
 namespace CustomerManagementFrameworkBundle;
 
+use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\CustomerSaveManagerPass;
 use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\OAuthUtilsPass;
+use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\SegmentManagerPass;
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -44,6 +46,8 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new OAuthUtilsPass());
+        $container->addCompilerPass(new CustomerSaveManagerPass());
+        $container->addCompilerPass(new SegmentManagerPass());
     }
 
     /**

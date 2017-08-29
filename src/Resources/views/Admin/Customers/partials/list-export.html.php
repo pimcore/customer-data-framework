@@ -3,8 +3,8 @@
 $cv = $this->customerView;
 
 $exporterConfigs = Pimcore::getContainer()
-    ->get('cmf.customer_export_manager')
-    ->getConfig();
+    ->get('cmf.customer_exporter_manager')
+    ->getExporterConfig();
 
 if (count($exporterConfigs) === 0) {
     return;
@@ -26,9 +26,9 @@ if (count($exporterConfigs) === 0) {
                     ?>
 
                     <a href="#" data-href="<?= $exportUrl ?>" class="btn btn-default js-customer-export">
-                        <i class="<?= isset($exporterConfig->icon) ? $exporterConfig->icon : 'fa fa-download' ?>"></i>
+                        <i class="<?= isset($exporterConfig['icon']) ? $exporterConfig['icon'] : 'fa fa-download' ?>"></i>
                         <?= $cv->translate('Export') ?>
-                        <span class="label label-info"><?= $exporterConfig->name ?></span>
+                        <span class="label label-info"><?= $exporterConfig['name'] ?></span>
                     </a>
 
                 <?php endforeach; ?>

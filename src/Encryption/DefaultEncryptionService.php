@@ -11,7 +11,6 @@
 
 namespace CustomerManagementFrameworkBundle\Encryption;
 
-use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Defuse\Crypto\Crypto;
 use Defuse\Crypto\Key;
@@ -26,6 +25,16 @@ class DefaultEncryptionService implements EncryptionServiceInterface
     protected $defaultKey;
 
     /**
+     * @var string
+     */
+    protected $secret;
+
+    public function __construct($secret)
+    {
+        $this->secret = $secret;
+    }
+
+    /**
      * Get the default key used for encryption/decryption if no key is passed
      *
      * @return Key
@@ -33,7 +42,7 @@ class DefaultEncryptionService implements EncryptionServiceInterface
     public function getDefaultKey()
     {
         if (null === $this->defaultKey) {
-            $secret = Config::getConfig()->Encryption->secret;
+            $secret = $this->secret;
             if (!$secret || empty($secret)) {
                 throw new \RuntimeException('Need an encryption secret');
             }

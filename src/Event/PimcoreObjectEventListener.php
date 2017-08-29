@@ -11,6 +11,7 @@
 
 namespace CustomerManagementFrameworkBundle\Event;
 
+use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\Model\AbstractObjectActivity;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
@@ -20,6 +21,16 @@ use Pimcore\Model\Object\ActivityDefinition;
 
 class PimcoreObjectEventListener
 {
+    /**
+     * @var CustomerSaveManagerInterface
+     */
+    protected $customerSaveManager;
+
+    public function __construct(CustomerSaveManagerInterface $customerSaveManager)
+    {
+        $this->customerSaveManager = $customerSaveManager;
+    }
+
     public function onPreUpdate(ElementEventInterface $e)
     {
         if (!$e instanceof ObjectEvent) {
@@ -29,7 +40,7 @@ class PimcoreObjectEventListener
         $object = $e->getObject();
 
         if ($object instanceof CustomerInterface) {
-            \Pimcore::getContainer()->get('cmf.customer_save_manager')->preUpdate($object);
+            $this->customerSaveManager->preUpdate($object);
         }
     }
 
@@ -42,7 +53,7 @@ class PimcoreObjectEventListener
         $object = $e->getObject();
 
         if ($object instanceof CustomerInterface) {
-            \Pimcore::getContainer()->get('cmf.customer_save_manager')->postUpdate($object);
+            \Pimcore::getContainer()->get(CustomerSaveManagerInterface::class)->postUpdate($object);
         } elseif ($object instanceof AbstractObjectActivity) {
             $trackIt = true;
             if (!$object->cmfUpdateOnSave()) {
@@ -66,7 +77,7 @@ class PimcoreObjectEventListener
         $object = $e->getObject();
 
         if ($object instanceof CustomerInterface) {
-            \Pimcore::getContainer()->get('cmf.customer_save_manager')->preAdd($object);
+            $this->customerSaveManager->preAdd($object);
         } elseif ($object instanceof ActivityDefinition) {
             $object->setCode(uniqid());
         }
@@ -81,7 +92,7 @@ class PimcoreObjectEventListener
         $object = $e->getObject();
 
         if ($object instanceof CustomerInterface) {
-            \Pimcore::getContainer()->get('cmf.customer_save_manager')->preDelete($object);
+            $this->customerSaveManager->preDelete($object);
         }
     }
 
@@ -94,7 +105,7 @@ class PimcoreObjectEventListener
         $object = $e->getObject();
 
         if ($object instanceof CustomerInterface) {
-            \Pimcore::getContainer()->get('cmf.customer_save_manager')->postDelete($object);
+            $this->customerSaveManager->postDelete($object);
         } elseif ($object instanceof ActivityInterface) {
             \Pimcore::getContainer()->get('cmf.activity_manager')->deleteActivity($object);
         }

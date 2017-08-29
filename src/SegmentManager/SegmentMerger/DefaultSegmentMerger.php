@@ -11,6 +11,7 @@
 
 namespace CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger;
 
+use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\Helper\Notes;
 use CustomerManagementFrameworkBundle\Helper\Objects;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
@@ -21,7 +22,14 @@ class DefaultSegmentMerger implements SegmentMergerInterface
 {
     use LoggerAware;
 
+    protected $customerSaveManager;
+
     protected $mergedSegmentsCustomerSaveQueue;
+
+    public function __construct(CustomerSaveManagerInterface $customerSaveManager)
+    {
+        $this->customerSaveManager = $customerSaveManager;
+    }
 
     /**
      * @inheritdoc
@@ -134,7 +142,7 @@ class DefaultSegmentMerger implements SegmentMergerInterface
         if (isset($this->mergedSegmentsCustomerSaveQueue[$customer->getId()])) {
             $queueEntry = $this->mergedSegmentsCustomerSaveQueue[$customer->getId()];
 
-            \Pimcore::getContainer()->get('cmf.customer_save_manager')->saveDirty($customer);
+            $this->customerSaveManager->saveDirty($customer);
 
             /**
              * @var Note $note

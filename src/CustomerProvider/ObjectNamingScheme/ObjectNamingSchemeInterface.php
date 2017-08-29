@@ -17,12 +17,10 @@ interface ObjectNamingSchemeInterface
 {
     /**
      * @param CustomerInterface $customer
-     * @param string $parentPath
-     * @param string $namingScheme
      *
      * @return void
      */
-    public function apply(CustomerInterface $customer, $parentPath, $namingScheme);
+    public function apply(CustomerInterface $customer);
 
     /**
      * deletes empty subfolders of the customers folder
@@ -30,4 +28,15 @@ interface ObjectNamingSchemeInterface
      * @return void
      */
     public function cleanupEmptyFolders();
+
+    /**
+     * @return string
+     */
+    public function getNamingScheme();
+
+    /**
+     * @param string $namingScheme
+     * @return void
+     */
+    public function setNamingScheme($namingScheme);
 }

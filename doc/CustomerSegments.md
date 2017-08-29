@@ -47,9 +47,32 @@ $addSegments = [$segment];
 $segmentManager->mergeSegments($customer, $addSegments, $deleteSegments, "GenderSegmentBuilder");
 ```
 
+#### Registration of segment builders
+
+Segment builders need to be added configured as services in the symfony service container. All segment builders which are registered as services with the tag "cmf.segment_builder" will be executed
+ 
+###### Example service definitions
+```yaml
+services:
+    appbundle.cmf.segment_builder.state:
+        class: CustomerManagementFrameworkBundle\SegmentBuilder\StateSegmentBuilder
+        tags: [cmf.segment_builder]
+        
+        
+    appbundle.cmf.segment_builder.gender:
+       class: CustomerManagementFrameworkBundle\SegmentBuilder\GenderSegmentBuilder
+       arguments:
+          - 'Gender'
+          - 'male'
+          - 'female'
+          - 'gender unknown'
+    
+       tags: [cmf.segment_builder]
+```
+
 #### Built in segment builders
 
-Segment builders need to be added to the CMF plugin config file. Only segment builders which are configured will be executed. The CMF framework includes some SegmentBulders which could be used out of the box:
+The CMF framework includes some SegmentBulders which could be used out of the box:
  
 ##### AgeSegmentBuilder
 
@@ -95,7 +118,7 @@ build segments for all customers:
 php pimcore/cli/console.php cmf:build-segments -f
 ```
 
-build segment x for all customers: 
+build segment x for all customers (provide symfony service id of segment builder): 
 ```
-php pimcore/cli/console.php cmf:build-segments --segmentBuilder='\Website\CustomerManagementFrameworkBundle\SegmentBuilder\Brand'
+php pimcore/cli/console.php cmf:build-segments --segmentBuilder='appbundle.cmf.segment_builder.state'
 ```

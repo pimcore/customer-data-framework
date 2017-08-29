@@ -17,7 +17,6 @@ use Psr\Log\LoggerInterface;
 
 interface SegmentBuilderInterface
 {
-    public function __construct($config, LoggerInterface $logger);
 
     /**
      * prepares data and configurations which could be reused for all buildSegment(CustomerInterface $customer) calls

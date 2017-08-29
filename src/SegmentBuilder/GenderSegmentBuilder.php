@@ -13,7 +13,7 @@ namespace CustomerManagementFrameworkBundle\SegmentBuilder;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
-use Psr\Log\LoggerInterface;
+
 
 class GenderSegmentBuilder extends AbstractSegmentBuilder
 {
@@ -21,18 +21,34 @@ class GenderSegmentBuilder extends AbstractSegmentBuilder
     const FEMALE = 'female';
     const NOT_SET = 'not-set';
 
-    private $config;
-    private $logger;
 
     private $maleSegment;
     private $femaleSegment;
     private $notsetSegment;
     private $segmentGroup;
 
-    public function __construct($config, LoggerInterface $logger)
+    private $segmentGroupName;
+    private $maleSegmentName;
+    private $femaleSegmentName;
+    private $notsetSegmentName;
+    private $valueMapping;
+
+    public function __construct(
+        $segmentGroupName = 'Gender',
+        $maleSegmentName = self::MALE,
+        $femaleSegmentName = self::FEMALE,
+        $notsetSegmentName = self::NOT_SET,
+        $valueMapping = []
+    )
     {
-        $this->config = $config;
-        $this->logger = $logger;
+        $this->segmentGroupName = $segmentGroupName;
+        $this->maleSegmentName = $maleSegmentName;
+        $this->femaleSegmentName = $femaleSegmentName;
+        $this->notsetSegmentName = $notsetSegmentName;
+        $this->valueMapping = sizeof($valueMapping) ? $valueMapping : [
+            'male' => \CustomerManagementFrameworkBundle\SegmentBuilder\GenderSegmentBuilder::MALE,
+            'female' =>\CustomerManagementFrameworkBundle\SegmentBuilder\GenderSegmentBuilder::FEMALE,
+        ];
     }
 
     /**
@@ -44,18 +60,18 @@ class GenderSegmentBuilder extends AbstractSegmentBuilder
      */
     public function prepare(SegmentManagerInterface $segmentManager)
     {
-        $segmentGroupName = $this->config->segmentGroup ?: 'Gender';
+        $segmentGroupName = $this->segmentGroupName;
 
         $this->maleSegment = $segmentManager->createCalculatedSegment(
-            (string)$this->config->maleSegmentName ?: self::MALE,
+            $this->maleSegmentName,
             $segmentGroupName
         );
         $this->femaleSegment = $segmentManager->createCalculatedSegment(
-            (string)$this->config->femaleSegmentName ?: self::FEMALE,
+            $this->femaleSegmentName,
             $segmentGroupName
         );
         $this->notsetSegment = $segmentManager->createCalculatedSegment(
-            (string)$this->config->notsetSegmentName ?: self::NOT_SET,
+            $this->notsetSegmentName,
             $segmentGroupName
         );
 
@@ -72,7 +88,7 @@ class GenderSegmentBuilder extends AbstractSegmentBuilder
      */
     public function calculateSegments(CustomerInterface $customer, SegmentManagerInterface $segmentManager)
     {
-        $valueMapping = $this->config->valueMapping->toArray();
+        $valueMapping = $this->valueMapping;
         $gender = $valueMapping[$customer->getGender()] ?: self::NOT_SET;
 
         if ($gender == self::MALE) {

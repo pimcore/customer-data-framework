@@ -11,7 +11,6 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
-use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\CustomerList\Exporter\AbstractExporter;
 use CustomerManagementFrameworkBundle\CustomerList\Exporter\ExporterInterface;
@@ -175,7 +174,7 @@ class CustomersController extends Admin
         $listing = $this->buildListing();
         $listing->addConditionParam('o_id in (' . implode(', ', $ids) . ')');
 
-        $exporter = $this->getExporter($request, $listing, $data['exporter']);
+        $exporter = $this->getExporter($listing, $data['exporter']);
         $exportData = $exporter->getExportData();
 
         $totalExportData = isset($data['exportData']) ? $data['exportData'] : [];
@@ -227,7 +226,7 @@ class CustomersController extends Admin
         $exportData = $data['exportData'];
 
         $listing = $this->buildListing();
-        $exporter = $this->getExporter($request, $listing, $data['exporter']);
+        $exporter = $this->getExporter($listing, $data['exporter']);
 
         $filename = sprintf(
             '%s-%s-segment-export.%s',
@@ -257,7 +256,7 @@ class CustomersController extends Admin
      *
      * @return ExporterInterface
      */
-    protected function getExporter(Request $request, Listing\Concrete $listing, $exporterName)
+    protected function getExporter(Listing\Concrete $listing, $exporterName)
     {
         /**
          * @var ExporterManagerInterface $exporterManager
@@ -309,10 +308,10 @@ class CustomersController extends Admin
     {
         $handler = new FilterHandler($listing);
 
-        $filterProperties = Config::getConfig()->CustomerList->filterProperties;
+        $filterProperties = \Pimcore::getContainer()->getParameter('pimcore_customer_management_framework.customer_list.filter_properties');
 
-        $equalsProperties = isset($filterProperties->equals) ? $filterProperties->equals->toArray() : [];
-        $searchProperties = isset($filterProperties->search) ? $filterProperties->search->toArray() : [];
+        $equalsProperties = isset($filterProperties['equals']) ? $filterProperties['equals'] : [];
+        $searchProperties = isset($filterProperties['search']) ? $filterProperties['search'] : [];
 
         foreach ($equalsProperties as $property => $databaseField) {
             if (array_key_exists($property, $filters)) {
@@ -427,8 +426,8 @@ class CustomersController extends Admin
      */
     protected function getConfiguredSearchBarFields()
     {
-        $filterProperties = Config::getConfig()->CustomerList->filterProperties;
-        $searchProperties = isset($filterProperties->search) ? $filterProperties->search->toArray() : [];
+        $filterProperties = \Pimcore::getContainer()->getParameter('pimcore_customer_management_framework.customer_list.filter_properties');;
+        $searchProperties = $filterProperties['search'];
 
         $searchBarFields = [];
         if (isset($searchProperties['search'])) {

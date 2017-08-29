@@ -12,6 +12,7 @@
 namespace CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme;
 
 use CustomerManagementFrameworkBundle\Config;
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Helper\Objects;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
@@ -24,14 +25,46 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
     use LoggerAware;
 
     /**
+     * @var string
+     */
+    private $namingScheme;
+
+    /**
+     * @var string
+     */
+    private $parentPath;
+
+    /**
+     * @var string
+     */
+    private $archiveDir;
+
+
+    /**
+     * DefaultObjectNamingScheme constructor.
+     * @param string $namingScheme
+     * @param string $parentPath
+     * @param string $archiveDir
+     */
+    public function __construct($namingScheme, $parentPath, $archiveDir)
+    {
+        $this->namingScheme = $namingScheme;
+        $this->parentPath = $parentPath;
+        $this->archiveDir = $archiveDir;
+    }
+
+    /**
      * @param CustomerInterface $customer
      * @param string $parentPath
      * @param string $namingScheme
      *
      * @return void
      */
-    public function apply(CustomerInterface $customer, $parentPath, $namingScheme)
+    public function apply(CustomerInterface $customer)
     {
+        $namingScheme = $this->namingScheme;
+        $parentPath = $customer->getPublished() && $customer->getActive() ? $this->parentPath : $this->archiveDir;
+
         if ($namingScheme) {
             $namingScheme = $this->extractNamingScheme($customer, $namingScheme);
 
@@ -54,12 +87,11 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
 
     public function cleanupEmptyFolders()
     {
-        $config = Config::getConfig()->CustomerProvider;
-        if(!$config->parentPath) {
+        if(!$this->parentPath) {
             return;
         }
 
-        if(!$config->namingScheme) {
+        if(!$this->namingScheme) {
             return;
         }
 
@@ -71,7 +103,7 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
         $folders->setCondition(
             "o_id in (select o_id from (select o_id, o_path, o_key, o_type, (select count(*) from objects where o_parentId = o.o_id) as counter from objects o) as temp where counter=0 and o_type = 'folder' and o_path like ?  and o_creationDate < ?)",
             [
-                str_replace('//', '/', $config->parentPath.'/%'),
+                str_replace('//', '/', $this->parentPath.'/%'),
                 $timestamp
             ]
         );
@@ -82,6 +114,22 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
                 $this->getLogger()->error("delete empty folder ". (string) $folder);
             }
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getNamingScheme()
+    {
+        return $this->namingScheme;
+    }
+
+    /**
+     * @param string $namingScheme
+     */
+    public function setNamingScheme($namingScheme)
+    {
+        $this->namingScheme = $namingScheme;
     }
 
 

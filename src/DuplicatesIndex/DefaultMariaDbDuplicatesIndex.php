@@ -33,15 +33,32 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
     const POTENTIAL_DUPLICATES_TABLE = 'plugin_cmf_potential_duplicates';
     const FALSE_POSITIVES_TABLE = 'plugin_cmf_duplicates_false_positives';
 
-    protected $config;
+    /**
+     * @var array
+     */
     protected $duplicateCheckFields;
+
+    /**
+     * @var bool
+     */
+    protected $enableDuplicatesIndex;
+
+    /**
+     * @var bool
+     */
     protected $analyzeFalsePositives = false;
 
-    public function __construct()
+    /**
+     * DefaultMariaDbDuplicatesIndex constructor.
+     * @param bool $enableDuplicatesIndex
+     * @param array $duplicateCheckFields
+     * @param array $dataTransformers
+     */
+    public function __construct($enableDuplicatesIndex = false, array $duplicateCheckFields = [], array $dataTransformers = [])
     {
-        $this->config = Config::getConfig()->CustomerDuplicatesService->DuplicatesIndex;
-        $this->duplicateCheckFields = $this->config->duplicateCheckFields ? $this->config->duplicateCheckFields->toArray(
-        ) : [];
+        $this->enableDuplicatesIndex = $enableDuplicatesIndex;
+        $this->duplicateCheckFields = $duplicateCheckFields;
+        $this->dataTransformers = $dataTransformers;
     }
 
     public function recreateIndex()
@@ -74,15 +91,20 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
             foreach ($paginator as $customer) {
                 $logger->notice(sprintf('update index for %s', (string)$customer));
 
-                \Pimcore::getContainer()->get('cmf.customer_duplicates_service')->updateDuplicateIndexForCustomer(
-                    $customer
-                );
+                $this->updateDuplicateIndexForCustomer( $customer, true);
             }
         }
     }
 
-    public function updateDuplicateIndexForCustomer(CustomerInterface $customer)
+    public function updateDuplicateIndexForCustomer(CustomerInterface $customer, $force = false)
     {
+
+        if(!$force && !$this->enableDuplicatesIndex) {
+            $this->getLogger()->debug('duplicate index disabled');
+
+            return;
+        }
+
         if (!$this->isRelevantForDuplicateIndex($customer)) {
             $this->deleteCustomerFromDuplicateIndex($customer);
 
@@ -699,7 +721,9 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
     protected function transformDataForDuplicateIndex($data, $field)
     {
-        if (!$class = $this->config->dataTransformers->{$field}) {
+        $class = isset($this->dataTransformers[$field]) ? $this->dataTransformers[$field] : false;
+
+        if (!$class) {
             $class = Standard::class;
         }
 

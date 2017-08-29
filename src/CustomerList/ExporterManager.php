@@ -19,22 +19,20 @@ use Symfony\Component\HttpFoundation\Request;
 class ExporterManager implements ExporterManagerInterface
 {
     /**
-     * @var \Pimcore\Config
+     * @var array
      */
-    protected $config;
+    protected $exporterConfig;
 
-    public function __construct()
+    public function __construct(array $exporterConfig = [])
     {
-        $this->config = Config::getConfig()->CustomerList->exporters;
+        $this->exporterConfig = $exporterConfig;
     }
 
-    /**
-     * @return \Pimcore\Config
-     */
-    public function getConfig()
+    public function getExporterConfig()
     {
-        return $this->config;
+        return $this->exporterConfig;
     }
+
 
     /**
      * @param $key
@@ -43,7 +41,7 @@ class ExporterManager implements ExporterManagerInterface
      */
     public function hasExporter($key)
     {
-        return isset($this->config->$key);
+        return isset($this->exporterConfig[$key]);
     }
 
     /**
@@ -58,11 +56,11 @@ class ExporterManager implements ExporterManagerInterface
             throw new \InvalidArgumentException(sprintf('Exporter %s is not defined', $key));
         }
 
-        $config = $this->config->$key;
+        $config = $this->exporterConfig[$key];
 
-        $exporter = $config->exporter;
+        $exporter = $config['exporter'];
         /** @var ExporterInterface $exporter */
-        $exporter = new $exporter($config->name, $config->properties->toArray(), (bool) $config->exportSegmentsAsColumns);
+        $exporter = new $exporter($config['name'], $config['properties'], $config['exportSegmentsAsColumns']);
 
         if (null !== $listing) {
             $exporter->setListing($listing);

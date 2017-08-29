@@ -11,7 +11,6 @@
 
 namespace CustomerManagementFrameworkBundle\DataValidator;
 
-use CustomerManagementFrameworkBundle\Config;
 
 class BlacklistValidator implements DataValidatorInterface
 {
@@ -24,9 +23,8 @@ class BlacklistValidator implements DataValidatorInterface
      */
     public function isValid($data)
     {
-        $config = Config::getConfig();
 
-        $blacklistFile = (string)$config->General->mailBlackListFile;
+        $blacklistFile = \Pimcore::getContainer()->getParameter('pimcore_customer_management_framework.general.mailBlackListFile');
 
         $blacklistedMails = [];
 

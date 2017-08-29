@@ -1,8 +1,75 @@
 parameters:
     cmf.mailchimp.client.apikey:
     cmf.customer_export.items_per_request: 500
+    cmf.customer_export.items_per_request: 500
+
+
 
 services:
+    _defaults:
+        public: true
+        autowire: true
+        autoconfigure: true
+
+    CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface:
+        class: CustomerManagementFrameworkBundle\CustomerSaveManager\DefaultCustomerSaveManager
+        arguments:
+            - '%pimcore_customer_management_framework.customer_save_manager.enableAutomaticObjectNamingScheme%'
+
+
+    CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface:
+         class: CustomerManagementFrameworkBundle\CustomerProvider\DefaultCustomerProvider
+         arguments:
+            - '%pimcore_customer_management_framework.general.customerPimcoreClass%'
+            - '%pimcore_customer_management_framework.customer_provider.parentPath%'
+
+
+    CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface:
+         class: CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\DefaultObjectNamingScheme
+         arguments:
+            - '%pimcore_customer_management_framework.customer_provider.namingScheme%'
+            - '%pimcore_customer_management_framework.customer_provider.parentPath%'
+            - '%pimcore_customer_management_framework.customer_provider.archiveDir%'
+         calls:
+            - [setLogger, ['@cmf.logger']]
+
+
+    CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface:
+        class: CustomerManagementFrameworkBundle\CustomerSaveValidator\DefaultCustomerSaveValidator
+        arguments:
+            - '%pimcore_customer_management_framework.customer_save_validator.requiredFields%'
+            - '%pimcore_customer_management_framework.customer_save_validator.checkForDuplicates%'
+
+
+    CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface:
+        class: CustomerManagementFrameworkBundle\SegmentManager\DefaultSegmentManager
+        arguments:
+            - '%pimcore_customer_management_framework.segment_manager.segmentFolder.calculated%'
+            - '%pimcore_customer_management_framework.segment_manager.segmentFolder.manual%'
+        calls:
+            - [setLogger, ['@cmf.logger']]
+
+
+    CustomerManagementFrameworkBundle\CustomerMerger\CustomerMergerInterface:
+        class: CustomerManagementFrameworkBundle\CustomerMerger\DefaultCustomerMerger
+        calls:
+            - [setLogger, ['@cmf.logger']]
+
+
+    CustomerManagementFrameworkBundle\CustomerDuplicatesService\CustomerDuplicatesServiceInterface:
+        class: CustomerManagementFrameworkBundle\CustomerDuplicatesService\DefaultCustomerDuplicatesService
+        arguments:
+            - '%pimcore_customer_management_framework.customer_duplicates_services.duplicateCheckFields%'
+
+    CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface:
+        class: CustomerManagementFrameworkBundle\DuplicatesIndex\DefaultMariaDbDuplicatesIndex
+        arguments:
+            - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.enableDuplicatesIndex%'
+            - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.duplicateCheckFields%'
+            - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.dataTransformers%'
+        calls:
+            - [setLogger, ['@cmf.logger']]
+
     cmf.logger:
         alias: logger
 
@@ -34,19 +101,7 @@ services:
         calls:
             - [setLogger, ['@cmf.logger']]
 
-    cmf.customer_save_manager:
-        class: CustomerManagementFrameworkBundle\CustomerSaveManager\DefaultCustomerSaveManager
-        lazy: true
 
-    cmf.customer_save_validator:
-        class: CustomerManagementFrameworkBundle\CustomerSaveValidator\DefaultCustomerSaveValidator
-        lazy: true
-
-    cmf.segment_manager:
-        class: CustomerManagementFrameworkBundle\SegmentManager\DefaultSegmentManager
-        lazy: true
-        calls:
-            - [setLogger, ['@cmf.logger']]
 
     cmf.segment_manager.segment_merger:
         class: CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\DefaultSegmentMerger
@@ -54,54 +109,30 @@ services:
         calls:
              - [setLogger, ['@cmf.logger']]
 
-    cmf.customer_duplicates_service:
-        class: CustomerManagementFrameworkBundle\CustomerDuplicatesService\DefaultCustomerDuplicatesService
-        lazy: true
 
     cmf.customer_duplicates_view:
         class: CustomerManagementFrameworkBundle\CustomerDuplicatesView\DefaultCustomerDuplicatesView
-        lazy: true
-        arguments: ['@cmf.view_formatter']
+        arguments:
+            - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.listFields%'
+            - '@cmf.view_formatter'
 
-
-    cmf.customer_duplicates_index:
-        class: CustomerManagementFrameworkBundle\DuplicatesIndex\DefaultMariaDbDuplicatesIndex
-        lazy: true
-        calls:
-            - [setLogger, ['@cmf.logger']]
 
     cmf.customer_view:
         class: CustomerManagementFrameworkBundle\CustomerView\DefaultCustomerView
         lazy: true
         arguments: ['@cmf.view_formatter']
 
-    cmf.customer_export_manager:
-        class: CustomerManagementFrameworkBundle\CustomerList\ExporterManager
-
     cmf.potential_duplicate_item:
         class: CustomerManagementFrameworkBundle\Model\CustomerDuplicates\PotentialDuplicateItem
         lazy: true
         shared: false
 
-    cmf.customer_merger:
-            class: CustomerManagementFrameworkBundle\CustomerMerger\DefaultCustomerMerger
-            lazy: true
-            calls:
-                - [setLogger, ['@cmf.logger']]
-
-    cmf.customer_provider:
-         class: CustomerManagementFrameworkBundle\CustomerProvider\DefaultCustomerProvider
-         lazy: true
 
     cmf.customer_exporter_manager:
          class: CustomerManagementFrameworkBundle\CustomerList\ExporterManager
-         lazy: true
+         arguments:
+              - '%pimcore_customer_management_framework.customer_list.exporters%'
 
-    cmf.customer_provider.object_naming_scheme:
-         class: CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\DefaultObjectNamingScheme
-         lazy: true
-         calls:
-            - [setLogger, ['@cmf.logger']]
 
     cmf.action_trigger.queue:
         class: CustomerManagementFrameworkBundle\ActionTrigger\Queue\DefaultQueue
@@ -125,7 +156,6 @@ services:
     cmf.rest.customers_handler:
         class: CustomerManagementFrameworkBundle\RESTApi\CustomersHandler
         lazy: true
-        arguments: ['@cmf.customer_provider']
         calls:
             - [setApiResourceRoute, ['customermanagementframework_rest_api_customers_readrecord']]
             - [setLogger, ['@cmf.logger']]
@@ -158,15 +188,7 @@ services:
 
     cmf.encryption_service:
         class: CustomerManagementFrameworkBundle\Encryption\DefaultEncryptionService
+        arguments:
+            - '%pimcore_customer_management_framework.encryption.secret%'
         calls:
              - [setLogger, ['@cmf.logger']]
-
-    cmf.mailchimp.client:
-        class: DrewM\MailChimp\MailChimp
-        lazy: true
-        arguments: ['%cmf.mailchimp.client.apikey%']
-
-    cmf.mailchimp.export_service:
-        class: CustomerManagementFrameworkBundle\ExportToolkit\ExportService\MailChimpExportService
-        lazy: true
-        arguments: ['@cmf.mailchimp.client']

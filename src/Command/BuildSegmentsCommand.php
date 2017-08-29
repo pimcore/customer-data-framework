@@ -31,7 +31,7 @@ class BuildSegmentsCommand extends AbstractCommand
                 'segmentBuilder',
                 's',
                 InputOption::VALUE_OPTIONAL,
-                'execute segment builder class only (php class name of segment builder)'
+                'execute segment builder class only (symfony service id of segment builder)'
             )
             ->addOption(
                 'customer',

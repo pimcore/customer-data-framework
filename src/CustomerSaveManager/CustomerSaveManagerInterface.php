@@ -11,6 +11,7 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerSaveManager;
 
+use CustomerManagementFrameworkBundle\CustomerSaveHandler\CustomerSaveHandlerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
 interface CustomerSaveManagerInterface
@@ -98,4 +99,31 @@ interface CustomerSaveManagerInterface
      * @return void
      */
     public function saveDirty(CustomerInterface $customer);
+
+    /**
+     * @return CustomerSaveHandlerInterface[]
+     */
+    public function getSaveHandlers();
+
+    /**
+     * @param CustomerSaveHandlerInterface[] $saveHandlers
+     */
+    public function setSaveHandlers(array $saveHandlers);
+
+    /**
+     * @param CustomerSaveHandlerInterface $saveHandler
+     *
+     * @return void
+     */
+    public function addSaveHandler(CustomerSaveHandlerInterface $saveHandler);
+
+    /**
+     * @return bool
+     */
+    public function getEnableAutomaticObjectNamingScheme();
+
+    /**
+     * @param bool $enableAutomaticObjectNamingScheme
+     */
+    public function setEnableAutomaticObjectNamingScheme($enableAutomaticObjectNamingScheme);
 }
