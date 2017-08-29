@@ -226,6 +226,7 @@ class MariaDb implements ActivityStoreInterface
                 self::ACTIVITIES_TABLE,
                 [
                     'id',
+                    'customerId',
                     'activityDate',
                     'type',
                     'implementationClass',
