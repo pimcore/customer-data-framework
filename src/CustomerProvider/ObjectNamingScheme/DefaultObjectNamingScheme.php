@@ -100,10 +100,13 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
         // apply it for folders older then 10 minutes only
         $timestamp = time() - 60*10;
 
+        $archiveDir = $this->archiveDir ? : $this->parentPath;
+
         $folders->setCondition(
-            "o_id in (select o_id from (select o_id, o_path, o_key, o_type, (select count(*) from objects where o_parentId = o.o_id) as counter from objects o) as temp where counter=0 and o_type = 'folder' and o_path like ?  and o_creationDate < ?)",
+            "o_id in (select o_id from (select o_id, o_path, o_key, o_type, (select count(*) from objects where o_parentId = o.o_id) as counter from objects o) as temp where counter=0 and o_type = 'folder' and (o_path like ? or o_path like ?) and o_creationDate < ?)",
             [
                 str_replace('//', '/', $this->parentPath.'/%'),
+                str_replace('//', '/', $archiveDir .'/%'),
                 $timestamp
             ]
         );
@@ -111,7 +114,7 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
         foreach($folders as $folder) {
             if($folder instanceof Folder) {
                 $folder->delete();
-                $this->getLogger()->error("delete empty folder ". (string) $folder);
+                $this->getLogger()->info("delete empty folder ". (string) $folder);
             }
         }
     }
