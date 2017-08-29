@@ -15,6 +15,7 @@ namespace CustomerManagementFrameworkBundle\DependencyInjection;
 
 use CustomerManagementFrameworkBundle\CustomerDuplicatesService\CustomerDuplicatesServiceInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
+use CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface;
 use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
@@ -91,6 +92,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
     private function registerCustomerProviderConfiguration(ContainerBuilder $container, array $config)
     {
         $container->setAlias('cmf.customer_provider', CustomerProviderInterface::class);
+        $container->setAlias('cmf.customer_provider.object_naming_scheme', ObjectNamingSchemeInterface::class);
 
         $container->setParameter('pimcore_customer_management_framework.customer_provider.namingScheme', $config['namingScheme']);
         $container->setParameter('pimcore_customer_management_framework.customer_provider.parentPath', $config['parentPath']);
