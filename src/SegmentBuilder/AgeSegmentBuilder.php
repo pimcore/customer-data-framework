@@ -16,7 +16,6 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Model\Tool\TmpStore;
-use Psr\Log\LoggerInterface;
 use Zend\Paginator\Paginator;
 
 class AgeSegmentBuilder extends AbstractSegmentBuilder
@@ -129,7 +128,7 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder
             return;
         }
 
-        $this->logger->info('execute maintenance of AgeSegmentBuilder');
+        $this->getLogger()->info('execute maintenance of AgeSegmentBuilder');
 
         TmpStore::add($tmpStoreKey, 1, null, (60 * 60 * 24)); // only execute it once per day
 
