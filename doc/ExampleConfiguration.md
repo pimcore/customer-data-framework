@@ -1,7 +1,19 @@
 # Full featured example configuration
 
 ```yaml
-# Default configuration for "PimcoreCustomerManagementFrameworkBundle"
+
+services:
+    # example customer save handler config
+    appbundle.cmf.customer_save_handler.normalize_zip:
+       class: CustomerManagementFrameworkBundle\CustomerSaveHandler\NormalizeZip
+       tags: [cmf.customer_save_handler]
+
+    # example segment builder config
+    appbundle.cmf.segment_builder.state:
+         class: CustomerManagementFrameworkBundle\SegmentBuilder\StateSegmentBuilder
+         tags: [cmf.segment_builder]
+
+
 pimcore_customer_management_framework:
     oauth_client:
         enabled:              false
