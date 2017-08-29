@@ -83,6 +83,19 @@ class PimcoreObjectEventListener
         }
     }
 
+    public function onPostAdd(ElementEventInterface $e)
+    {
+        if (!$e instanceof ObjectEvent) {
+            return;
+        }
+
+        $object = $e->getObject();
+
+        if ($object instanceof CustomerInterface) {
+            $this->customerSaveManager->postAdd($object);
+        }
+    }
+
     public function onPreDelete(ElementEventInterface $e)
     {
         if (!$e instanceof ObjectEvent) {

@@ -28,6 +28,13 @@ interface CustomerSaveManagerInterface
      *
      * @return void
      */
+    public function postAdd(CustomerInterface $customer);
+
+    /**
+     * @param CustomerInterface $customer
+     *
+     * @return void
+     */
     public function preUpdate(CustomerInterface $customer);
 
     /**

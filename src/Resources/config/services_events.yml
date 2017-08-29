@@ -18,6 +18,7 @@ services:
            - { name: kernel.event_listener, event: pimcore.object.preUpdate, method: onPreUpdate }
            - { name: kernel.event_listener, event: pimcore.object.postUpdate, method: onPostUpdate }
            - { name: kernel.event_listener, event: pimcore.object.preAdd, method: onPreAdd }
+           - { name: kernel.event_listener, event: pimcore.object.postAdd, method: onPostAdd }
            - { name: kernel.event_listener, event: pimcore.object.preDelete, method: onPreDelete }
            - { name: kernel.event_listener, event: pimcore.object.postDelete, method: onPostDelete }
 

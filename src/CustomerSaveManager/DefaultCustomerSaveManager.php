@@ -192,6 +192,11 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         $this->applyNamingScheme($customer);
     }
 
+    public function postAdd(CustomerInterface $customer)
+    {
+
+    }
+
     public function preUpdate(CustomerInterface $customer)
     {
         if (!$customer->getIdEncoded()) {
