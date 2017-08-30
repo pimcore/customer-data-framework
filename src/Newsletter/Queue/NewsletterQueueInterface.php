@@ -15,6 +15,10 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
 interface NewsletterQueueInterface
 {
+    const OPERATION_ADD = 'add';
+    const OPERATION_UPDATE = 'update';
+    const OPERATION_DELETE = 'delete';
+
     /**
      * @param CustomerInterface $customer
      * @param $operation

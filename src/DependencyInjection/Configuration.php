@@ -40,6 +40,7 @@ class Configuration implements ConfigurationInterface
         $rootNode->append($this->buildSegmentManagerNode());
         $rootNode->append($this->buildCustomerListNode());
         $rootNode->append($this->buildCustomerDuplicatesServicesNode());
+        $rootNode->append($this->buildNewsletterNode());
 
         return $treeBuilder;
     }
@@ -387,5 +388,29 @@ class Configuration implements ConfigurationInterface
         ;
 
         return $customerList;
+    }
+
+    private function buildNewsletterNode()
+    {
+        $treeBuilder = new TreeBuilder();
+
+        $newsletter = $treeBuilder->root('newsletter');
+
+        $newsletter
+            ->addDefaultsIfNotSet()
+            ->info('Configuration of newsletter services');
+
+        $newsletter
+            ->children()
+                ->arrayNode('mailchimp')
+                    ->children()
+                        ->scalarNode('listId')->end()
+                        ->scalarNode('apiKey')->end()
+                    ->end()
+                ->end()
+            ->end();
+
+
+        return $newsletter;
     }
 }

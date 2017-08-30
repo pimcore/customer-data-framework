@@ -11,10 +11,12 @@
 
 namespace CustomerManagementFrameworkBundle\Traits;
 
+use Pimcore\Log\ApplicationLogger;
+use Pimcore\Log\Handler\ApplicationLoggerDb;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-trait LoggerAware
+trait ApplicationLoggerAware
 {
     /**
      * @var LoggerInterface
@@ -27,7 +29,22 @@ trait LoggerAware
     public function getLogger()
     {
         if (null === $this->logger) {
-            return \Pimcore::getContainer()->get('cmf.logger');
+
+            $logger = new ApplicationLogger();
+            $dbWriter = new ApplicationLoggerDb('info');
+            $logger->addWriter($dbWriter);
+
+            $cmfLogger = \Pimcore::getContainer()->get('cmf.logger');
+            if($cmfLogger instanceof \Monolog\Logger) {
+
+                if($handlers = $cmfLogger->getHandlers()) {
+                    foreach($handlers as $handler) {
+                        $logger->addWriter($handler);
+                    }
+                }
+            }
+
+            return $logger;
         }
 
         return $this->logger;

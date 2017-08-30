@@ -15,6 +15,7 @@ use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface
 use CustomerManagementFrameworkBundle\CustomerSaveHandler\CustomerSaveHandlerInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db;
 use Pimcore\Model\Version;
@@ -194,7 +195,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     public function postAdd(CustomerInterface $customer)
     {
-
+        $this->handleNewsletterQueue($customer, NewsletterQueueInterface::OPERATION_ADD);
     }
 
     public function preUpdate(CustomerInterface $customer)
@@ -229,6 +230,8 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
                 $customer
             );
         }
+
+        $this->handleNewsletterQueue($customer, NewsletterQueueInterface::OPERATION_UPDATE);
     }
 
     public function preDelete(CustomerInterface $customer)
@@ -245,6 +248,8 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         }
 
         $this->addToDeletionsTable($customer);
+
+        $this->handleNewsletterQueue($customer, NewsletterQueueInterface::OPERATION_DELETE);
     }
 
     public function validateOnSave(CustomerInterface $customer, $withDuplicatesCheck = true)
@@ -259,6 +264,16 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         $validator = \Pimcore::getContainer()->get('cmf.customer_save_validator');
 
         return $validator->validate($customer, $withDuplicatesCheck);
+    }
+
+    protected function handleNewsletterQueue(CustomerInterface $customer, $operation)
+    {
+        /**
+         * @var NewsletterQueueInterface $newsletterQueue
+         */
+        $newsletterQueue = \Pimcore::getContainer()->get('cmf.newsletter.queue');
+
+        $newsletterQueue->enqueueCustomer($customer, $operation);
     }
 
     protected function addToDeletionsTable(CustomerInterface $customer)
