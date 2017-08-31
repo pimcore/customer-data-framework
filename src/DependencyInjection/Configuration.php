@@ -156,6 +156,7 @@ class Configuration implements ConfigurationInterface
         $segmentManager
             ->children()
                 ->arrayNode('segmentFolder')
+                ->addDefaultsIfNotSet()
                     ->children()
                         ->scalarNode('manual')
                             ->defaultValue('/segments/manual')
