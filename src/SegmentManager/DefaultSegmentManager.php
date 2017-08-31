@@ -445,7 +445,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
      *
      * @return mixed
      */
-    public function getSegmentByReference($segmentReference, CustomerSegmentGroup $segmentGroup, $calculated = null)
+    public function getSegmentByReference($segmentReference, CustomerSegmentGroup $segmentGroup = null, $calculated = null)
     {
         $list = new \Pimcore\Model\Object\CustomerSegment\Listing;
 
@@ -457,10 +457,18 @@ class DefaultSegmentManager implements SegmentManagerInterface
             }
         }
 
-        $list->setCondition(
-            'reference = ? and group__id = ? '.$calculatedCondition,
-            [$segmentReference, $segmentGroup->getId()]
-        );
+        if($segmentGroup) {
+            $list->setCondition(
+                'reference = ? and group__id = ? '.$calculatedCondition,
+                [$segmentReference, $segmentGroup->getId()]
+            );
+        } else {
+            $list->setCondition(
+                'reference = ? '.$calculatedCondition,
+                [$segmentReference]
+            );
+        }
+
         $list->setUnpublished(true);
         $list->setLimit(1);
         $list = $list->load();

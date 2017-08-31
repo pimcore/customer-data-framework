@@ -162,7 +162,7 @@ interface SegmentManagerInterface
     );
 
     /**
-     * Returns the CustomerSegment with given reference within given CustomerSegmentGroup.
+     * Returns the CustomerSegment with given reference within given CustomerSegmentGroup. If no CustomerSegmentGroup is given it will search globally.
      *
      * @param string $segmentReference
      * @param CustomerSegmentGroup $segmentGroup
@@ -170,7 +170,7 @@ interface SegmentManagerInterface
      *
      * @return CustomerSegmentInterface
      */
-    public function getSegmentByReference($segmentReference, CustomerSegmentGroup $segmentGroup, $calculated = false);
+    public function getSegmentByReference($segmentReference, CustomerSegmentGroup $segmentGroup = null, $calculated = false);
 
     /**
      * Creates a segment group.
