@@ -160,11 +160,11 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
                     $getter = 'get'.ucfirst($field);
                     if (method_exists($customer, $getter)) {
                         $value = (string)$customer->$getter();
-                        $value = $value ?: '--';
                         $namingScheme[$i] = str_replace($placeholder, $value, $namingScheme[$i]);
                     }
                 }
             }
+            $namingScheme[$i] = trim($namingScheme[$i]) ? : '--';
             $namingScheme[$i] = Objects::getValidKey($namingScheme[$i]);
         }
 
