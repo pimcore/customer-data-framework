@@ -63,7 +63,7 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
     public function apply(CustomerInterface $customer)
     {
         $namingScheme = $this->namingScheme;
-        $parentPath = $customer->getPublished() && $customer->getActive() ? $this->parentPath : $this->archiveDir;
+        $parentPath = $customer->getPublished() ? $this->parentPath : $this->archiveDir;
 
         if ($namingScheme) {
             $namingScheme = $this->extractNamingScheme($customer, $namingScheme);
