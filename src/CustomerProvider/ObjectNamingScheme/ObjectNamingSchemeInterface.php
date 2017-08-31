@@ -30,13 +30,11 @@ interface ObjectNamingSchemeInterface
     public function cleanupEmptyFolders();
 
     /**
+     * Returns the naming scheme format based on the given customer.
+     *
+     * example return string: {countryCode}/{zip}/{firstname}-{lastname}
+     *
      * @return string
      */
-    public function getNamingScheme();
-
-    /**
-     * @param string $namingScheme
-     * @return void
-     */
-    public function setNamingScheme($namingScheme);
+    public function determineNamingScheme(CustomerInterface $customer);
 }

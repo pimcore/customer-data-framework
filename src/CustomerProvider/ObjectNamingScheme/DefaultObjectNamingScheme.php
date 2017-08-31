@@ -62,7 +62,7 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
      */
     public function apply(CustomerInterface $customer)
     {
-        $namingScheme = $this->namingScheme;
+        $namingScheme = $this->determineNamingScheme($customer);
         $parentPath = $customer->getPublished() ? $this->parentPath : $this->archiveDir;
 
         if ($namingScheme) {
@@ -120,20 +120,15 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
     }
 
     /**
+     * @param CustomerInterface $customer
      * @return string
      */
-    public function getNamingScheme()
+    public function determineNamingScheme(CustomerInterface $customer)
     {
         return $this->namingScheme;
     }
 
-    /**
-     * @param string $namingScheme
-     */
-    public function setNamingScheme($namingScheme)
-    {
-        $this->namingScheme = $namingScheme;
-    }
+
 
 
     private function correctPath($path)
