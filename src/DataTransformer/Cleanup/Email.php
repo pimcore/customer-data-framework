@@ -18,6 +18,6 @@ class Email implements DataTransformerInterface
 {
     public function transform($data, $options = [])
     {
-        return filter_var($data, FILTER_SANITIZE_EMAIL);
+        return trim(filter_var($data, FILTER_SANITIZE_EMAIL), " \t\n\r\0\x0B.-_@");
     }
 }

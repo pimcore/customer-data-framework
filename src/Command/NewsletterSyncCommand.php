@@ -39,6 +39,6 @@ class NewsletterSyncCommand extends AbstractCommand
     {
         $this->newsletterManager = \Pimcore::getContainer()->get(NewsletterManagerInterface::class);
 
-        $this->newsletterManager->syncSegments();
+        $this->newsletterManager->syncCustomers();
     }
 }

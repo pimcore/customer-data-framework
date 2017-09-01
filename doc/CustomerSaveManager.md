@@ -23,7 +23,7 @@ services:
 The CMF offers the following customer save handlers out of the box (but they need to be enabled as services):
 
 #### Cleanup\Email
-Trims an email field.
+Removes invalid characters from an email field.
 
 #### NormalizeZip
 Tries to normalize zip numbers. For example A-1010 would become 1010. It offers zip correction regexes for several counties. It would be possible to extend the logic for other countries.
