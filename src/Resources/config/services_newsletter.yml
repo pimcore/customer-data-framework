@@ -1,0 +1,25 @@
+
+services:
+    _defaults:
+        public: true
+        autowire: true
+        autoconfigure: true
+
+
+    CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface:
+        class: CustomerManagementFrameworkBundle\Newsletter\Queue\DefaultNewsletterQueue
+
+    CustomerManagementFrameworkBundle\Newsletter\Manager\NewsletterManagerInterface:
+        class: CustomerManagementFrameworkBundle\Newsletter\Manager\DefaultNewsletterManager
+
+    CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\MailChimpExportService:
+        arguments:
+            - '@DrewM\MailChimp\MailChimp'
+            - '%pimcore_customer_management_framework.newsletter.mailchimp.listId%'
+
+    CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\SegmentExporter:
+
+
+    DrewM\MailChimp\MailChimp:
+        arguments:
+            - '%pimcore_customer_management_framework.newsletter.mailchimp.apiKey%'

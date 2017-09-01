@@ -403,6 +403,7 @@ class Configuration implements ConfigurationInterface
 
         $newsletter
             ->children()
+                ->booleanNode('newsletterSyncEnabled')->defaultFalse()->end()
                 ->arrayNode('mailchimp')
                     ->children()
                         ->scalarNode('listId')->end()

@@ -14,6 +14,7 @@ namespace CustomerManagementFrameworkBundle\Newsletter\Manager;
 use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\NewsletterAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProviderHandlerInterface;
+use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 
 class DefaultNewsletterManager implements NewsletterManagerInterface
@@ -71,6 +72,8 @@ class DefaultNewsletterManager implements NewsletterManagerInterface
 
     public function syncCustomers($changesQueueOnly = true)
     {
-        // TODO: Implement processSyncCustomers() method.
+        $queue = \Pimcore::getContainer()->get(NewsletterQueueInterface::class );
+
+        $queue->processQueue($this->newsletterProviderHandler);
     }
 }

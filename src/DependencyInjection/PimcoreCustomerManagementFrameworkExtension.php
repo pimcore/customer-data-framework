@@ -46,6 +46,11 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
             $loader->load('services_security_oauth_client.yml');
         }
 
+
+        if($config['newsletter']['newsletterSyncEnabled']) {
+            $loader->load('services_newsletter.yml');
+        }
+
         $this->registerGeneralConfiguration($container, $config['general']);
         $this->registerEncryptionConfiguration($container, $config['encryption']);
         $this->registerCustomerSaveManagerConfiguration($container, $config['customer_save_manager']);
@@ -125,10 +130,12 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
 
     private function registerNewsletterConfiguration(ContainerBuilder $container, array $config)
     {
-        $container->setAlias('cmf.newsletter.queue', NewsletterQueueInterface::class);
+        if($config['newsletterSyncEnabled']) {
+            $container->setAlias('cmf.newsletter.queue', NewsletterQueueInterface::class);
 
-        $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.listId', $config['mailchimp']['listId']);
-        $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.apiKey', $config['mailchimp']['apiKey']);
+            $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.listId', $config['mailchimp']['listId']);
+            $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.apiKey', $config['mailchimp']['apiKey']);
+        }
 
     }
 }
