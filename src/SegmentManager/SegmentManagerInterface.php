@@ -69,6 +69,12 @@ interface SegmentManagerInterface
     public function getSegmentGroups();
 
     /**
+     * @param bool $calculated
+     * @return \Pimcore\Model\Object\Folder
+     */
+    public function getSegmentsFolder($calculated = true);
+
+    /**
      * Applies all SegmentBuilders to customers. If the param $changesQueue only is set to true this is done only for customers which where changed since the last run.
      * If $segmentBuilderServiceId is given (php class name) then only this SegmentBuilder will be executed.
      *
