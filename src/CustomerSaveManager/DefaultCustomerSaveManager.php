@@ -336,16 +336,11 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         $originalCustomer = null;
         foreach ($saveHandlers as $handler) {
             if ($handler->isOriginalCustomerNeeded()) {
-                $originalCustomer = $this->customerProvider->getById($customer->getId(), true);
-                break;
-            }
-        }
-
-        if ($originalCustomer) {
-            foreach ($saveHandlers as $handler) {
-                if ($handler->isOriginalCustomerNeeded()) {
-                    $handler->setOriginalCustomer($originalCustomer);
+                if(is_null($originalCustomer)) {
+                    $originalCustomer = $this->customerProvider->getById($customer->getId(), true);
                 }
+
+                $handler->setOriginalCustomer($originalCustomer);
             }
         }
     }
