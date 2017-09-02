@@ -32,12 +32,12 @@ class DefaultSegmentManager implements SegmentManagerInterface
     const CHANGES_QUEUE_TABLE = 'plugin_cmf_segmentbuilder_changes_queue';
 
     /**
-     * @var string
+     * @var string|\Pimcore\Model\Object\Folder
      */
     protected $segmentFolderCalculated;
 
     /**
-     * @var string
+     * @var string|\Pimcore\Model\Object\Folder
      */
     protected $segmentFolderManual;
 
@@ -146,6 +146,21 @@ class DefaultSegmentManager implements SegmentManagerInterface
         $list->setUnpublished(false);
 
         return $list;
+    }
+
+    /**
+     * @param bool $calculated
+     * @return \Pimcore\Model\Object\Folder
+     */
+    public function getSegmentsFolder($calculated = true)
+    {
+        $folder = $calculated ? $this->segmentFolderCalculated : $this->segmentFolderManual;
+
+        if(is_string($folder)) {
+            $folder = Service::createFolderByPath($folder);
+        }
+
+        return $folder;
     }
 
     /**
@@ -495,7 +510,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
      *
      * @return mixed|CustomerSegment
      *
-     * @throws \Exception
+     * @throws \RuntimeException
      */
     public function createSegment(
         $segmentName,
@@ -505,7 +520,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
         $subFolder = null
     ) {
         if ($segmentGroup instanceof CustomerSegmentGroup && $segmentGroup->getCalculated() != $calculated) {
-            throw new \Exception(
+            throw new \RuntimeException(
                 sprintf(
                     "it's not possible to create a %s segment within a %s segment group",
                     $calculated ? 'calculated' : 'manual',
@@ -592,12 +607,8 @@ class DefaultSegmentManager implements SegmentManagerInterface
             return $segmentGroup;
         }
 
-        $segmentFolder = Service::createFolderByPath(
-            $calculated ? $this->segmentFolderCalculated : $this->segmentFolderManual
-        );
-
         $segmentGroup = new CustomerSegmentGroup();
-        $segmentGroup->setParent($segmentFolder);
+        $segmentGroup->setParent($this->getSegmentsFolder($calculated));
         $segmentGroup->setPublished(true);
         $segmentGroup->setKey(Objects::getValidKey($segmentGroupReference ?: $segmentGroupName));
         $segmentGroup->setCalculated($calculated);
@@ -618,25 +629,22 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     public function updateSegmentGroup(CustomerSegmentGroup $segmentGroup, array $values = [])
     {
-        $calculatedState = $segmentGroup->getCalculated();
+        $currentCalculatedState = $segmentGroup->getCalculated();
         $segmentGroup->setValues($values);
-        $segmentGroup->setKey(Objects::getValidKey($segmentGroup->getReference() ?: $segmentGroup->getName()));
+        $segmentGroup->setKey($segmentGroup->getReference() ?: $segmentGroup->getName());
         Objects::checkObjectKey($segmentGroup);
 
         if (isset($values['calculated'])) {
-            if ((bool)$values['calculated'] != $calculatedState) {
+            $newCalculatedState = (bool)$values['calculated'];
+            if ($newCalculatedState != $currentCalculatedState) {
                 foreach ($this->getSegmentsFromSegmentGroup($segmentGroup) as $segment) {
-                    if ($segment->getCalculated() != (bool)$values['calculated']) {
-                        $segment->setCalculated((bool)$values['calculated']);
+                    if ($segment->getCalculated() != $newCalculatedState) {
+                        $segment->setCalculated($newCalculatedState);
                         $segment->save();
                     }
                 }
 
-                $segmentGroup->setParent(
-                    Service::createFolderByPath(
-                        (bool)$values['calculated'] ? $this->segmentFolderCalculated : $this->segmentFolderManual
-                    )
-                );
+                $segmentGroup->setParent($this->getSegmentsFolder($newCalculatedState));
             }
         }
 
@@ -668,9 +676,8 @@ class DefaultSegmentManager implements SegmentManagerInterface
             }
         }
 
-        $segment->setKey(Objects::getValidKey($segment->getReference() ?: $segment->getName()));
+        $segment->setKey($segment->getReference() ?: $segment->getName());
         Objects::checkObjectKey($segment);
-
         $segment->save();
     }
 
@@ -678,47 +685,48 @@ class DefaultSegmentManager implements SegmentManagerInterface
      * @param $segmentGroupReference
      * @param $calculated
      *
-     * @return mixed
+     * @return CustomerSegmentGroup|null
      */
     public function getSegmentGroupByReference($segmentGroupReference, $calculated)
     {
-        if (!is_null($segmentGroupReference)) {
-            $list = new \Pimcore\Model\Object\CustomerSegmentGroup\Listing;
-            $list->setUnpublished(true);
-            $list->setCondition(
-                'reference = ? and '.($calculated ? '(calculated = 1)' : '(calculated is null or calculated = 0)'),
-                $segmentGroupReference
-            );
-            $list->setUnpublished(true);
-            $list->setLimit(1);
-            $list = $list->load();
-
-            return $list[0];
+        if (is_null($segmentGroupReference)) {
+            return null;
         }
+
+        $list = $this->getSegmentGroups()
+                ->setUnpublished(true)
+                ->setCondition(
+                    'reference = ? and '.($calculated ? '(calculated = 1)' : '(calculated is null or calculated = 0)'),
+                    $segmentGroupReference
+                );
+
+        if($list->count() > 1) {
+            throw new \RuntimeException(
+                sprintf('Ambiguous results: found more than one segment group with reference %s', $segmentGroupReference)
+            );
+        }
+
+        return $list->current();
     }
 
     /**
      * @param CustomerSegmentGroup $segmentGroup
      * @param array $ignoreSegments
      *
-     * @return array
+     * @return CustomerSegment[]
      */
     public function getSegmentsFromSegmentGroup(CustomerSegmentGroup $segmentGroup, array $ignoreSegments = [])
     {
-        $ignoreIds = [];
-        foreach ($ignoreSegments as $ignoreSegment) {
-            $ignoreIds[] = $ignoreSegment->getId();
-        }
+        $list = $this->getSegments()
+                ->addConditionParam('group__id = ?', $segmentGroup->getId())
+                ->setOrderKey('name');
 
-        $ignoreCondition = '';
+        $ignoreIds = Objects::getIdsFromArray($ignoreSegments);
+
         if (sizeof($ignoreIds)) {
-            $ignoreCondition = ' and o_id not in('.implode(',', $ignoreIds).')';
+            $list->addConditionParam('o_id not in(' . implode(',', $ignoreIds) . ')');
         }
 
-        $list = new CustomerSegment\Listing;
-        $list->setUnpublished(true);
-        $list->setCondition('group__id = ?'.$ignoreCondition, $segmentGroup->getId());
-        $list->setOrderKey('name');
         $result = $list->load();
 
         return $result ?: [];
@@ -742,20 +750,14 @@ class DefaultSegmentManager implements SegmentManagerInterface
         if ($segment instanceof Concrete) {
             $parent = $segment;
 
-            $group = null;
+            $segment->setGroup(null);
             while ($parent) {
                 $parent = $parent->getParent();
 
                 if ($parent instanceof CustomerSegmentGroup) {
-                    $group = $parent;
-                    break;
+                    $segment->setGroup($parent);
+                    return;
                 }
-            }
-
-            if ($group) {
-                $segment->setGroup($parent);
-            } else {
-                $segment->setGroup(null);
             }
         }
     }
@@ -789,7 +791,9 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     public function getCustomersSegmentsFromGroup(CustomerInterface $customer, $group)
     {
-        $group = $group instanceof CustomerSegmentGroup ? $group : $this->getSegmentGroupByReference($group, true);
+        if(!$group instanceof CustomerSegmentGroup) {
+            $group = $this->getSegmentGroupByReference($group, true);
+        }
 
         if (!$group instanceof CustomerSegmentGroup) {
             return [];
