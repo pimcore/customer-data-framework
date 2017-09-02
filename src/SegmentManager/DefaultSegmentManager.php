@@ -44,7 +44,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
     protected $customerSaveManager;
 
     /**
-     * @var SegmentBuilderInterface
+     * @var SegmentBuilderInterface[]
      */
     protected $segmentBuilders = [];
 
