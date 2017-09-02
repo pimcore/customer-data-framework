@@ -288,9 +288,7 @@ class MariaDb implements ActivityStoreInterface
      */
     public function deleteActivity(ActivityInterface $activity)
     {
-        $entry = $this->getEntryForActivity($activity);
-
-        if (!$entry) {
+        if (!$entry = $this->getEntryForActivity($activity)) {
             return false;
         }
 
