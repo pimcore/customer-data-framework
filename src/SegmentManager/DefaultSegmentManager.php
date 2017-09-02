@@ -31,9 +31,14 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
     const CHANGES_QUEUE_TABLE = 'plugin_cmf_segmentbuilder_changes_queue';
 
-    protected $mergedSegmentsCustomerSaveQueue;
-
+    /**
+     * @var string
+     */
     protected $segmentFolderCalculated;
+
+    /**
+     * @var string
+     */
     protected $segmentFolderManual;
 
     /**
@@ -51,6 +56,14 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     protected $customerProvider;
 
+
+    /**
+     * DefaultSegmentManager constructor.
+     * @param $segmentFolderCalculated
+     * @param $segmentFolderManual
+     * @param CustomerSaveManagerInterface $customerSaveManager
+     * @param CustomerProviderInterface $customerProvider
+     */
     public function __construct($segmentFolderCalculated, $segmentFolderManual, CustomerSaveManagerInterface $customerSaveManager, CustomerProviderInterface $customerProvider)
     {
         $this->segmentFolderCalculated = $segmentFolderCalculated;
@@ -93,13 +106,11 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
         $conditions = [];
         foreach ($segmentIds as $segmentId) {
-            $conditions[] = '(o_id in (select src_id from object_relations_1 where dest_id = '.$list->quote(
-                    $segmentId
-                ).'))';
+            $conditions[] = '(o_id in (select src_id from object_relations_1 where dest_id = ' . intval($segmentId) . '))';
         }
 
         if (sizeof($conditions)) {
-            $list->setCondition('('.implode(' '.$conditionMode.' ', $conditions).')');
+            $list->setCondition('(' . implode(' ' . $conditionMode . ' ', $conditions) . ')');
         }
 
         return $list;
@@ -128,6 +139,9 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     public function getSegmentGroups()
     {
+        /**
+         * @var CustomerSegmentGroup\Listing $list;
+         */
         $list = CustomerSegmentGroup::getList();
         $list->setUnpublished(false);
 
@@ -403,10 +417,9 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     public function buildCalculatedSegmentsOnCustomerSave(CustomerInterface $customer)
     {
-        $segmentBuilders = $this->segmentBuilders;
-        self::prepareSegmentBuilders($segmentBuilders, true);
+        self::prepareSegmentBuilders($this->segmentBuilders, true);
 
-        foreach ($segmentBuilders as $segmentBuilder) {
+        foreach ($this->segmentBuilders as $segmentBuilder) {
             if (!$segmentBuilder->executeOnCustomerSave()) {
                 continue;
             }
@@ -443,39 +456,34 @@ class DefaultSegmentManager implements SegmentManagerInterface
      * @param CustomerSegmentGroup $segmentGroup
      * @param null $calculated
      *
-     * @return mixed
+     * @return CustomerSegment|null
+     * @throws \RuntimeException
      */
     public function getSegmentByReference($segmentReference, CustomerSegmentGroup $segmentGroup = null, $calculated = null)
     {
-        $list = new \Pimcore\Model\Object\CustomerSegment\Listing;
+        $list = $this->getSegments()
+                ->setUnpublished(true)
+                ->addConditionParam('reference = ?', $segmentReference);
 
-        $calculatedCondition = '';
         if (!is_null($calculated)) {
-            $calculatedCondition = 'and calculated = 1';
-            if (!$calculated) {
-                $calculatedCondition = 'and (calculated is null or calculated = 0)';
+            if ($calculated) {
+                $list->addConditionParam('calculated = 1');
+            } else {
+                $list->addConditionParam('(calculated is null or calculated = 0)');
             }
         }
 
         if($segmentGroup) {
-            $list->setCondition(
-                'reference = ? and group__id = ? '.$calculatedCondition,
-                [$segmentReference, $segmentGroup->getId()]
-            );
-        } else {
-            $list->setCondition(
-                'reference = ? '.$calculatedCondition,
-                [$segmentReference]
+            $list->addConditionParam('group__id = ?', $segmentGroup->getId());
+        }
+
+        if($list->count() > 1) {
+            throw new \RuntimeException(
+                sprintf('Ambiguous results: found more than one segment with reference %s', $segmentReference)
             );
         }
 
-        $list->setUnpublished(true);
-        $list->setLimit(1);
-        $list = $list->load();
-
-        if (!empty($list)) {
-            return $list[0];
-        }
+        return $list->current();
     }
 
     /**
