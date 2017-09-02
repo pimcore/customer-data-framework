@@ -11,7 +11,7 @@
 
 namespace CustomerManagementFrameworkBundle\DataSimilarityMatcher;
 
-class BirthDate implements DataSimilarityMatcherInterface
+class BirthDate extends AbstractSimilarityMatcher
 {
     protected $defaultTreshold = 50;
 
@@ -57,14 +57,5 @@ class BirthDate implements DataSimilarityMatcherInterface
         }
 
         return 0;
-    }
-
-    public function isSimilar($value1, $value2, $treshold = null)
-    {
-        $similarity = $this->calculateSimilarity($value1, $value2);
-
-        $treshold = is_int($treshold) ? $treshold : $this->defaultTreshold;
-
-        return $similarity >= $treshold;
     }
 }

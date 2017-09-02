@@ -11,7 +11,7 @@
 
 namespace CustomerManagementFrameworkBundle\DataSimilarityMatcher;
 
-class SimilarText implements DataSimilarityMatcherInterface
+class SimilarText extends AbstractSimilarityMatcher
 {
     protected $defaultTreshold = 80;
 
@@ -21,14 +21,5 @@ class SimilarText implements DataSimilarityMatcherInterface
         similar_text($value1, $value2, $percent);
 
         return $percent;
-    }
-
-    public function isSimilar($value1, $value2, $treshold = null)
-    {
-        $similarity = $this->calculateSimilarity($value1, $value2);
-
-        $treshold = is_int($treshold) ? $treshold : $this->defaultTreshold;
-
-        return $similarity >= $treshold;
     }
 }
