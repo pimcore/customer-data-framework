@@ -74,25 +74,7 @@ interface SegmentManagerInterface
      */
     public function getSegmentsFolder($calculated = true);
 
-    /**
-     * Applies all SegmentBuilders to customers. If the param $changesQueue only is set to true this is done only for customers which where changed since the last run.
-     * If $segmentBuilderServiceId is given (php class name) then only this SegmentBuilder will be executed.
-     *
-     * @param bool $changesQueueOnly
-     * @param string|null $segmentBuilderServiceId
-     * @param int[]|null $customQueue Process only customer from given queue
-     * @param bool|null $activeState Consider active-state, null : ignore, false -> inactive only, true -> active only
-     * @param array $options
-     *
-     * @return void
-     */
-    public function buildCalculatedSegments(
-        $changesQueueOnly = true,
-        $segmentBuilderServiceId = null,
-        array $customQueue = null,
-        $activeState = null,
-        $options = []
-    );
+
 
     /**
      * @param SegmentBuilderInterface $segmentBuilder
@@ -101,11 +83,9 @@ interface SegmentManagerInterface
     public function addSegmentBuilder(SegmentBuilderInterface $segmentBuilder);
 
     /**
-     * Calls all maintenance methods of all SegmentBuilders
-     *
-     * @return void
+     * @return SegmentBuilderInterface[]
      */
-    public function executeSegmentBuilderMaintenance();
+    public function getSegmentBuilders();
 
     /**
      * Could be used to add/remove segments to/from customers. If segments are added or removed this will be tracked in the notes/events tab of the customer. With the optional $hintForNotes parameter it's possible to add an iditional hint to the notes/event entries.
@@ -226,13 +206,6 @@ interface SegmentManagerInterface
     public function getSegmentGroupByReference($segmentGroupReference, $calculated);
 
     /**
-     * @param CustomerInterface $customer
-     *
-     * @return void
-     */
-    public function buildCalculatedSegmentsOnCustomerSave(CustomerInterface $customer);
-
-    /**
      * @param CustomerSegmentGroup $segmentGroup
      * @param CustomerSegmentInterface[] $ignoreSegments
      *
@@ -257,13 +230,6 @@ interface SegmentManagerInterface
      * @return CustomerSegmentInterface[]
      */
     public function getCustomersSegmentsFromGroup(CustomerInterface $customer, $group);
-
-    /**
-     * @param CustomerInterface $customer
-     *
-     * @return void
-     */
-    public function addCustomerToChangesQueue(CustomerInterface $customer);
 
     /**
      * Called in pimcore's pre object update hook for CustomerSegment objects.

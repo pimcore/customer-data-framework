@@ -43,6 +43,8 @@ services:
             - '%pimcore_customer_management_framework.segment_manager.segmentFolder.calculated%'
             - '%pimcore_customer_management_framework.segment_manager.segmentFolder.manual%'
 
+    CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface:
+        class: CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\DefaultSegmentBuilderExecutor
 
     CustomerManagementFrameworkBundle\CustomerMerger\CustomerMergerInterface:
         class: CustomerManagementFrameworkBundle\CustomerMerger\DefaultCustomerMerger

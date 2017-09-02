@@ -11,6 +11,7 @@
 
 namespace CustomerManagementFrameworkBundle\Command;
 
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -98,10 +99,10 @@ class BuildSegmentsCommand extends AbstractCommand
             'pages' => $this->input->getOption('p-amount'),
         ];
 
-        /** @var \CustomerManagementFrameworkBundle\SegmentManager\DefaultSegmentManager $segmentManager */
-        $segmentManager = \Pimcore::getContainer()->get('cmf.segment_manager');
+        /** @var SegmentBuilderExecutorInterface $segmentBuilderExecutor */
+        $segmentBuilderExecutor = \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class);
 
-        $segmentManager->buildCalculatedSegments(
+        $segmentBuilderExecutor->buildCalculatedSegments(
             !$input->getOption('force'),
             $input->getOption('segmentBuilder'),
             $customQueue,

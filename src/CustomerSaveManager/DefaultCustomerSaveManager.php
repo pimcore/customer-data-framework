@@ -16,6 +16,7 @@ use CustomerManagementFrameworkBundle\CustomerSaveHandler\CustomerSaveHandlerInt
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db;
 use Pimcore\Model\Version;
@@ -218,11 +219,11 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         }
 
         if ($this->getSegmentBuildingHookEnabled()) {
-            \Pimcore::getContainer()->get('cmf.segment_manager')->buildCalculatedSegmentsOnCustomerSave($customer);
+            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class)->buildCalculatedSegmentsOnCustomerSave($customer);
         }
 
         if (!$this->isDisableQueue()) {
-            \Pimcore::getContainer()->get('cmf.segment_manager')->addCustomerToChangesQueue($customer);
+            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class)->addCustomerToChangesQueue($customer);
         }
 
         if (!$this->isDisableDuplicateIndex()) {
