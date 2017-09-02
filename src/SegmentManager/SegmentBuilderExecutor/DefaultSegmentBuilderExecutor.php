@@ -137,24 +137,13 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
         $customerList->setOrderKey('o_id');
 
         // parse options
-        $desiredPageSize = isset($options['pageSize']) && (is_int($options['pageSize']) || ctype_digit(
-                $options['pageSize']
-            )) ? (int)$options['pageSize'] : null;
-        $desiredStartPage = isset($options['startPage']) && (is_int($options['startPage']) || ctype_digit(
-                $options['startPage']
-            )) ? (int)$options['startPage'] : null;
-        $desiredEndPage = isset($options['endPage']) && (is_int($options['endPage']) || ctype_digit(
-                $options['endPage']
-            )) ? (int)$options['endPage'] : null;
-        $desiredPages = isset($options['pages']) && (is_int($options['pages']) || ctype_digit(
-                $options['pages']
-            )) ? (int)$options['pages'] : null;
+        $desiredPageSize = $this->getIntOption($options, 'pageSize');
+        $desiredStartPage = $this->getIntOption($options, 'startPage');
+        $desiredEndPage = $this->getIntOption($options, 'endPage');
+        $desiredPages = $this->getIntOption($options, 'pages');
 
-        $logger->notice(
-            sprintf(
-                'Pre-fetching all ids via adapter for speedup and coherent paging '
-            )
-        );
+        $logger->notice('Pre-fetching all ids via adapter for speedup and coherent paging');
+
         // note: listing is now constant and may be flushed per iteration
         $paginator = new Paginator(
             new \CustomerManagementFrameworkBundle\Pimcore\Model\Tool\ListingAdapter($customerList)
@@ -332,7 +321,11 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
         $this->customerSaveManager->setSegmentBuildingHookEnabled($backup);
     }
 
-
+    protected function getIntOption(array $options, $option)
+    {
+        return isset($options['pageSize']) && (is_int($options['pageSize']) || ctype_digit($options['pageSize']))
+            ? (int)$options['pageSize'] : null;
+    }
 
     /**
      * @param CustomerInterface $customer
