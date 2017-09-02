@@ -28,8 +28,6 @@ services:
             - '%pimcore_customer_management_framework.customer_provider.namingScheme%'
             - '%pimcore_customer_management_framework.customer_provider.parentPath%'
             - '%pimcore_customer_management_framework.customer_provider.archiveDir%'
-         calls:
-            - [setLogger, ['@cmf.logger']]
 
 
     CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface:
@@ -44,14 +42,10 @@ services:
         arguments:
             - '%pimcore_customer_management_framework.segment_manager.segmentFolder.calculated%'
             - '%pimcore_customer_management_framework.segment_manager.segmentFolder.manual%'
-        calls:
-            - [setLogger, ['@cmf.logger']]
 
 
     CustomerManagementFrameworkBundle\CustomerMerger\CustomerMergerInterface:
         class: CustomerManagementFrameworkBundle\CustomerMerger\DefaultCustomerMerger
-        calls:
-            - [setLogger, ['@cmf.logger']]
 
 
     CustomerManagementFrameworkBundle\CustomerDuplicatesService\CustomerDuplicatesServiceInterface:
@@ -65,47 +59,34 @@ services:
             - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.enableDuplicatesIndex%'
             - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.duplicateCheckFields%'
             - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.dataTransformers%'
-        calls:
-            - [setLogger, ['@cmf.logger']]
 
     cmf.logger:
         alias: logger
 
     cmf.view_formatter:
         class: CustomerManagementFrameworkBundle\View\Formatter\DefaultViewFormatter
-        lazy: true
 
     cmf.activity_view:
         class: CustomerManagementFrameworkBundle\ActivityView\DefaultActivityView
-        lazy: true
         arguments: ['@cmf.view_formatter']
 
     cmf.activity_store:
         class: CustomerManagementFrameworkBundle\ActivityStore\MariaDb
-        lazy: true
 
     cmf.activity_manager:
         class: CustomerManagementFrameworkBundle\ActivityManager\DefaultActivityManager
-        lazy: true
 
     cmf.activity_store_entry:
         class: CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\DefaultActivityStoreEntry
-        lazy: true
         shared: false
 
     cmf.activity_url_tracker:
         class: CustomerManagementFrameworkBundle\ActivityUrlTracker\DefaultActivityUrlTracker
-        lazy: true
-        calls:
-            - [setLogger, ['@cmf.logger']]
 
 
 
     cmf.segment_manager.segment_merger:
         class: CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\DefaultSegmentMerger
-        lazy: true
-        calls:
-             - [setLogger, ['@cmf.logger']]
 
 
     cmf.customer_duplicates_view:
@@ -117,12 +98,10 @@ services:
 
     cmf.customer_view:
         class: CustomerManagementFrameworkBundle\CustomerView\DefaultCustomerView
-        lazy: true
         arguments: ['@cmf.view_formatter']
 
     cmf.potential_duplicate_item:
         class: CustomerManagementFrameworkBundle\Model\CustomerDuplicates\PotentialDuplicateItem
-        lazy: true
         shared: false
 
 
@@ -134,59 +113,37 @@ services:
 
     cmf.action_trigger.queue:
         class: CustomerManagementFrameworkBundle\ActionTrigger\Queue\DefaultQueue
-        lazy: true
-        calls:
-            - [setLogger, ['@cmf.logger']]
 
     cmf.action_trigger.action_manager:
         class: CustomerManagementFrameworkBundle\ActionTrigger\ActionManager\DefaultActionManager
-        lazy: true
-        calls:
-            - [setLogger, ['@cmf.logger']]
 
     cmf.rest.activities_handler:
         class: CustomerManagementFrameworkBundle\RESTApi\ActivitiesHandler
-        lazy: true
         calls:
             - [setApiResourceRoute, ['customermanagementframework_rest_api_activities_readrecord']]
-            - [setLogger, ['@cmf.logger']]
 
     cmf.rest.customers_handler:
         class: CustomerManagementFrameworkBundle\RESTApi\CustomersHandler
-        lazy: true
         calls:
             - [setApiResourceRoute, ['customermanagementframework_rest_api_customers_readrecord']]
-            - [setLogger, ['@cmf.logger']]
 
     cmf.rest.segments_of_customer_handler:
         class: CustomerManagementFrameworkBundle\RESTApi\SegmentsOfCustomerHandler
-        lazy: true
-        calls:
-            - [setLogger, ['@cmf.logger']]
 
     cmf.rest.segments_handler:
         class: CustomerManagementFrameworkBundle\RESTApi\SegmentsHandler
-        lazy: true
         calls:
             - [setApiResourceRoute, ['customermanagementframework_rest_api_segments_readrecord']]
-            - [setLogger, ['@cmf.logger']]
 
     cmf.rest.segment_groups_handler:
-            class: CustomerManagementFrameworkBundle\RESTApi\SegmentGroupsHandler
-            lazy: true
-            calls:
-                - [setApiResourceRoute, ['customermanagementframework_rest_api_segmentgroups_readrecord']]
-                - [setLogger, ['@cmf.logger']]
+        class: CustomerManagementFrameworkBundle\RESTApi\SegmentGroupsHandler
+        calls:
+            - [setApiResourceRoute, ['customermanagementframework_rest_api_segmentgroups_readrecord']]
 
     cmf.rest.deletions_handler:
         class: CustomerManagementFrameworkBundle\RESTApi\DeletionsHandler
-        lazy: true
-        calls:
-            - [setLogger, ['@cmf.logger']]
 
     cmf.encryption_service:
         class: CustomerManagementFrameworkBundle\Encryption\DefaultEncryptionService
         arguments:
             - '%pimcore_customer_management_framework.encryption.secret%'
-        calls:
-             - [setLogger, ['@cmf.logger']]
