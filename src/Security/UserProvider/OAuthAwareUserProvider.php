@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Security\UserProvider;
 
+use CustomerManagementFrameworkBundle\Security\OAuth\Exception\AccountNotActiveException;
 use CustomerManagementFrameworkBundle\Security\OAuth\Exception\AccountNotLinkedException;
 use CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
@@ -63,6 +64,13 @@ class OAuthAwareUserProvider implements UserProviderInterface, OAuthAwareUserPro
             ));
 
             $exception->setUsername($username);
+
+            throw $exception;
+        }
+
+        if(!$user->getActive()) {
+            $exception = new AccountNotActiveException();
+            $exception->setCustomer($user);
 
             throw $exception;
         }

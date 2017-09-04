@@ -18,6 +18,7 @@ use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\Exception\DuplicateCustomerException;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Security\Authentication\LoginManagerInterface;
+use CustomerManagementFrameworkBundle\Security\OAuth\Exception\AccountNotActiveException;
 use CustomerManagementFrameworkBundle\Security\OAuth\Exception\AccountNotLinkedException;
 use CustomerManagementFrameworkBundle\Security\OAuth\OAuthRegistrationHandler;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
@@ -85,6 +86,13 @@ class AuthController extends FrontendController
             return $this->redirectToRoute('app_auth_register', [
                 'registrationKey' => $registrationKey
             ]);
+        }
+
+        // In some cases, additional information must be provided after registering via OAuth (e.g. birthday).
+        // As long as these informations are missing, an account should not be set active. This exception is
+        // thrown if a customer tries to login via OAuth with an account which is not set to active yet.
+        if ($error instanceof AccountNotActiveException) {
+            // redirect to a route in order to finish the registration process if necessary
         }
 
         // last username entered by the user
@@ -175,6 +183,8 @@ class AuthController extends FrontendController
         $errors = [];
         if ($form->isSubmitted() && $form->isValid()) {
             $registrationFormHandler->updateCustomerFromForm($customer, $form);
+
+            // if a customer is not set to active the OAuth login will throw an AccountNotActiveException.
             $customer->setActive(true);
 
             try {
