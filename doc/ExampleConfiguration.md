@@ -95,7 +95,7 @@ pimcore_customer_management_framework:
             xlsx:
                 name:                 XLSX # Required
                 icon:                 'fa fa-file-excel-o' # Required
-                exporter:             '\CustomerManagementFrameworkBundle\CustomerList\Exporter\XLSX' # Required
+                exporter:             '\CustomerManagementFrameworkBundle\CustomerList\Exporter\Xlsx' # Required
                 exportSegmentsAsColumns: true
                 properties:           
                    - id
