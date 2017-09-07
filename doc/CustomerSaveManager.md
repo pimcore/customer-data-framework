@@ -78,7 +78,38 @@ Second the CMF also searches for duplicate customers and declines saving the cus
  
 ## Save customer with disabled hooks
 
-Sometimes it's needed to save a customer without validaton or without appling for example customer save handlers or segment builders. Take a look at the CustomerSaveManagerInterface for methods to save the customer with disabled hooks.
+In most cases it's sufficent to just call `$customer->save()` to save a customer object.
+Sometimes it's needed to save a customer without validaton or without appling for example customer save handlers or segment builders.
 
+The customer mananagement framework offers a special SaveOptions class to handle the enabled state of all hooks when a customer gets saved.
+
+**Caution: only disable parts of the save options if you are sure that it's needed!**
+
+###### Examples
+```php
+    $customer = Customer::getById(1234);
+
+    // Disable all hooks and also Pimcore versioning.
+    $customer->saveDirty();
+
+    // Disable all hooks but enable Pimcore versioning.
+    $customer->saveDirty(true);
+
+    // globally disable on save segment building and also the segment builder queue
+    $customer->getSaveManager()->getSaveOptions()
+        ->disableOnSaveSegmentBuilders()
+        ->disableSegmentBuilderQueue();
+
+    // save customer with disabled object naming scheme but let the global state untouched (getSaveOptions(true) will deliver a cloned instance of the save options)
+    $saveOptions = $customer->getSaveManager()->getSaveOptions(true)
+                        ->disableObjectNamingScheme();
+    $customer->saveWithOptions($saveOptions);
+
+    // save customer with enabled object naming scheme even if it is disabled by default in the config
+    $saveOptions = $customer->getSaveManager()->getSaveOptions(true)
+                        ->enableObjectNamingScheme();
+    $customer->saveWithOptions($saveOptions);
+
+```
 
 

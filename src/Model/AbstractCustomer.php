@@ -11,6 +11,8 @@
 
 namespace CustomerManagementFrameworkBundle\Model;
 
+use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
+use CustomerManagementFrameworkBundle\CustomerSaveManager\SaveOptions;
 use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 
 abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implements CustomerInterface
@@ -43,4 +45,37 @@ abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implement
     {
         return [];
     }
+
+    /**
+     * @param bool $disableVersions
+     * @return mixed
+     */
+    public function saveDirty($disableVersions = true)
+    {
+        return $this->getSaveManager()->saveDirty($this, $disableVersions);
+    }
+
+    /**
+     * @param SaveOptions $saveOptions
+     * @param bool $disableVersions
+     * @return mixed
+     */
+    public function saveWithOptions(SaveOptions $saveOptions, $disableVersions = false)
+    {
+        return $this->getSaveManager()->saveWithOptions($this, $saveOptions, $disableVersions);
+    }
+
+    /**
+     * @return CustomerSaveManagerInterface
+     */
+    public function getSaveManager()
+    {
+        /**
+         * @var CustomerSaveManagerInterface $saveManager
+         */
+        $saveManager = \Pimcore::getContainer()->get('cmf.customer_save_manager');
+        return $saveManager;
+    }
+
+
 }

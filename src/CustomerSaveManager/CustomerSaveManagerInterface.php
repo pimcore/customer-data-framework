@@ -58,27 +58,6 @@ interface CustomerSaveManagerInterface
      */
     public function postDelete(CustomerInterface $customer);
 
-    /**
-     * @param bool $segmentBuildingHookEnabled
-     *
-     * @return void
-     */
-    public function setSegmentBuildingHookEnabled($segmentBuildingHookEnabled);
-
-    /**
-     * @return bool
-     */
-    public function getSegmentBuildingHookEnabled();
-
-    /**
-     * @return bool
-     */
-    public function getCustomerSaveValidatorEnabled();
-
-    /**
-     * @param bool $customerSaveValidatorEnabled
-     */
-    public function setCustomerSaveValidatorEnabled($customerSaveValidatorEnabled);
 
     /**
      * @param CustomerInterface $customer
@@ -89,23 +68,33 @@ interface CustomerSaveManagerInterface
     public function validateOnSave(CustomerInterface $customer, $withDuplicatesCheck = true);
 
     /**
-     * Saves customer with disabled segment builder + customer save validator
-     *
-     * @param CustomerInterface $customer
-     * @param bool $disableVersions
-     *
-     * @return void
+     * @return SaveOptions
      */
-    public function saveWithDisabledHooks(CustomerInterface $customer, $disableVersions = false);
+    public function getDefaultSaveOptions();
+
+    /**
+     * @param bool $clone
+     *
+     * @return SaveOptions
+     */
+    public function getSaveOptions($clone = false);
+
+    /**
+     * @param CustomerInterface $customer
+     * @param SaveOptions $options
+     * @param bool $disableVersions
+     * @return mixed
+     */
+    public function saveWithOptions(CustomerInterface $customer, SaveOptions $options, $disableVersions = false);
 
     /**
      * Dirty / quick save customer w/o invoking any hooks, save-handlers, version and alike
      *
      * @param CustomerInterface $customer
      *
-     * @return void
+     * @return mixed
      */
-    public function saveDirty(CustomerInterface $customer);
+    public function saveDirty(CustomerInterface $customer, $disableVersions = true);
 
     /**
      * @return CustomerSaveHandlerInterface[]
@@ -124,13 +113,4 @@ interface CustomerSaveManagerInterface
      */
     public function addSaveHandler(CustomerSaveHandlerInterface $saveHandler);
 
-    /**
-     * @return bool
-     */
-    public function getEnableAutomaticObjectNamingScheme();
-
-    /**
-     * @param bool $enableAutomaticObjectNamingScheme
-     */
-    public function setEnableAutomaticObjectNamingScheme($enableAutomaticObjectNamingScheme);
 }

@@ -9,10 +9,20 @@ services:
         autowire: true
         autoconfigure: true
 
+    CustomerManagementFrameworkBundle\CustomerSaveManager\SaveOptions:
+        arguments:
+          - true
+          - true
+          - true
+          - true
+          - '%pimcore_customer_management_framework.customer_save_manager.enableAutomaticObjectNamingScheme%'
+          - true # needs to be modified when newsletter queue feature is finished
+          - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.enableDuplicatesIndex%'
+
+
     CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface:
         class: CustomerManagementFrameworkBundle\CustomerSaveManager\DefaultCustomerSaveManager
-        arguments:
-            - '%pimcore_customer_management_framework.customer_save_manager.enableAutomaticObjectNamingScheme%'
+
 
 
     CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface:

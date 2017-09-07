@@ -86,7 +86,6 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
 
         $container->setParameter('pimcore_customer_management_framework.customer_save_validator.requiredFields', is_array($config['requiredFields']) ? $config['requiredFields'] : []);
         $container->setParameter('pimcore_customer_management_framework.customer_save_validator.checkForDuplicates', $config['checkForDuplicates']);
-        $container->setParameter('pimcore_customer_management_framework.customer_save_validator.checkForDuplicates', $config['checkForDuplicates']);
     }
 
     private function registerSegmentManagerConfiguration(ContainerBuilder $container, array $config)

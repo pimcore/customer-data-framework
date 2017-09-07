@@ -11,6 +11,8 @@
 
 namespace CustomerManagementFrameworkBundle\Model;
 
+use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
+use CustomerManagementFrameworkBundle\CustomerSaveManager\SaveOptions;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Object\CustomerSegment;
 
@@ -26,6 +28,9 @@ interface CustomerInterface extends ElementInterface
      */
     public static function classId();
 
+    /**
+     * @return mixed
+     */
     public function save();
 
     /**
@@ -203,4 +208,22 @@ interface CustomerInterface extends ElementInterface
      * @return array
      */
     public function getRelatedCustomerGroups();
+
+    /**
+     * @param bool $disableVersions
+     * @return mixed
+     */
+    public function saveDirty($disableVersions = true);
+
+    /**
+     * @param SaveOptions $saveOptions
+     * @param bool $disableVersions
+     * @return mixed
+     */
+    public function saveWithOptions(SaveOptions $saveOptions, $disableVersions = false);
+
+    /**
+     * @return CustomerSaveManagerInterface
+     */
+    public function getSaveManager();
 }
