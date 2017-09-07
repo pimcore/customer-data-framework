@@ -36,6 +36,7 @@ class Objects
         $origKey = is_null($origKey) ? self::getValidKey($object->getKey()) : $origKey;
 
         $list = new \Pimcore\Model\Object\Listing;
+        $list->setUnpublished(true);
         $list->setCondition(
             "o_path = '".(string)$object->getParent()."/' and o_key = '".$object->getKey(
             )."' and o_id != ".$object->getId()
