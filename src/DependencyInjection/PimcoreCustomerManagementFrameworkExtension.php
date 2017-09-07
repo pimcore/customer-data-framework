@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace CustomerManagementFrameworkBundle\DependencyInjection;
 
 use CustomerManagementFrameworkBundle\CustomerDuplicatesService\CustomerDuplicatesServiceInterface;
+use CustomerManagementFrameworkBundle\CustomerMerger\CustomerMergerInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
@@ -100,6 +101,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
     {
         $container->setAlias('cmf.customer_provider', CustomerProviderInterface::class);
         $container->setAlias('cmf.customer_provider.object_naming_scheme', ObjectNamingSchemeInterface::class);
+        $container->setAlias('cmf.customer_merger', CustomerMergerInterface::class);
 
         $container->setParameter('pimcore_customer_management_framework.customer_provider.namingScheme', $config['namingScheme']);
         $container->setParameter('pimcore_customer_management_framework.customer_provider.parentPath', $config['parentPath']);
