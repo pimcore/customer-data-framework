@@ -100,7 +100,8 @@ The customer mananagement framework offers a special SaveOptions class to handle
         ->disableOnSaveSegmentBuilders()
         ->disableSegmentBuilderQueue();
 
-    // save customer with disabled object naming scheme but let the global state untouched (getSaveOptions(true) will deliver a cloned instance of the save options)
+    // save customer with disabled object naming scheme but let the global state untouched
+    // (getSaveOptions(true) will deliver a cloned instance of the save options)
     $saveOptions = $customer->getSaveManager()->getSaveOptions(true)
                         ->disableObjectNamingScheme();
     $customer->saveWithOptions($saveOptions);
