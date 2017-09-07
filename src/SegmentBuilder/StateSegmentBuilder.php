@@ -49,7 +49,10 @@ class StateSegmentBuilder extends AbstractSegmentBuilder
         $this->segmentGroup = $segmentManager->createSegmentGroup($this->groupName, $this->groupName, true);
 
         foreach ($this->countryTransformers as $key => $transformer) {
-            $transformer = Factory::getInstance()->createObject($transformer, DataTransformerInterface::class);
+            if(is_object($transformer)) {
+                continue;
+            }
+            $transformer = Factory::getInstance()->createObject((string) $transformer, DataTransformerInterface::class);
             $this->countryTransformers[$key] = $transformer;
         }
     }
