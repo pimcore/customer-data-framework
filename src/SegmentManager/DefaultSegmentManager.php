@@ -154,8 +154,8 @@ class DefaultSegmentManager implements SegmentManagerInterface
         $logger = $this->getLogger();
         $logger->notice('start segment building');
 
-        $backup = $this->customerSaveManager->getSegmentBuildingHookEnabled();
-        $this->customerSaveManager->setSegmentBuildingHookEnabled(false);
+        $backup = $this->customerSaveManager->getSaveOptions()->isOnSaveSegmentBuildersEnabled();
+        $this->customerSaveManager->getSaveOptions()->disableOnSaveSegmentBuilders();
 
         if(!is_null($segmentBuilderServiceId)) {
             $segmentBuilders = [\Pimcore::getContainer()->get($segmentBuilderServiceId)];
@@ -395,7 +395,10 @@ class DefaultSegmentManager implements SegmentManagerInterface
             $flushQueue($customerQueueRemoval);
         }
 
-        $this->customerSaveManager->setSegmentBuildingHookEnabled($backup);
+        if($backup) {
+            $this->customerSaveManager->getSaveOptions()->enableOnSaveSegmentBuilders();
+        }
+
     }
 
     /**

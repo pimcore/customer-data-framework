@@ -80,6 +80,13 @@ interface CustomerSaveManagerInterface
     public function getSaveOptions($clone = false);
 
     /**
+     * @param bool $clone
+     *
+     * @return SaveOptions
+     */
+    public function setSaveOptions(SaveOptions $saveOptions);
+
+    /**
      * @param CustomerInterface $customer
      * @param SaveOptions $options
      * @param bool $disableVersions

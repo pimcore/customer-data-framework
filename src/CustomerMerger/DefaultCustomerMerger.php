@@ -51,16 +51,18 @@ class DefaultCustomerMerger implements CustomerMergerInterface
         CustomerInterface $targetCustomer,
         $mergeAttributes = true
     ) {
-        $saveValidatorBackup = $this->customerSaveManager->getCustomerSaveValidatorEnabled();
-        $segmentBuilderHookBackup = $this->customerSaveManager->getSegmentBuildingHookEnabled();
 
-        $this->customerSaveManager->setCustomerSaveValidatorEnabled(false);
-        $this->customerSaveManager->setSegmentBuildingHookEnabled(false);
+        //backup save options
+        $saveOptions = $this->customerSaveManager->getSaveOptions(true);
+
+        // disable unneeded components
+        $this->customerSaveManager->getSaveOptions()
+            ->disableValidator()
+            ->disableOnSaveSegmentBuilders();
 
         $this->mergeCustomerValues($sourceCustomer, $targetCustomer, $mergeAttributes);
         $targetCustomer->save();
 
-        $this->customerSaveManager->setEnableAutomaticObjectNamingScheme(false);
 
         if (!$sourceCustomer->getId()) {
             $note = Notes::createNote($targetCustomer, 'cmf.CustomerMerger', 'customer merged');
@@ -75,7 +77,6 @@ class DefaultCustomerMerger implements CustomerMergerInterface
 
             $sourceCustomer->setPublished(false);
             $sourceCustomer->setActive(false);
-            $sourceCustomer->setKey($sourceCustomer->getId());
 
             $sourceCustomer->save();
 
@@ -84,8 +85,8 @@ class DefaultCustomerMerger implements CustomerMergerInterface
             $note->save();
         }
 
-        $this->customerSaveManager->setCustomerSaveValidatorEnabled( $saveValidatorBackup );
-        $this->customerSaveManager->setSegmentBuildingHookEnabled( $segmentBuilderHookBackup );
+        // restore save options
+        $this->customerSaveManager->setSaveOptions($saveOptions);
 
         $logAddon = '';
         if (!$mergeAttributes) {
@@ -127,8 +128,6 @@ class DefaultCustomerMerger implements CustomerMergerInterface
         $manualSegments = (array)$sourceCustomer->getManualSegments();
         Objects::addObjectsToArray($manualSegments, (array)$targetCustomer->getManualSegments());
         $targetCustomer->setManualSegments($manualSegments);
-
-        $this->customerSaveManager->setCustomerSaveValidatorEnabled(false);
 
         $this->mergeActivities($sourceCustomer, $targetCustomer);
     }

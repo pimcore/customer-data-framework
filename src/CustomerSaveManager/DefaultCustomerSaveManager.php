@@ -316,6 +316,11 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         return $this->saveOptions;
     }
 
+    public function setSaveOptions(SaveOptions $saveOptions)
+    {
+        $this->saveOptions = $saveOptions;
+    }
+
     public function getDefaultSaveOptions()
     {
         return clone($this->defaultSaveOptions);
