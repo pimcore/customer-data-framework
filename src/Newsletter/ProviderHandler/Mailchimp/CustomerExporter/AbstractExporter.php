@@ -50,6 +50,8 @@ abstract class AbstractExporter
         $this->exportService = $exportService;
         $this->apiClient = $exportService->getApiClient();
         $this->newsletterQueue = $newsletterQueue;
+        $this->setLoggerComponent('NewsletterSync');
+
     }
 
     /**

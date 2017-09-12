@@ -13,17 +13,20 @@ namespace CustomerManagementFrameworkBundle\Newsletter\Queue;
 
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\Model\NewsletterAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProviderHandlerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\DefaultNewsletterQueueItem;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
+use CustomerManagementFrameworkBundle\Traits\ApplicationLoggerAware;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db;
+use Pimcore\Tool\Console;
 use Zend\Paginator\Adapter\ArrayAdapter;
 use Zend\Paginator\Paginator;
 
 class DefaultNewsletterQueue implements NewsletterQueueInterface
 {
-    use LoggerAware;
+    use ApplicationLoggerAware;
 
     const QUEUE_TABLE = 'plugin_cmf_newsletter_queue';
 
@@ -32,20 +35,31 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
     public function __construct( $maxItemsPerRound = 500 )
     {
         $this->maxItemsPerRound = $maxItemsPerRound;
+        $this->setLoggerComponent('NewsletterSync');
     }
 
-    public function enqueueCustomer(CustomerInterface $customer, $operation, $email = null)
+    public function enqueueCustomer(NewsletterAwareCustomerInterface $customer, $operation, $email = null, $immediateAsyncProcessQueueItem = false)
     {
+        $modificationDate = round(microtime(true) * 1000);
+        $email = !is_null($email) ? $email : $customer->getEmail();
+
         $db = Db::get();
         $db->query(
             'insert into ' . self::QUEUE_TABLE . ' (customerId, email, operation, modificationDate) values (:customerId,:email,:operation,:modificationDate) on duplicate key update operation = :operation, modificationDate = :modificationDate, email = :email',
             [
                 'customerId'=>$customer->getId(),
-                'email'=>!is_null($email) ? $email : $customer->getEmail(),
+                'email'=>$email,
                 'operation'=>$operation,
-                'modificationDate' => round(microtime(true) * 1000)
+                'modificationDate' => $modificationDate,
             ]
         );
+
+        if ($immediateAsyncProcessQueueItem) {
+            $item = new DefaultNewsletterQueueItem($customer->getId(), null, $email, $operation, $modificationDate);
+            $php = Console::getExecutable('php');
+            Console::execInBackground(sprintf($php . ' ' . PIMCORE_PROJECT_ROOT . "/bin/console cmf:newsletter-sync --process-queue-item='%s'", $item->toJson()));
+        }
+
     }
 
     /**
@@ -60,6 +74,16 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
         } else {
             $this->processAllItems($newsletterProviderHandlers, $forceUpdate);
         }
+    }
+
+    /**
+     * @param array $newsletterProviderHandler
+     * @param NewsletterQueueItemInterface $newsletterQueueItem
+     * @return void
+     */
+    public function syncSingleQueueItem(array $newsletterProviderHandler, NewsletterQueueItemInterface $newsletterQueueItem)
+    {
+        $this->processQueueItems($newsletterProviderHandler, [$newsletterQueueItem], false);
     }
 
     /**
@@ -104,6 +128,18 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
     }
 
     /**
+     * @return int
+     */
+    public function getQueueSize()
+    {
+        $sql = sprintf(
+            "select count(*) from %s",
+            self::QUEUE_TABLE
+        );
+        return Db::get()->fetchOne($sql);
+    }
+
+    /**
      * @param NewsletterProviderHandlerInterface[] $newsletterProviderHandler
      */
     protected function processAllItems(array $newsletterProviderHandlers, $forceUpdate)
@@ -129,7 +165,12 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
                 }
             }
 
-            $this->processQueueItems($newsletterProviderHandlers, $items, $forceUpdate);
+            try {
+                $this->processQueueItems($newsletterProviderHandlers, $items, $forceUpdate);
+            } catch(\Exception $e) {
+                $this->getLogger()->error('newsletter queue processing exception: ' . $e->getMessage());
+            }
+
 
             \Pimcore::collectGarbage();
         }

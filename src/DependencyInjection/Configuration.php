@@ -404,6 +404,7 @@ class Configuration implements ConfigurationInterface
         $newsletter
             ->children()
                 ->booleanNode('newsletterSyncEnabled')->defaultFalse()->end()
+                ->booleanNode('newsletterQueueImmidiateAsyncExecutionEnabled')->defaultTrue()->end()
                 ->arrayNode('mailchimp')
                     ->children()
                         ->scalarNode('apiKey')->end()

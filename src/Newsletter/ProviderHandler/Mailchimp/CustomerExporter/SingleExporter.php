@@ -56,8 +56,9 @@ class SingleExporter extends AbstractExporter
      * @param MailchimpAwareCustomerInterface $customer
      * @param NewsletterQueueItemInterface $item
      * @param string $listId
+     * @return bool
      */
-    protected function update(MailchimpAwareCustomerInterface $customer, NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler )
+    public function update(MailchimpAwareCustomerInterface $customer, NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler )
     {
         $exportService = $this->exportService;
         $apiClient = $this->apiClient;
@@ -118,10 +119,10 @@ class SingleExporter extends AbstractExporter
 
             $item->setSuccessfullyProcessed(true);
 
-
             $status = isset($entry['status']) ? $entry['status'] : $entry['status_if_new'];
             $mailchimpProviderHandler->updateMailchimpStatus($customer, $status);
 
+            return true;
 
         } else {
             $this->getLogger()->error(
@@ -136,6 +137,8 @@ class SingleExporter extends AbstractExporter
                 ]
             );
         }
+
+        return false;
     }
 
     /**

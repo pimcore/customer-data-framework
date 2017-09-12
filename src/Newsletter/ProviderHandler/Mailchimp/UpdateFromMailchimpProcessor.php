@@ -48,13 +48,13 @@ class UpdateFromMailchimpProcessor
         $changed = false;
 
         if($newsletterStatus = $mailchimpHandler->reverseMapNewsletterStatus($mailchimpStatus)) {
-            if(!$changed && ($customer->getNewsletterStatus() != $newsletterStatus)) {
+            if(!$changed && ($mailchimpHandler->getNewsletterStatus($customer) != $newsletterStatus)) {
                 $changed = true;
             }
-            $customer->setNewsletterStatus($newsletterStatus);
+            $mailchimpHandler->setNewsletterStatus($customer, $newsletterStatus);
         }
         if($mailchimpHandler->getMailchimpStatus($customer) != $mailchimpStatus) {
-            $mailchimpHandler->setMailchimpStatus($customer, $mailchimpStatus);
+            $mailchimpHandler->updateMailchimpStatus($customer, $mailchimpStatus, false);
             $changed = true;
         }
 

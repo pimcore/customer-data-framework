@@ -63,3 +63,25 @@
 .plugin_cmf_icon_actiontriggerrule_ChangeFieldValue,.plugin_cmf_icon_actiontriggerrule_Customer {
     background: url(/bundles/pimcorecustomermanagementframework/icons/customer.svg) center center no-repeat !important;
 }
+
+.pimcore_icon_newsletter_enqueue_all_customers {
+    background: url(/pimcore/static6/img/flat-color-icons/address_book.svg) center center no-repeat !important;
+}
+
+#pimcore_bundle_customerManagementFramework_newsletter_queue_status {
+    background-image: url(/pimcore/static6/img/flat-color-icons/address_book.svg) !important;
+    filter: grayscale(0%) !important;
+    -webkit-filter: grayscale(0%) !important;
+    position: relative;
+    padding-bottom: 20px;
+    height: 55px;
+}
+
+#pimcore_bundle_customerManagementFramework_newsletter_queue_status_count {
+    color: #fff;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 8pt;
+}

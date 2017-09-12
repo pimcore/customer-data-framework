@@ -41,12 +41,17 @@ class SaveOptions {
     /**
      * @var bool
      */
+    private $duplicatesIndexEnabled;
+
+    /**
+     * @var bool
+     */
     private $newsletterQueueEnabled;
 
     /**
      * @var bool
      */
-    private $duplicatesIndexEnabled;
+    private $newsletterQueueImmidiateAsyncExecutionEnabled;
 
     /**
      * SaveOptions constructor.
@@ -63,16 +68,18 @@ class SaveOptions {
         $saveHandlersExecutionEnabled = false,
         $segmentBuilderQueueEnabled = false,
         $objectNamingSchemeEnabled = false,
+        $duplicatesIndexEnabled = false,
         $newsletterQueueEnabled = false,
-        $duplicatesIndexEnabled = false
+        $newsletterQueueImmidiateAsyncExecutionEnabled = false
     ) {
         $this->onSaveSegmentBuildersEnabled = $onSaveSegmentBuildersEnabled;
         $this->validatorEnabled = $validatorEnabled;
         $this->saveHandlersExecutionEnabled = $saveHandlersExecutionEnabled;
         $this->segmentBuilderQueueEnabled = $segmentBuilderQueueEnabled;
         $this->objectNamingSchemeEnabled = $objectNamingSchemeEnabled;
-        $this->newsletterQueueEnabled = $newsletterQueueEnabled;
         $this->duplicatesIndexEnabled = $duplicatesIndexEnabled;
+        $this->newsletterQueueEnabled = $newsletterQueueEnabled;
+        $this->newsletterQueueImmidiateAsyncExecutionEnabled = $newsletterQueueImmidiateAsyncExecutionEnabled;
     }
 
     /**
@@ -115,6 +122,15 @@ class SaveOptions {
         return $this->objectNamingSchemeEnabled;
     }
 
+
+    /**
+     * @return bool
+     */
+    public function isDuplicatesIndexEnabled()
+    {
+        return $this->duplicatesIndexEnabled;
+    }
+
     /**
      * @return bool
      */
@@ -126,9 +142,9 @@ class SaveOptions {
     /**
      * @return bool
      */
-    public function isDuplicatesIndexEnabled()
+    public function isNewsletterQueueImmidiateAsyncExecutionEnabled()
     {
-        return $this->duplicatesIndexEnabled;
+        return $this->newsletterQueueImmidiateAsyncExecutionEnabled;
     }
 
 
@@ -216,6 +232,24 @@ class SaveOptions {
     /**
      * @return $this
      */
+    public function disableDuplicatesIndex()
+    {
+        $this->duplicatesIndexEnabled = false;
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function enableDuplicatesIndex()
+    {
+        $this->duplicatesIndexEnabled = true;
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
     public function enableObjectNamingScheme()
     {
         $this->objectNamingSchemeEnabled = true;
@@ -243,21 +277,20 @@ class SaveOptions {
     /**
      * @return $this
      */
-    public function disableDuplicatesIndex()
+    public function disableNewsletterQueueImmidiateAsyncExecution()
     {
-        $this->duplicatesIndexEnabled = false;
+        $this->newsletterQueueImmidiateAsyncExecutionEnabled = false;
         return $this;
     }
 
     /**
      * @return $this
      */
-    public function enableDuplicatesIndex()
+    public function enableNewsletterQueueImmidiateAsyncExecution()
     {
-        $this->duplicatesIndexEnabled = true;
+        $this->newsletterQueueImmidiateAsyncExecutionEnabled = true;
         return $this;
     }
-
 
     /**
      * @return $this

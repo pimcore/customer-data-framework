@@ -58,4 +58,5 @@ interface NewsletterProviderHandlerInterface
      * @return bool
      */
     public function unsubscribeCustomer(NewsletterAwareCustomerInterface $customer);
+
 }

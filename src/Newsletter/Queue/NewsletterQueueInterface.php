@@ -12,6 +12,7 @@
 namespace CustomerManagementFrameworkBundle\Newsletter\Queue;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\Model\NewsletterAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProviderHandlerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
 
@@ -27,7 +28,7 @@ interface NewsletterQueueInterface
      *
      * @return void
      */
-    public function enqueueCustomer(CustomerInterface $customer, $operation, $email = null);
+    public function enqueueCustomer(NewsletterAwareCustomerInterface $customer, $operation, $email = null, $immediateAsyncProcessQueueItem = false);
 
     /**
      * @param NewsletterProviderHandlerInterface[] $newsletterProviderHandler
@@ -36,6 +37,13 @@ interface NewsletterQueueInterface
      * @return void
      */
     public function processQueue(array $newsletterProviderHandler, $forceAllCustomers = false, $forceUpdate = false);
+
+    /**
+     * @param array $newsletterProviderHandler
+     * @param NewsletterQueueItemInterface $newsletterQueueItem
+     * @return void
+     */
+    public function syncSingleQueueItem(array $newsletterProviderHandler, NewsletterQueueItemInterface $newsletterQueueItem);
 
     /**
      * @param NewsletterQueueItemInterface $item
@@ -47,4 +55,9 @@ interface NewsletterQueueInterface
      * @return void
      */
     public function enqueueAllCustomers();
+
+    /**
+     * @return int
+     */
+    public function getQueueSize();
 }

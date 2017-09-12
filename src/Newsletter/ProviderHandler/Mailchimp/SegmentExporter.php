@@ -36,6 +36,8 @@ class SegmentExporter
     public function __construct(MailChimpExportService $exportService)
     {
         $this->exportService = $exportService;
+
+        $this->setLoggerComponent('NewsletterSync');
     }
 
     /**

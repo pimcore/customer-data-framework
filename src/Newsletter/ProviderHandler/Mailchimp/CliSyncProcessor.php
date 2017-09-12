@@ -50,6 +50,8 @@ class CliSyncProcessor
 
     public function __construct($pimcoreUserName = null, MailChimpExportService $exportService, CustomerProviderInterface $customerProvider, UpdateFromMailchimpProcessor $updateFromMailchimpProcessor, NewsletterManagerInterface $newsletterManager)
     {
+        $this->setLoggerComponent('NewsletterSync');
+
         if(!is_null($pimcoreUserName)) {
             if($user = User::getByName($pimcoreUserName)) {
                 $updateFromMailchimpProcessor->setUser($user);
@@ -94,6 +96,10 @@ class CliSyncProcessor
                             if(!$customer = $this->customerProvider->getActiveCustomerByEmail($row['email_address'])) {
                                 $this->getLogger()->error(sprintf("multiple active customers with email %s found", $row['email_address']));
                             }
+                        }
+
+                        if(!$customer) {
+                            continue;
                         }
 
                         $status = $row['status'];

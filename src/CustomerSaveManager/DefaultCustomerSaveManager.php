@@ -78,6 +78,20 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     public function postAdd(CustomerInterface $customer)
     {
         $this->handleNewsletterQueue($customer, NewsletterQueueInterface::OPERATION_UPDATE);
+
+        if ($this->saveOptions->isOnSaveSegmentBuildersEnabled()) {
+            \Pimcore::getContainer()->get('cmf.segment_manager')->buildCalculatedSegmentsOnCustomerSave($customer);
+        }
+
+        if ($this->saveOptions->isSegmentBuilderQueueEnabled()) {
+            \Pimcore::getContainer()->get('cmf.segment_manager')->addCustomerToChangesQueue($customer);
+        }
+
+        if ($this->saveOptions->isDuplicatesIndexEnabled()) {
+            \Pimcore::getContainer()->get('cmf.customer_duplicates_service')->updateDuplicateIndexForCustomer(
+                $customer
+            );
+        }
     }
 
     public function preUpdate(CustomerInterface $customer)
@@ -95,6 +109,9 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     public function postUpdate(CustomerInterface $customer)
     {
+
+        $this->handleNewsletterQueue($customer, NewsletterQueueInterface::OPERATION_UPDATE);
+
         if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
             $this->applySaveHandlers($customer, 'postUpdate');
         }
@@ -112,8 +129,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
                 $customer
             );
         }
-
-        $this->handleNewsletterQueue($customer, NewsletterQueueInterface::OPERATION_UPDATE);
     }
 
     public function preDelete(CustomerInterface $customer)
@@ -155,8 +170,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
              * @var NewsletterQueueInterface $newsletterQueue
              */
             $newsletterQueue = \Pimcore::getContainer()->get('cmf.newsletter.queue');
-
-            $newsletterQueue->enqueueCustomer($customer, $operation);
+            $newsletterQueue->enqueueCustomer($customer, $operation, null, $this->saveOptions->isNewsletterQueueImmidiateAsyncExecutionEnabled());
         }
 
     }

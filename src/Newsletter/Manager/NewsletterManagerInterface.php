@@ -13,6 +13,7 @@ namespace CustomerManagementFrameworkBundle\Newsletter\Manager;
 
 use CustomerManagementFrameworkBundle\Model\NewsletterAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProviderHandlerInterface;
+use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
 
 interface NewsletterManagerInterface
 {
@@ -41,6 +42,12 @@ interface NewsletterManagerInterface
      * @return void
      */
     public function syncCustomers( $forceAllCustomers = false, $forceUpdate = false );
+
+    /**
+     * @param NewsletterQueueItemInterface $newsletterQueueItem
+     * @return void
+     */
+    public function syncSingleCustomerQueueItem(NewsletterQueueItemInterface $newsletterQueueItem);
 
     /**
      * @param string $shortcut

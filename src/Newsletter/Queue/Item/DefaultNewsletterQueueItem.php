@@ -50,13 +50,16 @@ class DefaultNewsletterQueueItem implements  NewsletterQueueItemInterface
      */
     private $modificationDate;
 
+
     /**
      * @var bool
      */
     private $successfullyProcessed = false;
 
-    public function __construct($customerId, CustomerInterface $customer = null, $email, $operation, $modificationDate)
+    public function __construct($customerId, CustomerInterface $customer = null, $email, $operation, $modificationDate = null)
     {
+        $modificationDate = !is_null($modificationDate) ? $modificationDate : round(microtime(true) * 1000);
+
         $this->customerId = $customerId;
         $this->customer = $customer;
         $this->email = $email;
@@ -88,6 +91,7 @@ class DefaultNewsletterQueueItem implements  NewsletterQueueItemInterface
     {
         return $this->modificationDate;
     }
+
 
     /**
      * @return bool
@@ -129,6 +133,14 @@ class DefaultNewsletterQueueItem implements  NewsletterQueueItemInterface
         $this->overruledOperation = $overruledOperation;
     }
 
-
+    public function toJson()
+    {
+        return json_encode([
+            'customerId' => $this->customerId,
+            'operation' => $this->operation,
+            'email' => $this->email,
+            'modificationDate' => $this->modificationDate
+        ]);
+    }
 
 }

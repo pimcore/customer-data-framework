@@ -11,8 +11,11 @@
 
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler;
 
+use CustomerManagementFrameworkBundle\ActivityManager\ActivityManagerInterface;
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\DataTransformer\Cleanup\Email;
 use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
+use CustomerManagementFrameworkBundle\Model\Activity\MailchimpStatusChangeActivity;
 use CustomerManagementFrameworkBundle\Model\MailchimpAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Model\NewsletterAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CustomerExporter\BatchExporter;
@@ -20,6 +23,7 @@ use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\Custo
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\DataTransformer\MailchimpDataTransformerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\MailChimpExportService;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\WebhookProcessor;
+use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\DefaultNewsletterQueueItem;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\SegmentExporter;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
@@ -93,6 +97,8 @@ class Mailchimp implements NewsletterProviderHandlerInterface
      * @var int
      */
     protected $batchThreshold = 50;
+
+
 
 
     /**
@@ -188,7 +194,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
                     } else {
                         $this->getLogger()->info(
                             sprintf(
-                                '[MailChimp][CUSTOMER %s] Export not needed as the expot data did not change.',
+                                '[MailChimp][CUSTOMER %s] Export not needed as the export data did not change.',
                                 $item->getCustomer()->getId()
                             )
                         );
@@ -200,7 +206,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
                 } else {
                     $this->getLogger()->info(
                         sprintf(
-                            '[MailChimp][CUSTOMER %s] Export not needed as the expot data did not change.',
+                            '[MailChimp][CUSTOMER %s] Export not needed as the export data did not change.',
                             $item->getCustomer()->getId()
                         )
                     );
@@ -217,12 +223,87 @@ class Mailchimp implements NewsletterProviderHandlerInterface
 
     public function subscribeCustomer(NewsletterAwareCustomerInterface $customer)
     {
-        // TODO: Implement subscribeCustomer() method.
+        /**
+         * @var MailchimpAwareCustomerInterface $customer;
+         */
+        if(!$newsletterStatus = $this->reverseMapNewsletterStatus(self::STATUS_SUBSCRIBED)) {
+            $this->getLogger()->error(sprintf("subscribe failed: could not reverse map mailchimp status %s", self::STATUS_SUBSCRIBED) );
+
+            return false;
+        }
+        try {
+            $this->setNewsletterStatus($customer, $newsletterStatus);
+
+            $item = new DefaultNewsletterQueueItem(
+                $customer->getId(),
+                $customer,
+                $customer->getEmail(),
+                NewsletterQueueInterface::OPERATION_UPDATE
+            );
+
+            $success = $this->getSingleExporter()->update($customer, $item, $this);
+
+            if ($success) {
+
+
+                $customer->saveWithOptions(
+                    $customer->getSaveManager()->getSaveOptions()
+                        ->disableNewsletterQueue()
+                        ->disableDuplicatesIndex()
+                        ->disableOnSaveSegmentBuilders()
+                );
+
+
+            }
+        } catch (\Exception $e) {
+            $this->getLogger()->error('subscribe customer failed: '.$e->getMessage());
+            return false;
+        }
+        return $success;
     }
 
     public function unsubscribeCustomer(NewsletterAwareCustomerInterface $customer)
     {
-        // TODO: Implement unsubscribeCustomer() method.
+        /**
+         * @var MailchimpAwareCustomerInterface $customer;
+         */
+
+
+        if(!$newsletterStatus = $this->reverseMapNewsletterStatus(self::STATUS_UNSUBSCRIBED)) {
+            $this->getLogger()->error(sprintf("subscribe failed: could not reverse map mailchimp status %s", self::STATUS_UNSUBSCRIBED) );
+
+            return false;
+        }
+
+        try {
+
+            $this->setNewsletterStatus($customer, $newsletterStatus);
+
+            $item = new DefaultNewsletterQueueItem(
+                $customer->getId(),
+                $customer,
+                $customer->getEmail(),
+                NewsletterQueueInterface::OPERATION_UPDATE
+            );
+
+            $success = $this->getSingleExporter()->update($customer, $item, $this);
+
+            if ($success) {
+
+                $customer->saveWithOptions(
+                    $customer->getSaveManager()->getSaveOptions()
+                        ->disableNewsletterQueue()
+                        ->disableDuplicatesIndex()
+                        ->disableOnSaveSegmentBuilders()
+                );
+
+            }
+        } catch (\Exception $e) {
+            $this->getLogger()->error('unsubscribe customer failed: '.$e->getMessage());
+            return false;
+        }
+
+        return $success;
     }
 
 
@@ -395,7 +476,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
         return $data;
     }
 
-    public function updateMailchimpStatus(MailchimpAwareCustomerInterface $customer, $status)
+    public function updateMailchimpStatus(MailchimpAwareCustomerInterface $customer, $status, $saveCustomer = true)
     {
         $getter = 'getMailchimpStatus' . ucfirst($this->getShortcut());
 
@@ -406,17 +487,32 @@ class Mailchimp implements NewsletterProviderHandlerInterface
 
         $this->setMailchimpStatus($customer, $status);
 
-        /* The newsletter queue needs to be disabled to avoid endless loops.
-           Some other components are disabled for performance reasons as they are not needed here.
-           If somebody ever wants to build segments based on the mailchimp status then they could be handled via the segment building queue.
+        $this->trackStatusChangeActivity($customer, $status);
+
+        if($saveCustomer) {
+            /* The newsletter queue needs to be disabled to avoid endless loops.
+               Some other components are disabled for performance reasons as they are not needed here.
+               If somebody ever wants to build segments based on the mailchimp status then they could be handled via the segment building queue.
+             */
+            $customer->saveWithOptions(
+                $customer->getSaveManager()->getSaveOptions(true)
+                    ->disableNewsletterQueue()
+                    ->disableOnSaveSegmentBuilders()
+                    ->disableValidator()
+                    ->disableDuplicatesIndex()
+            );
+        }
+
+    }
+
+    protected function trackStatusChangeActivity(MailchimpAwareCustomerInterface $customer, $status)
+    {
+        $activity = new MailchimpStatusChangeActivity($customer, $status);
+        /**
+         * @var ActivityManagerInterface $activityManager
          */
-        $customer->saveWithOptions(
-            $customer->getSaveManager()->getSaveOptions(true)
-                ->disableNewsletterQueue()
-                ->disableOnSaveSegmentBuilders()
-                ->disableValidator()
-                ->disableDuplicatesIndex()
-        );
+        $activityManager = \Pimcore::getContainer()->get('cmf.activity_manager');
+        $activityManager->trackActivity($activity);
     }
 
     public function setMailchimpStatus(MailchimpAwareCustomerInterface $customer, $status)
@@ -446,6 +542,33 @@ class Mailchimp implements NewsletterProviderHandlerInterface
         return $customer->$getter();
     }
 
+    public function setNewsletterStatus(MailchimpAwareCustomerInterface $customer, $status)
+    {
+        $setter = 'setNewsletterStatus' . ucfirst($this->getShortcut());
+        if(!method_exists($customer, $setter)) {
+            throw new \Exception(sprintf('Customer needs to have a field %s in order to be able to hold the newsletter status for newsletter provider handler with shortcut %s',
+                $setter,
+                $this->getShortcut()
+            ));
+        }
+
+        $customer->$setter($status);
+    }
+
+    public function getNewsletterStatus(MailchimpAwareCustomerInterface $customer)
+    {
+        $getter = 'getNewsletterStatus' . ucfirst($this->getShortcut());
+
+        if(!method_exists($customer, $getter)) {
+            throw new \Exception(sprintf('Customer needs to have a field %s in order to be able to hold the newsletter status for newsletter provider handler with shortcut %s',
+                $getter,
+                $this->getShortcut()
+            ));
+        }
+
+        return $customer->$getter();
+    }
+
     public function processWebhook(array $webhookData, LoggerInterface $logger)
     {
         if($webhookData['data']['list_id'] == $this->getListId()) {
@@ -462,7 +585,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
      */
     protected function addNewsletterStatusToEntry(MailchimpAwareCustomerInterface $customer, array $entry)
     {
-        $status = $customer->getNewsletterStatus();
+        $status = $this->getNewsletterStatus($customer);
 
         if (!isset($this->statusMapping[$status])) {
             $status = \CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp::STATUS_UNSUBSCRIBED;
@@ -470,9 +593,11 @@ class Mailchimp implements NewsletterProviderHandlerInterface
             $status = $this->statusMapping[$status];
         }
 
+        // if we do have a mailchimp status we should not update it
         if($this->getMailchimpStatus($customer) == self::STATUS_CLEANED) {
             $status = self::STATUS_CLEANED;
         }
+
 
         if(!$customer->needsExportByNewsletterProviderHandler($this)) {
             $status = null;
@@ -487,6 +612,12 @@ class Mailchimp implements NewsletterProviderHandlerInterface
         return $entry;
     }
 
+    /**
+     * Map mailchimp status to pimcore object newsletterStatus
+     *
+     * @param $mailchimpStatus
+     * @return mixed|null
+     */
     public function reverseMapNewsletterStatus($mailchimpStatus) {
         if(isset($this->reverseStatusMapping[$mailchimpStatus])) {
             return $this->reverseStatusMapping[$mailchimpStatus];
@@ -546,4 +677,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
 
         return $this->fieldTransformers[$pimcoreField]->didMergeFieldDataChange($pimcoreData, $mailchimpImportData);
     }
+
+
+
 }

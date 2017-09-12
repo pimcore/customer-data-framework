@@ -41,6 +41,7 @@ interface NewsletterQueueItemInterface
      */
     public function getModificationDate();
 
+
     /**
      * @param bool $successfullyProcessed
      * @return void
@@ -68,5 +69,10 @@ interface NewsletterQueueItemInterface
      * @param string $overruledOperation
      */
     public function setOverruledOperation($overruledOperation);
+
+    /**
+     * @return string
+     */
+    public function toJson();
 
 }

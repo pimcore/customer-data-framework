@@ -14,6 +14,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
         // alert("CustomerManagementFramework Plugin Ready!");
 
         this.initToolbar();
+        this.initNewsletterQueueInfo();
 
 
     },
@@ -108,9 +109,14 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
                 iconCls: 'pimcore_icon_newsletter_enqueue_all_customers',
                 handler: function () {
                     Ext.Ajax.request({
-                        url: "/admin/bundle/advanced-object-search/admin/check-index-status"
+                        url: "/webservice/cmf/newsletter/enqueue-all-customers",
+                        success: function() {
+                            setTimeout(function(){
+                                this.checkNewsletterQueueStatus(Ext.get('pimcore_bundle_customerManagementFramework_newsletter_queue_status'));
+                            }.bind(this), 3000)
+                        }.bind(this)
                     });
-                }
+                }.bind(this)
             };
 
             menuItems.add(item);
@@ -163,6 +169,44 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
                 frame.contentWindow.location.reload();
             }
         }
+    },
+
+    checkNewsletterQueueStatus: function(statusIcon, initTimeout) {
+        Ext.Ajax.request({
+            url: "/webservice/cmf/newsletter/get-queue-size",
+            method: "get",
+            success: function (response) {
+                var rdata = Ext.decode(response.responseText);
+
+                document.getElementById('pimcore_bundle_customerManagementFramework_newsletter_queue_status_count').innerHTML = rdata.size;
+
+                if(rdata.size > 0) {
+                    statusIcon.show();
+                } else {
+                    statusIcon.hide();
+                }
+
+
+                if(initTimeout !== false) {
+                    setTimeout(this.checkNewsletterQueueStatus.bind(this, statusIcon), 15000);
+                }
+
+
+            }.bind(this)
+        });
+    },
+
+    initNewsletterQueueInfo: function() {
+        //adding status icon
+        var statusBar = Ext.get("pimcore_status");
+
+        var statusIcon = Ext.get(statusBar.insertHtml('afterBegin',
+            '<div id="pimcore_bundle_customerManagementFramework_newsletter_queue_status" style="display:none;" data-menu-tooltip="'
+            + t("plugin_cmf_newsletter_queue_running_tooltip") + '"><span id="pimcore_bundle_customerManagementFramework_newsletter_queue_status_count"></span></div>'));
+
+        pimcore.helpers.initMenuTooltips();
+
+        this.checkNewsletterQueueStatus(statusIcon);
     }
 });
 

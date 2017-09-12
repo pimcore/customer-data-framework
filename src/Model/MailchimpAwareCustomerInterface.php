@@ -20,14 +20,6 @@ namespace CustomerManagementFrameworkBundle\Model;
  */
 interface MailchimpAwareCustomerInterface extends NewsletterAwareCustomerInterface
 {
-    /**
-     * @param string $newsletter
-     */
-    public function setNewsletterStatus($newsletter);
 
-    /**
-     * @return string;
-     */
-    public function getNewsletterStatus();
 
 }
