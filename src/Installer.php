@@ -57,6 +57,8 @@ class Installer extends AbstractInstaller
         $permissions = [
             'plugin_customermanagementframework_activityview',
             'plugin_customermanagementframework_customerview',
+            'plugin_customermanagementframework_customer_automation_rules',
+            'plugin_customermanagementframework_newsletter_enqueue_all_customers',
         ];
 
         foreach ($permissions as $key) {

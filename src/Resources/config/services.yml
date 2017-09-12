@@ -1,8 +1,6 @@
 parameters:
     cmf.customer_export.items_per_request: 500
 
-
-
 services:
     _defaults:
         public: true
@@ -71,7 +69,7 @@ services:
             - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.dataTransformers%'
 
     cmf.logger:
-        alias: logger
+        alias: monolog.logger.cmf
 
     cmf.view_formatter:
         class: CustomerManagementFrameworkBundle\View\Formatter\DefaultViewFormatter

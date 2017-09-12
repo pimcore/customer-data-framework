@@ -150,12 +150,15 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     protected function handleNewsletterQueue(CustomerInterface $customer, $operation)
     {
-        /**
-         * @var NewsletterQueueInterface $newsletterQueue
-         */
-        $newsletterQueue = \Pimcore::getContainer()->get('cmf.newsletter.queue');
+        if($this->saveOptions->isNewsletterQueueEnabled()) {
+            /**
+             * @var NewsletterQueueInterface $newsletterQueue
+             */
+            $newsletterQueue = \Pimcore::getContainer()->get('cmf.newsletter.queue');
 
-        $newsletterQueue->enqueueCustomer($customer, $operation);
+            $newsletterQueue->enqueueCustomer($customer, $operation);
+        }
+
     }
 
     protected function addToDeletionsTable(CustomerInterface $customer)

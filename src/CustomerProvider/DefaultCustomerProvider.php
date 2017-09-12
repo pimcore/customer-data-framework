@@ -37,9 +37,9 @@ class DefaultCustomerProvider implements CustomerProviderInterface
 
     /**
      * DefaultCustomerProvider constructor.
-     * @param $pimcoreClass
-     * @param $parentPath
-     * @param $namingScheme
+     * @param string $pimcoreClass
+     * @param string $parentPath
+     * @param ObjectNamingSchemeInterface $namingScheme
      */
     public function __construct($pimcoreClass, $parentPath, ObjectNamingSchemeInterface $namingScheme)
     {
@@ -161,6 +161,28 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     public function getById($id, $force = false)
     {
         return $this->callStatic('getById', [$id, $force]);
+    }
+
+    /**
+     * Get active customer by email
+     *
+     * @param int $id
+     * @param bool $foce
+     *
+     * @return CustomerInterface|null
+     * @throws \RuntimeException
+     */
+    public function getActiveCustomerByEmail($email)
+    {
+        $list = $this->getList();
+        $list->setUnpublished(false);
+        $list->addConditionParam('active = 1 and trim(lower(email)) = ?', [$email]);
+
+        if($list->count() > 1) {
+            throw new \Exception(sprintf('multiple active and published customers with email %s found', $email));
+        }
+
+        return $list->current();
     }
 
     /**

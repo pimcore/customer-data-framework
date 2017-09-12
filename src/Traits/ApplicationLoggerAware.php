@@ -31,7 +31,8 @@ trait ApplicationLoggerAware
         if (null === $this->logger) {
 
             $logger = new ApplicationLogger();
-            $dbWriter = new ApplicationLoggerDb('info');
+
+            $dbWriter = new ApplicationLoggerDb('notice');
             $logger->addWriter($dbWriter);
 
             $cmfLogger = \Pimcore::getContainer()->get('cmf.logger');

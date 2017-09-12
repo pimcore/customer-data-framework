@@ -148,6 +148,7 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder
 
             foreach ($paginator as $customer) {
                 $this->calculateSegments($customer, $segmentManager);
+                $segmentManager->saveMergedSegments($customer);
             }
         }
     }

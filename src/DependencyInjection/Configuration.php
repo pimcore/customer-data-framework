@@ -406,8 +406,8 @@ class Configuration implements ConfigurationInterface
                 ->booleanNode('newsletterSyncEnabled')->defaultFalse()->end()
                 ->arrayNode('mailchimp')
                     ->children()
-                        ->scalarNode('listId')->end()
                         ->scalarNode('apiKey')->end()
+                        ->scalarNode('cliUpdatesPimcoreUserName')->end()
                     ->end()
                 ->end()
             ->end();

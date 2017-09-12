@@ -815,7 +815,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
                 continue;
             }
 
-            $this->getLogger()->notice(sprintf('prepare segment builder %s', $segmentBuilder->getName()));
+            $this->getLogger()->info(sprintf('prepare segment builder %s', $segmentBuilder->getName()));
             $segmentBuilder->prepare($this);
         }
     }

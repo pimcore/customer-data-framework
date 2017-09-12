@@ -12,34 +12,46 @@
 namespace CustomerManagementFrameworkBundle\Newsletter\Manager;
 
 use CustomerManagementFrameworkBundle\Model\NewsletterAwareCustomerInterface;
+use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProviderHandlerInterface;
 
 interface NewsletterManagerInterface
 {
     /**
+     * Subscribe customer from newsletter (for example via web form). Returns true if it was successful.
+     *
      * @param NewsletterAwareCustomerInterface $customer
-     * @return void
+     * @return bool
      */
     public function subscribeCustomer(NewsletterAwareCustomerInterface $customer);
 
     /**
+     * Unsubscribe customer from newsletter (for example via web form). Returns true if it was successful.
+     *
      * @param NewsletterAwareCustomerInterface $customer
-     * @return void
+     * @return bool
      */
     public function unsubscribeCustomer(NewsletterAwareCustomerInterface $customer);
 
     /**
      * @return void
      */
-    public function processSync( $changesQueueOnly = true );
+    public function syncSegments($forceUpdate = false);
 
     /**
      * @return void
      */
-    public function syncSegments();
+    public function syncCustomers( $forceAllCustomers = false, $forceUpdate = false );
 
     /**
+     * @param string $shortcut
+     * @param NewsletterProviderHandlerInterface $newsletterProviderHandler
      * @return void
      */
-    public function syncCustomers( $changesQueueOnly = true );
+    public function addNewsletterProviderHandler(NewsletterProviderHandlerInterface $newsletterProviderHandler);
+
+    /**
+     * @return NewsletterProviderHandlerInterface[]
+     */
+    public function getNewsletterProviderHandlers();
 
 }

@@ -11,39 +11,17 @@
 
 namespace CustomerManagementFrameworkBundle\Model;
 
+use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProviderHandlerInterface;
+
 interface NewsletterAwareCustomerInterface extends CustomerInterface
 {
     /**
+     * If this method returns true the customer will be exported by the provider handler with the given shortcut.
+     * Otherwise the provider handler will delete the customer in the target system if it exists.
+     * To ensure a consistant handling inactive or unpublished customers should never be exported.
+     *
+     * @param NewsletterProviderHandlerInterface $newsletterProviderHandler
      * @return bool
      */
-    public function getNewsletter();
-
-    /**
-     * @param bool $newsletter
-     */
-    public function setNewsletter($newsletter);
-
-    /**
-     * @param \Carbon\Carbon $newsletterUnsubscrriptionDate
-     * @return \Pimcore\Model\Object\Customer
-     */
-    public function setNewsletterUnsubscriptionDate ($newsletterUnsubscrriptionDate);
-
-    /**
-     * Get newsletterUnsubscrriptionDate - Unsubscription date
-     * @return \Carbon\Carbon
-     */
-    public function getNewsletterUnsubscriptionDate ();
-
-    /**
-     * @param \Carbon\Carbon $newsletterUnsubscrriptionDate
-     * @return \Pimcore\Model\Object\Customer
-     */
-    public function setNewsletterUnsubscrriptionDate ($newsletterUnsubscrriptionDate);
-
-    /**
-     * @param string $newsletterDataMd5
-     * @return \Pimcore\Model\Object\Customer
-     */
-    public function setNewsletterDataMd5 ($newsletterDataMd5);
+    public function needsExportByNewsletterProviderHandler(NewsletterProviderHandlerInterface $newsletterProviderHandler);
 }

@@ -25,55 +25,75 @@ class DefaultNewsletterManager implements NewsletterManagerInterface
     private $segmentManager;
 
     /**
-     * @var NewsletterProviderHandlerInterface
+     * @var NewsletterProviderHandlerInterface[]
      */
-    private $newsletterProviderHandler;
+    protected $newsletterProviderHandlers = [];
 
-    public function __construct(SegmentManagerInterface $segmentManager, NewsletterProviderHandlerInterface $newsletterProviderHandler)
+    public function __construct(SegmentManagerInterface $segmentManager)
     {
         $this->segmentManager = $segmentManager;
-
-        if(is_null($newsletterProviderHandler)) {
-            throw new \Exception('No newsletter provider handler configured. Take a look at the CMF docs newsletter section.');
-        }
-
-        $this->newsletterProviderHandler = $newsletterProviderHandler;
     }
 
+    /**
+     * Subscribe customer from newsletter (for example via web form). Returns true if it was successful.
+     *
+     * @param NewsletterAwareCustomerInterface $customer
+     * @return bool
+     */
     public function subscribeCustomer(NewsletterAwareCustomerInterface $customer)
     {
-        $customer->setNewsletter(true);
-        $customer->setNewsletterUnsubscriptionDate(null);
-        $customer->save();
+        foreach ($this->newsletterProviderHandlers as $newsletterProviderHandler) {
+            $newsletterProviderHandler->subscribeCustomer($customer);
+        }
     }
 
+
+    /**
+     * Unsubscribe customer from newsletter (for example via web form). Returns true if it was successful.
+     *
+     * @param NewsletterAwareCustomerInterface $customer
+     * @return bool
+     */
     public function unsubscribeCustomer(NewsletterAwareCustomerInterface $customer)
     {
-        $customer->setNewsletter(false);
-        $customer->setNewsletterUnsubscriptionDate(new Carbon());
-        $customer->setNewsletterDataMd5(null);
-        $customer->save();
+        foreach ($this->newsletterProviderHandlers as $newsletterProviderHandler) {
+            $newsletterProviderHandler->unsubscribeCustomer($customer);
+        }
     }
 
-    public function processSync($changesQueueOnly = true)
-    {
-        $this->syncSegments();
 
-        $this->syncCustomers($changesQueueOnly);
+    public function syncSegments($forceUpdate = false)
+    {
+        foreach ($this->newsletterProviderHandlers as $newsletterProviderHandler) {
+            $newsletterProviderHandler->updateSegmentGroups($forceUpdate);
+        }
     }
 
-    public function syncSegments()
+    public function syncCustomers( $forceAllCustomers = false, $forceUpdate = false )
     {
-        $segmentGroups = $this->segmentManager->getSegmentGroups();
-        $segmentGroups->addConditionParam("exportNewsletterProvider = 1");
-
-        $this->newsletterProviderHandler->updateSegmentGroups($segmentGroups->load());
-    }
-
-    public function syncCustomers($changesQueueOnly = true)
-    {
+        /**
+         * @var NewsletterQueueInterface $queue
+         */
         $queue = \Pimcore::getContainer()->get(NewsletterQueueInterface::class );
 
-        $queue->processQueue($this->newsletterProviderHandler);
+        $queue->processQueue($this->newsletterProviderHandlers, $forceAllCustomers, $forceUpdate);
+    }
+
+    /**
+     * @param string $shortcut
+     * @param NewsletterProviderHandlerInterface $newsletterProviderHandler
+     * @return void
+     */
+    public function addNewsletterProviderHandler(NewsletterProviderHandlerInterface $newsletterProviderHandler)
+    {
+        $this->newsletterProviderHandlers[] = $newsletterProviderHandler;
+    }
+
+    /**
+     * @return NewsletterProviderHandlerInterface[]
+     */
+    public function getNewsletterProviderHandlers()
+    {
+        return $this->newsletterProviderHandlers;
     }
 }

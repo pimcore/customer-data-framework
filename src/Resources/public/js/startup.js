@@ -84,21 +84,37 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
             menuItems.add(item);
         }
 
-        var customerAutomationRulesPanelId = 'plugin_cmf_customerautomationrules';
-        var item = {
-            text: t('plugin_cmf_customerautomationrules'),
-            iconCls: 'pimcore_icon_customerautomationrules',
-            handler: function () {
-                try {
-                    pimcore.globalmanager.get(customerAutomationRulesPanelId).activate();
+        if (user.isAllowed('plugin_customermanagementframework_customer_automation_rules')) {
+            var customerAutomationRulesPanelId = 'plugin_cmf_customerautomationrules';
+            var item = {
+                text: t('plugin_cmf_customerautomationrules'),
+                iconCls: 'pimcore_icon_customerautomationrules',
+                handler: function () {
+                    try {
+                        pimcore.globalmanager.get(customerAutomationRulesPanelId).activate();
+                    }
+                    catch (e) {
+                        pimcore.globalmanager.add(customerAutomationRulesPanelId, new pimcore.plugin.cmf.config.panel(customerAutomationRulesPanelId));
+                    }
                 }
-                catch (e) {
-                    pimcore.globalmanager.add(customerAutomationRulesPanelId, new pimcore.plugin.cmf.config.panel(customerAutomationRulesPanelId));
-                }
-            }
-        };
+            };
 
-        menuItems.add(item);
+            menuItems.add(item);
+        }
+
+        if (user.isAllowed('plugin_customermanagementframework_newsletter_enqueue_all_customers')) {
+           var item = {
+                text: t('plugin_cmf_newsletter_enqueue_all_customers'),
+                iconCls: 'pimcore_icon_newsletter_enqueue_all_customers',
+                handler: function () {
+                    Ext.Ajax.request({
+                        url: "/admin/bundle/advanced-object-search/admin/check-index-status"
+                    });
+                }
+            };
+
+            menuItems.add(item);
+        }
 
         // add main menu
         if (menuItems.items.length > 0) {

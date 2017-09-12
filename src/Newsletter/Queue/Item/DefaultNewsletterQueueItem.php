@@ -1,0 +1,134 @@
+<?php
+
+/**
+ * Pimcore Customer Management Framework Bundle
+ * Full copyright and license information is available in
+ * License.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
+ * @license    GPLv3
+ */
+
+namespace CustomerManagementFrameworkBundle\Newsletter\Queue\Item;
+
+use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+
+class DefaultNewsletterQueueItem implements  NewsletterQueueItemInterface
+{
+    /**
+     * @var int
+     */
+    private $customerId;
+
+    /**
+     * @var CustomerInterface|null
+     */
+    private $customer;
+
+    /**
+     * @var string
+     */
+    private $email;
+
+    /**
+     * @var string
+     */
+    private $operation;
+
+
+    /**
+     * Could be used as a storage for an overruled operation.
+     * If an update item is in the queue but the related customer is excluded by $customer->needsExportByNewsletterProviderHandler($providerHandler)
+     * the customer needs to be deleted allthough it is an update operation in the queue.
+     *
+     * @var string
+     */
+    private $overruledOperation;
+
+    /**
+     * @var int
+     */
+    private $modificationDate;
+
+    /**
+     * @var bool
+     */
+    private $successfullyProcessed = false;
+
+    public function __construct($customerId, CustomerInterface $customer = null, $email, $operation, $modificationDate)
+    {
+        $this->customerId = $customerId;
+        $this->customer = $customer;
+        $this->email = $email;
+        $this->operation = $operation;
+        $this->modificationDate = $modificationDate;
+    }
+
+    public function getCustomerId()
+    {
+        return $this->customerId;
+    }
+
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function getOperation()
+    {
+        return $this->operation;
+    }
+
+    public function getModificationDate()
+    {
+        return $this->modificationDate;
+    }
+
+    /**
+     * @return bool
+     */
+    public function wasSuccessfullyProcessed()
+    {
+        return $this->successfullyProcessed;
+    }
+
+    /**
+     * @param bool $successfullyProcessed
+     */
+    public function setSuccessfullyProcessed($successfullyProcessed)
+    {
+        $this->successfullyProcessed = $successfullyProcessed;
+    }
+
+    /**
+     * Could be used as a storage for an overruled operation.
+     * If an update item is in the queue but the related customer is excluded by $customer->needsExportByNewsletterProviderHandler($providerHandler)
+     * the customer needs to be deleted allthough it is an update operation in the queue.
+     *
+     * @return string
+     */
+    public function getOverruledOperation()
+    {
+        return $this->overruledOperation;
+    }
+
+    /**
+     * Could be used as a storage for an overruled operation.
+     * If an update item is in the queue but the related customer is excluded by $customer->needsExportByNewsletterProviderHandler($providerHandler)
+     * the customer needs to be deleted allthough it is an update operation in the queue.
+     *
+     * @param string $overruledOperation
+     */
+    public function setOverruledOperation($overruledOperation)
+    {
+        $this->overruledOperation = $overruledOperation;
+    }
+
+
+
+}

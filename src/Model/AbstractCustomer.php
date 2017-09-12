@@ -13,6 +13,7 @@ namespace CustomerManagementFrameworkBundle\Model;
 
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\SaveOptions;
+use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProviderHandlerInterface;
 use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 
 abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implements CustomerInterface
@@ -78,4 +79,15 @@ abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implement
     }
 
 
+    /**
+     * If this method returns true the customer will be exported by the provider handler with the given shortcut.
+     * Otherwise the provider handler will delete the customer in the target system if it exists.
+     *
+     * @param NewsletterProviderHandlerInterface $newsletterProviderHandler
+     * @return bool
+     */
+    public function needsExportByNewsletterProviderHandler(NewsletterProviderHandlerInterface $newsletterProviderHandler)
+    {
+        return $this->getPublished() && $this->getActive();
+    }
 }

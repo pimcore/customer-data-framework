@@ -134,8 +134,8 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         if($config['newsletterSyncEnabled']) {
             $container->setAlias('cmf.newsletter.queue', NewsletterQueueInterface::class);
 
-            $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.listId', $config['mailchimp']['listId']);
             $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.apiKey', $config['mailchimp']['apiKey']);
+            $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.cliUpdatesPimcoreUserName', $config['mailchimp']['cliUpdatesPimcoreUserName']);
         }
 
     }

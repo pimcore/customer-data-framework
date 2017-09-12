@@ -12,10 +12,11 @@
 namespace CustomerManagementFrameworkBundle\Newsletter\Queue;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProviderHandlerInterface;
+use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
 
 interface NewsletterQueueInterface
 {
-    const OPERATION_ADD = 'add';
     const OPERATION_UPDATE = 'update';
     const OPERATION_DELETE = 'delete';
 
@@ -27,4 +28,23 @@ interface NewsletterQueueInterface
      * @return void
      */
     public function enqueueCustomer(CustomerInterface $customer, $operation, $email = null);
+
+    /**
+     * @param NewsletterProviderHandlerInterface[] $newsletterProviderHandler
+     * @param bool $forceAllCustomers
+     * @param bool $forceUpdate
+     * @return void
+     */
+    public function processQueue(array $newsletterProviderHandler, $forceAllCustomers = false, $forceUpdate = false);
+
+    /**
+     * @param NewsletterQueueItemInterface $item
+     * @return void
+     */
+    public function removeFromQueue(NewsletterQueueItemInterface $item);
+
+    /**
+     * @return void
+     */
+    public function enqueueAllCustomers();
 }
