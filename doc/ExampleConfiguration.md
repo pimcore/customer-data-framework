@@ -15,13 +15,13 @@ services:
 
 
     # example newsletter provider handler (mailchimp sync) config
-    appbundle.data_transformer.mailchimp.birthdate:
+    appbundle.cmf.mailchimp.birthdate-transformer:
           class: CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\DataTransformer\Date
           arguments:
             - m/d/Y
             - Y-m-d
 
-    appbundle.mailchimp-handler.list1:
+    appbundle.cmf.mailchimp.handler.list1:
         class: CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp
         autowire: true
         arguments:
@@ -41,7 +41,7 @@ services:
               street: STREET
               birthDate: BIRTHDATE
 
-            - birthDate: '@appbundle.data_transformer.mailchimp.birthdate'
+            - birthDate: '@appbundle.cmf.mailchimp.birthdate-transformer'
 
         tags: [cmf.newsletter_provider_handler]
 
