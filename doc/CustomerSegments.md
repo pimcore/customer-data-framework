@@ -36,7 +36,9 @@ Both of the methods could interact with the SegmentManager for creating segments
 
 SegmentManager sample calls:
 ```php
-// create a segment called "male" within the segment group "gender". The segment group "gender" will be created too if it doesn't exist.
+/* create a segment called "male" within the segment group "gender". The segment group "gender" will be created too if it doesn't exist.
+   If the segment already exists it will not be reacreated but the existing segment will be returned.
+*/
 $segment = $segmentManager->createCalculatedSegment("male", "gender");
 
 // get all other segments of the segment group "gender" (but exclude "male")
