@@ -57,7 +57,9 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
         if ($immediateAsyncProcessQueueItem) {
             $item = new DefaultNewsletterQueueItem($customer->getId(), null, $email, $operation, $modificationDate);
             $php = Console::getExecutable('php');
-            Console::execInBackground(sprintf($php . ' ' . PIMCORE_PROJECT_ROOT . "/bin/console cmf:newsletter-sync --process-queue-item='%s'", $item->toJson()));
+            $cmd = sprintf($php . ' ' . PIMCORE_PROJECT_ROOT . "/bin/console cmf:newsletter-sync --process-queue-item='%s'", $item->toJson());
+            $this->getLogger()->info("execute async process queue item cmd: " . $cmd);
+            Console::execInBackground($cmd);
         }
 
     }

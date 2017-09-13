@@ -70,7 +70,7 @@ class MailchimpStatusChangeActivity extends AbstractActivity
 
     public static function cmfGetOverviewData(ActivityStoreEntryInterface $entry)
     {
-        return ['status' => $entry->getAttributes()['status']];
+        return ['status' => $entry->getAttributes()['status'], 'shortcut'=>$entry->getAttributes()['shortcut'], 'listId'=>$entry->getAttributes()['listId']];
     }
 
     public function cmfWebserviceUpdateAllowed()

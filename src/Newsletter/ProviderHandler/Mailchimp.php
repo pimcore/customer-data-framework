@@ -507,7 +507,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
 
     protected function trackStatusChangeActivity(MailchimpAwareCustomerInterface $customer, $status)
     {
-        $activity = new MailchimpStatusChangeActivity($customer, $status);
+        $activity = new MailchimpStatusChangeActivity($customer, $status, ['listId'=>$this->getListId(), 'shortcut'=>$this->getShortcut()]);
         /**
          * @var ActivityManagerInterface $activityManager
          */
@@ -641,6 +641,8 @@ class Mailchimp implements NewsletterProviderHandlerInterface
                 $transformer = $this->fieldTransformers[$field];
                 $value = $transformer->transformFromPimcoreToMailchimp($value);
             }
+
+            $value = is_null($value) ? '' : $value;
 
             return ['field' => $to, 'value' => $value];
         }
