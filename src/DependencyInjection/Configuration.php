@@ -348,6 +348,7 @@ class Configuration implements ConfigurationInterface
 
                 ->arrayNode('duplicates_view')
                     ->children()
+                        ->booleanNode('enabled')->defaultFalse()->end()
                         ->arrayNode('listFields')
                             ->prototype('array')
                                 ->prototype('scalar')

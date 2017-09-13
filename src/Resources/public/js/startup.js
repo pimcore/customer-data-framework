@@ -57,7 +57,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
         }
 
         // customer duplicates view
-        if (user.isAllowed('plugin_customermanagementframework_customerview')) {
+        if (pimcore.settings.cmf.duplicatesViewEnabled && user.isAllowed('plugin_customermanagementframework_customerview')) {
             var customerDuplicateViewPanelId = 'plugin_cmf_customerduplicatesview';
             var item = {
                 text: t('plugin_cmf_customerduplicatesview'),

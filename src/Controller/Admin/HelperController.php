@@ -86,7 +86,8 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
     public function settingJsonAction() {
 
         $settings = [
-            'newsletterSyncEnabled' => $this->container->getParameter('pimcore_customer_management_framework.newsletter.newsletterSyncEnabled')
+            'newsletterSyncEnabled' => $this->container->getParameter('pimcore_customer_management_framework.newsletter.newsletterSyncEnabled'),
+            'duplicatesViewEnabled' => $this->container->getParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.enabled')
         ];
 
         $content = "
