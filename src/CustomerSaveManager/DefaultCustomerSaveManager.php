@@ -84,7 +84,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         }
 
         if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
-            $this->applySaveHandlers($customer, 'postAdd', true);
+            $this->applySaveHandlers($customer, 'postAdd');
         }
 
         if ($this->saveOptions->isSegmentBuilderQueueEnabled()) {
@@ -96,6 +96,9 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
                 $customer
             );
         }
+
+
+        $this->handleNewsletterQueue($customer, NewsletterQueueInterface::OPERATION_UPDATE);
     }
 
     public function preUpdate(CustomerInterface $customer)
@@ -114,8 +117,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     public function postUpdate(CustomerInterface $customer)
     {
 
-        $this->handleNewsletterQueue($customer, NewsletterQueueInterface::OPERATION_UPDATE);
-
         if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
             $this->applySaveHandlers($customer, 'postUpdate');
         }
@@ -133,6 +134,9 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
                 $customer
             );
         }
+
+
+        $this->handleNewsletterQueue($customer, NewsletterQueueInterface::OPERATION_UPDATE);
     }
 
     public function preDelete(CustomerInterface $customer)
