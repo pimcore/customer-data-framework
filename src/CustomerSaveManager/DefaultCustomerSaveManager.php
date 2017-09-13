@@ -16,6 +16,7 @@ use CustomerManagementFrameworkBundle\CustomerSaveHandler\CustomerSaveHandlerInt
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db;
 use Pimcore\Model\Version;
@@ -84,13 +85,17 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
             $originalCustomerNeeded = true;
         }
 
-        $originalCustomer = $originalCustomerNeeded ? $this->customerProvider->getById($customer->getId(), true) : null;
-        $this->originalCustomer = $originalCustomer;
-    }
+        $originalCustomer = $this->originalCustomer;
 
-    protected function forgetOriginalCustomer()
-    {
-        $this->originalCustomer = null;
+        if($originalCustomer && ($originalCustomer->getId() != $customer->getId())) {
+            $originalCustomer = null;
+        }
+
+        if($originalCustomerNeeded) {
+            $originalCustomer = $this->customerProvider->getById($customer->getId());
+        }
+
+        $this->originalCustomer = $originalCustomer;
     }
 
     public function preAdd(CustomerInterface $customer)
@@ -113,7 +118,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
 
         if ($this->saveOptions->isOnSaveSegmentBuildersEnabled()) {
-            \Pimcore::getContainer()->get('cmf.segment_manager')->buildCalculatedSegmentsOnCustomerSave($customer);
+            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class )->buildCalculatedSegmentsOnCustomerSave($customer);
         }
 
         if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
@@ -121,7 +126,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         }
 
         if ($this->saveOptions->isSegmentBuilderQueueEnabled()) {
-            \Pimcore::getContainer()->get('cmf.segment_manager')->addCustomerToChangesQueue($customer);
+            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class )->addCustomerToChangesQueue($customer);
         }
 
         if ($this->saveOptions->isDuplicatesIndexEnabled()) {
@@ -132,8 +137,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
 
         $this->handleNewsletterQueue($customer, NewsletterQueueInterface::OPERATION_UPDATE);
-
-        $this->forgetOriginalCustomer();
     }
 
     public function preUpdate(CustomerInterface $customer)
@@ -159,11 +162,11 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         }
 
         if ($this->saveOptions->isOnSaveSegmentBuildersEnabled()) {
-            \Pimcore::getContainer()->get('cmf.segment_manager')->buildCalculatedSegmentsOnCustomerSave($customer);
+            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class )->buildCalculatedSegmentsOnCustomerSave($customer);
         }
 
         if ($this->saveOptions->isSegmentBuilderQueueEnabled()) {
-            \Pimcore::getContainer()->get('cmf.segment_manager')->addCustomerToChangesQueue($customer);
+            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class )->addCustomerToChangesQueue($customer);
         }
 
         if ($this->saveOptions->isDuplicatesIndexEnabled()) {
@@ -174,8 +177,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
 
         $this->handleNewsletterQueue($customer, NewsletterQueueInterface::OPERATION_UPDATE);
-
-        $this->forgetOriginalCustomer();
     }
 
     public function preDelete(CustomerInterface $customer)
@@ -196,8 +197,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         $this->addToDeletionsTable($customer);
 
         $this->handleNewsletterQueue($customer, NewsletterQueueInterface::OPERATION_DELETE);
-
-        $this->forgetOriginalCustomer();
     }
 
     public function validateOnSave(CustomerInterface $customer, $withDuplicatesCheck = true)
