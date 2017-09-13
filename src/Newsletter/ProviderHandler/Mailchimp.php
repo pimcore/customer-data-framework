@@ -140,7 +140,23 @@ class Mailchimp implements NewsletterProviderHandlerInterface
     {
         $items = $this->getUpdateNeededItems($items, $forceUpdate);
 
-        $itemCount = count($items);
+        list($emailChangedItems, $regularItems) = $this->determineEmailChangedItems($items);
+
+        //Customers where the email address changed need to be handled by the single exporter as the batch exporter does not allow such operations.
+        if(sizeof($emailChangedItems)) {
+            $this->getLogger()->info(
+                sprintf(
+                    '[MailChimp] process %s items where the email address changed...',
+                    sizeof($emailChangedItems)
+                )
+            );
+
+            foreach($emailChangedItems as $item) {
+                $this->customerExportSingle($item);
+            }
+        }
+
+        $itemCount = count($regularItems);
 
         if(!$itemCount) {
             $this->getLogger()->info(
@@ -156,7 +172,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
                     $this->batchThreshold
                 )
             );
-            foreach($items as $item) {
+            foreach($regularItems as $item) {
                 $this->customerExportSingle($item);
             }
         } else {
@@ -165,8 +181,39 @@ class Mailchimp implements NewsletterProviderHandlerInterface
                     '[MailChimp] Sending data as batch request'
                 )
             );
-            $this->customerExportBatch($items);
+            $this->customerExportBatch($regularItems);
         }
+    }
+
+    /**
+     * @param NewsletterQueueItemInterface[] $items
+     * @return array
+     */
+    protected function determineEmailChangedItems(array $items)
+    {
+        $emailChangedItems = [];
+        $regularItems = [];
+
+        foreach($items as $item) {
+            if($item->getOperation() != NewsletterQueueInterface::OPERATION_UPDATE) {
+                $regularItems[] = $item;
+                continue;
+            }
+
+            if(!$item->getCustomer()) {
+                $regularItems[] = $item;
+                continue;
+            }
+
+            if($item->getCustomer()->getEmail() != $item->getEmail()) {
+                $emailChangedItems[] = $item;
+                continue;
+            }
+
+            $regularItems[] = $item;
+        }
+
+        return [$emailChangedItems, $regularItems];
     }
 
     /**

@@ -65,8 +65,9 @@ class SegmentExporter
         if ($forceCreate) {
             $this->getLogger()->info(
                 sprintf(
-                    '[MailChimp][GROUP %s] Forcing creation of group %s',
+                    '[MailChimp][GROUP %s][%s] Forcing creation of group %s',
                     $group->getId(),
+                    $listId,
                     $group->getName()
                 ),
                 [
@@ -78,8 +79,9 @@ class SegmentExporter
         if ($forceCreate || !$exportService->wasExported($group, $listId)) {
             $this->getLogger()->info(
                 sprintf(
-                    '[MailChimp][GROUP %s] Creating group %s',
+                    '[MailChimp][GROUP %s][%s] Creating group %s',
                     $group->getId(),
+                    $listId,
                     $group->getName(),
                     $remoteGroupId
                 ),
@@ -105,8 +107,9 @@ class SegmentExporter
             if(!$forceUpdate && !$exportService->needsUpdate($group, $listId)) {
                 $this->getLogger()->debug(
                     sprintf(
-                        '[MailChimp][GROUP %s] Updating group %s with remote ID %s skipped - no update needed',
+                        '[MailChimp][GROUP %s][%s] Updating group %s with remote ID %s skipped - no update needed',
                         $group->getId(),
+                        $listId,
                         $group->getName(),
                         $remoteGroupId
                     ),
@@ -120,8 +123,9 @@ class SegmentExporter
 
             $this->getLogger()->info(
                 sprintf(
-                    '[MailChimp][GROUP %s] Updating group %s with remote ID %s',
+                    '[MailChimp][GROUP %s][%s] Updating group %s with remote ID %s',
                     $group->getId(),
+                    $listId,
                     $group->getName(),
                     $remoteGroupId
                 ),
@@ -142,8 +146,9 @@ class SegmentExporter
         if ($apiClient->success()) {
             $this->getLogger()->notice(
                 sprintf(
-                    '[MailChimp][GROUP %s] Request was successful for group %s. Remote ID is %s',
+                    '[MailChimp][GROUP %s][%s] Request was successful for group %s. Remote ID is %s',
                     $group->getId(),
+                    $listId,
                     $group->getName(),
                     $remoteGroupId
                 ),
@@ -159,8 +164,9 @@ class SegmentExporter
         } else {
             $this->getLogger()->error(
                 sprintf(
-                    '[MailChimp][GROUP %s] Failed to export group %s: %s %s',
+                    '[MailChimp][GROUP %s][%s] Failed to export group %s: %s %s',
                     $group->getId(),
+                    $listId,
                     $group->getName(),
                     json_encode($apiClient->getLastError()),
                     $apiClient->getLastResponse()['body']
@@ -216,8 +222,9 @@ class SegmentExporter
         if ($forceCreate) {
             $this->getLogger()->info(
                 sprintf(
-                    '[MailChimp][SEGMENT %s] Forcing creation of segment %s',
+                    '[MailChimp][SEGMENT %s][%s] Forcing creation of segment %s',
                     $segment->getId(),
+                    $listId,
                     $segment->getName()
                 ),
                 [
@@ -228,8 +235,9 @@ class SegmentExporter
         if ($forceCreate || !$exportService->wasExported($segment, $listId)) {
             $this->getLogger()->info(
                 sprintf(
-                    '[MailChimp][SEGMENT %s] Creating segment %s',
+                    '[MailChimp][SEGMENT %s][%s] Creating segment %s',
                     $segment->getId(),
+                    $listId,
                     $segment->getName(),
                     $remoteSegmentId
                 ),
@@ -254,8 +262,9 @@ class SegmentExporter
             if(!$forceUpdate && !$exportService->needsUpdate($segment, $listId)) {
                 $this->getLogger()->debug(
                     sprintf(
-                        '[MailChimp][SEGMENT %s] Updating segment %s with remote ID %s skipped - no update needed',
+                        '[MailChimp][SEGMENT %s][%s] Updating segment %s with remote ID %s skipped - no update needed',
                         $segment->getId(),
+                        $listId,
                         $segment->getName(),
                         $remoteSegmentId
                     ),
@@ -269,8 +278,9 @@ class SegmentExporter
 
             $this->getLogger()->info(
                 sprintf(
-                    '[MailChimp][SEGMENT %s] Updating segment %s with remote ID %s',
+                    '[MailChimp][SEGMENT %s][%s] Updating segment %s with remote ID %s',
                     $segment->getId(),
+                    $listId,
                     $segment->getName(),
                     $remoteSegmentId
                 ),
@@ -289,8 +299,9 @@ class SegmentExporter
         if ($apiClient->success()) {
             $this->getLogger()->notice(
                 sprintf(
-                    '[MailChimp][SEGMENT %s] Request was successful for segment %s. Remote ID is %s',
+                    '[MailChimp][SEGMENT %s][%s] Request was successful for segment %s. Remote ID is %s',
                     $segment->getId(),
+                    $listId,
                     $segment->getName(),
                     $remoteGroupId
                 ),
@@ -305,8 +316,9 @@ class SegmentExporter
         } else {
             $this->getLogger()->error(
                 sprintf(
-                    '[MailChimp][SEGMENT %s] Failed to export segment %s: %s %s',
+                    '[MailChimp][SEGMENT %s][%s] Failed to export segment %s: %s %s',
                     $segment->getId(),
+                    $listId,
                     $segment->getName(),
                     json_encode($apiClient->getLastError()),
                     $apiClient->getLastResponse()['body']
@@ -319,7 +331,8 @@ class SegmentExporter
             if ($isEdit && isset($result['status']) && $result['status'] === 404) {
                 $this->getLogger()->error(
                     sprintf(
-                        '[MailChimp][SEGMENT %s] Edit request was a 404 - falling back to create %s',
+                        '[MailChimp][SEGMENT %s][%s] Edit request was a 404 - falling back to create %s',
+                        $listId,
                         $segment->getId(),
                         $segment->getName()
                     ),
@@ -358,7 +371,8 @@ class SegmentExporter
 
                 $this->getLogger()->info(
                     sprintf(
-                        '[MailChimp][Segment] Deleting segments with remote ID %s within group ID %s',
+                        '[MailChimp][Segment][%s] Deleting segments with remote ID %s within group ID %s',
+                        $listId,
                         $interest['id'],
                         $remoteGroupId
                     )
@@ -371,7 +385,8 @@ class SegmentExporter
                 if(!$apiClient->success()) {
                     $this->getLogger()->error(
                         sprintf(
-                            '[MailChimp][Segment] Deleting segments with remote ID %s within group ID %s failed: %s %s',
+                            '[MailChimp][Segment][%s] Deleting segments with remote ID %s within group ID %s failed: %s %s',
+                            $listId,
                             $interest['id'],
                             $remoteGroupId,
                             json_encode($apiClient->getLastError()),
@@ -429,8 +444,9 @@ class SegmentExporter
 
             $this->getLogger()->info(
                 sprintf(
-                    '[MailChimp][GROUP %s] Deleting group %s with remote ID %s',
+                    '[MailChimp][GROUP %s][%s] Deleting group %s with remote ID %s',
                     $group->getId(),
+                    $listId,
                     $group->getName(),
                     $remoteGroupId
                 ),
@@ -441,7 +457,8 @@ class SegmentExporter
         } else {
             $this->getLogger()->info(
                 sprintf(
-                    '[MailChimp][GROUP] Deleting group with remote ID %s',
+                    '[MailChimp][GROUP][%s] Deleting group with remote ID %s',
+                    $listId,
                     $remoteGroupId
                 )
             );
@@ -457,7 +474,8 @@ class SegmentExporter
         if(!$apiClient->success()) {
             $this->getLogger()->error(
                 sprintf(
-                    '[MailChimp][GROUP] Failed to delete group with remote ID %s: %s %s',
+                    '[MailChimp][GROUP][%s] Failed to delete group with remote ID %s: %s %s',
+                    $listId,
                     $remoteGroupId,
                     json_encode($apiClient->getLastError()),
                     $apiClient->getLastResponse()['body']

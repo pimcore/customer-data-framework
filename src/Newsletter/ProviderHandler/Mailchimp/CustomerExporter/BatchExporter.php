@@ -154,8 +154,9 @@ class BatchExporter extends AbstractExporter
 
         $this->getLogger()->info(
             sprintf(
-                '[MailChimp][CUSTOMER %s][BATCH] Adding customer with remote ID %s',
+                '[MailChimp][CUSTOMER %s][%s][BATCH] Adding customer with remote ID %s',
                 $objectId,
+                $mailchimpProviderHandler->getShortcut(),
                 $remoteId
             )
         );
@@ -163,16 +164,18 @@ class BatchExporter extends AbstractExporter
         if ($exportService->wasExported($customer, $mailchimpProviderHandler->getListId())) {
             $this->getLogger()->info(
                 sprintf(
-                    '[MailChimp][CUSTOMER %s][BATCH] Customer already exists remotely with remote ID %s',
+                    '[MailChimp][CUSTOMER %s][%s][BATCH] Customer already exists remotely with remote ID %s',
                     $objectId,
+                    $mailchimpProviderHandler->getShortcut(),
                     $remoteId
                 )
             );
         } else {
             $this->getLogger()->info(
                 sprintf(
-                    '[MailChimp][CUSTOMER %s][BATCH] Customer was not exported yet',
-                    $objectId
+                    '[MailChimp][CUSTOMER %s][%s][BATCH] Customer was not exported yet',
+                    $objectId,
+                    $mailchimpProviderHandler->getShortcut()
                 )
             );
         }
@@ -199,8 +202,9 @@ class BatchExporter extends AbstractExporter
 
         $this->getLogger()->info(
             sprintf(
-                '[MailChimp][CUSTOMER %s][BATCH] Adding deletion of customer with remote ID %s',
+                '[MailChimp][CUSTOMER %s][%s][BATCH] Adding deletion of customer with remote ID %s',
                 $objectId,
+                $mailchimpProviderHandler->getShortcut(),
                 $remoteId
             )
         );
@@ -367,8 +371,9 @@ class BatchExporter extends AbstractExporter
 
             $this->getLogger()->notice(
                 sprintf(
-                    '[MailChimp][CUSTOMER %s] Export was successful. Remote ID is %s',
+                    '[MailChimp][CUSTOMER %s][%s] Export was successful. Remote ID is %s',
                     $customer->getId(),
+                    $mailchimpProviderHandler->getShortcut(),
                     $remoteId
                 ),
                 [
@@ -383,8 +388,9 @@ class BatchExporter extends AbstractExporter
 
             $this->getLogger()->notice(
                 sprintf(
-                    '[MailChimp][CUSTOMER %s] Deletion was successful. Remote ID is %s',
+                    '[MailChimp][CUSTOMER %s][%s] Deletion was successful. Remote ID is %s',
                     $customer->getId(),
+                    $mailchimpProviderHandler->getShortcut(),
                     $remoteId
                 ),
                 [
@@ -416,8 +422,9 @@ class BatchExporter extends AbstractExporter
 
             $this->getLogger()->error(
                 sprintf(
-                    '[MailChimp][CUSTOMER %s] Export failed. Remote ID is %s. [error: %s]',
+                    '[MailChimp][CUSTOMER %s][%s] Export failed. Remote ID is %s. [error: %s]',
                     $customer->getId(),
+                    $mailchimpProviderHandler->getShortcut(),
                     $remoteId,
                     $message
                 ),
@@ -429,8 +436,9 @@ class BatchExporter extends AbstractExporter
         } elseif($customer) {
             $this->getLogger()->error(
                 sprintf(
-                    '[MailChimp][CUSTOMER %s] Deletion failed. Remote ID is %s. [error: %s]',
+                    '[MailChimp][CUSTOMER %s][%s] Deletion failed. Remote ID is %s. [error: %s]',
                     $customer->getId(),
+                    $mailchimpProviderHandler->getShortcut(),
                     $remoteId,
                     $message
                 ),

@@ -65,29 +65,34 @@ class SingleExporter extends AbstractExporter
 
         // entry to send to API
         $entry = $mailchimpProviderHandler->buildEntry($customer);
-        $remoteId = $this->apiClient->subscriberHash($entry['email_address']);
+        $remoteId = $this->apiClient->subscriberHash($item->getEmail());
 
         $this->getLogger()->info(
             sprintf(
-                '[MailChimp][CUSTOMER %s] Exporting customer with remote ID %s',
+                '[MailChimp][CUSTOMER %s][%s] Exporting customer with remote ID %s',
                 $customer->getId(),
+                $mailchimpProviderHandler->getShortcut(),
                 $remoteId
             )
         );
 
+        $remoteId = $this->handleChangedEmail($customer, $item, $mailchimpProviderHandler, $remoteId);
+
         if ($exportService->wasExported($customer, $mailchimpProviderHandler->getListId())) {
             $this->getLogger()->info(
                 sprintf(
-                    '[MailChimp][CUSTOMER %s] Customer already exists remotely with remote ID %s',
+                    '[MailChimp][CUSTOMER %s][%s] Customer already exists remotely with remote ID %s',
                     $customer->getId(),
+                    $mailchimpProviderHandler->getShortcut(),
                     $remoteId
                 )
             );
         } else {
             $this->getLogger()->info(
                 sprintf(
-                    '[MailChimp][CUSTOMER %s] Customer was not exported yet',
-                    $customer->getId()
+                    '[MailChimp][CUSTOMER %s][%s] Customer was not exported yet',
+                    $customer->getId(),
+                    $mailchimpProviderHandler->getShortcut()
                 )
             );
         }
@@ -101,8 +106,9 @@ class SingleExporter extends AbstractExporter
         if ($apiClient->success()) {
             $this->getLogger()->notice(
                 sprintf(
-                    '[MailChimp][CUSTOMER %s] Export was successful. Remote ID is %s',
+                    '[MailChimp][CUSTOMER %s][%s] Export was successful. Remote ID is %s',
                     $customer->getId(),
+                    $mailchimpProviderHandler->getShortcut(),
                     $remoteId
                 ),
                 [
@@ -125,10 +131,14 @@ class SingleExporter extends AbstractExporter
             return true;
 
         } else {
+
+            p_r($entry);
+
             $this->getLogger()->error(
                 sprintf(
-                    '[MailChimp][CUSTOMER %s] Export failed: %s %s',
+                    '[MailChimp][CUSTOMER %s][%s] Export failed: %s %s',
                     $customer->getId(),
+                    $mailchimpProviderHandler->getShortcut(),
                     json_encode($apiClient->getLastError()),
                     $apiClient->getLastResponse()['body']
                 ),
@@ -139,6 +149,104 @@ class SingleExporter extends AbstractExporter
         }
 
         return false;
+    }
+
+    protected function handleChangedEmail(MailchimpAwareCustomerInterface $customer, NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler, $remoteId)
+    {
+        $exportService = $this->exportService;
+        $apiClient = $exportService->getApiClient();
+
+        /* if the email address changes and the customer is not subscribed in mailchimp we have to delete and recreate it
+           as mailchimp does only allow updating of email addresses for subscribed customers */
+        if ($customer->getEmail() != $item->getEmail() && $mailchimpProviderHandler->getMailchimpStatus($customer) != Mailchimp::STATUS_SUBSCRIBED) {
+
+            $apiClient->delete(
+                $exportService->getListResourceUrl($mailchimpProviderHandler->getListId(), sprintf('members/%s', $remoteId))
+            );
+            if ($apiClient->success()) {
+                $this->getLogger()->notice(
+                    sprintf(
+                        '[MailChimp][CUSTOMER %s][%s] Deletion and recreation needed as email address changed and the status was not "subscribed". Deletion successfull. Remote ID is %s',
+                        $customer->getId(),
+                        $mailchimpProviderHandler->getShortcut(),
+                        $remoteId
+                    ),
+                    [
+                        'relatedObject' => $customer
+                    ]
+                );
+            } elseif($apiClient->getLastResponse()['headers']['http_code'] == 404) {
+                $this->getLogger()->info(
+                    sprintf(
+                        '[MailChimp][CUSTOMER %s][%s] Deletion and recreation needed as email address changed and the status was not "subscribed". Remote ID is %s. Deletion skipped as it already was done before.',
+                        $customer->getId(),
+                        $mailchimpProviderHandler->getShortcut(),
+                        $remoteId
+                    ),
+                    [
+                        'relatedObject' => $customer
+                    ]
+                );
+            } else {
+
+                $this->getLogger()->error(
+                    sprintf(
+                        '[MailChimp][CUSTOMER %s][%s] Deletion and recreation needed as email address changed and the status was not "subscribed". Remote ID is %s. Deletion failed: %s %s',
+                        $customer->getId(),
+                        $mailchimpProviderHandler->getShortcut(),
+                        $remoteId,
+                        json_encode($apiClient->getLastError()),
+                        $apiClient->getLastResponse()['body']
+                    ),
+                    [
+                        'relatedObject' => $customer
+                    ]
+                );
+
+                return false;
+            }
+
+            // change the remote id to the new/current email address => recreate the customer with the new email/ID
+            $remoteId = $this->apiClient->subscriberHash($customer->getEmail());
+        } elseif ($customer->getEmail() != $item->getEmail()) {
+
+            $this->getLogger()->info(
+                sprintf(
+                    '[MailChimp][CUSTOMER %s][%s] Check if subscriber with old email exists. Remote ID is %s.',
+                    $customer->getId(),
+                    $mailchimpProviderHandler->getShortcut(),
+                    $remoteId
+                ),
+                [
+                    'relatedObject' => $customer
+                ]
+            );
+
+            $apiClient->get(
+                $exportService->getListResourceUrl($mailchimpProviderHandler->getListId(), sprintf('members/%s', $remoteId))
+            );
+
+            /* if the old email does not exist anymore it was already deleted or updated previously
+               => move to the current email/ID and update the customer with the current ID */
+            if (!$apiClient->success() && $apiClient->getLastResponse()['headers']['http_code'] == 404) {
+
+                $remoteId = $this->apiClient->subscriberHash($customer->getEmail());
+
+                $this->getLogger()->info(
+                    sprintf(
+                        '[MailChimp][CUSTOMER %s][%s] Subscriber with old email does not exist anymore. Create/update subscriber with new email. Remote ID is %s.',
+                        $customer->getId(),
+                        $mailchimpProviderHandler->getShortcut(),
+                        $remoteId
+                    ),
+                    [
+                        'relatedObject' => $customer
+                    ]
+                );
+            }
+        }
+
+        return $remoteId;
     }
 
     /**
@@ -153,12 +261,13 @@ class SingleExporter extends AbstractExporter
 
         // entry to send to API
         $entry = $mailchimpProviderHandler->buildEntry($customer);
-        $remoteId = $this->apiClient->subscriberHash($entry['email_address']);
+        $remoteId = $this->apiClient->subscriberHash($item->getEmail());
 
         $this->getLogger()->debug(
             sprintf(
-                '[MailChimp][CUSTOMER %s] Deleting customer with remote ID %s',
+                '[MailChimp][CUSTOMER %s][%s] Deleting customer with remote ID %s',
                 $customer->getId(),
+                $mailchimpProviderHandler->getShortcut(),
                 $remoteId
             )
         );
@@ -171,8 +280,9 @@ class SingleExporter extends AbstractExporter
         if ($apiClient->success()) {
             $this->getLogger()->notice(
                 sprintf(
-                    '[MailChimp][CUSTOMER %s] Deletion was successful. Remote ID is %s',
+                    '[MailChimp][CUSTOMER %s][%s] Deletion was successful. Remote ID is %s',
                     $customer->getId(),
+                    $mailchimpProviderHandler->getShortcut(),
                     $remoteId
                 ),
                 [
@@ -195,8 +305,9 @@ class SingleExporter extends AbstractExporter
             if($response['headers']['http_code'] != 404) {
                 $this->getLogger()->error(
                     sprintf(
-                        '[MailChimp][CUSTOMER %s] Deletion failed: %s %s',
+                        '[MailChimp][CUSTOMER %s][%s] Deletion failed: %s %s',
                         $customer->getId(),
+                        $mailchimpProviderHandler->getShortcut(),
                         json_encode($apiClient->getLastError()),
                         $apiClient->getLastResponse()['body']
                     ),
@@ -207,8 +318,9 @@ class SingleExporter extends AbstractExporter
             } else {
                 $this->getLogger()->debug(
                     sprintf(
-                        '[MailChimp][CUSTOMER %s] Deletion not needed as the remote user does not exist. Remote ID is %s',
+                        '[MailChimp][CUSTOMER %s][%s] Deletion not needed as the remote user does not exist. Remote ID is %s',
                         $customer->getId(),
+                        $mailchimpProviderHandler->getShortcut(),
                         $remoteId
                     )
                 );
@@ -231,8 +343,9 @@ class SingleExporter extends AbstractExporter
 
         $this->getLogger()->info(
             sprintf(
-                '[MailChimp][CUSTOMER %s] Deleting customer with remote ID %s',
+                '[MailChimp][CUSTOMER %s][%s] Deleting customer with remote ID %s',
                 $item->getCustomerId(),
+                $mailchimpProviderHandler->getShortcut(),
                 $remoteId
             )
         );
@@ -245,8 +358,9 @@ class SingleExporter extends AbstractExporter
         if ($apiClient->success()) {
             $this->getLogger()->notice(
                 sprintf(
-                    '[MailChimp][CUSTOMER %s] Deletion was successful. Remote ID is %s',
+                    '[MailChimp][CUSTOMER %s][%s] Deletion was successful. Remote ID is %s',
                     $item->getCustomerId(),
+                    $mailchimpProviderHandler->getShortcut(),
                     $remoteId
                 )
             );
@@ -259,8 +373,9 @@ class SingleExporter extends AbstractExporter
             if($response['headers']['http_code'] != 404) {
                 $this->getLogger()->error(
                     sprintf(
-                        '[MailChimp][CUSTOMER %s] Deletion failed: %s %s',
+                        '[MailChimp][CUSTOMER %s][%s] Deletion failed: %s %s',
                         $item->getCustomerId(),
+                        $mailchimpProviderHandler->getShortcut(),
                         json_encode($apiClient->getLastError()),
                         $apiClient->getLastResponse()['body']
                     )
@@ -268,8 +383,9 @@ class SingleExporter extends AbstractExporter
             } else {
                 $this->getLogger()->info(
                     sprintf(
-                        '[MailChimp][CUSTOMER %s] Deletion not needed as the remote user does not exist. Remote ID is %s',
+                        '[MailChimp][CUSTOMER %s][%s] Deletion not needed as the remote user does not exist. Remote ID is %s',
                         $item->getCustomerId(),
+                        $mailchimpProviderHandler->getShortcut(),
                         $remoteId
                     )
                 );

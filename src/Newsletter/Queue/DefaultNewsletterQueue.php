@@ -45,7 +45,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
         $db = Db::get();
         $db->query(
-            'insert into ' . self::QUEUE_TABLE . ' (customerId, email, operation, modificationDate) values (:customerId,:email,:operation,:modificationDate) on duplicate key update operation = :operation, modificationDate = :modificationDate, email = :email',
+            'insert into ' . self::QUEUE_TABLE . ' (customerId, email, operation, modificationDate) values (:customerId,:email,:operation,:modificationDate) on duplicate key update operation = :operation, modificationDate = :modificationDate',
             [
                 'customerId'=>$customer->getId(),
                 'email'=>$email,
