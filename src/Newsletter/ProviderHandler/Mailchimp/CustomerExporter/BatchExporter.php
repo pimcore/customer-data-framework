@@ -14,10 +14,10 @@ namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\MailchimpAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
+use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use DrewM\MailChimp\Batch;
 use Pimcore\Model\Element\ElementInterface;
-use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
 
 class BatchExporter extends AbstractExporter
 {
@@ -62,10 +62,9 @@ class BatchExporter extends AbstractExporter
         foreach ($items as $item) {
             $customer = $item->getCustomer();
 
-
             // schedule batch operation
-            if($item->getOperation() == NewsletterQueueInterface::OPERATION_UPDATE) {
-                if($item->getCustomer()->needsExportByNewsletterProviderHandler($mailchimpProviderHandler)) {
+            if ($item->getOperation() == NewsletterQueueInterface::OPERATION_UPDATE) {
+                if ($item->getCustomer()->needsExportByNewsletterProviderHandler($mailchimpProviderHandler)) {
                     // entry to send to API
                     $entry = $mailchimpProviderHandler->buildEntry($customer);
                     $this->createBatchUpdateOperation($batch, $customer, $entry, $mailchimpProviderHandler);
@@ -73,10 +72,9 @@ class BatchExporter extends AbstractExporter
                     $item->setOverruledOperation(NewsletterQueueInterface::OPERATION_DELETE);
                     $this->createBatchDeleteOperation($batch, $item, $mailchimpProviderHandler);
                 }
-            } elseif($item->getOperation() == NewsletterQueueInterface::OPERATION_DELETE) {
+            } elseif ($item->getOperation() == NewsletterQueueInterface::OPERATION_DELETE) {
                 $this->createBatchDeleteOperation($batch, $item, $mailchimpProviderHandler);
             }
-
         }
 
         $this->getLogger()->info(
@@ -186,6 +184,7 @@ class BatchExporter extends AbstractExporter
             $entry
         );
     }
+
     /**
      * @param Batch $batch
      * @param CustomerInterface|ElementInterface $customer
@@ -214,7 +213,6 @@ class BatchExporter extends AbstractExporter
             $exportService->getListResourceUrl($mailchimpProviderHandler->getListId(), sprintf('members/%s', $remoteId))
         );
     }
-
 
     /**
      * Check batch status and back off exponentially after errors
@@ -311,7 +309,6 @@ class BatchExporter extends AbstractExporter
                 )
             );
 
-
             foreach ($items as $item) {
                 $this->processSuccessfullItem($mailchimpProviderHandler, $item);
             }
@@ -320,29 +317,29 @@ class BatchExporter extends AbstractExporter
             // which is a tar.gz containing JSON file(s), parse those results and show which records failed
 
             $data = gzdecode(file_get_contents($result['response_body_url']));
-            $temp = tempnam("","") . ".tar";
+            $temp = tempnam('', '') . '.tar';
             file_put_contents($temp, $data);
             $tar_object = new \Archive_Tar($temp);
             $v_list  =  $tar_object->listContent();
             $contents = null;
 
             foreach ($v_list as $item) {
-                if (strpos($item["filename"], ".json") !== FALSE ) {
-                    $contents = $tar_object->extractInString($item["filename"]);
+                if (strpos($item['filename'], '.json') !== false) {
+                    $contents = $tar_object->extractInString($item['filename']);
                 }
             }
             unlink($temp);
             $contents = json_decode($contents, true);
 
             $failedOperations = [];
-            foreach($contents as $operation) {
-                if($operation['status_code'] != 200) {
+            foreach ($contents as $operation) {
+                if ($operation['status_code'] != 200) {
                     $failedOperations[$operation['operation_id']] = $operation;
                 }
             }
 
             foreach ($items as $item) {
-                if(!isset($failedOperations[$item->getCustomerId()])) {
+                if (!isset($failedOperations[$item->getCustomerId()])) {
                     $this->processSuccessfullItem($mailchimpProviderHandler, $item);
                 } else {
                     $this->processFailedItem($mailchimpProviderHandler, $item, $failedOperations[$item->getCustomerId()]['response']);
@@ -364,7 +361,7 @@ class BatchExporter extends AbstractExporter
         $operation = $item->getOverruledOperation() ?: $item->getOperation();
 
         // add note
-        if($operation == NewsletterQueueInterface::OPERATION_UPDATE) {
+        if ($operation == NewsletterQueueInterface::OPERATION_UPDATE) {
             $exportService
                 ->createExportNote($customer, $mailchimpProviderHandler->getListId(), $remoteId, null, 'Mailchimp Export [' . $mailchimpProviderHandler->getShortcut() . ']', ['exportdataMd5' => $exportService->getMd5($entry)])
                 ->save();
@@ -380,8 +377,7 @@ class BatchExporter extends AbstractExporter
                     'relatedObject' => $customer
                 ]
             );
-
-        } elseif($customer) {
+        } elseif ($customer) {
             $exportService
                 ->createExportNote($customer, $mailchimpProviderHandler->getListId(), $remoteId, null, 'Mailchimp Deletion [' . $mailchimpProviderHandler->getShortcut() . ']')
                 ->save();
@@ -418,8 +414,7 @@ class BatchExporter extends AbstractExporter
         $operation = $item->getOverruledOperation() ?: $item->getOperation();
 
         // add note
-        if($operation == NewsletterQueueInterface::OPERATION_UPDATE) {
-
+        if ($operation == NewsletterQueueInterface::OPERATION_UPDATE) {
             $this->getLogger()->error(
                 sprintf(
                     '[MailChimp][CUSTOMER %s][%s] Export failed. Remote ID is %s. [error: %s]',
@@ -432,8 +427,7 @@ class BatchExporter extends AbstractExporter
                     'relatedObject' => $customer
                 ]
             );
-
-        } elseif($customer) {
+        } elseif ($customer) {
             $this->getLogger()->error(
                 sprintf(
                     '[MailChimp][CUSTOMER %s][%s] Deletion failed. Remote ID is %s. [error: %s]',
@@ -447,6 +441,5 @@ class BatchExporter extends AbstractExporter
                 ]
             );
         }
-
     }
 }

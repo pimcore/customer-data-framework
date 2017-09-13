@@ -18,6 +18,7 @@ use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
  * Transforms a Pimcore date to mailchimp date format.
  *
  * Class Date
+ *
  * @package CustomerManagementFrameworkBundle\DataTransformer\Mailchimp
  */
 class Date implements DataTransformerInterface
@@ -40,7 +41,7 @@ class Date implements DataTransformerInterface
 
     public function transform($data, $options = [])
     {
-        if(!$data) {
+        if (!$data) {
             return null;
         }
 

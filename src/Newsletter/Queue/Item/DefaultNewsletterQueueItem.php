@@ -13,7 +13,7 @@ namespace CustomerManagementFrameworkBundle\Newsletter\Queue\Item;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
-class DefaultNewsletterQueueItem implements  NewsletterQueueItemInterface
+class DefaultNewsletterQueueItem implements NewsletterQueueItemInterface
 {
     /**
      * @var int
@@ -35,7 +35,6 @@ class DefaultNewsletterQueueItem implements  NewsletterQueueItemInterface
      */
     private $operation;
 
-
     /**
      * Could be used as a storage for an overruled operation.
      * If an update item is in the queue but the related customer is excluded by $customer->needsExportByNewsletterProviderHandler($providerHandler)
@@ -49,7 +48,6 @@ class DefaultNewsletterQueueItem implements  NewsletterQueueItemInterface
      * @var int
      */
     private $modificationDate;
-
 
     /**
      * @var bool
@@ -91,7 +89,6 @@ class DefaultNewsletterQueueItem implements  NewsletterQueueItemInterface
     {
         return $this->modificationDate;
     }
-
 
     /**
      * @return bool
@@ -142,5 +139,4 @@ class DefaultNewsletterQueueItem implements  NewsletterQueueItemInterface
             'modificationDate' => $this->modificationDate
         ]);
     }
-
 }

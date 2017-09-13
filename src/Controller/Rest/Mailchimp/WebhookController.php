@@ -18,15 +18,13 @@ use Monolog\Handler\StreamHandler;
 use Pimcore\Bundle\AdminBundle\Controller\Rest\AbstractRestController;
 use Pimcore\Log\ApplicationLogger;
 use Pimcore\Log\Handler\ApplicationLoggerDb;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-
 
 class WebhookController extends AbstractRestController
 {
-
     /**
      * @param Request $request
      * @Route("/mailchimp/webhook")
@@ -39,27 +37,26 @@ class WebhookController extends AbstractRestController
         $logger = $this->createLogger();
         $logger->info('webhook received: ' . ($result ? json_encode($result) : 'false'));
 
-        if($result) {
+        if ($result) {
             /**
              * @var NewsletterManagerInterface $newsletterManager
              */
             $newsletterManager = $this->container->get(NewsletterManagerInterface::class);
 
-            foreach($newsletterManager->getNewsletterProviderHandlers() as $newsletterProviderHandler) {
-                if($newsletterProviderHandler instanceof Mailchimp) {
+            foreach ($newsletterManager->getNewsletterProviderHandlers() as $newsletterProviderHandler) {
+                if ($newsletterProviderHandler instanceof Mailchimp) {
                     $newsletterProviderHandler->processWebhook($result, $logger);
                 }
             }
         }
 
-
-        return new JsonResponse("ok");
+        return new JsonResponse('ok');
     }
 
     private function createLogger()
     {
         $logger = new ApplicationLogger();
-        $logger->setComponent("Mailchimp");
+        $logger->setComponent('Mailchimp');
         $dbWriter = new ApplicationLoggerDb('notice');
         $logger->addWriter($dbWriter);
 

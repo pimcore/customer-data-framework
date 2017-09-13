@@ -20,6 +20,7 @@ trait LegacyTrait
 {
     /**
      * @return bool
+     *
      * @deprecated
      */
     public function getSegmentBuildingHookEnabled()
@@ -31,22 +32,23 @@ trait LegacyTrait
      * @param bool $segmentBuildingHookEnabled
      *
      * @return $this
+     *
      * @deprecated
      */
     public function setSegmentBuildingHookEnabled($segmentBuildingHookEnabled)
     {
-        if($segmentBuildingHookEnabled) {
+        if ($segmentBuildingHookEnabled) {
             $this->saveOptions->enableOnSaveSegmentBuilders();
         } else {
             $this->saveOptions->disableOnSaveSegmentBuilders();
         }
-
 
         return $this;
     }
 
     /**
      * @return bool
+     *
      * @deprecated
      */
     public function getCustomerSaveValidatorEnabled()
@@ -58,22 +60,23 @@ trait LegacyTrait
      * @param bool $customerSaveValidatorEnabled
      *
      * @return $this
+     *
      * @deprecated
      */
     public function setCustomerSaveValidatorEnabled($customerSaveValidatorEnabled)
     {
-        if($customerSaveValidatorEnabled) {
+        if ($customerSaveValidatorEnabled) {
             $this->saveOptions->enableValidator();
         } else {
             $this->saveOptions->disableValidator();
         }
-
 
         return $this;
     }
 
     /**
      * @return bool
+     *
      * @deprecated
      */
     public function isDisableSaveHandlers()
@@ -85,11 +88,12 @@ trait LegacyTrait
      * @param bool $disableSaveHandlers
      *
      * @return $this
+     *
      * @deprecated
      */
     public function setDisableSaveHandlers($disableSaveHandlers)
     {
-        if($disableSaveHandlers) {
+        if ($disableSaveHandlers) {
             $this->saveOptions->disableSaveHandlers();
         } else {
             $this->saveOptions->enableSaveHandlers();
@@ -100,6 +104,7 @@ trait LegacyTrait
 
     /**
      * @return bool
+     *
      * @deprecated
      */
     public function isDisableDuplicateIndex()
@@ -111,11 +116,12 @@ trait LegacyTrait
      * @param bool $disableDuplicateIndex
      *
      * @return $this
+     *
      * @deprecated
      */
     public function setDisableDuplicateIndex($disableDuplicateIndex)
     {
-        if($disableDuplicateIndex) {
+        if ($disableDuplicateIndex) {
             $this->saveOptions->disableDuplicatesIndex();
         } else {
             $this->saveOptions->enableDuplicatesIndex();
@@ -126,6 +132,7 @@ trait LegacyTrait
 
     /**
      * @return bool
+     *
      * @deprecated
      */
     public function isDisableQueue()
@@ -137,11 +144,12 @@ trait LegacyTrait
      * @param bool $disableQueue
      *
      * @return $this
+     *
      * @deprecated
      */
     public function setDisableQueue($disableQueue)
     {
-        if($disableQueue) {
+        if ($disableQueue) {
             $this->saveOptions->disableSegmentBuilderQueue();
         } else {
             $this->saveOptions->enableSegmentBuilderQueue();
@@ -150,12 +158,12 @@ trait LegacyTrait
         return $this;
     }
 
-
     /**
      * @param CustomerInterface $customer
      * @param bool $disableVersions
      *
      * @return mixed
+     *
      * @deprecated
      */
     public function saveWithDisabledHooks(CustomerInterface $customer, $disableVersions = false)

@@ -11,7 +11,6 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerProvider;
 
-use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\Element\ElementInterface;
@@ -37,6 +36,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
 
     /**
      * DefaultCustomerProvider constructor.
+     *
      * @param string $pimcoreClass
      * @param string $parentPath
      * @param ObjectNamingSchemeInterface $namingScheme
@@ -170,6 +170,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      * @param bool $foce
      *
      * @return CustomerInterface|null
+     *
      * @throws \RuntimeException
      */
     public function getActiveCustomerByEmail($email)
@@ -178,7 +179,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
         $list->setUnpublished(false);
         $list->addConditionParam('active = 1 and trim(lower(email)) = ?', [$email]);
 
-        if($list->count() > 1) {
+        if ($list->count() > 1) {
             throw new \Exception(sprintf('multiple active and published customers with email %s found', $email));
         }
 
@@ -206,7 +207,6 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     {
         $this->parentPath = $parentPath;
     }
-
 
     /**
      * @param string $method

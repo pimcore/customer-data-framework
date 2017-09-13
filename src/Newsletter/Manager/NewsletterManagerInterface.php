@@ -21,6 +21,7 @@ interface NewsletterManagerInterface
      * Subscribe customer from newsletter (for example via web form). Returns true if it was successful.
      *
      * @param NewsletterAwareCustomerInterface $customer
+     *
      * @return bool
      */
     public function subscribeCustomer(NewsletterAwareCustomerInterface $customer);
@@ -29,6 +30,7 @@ interface NewsletterManagerInterface
      * Unsubscribe customer from newsletter (for example via web form). Returns true if it was successful.
      *
      * @param NewsletterAwareCustomerInterface $customer
+     *
      * @return bool
      */
     public function unsubscribeCustomer(NewsletterAwareCustomerInterface $customer);
@@ -41,10 +43,11 @@ interface NewsletterManagerInterface
     /**
      * @return void
      */
-    public function syncCustomers( $forceAllCustomers = false, $forceUpdate = false );
+    public function syncCustomers($forceAllCustomers = false, $forceUpdate = false);
 
     /**
      * @param NewsletterQueueItemInterface $newsletterQueueItem
+     *
      * @return void
      */
     public function syncSingleCustomerQueueItem(NewsletterQueueItemInterface $newsletterQueueItem);
@@ -52,6 +55,7 @@ interface NewsletterManagerInterface
     /**
      * @param string $shortcut
      * @param NewsletterProviderHandlerInterface $newsletterProviderHandler
+     *
      * @return void
      */
     public function addNewsletterProviderHandler(NewsletterProviderHandlerInterface $newsletterProviderHandler);
@@ -60,5 +64,4 @@ interface NewsletterManagerInterface
      * @return NewsletterProviderHandlerInterface[]
      */
     public function getNewsletterProviderHandlers();
-
 }

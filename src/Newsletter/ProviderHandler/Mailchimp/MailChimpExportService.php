@@ -12,7 +12,6 @@
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 
 use Carbon\Carbon;
-use CustomerManagementFrameworkBundle\Model\MailchimpAwareCustomerInterface;
 use DrewM\MailChimp\MailChimp;
 use Pimcore\Db;
 use Pimcore\Model\Element\ElementInterface;
@@ -50,7 +49,6 @@ class MailChimpExportService
     {
         return $this->apiClient;
     }
-
 
     /**
      * @param string $listId
@@ -92,7 +90,8 @@ class MailChimpExportService
     public function getObjectByRemoteId($remoteId)
     {
         $db = Db::get();
-        return AbstractObject::getById( $db->fetchOne("select cid from notes, notes_data where notes.id = notes_data.id and notes.ctype='object' and name='mailchimp_id' and notes_data.type='text' and data = ? limit 1", $remoteId) );
+
+        return AbstractObject::getById($db->fetchOne("select cid from notes, notes_data where notes.id = notes_data.id and notes.ctype='object' and name='mailchimp_id' and notes_data.type='text' and data = ? limit 1", $remoteId));
     }
 
     /**
@@ -166,8 +165,8 @@ class MailChimpExportService
         $note->addData('list_id', 'text', $listId);
         $note->addData('mailchimp_id', 'text', $remoteId);
 
-        if(sizeof($additionalFields)) {
-            foreach($additionalFields as $key => $value) {
+        if (sizeof($additionalFields)) {
+            foreach ($additionalFields as $key => $value) {
                 $note->addData($key, 'text', $value);
             }
         }
@@ -218,16 +217,17 @@ class MailChimpExportService
     /**
      * @param ElementInterface $object
      * @param $listId
+     *
      * @return bool
      */
     public function didExportDataChangeSinceLastExport(ElementInterface $object, $listId, $exportData)
     {
-        if(!$note = $this->getLastExportNote($object, $listId)) {
+        if (!$note = $this->getLastExportNote($object, $listId)) {
             return true;
         }
 
-        if($data = $note->getData()) {
-            if(isset($data['exportdataMd5']) && $data['exportdataMd5']['data'] == $this->getMd5($exportData)) {
+        if ($data = $note->getData()) {
+            if (isset($data['exportdataMd5']) && $data['exportdataMd5']['data'] == $this->getMd5($exportData)) {
                 return false;
             }
         }
@@ -248,7 +248,6 @@ class MailChimpExportService
             return $this->getNoteDateTime($note);
         }
     }
-
 
     public function getMd5($data)
     {

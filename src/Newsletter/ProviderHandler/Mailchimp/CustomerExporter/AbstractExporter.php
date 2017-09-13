@@ -11,9 +11,7 @@
 
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CustomerExporter;
 
-use CustomerManagementFrameworkBundle\DataTransformer\Cleanup\Email;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use CustomerManagementFrameworkBundle\Model\MailchimpAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\MailChimpExportService;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use CustomerManagementFrameworkBundle\Traits\ApplicationLoggerAware;
@@ -23,7 +21,6 @@ use Pimcore\Model\Element\ElementInterface;
 abstract class AbstractExporter
 {
     use ApplicationLoggerAware;
-
 
     /**
      * @var MailChimpExportService
@@ -51,7 +48,6 @@ abstract class AbstractExporter
         $this->apiClient = $exportService->getApiClient();
         $this->newsletterQueue = $newsletterQueue;
         $this->setLoggerComponent('NewsletterSync');
-
     }
 
     /**

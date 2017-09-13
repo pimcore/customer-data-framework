@@ -11,13 +11,13 @@
 
 namespace CustomerManagementFrameworkBundle\DataTransformer\Mailchimp;
 
-use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 
 /**
  * Transforms a Pimcore date to mailchimp date format.
  *
  * Class Date
+ *
  * @package CustomerManagementFrameworkBundle\DataTransformer\Mailchimp
  */
 class Date implements DataTransformerInterface

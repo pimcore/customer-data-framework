@@ -14,7 +14,6 @@ namespace CustomerManagementFrameworkBundle\Traits;
 use Pimcore\Log\ApplicationLogger;
 use Pimcore\Log\Handler\ApplicationLoggerDb;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 trait ApplicationLoggerAware
 {
@@ -34,21 +33,19 @@ trait ApplicationLoggerAware
     public function getLogger()
     {
         if (null === $this->logger) {
-
             $logger = new ApplicationLogger();
 
             $dbWriter = new ApplicationLoggerDb('notice');
             $logger->addWriter($dbWriter);
 
-            if($this->loggerComponent) {
+            if ($this->loggerComponent) {
                 $logger->setComponent($this->loggerComponent);
             }
 
             $cmfLogger = \Pimcore::getContainer()->get('cmf.logger');
-            if($cmfLogger instanceof \Monolog\Logger) {
-
-                if($handlers = $cmfLogger->getHandlers()) {
-                    foreach($handlers as $handler) {
+            if ($cmfLogger instanceof \Monolog\Logger) {
+                if ($handlers = $cmfLogger->getHandlers()) {
+                    foreach ($handlers as $handler) {
                         $logger->addWriter($handler);
                     }
                 }

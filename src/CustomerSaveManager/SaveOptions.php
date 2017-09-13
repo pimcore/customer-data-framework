@@ -11,8 +11,8 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerSaveManager;
 
-class SaveOptions {
-
+class SaveOptions
+{
     /**
      * @var bool
      */
@@ -55,6 +55,7 @@ class SaveOptions {
 
     /**
      * SaveOptions constructor.
+     *
      * @param bool $onSaveSegmentBuildersEnabled
      * @param bool $validatorEnabled
      * @param bool $saveHandlersEnabled
@@ -122,7 +123,6 @@ class SaveOptions {
         return $this->objectNamingSchemeEnabled;
     }
 
-
     /**
      * @return bool
      */
@@ -147,13 +147,13 @@ class SaveOptions {
         return $this->newsletterQueueImmidiateAsyncExecutionEnabled;
     }
 
-
     /**
      * @return $this
      */
     public function disableOnSaveSegmentBuilders()
     {
         $this->onSaveSegmentBuildersEnabled = false;
+
         return $this;
     }
 
@@ -163,6 +163,7 @@ class SaveOptions {
     public function enableOnSaveSegmentBuilders()
     {
         $this->onSaveSegmentBuildersEnabled = true;
+
         return $this;
     }
 
@@ -172,6 +173,7 @@ class SaveOptions {
     public function disableValidator()
     {
         $this->validatorEnabled = false;
+
         return $this;
     }
 
@@ -181,6 +183,7 @@ class SaveOptions {
     public function enableValidator()
     {
         $this->enableValidator = true;
+
         return $this;
     }
 
@@ -190,6 +193,7 @@ class SaveOptions {
     public function disableSaveHandlers()
     {
         $this->saveHandlersExecutionEnabled = false;
+
         return $this;
     }
 
@@ -199,6 +203,7 @@ class SaveOptions {
     public function enableSaveHandlers()
     {
         $this->saveHandlersExecutionEnabled = true;
+
         return $this;
     }
 
@@ -208,6 +213,7 @@ class SaveOptions {
     public function disableSegmentBuilderQueue()
     {
         $this->segmentBuilderQueueEnabled = false;
+
         return $this;
     }
 
@@ -217,6 +223,7 @@ class SaveOptions {
     public function enableSegmentBuilderQueue()
     {
         $this->segmentBuilderQueueEnabled = true;
+
         return $this;
     }
 
@@ -226,6 +233,7 @@ class SaveOptions {
     public function disableObjectNamingScheme()
     {
         $this->objectNamingSchemeEnabled = false;
+
         return $this;
     }
 
@@ -235,6 +243,7 @@ class SaveOptions {
     public function disableDuplicatesIndex()
     {
         $this->duplicatesIndexEnabled = false;
+
         return $this;
     }
 
@@ -244,6 +253,7 @@ class SaveOptions {
     public function enableDuplicatesIndex()
     {
         $this->duplicatesIndexEnabled = true;
+
         return $this;
     }
 
@@ -253,6 +263,7 @@ class SaveOptions {
     public function enableObjectNamingScheme()
     {
         $this->objectNamingSchemeEnabled = true;
+
         return $this;
     }
 
@@ -262,6 +273,7 @@ class SaveOptions {
     public function disableNewsletterQueue()
     {
         $this->newsletterQueueEnabled = false;
+
         return $this;
     }
 
@@ -271,6 +283,7 @@ class SaveOptions {
     public function enableNewsletterQueue()
     {
         $this->newsletterQueueEnabled = true;
+
         return $this;
     }
 
@@ -280,6 +293,7 @@ class SaveOptions {
     public function disableNewsletterQueueImmidiateAsyncExecution()
     {
         $this->newsletterQueueImmidiateAsyncExecutionEnabled = false;
+
         return $this;
     }
 
@@ -289,6 +303,7 @@ class SaveOptions {
     public function enableNewsletterQueueImmidiateAsyncExecution()
     {
         $this->newsletterQueueImmidiateAsyncExecutionEnabled = true;
+
         return $this;
     }
 
@@ -305,6 +320,5 @@ class SaveOptions {
             ->disableSaveHandlers()
             ->disableSegmentBuilderQueue()
             ->disableValidator();
-
     }
 }

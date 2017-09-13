@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\DependencyInjection\Compiler;
 
-use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Manager\NewsletterManagerInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -23,19 +22,16 @@ class NewsletterManagerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-
         $taggedServices = $container->findTaggedServiceIds('cmf.newsletter_provider_handler');
 
-        if(sizeof($taggedServices)) {
+        if (sizeof($taggedServices)) {
             if (!$container->hasDefinition(NewsletterManagerInterface::class)) {
                 throw new \Exception('CMF newsletter services are not enabled in the config file but a newsletter provider handler is registered as service.');
             }
 
-            $definition = $container->getDefinition( NewsletterManagerInterface::class);
-
+            $definition = $container->getDefinition(NewsletterManagerInterface::class);
 
             foreach ($taggedServices as $id => $tags) {
-
                 $definition->addMethodCall('addNewsletterProviderHandler', [new Reference($id)]);
             }
         }

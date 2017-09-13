@@ -40,7 +40,7 @@ class Date implements MailchimpDataTransformerInterface
 
     public function transformFromMailchimpToPimcore($data)
     {
-        if(!$data) {
+        if (!$data) {
             return null;
         }
 
@@ -50,11 +50,10 @@ class Date implements MailchimpDataTransformerInterface
     public function didMergeFieldDataChange($pimcoreData, $mailchimpImportData)
     {
         if ($pimcoreData instanceof Carbon) {
-
             return $pimcoreData->format($this->importFormat) != $mailchimpImportData;
         }
 
-        if(!$mailchimpImportData) {
+        if (!$mailchimpImportData) {
             return false;
         }
 

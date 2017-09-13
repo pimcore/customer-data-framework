@@ -22,7 +22,6 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
  */
 class Email extends AbstractCustomerSaveHandler
 {
-
     /**
      * @var string
      */
@@ -43,11 +42,10 @@ class Email extends AbstractCustomerSaveHandler
         $getter = 'get' . ucfirst($this->emailField);
         $setter = 'set' . ucfirst($this->emailField);
 
-        if($email = $customer->$getter()) {
+        if ($email = $customer->$getter()) {
             $cleaner = new EmailTransformer();
 
             $customer->$setter($cleaner->transform($email));
         }
-
     }
 }

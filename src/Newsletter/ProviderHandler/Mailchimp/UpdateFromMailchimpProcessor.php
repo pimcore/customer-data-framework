@@ -11,8 +11,6 @@
 
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 
-use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
-use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\MailchimpAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 use Pimcore\Model\User;
@@ -20,7 +18,6 @@ use Psr\Log\LoggerInterface;
 
 class UpdateFromMailchimpProcessor
 {
-
     /**
      * @var User
      */
@@ -40,26 +37,25 @@ class UpdateFromMailchimpProcessor
      * @param Mailchimp $mailchimpHandler
      * @param MailchimpAwareCustomerInterface $mailchimpAwareCustomer
      * @param $status
+     *
      * @return bool
      */
     public function updateNewsletterStatus(Mailchimp $mailchimpHandler, MailchimpAwareCustomerInterface $customer, $mailchimpStatus)
     {
-
         $changed = false;
 
-        if($newsletterStatus = $mailchimpHandler->reverseMapNewsletterStatus($mailchimpStatus)) {
-            if(!$changed && ($mailchimpHandler->getNewsletterStatus($customer) != $newsletterStatus)) {
+        if ($newsletterStatus = $mailchimpHandler->reverseMapNewsletterStatus($mailchimpStatus)) {
+            if (!$changed && ($mailchimpHandler->getNewsletterStatus($customer) != $newsletterStatus)) {
                 $changed = true;
             }
             $mailchimpHandler->setNewsletterStatus($customer, $newsletterStatus);
         }
-        if($mailchimpHandler->getMailchimpStatus($customer) != $mailchimpStatus) {
+        if ($mailchimpHandler->getMailchimpStatus($customer) != $mailchimpStatus) {
             $mailchimpHandler->updateMailchimpStatus($customer, $mailchimpStatus, false);
             $changed = true;
         }
 
         return $changed;
-
     }
 
     /**
@@ -67,21 +63,20 @@ class UpdateFromMailchimpProcessor
      * @param MailchimpAwareCustomerInterface $customer
      * @param array $mergeFieldData
      * @param LoggerInterface $logger
+     *
      * @return bool
      */
     public function processMergeFields(Mailchimp $mailchimpHandler, MailchimpAwareCustomerInterface $customer, array $mergeFieldData)
     {
         $changed = false;
-        foreach($mergeFieldData as $key => $value) {
-            if($reverseMapped = $mailchimpHandler->reverseMapMergeField($key, $value)) {
-
+        foreach ($mergeFieldData as $key => $value) {
+            if ($reverseMapped = $mailchimpHandler->reverseMapMergeField($key, $value)) {
                 $setter = 'set' . ucfirst($reverseMapped['field']);
                 $getter = 'get' . ucfirst($reverseMapped['field']);
 
                 $currentPimcoreData = $customer->$getter();
 
-
-                if($mailchimpHandler->didMergeFieldDataChange($reverseMapped['field'], $currentPimcoreData, $value)) {
+                if ($mailchimpHandler->didMergeFieldDataChange($reverseMapped['field'], $currentPimcoreData, $value)) {
                     $changed = true;
                     $customer->$setter($reverseMapped['value']);
                 }
@@ -93,8 +88,8 @@ class UpdateFromMailchimpProcessor
 
     public function saveCustomerIfChanged(MailchimpAwareCustomerInterface $customer, $changed)
     {
-        if($changed) {
-            if($this->user) {
+        if ($changed) {
+            if ($this->user) {
                 $customer->setUserModification($this->user->getId());
             }
 
@@ -121,6 +116,4 @@ class UpdateFromMailchimpProcessor
     {
         $this->user = $user;
     }
-
-
 }

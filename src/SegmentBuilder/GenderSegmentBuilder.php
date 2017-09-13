@@ -14,13 +14,11 @@ namespace CustomerManagementFrameworkBundle\SegmentBuilder;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 
-
 class GenderSegmentBuilder extends AbstractSegmentBuilder
 {
     const MALE = 'male';
     const FEMALE = 'female';
     const NOT_SET = 'not-set';
-
 
     private $maleSegment;
     private $femaleSegment;
@@ -39,8 +37,7 @@ class GenderSegmentBuilder extends AbstractSegmentBuilder
         $femaleSegmentName = self::FEMALE,
         $notsetSegmentName = self::NOT_SET,
         $valueMapping = []
-    )
-    {
+    ) {
         $this->segmentGroupName = $segmentGroupName;
         $this->maleSegmentName = $maleSegmentName;
         $this->femaleSegmentName = $femaleSegmentName;

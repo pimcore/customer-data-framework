@@ -70,14 +70,14 @@ interface SegmentManagerInterface
 
     /**
      * @param bool $calculated
+     *
      * @return \Pimcore\Model\Object\Folder
      */
     public function getSegmentsFolder($calculated = true);
 
-
-
     /**
      * @param SegmentBuilderInterface $segmentBuilder
+     *
      * @return void
      */
     public function addSegmentBuilder(SegmentBuilderInterface $segmentBuilder);

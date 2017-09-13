@@ -77,6 +77,7 @@ interface CustomerProviderInterface
      * @param bool $foce
      *
      * @return CustomerInterface|null
+     *
      * @throws \RuntimeException
      */
     public function getActiveCustomerByEmail($email);
@@ -97,6 +98,7 @@ interface CustomerProviderInterface
 
     /**
      * @param string $parentPath
+     *
      * @return void
      */
     public function setParentPath($parentPath);

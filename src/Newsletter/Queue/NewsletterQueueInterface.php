@@ -34,6 +34,7 @@ interface NewsletterQueueInterface
      * @param NewsletterProviderHandlerInterface[] $newsletterProviderHandler
      * @param bool $forceAllCustomers
      * @param bool $forceUpdate
+     *
      * @return void
      */
     public function processQueue(array $newsletterProviderHandler, $forceAllCustomers = false, $forceUpdate = false);
@@ -41,12 +42,14 @@ interface NewsletterQueueInterface
     /**
      * @param array $newsletterProviderHandler
      * @param NewsletterQueueItemInterface $newsletterQueueItem
+     *
      * @return void
      */
     public function syncSingleQueueItem(array $newsletterProviderHandler, NewsletterQueueItemInterface $newsletterQueueItem);
 
     /**
      * @param NewsletterQueueItemInterface $item
+     *
      * @return void
      */
     public function removeFromQueue(NewsletterQueueItemInterface $item);

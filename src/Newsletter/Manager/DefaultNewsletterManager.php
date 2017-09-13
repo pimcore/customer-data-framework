@@ -11,7 +11,6 @@
 
 namespace CustomerManagementFrameworkBundle\Newsletter\Manager;
 
-use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\NewsletterAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Exception\SubscribeFailedException;
 use CustomerManagementFrameworkBundle\Newsletter\Exception\UnsubscribeFailedException;
@@ -41,51 +40,53 @@ class DefaultNewsletterManager implements NewsletterManagerInterface
      * Subscribe customer from newsletter (for example via web form). Returns true if it was successful.
      *
      * @param NewsletterAwareCustomerInterface $customer
+     *
      * @return bool
+     *
      * @throws SubscribeFailedException
      */
     public function subscribeCustomer(NewsletterAwareCustomerInterface $customer)
     {
         $success = true;
         foreach ($this->newsletterProviderHandlers as $newsletterProviderHandler) {
-            if(!$newsletterProviderHandler->subscribeCustomer($customer)) {
+            if (!$newsletterProviderHandler->subscribeCustomer($customer)) {
                 $success = false;
                 break;
             }
         }
 
-        if(!$success) {
+        if (!$success) {
             throw new SubscribeFailedException(sprintf('newsletter subscribe of customer ID %s failed', $customer->getId()));
         }
 
         return true;
     }
 
-
     /**
      * Unsubscribe customer from newsletter (for example via web form). Returns true if it was successful.
      *
      * @param NewsletterAwareCustomerInterface $customer
+     *
      * @return bool
+     *
      * @throws UnsubscribeFailedException
      */
     public function unsubscribeCustomer(NewsletterAwareCustomerInterface $customer)
     {
         $success = true;
         foreach ($this->newsletterProviderHandlers as $newsletterProviderHandler) {
-            if(!$newsletterProviderHandler->unsubscribeCustomer($customer)) {
+            if (!$newsletterProviderHandler->unsubscribeCustomer($customer)) {
                 $success = false;
                 break;
             }
         }
 
-        if(!$success) {
+        if (!$success) {
             throw new UnsubscribeFailedException(sprintf('newsletter unsubscribe of customer ID %s failed', $customer->getId()));
         }
 
         return true;
     }
-
 
     public function syncSegments($forceUpdate = false)
     {
@@ -94,12 +95,12 @@ class DefaultNewsletterManager implements NewsletterManagerInterface
         }
     }
 
-    public function syncCustomers( $forceAllCustomers = false, $forceUpdate = false )
+    public function syncCustomers($forceAllCustomers = false, $forceUpdate = false)
     {
         /**
          * @var NewsletterQueueInterface $queue
          */
-        $queue = \Pimcore::getContainer()->get(NewsletterQueueInterface::class );
+        $queue = \Pimcore::getContainer()->get(NewsletterQueueInterface::class);
 
         $queue->processQueue($this->newsletterProviderHandlers, $forceAllCustomers, $forceUpdate);
     }
@@ -109,7 +110,7 @@ class DefaultNewsletterManager implements NewsletterManagerInterface
         /**
          * @var NewsletterQueueInterface $queue
          */
-        $queue = \Pimcore::getContainer()->get(NewsletterQueueInterface::class );
+        $queue = \Pimcore::getContainer()->get(NewsletterQueueInterface::class);
 
         $queue->syncSingleQueueItem($this->getNewsletterProviderHandlers(), $newsletterQueueItem);
     }
@@ -117,6 +118,7 @@ class DefaultNewsletterManager implements NewsletterManagerInterface
     /**
      * @param string $shortcut
      * @param NewsletterProviderHandlerInterface $newsletterProviderHandler
+     *
      * @return void
      */
     public function addNewsletterProviderHandler(NewsletterProviderHandlerInterface $newsletterProviderHandler)

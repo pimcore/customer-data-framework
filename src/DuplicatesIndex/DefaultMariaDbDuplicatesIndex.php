@@ -11,7 +11,6 @@
 
 namespace CustomerManagementFrameworkBundle\DuplicatesIndex;
 
-use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\DataSimilarityMatcher\DataSimilarityMatcherInterface;
 use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 use CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Standard;
@@ -50,6 +49,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
     /**
      * DefaultMariaDbDuplicatesIndex constructor.
+     *
      * @param bool $enableDuplicatesIndex
      * @param array $duplicateCheckFields
      * @param array $dataTransformers
@@ -91,15 +91,14 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
             foreach ($paginator as $customer) {
                 $logger->notice(sprintf('update index for %s', (string)$customer));
 
-                $this->updateDuplicateIndexForCustomer( $customer, true);
+                $this->updateDuplicateIndexForCustomer($customer, true);
             }
         }
     }
 
     public function updateDuplicateIndexForCustomer(CustomerInterface $customer, $force = false)
     {
-
-        if(!$force && !$this->enableDuplicatesIndex) {
+        if (!$force && !$this->enableDuplicatesIndex) {
             $this->getLogger()->debug('duplicate index disabled');
 
             return;

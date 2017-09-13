@@ -13,11 +13,9 @@ namespace CustomerManagementFrameworkBundle\SegmentBuilder;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
-use Psr\Log\LoggerInterface;
 
 interface SegmentBuilderInterface
 {
-
     /**
      * prepares data and configurations which could be reused for all buildSegment(CustomerInterface $customer) calls
      *

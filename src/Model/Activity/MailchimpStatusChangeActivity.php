@@ -14,7 +14,6 @@ namespace CustomerManagementFrameworkBundle\Model\Activity;
 use CustomerManagementFrameworkBundle\Model\AbstractActivity;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use Pimcore\Model\Object\ActivityDefinition;
 
 class MailchimpStatusChangeActivity extends AbstractActivity
 {
@@ -39,13 +38,14 @@ class MailchimpStatusChangeActivity extends AbstractActivity
 
     /**
      * MailchimpStatusChangeActivity constructor.
+     *
      * @param CustomerInterface $customer
      * @param string $status
      * @param int $activityDate
      */
     public function __construct(CustomerInterface $customer, $status, array $additionalAttributes = [], $activityDate = null)
     {
-        if(is_null($activityDate)) {
+        if (is_null($activityDate)) {
             $activityDate = time();
         }
 
@@ -86,6 +86,5 @@ class MailchimpStatusChangeActivity extends AbstractActivity
      */
     public static function cmfCreate(array $data, $fromWebservice = false)
     {
-
     }
 }

@@ -15,7 +15,6 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
 interface NewsletterQueueItemInterface
 {
-
     /**
      * @return int
      */
@@ -41,9 +40,9 @@ interface NewsletterQueueItemInterface
      */
     public function getModificationDate();
 
-
     /**
      * @param bool $successfullyProcessed
+     *
      * @return void
      */
     public function setSuccessfullyProcessed($successfullyProcessed);
@@ -52,6 +51,7 @@ interface NewsletterQueueItemInterface
      * @return bool
      */
     public function wasSuccessfullyProcessed();
+
     /**
      * Could be used as a storage for an overruled operation.
      * If an update item is in the queue but the related customer is excluded by $customer->needsExportByNewsletterProviderHandler($providerHandler)
@@ -74,5 +74,4 @@ interface NewsletterQueueItemInterface
      * @return string
      */
     public function toJson();
-
 }

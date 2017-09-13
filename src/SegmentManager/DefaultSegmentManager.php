@@ -18,7 +18,6 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentBuilder\SegmentBuilderInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Pimcore\Db;
 use Pimcore\Model\Object\Concrete;
 use Pimcore\Model\Object\CustomerSegment;
 use Pimcore\Model\Object\CustomerSegmentGroup;
@@ -53,9 +52,9 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     protected $customerProvider;
 
-
     /**
      * DefaultSegmentManager constructor.
+     *
      * @param $segmentFolderCalculated
      * @param $segmentFolderManual
      * @param CustomerSaveManagerInterface $customerSaveManager
@@ -147,13 +146,14 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
     /**
      * @param bool $calculated
+     *
      * @return \Pimcore\Model\Object\Folder
      */
     public function getSegmentsFolder($calculated = true)
     {
         $folder = $calculated ? $this->segmentFolderCalculated : $this->segmentFolderManual;
 
-        if(is_string($folder)) {
+        if (is_string($folder)) {
             $folder = Service::createFolderByPath($folder);
         }
 
@@ -166,6 +166,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
      * @param null $calculated
      *
      * @return CustomerSegment|null
+     *
      * @throws \RuntimeException
      */
     public function getSegmentByReference($segmentReference, CustomerSegmentGroup $segmentGroup = null, $calculated = null)
@@ -182,11 +183,11 @@ class DefaultSegmentManager implements SegmentManagerInterface
             }
         }
 
-        if($segmentGroup) {
+        if ($segmentGroup) {
             $list->addConditionParam('group__id = ?', $segmentGroup->getId());
         }
 
-        if($list->count() > 1) {
+        if ($list->count() > 1) {
             throw new \RuntimeException(
                 sprintf('Ambiguous results: found more than one segment with reference %s', $segmentReference)
             );
@@ -394,7 +395,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
                 $segmentGroupReference
             );
 
-        if($list->count() > 1) {
+        if ($list->count() > 1) {
             throw new \RuntimeException(
                 sprintf('Ambiguous results: found more than one segment group with reference %s', $segmentGroupReference)
             );
@@ -440,6 +441,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
                 if ($parent instanceof CustomerSegmentGroup) {
                     $segment->setGroup($parent);
+
                     return;
                 }
             }
@@ -473,7 +475,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     public function getCustomersSegmentsFromGroup(CustomerInterface $customer, $group)
     {
-        if(!$group instanceof CustomerSegmentGroup) {
+        if (!$group instanceof CustomerSegmentGroup) {
             $group = $this->getSegmentGroupByReference($group, true);
         }
 
@@ -519,7 +521,6 @@ class DefaultSegmentManager implements SegmentManagerInterface
     {
         \Pimcore::getContainer()->get('cmf.segment_manager.segment_merger')->saveMergedSegments($customer);
     }
-
 
     public function addSegmentBuilder(SegmentBuilderInterface $segmentBuilder)
     {

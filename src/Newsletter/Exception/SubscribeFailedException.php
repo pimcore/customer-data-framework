@@ -13,5 +13,4 @@ namespace CustomerManagementFrameworkBundle\Newsletter\Exception;
 
 class SubscribeFailedException extends \Exception
 {
-
 }

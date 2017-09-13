@@ -28,13 +28,12 @@ class Installer extends AbstractInstaller
 
     public function isInstalled()
     {
-
         $db = Db::get();
         try {
-            $db->fetchOne("select customerId from plugin_cmf_newsletter_queue limit 1");
+            $db->fetchOne('select customerId from plugin_cmf_newsletter_queue limit 1');
 
             return true;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }
@@ -214,14 +213,14 @@ class Installer extends AbstractInstaller
         );
 
         \Pimcore\Db::get()->query(
-            "CREATE TABLE `plugin_cmf_newsletter_queue` (
+            'CREATE TABLE `plugin_cmf_newsletter_queue` (
               `customerId` int(11) unsigned NOT NULL,
               `email` varchar(255) DEFAULT NULL,
               `operation` varchar(20) DEFAULT NULL,
               `modificationDate` bigint(20) DEFAULT NULL,
               UNIQUE KEY `customerId` (`customerId`),
               KEY `operation` (`operation`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
         );
     }
 
@@ -254,5 +253,4 @@ class Installer extends AbstractInstaller
             Logger::err("Could not import $classname Class.");
         }
     }
-
 }

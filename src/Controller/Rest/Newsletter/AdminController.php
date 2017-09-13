@@ -11,35 +11,25 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Rest\Newsletter;
 
-use CustomerManagementFrameworkBundle\Newsletter\Manager\NewsletterManagerInterface;
-use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
-use DrewM\MailChimp\Webhook;
-use Monolog\Handler\StreamHandler;
 use Pimcore\Bundle\AdminBundle\Controller\Rest\AbstractRestController;
-use Pimcore\Log\ApplicationLogger;
-use Pimcore\Log\Handler\ApplicationLoggerDb;
 use Pimcore\Tool\Console;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Annotation\Route;
 
 class AdminController extends AbstractRestController
 {
-
     /**
      * @Route("/newsletter/enqueue-all-customers")
      * @Method({"GET"})
      */
     public function enqueueAllCustomers()
     {
-
         $php = Console::getExecutable('php');
         Console::execInBackground($php . ' ' . PIMCORE_PROJECT_ROOT . '/bin/console cmf:newsletter-sync --enqueue-all-customers -c');
 
-        return new JsonResponse("ok");
+        return new JsonResponse('ok');
     }
 
     /**

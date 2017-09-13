@@ -21,6 +21,7 @@ interface NewsletterAwareCustomerInterface extends CustomerInterface
      * To ensure a consistant handling inactive or unpublished customers should never be exported.
      *
      * @param NewsletterProviderHandlerInterface $newsletterProviderHandler
+     *
      * @return bool
      */
     public function needsExportByNewsletterProviderHandler(NewsletterProviderHandlerInterface $newsletterProviderHandler);

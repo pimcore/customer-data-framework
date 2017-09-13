@@ -18,7 +18,6 @@ use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProvi
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\DefaultNewsletterQueueItem;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
 use CustomerManagementFrameworkBundle\Traits\ApplicationLoggerAware;
-use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db;
 use Pimcore\Tool\Console;
 use Zend\Paginator\Adapter\ArrayAdapter;
@@ -32,7 +31,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
     protected $maxItemsPerRound;
 
-    public function __construct( $maxItemsPerRound = 500 )
+    public function __construct($maxItemsPerRound = 500)
     {
         $this->maxItemsPerRound = $maxItemsPerRound;
         $this->setLoggerComponent('NewsletterSync');
@@ -58,20 +57,20 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
             $item = new DefaultNewsletterQueueItem($customer->getId(), null, $email, $operation, $modificationDate);
             $php = Console::getExecutable('php');
             $cmd = sprintf($php . ' ' . PIMCORE_PROJECT_ROOT . "/bin/console cmf:newsletter-sync --process-queue-item='%s'", $item->toJson());
-            $this->getLogger()->info("execute async process queue item cmd: " . $cmd);
+            $this->getLogger()->info('execute async process queue item cmd: ' . $cmd);
             Console::execInBackground($cmd);
         }
-
     }
 
     /**
      * @param NewsletterProviderHandlerInterface[] $newsletterProviderHandler
      * @param bool $forceAllCustomers
+     *
      * @return void
      */
     public function processQueue(array $newsletterProviderHandlers, $forceAllCustomers = false, $forceUpdate = false)
     {
-        if(!$forceAllCustomers) {
+        if (!$forceAllCustomers) {
             $this->processItemsFromQueue($newsletterProviderHandlers, $forceUpdate);
         } else {
             $this->processAllItems($newsletterProviderHandlers, $forceUpdate);
@@ -81,6 +80,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
     /**
      * @param array $newsletterProviderHandler
      * @param NewsletterQueueItemInterface $newsletterQueueItem
+     *
      * @return void
      */
     public function syncSingleQueueItem(array $newsletterProviderHandler, NewsletterQueueItemInterface $newsletterQueueItem)
@@ -90,6 +90,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
     /**
      * @param NewsletterQueueItemInterface $item
+     *
      * @return void
      */
     public function removeFromQueue(NewsletterQueueItemInterface $item)
@@ -100,8 +101,12 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
             $item->getCustomerId(), $item->getEmail(), $item->getOperation(), $item->getModificationDate()
         ]);
 
-        $this->getLogger()->info(sprintf("newsletter queue item removed [customerId: %s, email: %s, operation: %s, modificationDate: %s]",
-            $item->getCustomerId(), $item->getEmail(), $item->getOperation(), $item->getModificationDate()
+        $this->getLogger()->info(sprintf(
+            'newsletter queue item removed [customerId: %s, email: %s, operation: %s, modificationDate: %s]',
+            $item->getCustomerId(),
+            $item->getEmail(),
+            $item->getOperation(),
+            $item->getModificationDate()
         ));
     }
 
@@ -110,7 +115,6 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
      */
     public function enqueueAllCustomers()
     {
-
         $this->getLogger()->info('add all customers to newsletter queue');
         /**
          * @var CustomerProviderInterface $customerProvider
@@ -135,9 +139,10 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
     public function getQueueSize()
     {
         $sql = sprintf(
-            "select count(*) from %s",
+            'select count(*) from %s',
             self::QUEUE_TABLE
         );
+
         return Db::get()->fetchOne($sql);
     }
 
@@ -158,21 +163,20 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
         $pageCount = $paginator->getPages()->pageCount;
 
-        for( $i=1; $i<= $pageCount; $i++) {
+        for ($i=1; $i <= $pageCount; $i++) {
             $paginator->setCurrentPageNumber($i);
             $items = [];
-            foreach($paginator as $customer) {
-                if($item = $this->createUpdateItem($customer)) {
+            foreach ($paginator as $customer) {
+                if ($item = $this->createUpdateItem($customer)) {
                     $items[] = $item;
                 }
             }
 
             try {
                 $this->processQueueItems($newsletterProviderHandlers, $items, $forceUpdate);
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 $this->getLogger()->error('newsletter queue processing exception: ' . $e->getMessage());
             }
-
 
             \Pimcore::collectGarbage();
         }
@@ -180,6 +184,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
     /**
      * @param NewsletterProviderHandlerInterface[] $newsletterProviderHandlers
+     *
      * @return NewsletterQueueItemInterface[]
      */
     protected function processItemsFromQueue(array $newsletterProviderHandlers, $forceUpdate)
@@ -197,11 +202,11 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
         $pageCount = $paginator->getPages()->pageCount;
 
-        for( $i=1; $i<= $pageCount; $i++) {
+        for ($i=1; $i <= $pageCount; $i++) {
             $paginator->setCurrentPageNumber($i);
             $items = [];
-            foreach($paginator as $row) {
-                if($item = $this->createItemFromData($row)) {
+            foreach ($paginator as $row) {
+                if ($item = $this->createItemFromData($row)) {
                     $items[] = $item;
                 }
             }
@@ -210,7 +215,6 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
             \Pimcore::collectGarbage();
         }
-
     }
 
     /**
@@ -224,13 +228,12 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
          */
         $successfullItems = [];
         $firstCall = true;
-        foreach($newsletterProviderHandlers as $newsletterProviderHandler) {
+        foreach ($newsletterProviderHandlers as $newsletterProviderHandler) {
             $this->resetItemsStates($items);
             $newsletterProviderHandler->processCustomerQueueItems($items, $forceUpdate);
             $this->checkSuccessfullItems($successfullItems, $items, $firstCall);
             $firstCall = false;
         }
-
 
         // items need to be successful in all provider handlers otherwise they will stay in the queue.
         foreach ($successfullItems as $item) {
@@ -245,9 +248,9 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
      */
     protected function checkSuccessfullItems(array &$successfullItems, array $processedItems, $firstCall = false)
     {
-        if($firstCall) {
-            foreach($processedItems as $item) {
-                if($item->wasSuccessfullyProcessed()) {
+        if ($firstCall) {
+            foreach ($processedItems as $item) {
+                if ($item->wasSuccessfullyProcessed()) {
                     $successfullItems[] = $item;
                 }
             }
@@ -258,13 +261,12 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
         $result = [];
 
         foreach ($processedItems as $item) {
-
-            if(!$item->wasSuccessfullyProcessed()) {
+            if (!$item->wasSuccessfullyProcessed()) {
                 continue;
             }
 
-            foreach($successfullItems as $successfullItem) {
-                if($successfullItem == $item) {
+            foreach ($successfullItems as $successfullItem) {
+                if ($successfullItem == $item) {
                     $result[] = $item;
                     break;
                 }
@@ -279,7 +281,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
      */
     protected function resetItemsStates(array $items)
     {
-        foreach($items as $item) {
+        foreach ($items as $item) {
             $item->setSuccessfullyProcessed(false);
             $item->setOverruledOperation(null);
         }
@@ -292,6 +294,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
     /**
      * @param array $data
+     *
      * @return NewsletterQueueItemInterface|false
      */
     protected function createItemFromData(array $data)
@@ -303,7 +306,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
         $customer = $customerProvider->getById($data['customerId']);
 
-        if($data['operation'] == self::OPERATION_UPDATE && !$customer) {
+        if ($data['operation'] == self::OPERATION_UPDATE && !$customer) {
             return false;
         }
 

@@ -129,6 +129,7 @@ class Objects
      * Returns IDs of an array of objects
      *
      * @param array $array
+     *
      * @return array
      */
     public static function getIdsFromArray(array &$array)

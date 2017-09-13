@@ -29,6 +29,7 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
 
     /**
      * DefaultCustomerSaveValidator constructor.
+     *
      * @param array $requiredFields
      * @param bool $checkForDuplicates
      */
@@ -52,7 +53,7 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
 
     protected function validateRequiredFields(CustomerInterface $customer)
     {
-        if(!sizeof($this->requiredFields)) {
+        if (!sizeof($this->requiredFields)) {
             return true;
         }
 

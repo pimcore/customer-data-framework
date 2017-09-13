@@ -17,16 +17,14 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\SegmentBuilder\SegmentBuilderInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Zend\Paginator\Paginator;
 use Pimcore\Db;
+use Zend\Paginator\Paginator;
 
 class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
 {
     use LoggerAware;
 
-
     const CHANGES_QUEUE_TABLE = 'plugin_cmf_segmentbuilder_changes_queue';
-
 
     /**
      * @var SegmentManagerInterface
@@ -91,7 +89,7 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
         $backup = $this->customerSaveManager->getSegmentBuildingHookEnabled();
         $this->customerSaveManager->setSegmentBuildingHookEnabled(false);
 
-        if(!is_null($segmentBuilderServiceId)) {
+        if (!is_null($segmentBuilderServiceId)) {
             $segmentBuilders = [\Pimcore::getContainer()->get($segmentBuilderServiceId)];
         } else {
             $segmentBuilders = $this->segmentManager->getSegmentBuilders();
@@ -336,7 +334,6 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
             sprintf('insert ignore into %s set customerId = %d', self::CHANGES_QUEUE_TABLE, $customer->getId())
         );
     }
-
 
     public function executeSegmentBuilderMaintenance()
     {

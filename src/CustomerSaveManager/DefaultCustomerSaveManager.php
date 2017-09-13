@@ -53,12 +53,13 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     /**
      * DefaultCustomerSaveManager constructor.
+     *
      * @param bool $enableAutomaticObjectNamingScheme
      */
     public function __construct(SaveOptions $saveOptions, CustomerProviderInterface $customerProvider)
     {
         $this->saveOptions = $saveOptions;
-        $this->defaultSaveOptions = clone($saveOptions);
+        $this->defaultSaveOptions = clone $saveOptions;
         $this->customerProvider = $customerProvider;
     }
 
@@ -73,25 +74,25 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     {
         $originalCustomerNeeded = false;
         if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
-            foreach($this->getSaveHandlers() as $saveHandler) {
-                if($saveHandler->isOriginalCustomerNeeded()) {
+            foreach ($this->getSaveHandlers() as $saveHandler) {
+                if ($saveHandler->isOriginalCustomerNeeded()) {
                     $originalCustomerNeeded = true;
                     break;
                 }
             }
         }
 
-        if(!$originalCustomerNeeded && $this->getSaveOptions()->isNewsletterQueueEnabled()) {
+        if (!$originalCustomerNeeded && $this->getSaveOptions()->isNewsletterQueueEnabled()) {
             $originalCustomerNeeded = true;
         }
 
         $originalCustomer = $this->originalCustomer;
 
-        if($originalCustomer && ($originalCustomer->getId() != $customer->getId())) {
+        if ($originalCustomer && ($originalCustomer->getId() != $customer->getId())) {
             $originalCustomer = null;
         }
 
-        if($originalCustomerNeeded) {
+        if ($originalCustomerNeeded) {
             $originalCustomer = $this->customerProvider->getById($customer->getId());
         }
 
@@ -115,10 +116,8 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     public function postAdd(CustomerInterface $customer)
     {
-
-
         if ($this->saveOptions->isOnSaveSegmentBuildersEnabled()) {
-            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class )->buildCalculatedSegmentsOnCustomerSave($customer);
+            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class)->buildCalculatedSegmentsOnCustomerSave($customer);
         }
 
         if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
@@ -126,7 +125,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         }
 
         if ($this->saveOptions->isSegmentBuilderQueueEnabled()) {
-            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class )->addCustomerToChangesQueue($customer);
+            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class)->addCustomerToChangesQueue($customer);
         }
 
         if ($this->saveOptions->isDuplicatesIndexEnabled()) {
@@ -134,7 +133,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
                 $customer
             );
         }
-
 
         $this->handleNewsletterQueue($customer, NewsletterQueueInterface::OPERATION_UPDATE);
     }
@@ -156,17 +154,16 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     public function postUpdate(CustomerInterface $customer)
     {
-
         if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
             $this->applySaveHandlers($customer, 'postUpdate');
         }
 
         if ($this->saveOptions->isOnSaveSegmentBuildersEnabled()) {
-            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class )->buildCalculatedSegmentsOnCustomerSave($customer);
+            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class)->buildCalculatedSegmentsOnCustomerSave($customer);
         }
 
         if ($this->saveOptions->isSegmentBuilderQueueEnabled()) {
-            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class )->addCustomerToChangesQueue($customer);
+            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class)->addCustomerToChangesQueue($customer);
         }
 
         if ($this->saveOptions->isDuplicatesIndexEnabled()) {
@@ -174,7 +171,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
                 $customer
             );
         }
-
 
         $this->handleNewsletterQueue($customer, NewsletterQueueInterface::OPERATION_UPDATE);
     }
@@ -215,14 +211,13 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     protected function handleNewsletterQueue(CustomerInterface $customer, $operation)
     {
-        if($this->saveOptions->isNewsletterQueueEnabled()) {
+        if ($this->saveOptions->isNewsletterQueueEnabled()) {
             /**
              * @var NewsletterQueueInterface $newsletterQueue
              */
             $newsletterQueue = \Pimcore::getContainer()->get('cmf.newsletter.queue');
             $newsletterQueue->enqueueCustomer($customer, $operation, $this->originalCustomer->getEmail(), $this->saveOptions->isNewsletterQueueImmidiateAsyncExecutionEnabled());
         }
-
     }
 
     protected function addToDeletionsTable(CustomerInterface $customer)
@@ -292,7 +287,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         }
     }
 
-
     /**
      * @param CustomerInterface $customer
      *
@@ -338,6 +332,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
      * @param CustomerInterface $customer
      * @param SaveOptions $options
      * @param bool $disableVersions
+     *
      * @return mixed
      */
     public function saveWithOptions(CustomerInterface $customer, SaveOptions $options, $disableVersions = false)
@@ -373,9 +368,10 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
      */
     public function getSaveOptions($clone = false)
     {
-        if($clone) {
-            return clone($this->saveOptions);
+        if ($clone) {
+            return clone $this->saveOptions;
         }
+
         return $this->saveOptions;
     }
 
@@ -386,7 +382,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     public function getDefaultSaveOptions()
     {
-        return clone($this->defaultSaveOptions);
+        return clone $this->defaultSaveOptions;
     }
 
     /**

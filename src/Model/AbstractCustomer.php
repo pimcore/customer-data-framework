@@ -49,6 +49,7 @@ abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implement
 
     /**
      * @param bool $disableVersions
+     *
      * @return mixed
      */
     public function saveDirty($disableVersions = true)
@@ -59,6 +60,7 @@ abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implement
     /**
      * @param SaveOptions $saveOptions
      * @param bool $disableVersions
+     *
      * @return mixed
      */
     public function saveWithOptions(SaveOptions $saveOptions, $disableVersions = false)
@@ -75,15 +77,16 @@ abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implement
          * @var CustomerSaveManagerInterface $saveManager
          */
         $saveManager = \Pimcore::getContainer()->get('cmf.customer_save_manager');
+
         return $saveManager;
     }
-
 
     /**
      * If this method returns true the customer will be exported by the provider handler with the given shortcut.
      * Otherwise the provider handler will delete the customer in the target system if it exists.
      *
      * @param NewsletterProviderHandlerInterface $newsletterProviderHandler
+     *
      * @return bool
      */
     public function needsExportByNewsletterProviderHandler(NewsletterProviderHandlerInterface $newsletterProviderHandler)

@@ -11,7 +11,7 @@
 
 namespace CustomerManagementFrameworkBundle\DataSimilarityMatcher;
 
-abstract class AbstractSimilarityMatcher implements  DataSimilarityMatcherInterface
+abstract class AbstractSimilarityMatcher implements DataSimilarityMatcherInterface
 {
     protected $defaultTreshold = 90;
 

@@ -12,18 +12,15 @@
 namespace CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use CustomerManagementFrameworkBundle\SegmentBuilder\SegmentBuilderInterface;
 
 interface SegmentBuilderExecutorInterface
 {
-
     /**
      * @param CustomerInterface $customer
      *
      * @return void
      */
     public function buildCalculatedSegmentsOnCustomerSave(CustomerInterface $customer);
-
 
     /**
      * Applies all SegmentBuilders to customers. If the param $changesQueueonly is set to true this is done only for customers which where changed since the last run.
@@ -45,7 +42,6 @@ interface SegmentBuilderExecutorInterface
         $options = [],
         $captureSignals = false
     );
-
 
     /**
      * @param CustomerInterface $customer

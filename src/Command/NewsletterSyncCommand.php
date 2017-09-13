@@ -28,8 +28,6 @@ class NewsletterSyncCommand extends AbstractCommand
      */
     private $newsletterManager;
 
-
-
     protected function configure()
     {
         $this->setName('cmf:newsletter-sync')
@@ -51,7 +49,7 @@ class NewsletterSyncCommand extends AbstractCommand
     {
         $this->newsletterManager = \Pimcore::getContainer()->get(NewsletterManagerInterface::class);
 
-        if($input->getOption('enqueue-all-customers')) {
+        if ($input->getOption('enqueue-all-customers')) {
             /**
              * @var NewsletterQueueInterface $newsletterQueue
              */
@@ -59,10 +57,9 @@ class NewsletterSyncCommand extends AbstractCommand
             $newsletterQueue->enqueueAllCustomers();
         }
 
-        if($input->getOption('customer-data-sync') || $input->getOption('all-customers')) {
-
+        if ($input->getOption('customer-data-sync') || $input->getOption('all-customers')) {
             $lockKey = 'plugin_cmf_newsletter_sync_queue';
-            if (Lock::isLocked($lockKey, (60*60*12))) {
+            if (Lock::isLocked($lockKey, (60 * 60 * 12))) {
                 die('locked - not starting now');
             }
 
@@ -74,27 +71,27 @@ class NewsletterSyncCommand extends AbstractCommand
                 (bool)$input->getOption('force-customers')
             );
 
-             Lock::release($lockKey);
+            Lock::release($lockKey);
         }
 
-        if($input->getOption('mailchimp-status-sync')) {
+        if ($input->getOption('mailchimp-status-sync')) {
             $this->mailchimpStatusSync();
         }
 
         if ($processQueueItem = $input->getOption('process-queue-item')) {
-           $data = json_decode($processQueueItem, true);
+            $data = json_decode($processQueueItem, true);
 
             /**
              * @var CustomerProviderInterface $customerProvider
              */
-           $customerProvider = \Pimcore::getContainer()->get('cmf.customer_provider');
+            $customerProvider = \Pimcore::getContainer()->get('cmf.customer_provider');
 
-           if(empty($data['customerId']) || empty($data['email']) || empty($data['operation']) || empty($data['modificationDate'])) {
-               throw new \Exception('invalid item');
-           }
+            if (empty($data['customerId']) || empty($data['email']) || empty($data['operation']) || empty($data['modificationDate'])) {
+                throw new \Exception('invalid item');
+            }
 
-           $item = new DefaultNewsletterQueueItem($data['customerId'], $customerProvider->getById($data['customerId']), $data['email'], $data['operation'], $data['modificationDate']);
-           $this->newsletterManager->syncSingleCustomerQueueItem($item);
+            $item = new DefaultNewsletterQueueItem($data['customerId'], $customerProvider->getById($data['customerId']), $data['email'], $data['operation'], $data['modificationDate']);
+            $this->newsletterManager->syncSingleCustomerQueueItem($item);
         }
     }
 
@@ -103,7 +100,7 @@ class NewsletterSyncCommand extends AbstractCommand
         /**
          * @var Mailchimp\CliSyncProcessor $cliSyncProcessor
          */
-        $cliSyncProcessor = \Pimcore::getContainer()->get(Mailchimp\CliSyncProcessor::class );
+        $cliSyncProcessor = \Pimcore::getContainer()->get(Mailchimp\CliSyncProcessor::class);
 
         $cliSyncProcessor->process();
     }

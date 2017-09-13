@@ -211,6 +211,7 @@ interface CustomerInterface extends ElementInterface
 
     /**
      * @param bool $disableVersions
+     *
      * @return mixed
      */
     public function saveDirty($disableVersions = true);
@@ -218,6 +219,7 @@ interface CustomerInterface extends ElementInterface
     /**
      * @param SaveOptions $saveOptions
      * @param bool $disableVersions
+     *
      * @return mixed
      */
     public function saveWithOptions(SaveOptions $saveOptions, $disableVersions = false);

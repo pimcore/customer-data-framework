@@ -11,7 +11,6 @@
 
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CustomerExporter;
 
-use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\MailchimpAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
@@ -34,20 +33,20 @@ class SingleExporter extends AbstractExporter
      */
     public function export(NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler)
     {
-        if($item->getOperation() == NewsletterQueueInterface::OPERATION_UPDATE) {
+        if ($item->getOperation() == NewsletterQueueInterface::OPERATION_UPDATE) {
             /**
              * @var MailchimpAwareCustomerInterface $customer
              */
             $customer = $item->getCustomer();
 
-            if(!$customer->needsExportByNewsletterProviderHandler($mailchimpProviderHandler)) {
+            if (!$customer->needsExportByNewsletterProviderHandler($mailchimpProviderHandler)) {
                 $this->delete($customer, $item, $mailchimpProviderHandler);
+
                 return;
             }
 
             $this->update($customer, $item, $mailchimpProviderHandler);
-
-        } elseif($item->getOperation() == NewsletterQueueInterface::OPERATION_DELETE) {
+        } elseif ($item->getOperation() == NewsletterQueueInterface::OPERATION_DELETE) {
             $this->processDeleteQueueItem($item, $mailchimpProviderHandler);
         }
     }
@@ -56,9 +55,10 @@ class SingleExporter extends AbstractExporter
      * @param MailchimpAwareCustomerInterface $customer
      * @param NewsletterQueueItemInterface $item
      * @param string $listId
+     *
      * @return bool
      */
-    public function update(MailchimpAwareCustomerInterface $customer, NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler )
+    public function update(MailchimpAwareCustomerInterface $customer, NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler)
     {
         $exportService = $this->exportService;
         $apiClient = $this->apiClient;
@@ -129,9 +129,7 @@ class SingleExporter extends AbstractExporter
             $mailchimpProviderHandler->updateMailchimpStatus($customer, $status);
 
             return true;
-
         } else {
-
             p_r($entry);
 
             $this->getLogger()->error(
@@ -159,7 +157,6 @@ class SingleExporter extends AbstractExporter
         /* if the email address changes and the customer is not subscribed in mailchimp we have to delete and recreate it
            as mailchimp does only allow updating of email addresses for subscribed customers */
         if ($customer->getEmail() != $item->getEmail() && $mailchimpProviderHandler->getMailchimpStatus($customer) != Mailchimp::STATUS_SUBSCRIBED) {
-
             $apiClient->delete(
                 $exportService->getListResourceUrl($mailchimpProviderHandler->getListId(), sprintf('members/%s', $remoteId))
             );
@@ -175,7 +172,7 @@ class SingleExporter extends AbstractExporter
                         'relatedObject' => $customer
                     ]
                 );
-            } elseif($apiClient->getLastResponse()['headers']['http_code'] == 404) {
+            } elseif ($apiClient->getLastResponse()['headers']['http_code'] == 404) {
                 $this->getLogger()->info(
                     sprintf(
                         '[MailChimp][CUSTOMER %s][%s] Deletion and recreation needed as email address changed and the status was not "subscribed". Remote ID is %s. Deletion skipped as it already was done before.',
@@ -188,7 +185,6 @@ class SingleExporter extends AbstractExporter
                     ]
                 );
             } else {
-
                 $this->getLogger()->error(
                     sprintf(
                         '[MailChimp][CUSTOMER %s][%s] Deletion and recreation needed as email address changed and the status was not "subscribed". Remote ID is %s. Deletion failed: %s %s',
@@ -209,7 +205,6 @@ class SingleExporter extends AbstractExporter
             // change the remote id to the new/current email address => recreate the customer with the new email/ID
             $remoteId = $this->apiClient->subscriberHash($customer->getEmail());
         } elseif ($customer->getEmail() != $item->getEmail()) {
-
             $this->getLogger()->info(
                 sprintf(
                     '[MailChimp][CUSTOMER %s][%s] Check if subscriber with old email exists. Remote ID is %s.',
@@ -229,7 +224,6 @@ class SingleExporter extends AbstractExporter
             /* if the old email does not exist anymore it was already deleted or updated previously
                => move to the current email/ID and update the customer with the current ID */
             if (!$apiClient->success() && $apiClient->getLastResponse()['headers']['http_code'] == 404) {
-
                 $remoteId = $this->apiClient->subscriberHash($customer->getEmail());
 
                 $this->getLogger()->info(
@@ -254,7 +248,7 @@ class SingleExporter extends AbstractExporter
      * @param NewsletterQueueItemInterface $item
      * @param string $listId
      */
-    protected function delete(MailchimpAwareCustomerInterface $customer, NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler )
+    protected function delete(MailchimpAwareCustomerInterface $customer, NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler)
     {
         $exportService = $this->exportService;
         $apiClient = $this->apiClient;
@@ -299,10 +293,9 @@ class SingleExporter extends AbstractExporter
 
             $mailchimpProviderHandler->updateMailchimpStatus($customer, null);
         } else {
-
             $response = $apiClient->getLastResponse();
 
-            if($response['headers']['http_code'] != 404) {
+            if ($response['headers']['http_code'] != 404) {
                 $this->getLogger()->error(
                     sprintf(
                         '[MailChimp][CUSTOMER %s][%s] Deletion failed: %s %s',
@@ -328,12 +321,10 @@ class SingleExporter extends AbstractExporter
 
                 $mailchimpProviderHandler->updateMailchimpStatus($customer, null);
             }
-
-
         }
     }
 
-    protected function processDeleteQueueItem(NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler )
+    protected function processDeleteQueueItem(NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler)
     {
         $exportService = $this->exportService;
         $apiClient = $this->apiClient;
@@ -367,10 +358,9 @@ class SingleExporter extends AbstractExporter
 
             $item->setSuccessfullyProcessed(true);
         } else {
-
             $response = $apiClient->getLastResponse();
 
-            if($response['headers']['http_code'] != 404) {
+            if ($response['headers']['http_code'] != 404) {
                 $this->getLogger()->error(
                     sprintf(
                         '[MailChimp][CUSTOMER %s][%s] Deletion failed: %s %s',
@@ -391,8 +381,6 @@ class SingleExporter extends AbstractExporter
                 );
                 $item->setSuccessfullyProcessed(true);
             }
-
-
         }
     }
 }

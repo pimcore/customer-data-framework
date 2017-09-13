@@ -12,7 +12,6 @@
 namespace CustomerManagementFrameworkBundle\Traits;
 
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 trait LoggerAware
 {

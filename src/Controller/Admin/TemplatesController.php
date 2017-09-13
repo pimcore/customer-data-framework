@@ -20,29 +20,28 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/templates")
  */
-class TemplatesController extends AdminController {
-
+class TemplatesController extends AdminController
+{
     /**
      * @param Request $request
      * @param TemplateExporter $templateExporter
+     *
      * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
+     *
      * @throws \Exception
      * @Route("/export")
      */
-    public function exportAction(Request $request) {
-
+    public function exportAction(Request $request)
+    {
         $templateExporter = $this->get(TemplateExporter::class);
-        $document = PageSnippet::getById($request->get("document_id"));
+        $document = PageSnippet::getById($request->get('document_id'));
 
-        if($document) {
-
+        if ($document) {
             $templateExporter->exportTemplate($document);
+
             return $this->json(['success' => true]);
-
         } else {
-            throw new \Exception(sprintf("Document {%s} not found!", $request->get("document_id")));
+            throw new \Exception(sprintf('Document {%s} not found!', $request->get('document_id')));
         }
-
     }
-
 }

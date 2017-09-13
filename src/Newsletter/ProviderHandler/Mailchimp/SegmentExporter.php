@@ -11,7 +11,6 @@
 
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 
-use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\Traits\ApplicationLoggerAware;
 use DrewM\MailChimp\MailChimp;
 use Pimcore\Model\Object\CustomerSegment;
@@ -20,7 +19,7 @@ use Pimcore\Model\Object\CustomerSegmentGroup;
 class SegmentExporter
 {
     use ApplicationLoggerAware;
-    
+
     /**
      * @var MailChimpExportService
      */
@@ -30,6 +29,7 @@ class SegmentExporter
 
     /**
      * SegmentExporter constructor.
+     *
      * @param MailChimp $apiClient
      * @param string $listId
      */
@@ -104,7 +104,7 @@ class SegmentExporter
             $isEdit = true;
             $remoteGroupId = $exportService->getRemoteId($group, $listId);
 
-            if(!$forceUpdate && !$exportService->needsUpdate($group, $listId)) {
+            if (!$forceUpdate && !$exportService->needsUpdate($group, $listId)) {
                 $this->getLogger()->debug(
                     sprintf(
                         '[MailChimp][GROUP %s][%s] Updating group %s with remote ID %s skipped - no update needed',
@@ -117,9 +117,9 @@ class SegmentExporter
                         'relatedObject' => $group
                     ]
                 );
+
                 return $remoteGroupId;
             }
-
 
             $this->getLogger()->info(
                 sprintf(
@@ -259,7 +259,7 @@ class SegmentExporter
             $isEdit = true;
             $remoteSegmentId = $exportService->getRemoteId($segment, $listId);
 
-            if(!$forceUpdate && !$exportService->needsUpdate($segment, $listId)) {
+            if (!$forceUpdate && !$exportService->needsUpdate($segment, $listId)) {
                 $this->getLogger()->debug(
                     sprintf(
                         '[MailChimp][SEGMENT %s][%s] Updating segment %s with remote ID %s skipped - no update needed',
@@ -340,10 +340,13 @@ class SegmentExporter
                         'relatedObject' => $segment
                     ]
                 );
+
                 return $this->exportSegment($segment, $listId, $remoteGroupId, true);
             }
+
             return null;
         }
+
         return $remoteSegmentId;
     }
 
@@ -363,9 +366,9 @@ class SegmentExporter
             $exportService->getListResourceUrl($listId, 'interest-categories/' . $remoteGroupId . '/interests')
         );
 
-        if(isset($result['interests'])) {
-            foreach($result['interests'] as $interest) {
-                if(in_array($interest['id'], $existingSegmentIds)) {
+        if (isset($result['interests'])) {
+            foreach ($result['interests'] as $interest) {
+                if (in_array($interest['id'], $existingSegmentIds)) {
                     continue;
                 }
 
@@ -379,10 +382,10 @@ class SegmentExporter
                 );
 
                 $apiClient->delete(
-                    $exportService->getListResourceUrl($listId,'interest-categories/' . $remoteGroupId . '/interests/' . $interest['id'])
+                    $exportService->getListResourceUrl($listId, 'interest-categories/' . $remoteGroupId . '/interests/' . $interest['id'])
                 );
 
-                if(!$apiClient->success()) {
+                if (!$apiClient->success()) {
                     $this->getLogger()->error(
                         sprintf(
                             '[MailChimp][Segment][%s] Deleting segments with remote ID %s within group ID %s failed: %s %s',
@@ -409,14 +412,14 @@ class SegmentExporter
         $exportService = $this->exportService;
         $apiClient = $exportService->getApiClient();
 
-        $url = $exportService->getListResourceUrl($listId,'interest-categories');
+        $url = $exportService->getListResourceUrl($listId, 'interest-categories');
 
         $result = $apiClient->get(
             $url
         );
 
-        foreach($result['categories'] as $category) {
-            if(!in_array($category['id'], $existingGroupIds)) {
+        foreach ($result['categories'] as $category) {
+            if (!in_array($category['id'], $existingGroupIds)) {
                 $this->deleteGroupByRemoteId($category['id'], $listId);
             }
         }
@@ -430,18 +433,15 @@ class SegmentExporter
         return $this->lastCreatedGroupRemoteId;
     }
 
-
-
     /**
      * @param string $remoteGroupId
      * @param string $listId
      */
-    private function deleteGroupByRemoteId( $remoteGroupId, $listId )
+    private function deleteGroupByRemoteId($remoteGroupId, $listId)
     {
-        $group = $this->exportService->getObjectByRemoteId( $remoteGroupId );
+        $group = $this->exportService->getObjectByRemoteId($remoteGroupId);
 
-        if($group instanceof CustomerSegmentGroup) {
-
+        if ($group instanceof CustomerSegmentGroup) {
             $this->getLogger()->info(
                 sprintf(
                     '[MailChimp][GROUP %s][%s] Deleting group %s with remote ID %s',
@@ -468,10 +468,10 @@ class SegmentExporter
         $apiClient = $exportService->getApiClient();
 
         $apiClient->delete(
-            $exportService->getListResourceUrl($listId,'interest-categories/' . $remoteGroupId)
+            $exportService->getListResourceUrl($listId, 'interest-categories/' . $remoteGroupId)
         );
 
-        if(!$apiClient->success()) {
+        if (!$apiClient->success()) {
             $this->getLogger()->error(
                 sprintf(
                     '[MailChimp][GROUP][%s] Failed to delete group with remote ID %s: %s %s',
@@ -485,6 +485,5 @@ class SegmentExporter
                 ]
             );
         }
-
     }
 }

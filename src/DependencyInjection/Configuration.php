@@ -82,7 +82,8 @@ class Configuration implements ConfigurationInterface
         $general
             ->children()
             ->scalarNode('secret')
-                ->info('echo \Defuse\Crypto\Key::createNewRandomKey()->saveToAsciiSafeString();' . PHP_EOL .
+                ->info(
+                    'echo \Defuse\Crypto\Key::createNewRandomKey()->saveToAsciiSafeString();' . PHP_EOL .
                     'keep it secret'
                 )
                 ->defaultValue('')
@@ -413,7 +414,6 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
             ->end();
-
 
         return $newsletter;
     }

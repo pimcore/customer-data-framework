@@ -12,7 +12,6 @@
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
-use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\MailchimpAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 use Psr\Log\LoggerInterface;
@@ -43,50 +42,43 @@ class WebhookProcessor
 
     public function process(Mailchimp $mailchimpHandler, array $webhookData, LoggerInterface $logger)
     {
-
         $logger->info($webhookData['data']['email']);
 
         try {
-            if(!$customer = $this->customerProvider->getActiveCustomerByEmail($webhookData['data']['email'])) {
+            if (!$customer = $this->customerProvider->getActiveCustomerByEmail($webhookData['data']['email'])) {
                 $logger->error(sprintf('no active customer with email %s found', $webhookData['data']['email']));
+
                 return true;
             }
 
             $logger->info((string) $customer);
-
-        } catch(\RuntimeException $e) {
+        } catch (\RuntimeException $e) {
             $logger->error(sprintf('multiple active customers with email %s found', $webhookData['data']['email']));
+
             return true;
         }
 
-
-        $logger->info(sprintf("process web hook data for provider handler with list id %s and customer ID %s", $mailchimpHandler->getListId(), $customer->getId()));
-
-
+        $logger->info(sprintf('process web hook data for provider handler with list id %s and customer ID %s', $mailchimpHandler->getListId(), $customer->getId()));
 
         /**
          * @var MailchimpAwareCustomerInterface $customer
          * $customer
          */
-
         $changed = false;
 
         if ($webhookData['type'] == 'subscribe') {
             $changed = $this->processSubscribe($mailchimpHandler, $customer, $logger);
-        } elseif($webhookData['type'] == 'unsubscribe') {
-           $changed = $this->processUnsubscribe($mailchimpHandler, $customer, $logger);
-        } elseif($webhookData['type'] == 'cleaned') {
+        } elseif ($webhookData['type'] == 'unsubscribe') {
+            $changed = $this->processUnsubscribe($mailchimpHandler, $customer, $logger);
+        } elseif ($webhookData['type'] == 'cleaned') {
             $changed = $this->processCleaned($mailchimpHandler, $customer, $logger);
-        } elseif($webhookData['type'] == 'profile') {
+        } elseif ($webhookData['type'] == 'profile') {
             $changed = $this->processProfile($mailchimpHandler, $customer, $webhookData, $logger);
         } else {
-            $logger->error(sprintf("webhook type %s currently not implemented", $webhookData['type']));
-
+            $logger->error(sprintf('webhook type %s currently not implemented', $webhookData['type']));
         }
 
-
         $this->updateFromMailchimpProcessor->saveCustomerIfChanged($customer, $changed);
-
     }
 
     protected function processSubscribe(Mailchimp $mailchimpHandler, MailchimpAwareCustomerInterface $customer, LoggerInterface $logger)
@@ -94,7 +86,6 @@ class WebhookProcessor
         $logger->info(sprintf("process 'subscribe' web hook data for provider handler with list id %s and customer ID %s", $mailchimpHandler->getListId(), $customer->getId()));
 
         return $this->updateFromMailchimpProcessor->updateNewsletterStatus($mailchimpHandler, $customer, Mailchimp::STATUS_SUBSCRIBED);
-
     }
 
     protected function processUnsubscribe(Mailchimp $mailchimpHandler, MailchimpAwareCustomerInterface $customer, LoggerInterface $logger)
@@ -111,13 +102,10 @@ class WebhookProcessor
         return $this->updateFromMailchimpProcessor->updateNewsletterStatus($mailchimpHandler, $customer, Mailchimp::STATUS_CLEANED);
     }
 
-
     protected function processProfile(Mailchimp $mailchimpHandler, MailchimpAwareCustomerInterface $customer, array $webhookData, LoggerInterface $logger)
     {
         $logger->info(sprintf("process 'profile' web hook data for provider handler with list id %s and customer ID %s", $mailchimpHandler->getListId(), $customer->getId()));
 
         return $this->updateFromMailchimpProcessor->processMergeFields($mailchimpHandler, $customer, $webhookData['data']['merges']);
-
     }
-
 }

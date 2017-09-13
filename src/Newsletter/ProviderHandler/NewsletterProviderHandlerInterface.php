@@ -11,10 +11,7 @@
 
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler;
 
-
-use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\NewsletterAwareCustomerInterface;
-use Pimcore\Model\Object\CustomerSegmentGroup;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
 
 interface NewsletterProviderHandlerInterface
@@ -32,13 +29,14 @@ interface NewsletterProviderHandlerInterface
      *
      * @param NewsletterQueueItemInterface[] $array
      * @param bool $forceUpdate
+     *
      * @return void
      */
     public function processCustomerQueueItems(array $items, $forceUpdate = false);
 
-
     /**
      * @param bool $forceUpdate
+     *
      * @return void
      */
     public function updateSegmentGroups($forceUpdate = false);
@@ -47,6 +45,7 @@ interface NewsletterProviderHandlerInterface
      * Subscribe customer to newsletter (for example via web form). Returns true if it was successful.
      *
      * @param NewsletterAwareCustomerInterface $customer
+     *
      * @return bool
      */
     public function subscribeCustomer(NewsletterAwareCustomerInterface $customer);
@@ -55,8 +54,8 @@ interface NewsletterProviderHandlerInterface
      * Unsubscribe customer from newsletter (for example via web form). Returns true if it was successful.
      *
      * @param NewsletterAwareCustomerInterface $customer
+     *
      * @return bool
      */
     public function unsubscribeCustomer(NewsletterAwareCustomerInterface $customer);
-
 }

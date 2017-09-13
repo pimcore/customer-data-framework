@@ -58,7 +58,6 @@ interface CustomerSaveManagerInterface
      */
     public function postDelete(CustomerInterface $customer);
 
-
     /**
      * @param CustomerInterface $customer
      * @param bool $withDuplicatesCheck
@@ -90,6 +89,7 @@ interface CustomerSaveManagerInterface
      * @param CustomerInterface $customer
      * @param SaveOptions $options
      * @param bool $disableVersions
+     *
      * @return mixed
      */
     public function saveWithOptions(CustomerInterface $customer, SaveOptions $options, $disableVersions = false);
@@ -119,5 +119,4 @@ interface CustomerSaveManagerInterface
      * @return void
      */
     public function addSaveHandler(CustomerSaveHandlerInterface $saveHandler);
-
 }

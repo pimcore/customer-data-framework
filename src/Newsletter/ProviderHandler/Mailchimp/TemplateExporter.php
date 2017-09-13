@@ -11,20 +11,17 @@
 
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 
-use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\Traits\ApplicationLoggerAware;
 use DrewM\MailChimp\MailChimp;
 use Pimcore\Helper\Mail;
 use Pimcore\Model\Document;
-use Pimcore\Model\Object\CustomerSegment;
-use Pimcore\Model\Object\CustomerSegmentGroup;
 
 class TemplateExporter
 {
     use ApplicationLoggerAware;
 
-    const LIST_ID_PLACEHOLDER = "global";
-    
+    const LIST_ID_PLACEHOLDER = 'global';
+
     /**
      * @var MailChimpExportService
      */
@@ -32,6 +29,7 @@ class TemplateExporter
 
     /**
      * TemplateExporter constructor.
+     *
      * @param MailChimp $apiClient
      * @param string $listId
      */
@@ -42,8 +40,8 @@ class TemplateExporter
         $this->setLoggerComponent('NewsletterSync');
     }
 
-    public function exportTemplate(Document\PageSnippet $document) {
-
+    public function exportTemplate(Document\PageSnippet $document)
+    {
         $exportService = $this->exportService;
         $apiClient = $exportService->getApiClient();
 
@@ -54,20 +52,17 @@ class TemplateExporter
         $html = Mail::embedAndModifyCss($html, $document);
         $html = Mail::setAbsolutePaths($html, $document);
 
-
         $templateExists = false;
 
         //check if template really exists in MailChimp
-        if($remoteId) {
+        if ($remoteId) {
             $result = $apiClient->get("templates/$remoteId");
-            if($apiClient->success() && $result['id'] && $result['active']) {
+            if ($apiClient->success() && $result['id'] && $result['active']) {
                 $templateExists = true;
             }
         }
 
-
-        if($remoteId && $templateExists) {
-
+        if ($remoteId && $templateExists) {
             $this->getLogger()->info(
                 sprintf(
                     '[MailChimp] Updating new Template with name %s based on document id %s',
@@ -80,10 +75,7 @@ class TemplateExporter
                 'name' => $document->getFullPath(),
                 'html' => $html
             ]);
-
-
         } else {
-
             $this->getLogger()->info(
                 sprintf(
                     '[MailChimp][Template] Creating new template with name %s based on document id %s',
@@ -92,11 +84,10 @@ class TemplateExporter
                 )
             );
 
-            $result = $apiClient->post("templates", [
+            $result = $apiClient->post('templates', [
                 'name' => $document->getFullPath(),
                 'html' => $html
             ]);
-
         }
 
         if ($apiClient->success()) {
@@ -116,9 +107,7 @@ class TemplateExporter
                 ]
             );
 
-            throw new \Exception("[MailChimp] Creating new Template failed: " . json_encode($apiClient->getLastError()));
+            throw new \Exception('[MailChimp] Creating new Template failed: ' . json_encode($apiClient->getLastError()));
         }
-
     }
-
 }

@@ -16,10 +16,9 @@ namespace CustomerManagementFrameworkBundle\Model;
  * 'mailchimpStatus' . ucfirst($newsletterProviderShortcut)
  *
  * Interface MailchimpAwareCustomerInterface
+ *
  * @package CustomerManagementFrameworkBundle\Model
  */
 interface MailchimpAwareCustomerInterface extends NewsletterAwareCustomerInterface
 {
-
-
 }

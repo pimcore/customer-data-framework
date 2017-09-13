@@ -18,12 +18,10 @@ use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntr
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Model\Object\ClassDefinition;
-use Pimcore\Model\Object\Service;
 
 class DefaultCustomerMerger implements CustomerMergerInterface
 {
     use LoggerAware;
-
 
     /**
      * @var CustomerSaveManagerInterface
@@ -32,7 +30,6 @@ class DefaultCustomerMerger implements CustomerMergerInterface
 
     public function __construct(CustomerSaveManagerInterface $customerSaveManager)
     {
-
         $this->customerSaveManager = $customerSaveManager;
     }
 
@@ -63,7 +60,6 @@ class DefaultCustomerMerger implements CustomerMergerInterface
         $this->mergeCustomerValues($sourceCustomer, $targetCustomer, $mergeAttributes);
         $targetCustomer->save();
 
-
         if (!$sourceCustomer->getId()) {
             $note = Notes::createNote($targetCustomer, 'cmf.CustomerMerger', 'customer merged');
             $note->setDescription('merged with new customer instance');
@@ -73,7 +69,6 @@ class DefaultCustomerMerger implements CustomerMergerInterface
             $note->setDescription('merged with existing customer instance');
             $note->addData('mergedCustomer', 'object', $sourceCustomer);
             $note->save();
-
 
             $sourceCustomer->setPublished(false);
             $sourceCustomer->setActive(false);
