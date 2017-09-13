@@ -14,6 +14,37 @@ services:
          tags: [cmf.segment_builder]
 
 
+    # example newsletter provider handler (mailchimp sync) config
+    appbundle.data_transformer.mailchimp.birthdate:
+          class: CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\DataTransformer\Date
+          arguments:
+            - m/d/Y
+            - Y-m-d
+
+    appbundle.mailchimp-handler.list1:
+        class: CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp
+        autowire: true
+        arguments:
+            - list1
+            - 1ea29442a8
+            - manuallySubscribed: subscribed
+              singleOptIn: subscribed
+              doubleOptIn: subscribed
+              unsubscribed: unsubscribed
+              pending: pending
+            - subscribed: doubleOptIn
+              unsubscribed: unsubscribed
+              pending: pending
+
+            - firstname: FNAME
+              lastname: LNAME
+              street: STREET
+              birthDate: BIRTHDATE
+
+            - birthDate: '@appbundle.data_transformer.mailchimp.birthdate'
+
+        tags: [cmf.newsletter_provider_handler]
+
 pimcore_customer_management_framework:
     oauth_client:
         enabled:              false
@@ -68,6 +99,16 @@ pimcore_customer_management_framework:
 
             # parent folder of calculated segments + segment groups
             calculated:           /segments/calculated
+
+    newsletter:
+      newsletterSyncEnabled: true
+
+      # if enabled the queue console command for a single item will be executed as background cli command on customer save
+      newsletterQueueImmidiateAsyncExecutionEnabled: true
+
+      mailchimp:
+          apiKey: d1a46n87d7fsd51f8e98a9decc7b71b9-us15
+          cliUpdatesPimcoreUserName: mailchimp-cli
 
     # Configuration of customer list view
     customer_list:
@@ -139,6 +180,7 @@ pimcore_customer_management_framework:
           - [firstname, lastname]
           
         duplicates_view:
+            enabled: true # the feature will be visible in the backend only if it is enabled
             listFields:
               - [id]
               - [email]
