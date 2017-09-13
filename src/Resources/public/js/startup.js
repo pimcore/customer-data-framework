@@ -102,7 +102,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
             menuItems.add(item);
         }
 
-        if (user.isAllowed('plugin_customermanagementframework_newsletter_enqueue_all_customers')) {
+        if (pimcore.settings.cmf.newsletterSyncEnabled && user.isAllowed('plugin_customermanagementframework_newsletter_enqueue_all_customers')) {
            var item = {
                 text: t('plugin_cmf_newsletter_enqueue_all_customers'),
                 iconCls: 'pimcore_icon_newsletter_enqueue_all_customers',
@@ -196,6 +196,11 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
     },
 
     initNewsletterQueueInfo: function() {
+
+        if(!pimcore.settings.cmf.newsletterSyncEnabled) {
+            return;
+        }
+
         //adding status icon
         var statusBar = Ext.get("pimcore_status");
 
