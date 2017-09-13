@@ -45,6 +45,7 @@ $deleteSegments = $segmentManager->getSegmentsFromSegmentGroup($segment->getGrou
 // add the segment to the customer and remove all other segments from the segment group "gender). The param "GenderSegmentBuilder" is an optional comment which will be added to the notes/events tab of the customer.
 $addSegments = [$segment];
 $segmentManager->mergeSegments($customer, $addSegments, $deleteSegments, "GenderSegmentBuilder");
+$segmentManager->saveMergedSegments($customer);
 ```
 
 #### Registration of segment builders
