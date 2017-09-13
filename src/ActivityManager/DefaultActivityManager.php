@@ -14,6 +14,7 @@ namespace CustomerManagementFrameworkBundle\ActivityManager;
 use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface;
 
 class DefaultActivityManager implements ActivityManagerInterface
 {
@@ -67,7 +68,7 @@ class DefaultActivityManager implements ActivityManagerInterface
             return;
         }
 
-        \Pimcore::getContainer()->get('cmf.segment_manager')->addCustomerToChangesQueue($activity->getCustomer());
+        \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class)->addCustomerToChangesQueue($activity->getCustomer());
 
         if (!$activity->cmfIsActive()) {
             $store->deleteActivity($activity);

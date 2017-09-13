@@ -124,4 +124,20 @@ class Objects
 
         return sizeof($removed) ? $removed : false;
     }
+
+    /**
+     * Returns IDs of an array of objects
+     *
+     * @param array $array
+     * @return array
+     */
+    public static function getIdsFromArray(array &$array)
+    {
+        $ids = [];
+        foreach ($array as $object) {
+            $ids[] = $object->getId();
+        }
+
+        return $ids;
+    }
 }
