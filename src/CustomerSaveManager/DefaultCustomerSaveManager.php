@@ -77,10 +77,14 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     public function postAdd(CustomerInterface $customer)
     {
-        $this->handleNewsletterQueue($customer, NewsletterQueueInterface::OPERATION_UPDATE);
+
 
         if ($this->saveOptions->isOnSaveSegmentBuildersEnabled()) {
             \Pimcore::getContainer()->get('cmf.segment_manager')->buildCalculatedSegmentsOnCustomerSave($customer);
+        }
+
+        if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
+            $this->applySaveHandlers($customer, 'postAdd', true);
         }
 
         if ($this->saveOptions->isSegmentBuilderQueueEnabled()) {
