@@ -18,6 +18,8 @@ services:
 
     CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\SegmentExporter: ~
 
+    CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\TemplateExporter: ~
+
     CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CustomerExporter\SingleExporter: ~
     CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CustomerExporter\BatchExporter: ~
 

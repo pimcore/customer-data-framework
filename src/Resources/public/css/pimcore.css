@@ -24,6 +24,7 @@
     background: url("/pimcore/static6/img/flat-color-icons/cancel.svg") no-repeat scroll left center transparent !important;
 }
 
+
 /** Customer Automation Rules Tabs **/
 .plugin_cmf_icon_rule_settings {
     background: url("/pimcore/static6/img/flat-color-icons/settings.svg") no-repeat scroll left center transparent !important;
@@ -84,4 +85,9 @@
     width: 100%;
     text-align: center;
     font-size: 8pt;
+}
+
+
+.plugin_cmf_icon_export_action {
+    background: url("/pimcore/static6/img/flat-color-icons/export.svg") center center no-repeat !important;
 }

@@ -29,3 +29,6 @@ plugin_cmf_custom_reports_termsegmentbuilder_sql: "SQL (die erste Spalte muss 't
 plugin_cmf_custom_reports_termsegmentbuilder_term_definition: "term definition"
 plugin_cmf_newsletter_enqueue_all_customers: "Newsletter: alle Kunden exportieren"
 plugin_cmf_newsletter_queue_running_tooltip: "Newsletter Sync läuft"
+plugin_cmf_newsletter_export_template: "MailChimp Template Export"
+plugin_cmf_newsletter_export_template_success: "Templateexport erfolgreich"
+plugin_cmf_newsletter_export_template_error: "Templateexport fehlgeschlagen"

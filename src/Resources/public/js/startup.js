@@ -16,7 +16,6 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
         this.initToolbar();
         this.initNewsletterQueueInfo();
 
-
     },
 
     initToolbar: function () {
@@ -207,6 +206,42 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
         pimcore.helpers.initMenuTooltips();
 
         this.checkNewsletterQueueStatus(statusIcon);
+    },
+
+
+    postOpenDocument: function(document, type) {
+
+        if(pimcore.settings.cmf.newsletterSyncEnabled && type == 'email') {
+
+            document.tab.items.items[0].add({
+                text: t('plugin_cmf_newsletter_export_template'),
+                iconCls: 'plugin_cmf_icon_export_action',
+                scale: 'small',
+                handler: function (obj) {
+
+                    Ext.Ajax.request({
+                        url: "/admin/customermanagementframework/templates/export",
+                        method: "post",
+                        params: {document_id: document.id},
+                        success: function (response) {
+
+                            var rdata = Ext.decode(response.responseText);
+                            if(rdata && rdata.success) {
+                                pimcore.helpers.showNotification(t("success"), t("plugin_cmf_newsletter_export_template_success"), "success");
+                            } else {
+                                pimcore.helpers.showNotification(t("error"), t("plugin_cmf_newsletter_export_template_error"), "error", response.responseText);
+                            }
+
+                        }.bind(this)
+                    });
+
+                }.bind(this, document)
+            });
+            pimcore.layout.refresh();
+
+        }
+
+
     }
 });
 

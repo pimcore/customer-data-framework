@@ -23,6 +23,7 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
     public function getJsPaths()
     {
         return [
+            '/admin/customermanagementframework/helper/settings-json',
             '/bundles/pimcorecustomermanagementframework/js/startup.js',
             '/bundles/pimcorecustomermanagementframework/js/ActivityView.js',
             '/bundles/pimcorecustomermanagementframework/js/CustomerView.js',
@@ -33,7 +34,7 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
             '/bundles/pimcorecustomermanagementframework/js/config/conditions.js',
             '/bundles/pimcorecustomermanagementframework/js/config/actions.js',
             '/bundles/pimcorecustomermanagementframework/js/config/actions.js',
-            '/bundles/pimcorecustomermanagementframework/js/pimcore/report/custom/definitions/termSegmentBuilder.js',
+            '/bundles/pimcorecustomermanagementframework/js/pimcore/report/custom/definitions/termSegmentBuilder.js'
         ];
     }
 
