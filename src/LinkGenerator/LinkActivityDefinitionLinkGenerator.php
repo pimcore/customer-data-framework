@@ -14,6 +14,8 @@ namespace CustomerManagementFrameworkBundle\LinkGenerator;
 use Pimcore\Model\DataObject\ClassDefinition\LinkGeneratorInterface;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\LinkActivityDefinition;
+use Pimcore\Model\Document;
+use Pimcore\Model\Site;
 use Pimcore\Tool;
 
 class LinkActivityDefinitionLinkGenerator implements LinkGeneratorInterface
@@ -32,6 +34,14 @@ class LinkActivityDefinitionLinkGenerator implements LinkGeneratorInterface
      */
     public function generate(Concrete $object, array $params = []): string
     {
+
+        // workarround to let it work in cross site links
+        if (!Site::isSiteRequest()) {
+            $site = new Site();
+            $site->setRootDocument(Document::getById(1));
+            Site::setCurrentSite($site);
+        }
+
         $href = $object->getLink()->getHref();
 
         $url = new \Net_URL2($href);

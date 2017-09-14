@@ -459,7 +459,7 @@
         "locked": false
     },
     "icon": "\/pimcore\/static6\/img\/flat-color-icons\/sports_mode.svg",
-    "previewUrl": "\/admin\/customermanagementframework\/helper\/link-activity-definition-preview",
+    "previewUrl": "\/__customermanagementframework\/object-preview\/link-activity-definition-preview",
     "group": "CustomerManagement",
     "propertyVisibility": {
         "grid": {
