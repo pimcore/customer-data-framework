@@ -82,7 +82,7 @@ $segmentManager->mergeSegments($customer, [$climbingSegment], [], "InterestSegme
 $segmentManager->saveMergedSegments($customer);
 
 /*
-    The same example above but manually determine the counter (based on activity data)
+    The same example like above but manually determine the counter (based on activity data)
 */
 $hikingActivityCounter = 12;
 $climbingActivityCounter = 3;
