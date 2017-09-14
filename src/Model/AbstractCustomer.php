@@ -14,6 +14,7 @@ namespace CustomerManagementFrameworkBundle\Model;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\SaveOptions;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProviderHandlerInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 
 abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implements CustomerInterface
@@ -39,7 +40,15 @@ abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implement
      */
     public function getAllSegments()
     {
-        return array_merge((array)$this->getCalculatedSegments(), (array)$this->getManualSegments());
+        /**
+         * @var SegmentManagerInterface $segmentManager
+         */
+        $segmentManager = \Pimcore::getContainer()->get('cmf.segment_manager');
+
+        return array_merge(
+            $segmentManager->getCalculatedSegmentsFromCustomer($this),
+            $segmentManager->getManualSegmentsFromCustomer($this)
+        );
     }
 
     public function getRelatedCustomerGroups()

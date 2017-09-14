@@ -21,6 +21,7 @@ use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Model\Object\Concrete;
 use Pimcore\Model\Object\CustomerSegment;
 use Pimcore\Model\Object\CustomerSegmentGroup;
+use Pimcore\Model\Object\Data\ObjectMetadata;
 use Pimcore\Model\Object\Service;
 
 class DefaultSegmentManager implements SegmentManagerInterface
@@ -466,6 +467,55 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
+     * @param CustomerInterface $customer
+     * @return CustomerSegmentInterface[]
+     */
+    public function getCalculatedSegmentsFromCustomer(CustomerInterface $customer)
+    {
+        return $this->extractSegmentsFromPimcoreFieldData($customer->getCalculatedSegments());
+    }
+
+    /**
+     * @param CustomerInterface $customer
+     * @return CustomerSegmentInterface[]
+     */
+    public function getManualSegmentsFromCustomer(CustomerInterface $customer)
+    {
+        return $this->extractSegmentsFromPimcoreFieldData($customer->getManualSegments());
+    }
+
+
+
+    /**
+     * The CMF supports object with metadata and "normal" object relations as store for the segments of a customer.
+     * This methods extracts the segments if object with metadata is used.
+     *
+     * @param CustomerSegmentInterface[]|ObjectMetadata[]|null $segments
+     * @return CustomerSegmentInterface[]
+     */
+    protected function extractSegmentsFromPimcoreFieldData($segments)
+    {
+        if(!is_array($segments)) {
+            return [];
+        }
+
+        if(!sizeof($segments)) {
+            return [];
+        }
+
+        $result = [];
+        foreach($segments as $segment) {
+            if($segment instanceof CustomerSegmentInterface) {
+                $result[] = $segment;
+            } elseif($segment instanceof ObjectMetadata && $segment->getObject() instanceof CustomerSegmentInterface) {
+                $result[] = $segment->getObject();
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Return segments of given customers which are within given customer segment group.
      *
      * @param CustomerInterface $customer
@@ -504,13 +554,17 @@ class DefaultSegmentManager implements SegmentManagerInterface
         CustomerInterface $customer,
         array $addSegments,
         array $deleteSegments = [],
-        $hintForNotes = null
+        $hintForNotes = null,
+        $segmentCreatedTimestamp = null,
+        $segmentApplicationCounter = null
     ) {
         \Pimcore::getContainer()->get('cmf.segment_manager.segment_merger')->mergeSegments(
             $customer,
             $addSegments,
             $deleteSegments,
-            $hintForNotes
+            $hintForNotes,
+            $segmentCreatedTimestamp,
+            $segmentApplicationCounter
         );
     }
 

@@ -95,6 +95,32 @@ interface SegmentManagerInterface
      * @param array $addSegments
      * @param array $deleteSegments
      * @param string|null $hintForNotes
+     * @param int|true|null $segmentCreatedTimestamp     Optional. Can be used to store the date when the segment was added (for potentially expiring segments).
+     *
+     *                                                   If true was passed the timestamp will be set to the current time if the segment was added, otherwise the timestamp will be untouched.
+     *
+     *                                                   If a timestamp (int) was passed this timestamp will be stored.
+     *                                                   Be careful: if you use this in SegmentBuilders it's not predicatable when/how often the SegmentBuilder will run.
+     *                                                   Therefore it's not a good idea to rely on the execution timestamp (time()) here.
+     *                                                   It's necessary to do this based on other criterias (for example activities).
+     *
+     *                                                   If null was passed the timestamp will be set to null.
+     *
+     *                                                   This feature will only work if you use an object with metadata field to store the segment relations. Take a look at the docs for more information.
+     *
+     *
+     * @param int|true|null $segmentApplicationCounter   Optional. Can be used to store a counter how often the segment applies or how often the segment has been added.
+     *
+     *                                                   If true was passed the counter will increment by one each time the timestamp changes. Otherwise it stay's untouched.
+     *
+     *                                                   If a counter (int) was passed this counter will be used as new value.
+     *                                                   Be careful: if you use this in SegmentBuilders it's not predicatable when/how often the SegmentBuilder will run.
+     *                                                   Therefore it's not a good idea to just always increment it by one here.
+     *                                                   It's necessary to do this based on other criterias (for example activities).
+     *
+     *                                                   If null was passed the timestamp will be set to null.
+     *
+     *                                                   This feature will only work if you use an object with metadata field to store the segment relations. Take a look at the docs for more information.
      *
      * @return void
      */
@@ -102,7 +128,9 @@ interface SegmentManagerInterface
         CustomerInterface $customer,
         array $addSegments,
         array $deleteSegments = [],
-        $hintForNotes = null
+        $hintForNotes = null,
+        $segmentCreatedTimestamp = null,
+        $segmentApplicationCounter = null
     );
 
     /**
@@ -220,6 +248,18 @@ interface SegmentManagerInterface
      * @return bool
      */
     public function customerHasSegment(CustomerInterface $customer, CustomerSegmentInterface $segment);
+
+    /**
+     * @param CustomerInterface $customer
+     * @return CustomerSegmentInterface[]
+     */
+    public function getCalculatedSegmentsFromCustomer(CustomerInterface $customer);
+
+    /**
+     * @param CustomerInterface $customer
+     * @return CustomerSegmentInterface[]
+     */
+    public function getManualSegmentsFromCustomer(CustomerInterface $customer);
 
     /**
      * Return segments of given customers which are within given customer segment group.

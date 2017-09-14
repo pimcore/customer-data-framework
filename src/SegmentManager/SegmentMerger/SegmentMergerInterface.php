@@ -23,6 +23,8 @@ interface SegmentMergerInterface
      * @param array $addSegments
      * @param array $deleteSegments
      * @param string|null $hintForNotes
+     * @param int|true|null $segmentCreatedTimestamp
+     * @param int|true|null $segmentApplicationCounter
      *
      * @return void
      */
@@ -30,7 +32,9 @@ interface SegmentMergerInterface
         CustomerInterface $customer,
         array $addSegments,
         array $deleteSegments = [],
-        $hintForNotes = null
+        $hintForNotes = null,
+        $segmentCreatedTimestamp = null,
+        $segmentApplicationCounter = null
     );
 
     /**
