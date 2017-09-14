@@ -59,6 +59,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $this->registerCustomerListConfiguration($container, $config['customer_list']);
         $this->registerCustomerDuplicatesServicesConfiguration($container, $config['customer_duplicates_services']);
         $this->registerNewsletterConfiguration($container, $config['newsletter']);
+        $this->registerActivityUrlTrackerConfiguration($container, $config['activity_url_tracker']);
     }
 
     private function registerGeneralConfiguration(ContainerBuilder $container, array $config)
@@ -137,5 +138,12 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
             $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.apiKey', $config['mailchimp']['apiKey']);
             $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.cliUpdatesPimcoreUserName', $config['mailchimp']['cliUpdatesPimcoreUserName']);
         }
+    }
+
+    private function registerActivityUrlTrackerConfiguration(ContainerBuilder $container, array $config)
+    {
+        $container->setParameter('pimcore_customer_management_framework.url_activity_tracker.enabled', (bool) $config['enabled']);
+        $container->setParameter('pimcore_customer_management_framework.url_activity_tracker.linkCmfcPlaceholder', $config['linkCmfcPlaceholder']);
+
     }
 }

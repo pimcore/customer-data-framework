@@ -11,6 +11,7 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
+use Pimcore\Model\DataObject\LinkActivityDefinition;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -96,5 +97,21 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
         ';
 
         return new Response($content, 200, ['content-type' => 'application/javascript']);
+    }
+
+    /**
+     * @return Response
+     * @Route("/link-activity-definition-preview")
+     */
+    public function linkActivityDefinitionPreviewAction()
+    {
+        $activityDefinition = LinkActivityDefinition::getById(6697057);
+
+        return $this->render(
+        'PimcoreCustomerManagementFrameworkBundle:Admin\Helper:link-activity-definition-preview.html.php',
+        [
+            'activityDefinition' => $activityDefinition
+        ]
+    );
     }
 }

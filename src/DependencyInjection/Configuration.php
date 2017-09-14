@@ -41,6 +41,7 @@ class Configuration implements ConfigurationInterface
         $rootNode->append($this->buildCustomerListNode());
         $rootNode->append($this->buildCustomerDuplicatesServicesNode());
         $rootNode->append($this->buildNewsletterNode());
+        $rootNode->append($this->buildActivityUrlTrackerNode());
 
         return $treeBuilder;
     }
@@ -416,5 +417,24 @@ class Configuration implements ConfigurationInterface
             ->end();
 
         return $newsletter;
+    }
+
+    private function buildActivityUrlTrackerNode()
+    {
+        $treeBuilder = new TreeBuilder();
+
+        $tracker = $treeBuilder->root('activity_url_tracker');
+
+        $tracker
+            ->addDefaultsIfNotSet()
+            ->info('Configuration of activity url tracker services');
+
+        $tracker
+            ->children()
+                ->booleanNode('enabled')->defaultTrue()->end()
+                ->scalarNode('linkCmfcPlaceholder')->defaultValue('*|ID_ENCODED|*')->info('used for automatic link generation of LinkActivityDefinition data objects')->end()
+            ->end();
+
+        return $tracker;
     }
 }

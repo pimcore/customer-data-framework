@@ -23,6 +23,10 @@ class UrlActivityTracker extends AbstractFrontendListener
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
+        if(!\Pimcore::getContainer()->getParameter('pimcore_customer_management_framework.url_activity_tracker.enabled')) {
+            return;
+        }
+
         $request = $event->getRequest();
 
         if (!$request->get('cmfa') || !$request->get('cmfc')) {

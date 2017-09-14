@@ -110,6 +110,11 @@ pimcore_customer_management_framework:
           apiKey: d1a46n87d7fsd51f8e98a9decc7b71b9-us15
           cliUpdatesPimcoreUserName: mailchimp-cli
 
+    activity_url_tracker:
+          enabled: true
+          # used for automatic link generation of LinkActivityDefinition data objects
+          linkCmfcPlaceholder: '*|ID_ENCODED|*'
+
     # Configuration of customer list view
     customer_list:
         exporters:

@@ -94,7 +94,10 @@ services:
     cmf.activity_url_tracker:
         class: CustomerManagementFrameworkBundle\ActivityUrlTracker\DefaultActivityUrlTracker
 
-
+    cmf.link-activity-definition.linkgenerator:
+        class: CustomerManagementFrameworkBundle\LinkGenerator\LinkActivityDefinitionLinkGenerator
+        arguments:
+          - '%pimcore_customer_management_framework.url_activity_tracker.linkCmfcPlaceholder%'
 
     cmf.segment_manager.segment_merger:
         class: CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\DefaultSegmentMerger

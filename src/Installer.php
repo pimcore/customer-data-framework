@@ -14,27 +14,23 @@ namespace CustomerManagementFrameworkBundle;
 use Pimcore\Db;
 use Pimcore\Extension\Bundle\Installer\AbstractInstaller;
 use Pimcore\Logger;
+use Pimcore\Model\DataObject\ClassDefinition;
 
 class Installer extends AbstractInstaller
 {
     public function install()
     {
         $this->installPermissions();
-        $this->installClasses();
         $this->installDatabaseTables();
+        $this->installClasses();
 
         return true;
     }
 
     public function isInstalled()
     {
-        $db = Db::get();
-        try {
-            $db->fetchOne('select customerId from plugin_cmf_newsletter_queue limit 1');
-
+        if (ClassDefinition::getByName('LinkActivityDefinition')) {
             return true;
-        } catch (\Exception $e) {
-            return false;
         }
     }
 
@@ -230,12 +226,13 @@ class Installer extends AbstractInstaller
 
         self::installClass('CustomerSegmentGroup', $sourcePath.'/class_CustomerSegmentGroup_export.json');
         self::installClass('CustomerSegment', $sourcePath.'/class_CustomerSegment_export.json');
-        self::installClass('ActivityDefinition', $sourcePath.'/class_ActivityDefinition_export.json');
         self::installClass('SsoIdentity', $sourcePath.'/class_SsoIdentity_export.json');
         self::installClass(
             'TermSegmentBuilderDefinition',
             $sourcePath.'/class_TermSegmentBuilderDefinition_export.json'
         );
+
+        self::installClass('LinkActivityDefinition', $sourcePath.'/class_LinkActivityDefinition_export.json');
     }
 
     public static function installClass($classname, $filepath)
