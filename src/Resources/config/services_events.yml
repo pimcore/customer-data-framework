@@ -5,9 +5,7 @@ services:
             autoconfigure: true
 
     pimcore.event_listener.frontend.activity_url_tracker:
-            class: CustomerManagementFrameworkBundle\EventListener\Frontend\UrlActivityTracker
-            calls:
-                - [setPimcoreContextResolver, ['@pimcore.service.request.pimcore_context_resolver']]
+            class: CustomerManagementFrameworkBundle\Event\Frontend\UrlActivityTracker
             tags:
                 - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: -200 }
 

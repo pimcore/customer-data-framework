@@ -54,6 +54,11 @@ class DefaultActivityUrlTracker implements ActivityUrlTrackerInterface
              * @var LinkActivityDefinition $activityDefinition
              */
             if ($activityDefinition = LinkActivityDefinition::getByCode($activityCode, 1)) {
+
+                if (!$activityDefinition->getActive()) {
+                    return;
+                }
+
                 $activity = new TrackedUrlActivity($customer, $activityDefinition);
 
                 $this->activityManager->trackActivity($activity);

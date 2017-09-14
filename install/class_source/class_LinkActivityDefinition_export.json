@@ -179,12 +179,25 @@
                                         "visibleSearch": false
                                     },
                                     {
-                                        "fieldtype": "checkbox",
-                                        "defaultValue": 1,
-                                        "queryColumnType": "tinyint(1)",
-                                        "columnType": "tinyint(1)",
-                                        "phpdocType": "boolean",
-                                        "name": "activeURL",
+                                        "fieldtype": "select",
+                                        "options": [
+                                            {
+                                                "key": "Yes",
+                                                "value": "1"
+                                            },
+                                            {
+                                                "key": "No",
+                                                "value": "0"
+                                            }
+                                        ],
+                                        "width": 90,
+                                        "defaultValue": "1",
+                                        "optionsProviderClass": "",
+                                        "optionsProviderData": "",
+                                        "queryColumnType": "varchar(190)",
+                                        "columnType": "varchar(190)",
+                                        "phpdocType": "string",
+                                        "name": "active",
                                         "title": "active",
                                         "tooltip": "",
                                         "mandatory": false,
