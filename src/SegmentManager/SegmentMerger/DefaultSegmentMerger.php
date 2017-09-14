@@ -16,11 +16,11 @@ use CustomerManagementFrameworkBundle\Helper\Notes;
 use CustomerManagementFrameworkBundle\Helper\Objects;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\DefaultSegmentMerger\MetadataFiller;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Cache;
 use Pimcore\Model\Element\Note;
-use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Model\Object\ClassDefinition;
 use Pimcore\Model\Object\Data\ObjectMetadata;
 
@@ -32,7 +32,6 @@ class DefaultSegmentMerger implements SegmentMergerInterface
      * @var CustomerSaveManagerInterface
      */
     protected $customerSaveManager;
-
 
     /**
      * @var
@@ -48,7 +47,6 @@ class DefaultSegmentMerger implements SegmentMergerInterface
      * @var array
      */
     protected $mergedSegmentsCustomerSaveQueue;
-
 
     public function __construct(CustomerSaveManagerInterface $customerSaveManager, SegmentManagerInterface $segmentManager, MetadataFiller $metadataFiller)
     {
@@ -68,7 +66,6 @@ class DefaultSegmentMerger implements SegmentMergerInterface
         $segmentCreatedTimestamp = null,
         $segmentApplicationCounter = null
     ) {
-
         list($addManualSegments, $addCalculatedSegments) = $this->devideIntoManualAndCalculatedSegments($addSegments);
         list($deleteManualSegments, $deleteCalculatedSegments) = $this->devideIntoManualAndCalculatedSegments($deleteSegments);
 
@@ -99,6 +96,7 @@ class DefaultSegmentMerger implements SegmentMergerInterface
 
     /**
      * @param CustomerSegmentInterface[] $segments
+     *
      * @return array
      */
     private function devideIntoManualAndCalculatedSegments(array $segments)
@@ -147,7 +145,6 @@ class DefaultSegmentMerger implements SegmentMergerInterface
             $saveNeeded = true;
         }
 
-
         $this->setSegmentsDataOfCustomer($customer, $currentSegments, $calculated);
 
         $saveNeeded = $this->metadataFiller->mergedSegmentsFillUpMetadata(
@@ -162,7 +159,6 @@ class DefaultSegmentMerger implements SegmentMergerInterface
         );
 
         if ($saveNeeded) {
-
             $notes = [];
 
             if (is_array($removedSegments) && sizeof($removedSegments)) {
@@ -183,17 +179,17 @@ class DefaultSegmentMerger implements SegmentMergerInterface
         }
     }
 
-
     /**
      * @param $segments
      * @param $addSegments
+     *
      * @return CustomerSegmentInterface[]|false
      */
     protected function addSegmentsToArray(&$segments, $addSegments)
     {
         $addedSegments = Objects::addObjectsToArray($segments, $addSegments);
 
-        if($addedSegments) {
+        if ($addedSegments) {
             $addedSegments = $this->objectMetadataArrayToObjectArray($addedSegments);
         }
 
@@ -202,18 +198,17 @@ class DefaultSegmentMerger implements SegmentMergerInterface
 
     protected function convertToSegmentRelationFieldType(array $segments, $calculated = false)
     {
-        if(!sizeof($segments)) {
+        if (!sizeof($segments)) {
             return $segments;
         }
 
-        if(!$this->hasObjectMetadataSegmentsField($calculated)) {
+        if (!$this->hasObjectMetadataSegmentsField($calculated)) {
             return $segments;
         }
 
         $fieldname = $calculated ? 'calculatedSegments' : 'manualSegments';
 
-        foreach($segments as $key => $segment) {
-
+        foreach ($segments as $key => $segment) {
             $objectMetadata = new ObjectMetadata($fieldname, ['created_timestamp', 'application_counter'], $segment);
             $segments[$key] = $objectMetadata;
         }
@@ -224,16 +219,16 @@ class DefaultSegmentMerger implements SegmentMergerInterface
     /**
      *
      * @param bool $calculated
+     *
      * @return bool
      */
     public function hasObjectMetadataSegmentsField($calculated = false)
     {
-
         $classId = \Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassId();
 
         $cacheKey = 'CMFSegmentMergerHasObjectMetdataField' . $classId;
 
-        if($calculated) {
+        if ($calculated) {
             $cacheKey .= 'Calculated';
         } else {
             $cacheKey .= 'Manual';
@@ -241,8 +236,7 @@ class DefaultSegmentMerger implements SegmentMergerInterface
 
         $fieldname = $calculated ? 'calculatedSegments' : 'manualSegments';
 
-        if(!Cache\Runtime::isRegistered($cacheKey)) {
-
+        if (!Cache\Runtime::isRegistered($cacheKey)) {
             $classDefinition = ClassDefinition::getById($classId);
             $fd = $classDefinition->getFieldDefinition($fieldname);
 
@@ -259,14 +253,14 @@ class DefaultSegmentMerger implements SegmentMergerInterface
     /**
      * @param $segments
      * @param $addSegments
+     *
      * @return CustomerSegmentInterface[]|false
      */
     protected function removeSegmentsFromArray(&$segments, $removeSegments)
     {
-
         $removedSegments = Objects::removeObjectsFromArray($segments, $removeSegments);
 
-        if($removedSegments) {
+        if ($removedSegments) {
             $removedSegments = $this->objectMetadataArrayToObjectArray($removedSegments);
         }
 
@@ -275,7 +269,7 @@ class DefaultSegmentMerger implements SegmentMergerInterface
 
     private function objectMetadataArrayToObjectArray(array $array)
     {
-        foreach($array as $key => $item) {
+        foreach ($array as $key => $item) {
             $array[$key] = $item instanceof ObjectMetadata ? $item->getObject() : $item;
         }
 
@@ -285,16 +279,16 @@ class DefaultSegmentMerger implements SegmentMergerInterface
     /**
      * @param CustomerInterface $customer
      * @param bool $calculated
+     *
      * @return \CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface[]|\Pimcore\Model\Object\Data\ObjectMetadata[]
      */
     public function getSegmentsDataFromCustomer(CustomerInterface $customer, $calculated = false)
     {
-        if($calculated) {
+        if ($calculated) {
             return (array) $customer->getCalculatedSegments();
         }
 
         return (array) $customer->getManualSegments();
-
     }
 
     /**

@@ -23,12 +23,12 @@ interface SegmentManagerInterface
     const CONDITION_OR = 'or';
 
     /**
-     * Returns a list of customers which are within the given customer segments.
+     * Returns a list of customers filtered by segment IDs
      *
      * @param int[] $segmentIds
      * @param string $conditionMode
      *
-     * @return CustomerSegment\Listing
+     * @return \Pimcore\Model\Object\Listing\Concrete
      */
     public function getCustomersBySegmentIds(array $segmentIds, $conditionMode = self::CONDITION_AND);
 
@@ -51,7 +51,7 @@ interface SegmentManagerInterface
     public function getSegmentGroupById($id);
 
     /**
-     * Returns an array with all customer segments.
+     * Returns an object list of all customer segments.
      *
      * @param array $params
      *
@@ -60,7 +60,7 @@ interface SegmentManagerInterface
     public function getSegments();
 
     /**
-     * Returns an object list with all customer segment groups. Optionally this could be filtered by given params.
+     * Returns an object list with all customer segment groups.
      *
      * @param array $params
      *
@@ -88,39 +88,36 @@ interface SegmentManagerInterface
     public function getSegmentBuilders();
 
     /**
-     * Could be used to add/remove segments to/from customers. If segments are added or removed this will be tracked in the notes/events tab of the customer. With the optional $hintForNotes parameter it's possible to add an iditional hint to the notes/event entries.
+     * Could be used to add/remove segments to/from customers.
+     * If segments are added or removed this will be tracked in the notes/events tab of the customer.
      * The changes of this method will be persisted when saveMergedSegments() gets called.
      *
      * @param CustomerInterface $customer
      * @param array $addSegments
      * @param array $deleteSegments
-     * @param string|null $hintForNotes
-     * @param int|true|null $segmentCreatedTimestamp     Optional. Can be used to store the date when the segment was added (for potentially expiring segments).
-     *
-     *                                                   If true was passed the timestamp will be set to the current time if the segment was added, otherwise the timestamp will be untouched.
-     *
-     *                                                   If a timestamp (int) was passed this timestamp will be stored.
-     *                                                   Be careful: if you use this in SegmentBuilders it's not predicatable when/how often the SegmentBuilder will run.
-     *                                                   Therefore it's not a good idea to rely on the execution timestamp (time()) here.
-     *                                                   It's necessary to do this based on other criterias (for example activities).
-     *
-     *                                                   If null was passed the timestamp will be set to null.
-     *
-     *                                                   This feature will only work if you use an object with metadata field to store the segment relations. Take a look at the docs for more information.
-     *
-     *
-     * @param int|true|null $segmentApplicationCounter   Optional. Can be used to store a counter how often the segment applies or how often the segment has been added.
-     *
-     *                                                   If true was passed the counter will increment by one each time the timestamp changes. Otherwise it stay's untouched.
-     *
-     *                                                   If a counter (int) was passed this counter will be used as new value.
-     *                                                   Be careful: if you use this in SegmentBuilders it's not predicatable when/how often the SegmentBuilder will run.
-     *                                                   Therefore it's not a good idea to just always increment it by one here.
-     *                                                   It's necessary to do this based on other criterias (for example activities).
-     *
-     *                                                   If null was passed the timestamp will be set to null.
-     *
-     *                                                   This feature will only work if you use an object with metadata field to store the segment relations. Take a look at the docs for more information.
+     * @param string|null $hintForNotes additional hint for the notes/event entries
+     * @param int|true|null $segmentCreatedTimestamp
+     *  Optional. Can be used to store the date when the segment was added (for potentially expiring segments).
+     *  This feature will only work if you use an object with metadata field to store the segment relations.
+     *  Take a look at the docs for more information.
+     *  - If true was passed the timestamp will be set to the current time if the segment was added,
+     *    otherwise the timestamp will be untouched.
+     *  - If a timestamp (int) was passed this timestamp will be stored.
+     *    Be careful: if you use this in SegmentBuilders it's not predicatable when/how often the SegmentBuilder will run.
+     *    Therefore it's not a good idea to rely on the execution timestamp (time()) here.
+     *    It's necessary to do this based on other criterias (for example activities).
+     *  - If null was passed the timestamp will be set to null
+     * @param int|true|null $segmentApplicationCounter
+     *  Optional. Can be used to store a counter how often the segment applies or how often the segment has been added.
+     *  This feature will only work if you use an object with metadata field to store the segment relations.
+     *  Take a look at the docs for more information.
+     *  - If true was passed the counter will increment by one each time the timestamp changes,
+     *    otherwise it stay's untouched.
+     *  - If a counter (int) was passed this counter will be used as new value.
+     *    Be careful: if you use this in SegmentBuilders it's not predicatable when/how often the SegmentBuilder will run.
+     *    Therefore it's not a good idea to just always increment it by one here.
+     *    It's necessary to do this based on other criterias (for example activities).
+     *  - If null was passed the timestamp will be set to null.
      *
      * @return void
      */
@@ -134,7 +131,7 @@ interface SegmentManagerInterface
     );
 
     /**
-     * Needs to be called after segments are merged with mergeSegments() in order to persist the segments in the customer object
+     * Needs to be called after segments are merged with mergeSegments() in order to persist the segments in the customer object.
      *
      * @param CustomerInterface $customer
      *
@@ -143,27 +140,27 @@ interface SegmentManagerInterface
     public function saveMergedSegments(CustomerInterface $customer);
 
     /**
-     * Create a calculated segment within the given $segmentGroup. The $segmentGroup needs to be either a CustomerSegmentGroup object or a reference to a calculated CustomerSegmentGroup object.
-     * With the (optional) $subFolder parameter it's possible to create subfolders within the CustomerSegmentGroup for better a better overview.
+     * Create a calculated segment within the given $segmentGroup.
+     * The $segmentGroup needs to be either a CustomerSegmentGroup object or a reference string to a calculated CustomerSegmentGroup object.
      *
      * @param string $segmentReference
      * @param string|CustomerSegmentGroup $segmentGroup
      * @param string $segmentName
-     * @param string $subFolder
+     * @param string|null $subFolder Optional. If passed a subfolder within the CustomerSegmentGroup will be created.
      *
      * @return CustomerSegmentInterface
      */
     public function createCalculatedSegment($segmentReference, $segmentGroup, $segmentName = null, $subFolder = null);
 
     /**
-     * * Create a customer segment within the given $segmentGroup. The $segmentGroup needs to be either a CustomerSegmentGroup object or a reference to a CustomerSegmentGroup object.
-     * With the (optional) $subFolder parameter it's possible to create subfolders within the CustomerSegmentGroup for better a better overview.
+     * Create a customer segment within the given $segmentGroup.
+     * The $segmentGroup needs to be either a CustomerSegmentGroup object or a reference string to a CustomerSegmentGroup object.
      *
      * @param string $segmentReference
      * @param string|CustomerSegmentGroup $segmentGroup
      * @param string $segmentName
      * @param bool $calculated
-     * @param string $subFolder
+     * @param string|null $subFolder Optional. If passed a subfolder within the CustomerSegmentGroup will be created.
      *
      * @return CustomerSegmentInterface
      */
@@ -176,7 +173,8 @@ interface SegmentManagerInterface
     );
 
     /**
-     * Returns the CustomerSegment with given reference within given CustomerSegmentGroup. If no CustomerSegmentGroup is given it will search globally.
+     * Returns the CustomerSegment with given reference within given CustomerSegmentGroup.
+     * If no CustomerSegmentGroup is given it will search globally.
      *
      * @param string $segmentReference
      * @param CustomerSegmentGroup $segmentGroup
@@ -189,7 +187,7 @@ interface SegmentManagerInterface
     /**
      * Creates a segment group.
      *
-     * @param       $segmentGroupName
+     * @param string $segmentGroupName
      * @param null $segmentGroupReference
      * @param bool $calculated
      * @param array $values
@@ -216,12 +214,12 @@ interface SegmentManagerInterface
     /**
      * Updates a sgement.
      *
-     * @param CustomerSegment $segment
+     * @param CustomerSegmentInterface $segment
      * @param array $values
      *
      * @return mixed
      */
-    public function updateSegment(CustomerSegment $segment, array $values = []);
+    public function updateSegment(CustomerSegmentInterface $segment, array $values = []);
 
     /**
      * Returns the SegmentGroup with the given reference.
@@ -251,12 +249,14 @@ interface SegmentManagerInterface
 
     /**
      * @param CustomerInterface $customer
+     *
      * @return CustomerSegmentInterface[]
      */
     public function getCalculatedSegmentsFromCustomer(CustomerInterface $customer);
 
     /**
      * @param CustomerInterface $customer
+     *
      * @return CustomerSegmentInterface[]
      */
     public function getManualSegmentsFromCustomer(CustomerInterface $customer);

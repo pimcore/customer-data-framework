@@ -71,9 +71,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @param int $id
-     *
-     * @return CustomerSegmentInterface
+     * @inheritdoc
      */
     public function getSegmentById($id)
     {
@@ -81,9 +79,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @param int $id
-     *
-     * @return CustomerSegmentGroup
+     * @inheritdoc
      */
     public function getSegmentGroupById($id)
     {
@@ -91,10 +87,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @param array $segmentIds
-     * @param string $conditionMode
-     *
-     * @return \Pimcore\Model\Object\Listing\Concrete
+     * @inheritdoc
      */
     public function getCustomersBySegmentIds(array $segmentIds, $conditionMode = self::CONDITION_AND)
     {
@@ -103,7 +96,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
         $conditions = [];
         foreach ($segmentIds as $segmentId) {
-            $conditions[] = '(o_id in (select src_id from object_relations_1 where dest_id = ' . intval($segmentId) . '))';
+            $conditions[] = '(o_id in (select src_id from object_relations_' . CustomerSegment::classId() . ' where dest_id = ' . intval($segmentId) . '))';
         }
 
         if (sizeof($conditions)) {
@@ -114,9 +107,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @param array $params
-     *
-     * @return CustomerSegment\Listing
+     * @inheritdoc
      */
     public function getSegments(array $params = [])
     {
@@ -130,9 +121,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @param array $params
-     *
-     * @return CustomerSegmentGroup\Listing
+     * @inheritdoc
      */
     public function getSegmentGroups()
     {
@@ -146,29 +135,29 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @param bool $calculated
-     *
-     * @return \Pimcore\Model\Object\Folder
+     * @inheritdoc
      */
     public function getSegmentsFolder($calculated = true)
     {
         $folder = $calculated ? $this->segmentFolderCalculated : $this->segmentFolderManual;
 
-        if (is_string($folder)) {
-            $folder = Service::createFolderByPath($folder);
+        if (is_object($folder)) {
+            return $folder;
+        }
+
+        $folder = Service::createFolderByPath($folder);
+
+        if ($calculated) {
+            $this->segmentFolderCalculated = $folder;
+        } else {
+            $this->segmentFolderManual = $folder;
         }
 
         return $folder;
     }
 
     /**
-     * @param                      $segmentReference
-     * @param CustomerSegmentGroup $segmentGroup
-     * @param null $calculated
-     *
-     * @return CustomerSegment|null
-     *
-     * @throws \RuntimeException
+     * @inheritdoc
      */
     public function getSegmentByReference($segmentReference, CustomerSegmentGroup $segmentGroup = null, $calculated = null)
     {
@@ -198,15 +187,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @param string $segmentName
-     * @param CustomerSegmentGroup|string $segmentGroup
-     * @param null $segmentReference
-     * @param bool $calculated
-     * @param null $subFolder
-     *
-     * @return mixed|CustomerSegment
-     *
-     * @throws \RuntimeException
+     * @inheritdoc
      */
     public function createSegment(
         $segmentName,
@@ -263,12 +244,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @param string $segmentReference
-     * @param CustomerSegmentGroup|string $segmentGroup
-     * @param null $segmentName
-     * @param null $subFolder
-     *
-     * @return mixed|CustomerSegment
+     * @inheritdoc
      */
     public function createCalculatedSegment($segmentReference, $segmentGroup, $segmentName = null, $subFolder = null)
     {
@@ -282,12 +258,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @param       $segmentGroupName
-     * @param null $segmentGroupReference
-     * @param bool $calculated
-     * @param array $values
-     *
-     * @return CustomerSegmentGroup
+     * @inheritdoc
      */
     public function createSegmentGroup(
         $segmentGroupName,
@@ -320,8 +291,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @param CustomerSegmentGroup $segmentGroup
-     * @param array $values
+     * @inheritdoc
      */
     public function updateSegmentGroup(CustomerSegmentGroup $segmentGroup, array $values = [])
     {
@@ -348,12 +318,9 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @param CustomerSegment $segment
-     * @param array $values
-     *
-     * @throws \Exception
+     * @inheritdoc
      */
-    public function updateSegment(CustomerSegment $segment, array $values = [])
+    public function updateSegment(CustomerSegmentInterface $segment, array $values = [])
     {
         $segment->setValues($values);
 
@@ -378,10 +345,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @param $segmentGroupReference
-     * @param $calculated
-     *
-     * @return CustomerSegmentGroup|null
+     * @inheritdoc
      */
     public function getSegmentGroupByReference($segmentGroupReference, $calculated)
     {
@@ -406,10 +370,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @param CustomerSegmentGroup $segmentGroup
-     * @param array $ignoreSegments
-     *
-     * @return CustomerSegment[]
+     * @inheritdoc
      */
     public function getSegmentsFromSegmentGroup(CustomerSegmentGroup $segmentGroup, array $ignoreSegments = [])
     {
@@ -429,7 +390,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @param CustomerSegmentInterface $segment
+     * @inheritdoc
      */
     public function preSegmentUpdate(CustomerSegmentInterface $segment)
     {
@@ -450,10 +411,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @param CustomerInterface $customer
-     * @param CustomerSegmentInterface $segment
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function customerHasSegment(CustomerInterface $customer, CustomerSegmentInterface $segment)
     {
@@ -467,8 +425,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @param CustomerInterface $customer
-     * @return CustomerSegmentInterface[]
+     * @inheritdoc
      */
     public function getCalculatedSegmentsFromCustomer(CustomerInterface $customer)
     {
@@ -476,38 +433,36 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @param CustomerInterface $customer
-     * @return CustomerSegmentInterface[]
+     * @inheritdoc
      */
     public function getManualSegmentsFromCustomer(CustomerInterface $customer)
     {
         return $this->extractSegmentsFromPimcoreFieldData($customer->getManualSegments());
     }
 
-
-
     /**
      * The CMF supports object with metadata and "normal" object relations as store for the segments of a customer.
      * This methods extracts the segments if object with metadata is used.
      *
      * @param CustomerSegmentInterface[]|ObjectMetadata[]|null $segments
+     *
      * @return CustomerSegmentInterface[]
      */
     protected function extractSegmentsFromPimcoreFieldData($segments)
     {
-        if(!is_array($segments)) {
+        if (!is_array($segments)) {
             return [];
         }
 
-        if(!sizeof($segments)) {
+        if (!sizeof($segments)) {
             return [];
         }
 
         $result = [];
-        foreach($segments as $segment) {
-            if($segment instanceof CustomerSegmentInterface) {
+        foreach ($segments as $segment) {
+            if ($segment instanceof CustomerSegmentInterface) {
                 $result[] = $segment;
-            } elseif($segment instanceof ObjectMetadata && $segment->getObject() instanceof CustomerSegmentInterface) {
+            } elseif ($segment instanceof ObjectMetadata && $segment->getObject() instanceof CustomerSegmentInterface) {
                 $result[] = $segment->getObject();
             }
         }
@@ -516,12 +471,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * Return segments of given customers which are within given customer segment group.
-     *
-     * @param CustomerInterface $customer
-     * @param CustomerSegmentGroup|string $group
-     *
-     * @return CustomerSegmentInterface[]
+     * @inheritdoc
      */
     public function getCustomersSegmentsFromGroup(CustomerInterface $customer, $group)
     {
@@ -582,7 +532,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @return SegmentBuilderInterface[]
+     * @inheritdoc
      */
     public function getSegmentBuilders()
     {

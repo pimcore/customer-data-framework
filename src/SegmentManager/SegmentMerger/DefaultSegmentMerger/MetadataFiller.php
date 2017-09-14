@@ -37,9 +37,7 @@ class MetadataFiller
         $saveNeeded,
         DefaultSegmentMerger $segmentMerger
     ) {
-
-
-        if(!$segmentMerger->hasObjectMetadataSegmentsField($calculated)) {
+        if (!$segmentMerger->hasObjectMetadataSegmentsField($calculated)) {
             return $saveNeeded;
         }
 
@@ -48,8 +46,7 @@ class MetadataFiller
         /**
          * @var ObjectMetadata $segmentItem
          */
-        foreach($segmentMerger->getSegmentsDataFromCustomer($customer, $calculated) as $segmentItem)
-        {
+        foreach ($segmentMerger->getSegmentsDataFromCustomer($customer, $calculated) as $segmentItem) {
             if (!Objects::objectInArray($segmentItem, $addSegments)) {
                 continue;
             }
@@ -57,7 +54,7 @@ class MetadataFiller
             $appliedTimestamp = $this->determineAppliedTimestamp($segmentItem, $addedSegments, $timestampIfSegmentIsNew, $segmentCreatedTimestamp);
 
             if ($appliedTimestamp !== $this->getCurrentTimestamp($segmentItem)) {
-               $saveNeeded = true;
+                $saveNeeded = true;
             }
 
             $appliedCounter = $this->determineAppliedCounter($segmentItem, $addedSegments, $appliedTimestamp, $segmentApplicationCounter);
@@ -78,7 +75,7 @@ class MetadataFiller
         $timestampIfSegmentIsNew = $segmentCreatedTimestamp === true ? time() : $segmentCreatedTimestamp;
 
         if (is_int($timestampIfSegmentIsNew)) {
-           return $timestampIfSegmentIsNew;
+            return $timestampIfSegmentIsNew;
         }
 
         return null;
@@ -94,16 +91,14 @@ class MetadataFiller
         return $segmentItem->getApplication_counter();
     }
 
-
     protected function determineAppliedTimestamp(ObjectMetadata $segmentItem, $addedSegments, $timestampIfSegmentIsNew, $segmentCreatedTimestamp)
     {
-
         if (is_int($segmentCreatedTimestamp)) {
             return $segmentCreatedTimestamp;
         }
 
         if (Objects::objectInArray($segmentItem, $addedSegments)) {
-           return $timestampIfSegmentIsNew;
+            return $timestampIfSegmentIsNew;
         }
 
         if ($segmentCreatedTimestamp === true) {
@@ -120,11 +115,10 @@ class MetadataFiller
         }
 
         if ($segmentApplicationCounter === true) {
-
             $currentCounter = intval($this->getCurrentCounter($segmentItem));
 
-            if($appliedTimestamp != $this->getCurrentTimestamp($segmentItem)) {
-                return $currentCounter+1;
+            if ($appliedTimestamp != $this->getCurrentTimestamp($segmentItem)) {
+                return $currentCounter + 1;
             }
 
             return $currentCounter > 0 ? $currentCounter : 1;
