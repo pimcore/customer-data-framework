@@ -12,13 +12,28 @@
 namespace CustomerManagementFrameworkBundle\ActivityManager;
 
 use Carbon\Carbon;
+use CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface;
 
 class DefaultActivityManager implements ActivityManagerInterface
 {
+
+    /**
+     * @var ActivityStoreInterface
+     */
+    protected $activityStore;
+
+    /**
+     * @var bool
+     */
     protected $disableEvents = false;
+
+    public function __construct(ActivityStoreInterface $activityStore)
+    {
+        $this->activityStore = $activityStore;
+    }
 
     /**
      * @return bool
@@ -54,7 +69,7 @@ class DefaultActivityManager implements ActivityManagerInterface
      */
     public function trackActivity(ActivityInterface $activity)
     {
-        $store = \Pimcore::getContainer()->get('cmf.activity_store');
+        $store = $this->activityStore;
 
         if (!($activity->cmfGetActivityDate() instanceof Carbon)) {
             throw new \Exception(
@@ -110,7 +125,7 @@ class DefaultActivityManager implements ActivityManagerInterface
      */
     public function deleteActivity(ActivityInterface $activity)
     {
-        $store = \Pimcore::getContainer()->get('cmf.activity_store');
+        $store = $this->activityStore;
 
         $store->deleteActivity($activity);
     }
