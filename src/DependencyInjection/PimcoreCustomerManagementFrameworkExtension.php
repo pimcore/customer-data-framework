@@ -20,7 +20,6 @@ use CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\Object
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface;
 use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
-use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProviderHandlerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Symfony\Component\Config\FileLocator;
@@ -47,8 +46,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
             $loader->load('services_security_oauth_client.yml');
         }
 
-
-        if($config['newsletter']['newsletterSyncEnabled']) {
+        if ($config['newsletter']['newsletterSyncEnabled']) {
             $loader->load('services_newsletter.yml');
         }
 
@@ -61,6 +59,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $this->registerCustomerListConfiguration($container, $config['customer_list']);
         $this->registerCustomerDuplicatesServicesConfiguration($container, $config['customer_duplicates_services']);
         $this->registerNewsletterConfiguration($container, $config['newsletter']);
+        $this->registerActivityUrlTrackerConfiguration($container, $config['activity_url_tracker']);
     }
 
     private function registerGeneralConfiguration(ContainerBuilder $container, array $config)
@@ -108,14 +107,11 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $container->setParameter('pimcore_customer_management_framework.customer_provider.archiveDir', $config['archiveDir']);
     }
 
-
     private function registerCustomerListConfiguration(ContainerBuilder $container, array $config)
     {
         $container->setParameter('pimcore_customer_management_framework.customer_list.exporters', $config['exporters'] ?: []);
         $container->setParameter('pimcore_customer_management_framework.customer_list.filter_properties', $config['filter_properties'] ?: []);
-
     }
-
 
     private function registerCustomerDuplicatesServicesConfiguration(ContainerBuilder $container, array $config)
     {
@@ -124,6 +120,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
 
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicateCheckFields', $config['duplicateCheckFields']);
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.listFields', $config['duplicates_view']['listFields'] ?: []);
+        $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.enabled', (bool) $config['duplicates_view']['enabled']);
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.enableDuplicatesIndex', $config['duplicates_index']['enableDuplicatesIndex'] ?: []);
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.duplicateCheckFields', $config['duplicates_index']['duplicateCheckFields'] ?: []);
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.dataTransformers', $config['duplicates_index']['dataTransformers'] ?: []);
@@ -131,12 +128,22 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
 
     private function registerNewsletterConfiguration(ContainerBuilder $container, array $config)
     {
-        if($config['newsletterSyncEnabled']) {
+        $container->setParameter('pimcore_customer_management_framework.newsletter.newsletterSyncEnabled', (bool) $config['newsletterSyncEnabled']);
+        $container->setParameter('pimcore_customer_management_framework.newsletter.newsletterSyncEnabled', (bool) $config['newsletterSyncEnabled']);
+        $container->setParameter('pimcore_customer_management_framework.newsletter.newsletterQueueImmidiateAsyncExecutionEnabled', (bool) $config['newsletterQueueImmidiateAsyncExecutionEnabled']);
+
+        if ($config['newsletterSyncEnabled']) {
             $container->setAlias('cmf.newsletter.queue', NewsletterQueueInterface::class);
 
-            $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.listId', $config['mailchimp']['listId']);
             $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.apiKey', $config['mailchimp']['apiKey']);
+            $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.cliUpdatesPimcoreUserName', $config['mailchimp']['cliUpdatesPimcoreUserName']);
         }
+    }
+
+    private function registerActivityUrlTrackerConfiguration(ContainerBuilder $container, array $config)
+    {
+        $container->setParameter('pimcore_customer_management_framework.url_activity_tracker.enabled', (bool) $config['enabled']);
+        $container->setParameter('pimcore_customer_management_framework.url_activity_tracker.linkCmfcPlaceholder', $config['linkCmfcPlaceholder']);
 
     }
 }

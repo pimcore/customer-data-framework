@@ -139,7 +139,6 @@ interface ActivityStoreEntryInterface
      */
     public function getAttributes();
 
-
     /**
      * @return array
      */

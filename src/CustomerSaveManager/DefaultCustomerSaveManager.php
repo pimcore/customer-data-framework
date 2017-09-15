@@ -16,6 +16,7 @@ use CustomerManagementFrameworkBundle\CustomerSaveHandler\CustomerSaveHandlerInt
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db;
 use Pimcore\Model\Version;
@@ -46,13 +47,19 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     private $customerProvider;
 
     /**
+     * @var CustomerInterface|null
+     */
+    private $originalCustomer;
+
+    /**
      * DefaultCustomerSaveManager constructor.
+     *
      * @param bool $enableAutomaticObjectNamingScheme
      */
     public function __construct(SaveOptions $saveOptions, CustomerProviderInterface $customerProvider)
     {
         $this->saveOptions = $saveOptions;
-        $this->defaultSaveOptions = clone($saveOptions);
+        $this->defaultSaveOptions = clone $saveOptions;
         $this->customerProvider = $customerProvider;
     }
 
@@ -63,11 +70,43 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         }
     }
 
+    protected function rememberOriginalCustomer(CustomerInterface $customer)
+    {
+        $originalCustomerNeeded = false;
+        if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
+            foreach ($this->getSaveHandlers() as $saveHandler) {
+                if ($saveHandler->isOriginalCustomerNeeded()) {
+                    $originalCustomerNeeded = true;
+                    break;
+                }
+            }
+        }
+
+        if (!$originalCustomerNeeded && $this->getSaveOptions()->isNewsletterQueueEnabled()) {
+            $originalCustomerNeeded = true;
+        }
+
+        $originalCustomer = $this->originalCustomer;
+
+        if ($originalCustomer && ($originalCustomer->getId() != $customer->getId())) {
+            $originalCustomer = null;
+        }
+
+        if ($originalCustomerNeeded) {
+            $originalCustomer = $this->customerProvider->getById($customer->getId());
+        }
+
+        $this->originalCustomer = $originalCustomer;
+    }
+
     public function preAdd(CustomerInterface $customer)
     {
         if ($customer->getPublished()) {
             $this->validateOnSave($customer);
         }
+
+        $this->rememberOriginalCustomer($customer);
+
         if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
             $this->applySaveHandlers($customer, 'preAdd', true);
         }
@@ -77,11 +116,31 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     public function postAdd(CustomerInterface $customer)
     {
+        if ($this->saveOptions->isOnSaveSegmentBuildersEnabled()) {
+            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class)->buildCalculatedSegmentsOnCustomerSave($customer);
+        }
+
+        if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
+            $this->applySaveHandlers($customer, 'postAdd');
+        }
+
+        if ($this->saveOptions->isSegmentBuilderQueueEnabled()) {
+            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class)->addCustomerToChangesQueue($customer);
+        }
+
+        if ($this->saveOptions->isDuplicatesIndexEnabled()) {
+            \Pimcore::getContainer()->get('cmf.customer_duplicates_service')->updateDuplicateIndexForCustomer(
+                $customer
+            );
+        }
+
         $this->handleNewsletterQueue($customer, NewsletterQueueInterface::OPERATION_UPDATE);
     }
 
     public function preUpdate(CustomerInterface $customer)
     {
+        $this->rememberOriginalCustomer($customer);
+
         if (!$customer->getIdEncoded()) {
             $customer->setIdEncoded(md5($customer->getId()));
         }
@@ -100,11 +159,11 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         }
 
         if ($this->saveOptions->isOnSaveSegmentBuildersEnabled()) {
-            \Pimcore::getContainer()->get('cmf.segment_manager')->buildCalculatedSegmentsOnCustomerSave($customer);
+            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class)->buildCalculatedSegmentsOnCustomerSave($customer);
         }
 
         if ($this->saveOptions->isSegmentBuilderQueueEnabled()) {
-            \Pimcore::getContainer()->get('cmf.segment_manager')->addCustomerToChangesQueue($customer);
+            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class)->addCustomerToChangesQueue($customer);
         }
 
         if ($this->saveOptions->isDuplicatesIndexEnabled()) {
@@ -118,6 +177,8 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     public function preDelete(CustomerInterface $customer)
     {
+        $this->rememberOriginalCustomer($customer);
+
         if (!$this->saveOptions->isSaveHandlersExecutionEnabled()) {
             $this->applySaveHandlers($customer, 'preDelete', true);
         }
@@ -150,12 +211,13 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     protected function handleNewsletterQueue(CustomerInterface $customer, $operation)
     {
-        /**
-         * @var NewsletterQueueInterface $newsletterQueue
-         */
-        $newsletterQueue = \Pimcore::getContainer()->get('cmf.newsletter.queue');
-
-        $newsletterQueue->enqueueCustomer($customer, $operation);
+        if ($this->saveOptions->isNewsletterQueueEnabled()) {
+            /**
+             * @var NewsletterQueueInterface $newsletterQueue
+             */
+            $newsletterQueue = \Pimcore::getContainer()->get('cmf.newsletter.queue');
+            $newsletterQueue->enqueueCustomer($customer, $operation, $this->originalCustomer->getEmail(), $this->saveOptions->isNewsletterQueueImmidiateAsyncExecutionEnabled());
+        }
     }
 
     protected function addToDeletionsTable(CustomerInterface $customer)
@@ -221,14 +283,9 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
                 continue;
             }
 
-            if(is_null($originalCustomer)) {
-                $originalCustomer = $this->customerProvider->getById($customer->getId(), true);
-            }
-
-            $handler->setOriginalCustomer($originalCustomer);
+            $handler->setOriginalCustomer($this->originalCustomer);
         }
     }
-
 
     /**
      * @param CustomerInterface $customer
@@ -275,6 +332,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
      * @param CustomerInterface $customer
      * @param SaveOptions $options
      * @param bool $disableVersions
+     *
      * @return mixed
      */
     public function saveWithOptions(CustomerInterface $customer, SaveOptions $options, $disableVersions = false)
@@ -310,9 +368,10 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
      */
     public function getSaveOptions($clone = false)
     {
-        if($clone) {
-            return clone($this->saveOptions);
+        if ($clone) {
+            return clone $this->saveOptions;
         }
+
         return $this->saveOptions;
     }
 
@@ -323,7 +382,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     public function getDefaultSaveOptions()
     {
-        return clone($this->defaultSaveOptions);
+        return clone $this->defaultSaveOptions;
     }
 
     /**
@@ -334,5 +393,13 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     protected function applySaveOptions(SaveOptions $options)
     {
         $this->saveOptions = $options;
+    }
+
+    /**
+     * @return CustomerInterface|null
+     */
+    protected function getOriginalCustomer()
+    {
+        return $this->originalCustomer;
     }
 }

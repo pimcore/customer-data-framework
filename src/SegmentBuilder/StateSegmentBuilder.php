@@ -19,20 +19,17 @@ use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 
 class StateSegmentBuilder extends AbstractSegmentBuilder
 {
-
     private $countryTransformers;
     private $groupName;
     private $segmentGroup;
 
     public function __construct($groupName = 'State', array $countryTransformers = [])
     {
-
         $this->countryTransformers = sizeof($countryTransformers) ? $countryTransformers : [
             'AT' => \CustomerManagementFrameworkBundle\DataTransformer\Zip2State\At::class,
             'DE' => \CustomerManagementFrameworkBundle\DataTransformer\Zip2State\De::class,
             'CH' => \CustomerManagementFrameworkBundle\DataTransformer\Zip2State\Ch::class,
         ];
-
 
         $this->groupName = $groupName ?: 'State';
     }
@@ -49,7 +46,7 @@ class StateSegmentBuilder extends AbstractSegmentBuilder
         $this->segmentGroup = $segmentManager->createSegmentGroup($this->groupName, $this->groupName, true);
 
         foreach ($this->countryTransformers as $key => $transformer) {
-            if(is_object($transformer)) {
+            if (is_object($transformer)) {
                 continue;
             }
             $transformer = Factory::getInstance()->createObject((string) $transformer, DataTransformerInterface::class);

@@ -319,7 +319,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     public function save($updateAttributes = false)
     {
         $relatedItem = $this->getRelatedItem();
-        if($relatedItem) {
+        if ($relatedItem) {
             $relatedItem->setCustomer($this->getCustomer());
         }
 

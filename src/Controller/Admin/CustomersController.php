@@ -426,7 +426,7 @@ class CustomersController extends Admin
      */
     protected function getConfiguredSearchBarFields()
     {
-        $filterProperties = \Pimcore::getContainer()->getParameter('pimcore_customer_management_framework.customer_list.filter_properties');;
+        $filterProperties = \Pimcore::getContainer()->getParameter('pimcore_customer_management_framework.customer_list.filter_properties');
         $searchProperties = $filterProperties['search'];
 
         $searchBarFields = [];

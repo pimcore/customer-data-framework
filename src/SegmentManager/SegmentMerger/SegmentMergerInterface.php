@@ -16,13 +16,15 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 interface SegmentMergerInterface
 {
     /**
-     * Could be used to add/remove segments to/from customers. If segments are added or removed this will be tracked in the notes/events tab of the customer. With the optional $hintForNotes parameter it's possible to add an iditional hint to the notes/event entries.
-     * The changes of this method will be persisted when saveMergedSegments() gets called.
+     * Could be used to add/remove segments to/from customers.
+     * Take a look at the same method with the same name in the SegmentManagerInterface for further details.
      *
      * @param CustomerInterface $customer
      * @param array $addSegments
      * @param array $deleteSegments
      * @param string|null $hintForNotes
+     * @param int|true|null $segmentCreatedTimestamp
+     * @param int|true|null $segmentApplicationCounter
      *
      * @return void
      */
@@ -30,7 +32,9 @@ interface SegmentMergerInterface
         CustomerInterface $customer,
         array $addSegments,
         array $deleteSegments = [],
-        $hintForNotes = null
+        $hintForNotes = null,
+        $segmentCreatedTimestamp = null,
+        $segmentApplicationCounter = null
     );
 
     /**

@@ -11,7 +11,6 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerList;
 
-use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\CustomerList\Exporter\ExporterInterface;
 use Pimcore\Model\Object\Listing;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +31,6 @@ class ExporterManager implements ExporterManagerInterface
     {
         return $this->exporterConfig;
     }
-
 
     /**
      * @param $key

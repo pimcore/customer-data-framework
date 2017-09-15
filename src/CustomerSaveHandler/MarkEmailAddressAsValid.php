@@ -13,7 +13,6 @@ namespace CustomerManagementFrameworkBundle\CustomerSaveHandler;
 
 use CustomerManagementFrameworkBundle\DataValidator\EmailValidator;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use Psr\Log\LoggerInterface;
 
 /**
  * marks an email address as valid if it has a valid format

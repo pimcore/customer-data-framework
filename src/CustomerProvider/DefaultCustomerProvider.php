@@ -11,7 +11,6 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerProvider;
 
-use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\Element\ElementInterface;
@@ -37,9 +36,10 @@ class DefaultCustomerProvider implements CustomerProviderInterface
 
     /**
      * DefaultCustomerProvider constructor.
-     * @param $pimcoreClass
-     * @param $parentPath
-     * @param $namingScheme
+     *
+     * @param string $pimcoreClass
+     * @param string $parentPath
+     * @param ObjectNamingSchemeInterface $namingScheme
      */
     public function __construct($pimcoreClass, $parentPath, ObjectNamingSchemeInterface $namingScheme)
     {
@@ -164,6 +164,29 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     }
 
     /**
+     * Get active customer by email
+     *
+     * @param int $id
+     * @param bool $foce
+     *
+     * @return CustomerInterface|null
+     *
+     * @throws \RuntimeException
+     */
+    public function getActiveCustomerByEmail($email)
+    {
+        $list = $this->getList();
+        $list->setUnpublished(false);
+        $list->addConditionParam('active = 1 and trim(lower(email)) = ?', [$email]);
+
+        if ($list->count() > 1) {
+            throw new \Exception(sprintf('multiple active and published customers with email %s found', $email));
+        }
+
+        return $list->current();
+    }
+
+    /**
      * Sets the correct parent folder and object key for the given customer.
      *
      * @param CustomerInterface $customer
@@ -184,7 +207,6 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     {
         $this->parentPath = $parentPath;
     }
-
 
     /**
      * @param string $method

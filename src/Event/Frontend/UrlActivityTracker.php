@@ -9,13 +9,30 @@
  * @license    GPLv3
  */
 
-namespace CustomerManagementFrameworkBundle\EventListener\Frontend;
+namespace CustomerManagementFrameworkBundle\Event\Frontend;
 
 use Pimcore\Bundle\CoreBundle\EventListener\Frontend\AbstractFrontendListener;
+use Pimcore\Bundle\CoreBundle\EventListener\Traits\PimcoreContextAwareTrait;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-class UrlActivityTracker extends AbstractFrontendListener
+class UrlActivityTracker implements EventSubscriberInterface
 {
+    use PimcoreContextAwareTrait;
+
+    protected $allreadyTracked = false;
+
+    /**
+     * @inheritDoc
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            KernelEvents::REQUEST => 'onKernelRequest',
+        ];
+    }
+
     /**
      * Checks for request params cmfa + cmfc and tracks activity if needed
      *
@@ -23,6 +40,14 @@ class UrlActivityTracker extends AbstractFrontendListener
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
+        if(!\Pimcore::getContainer()->getParameter('pimcore_customer_management_framework.url_activity_tracker.enabled')) {
+            return;
+        }
+
+        if ($this->allreadyTracked) {
+            return;
+        }
+
         $request = $event->getRequest();
 
         if (!$request->get('cmfa') || !$request->get('cmfc')) {
@@ -34,5 +59,7 @@ class UrlActivityTracker extends AbstractFrontendListener
             $request->get('cmfa'),
             $request->request->all()
         );
+
+        $this->allreadyTracked = true;
     }
 }

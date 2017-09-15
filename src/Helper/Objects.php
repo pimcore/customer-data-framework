@@ -12,8 +12,10 @@
 namespace CustomerManagementFrameworkBundle\Helper;
 
 use Pimcore\File;
+use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Element\Service;
 use Pimcore\Model\Object\Concrete;
+use Pimcore\Model\Object\Data\ObjectMetadata;
 
 class Objects
 {
@@ -53,7 +55,10 @@ class Objects
 
     /**
      * add pimcore objects to given array if element are not already part of the array
-     * - returns true if data in array got changed
+     * works with arrays of objects and arrays of objects with metadata
+     * 
+     * - returns false if no data in array was changed
+     * - returns array with added objects if object where added
      *
      * @param array $array
      * @param array $addObjects
@@ -63,9 +68,20 @@ class Objects
     public static function addObjectsToArray(array &$array, array $addObjects)
     {
         $added = [];
-        foreach ($addObjects as $addObject) {
+        foreach ($addObjects as $add) {
+
+            $addObject = $add instanceof ObjectMetadata ? $add->getObject() : $add;
+
+
+            if (!method_exists($addObject, 'getId')) {
+                continue;
+            }
+
             $found = false;
             foreach ($array as $object) {
+                $object = $object instanceof ObjectMetadata ? $object->getObject() : $object;
+
+
                 if ($addObject->getId() == $object->getId()) {
                     $found = true;
                     break;
@@ -73,28 +89,22 @@ class Objects
             }
 
             if (!$found) {
-                $added[] = $addObject;
-                $array[] = $addObject;
+                $added[] = $add;
+                $array[] = $add;
             }
         }
 
         return sizeof($added) ? $added : false;
     }
 
-    public static function objectArrayUnique($array)
-    {
-        $result = [];
 
-        foreach ($array as $object) {
-            $result[$object->getId()] = $object;
-        }
-
-        return array_values($result);
-    }
 
     /**
      * remove pimcore objects from given array
-     * - returns true if data in array got changed
+     * works with arrays of objects and arrays of objects with metadata
+     *
+     * - returns false if no data in array was changed
+     * - returns array with removed objects if object where removed
      *
      * @param array $array
      * @param array $removeObjects
@@ -106,13 +116,18 @@ class Objects
         $removed = [];
 
         foreach ($array as $key => $object) {
-            foreach ($removeObjects as $removeObject) {
+            $object = $object instanceof ObjectMetadata ? $object->getObject() : $object;
+
+            foreach ($removeObjects as $remove) {
+
+                $removeObject = $remove instanceof ObjectMetadata ? $remove->getObject() : $remove;
+
                 if (!method_exists($removeObject, 'getId')) {
                     continue;
                 }
 
                 if ($object->getId() == $removeObject->getId()) {
-                    $removed[] = $removeObject;
+                    $removed[] = $remove;
                     unset($array[$key]);
                 }
             }
@@ -123,5 +138,67 @@ class Objects
         }
 
         return sizeof($removed) ? $removed : false;
+    }
+
+
+    public static function objectArrayUnique($array)
+    {
+        $result = [];
+
+        foreach ($array as $object) {
+            $result[$object->getId()] = $object;
+        }
+
+        return array_values($result);
+    }
+    /**
+     * Returns IDs of an array of objects
+     *
+     * @param array $array
+     *
+     * @return array
+     */
+    public static function getIdsFromArray(array &$array)
+    {
+        $ids = [];
+        foreach ($array as $object) {
+            $ids[] = $object->getId();
+        }
+
+        return $ids;
+    }
+
+    /**
+     * Returns true if the given object or (object with metadata item) is contained in the $addSegments array.
+     * Objects with metdata are only matched by object IDs (not by metadata or concrete instances).
+     *
+     * @param $object
+     * @param array $objects
+     *
+     * @return bool;
+     */
+    public static function objectInArray($object, array $objects)
+    {
+        $object = $object instanceof ObjectMetadata ? $object->getObject() : $object;
+        if(!$object instanceof ElementInterface) {
+            return false;
+        }
+
+        if(!$object->getId()) {
+            return false;
+        }
+
+        foreach($objects as $_object) {
+            $_object = $_object instanceof ObjectMetadata ? $_object->getObject() : $_object;
+            if(!$_object instanceof ElementInterface) {
+                continue;
+            }
+
+            if($_object->getId() == $object->getId()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -34,9 +34,11 @@ As mentioned above they need to implement the SegmentBuilderInterface. Most of t
 
 Both of the methods could interact with the SegmentManager for creating segments and adding/removing them to the customer.
 
-SegmentManager sample calls:
+###### SegmentManager sample calls:
 ```php
-// create a segment called "male" within the segment group "gender". The segment group "gender" will be created too if it doesn't exist.
+/* create a segment called "male" within the segment group "gender". The segment group "gender" will be created too if it doesn't exist.
+   If the segment already exists it will not be reacreated but the existing segment will be returned.
+*/
 $segment = $segmentManager->createCalculatedSegment("male", "gender");
 
 // get all other segments of the segment group "gender" (but exclude "male")
@@ -45,6 +47,49 @@ $deleteSegments = $segmentManager->getSegmentsFromSegmentGroup($segment->getGrou
 // add the segment to the customer and remove all other segments from the segment group "gender). The param "GenderSegmentBuilder" is an optional comment which will be added to the notes/events tab of the customer.
 $addSegments = [$segment];
 $segmentManager->mergeSegments($customer, $addSegments, $deleteSegments, "GenderSegmentBuilder");
+$segmentManager->saveMergedSegments($customer);
+```
+
+##### Optional: Store the creation date and how often a segment was added
+
+The CMF offers a mechanism to handle potentially expiring segments by storing the creation date and a counter how often a segment was added if it applies multiple time.
+For example, if there is a segment "interested in hiking", it might be important that it will expire/removed at some point in the future. Also a counter could be usefull to store the information on how often a customer performed an activity which leads to the segment "interested in hiking".
+
+
+The CMF supports objects and objects with metadata fields to store the manual and calculated segment relations of a customer.
+If you would like to use the creation date + counter storing feature, it's necessary to use at least for the `calculatedSegments` attribute an object with metadata field with the following two metadata columns:
+- created_timestamp (type number)
+- application_counter (type number)
+
+###### SegmentManager sample calls with usage of the timestamp + counter storage features (take a look at the PHPdoc of the SegmentManagerInterface for more details):
+```php
+
+// example last hiking/climbing activity timestamps (int values) calculated based on "hiking/climbing interest" activity data
+$lastHikingActivityTimestamp;
+$lastClimbingActivityTimestamp;
+
+$hikingSegment = $segmentManager->createCalculatedSegment("interests", "hiking");
+$climbingSegment = $segmentManager->createCalculatedSegment("interests", "climbing");
+
+/*
+   Add the 2 segments with the given timestamps and let the counter increment automatically each time the timestamp changes.
+   The timestamp will be applied to all added segments in one mergeSegments call.
+   Therefore in this case 2 merge segment calls are needed as $hikingSegment and $climbingSegment should have different timestamps.
+*/
+$segmentManager->mergeSegments($customer, [$hikingSegment], [], "InterestSegmentBuilder", $lastHikingActivityTimestamp, true);
+$segmentManager->mergeSegments($customer, [$climbingSegment], [], "InterestSegmentBuilder", $lastClimbingActivityTimestamp, true);
+$segmentManager->saveMergedSegments($customer);
+
+/*
+    The same example like above but manually determine the counter (based on activity data)
+*/
+$hikingActivityCounter = 12;
+$climbingActivityCounter = 3;
+
+$segmentManager->mergeSegments($customer, [$hikingSegment], [], "InterestSegmentBuilder", $lastHikingActivityTimestamp, $hikingActivityCounter);
+$segmentManager->mergeSegments($customer, [$climbingSegment], [], "InterestSegmentBuilder", $lastClimbingActivityTimestamp, $climbingActivityCounter);
+$segmentManager->saveMergedSegments($customer);
+
 ```
 
 #### Registration of segment builders

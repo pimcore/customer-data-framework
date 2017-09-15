@@ -29,12 +29,7 @@ class MailChimpExportService
     protected $apiClient;
 
     /**
-     * @var string
-     */
-    protected $listId;
-
-    /**
-     * @var Note[][]
+     * @var Note[][][]
      */
     protected $notes = [];
 
@@ -42,10 +37,9 @@ class MailChimpExportService
      * @param MailChimp $apiClient
      * @param $listId
      */
-    public function __construct(MailChimp $apiClient, $listId)
+    public function __construct(MailChimp $apiClient)
     {
         $this->apiClient = $apiClient;
-        $this->listId = $listId;
     }
 
     /**
@@ -57,21 +51,14 @@ class MailChimpExportService
     }
 
     /**
-     * @return string
-     */
-    public function getListId()
-    {
-        return $this->listId;
-    }
-
-    /**
+     * @param string $listId
      * @param null|string $subResource
      *
      * @return string
      */
-    public function getListResourceUrl($subResource = null)
+    public function getListResourceUrl($listId, $subResource = null)
     {
-        $url = sprintf('lists/%s', $this->listId);
+        $url = sprintf('lists/%s', $listId);
 
         if ($subResource) {
             $url = sprintf('%s/%s', $url, $subResource);
@@ -84,13 +71,14 @@ class MailChimpExportService
      * Get remote mailchimp ID as stored in export notes
      *
      * @param ElementInterface $object
+     * @param string $listId
      *
      * @return string|null
      */
-    public function getRemoteId(ElementInterface $object)
+    public function getRemoteId(ElementInterface $object, $listId)
     {
-        if ($this->wasExported($object)) {
-            $note = $this->getLastExportNote($object);
+        if ($this->wasExported($object, $listId)) {
+            $note = $this->getLastExportNote($object, $listId);
             $data = $note->getData();
 
             if (isset($data['mailchimp_id'])) {
@@ -102,33 +90,36 @@ class MailChimpExportService
     public function getObjectByRemoteId($remoteId)
     {
         $db = Db::get();
-        return AbstractObject::getById( $db->fetchOne("select cid from notes, notes_data where notes.id = notes_data.id and notes.ctype='object' and name='mailchimp_id' and notes_data.type='text' and data = ? limit 1", $remoteId) );
+
+        return AbstractObject::getById($db->fetchOne("select cid from notes, notes_data where notes.id = notes_data.id and notes.ctype='object' and name='mailchimp_id' and notes_data.type='text' and data = ? limit 1", $remoteId));
     }
 
     /**
      * @param ElementInterface $object
+     * @param string $listId
      *
      * @return bool
      */
-    public function wasExported(ElementInterface $object)
+    public function wasExported(ElementInterface $object, $listId)
     {
-        return null !== $this->getLastExportNote($object);
+        return null !== $this->getLastExportNote($object, $listId);
     }
 
     /**
      * @param ElementInterface|Concrete $object
+     * @param string $listId
      *
      * @return bool
      */
-    public function needsUpdate(ElementInterface $object)
+    public function needsUpdate(ElementInterface $object, $listId)
     {
         // no last export -> needs update
-        if (!$this->wasExported($object)) {
+        if (!$this->wasExported($object, $listId)) {
             return true;
         }
 
         if ($object->getModificationDate()) {
-            $lastExportDate = $this->getLastExportDateTime($object);
+            $lastExportDate = $this->getLastExportDateTime($object, $listId);
             $modificationDate = Carbon::createFromTimestamp(
                 $object->getModificationDate(),
                 $lastExportDate->getTimezone()
@@ -153,12 +144,13 @@ class MailChimpExportService
 
     /**
      * @param ElementInterface $object
+     * @param string $listId
      * @param string $remoteId
      * @param \DateTime|null $date
      *
      * @return Note
      */
-    public function createExportNote(ElementInterface $object, $remoteId, \DateTime $date = null)
+    public function createExportNote(ElementInterface $object, $listId, $remoteId, \DateTime $date = null, $title = 'Mailchimp Export', $additionalFields = [])
     {
         if (!$date) {
             $date = Carbon::now();
@@ -168,46 +160,54 @@ class MailChimpExportService
         $note->setElement($object);
         $note->setDate($date->getTimestamp());
         $note->setType(static::NOTE_TYPE);
-        $note->setDescription($this->listId);
-        $note->setTitle('Mailchimp Export');
-        $note->addData('list_id', 'text', $this->listId);
+        $note->setDescription($listId);
+        $note->setTitle($title);
+        $note->addData('list_id', 'text', $listId);
         $note->addData('mailchimp_id', 'text', $remoteId);
+
+        if (sizeof($additionalFields)) {
+            foreach ($additionalFields as $key => $value) {
+                $note->addData($key, 'text', $value);
+            }
+        }
 
         return $note;
     }
 
     /**
      * @param ElementInterface $object
+     * @param string $listId
      * @param bool $refresh
      *
      * @return Note[]|Note\Listing|\Pimcore\Model\Object\Listing\Dao
      */
-    public function getExportNotes(ElementInterface $object, $refresh = false)
+    public function getExportNotes(ElementInterface $object, $listId, $refresh = false)
     {
-        if (!isset($this->notes[$object->getId()]) || $refresh) {
+        if (!isset($this->notes[$listId][$object->getId()]) || $refresh) {
             /** @var Note\Listing|\Pimcore\Model\Object\Listing\Dao $list */
             $list = new Note\Listing();
             $list->setOrderKey('date');
             $list->setOrder('desc');
             $list->addConditionParam('type = ?', static::NOTE_TYPE);
-            $list->addConditionParam('description = ?', $this->listId);
+            $list->addConditionParam('description = ?', $listId);
             $list->addConditionParam('cid = ?', $object->getId());
 
-            $this->notes[$object->getId()] = $list->load();
+            $this->notes[$listId][$object->getId()] = $list->load();
         }
 
-        return $this->notes[$object->getId()];
+        return $this->notes[$listId][$object->getId()];
     }
 
     /**
      * @param ElementInterface $object
+     * @param string $listId
      * @param bool $refresh
      *
      * @return Note|null
      */
-    public function getLastExportNote(ElementInterface $object, $refresh = false)
+    public function getLastExportNote(ElementInterface $object, $listId, $refresh = false)
     {
-        $notes = $this->getExportNotes($object, $refresh);
+        $notes = $this->getExportNotes($object, $listId, $refresh);
 
         if ($notes) {
             return $notes[0];
@@ -216,15 +216,48 @@ class MailChimpExportService
 
     /**
      * @param ElementInterface $object
+     * @param $listId
+     *
+     * @return bool
+     */
+    public function didExportDataChangeSinceLastExport(ElementInterface $object, $listId, $exportData)
+    {
+        if (!$note = $this->getLastExportNote($object, $listId)) {
+            return true;
+        }
+
+        if ($data = $note->getData()) {
+            if (isset($data['exportdataMd5']) && $data['exportdataMd5']['data'] == $this->getMd5($exportData)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param ElementInterface $object
+     * @param string $listId
      *
      * @return \DateTime|null
      */
-    public function getLastExportDateTime(ElementInterface $object)
+    public function getLastExportDateTime(ElementInterface $object, $listId)
     {
-        $note = $this->getLastExportNote($object);
+        $note = $this->getLastExportNote($object, $listId);
         if ($note) {
             return $this->getNoteDateTime($note);
         }
+    }
+
+    public function getMd5($data)
+    {
+        // ensure that status_if_new and status are handled the same way in the md5 check
+        $status = isset($data['status_if_new']) ? $data['status_if_new'] : $data['status'];
+
+        unset($data['status_if_new']);
+        $data['status'] = $status;
+
+        return md5(serialize($data));
     }
 
     /**

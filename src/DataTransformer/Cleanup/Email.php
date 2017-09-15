@@ -11,7 +11,6 @@
 
 namespace CustomerManagementFrameworkBundle\DataTransformer\Cleanup;
 
-use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 
 class Email implements DataTransformerInterface

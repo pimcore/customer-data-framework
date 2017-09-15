@@ -12,12 +12,9 @@
 namespace CustomerManagementFrameworkBundle\SegmentBuilder;
 
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
-use Psr\Log\LoggerInterface;
 
 abstract class AbstractSegmentBuilder implements SegmentBuilderInterface
 {
-
-
     /**
      * return the name of the segment builder
      *

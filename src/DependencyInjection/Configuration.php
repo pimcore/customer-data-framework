@@ -41,6 +41,7 @@ class Configuration implements ConfigurationInterface
         $rootNode->append($this->buildCustomerListNode());
         $rootNode->append($this->buildCustomerDuplicatesServicesNode());
         $rootNode->append($this->buildNewsletterNode());
+        $rootNode->append($this->buildActivityUrlTrackerNode());
 
         return $treeBuilder;
     }
@@ -82,7 +83,8 @@ class Configuration implements ConfigurationInterface
         $general
             ->children()
             ->scalarNode('secret')
-                ->info('echo \Defuse\Crypto\Key::createNewRandomKey()->saveToAsciiSafeString();' . PHP_EOL .
+                ->info(
+                    'echo \Defuse\Crypto\Key::createNewRandomKey()->saveToAsciiSafeString();' . PHP_EOL .
                     'keep it secret'
                 )
                 ->defaultValue('')
@@ -348,6 +350,7 @@ class Configuration implements ConfigurationInterface
 
                 ->arrayNode('duplicates_view')
                     ->children()
+                        ->booleanNode('enabled')->defaultFalse()->end()
                         ->arrayNode('listFields')
                             ->prototype('array')
                                 ->prototype('scalar')
@@ -404,15 +407,34 @@ class Configuration implements ConfigurationInterface
         $newsletter
             ->children()
                 ->booleanNode('newsletterSyncEnabled')->defaultFalse()->end()
+                ->booleanNode('newsletterQueueImmidiateAsyncExecutionEnabled')->defaultTrue()->end()
                 ->arrayNode('mailchimp')
                     ->children()
-                        ->scalarNode('listId')->end()
                         ->scalarNode('apiKey')->end()
+                        ->scalarNode('cliUpdatesPimcoreUserName')->end()
                     ->end()
                 ->end()
             ->end();
 
-
         return $newsletter;
+    }
+
+    private function buildActivityUrlTrackerNode()
+    {
+        $treeBuilder = new TreeBuilder();
+
+        $tracker = $treeBuilder->root('activity_url_tracker');
+
+        $tracker
+            ->addDefaultsIfNotSet()
+            ->info('Configuration of activity url tracker services');
+
+        $tracker
+            ->children()
+                ->booleanNode('enabled')->defaultTrue()->end()
+                ->scalarNode('linkCmfcPlaceholder')->defaultValue('*|ID_ENCODED|*')->info('used for automatic link generation of LinkActivityDefinition data objects')->end()
+            ->end();
+
+        return $tracker;
     }
 }

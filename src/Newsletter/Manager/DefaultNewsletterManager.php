@@ -11,9 +11,11 @@
 
 namespace CustomerManagementFrameworkBundle\Newsletter\Manager;
 
-use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\NewsletterAwareCustomerInterface;
+use CustomerManagementFrameworkBundle\Newsletter\Exception\SubscribeFailedException;
+use CustomerManagementFrameworkBundle\Newsletter\Exception\UnsubscribeFailedException;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProviderHandlerInterface;
+use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 
@@ -25,55 +27,110 @@ class DefaultNewsletterManager implements NewsletterManagerInterface
     private $segmentManager;
 
     /**
-     * @var NewsletterProviderHandlerInterface
+     * @var NewsletterProviderHandlerInterface[]
      */
-    private $newsletterProviderHandler;
+    protected $newsletterProviderHandlers = [];
 
-    public function __construct(SegmentManagerInterface $segmentManager, NewsletterProviderHandlerInterface $newsletterProviderHandler)
+    public function __construct(SegmentManagerInterface $segmentManager)
     {
         $this->segmentManager = $segmentManager;
-
-        if(is_null($newsletterProviderHandler)) {
-            throw new \Exception('No newsletter provider handler configured. Take a look at the CMF docs newsletter section.');
-        }
-
-        $this->newsletterProviderHandler = $newsletterProviderHandler;
     }
 
+    /**
+     * Subscribe customer from newsletter (for example via web form). Returns true if it was successful.
+     *
+     * @param NewsletterAwareCustomerInterface $customer
+     *
+     * @return bool
+     *
+     * @throws SubscribeFailedException
+     */
     public function subscribeCustomer(NewsletterAwareCustomerInterface $customer)
     {
-        $customer->setNewsletter(true);
-        $customer->setNewsletterUnsubscriptionDate(null);
-        $customer->save();
+        $success = true;
+        foreach ($this->newsletterProviderHandlers as $newsletterProviderHandler) {
+            if (!$newsletterProviderHandler->subscribeCustomer($customer)) {
+                $success = false;
+                break;
+            }
+        }
+
+        if (!$success) {
+            throw new SubscribeFailedException(sprintf('newsletter subscribe of customer ID %s failed', $customer->getId()));
+        }
+
+        return true;
     }
 
+    /**
+     * Unsubscribe customer from newsletter (for example via web form). Returns true if it was successful.
+     *
+     * @param NewsletterAwareCustomerInterface $customer
+     *
+     * @return bool
+     *
+     * @throws UnsubscribeFailedException
+     */
     public function unsubscribeCustomer(NewsletterAwareCustomerInterface $customer)
     {
-        $customer->setNewsletter(false);
-        $customer->setNewsletterUnsubscriptionDate(new Carbon());
-        $customer->setNewsletterDataMd5(null);
-        $customer->save();
+        $success = true;
+        foreach ($this->newsletterProviderHandlers as $newsletterProviderHandler) {
+            if (!$newsletterProviderHandler->unsubscribeCustomer($customer)) {
+                $success = false;
+                break;
+            }
+        }
+
+        if (!$success) {
+            throw new UnsubscribeFailedException(sprintf('newsletter unsubscribe of customer ID %s failed', $customer->getId()));
+        }
+
+        return true;
     }
 
-    public function processSync($changesQueueOnly = true)
+    public function syncSegments($forceUpdate = false)
     {
-        $this->syncSegments();
-
-        $this->syncCustomers($changesQueueOnly);
+        foreach ($this->newsletterProviderHandlers as $newsletterProviderHandler) {
+            $newsletterProviderHandler->updateSegmentGroups($forceUpdate);
+        }
     }
 
-    public function syncSegments()
+    public function syncCustomers($forceAllCustomers = false, $forceUpdate = false)
     {
-        $segmentGroups = $this->segmentManager->getSegmentGroups();
-        $segmentGroups->addConditionParam("exportNewsletterProvider = 1");
+        /**
+         * @var NewsletterQueueInterface $queue
+         */
+        $queue = \Pimcore::getContainer()->get(NewsletterQueueInterface::class);
 
-        $this->newsletterProviderHandler->updateSegmentGroups($segmentGroups->load());
+        $queue->processQueue($this->newsletterProviderHandlers, $forceAllCustomers, $forceUpdate);
     }
 
-    public function syncCustomers($changesQueueOnly = true)
+    public function syncSingleCustomerQueueItem(NewsletterQueueItemInterface $newsletterQueueItem)
     {
-        $queue = \Pimcore::getContainer()->get(NewsletterQueueInterface::class );
+        /**
+         * @var NewsletterQueueInterface $queue
+         */
+        $queue = \Pimcore::getContainer()->get(NewsletterQueueInterface::class);
 
-        $queue->processQueue($this->newsletterProviderHandler);
+        $queue->syncSingleQueueItem($this->getNewsletterProviderHandlers(), $newsletterQueueItem);
+    }
+
+    /**
+     * @param string $shortcut
+     * @param NewsletterProviderHandlerInterface $newsletterProviderHandler
+     *
+     * @return void
+     */
+    public function addNewsletterProviderHandler(NewsletterProviderHandlerInterface $newsletterProviderHandler)
+    {
+        $this->newsletterProviderHandlers[] = $newsletterProviderHandler;
+    }
+
+    /**
+     * @return NewsletterProviderHandlerInterface[]
+     */
+    public function getNewsletterProviderHandlers()
+    {
+        return $this->newsletterProviderHandlers;
     }
 }

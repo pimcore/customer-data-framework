@@ -11,8 +11,9 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
-use CustomerManagementFrameworkBundle\Config;
+use Pimcore\Model\DataObject\LinkActivityDefinition;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -77,4 +78,25 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
 
         return $this->json($result);
     }
+
+    /**
+     * @return Response
+     * @Route("/settings-json")
+     */
+    public function settingJsonAction()
+    {
+        $settings = [
+            'newsletterSyncEnabled' => $this->container->getParameter('pimcore_customer_management_framework.newsletter.newsletterSyncEnabled'),
+            'duplicatesViewEnabled' => $this->container->getParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.enabled')
+        ];
+
+        $content = '
+            pimcore = pimcore || {};
+            pimcore.settings = pimcore.settings || {};
+            pimcore.settings.cmf = ' . json_encode($settings) . ';
+        ';
+
+        return new Response($content, 200, ['content-type' => 'application/javascript']);
+    }
+
 }

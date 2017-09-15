@@ -14,28 +14,23 @@ namespace CustomerManagementFrameworkBundle;
 use Pimcore\Db;
 use Pimcore\Extension\Bundle\Installer\AbstractInstaller;
 use Pimcore\Logger;
+use Pimcore\Model\DataObject\ClassDefinition;
 
 class Installer extends AbstractInstaller
 {
     public function install()
     {
         $this->installPermissions();
-        $this->installClasses();
         $this->installDatabaseTables();
+        $this->installClasses();
 
         return true;
     }
 
     public function isInstalled()
     {
-
-        $db = Db::get();
-        try {
-            $db->fetchOne("select customerId from plugin_cmf_newsletter_queue limit 1");
-
+        if (ClassDefinition::getByName('LinkActivityDefinition')) {
             return true;
-        } catch(\Exception $e) {
-            return false;
         }
     }
 
@@ -57,6 +52,8 @@ class Installer extends AbstractInstaller
         $permissions = [
             'plugin_customermanagementframework_activityview',
             'plugin_customermanagementframework_customerview',
+            'plugin_customermanagementframework_customer_automation_rules',
+            'plugin_customermanagementframework_newsletter_enqueue_all_customers',
         ];
 
         foreach ($permissions as $key) {
@@ -212,14 +209,14 @@ class Installer extends AbstractInstaller
         );
 
         \Pimcore\Db::get()->query(
-            "CREATE TABLE `plugin_cmf_newsletter_queue` (
+            'CREATE TABLE `plugin_cmf_newsletter_queue` (
               `customerId` int(11) unsigned NOT NULL,
               `email` varchar(255) DEFAULT NULL,
               `operation` varchar(20) DEFAULT NULL,
               `modificationDate` bigint(20) DEFAULT NULL,
               UNIQUE KEY `customerId` (`customerId`),
               KEY `operation` (`operation`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
         );
     }
 
@@ -229,12 +226,13 @@ class Installer extends AbstractInstaller
 
         self::installClass('CustomerSegmentGroup', $sourcePath.'/class_CustomerSegmentGroup_export.json');
         self::installClass('CustomerSegment', $sourcePath.'/class_CustomerSegment_export.json');
-        self::installClass('ActivityDefinition', $sourcePath.'/class_ActivityDefinition_export.json');
         self::installClass('SsoIdentity', $sourcePath.'/class_SsoIdentity_export.json');
         self::installClass(
             'TermSegmentBuilderDefinition',
             $sourcePath.'/class_TermSegmentBuilderDefinition_export.json'
         );
+
+        self::installClass('LinkActivityDefinition', $sourcePath.'/class_LinkActivityDefinition_export.json');
     }
 
     public static function installClass($classname, $filepath)
@@ -252,5 +250,4 @@ class Installer extends AbstractInstaller
             Logger::err("Could not import $classname Class.");
         }
     }
-
 }

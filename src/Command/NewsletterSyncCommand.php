@@ -11,9 +11,14 @@
 
 namespace CustomerManagementFrameworkBundle\Command;
 
-use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Manager\NewsletterManagerInterface;
+use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
+use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\DefaultNewsletterQueueItem;
+use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
+use Pimcore\Model\Tool\Lock;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class NewsletterSyncCommand extends AbstractCommand
@@ -23,12 +28,17 @@ class NewsletterSyncCommand extends AbstractCommand
      */
     private $newsletterManager;
 
-
-
     protected function configure()
     {
         $this->setName('cmf:newsletter-sync')
-            ->setDescription('Handles the synchronization of customers and segments with the newsletter provider');
+            ->setDescription('Handles the synchronization of customers and segments with the newsletter provider')
+            ->addOption('customer-data-sync', 'c', null, 'process customer data sync')
+            ->addOption('enqueue-all-customers', null, null, 'add all customers to newsletter queue')
+            ->addOption('all-customers', 'a', null, 'full sync of all customers (otherwise only the newsletter queue will be processed)')
+            ->addOption('force-segments', 's', null, 'force update of segments (otherwise only changed segments will be exported)')
+            ->addOption('force-customers', 'f', null, 'force update of customers (otherwise only changed customers will be exported)')
+            ->addOption('mailchimp-status-sync', 'm', null, 'mailchimp status sync (direction mailchimp => pimcore) for all mailchimp newsletter provider handlers')
+            ->addOption('process-queue-item', null, InputOption::VALUE_REQUIRED, 'process single queue item (provide json data of queue item)');
     }
 
     /**
@@ -39,6 +49,59 @@ class NewsletterSyncCommand extends AbstractCommand
     {
         $this->newsletterManager = \Pimcore::getContainer()->get(NewsletterManagerInterface::class);
 
-        $this->newsletterManager->syncCustomers();
+        if ($input->getOption('enqueue-all-customers')) {
+            /**
+             * @var NewsletterQueueInterface $newsletterQueue
+             */
+            $newsletterQueue = \Pimcore::getContainer()->get(NewsletterQueueInterface::class);
+            $newsletterQueue->enqueueAllCustomers();
+        }
+
+        if ($input->getOption('customer-data-sync') || $input->getOption('all-customers')) {
+            $lockKey = 'plugin_cmf_newsletter_sync_queue';
+            if (Lock::isLocked($lockKey, (60 * 60 * 12))) {
+                die('locked - not starting now');
+            }
+
+            Lock::lock($lockKey);
+
+            $this->newsletterManager->syncSegments((bool)$input->getOption('force-segments'));
+            $this->newsletterManager->syncCustomers(
+                (bool)$input->getOption('all-customers'),
+                (bool)$input->getOption('force-customers')
+            );
+
+            Lock::release($lockKey);
+        }
+
+        if ($input->getOption('mailchimp-status-sync')) {
+            $this->mailchimpStatusSync();
+        }
+
+        if ($processQueueItem = $input->getOption('process-queue-item')) {
+            $data = json_decode($processQueueItem, true);
+
+            /**
+             * @var CustomerProviderInterface $customerProvider
+             */
+            $customerProvider = \Pimcore::getContainer()->get('cmf.customer_provider');
+
+            if (empty($data['customerId']) || empty($data['email']) || empty($data['operation']) || empty($data['modificationDate'])) {
+                throw new \Exception('invalid item');
+            }
+
+            $item = new DefaultNewsletterQueueItem($data['customerId'], $customerProvider->getById($data['customerId']), $data['email'], $data['operation'], $data['modificationDate']);
+            $this->newsletterManager->syncSingleCustomerQueueItem($item);
+        }
+    }
+
+    protected function mailchimpStatusSync()
+    {
+        /**
+         * @var Mailchimp\CliSyncProcessor $cliSyncProcessor
+         */
+        $cliSyncProcessor = \Pimcore::getContainer()->get(Mailchimp\CliSyncProcessor::class);
+
+        $cliSyncProcessor->process();
     }
 }

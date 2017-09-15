@@ -12,7 +12,8 @@
         "hwi/oauth-bundle": "^0.5.3",
         "mtdowling/cron-expression": "^1.1.0",
         "pimcore/search-query-parser": "^1.2.4",
-        "box/spout": "^2.7"
+        "box/spout": "^2.7",
+        "pear/archive_ta": "^1.4.3"
     },
     "require-dev": {
         "codeception/codeception": "^2.2"

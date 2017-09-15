@@ -14,6 +14,7 @@ namespace CustomerManagementFrameworkBundle\Model\Activity;
 use CustomerManagementFrameworkBundle\Model\AbstractActivity;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use Pimcore\Model\DataObject\LinkActivityDefinition;
 use Pimcore\Model\Object\ActivityDefinition;
 
 class TrackedUrlActivity extends AbstractActivity
@@ -21,7 +22,7 @@ class TrackedUrlActivity extends AbstractActivity
     protected $customer;
     private $activityDefinition;
 
-    public function __construct(CustomerInterface $customer, ActivityDefinition $activityDefinition)
+    public function __construct(CustomerInterface $customer, LinkActivityDefinition $activityDefinition)
     {
         $this->customer = $customer;
         $this->activityDefinition = $activityDefinition;
@@ -37,12 +38,12 @@ class TrackedUrlActivity extends AbstractActivity
         $attributes = [
             'label' => $this->activityDefinition->getLabel(),
             'code' => $this->activityDefinition->getCode(),
+            'activityDefinitionId' => $this->activityDefinition->getId(),
         ];
 
         if ($additionalAttributes = $this->activityDefinition->getAttributes()) {
             foreach ($additionalAttributes as $additionalAttribute) {
-                $attributes[$additionalAttribute['attribute']->getData(
-                )] = $additionalAttribute['attributeValue']->getData();
+                $attributes[$additionalAttribute['attribute']->getData()] = $additionalAttribute['attributeValue']->getData();
             }
         }
 
@@ -56,20 +57,24 @@ class TrackedUrlActivity extends AbstractActivity
 
     public function cmfWebserviceUpdateAllowed()
     {
-        return true;
+        return false;
     }
 
     /**
      * @param array $data
      * @param bool $fromWebservice
      *
-     * @return bool
+     * @return static|null
      */
     public static function cmfCreate(array $data, $fromWebservice = false)
     {
+        if(!isset($data['activityDefinitionId'])) {
+            return null;
+        }
+
         return new static(
             \Pimcore::getContainer()->get('cmf.customer_provider')->getById($data['customerId']),
-            ActivityDefinition::getById('6697057')
+            LinkActivityDefinition::getById($data['activityDefinitionId'])
         );
     }
 }

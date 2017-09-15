@@ -81,10 +81,12 @@ class MariaDb implements ActivityStoreInterface
         $activity = null;
         if (!$updateAttributes) {
             $this->saveActivityStoreEntry($entry);
+            return;
         }
 
         if ($activity = $entry->getRelatedItem()) {
             $this->saveActivityStoreEntry($entry, $activity);
+            return;
         }
 
         $this->saveActivityStoreEntry($entry);

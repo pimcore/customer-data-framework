@@ -13,15 +13,13 @@ namespace CustomerManagementFrameworkBundle\Event;
 
 class CustomerMergerEventListener
 {
-
     public function onPostMerge(\Symfony\Component\EventDispatcher\GenericEvent $e)
     {
         $sourceCustomer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById($e->getArgument('sourceId'));
         $targetCustomer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById($e->getArgument('targetId'));
 
-        if($sourceCustomer && $targetCustomer) {
+        if ($sourceCustomer && $targetCustomer) {
             \Pimcore::getContainer()->get('cmf.customer_merger')->mergeCustomers($sourceCustomer, $targetCustomer, false);
         }
     }
-
 }

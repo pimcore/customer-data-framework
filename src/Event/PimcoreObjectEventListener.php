@@ -15,6 +15,7 @@ use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInt
 use CustomerManagementFrameworkBundle\Model\AbstractObjectActivity;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use Pimcore\Event\Model\DataObjectEvent;
 use Pimcore\Event\Model\ElementEventInterface;
 use Pimcore\Event\Model\ObjectEvent;
 use Pimcore\Model\Object\ActivityDefinition;
@@ -33,7 +34,8 @@ class PimcoreObjectEventListener
 
     public function onPreUpdate(ElementEventInterface $e)
     {
-        if (!$e instanceof ObjectEvent) {
+
+        if (!$e instanceof DataObjectEvent) {
             return;
         }
 
@@ -46,7 +48,7 @@ class PimcoreObjectEventListener
 
     public function onPostUpdate(ElementEventInterface $e)
     {
-        if (!$e instanceof ObjectEvent) {
+        if (!$e instanceof DataObjectEvent) {
             return;
         }
 
@@ -70,7 +72,7 @@ class PimcoreObjectEventListener
 
     public function onPreAdd(ElementEventInterface $e)
     {
-        if (!$e instanceof ObjectEvent) {
+        if (!$e instanceof DataObjectEvent) {
             return;
         }
 
@@ -85,7 +87,7 @@ class PimcoreObjectEventListener
 
     public function onPostAdd(ElementEventInterface $e)
     {
-        if (!$e instanceof ObjectEvent) {
+        if (!$e instanceof DataObjectEvent) {
             return;
         }
 
@@ -98,7 +100,7 @@ class PimcoreObjectEventListener
 
     public function onPreDelete(ElementEventInterface $e)
     {
-        if (!$e instanceof ObjectEvent) {
+        if (!$e instanceof DataObjectEvent) {
             return;
         }
 
@@ -111,7 +113,7 @@ class PimcoreObjectEventListener
 
     public function onPostDelete(ElementEventInterface $e)
     {
-        if (!$e instanceof ObjectEvent) {
+        if (!$e instanceof DataObjectEvent) {
             return;
         }
 

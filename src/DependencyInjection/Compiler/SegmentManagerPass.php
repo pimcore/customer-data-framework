@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\DependencyInjection\Compiler;
 
-use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

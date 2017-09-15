@@ -1,4 +1,4 @@
-var CustomerView = pimcore.registerNS("pimcore.plugin.CustomerManagementFramework.CustomerView");
+var CustomerView = pimcore.registerNS("pimcore.plugin.customermanagementframework.CustomerView");
 
 CustomerView.config = {
     PERMISSION: "plugin_customermanagementframework_customerview"

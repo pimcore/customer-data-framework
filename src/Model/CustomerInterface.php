@@ -15,6 +15,7 @@ use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInt
 use CustomerManagementFrameworkBundle\CustomerSaveManager\SaveOptions;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Object\CustomerSegment;
+use Pimcore\Model\Object\Data\ObjectMetadata;
 
 interface CustomerInterface extends ElementInterface
 {
@@ -159,7 +160,7 @@ interface CustomerInterface extends ElementInterface
     public function setPhone($phone);
 
     /**
-     * @return CustomerSegment[]
+     * @return CustomerSegmentInterface[]|ObjectMetadata[]|null
      */
     public function getManualSegments();
 
@@ -171,7 +172,7 @@ interface CustomerInterface extends ElementInterface
     public function setManualSegments($segments);
 
     /**
-     * @return CustomerSegment[]
+     * @return CustomerSegmentInterface[]|ObjectMetadata[]|null
      */
     public function getCalculatedSegments();
 
@@ -211,6 +212,7 @@ interface CustomerInterface extends ElementInterface
 
     /**
      * @param bool $disableVersions
+     *
      * @return mixed
      */
     public function saveDirty($disableVersions = true);
@@ -218,6 +220,7 @@ interface CustomerInterface extends ElementInterface
     /**
      * @param SaveOptions $saveOptions
      * @param bool $disableVersions
+     *
      * @return mixed
      */
     public function saveWithOptions(SaveOptions $saveOptions, $disableVersions = false);

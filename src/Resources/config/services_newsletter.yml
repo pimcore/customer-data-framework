@@ -15,9 +15,19 @@ services:
     CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\MailChimpExportService:
         arguments:
             - '@DrewM\MailChimp\MailChimp'
-            - '%pimcore_customer_management_framework.newsletter.mailchimp.listId%'
 
-    CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\SegmentExporter:
+    CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\SegmentExporter: ~
+
+    CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\TemplateExporter: ~
+
+    CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CustomerExporter\SingleExporter: ~
+    CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CustomerExporter\BatchExporter: ~
+
+    CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\WebhookProcessor: ~
+    CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\UpdateFromMailchimpProcessor: ~
+    CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CliSyncProcessor:
+        arguments:
+           - '%pimcore_customer_management_framework.newsletter.mailchimp.cliUpdatesPimcoreUserName%'
 
 
     DrewM\MailChimp\MailChimp:

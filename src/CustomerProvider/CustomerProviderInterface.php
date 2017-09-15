@@ -71,6 +71,18 @@ interface CustomerProviderInterface
     public function getById($id, $force = false);
 
     /**
+     * Get active customer by email
+     *
+     * @param int $id
+     * @param bool $foce
+     *
+     * @return CustomerInterface|null
+     *
+     * @throws \RuntimeException
+     */
+    public function getActiveCustomerByEmail($email);
+
+    /**
      * Sets the correct parent folder and object key for the given customer.
      *
      * @param CustomerInterface $customer
@@ -86,6 +98,7 @@ interface CustomerProviderInterface
 
     /**
      * @param string $parentPath
+     *
      * @return void
      */
     public function setParentPath($parentPath);

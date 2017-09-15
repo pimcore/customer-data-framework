@@ -13,6 +13,8 @@ namespace CustomerManagementFrameworkBundle\Model;
 
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\SaveOptions;
+use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProviderHandlerInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 
 abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implements CustomerInterface
@@ -38,7 +40,15 @@ abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implement
      */
     public function getAllSegments()
     {
-        return array_merge((array)$this->getCalculatedSegments(), (array)$this->getManualSegments());
+        /**
+         * @var SegmentManagerInterface $segmentManager
+         */
+        $segmentManager = \Pimcore::getContainer()->get('cmf.segment_manager');
+
+        return array_merge(
+            $segmentManager->getCalculatedSegmentsFromCustomer($this),
+            $segmentManager->getManualSegmentsFromCustomer($this)
+        );
     }
 
     public function getRelatedCustomerGroups()
@@ -48,6 +58,7 @@ abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implement
 
     /**
      * @param bool $disableVersions
+     *
      * @return mixed
      */
     public function saveDirty($disableVersions = true)
@@ -58,6 +69,7 @@ abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implement
     /**
      * @param SaveOptions $saveOptions
      * @param bool $disableVersions
+     *
      * @return mixed
      */
     public function saveWithOptions(SaveOptions $saveOptions, $disableVersions = false)
@@ -74,8 +86,20 @@ abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implement
          * @var CustomerSaveManagerInterface $saveManager
          */
         $saveManager = \Pimcore::getContainer()->get('cmf.customer_save_manager');
+
         return $saveManager;
     }
 
-
+    /**
+     * If this method returns true the customer will be exported by the provider handler with the given shortcut.
+     * Otherwise the provider handler will delete the customer in the target system if it exists.
+     *
+     * @param NewsletterProviderHandlerInterface $newsletterProviderHandler
+     *
+     * @return bool
+     */
+    public function needsExportByNewsletterProviderHandler(NewsletterProviderHandlerInterface $newsletterProviderHandler)
+    {
+        return $this->getPublished() && $this->getActive();
+    }
 }
