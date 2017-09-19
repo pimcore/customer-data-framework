@@ -14,6 +14,7 @@ namespace CustomerManagementFrameworkBundle\SegmentManager;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentBuilder\SegmentBuilderInterface;
+use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Object\CustomerSegment;
 use Pimcore\Model\Object\CustomerSegmentGroup;
 
@@ -49,6 +50,12 @@ interface SegmentManagerInterface
      * @return CustomerSegmentGroup
      */
     public function getSegmentGroupById($id);
+
+    /**
+     * @param ElementInterface $element
+     * @return CustomerSegmentInterface[]
+     */
+    public function getSegmentsForElement(ElementInterface $element): array;
 
     /**
      * Returns an object list of all customer segments.
@@ -212,7 +219,7 @@ interface SegmentManagerInterface
     public function updateSegmentGroup(CustomerSegmentGroup $segmentGroup, array $values = []);
 
     /**
-     * Updates a sgement.
+     * Updates a segment.
      *
      * @param CustomerSegmentInterface $segment
      * @param array $values

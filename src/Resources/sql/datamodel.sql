@@ -1,8 +1,8 @@
 CREATE TABLE `plugin_cmf_segment_assignment_index` (
   `elementId` INT(11),
   `elementType` ENUM('document', 'asset', 'object'),
-  `segment` INT,
-  PRIMARY KEY (`elementId`, `elementType`, `segment`)
+  `segmentId` INT,
+  PRIMARY KEY (`elementId`, `elementType`, `segmentId`)
 );
 
 CREATE TABLE `plugin_cmf_segment_assignment_queue` (

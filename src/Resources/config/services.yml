@@ -51,6 +51,7 @@ services:
         arguments:
             - '%pimcore_customer_management_framework.segment_manager.segmentFolder.calculated%'
             - '%pimcore_customer_management_framework.segment_manager.segmentFolder.manual%'
+            - '%cmf.segmentAssignment.table.index%'
 
     CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface:
         class: CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\DefaultSegmentBuilderExecutor
@@ -70,6 +71,12 @@ services:
             - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.enableDuplicatesIndex%'
             - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.duplicateCheckFields%'
             - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.dataTransformers%'
+
+    CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\IndexerInterface:
+        class: CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\Indexer
+
+    CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapperInterface:
+        class: CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapper
 
     cmf.logger:
         alias: monolog.logger.cmf

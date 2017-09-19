@@ -27,7 +27,7 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
             '/bundles/pimcorecustomermanagementframework/js/startup.js',
             '/bundles/pimcorecustomermanagementframework/js/ActivityView.js',
             '/bundles/pimcorecustomermanagementframework/js/CustomerView.js',
-            '/bundles/pimcorecustomermanagementframework/js/CustomerView.js',
+            '/bundles/pimcorecustomermanagementframework/js/SegmentAssignmentView.js',
             '/bundles/pimcorecustomermanagementframework/js/config/panel.js',
             '/bundles/pimcorecustomermanagementframework/js/config/rule.js',
             '/bundles/pimcorecustomermanagementframework/js/config/trigger.js',
