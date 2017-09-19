@@ -32,6 +32,8 @@ class Installer extends AbstractInstaller
         if (ClassDefinition::getByName('LinkActivityDefinition')) {
             return true;
         }
+
+        return false;
     }
 
     public function canBeInstalled()
