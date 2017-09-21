@@ -32,6 +32,8 @@ class Installer extends AbstractInstaller
         if (ClassDefinition::getByName('LinkActivityDefinition')) {
             return true;
         }
+
+        return false;
     }
 
     public function canBeInstalled()
@@ -209,7 +211,7 @@ class Installer extends AbstractInstaller
         );
 
         \Pimcore\Db::get()->query(
-            'CREATE TABLE `plugin_cmf_newsletter_queue` (
+            'CREATE TABLE IF NOT EXISTS `plugin_cmf_newsletter_queue` (
               `customerId` int(11) unsigned NOT NULL,
               `email` varchar(255) DEFAULT NULL,
               `operation` varchar(20) DEFAULT NULL,
