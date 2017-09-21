@@ -1,7 +1,2 @@
 monolog:
     channels: ['cmf']
-
-parameters:
-    cmf.segmentAssignment.table.raw: plugin_cmf_segment_assignment
-    cmf.segmentAssignment.table.index: plugin_cmf_segment_assignment_index
-    cmf.segmentAssignment.table.queue: plugin_cmf_segment_assignment_queue
