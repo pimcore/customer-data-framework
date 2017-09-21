@@ -133,12 +133,19 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @param ElementInterface $element
-     * @return CustomerSegmentInterface[]
+     * @inheritdoc
      */
     public function getSegmentsForElement(ElementInterface $element): array {
         $id = $element->getId();
         $type = $this->getTypeMapper()->getTypeStringByObject($element);
+
+        return $this->getSegmentsForElementId($id, $type);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSegmentsForElementId(string $id, string $type): array {
         $segmentIds = Db::get()->fetchCol(sprintf('SELECT `segmentId` FROM %s WHERE `elementId` = %s AND `elementType` = "%s"', $this->getSegmentAssignmentIndexTable(), $id, $type));
 
         return array_map(function($id){

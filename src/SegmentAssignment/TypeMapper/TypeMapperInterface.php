@@ -20,10 +20,18 @@ use Pimcore\Model\Element\ElementInterface;
 interface TypeMapperInterface {
 
     /**
-     * returns a type string (e.g. 'document'/'asset'/'object') for the provided element
+     * returns a type string (e.g. 'document'|'asset'|'object') for the provided element
      *
      * @param ElementInterface $element
      * @return string
      */
     public function getTypeStringByObject(ElementInterface $element): string;
+
+    /**
+     * returns a type string (e.g. 'document'|'asset'|'object') for the provided sub type
+     *
+     * @param string $subType
+     * @return string
+     */
+    public function getTypeStringBySubType(string $subType): string;
 }

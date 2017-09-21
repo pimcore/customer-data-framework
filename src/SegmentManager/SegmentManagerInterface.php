@@ -52,10 +52,21 @@ interface SegmentManagerInterface
     public function getSegmentGroupById($id);
 
     /**
+     * Returns all segments assigned to $element
+     *
      * @param ElementInterface $element
      * @return CustomerSegmentInterface[]
      */
     public function getSegmentsForElement(ElementInterface $element): array;
+
+    /**
+     * Returns all segments assigned to $id with $type
+     *
+     * @param string $id
+     * @param string $type
+     * @return CustomerSegmentInterface[]
+     */
+    public function getSegmentsForElementId(string $id, string $type): array;
 
     /**
      * Returns an object list of all customer segments.

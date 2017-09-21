@@ -15,7 +15,6 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
 
         this.initToolbar();
         this.initNewsletterQueueInfo();
-
     },
 
     initToolbar: function () {
@@ -157,7 +156,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
             panel.updateLayout();
         }
 
-        this.addSegmentAssignmentTab(object, type);
+        this.addSegmentAssignmentTab(object, 'object');
     },
 
     pluginObjectMergerPostMerge: function (data) {
@@ -216,11 +215,9 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
 
         this.checkNewsletterQueueStatus(statusIcon);
     },
-
-
     postOpenDocument: function (document, type) {
 
-        if (pimcore.settings.cmf.newsletterSyncEnabled && type == 'email') {
+        if (pimcore.settings.cmf.newsletterSyncEnabled && type === 'email') {
 
             document.tab.items.items[0].add({
                 text: t('plugin_cmf_newsletter_export_template'),
@@ -248,22 +245,64 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
             });
             pimcore.layout.refresh();
 
-            this.addSegmentAssignmentTab(document, type)
+
         }
+
+        this.addSegmentAssignmentTab(document, 'document');
     },
 
     postOpenAsset: function (asset, type) {
-        this.addSegmentAssignmentTab(asset, type);
+        this.addSegmentAssignmentTab(asset, 'asset');
     },
 
     addSegmentAssignmentTab: function (object, type) {
         if (false /*configuration*/) {
             return;
         }
-        var configTab = new pimcore.plugin.customermanagementframework.segmentAssignmentTab(object, type);
-        var panel = configTab.getLayout();
-        object.tab.items.items[1].insert(1, panel);
-        panel.updateLayout();
+        this.segmentTab = new pimcore.plugin.customermanagementframework.segmentAssignmentTab(object, type);
+        object.tab.items.items[1].insert(1, this.segmentTab.getLayout());
+        object.tab.items.items[1].updateLayout();
+    },
+
+    preSaveDocument: function (element, type, task, only) {
+        this.saveSegmentAssignments(element, 'document', task, only);
+    },
+
+    preSaveAsset: function(element, type, task, only) {
+        this.saveSegmentAssignments(element, 'asset', task, only);
+    },
+
+    preSaveObject: function(element, type, task, only) {
+        this.saveSegmentAssignments(element, 'object', task, only);
+    },
+
+    saveSegmentAssignments: function (element, type, task, only) {
+        var segmentTab = this.segmentTab;
+        var breaksInheritance = segmentTab.breaksInheritance.items.items[0].checked;
+        var segmentIds = [];
+
+        segmentTab.assignedStore.data.items.forEach(function(item){
+            segmentIds.push(item.id);
+        });
+
+        Ext.Ajax.request(
+            {
+                url: "/admin/customermanagementframework/segment-assignment/assign",
+                method: "post",
+                params: {
+                    id: element.id,
+                    type: type,
+                    breaksInheritance: breaksInheritance,
+                    segmentIds: JSON.stringify(segmentIds)
+                },
+                success: function (response) {
+                    console.log(response.responseText);
+                },
+                failure: function(response) {
+                    pimcore.helpers.showNotification(t("error"), t("plugin_cmf_segment_assignment_error"), "error", response.responseText);
+                }
+            }
+        );
     }
 });
 

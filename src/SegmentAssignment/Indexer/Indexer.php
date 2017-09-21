@@ -13,9 +13,6 @@ use \Pimcore\Db\Connection;
 
 class Indexer implements IndexerInterface {
 
-    const QUEUE_TABLE = 'plugin_cmf_segment_assignment_queue';
-    const INDEX_TABLE = 'plugin_cmf_segment_assignment_index';
-
     const STORED_FUNCTIONS = [
         'document' => 'PLUGIN_CMF_COLLECT_DOCUMENT_SEGMENT_ASSIGNMENTS',
         'asset' => 'PLUGIN_CMF_COLLECT_ASSET_SEGMENT_ASSIGNMENTS',
@@ -25,9 +22,47 @@ class Indexer implements IndexerInterface {
     const PAGE_SIZE = 200;
 
     /**
+     * @var string
+     */
+    private $segmentAssignmentIndexTable = '';
+
+    /**
+     * @var string
+     */
+    private $segmentAssignmentQueueTable = '';
+
+    /**
      * @var Connection
      */
     private $db = null;
+
+    /**
+     * @return string
+     */
+    public function getSegmentAssignmentIndexTable(): string {
+        return $this->segmentAssignmentIndexTable;
+    }
+
+    /**
+     * @param string $segmentAssignmentIndexTable
+     */
+    public function setSegmentAssignmentIndexTable(string $segmentAssignmentIndexTable) {
+        $this->segmentAssignmentIndexTable = $segmentAssignmentIndexTable;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSegmentAssignmentQueueTable(): string {
+        return $this->segmentAssignmentQueueTable;
+    }
+
+    /**
+     * @param string $segmentAssignmentQueueTable
+     */
+    public function setSegmentAssignmentQueueTable(string $segmentAssignmentQueueTable) {
+        $this->segmentAssignmentQueueTable = $segmentAssignmentQueueTable;
+    }
 
     /**
      * @return Connection
@@ -44,10 +79,11 @@ class Indexer implements IndexerInterface {
     }
 
     /**
-     * Indexer constructor.
      * @param Connection $db
      */
-    public function __construct(Connection $db) {
+    public function __construct(string $segmentAssignmentIndexTable, string $segmentAssignmentQueueTable, Connection $db) {
+        $this->setSegmentAssignmentIndexTable($segmentAssignmentIndexTable);
+        $this->setSegmentAssignmentQueueTable($segmentAssignmentQueueTable);
         $this->setDb($db);
     }
 
@@ -55,7 +91,7 @@ class Indexer implements IndexerInterface {
      * @inheritDoc
      */
     public function processQueue(): bool {
-        $chunkStatement = sprintf('SELECT * FROM %s LIMIT %s', static::QUEUE_TABLE, static::PAGE_SIZE);
+        $chunkStatement = sprintf('SELECT * FROM `%s` LIMIT %s', $this->getSegmentAssignmentQueueTable(), static::PAGE_SIZE);
 
         $queuedElements = $this->getDb()->fetchAll($chunkStatement);
 
@@ -73,7 +109,6 @@ class Indexer implements IndexerInterface {
 
     /**
      * processes a single element,
-     * delete all previously assigned segments and inserts the currently assigned ones
      * inserts one row for each segment assigned to that element
      * and finally dequeues the element
      *
@@ -89,13 +124,19 @@ class Indexer implements IndexerInterface {
             return sprintf('(%s, "%s", %s)', $elementId, $elementType, $segmentId);
         }, $segmentIds));
 
-        $formatArguments = [static::INDEX_TABLE, static::QUEUE_TABLE, $elementId, $elementType, $values];
+        $formatArguments = [
+            1 => $this->getSegmentAssignmentIndexTable(),
+            2 => $this->getSegmentAssignmentQueueTable(),
+            3 => $elementId,
+            4 => $elementType,
+            5 => $values,
+            6 => join(',', $segmentIds)
+        ];
 
-        $this->getDb()->query(vsprintf('START TRANSACTION;
-        DELETE FROM %1$s WHERE `elementId` = "%3$s" AND `elementType` = "%4$s";
-        INSERT INTO %1$s VALUES %5$s;
-        DELETE FROM %2$s WHERE `elementId` = "%3$s" AND `elementType` = "%4$s";
-        COMMIT;
-        ', $formatArguments));
+        $this->getDb()->query(vsprintf('START TRANSACTION;'.
+        'INSERT INTO `%1$s` VALUES %5$s ON DUPLICATE KEY UPDATE `elementId` = `elementId`;'.
+        'DELETE FROM `%1$s` WHERE `elementId` = %3$s AND `elementType` = "%4$s" AND FIND_IN_SET(`segmentId`, "%6$s") = 0;'.
+        'DELETE FROM `%2$s` WHERE `elementId` = "%3$s" AND `elementType` = "%4$s";'.
+        'COMMIT;', $formatArguments));
     }
 }

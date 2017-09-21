@@ -21,29 +21,32 @@ use Pimcore\Model\Element\ElementInterface;
 interface SegmentAssignerInterface {
 
     /**
-     * Assign a segment to an element
+     * Assigns segments to an element
      *
      * @param ElementInterface $element
-     * @param CustomerSegmentInterface $segment
+     * @param bool $breaksInheritance
+     * @param CustomerSegmentInterface[] $segments
      * @return bool true on success, false on failure
      */
-    public function assign(ElementInterface $element, CustomerSegmentInterface $segment): bool;
+    public function assign(ElementInterface $element, bool $breaksInheritance, array $segments): bool;
 
     /**
-     * Assign a segment to an element using the segment's id
+     * Assigns segments to an element id using the segments' ids
      *
-     * @param ElementInterface $element
-     * @param string $segmentId
+     * @param string $elementId
+     * @param string $type
+     * @param bool $breaksInheritance
+     * @param string[] $segmentIds
      * @return bool true on success, false on failure
      */
-    public function assignById(ElementInterface $element, string $segmentId): bool;
+    public function assignById(string $elementId, string $type, bool $breaksInheritance, array $segmentIds): bool;
 
     /**
-     * Remove an assigned segment from an element
+     * adds an element's children to the segment assignment queue
      *
-     * @param ElementInterface $element
-     * @param CustomerSegmentInterface $segment
-     * @return bool true on success, false on failure
+     * @param string $elementId
+     * @param string $type
+     * @return bool
      */
-    public function removeAssignment(ElementInterface $element, CustomerSegmentInterface $segment): bool;
+    public function enqueueChildren(string $elementId, string $type): bool;
 }

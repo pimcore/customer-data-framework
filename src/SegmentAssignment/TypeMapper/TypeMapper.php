@@ -8,7 +8,6 @@
 
 namespace CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper;
 
-
 use Pimcore\Model\Asset;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\ElementInterface;
@@ -35,5 +34,26 @@ class TypeMapper implements TypeMapperInterface {
         if($element instanceof AbstractObject) {
             return static::TYPE_OBJECT;
         }
+
+        return '';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getTypeStringBySubType(string $subType): string {
+        if(in_array($subType, Document::$types)){
+            return static::TYPE_DOCUMENT;
+        }
+
+        if(in_array($subType, Asset::$types)) {
+            return static::TYPE_ASSET;
+        }
+
+        if(in_array($subType, AbstractObject::$types)) {
+            return static::TYPE_OBJECT;
+        }
+
+        return '';
     }
 }

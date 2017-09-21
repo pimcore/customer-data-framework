@@ -218,6 +218,14 @@ class Installer extends AbstractInstaller
               KEY `operation` (`operation`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
         );
+
+        $sqlPath = __DIR__ . '/Resources/sql/segmentAssignment/';
+        $sqlFileNames = ['datamodel.sql', 'storedFunctionDocument.sql', 'storedFunctionAsset.sql', 'storedFunctionObject.sql'];
+
+        foreach($sqlFileNames as $fileName) {
+            $statement = file_get_contents($sqlPath.$fileName);
+            \Pimcore\Db::get()->query($statement);
+        }
     }
 
     public static function installClasses()

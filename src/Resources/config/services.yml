@@ -74,9 +74,18 @@ services:
 
     CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\IndexerInterface:
         class: CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\Indexer
+        arguments:
+            $segmentAssignmentIndexTable: '%cmf.segmentAssignment.table.index%'
+            $segmentAssignmentQueueTable: '%cmf.segmentassignment.table.queue%'
 
     CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapperInterface:
         class: CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapper
+
+    CustomerManagementFrameworkBundle\SegmentAssignment\SegmentAssigner\SegmentAssignerInterface:
+        class: CustomerManagementFrameworkBundle\SegmentAssignment\SegmentAssigner\SegmentAssigner
+        arguments:
+            $segmentAssignmentTable: '%cmf.segmentAssignment.table.raw%'
+            $segmentAssignmentQueueTable: '%cmf.segmentAssignment.table.queue%'
 
     cmf.logger:
         alias: monolog.logger.cmf
