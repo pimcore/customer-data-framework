@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\DependencyInjection;
 
+use Pimcore\Model\Object\AbstractObject;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -42,6 +43,7 @@ class Configuration implements ConfigurationInterface
         $rootNode->append($this->buildCustomerDuplicatesServicesNode());
         $rootNode->append($this->buildNewsletterNode());
         $rootNode->append($this->buildActivityUrlTrackerNode());
+        $rootNode->append($this->buildSegmentAssignmentClassPermission());
 
         return $treeBuilder;
     }
@@ -66,6 +68,16 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
         ;
+
+        $general
+            ->children()
+            ->scalarNode('customerPimcoreClass')
+            ->defaultValue('Customer')
+            ->end()
+            ->scalarNode('mailBlackListFile')
+            ->defaultValue(PIMCORE_CONFIGURATION_DIRECTORY . '/cmf/mail-blacklist.txt')
+            ->end()
+            ->end();
 
         return $general;
     }
@@ -436,5 +448,57 @@ class Configuration implements ConfigurationInterface
             ->end();
 
         return $tracker;
+    }
+
+    private function buildSegmentAssignmentClassPermission() {
+        $treeBuilder = new TreeBuilder();
+
+        $assignment = $treeBuilder->root('segment_assignment_classes');
+
+        $assignment
+            ->children()
+                ->arrayNode('types')
+                    ->children()
+                        ->arrayNode('document')->info('expects sub types of document')
+                            ->children()
+                                ->scalarNode('folder')->defaultFalse()->end()
+                                ->scalarNode('page')->defaultFalse()->end()
+                                ->scalarNode('snippet')->defaultFalse()->end()
+                                ->scalarNode('link')->defaultFalse()->end()
+                                ->scalarNode('hardlink')->defaultFalse()->end()
+                                ->scalarNode('email')->defaultFalse()->end()
+                                ->scalarNode('newsletter')->defaultFalse()->end()
+                                ->scalarNode('printpage')->defaultFalse()->end()
+                                ->scalarNode('printcontainer')->defaultFalse()->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('asset')->info('expects sub types of asset')
+                            ->children()
+                                ->scalarNode('folder')->defaultFalse()->end()
+                                ->scalarNode('image')->defaultFalse()->end()
+                                ->scalarNode('text')->defaultFalse()->end()
+                                ->scalarNode('audio')->defaultFalse()->end()
+                                ->scalarNode('video')->defaultFalse()->end()
+                                ->scalarNode('document')->defaultFalse()->end()
+                                ->scalarNode('archive')->defaultFalse()->end()
+                                ->scalarNode('unknown')->defaultFalse()->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('object')->info('expects sub types of object')
+                            ->children()
+                                ->scalarNode(AbstractObject::OBJECT_TYPE_FOLDER)->end()
+                                ->arrayNode(AbstractObject::OBJECT_TYPE_OBJECT)
+                                    ->prototype('boolean')->end()
+                                ->end()
+                                ->arrayNode(AbstractObject::OBJECT_TYPE_VARIANT)
+                                    ->prototype('boolean')->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
+
+        return $assignment;
     }
 }

@@ -114,6 +114,20 @@ pimcore_customer_management_framework:
           enabled: true
           # used for automatic link generation of LinkActivityDefinition data objects
           linkCmfcPlaceholder: '*|ID_ENCODED|*'
+     
+    # Configuration for segment assignment
+    segment_assignment_classes:
+          types:
+              document:
+                  page: true
+                  email: true
+              asset:
+                  image: true
+              object:
+                  object:
+                    Product: true
+                    ShopCategory: true
+                  folder: true
 
     # Configuration of customer list view
     customer_list:

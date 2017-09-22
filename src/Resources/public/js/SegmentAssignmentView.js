@@ -77,7 +77,7 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
                     boxLabel: t('cmf.breaksInheritance'),
                     inputValue: '1',
                     checked: false,
-                    handler: function(target, checkedState) {
+                    handler: function (target, checkedState) {
                         inheritableGrid.setDisabled(checkedState);
                         inheritableGrid.updateLayout();
                     }
@@ -91,11 +91,11 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
             url: "/admin/customermanagementframework/segment-assignment/breaks-inheritance",
             method: "post",
             params: {id: this.object.id, type: this.type},
-            success: function(response) {
+            success: function (response) {
                 var data = JSON.parse(response.responseText);
                 checkBox.setValue(data.breaksInheritance === '1');
             },
-            failure: function(response) {
+            failure: function (response) {
                 pimcore.helpers.showNotification(t("error"), t("plugin_cmf_segment_assignment_error"), "error", response.responseText);
             }
         });
@@ -133,7 +133,7 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
                     {
                         xtype: "button",
                         iconCls: "pimcore_icon_search",
-                        //handler: this.openSearchEditor.bind(this)
+                        handler: this.openSearchEditor.bind(this)
                     }
                 ]
             },
@@ -141,7 +141,8 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
             columns: [
                 {header: 'Id', sortable: false, dataIndex: 'id', flex: 1},
                 {header: 'Name', sortable: false, dataIndex: 'name', flex: 3},
-                {header: t('remove'),
+                {
+                    header: t('remove'),
                     xtype: 'actioncolumn',
                     flex: 1,
                     items: [{
@@ -150,7 +151,8 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
                         handler: function (grid, rowIndex) {
                             grid.getStore().removeAt(rowIndex);
                         }.bind(this)
-                    }]}
+                    }]
+                }
             ],
             stripeRows: true
         });
@@ -165,9 +167,9 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
 
             var dropTargetEl = assignedGrid.getEl();
             var gridDropTarget = new Ext.dd.DropZone(dropTargetEl, {
-                ddGroup    : 'element',
+                ddGroup: 'element',
 
-                getTargetFromEvent: function(e) {
+                getTargetFromEvent: function (e) {
                     return assignedGrid.getEl().dom;
                 }.bind(this),
 
@@ -182,7 +184,7 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
                     }
                 }.bind(this),
 
-                onNodeDrop : function(target, dd, event, data) {
+                onNodeDrop: function (target, dd, event, data) {
                     var element = data.records[0].data;
                     var fromTree = this.isFromTree(dd);
 
@@ -199,23 +201,49 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
         return assignedGrid;
     },
 
-    isFromTree: function(ddSource) {
+    isFromTree: function (ddSource) {
         return Ext.getClass(ddSource).getName() === "Ext.tree.ViewDragZone";
     },
 
-    dndAllowed: function(data, fromTree) {
+    dndAllowed: function (data, fromTree) {
         return data.elementType === 'object' && data.className === "CustomerSegment";
     },
 
     openSearchEditor: function () {
-
         pimcore.helpers.itemselector(true, this.addDataFromSelector.bind(this), {
-            type: this.options.types,
-            subtype: this.options.subtypes,
+            type: 'object',
+            subtype: 'object',
             specific: {
-                classes: this.options["classes"]
+                classes: 'CustomerSegment'
             }
         });
-
     },
+
+    addDataFromSelector: function (items) {
+        if (items.length <= 0) {
+            return;
+        }
+
+        for (var i = 0; i < items.length; i++) {
+            if (!this.elementAlreadyExists(items[i].id, items[i].type)) {
+
+                var subtype = items[i].subtype;
+                if (items[i].type === "object") {
+                    if (items[i].subtype === "object") {
+                        if (items[i].classname) {
+                            subtype = items[i].classname;
+                        }
+                    }
+                }
+
+                this.assignedStore.add({
+                    id: items[i].id,
+                    path: items[i].fullpath,
+                    type: items[i].type,
+                    subtype: subtype
+                });
+            }
+        }
+
+    }
 });

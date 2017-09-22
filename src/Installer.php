@@ -29,11 +29,7 @@ class Installer extends AbstractInstaller
 
     public function isInstalled()
     {
-        if (ClassDefinition::getByName('LinkActivityDefinition')) {
-            return true;
-        }
-
-        return false;
+        return Db::get()->fetchOne("SHOW TABLES LIKE 'plugin_cmf_segment_assignment'") !== '';
     }
 
     public function canBeInstalled()

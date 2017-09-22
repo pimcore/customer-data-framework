@@ -4,6 +4,7 @@
 
 * [Activities (ActivityManager, ActivityStore, ActivityView)](./doc/Activities.md)
 * [Customer Segments](./doc/CustomerSegments.md)
+* [Segment Assignment](./doc/SegmentAssignment.md)
 * [Customer Duplicates Service](./doc/CustomerDuplicatesService.md)
 * [Customer Save Manager](./doc/CustomerSaveManager.md)
 * [Webservice](./doc/Webservice.md)

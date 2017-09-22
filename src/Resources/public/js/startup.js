@@ -156,7 +156,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
             panel.updateLayout();
         }
 
-        this.addSegmentAssignmentTab(object, 'object');
+        this.addSegmentAssignmentTab(object, 'object', type);
     },
 
     pluginObjectMergerPostMerge: function (data) {
@@ -248,20 +248,27 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
 
         }
 
-        this.addSegmentAssignmentTab(document, 'document');
+        this.addSegmentAssignmentTab(document, 'document', type);
     },
 
     postOpenAsset: function (asset, type) {
-        this.addSegmentAssignmentTab(asset, 'asset');
+        this.addSegmentAssignmentTab(asset, 'asset', type);
     },
 
-    addSegmentAssignmentTab: function (object, type) {
-        if (false /*configuration*/) {
+    addSegmentAssignmentTab: function (element, type, subType) {
+        var addTab = Boolean(pimcore.settings.cmf.segmentAssignment[type][subType]);
+
+        if('object' === type) {
+            addTab &= pimcore.settings.cmf.segmentAssignment[type][subType][element.data.general.o_className];
+        }
+
+        if (!addTab) {
             return;
         }
-        this.segmentTab = new pimcore.plugin.customermanagementframework.segmentAssignmentTab(object, type);
-        object.tab.items.items[1].insert(1, this.segmentTab.getLayout());
-        object.tab.items.items[1].updateLayout();
+
+        this.segmentTab = new pimcore.plugin.customermanagementframework.segmentAssignmentTab(element, type);
+        element.tab.items.items[1].insert(1, this.segmentTab.getLayout());
+        element.tab.items.items[1].updateLayout();
     },
 
     preSaveDocument: function (element, type, task, only) {
