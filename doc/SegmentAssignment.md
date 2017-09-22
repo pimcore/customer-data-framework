@@ -60,4 +60,6 @@ the `cmf:maintenance` cli command (e.g. as a cronjob).
 
 ## Retrieving assigned segments
 
-To retrieve segments assigned to 
+To retrieve segments assigned to a certain element,
+`SegmentManagerInterface::getSegmentsForElement` and `SegmentManagerInterface::getSegmentsForElementId`
+return an array of fully hydrated CustomerSegments
