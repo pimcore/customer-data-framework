@@ -29,7 +29,9 @@ class Installer extends AbstractInstaller
 
     public function isInstalled()
     {
-        return Db::get()->fetchOne("SHOW TABLES LIKE 'plugin_cmf_segment_assignment'") !== '';
+        $result = \Pimcore\Db::get()->fetchAll('SHOW TABLES LIKE "plugin_cmf_segment_assignment"');
+
+        return !empty($result);
     }
 
     public function canBeInstalled()
