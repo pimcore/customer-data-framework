@@ -28,6 +28,9 @@ Removes invalid characters from an email field.
 #### NormalizeZip
 Tries to normalize zip numbers. For example A-1010 would become 1010. It offers zip correction regexes for several counties. It would be possible to extend the logic for other countries.
 
+#### SalutationToGender
+Maps a salutation field to a gender field. This can automatically adjust the gender based on the salutation.
+
 #### RemoveBlacklistedEmails
 Sets the email field to a empty value if the given email adress is in a defined blacklist. 
 

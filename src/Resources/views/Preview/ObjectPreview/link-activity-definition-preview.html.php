@@ -5,6 +5,9 @@
  * @var \Pimcore\Templating\GlobalVariables $app
  */
 
+$this->headScript()->appendFile('/bundles/pimcorecustomermanagementframework/vendor/clipboardjs/clipboard.min.js');
+$this->headScript()->appendFile('/bundles/pimcorecustomermanagementframework/js/LinkActivityDefinition/preview.js');
+
 $this->extend('PimcoreCustomerManagementFrameworkBundle::layout.html.php');
 
 /**
@@ -31,7 +34,16 @@ $activityDefinition = $this->activityDefinition;
                     <div class="box-body">
                         <?php if($activityDefinition): ?>
                             <?php $link = $app->getContainer()->get('cmf.link-activity-definition.linkgenerator')->generate($activityDefinition); ?>
-                            <?= $link ? : '-' ?>
+                            <?php if($link): ?>
+                                <a href="#" data-clipboard-target="#js-copy-to-clipboard-container" style="margin-right: 10px;" class="btn btn-sm btn-default pull-left js-copy-to-clipboard" title="copy to clipboard">
+                                    <i class="fa fa-clipboard"></i>
+                                </a>
+
+                                <div id="js-copy-to-clipboard-container" style="padding-top: 5px;" href="<?=$link?>"><?=$link?></div>
+
+                            <?php else: ?>
+                                -
+                            <?php endif; ?>
                         <?php else: ?>
                             -
                         <?php endif; ?>
