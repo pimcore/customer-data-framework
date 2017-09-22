@@ -1,11 +1,9 @@
 parameters:
     cmf.customer_export.items_per_request: 500
+
     cmf.segmentAssignment.table.raw: plugin_cmf_segment_assignment
     cmf.segmentAssignment.table.index: plugin_cmf_segment_assignment_index
     cmf.segmentAssignment.table.queue: plugin_cmf_segment_assignment_queue
-
-    cmf.maintenance.serviceCalls:
-        CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\IndexerInterface: 'processQueue'
 
 services:
     _defaults:
@@ -92,6 +90,11 @@ services:
         arguments:
             $segmentAssignmentTable: '%cmf.segmentAssignment.table.raw%'
             $segmentAssignmentQueueTable: '%cmf.segmentAssignment.table.queue%'
+
+    CustomerManagementFrameworkBundle\Maintenance\MaintenanceWorker:
+        arguments:
+            $serviceConfiguration:
+                'processQueue': '@CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\IndexerInterface'
 
     cmf.logger:
         alias: monolog.logger.cmf
