@@ -456,10 +456,13 @@ class Configuration implements ConfigurationInterface
         $assignment = $treeBuilder->root('segment_assignment_classes');
 
         $assignment
+            ->addDefaultsIfNotSet()
             ->children()
                 ->arrayNode('types')
+                    ->addDefaultsIfNotSet()
                     ->children()
                         ->arrayNode('document')->info('expects sub types of document')
+                            ->addDefaultsIfNotSet()
                             ->children()
                                 ->scalarNode('folder')->defaultFalse()->end()
                                 ->scalarNode('page')->defaultFalse()->end()
@@ -473,6 +476,7 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
                         ->arrayNode('asset')->info('expects sub types of asset')
+                            ->addDefaultsIfNotSet()
                             ->children()
                                 ->scalarNode('folder')->defaultFalse()->end()
                                 ->scalarNode('image')->defaultFalse()->end()
@@ -485,8 +489,9 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
                         ->arrayNode('object')->info('expects sub types of object')
+                            ->addDefaultsIfNotSet()
                             ->children()
-                                ->scalarNode(AbstractObject::OBJECT_TYPE_FOLDER)->end()
+                                ->scalarNode(AbstractObject::OBJECT_TYPE_FOLDER)->defaultFalse()->end()
                                 ->arrayNode(AbstractObject::OBJECT_TYPE_OBJECT)
                                     ->prototype('boolean')->end()
                                 ->end()
