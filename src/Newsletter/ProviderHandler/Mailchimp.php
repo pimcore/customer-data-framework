@@ -264,6 +264,8 @@ class Mailchimp implements NewsletterProviderHandlerInterface
                                 )
                             );
                             $item->setSuccessfullyProcessed(true);;
+                        } else {
+                            $updateNeededItems[] = $item;
                         }
                     } else {
                         $updateNeededItems[] = $item;
