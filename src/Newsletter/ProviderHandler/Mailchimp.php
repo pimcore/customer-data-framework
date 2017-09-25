@@ -263,10 +263,12 @@ class Mailchimp implements NewsletterProviderHandlerInterface
                                     $item->getCustomer()->getId()
                                 )
                             );
+                            $item->setSuccessfullyProcessed(true);;
                         }
+                    } else {
+                        $updateNeededItems[] = $item;
                     }
 
-                    $updateNeededItems[] = $item;
                 } else {
                     $this->getLogger()->info(
                         sprintf(
@@ -378,6 +380,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
 
             $segmentIds = [];
             foreach ($segments as $segment) {
+
                 $forceCreate = false;
                 if ($remoteGroupId && ($this->segmentExporter->getLastCreatedGroupRemoteId() == $remoteGroupId)) {
                     $forceCreate = true;
