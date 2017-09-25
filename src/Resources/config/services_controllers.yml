@@ -1,0 +1,10 @@
+services:
+  _defaults:
+      public: true
+      autowire: true
+      autoconfigure: true
+
+  CustomerManagementFrameworkBundle\Controller\:
+      resource: '../../Controller'
+      public: true
+      tags: ['controller.service_arguments']
