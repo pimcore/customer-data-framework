@@ -28,11 +28,17 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
     /**
      * @var array
      */
+    private $duplicateCheckTrimmedFields;
+
+    /**
+     * @var array
+     */
     protected $matchedDuplicateFields;
 
-    public function __construct(array $duplicateCheckFields = [])
+    public function __construct(array $duplicateCheckFields = [], array $duplicateCheckTrimmedFields = [])
     {
         $this->duplicateCheckFields = $duplicateCheckFields;
+        $this->duplicateCheckTrimmedFields = $duplicateCheckTrimmedFields;
     }
 
     /**
@@ -212,7 +218,12 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
      */
     protected function addNormalizedMysqlCompareConditionForStringFields(Concrete &$list, $field, $value)
     {
-        $list->addConditionParam('TRIM(LCASE('.$field.')) = ?', trim(mb_strtolower($value, 'UTF-8')));
+        if (in_array($field, $this->duplicateCheckTrimmedFields)) {
+            print 'like called';
+            $list->addConditionParam($field . ' like ?', trim(mb_strtolower($value, 'UTF-8')));
+        } else {
+            $list->addConditionParam('TRIM(LCASE('.$field.')) = ?', trim(mb_strtolower($value, 'UTF-8')));
+        }
     }
 
     /**

@@ -360,6 +360,13 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
 
+
+
+                ->arrayNode('duplicateCheckTrimmedFields')
+                    ->info('Performance improvement: add duplicate check fields which are trimmed (trim() called on the field value) by a customer save handler. No trim operation will be needed in the resulting query.')
+                    ->prototype('scalar')->end()
+                ->end()
+
                 ->arrayNode('duplicates_view')
                     ->children()
                         ->booleanNode('enabled')->defaultFalse()->end()

@@ -68,6 +68,7 @@ services:
         class: CustomerManagementFrameworkBundle\CustomerDuplicatesService\DefaultCustomerDuplicatesService
         arguments:
             - '%pimcore_customer_management_framework.customer_duplicates_services.duplicateCheckFields%'
+            - '%pimcore_customer_management_framework.customer_duplicates_services.duplicateCheckTrimmedFields%'
 
     CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface:
         class: CustomerManagementFrameworkBundle\DuplicatesIndex\DefaultMariaDbDuplicatesIndex

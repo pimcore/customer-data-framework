@@ -7,6 +7,11 @@ This is done directly via the database/customer object list. The duplicate servi
 
 The field combination(s) which should match could be defined in the CMF config file (CustomerDuplicatesService->duplicateCheckFields section). (Optional) multiple field combinations are supported (for example first check for duplicates based on firstname/lastname/street/zip/city - if no duplicates where found, check for firstname/street/zip/city/birthDate).
 
+### Performance tip:
+
+Add customer save handlers for trimming duplicate check fields and afterwards add these fields to the `duplicateCheckTrimmedFields` config section. The result will be that no trim operation will be needed in the resulting query. This could be a massive performance boost!
+
+
 ### Samples (for part 1):
 
 #### create a new customer instance

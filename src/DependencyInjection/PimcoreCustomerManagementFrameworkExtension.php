@@ -120,6 +120,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $container->setAlias('cmf.customer_duplicates_index', DuplicatesIndexInterface::class);
 
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicateCheckFields', $config['duplicateCheckFields']);
+        $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicateCheckTrimmedFields', (array) $config['duplicateCheckTrimmedFields']);
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.listFields', $config['duplicates_view']['listFields'] ?: []);
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.enabled', (bool) $config['duplicates_view']['enabled']);
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.enableDuplicatesIndex', $config['duplicates_index']['enableDuplicatesIndex'] ?: []);
