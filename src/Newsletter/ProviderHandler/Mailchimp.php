@@ -241,7 +241,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
                     } else {
                         $this->getLogger()->info(
                             sprintf(
-                                '[MailChimp][CUSTOMER %s] Export not needed as the export data did not change.',
+                                '[MailChimp][CUSTOMER %s] Export not needed as the export data did not change (customer is not in export list).',
                                 $item->getCustomer()->getId()
                             )
                         );
