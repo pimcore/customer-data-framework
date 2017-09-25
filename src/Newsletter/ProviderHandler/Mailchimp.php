@@ -249,6 +249,23 @@ class Mailchimp implements NewsletterProviderHandlerInterface
                         $item->setSuccessfullyProcessed(true);
                     }
                 } elseif ($forceUpdate || $this->exportService->didExportDataChangeSinceLastExport($item->getCustomer(), $this->getListId(), $this->buildEntry($item->getCustomer()))) {
+
+                    $mailchimpStatus = $this->getMailchimpStatus($item->getCustomer());
+                    if (!$mailchimpStatus) {
+                        $entry = $this->buildEntry($item->getCustomer());
+
+                        $setStatus = isset($entry['status_if_new']) ? : $entry['status'];
+
+                        if($setStatus == self::STATUS_UNSUBSCRIBED) {
+                            $this->getLogger()->info(
+                                sprintf(
+                                    '[MailChimp][CUSTOMER %s] Export not needed as the customer is unsubscribed and was not exported yet.',
+                                    $item->getCustomer()->getId()
+                                )
+                            );
+                        }
+                    }
+
                     $updateNeededItems[] = $item;
                 } else {
                     $this->getLogger()->info(
@@ -471,9 +488,12 @@ class Mailchimp implements NewsletterProviderHandlerInterface
 
         $result = [
             'email_address' => $emailCleaner->transform($customer->getEmail()),
-            'merge_fields' => $mergeFields,
-            'interests' => $this->buildCustomerSegmentData($customer)
+            'merge_fields' => $mergeFields
         ];
+
+        if($interests = $this->buildCustomerSegmentData($customer)) {
+            $result['interests'] = $interests;
+        }
 
         $result = $this->addNewsletterStatusToEntry($customer, $result);
 
@@ -507,7 +527,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
             }
         }
 
-        return $data;
+        return sizeof($data) ? $data : null;
     }
 
     public function updateMailchimpStatus(MailchimpAwareCustomerInterface $customer, $status, $saveCustomer = true)
