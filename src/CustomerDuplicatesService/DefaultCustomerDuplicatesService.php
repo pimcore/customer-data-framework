@@ -83,7 +83,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
             ->addConditionParam('active = ?', 1);
 
         foreach ($data as $field => $value) {
-            if (is_null($value)) {
+            if (is_null($value) || $value === '') {
                 return null;
             } else {
                 $this->addNormalizedMysqlCompareCondition($list, $field, $value);
@@ -116,7 +116,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
             $getter = 'get'.ucfirst($field);
             $value = $customer->$getter();
 
-            if (is_null($value)) {
+            if (is_null($value) || $value === '') {
                 return null;
             } else {
                 $data[$field] = $value;
