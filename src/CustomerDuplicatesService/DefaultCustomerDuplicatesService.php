@@ -219,7 +219,6 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
     protected function addNormalizedMysqlCompareConditionForStringFields(Concrete &$list, $field, $value)
     {
         if (in_array($field, $this->duplicateCheckTrimmedFields)) {
-            print 'like called';
             $list->addConditionParam($field . ' like ?', trim(mb_strtolower($value, 'UTF-8')));
         } else {
             $list->addConditionParam('TRIM(LCASE('.$field.')) = ?', trim(mb_strtolower($value, 'UTF-8')));
