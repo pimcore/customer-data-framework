@@ -24,8 +24,6 @@ class DuplicatesController extends Admin
 {
     public function init()
     {
-        parent::init();
-
         \Pimcore\Model\Object\AbstractObject::setHideUnpublished(true);
     }
 
