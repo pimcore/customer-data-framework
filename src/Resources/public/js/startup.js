@@ -267,8 +267,9 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
         }
 
         this.segmentTab = new pimcore.plugin.customermanagementframework.segmentAssignmentTab(element, type);
-        element.tab.items.items[1].insert(1, this.segmentTab.getLayout());
-        element.tab.items.items[1].updateLayout();
+        var tabPanel = element.tab.items.items[1];
+        tabPanel.insert(tabPanel.items.length, this.segmentTab.getLayout());
+        tabPanel.updateLayout();
     },
 
     preSaveDocument: function (element, type, task, only) {
