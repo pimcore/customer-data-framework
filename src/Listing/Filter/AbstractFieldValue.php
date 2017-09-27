@@ -12,7 +12,7 @@
 namespace CustomerManagementFrameworkBundle\Listing\Filter;
 
 use Pimcore\Db;
-use Pimcore\Model\Object\Listing as CoreListing;
+use Pimcore\Model\DataObject\Listing as CoreListing;
 
 abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQueryFilterInterface
 {

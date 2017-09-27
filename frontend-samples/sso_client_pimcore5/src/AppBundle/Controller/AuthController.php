@@ -135,7 +135,7 @@ class AuthController extends FrontendController
         }
 
         // create a new, empty customer instance
-        /** @var CustomerInterface|\Pimcore\Model\Object\Customer $customer */
+        /** @var CustomerInterface|\Pimcore\Model\DataObject\Customer $customer */
         $customer = $customerProvider->create();
 
         /** @var OAuthToken $oAuthToken */

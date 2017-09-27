@@ -13,7 +13,7 @@ namespace CustomerManagementFrameworkBundle\DataTransformer\Terms;
 
 use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 use CustomerManagementFrameworkBundle\Model\AbstractTermSegmentBuilderDefinition;
-use Pimcore\Model\Object\TermSegmentBuilderDefinition;
+use Pimcore\Model\DataObject\TermSegmentBuilderDefinition;
 
 class TermSegmentBuilderTransformer implements DataTransformerInterface
 {

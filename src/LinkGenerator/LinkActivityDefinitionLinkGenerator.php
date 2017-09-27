@@ -22,7 +22,7 @@ class LinkActivityDefinitionLinkGenerator implements LinkGeneratorInterface
 {
     protected $cmfcPlaceholder;
 
-    public function __construct($cmfcPlaceholder = '*|ENCODED_ID|*')
+    public function __construct($cmfcPlaceholder = '*|ID_ENCODED|*')
     {
         $this->cmfcPlaceholder = $cmfcPlaceholder;
     }
@@ -63,8 +63,12 @@ class LinkActivityDefinitionLinkGenerator implements LinkGeneratorInterface
         $url->setQueryVariable('cmfa', $object->getCode());
         $url->setQueryVariable('cmfc', $this->cmfcPlaceholder);
 
+        $url = $url->getURL();
 
-        return (string) $url;
+        //make sure that cmfcPlaceholder is not urlencoded
+        $url = str_replace(rawurlencode($this->cmfcPlaceholder), $this->cmfcPlaceholder, $url);
+
+        return $url;
     }
 
 }

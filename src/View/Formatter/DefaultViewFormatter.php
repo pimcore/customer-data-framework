@@ -13,8 +13,8 @@ namespace CustomerManagementFrameworkBundle\View\Formatter;
 
 use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
-use Pimcore\Model\Object\ClassDefinition;
-use Pimcore\Model\Object\ClassDefinition\Data;
+use Pimcore\Model\DataObject\ClassDefinition;
+use Pimcore\Model\DataObject\ClassDefinition\Data;
 use Pimcore\Model\Translation\TranslationInterface;
 
 class DefaultViewFormatter implements ViewFormatterInterface

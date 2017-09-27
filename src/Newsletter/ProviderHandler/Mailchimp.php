@@ -30,7 +30,7 @@ use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\File;
-use Pimcore\Model\Object\CustomerSegment;
+use Pimcore\Model\DataObject\CustomerSegment;
 use Psr\Log\LoggerInterface;
 
 class Mailchimp implements NewsletterProviderHandlerInterface
@@ -145,7 +145,8 @@ class Mailchimp implements NewsletterProviderHandlerInterface
         if (sizeof($emailChangedItems)) {
             $this->getLogger()->info(
                 sprintf(
-                    '[MailChimp] process %s items where the email address changed...',
+                    '[MailChimp][%s] process %s items where the email address changed...',
+                    $this->getShortcut(),
                     sizeof($emailChangedItems)
                 )
             );
@@ -160,13 +161,15 @@ class Mailchimp implements NewsletterProviderHandlerInterface
         if (!$itemCount) {
             $this->getLogger()->info(
                 sprintf(
-                    '[MailChimp] 0 items to process...'
+                    '[MailChimp][%s] 0 items to process...',
+                    $this->getShortcut()
                 )
             );
         } elseif ($itemCount <= $this->batchThreshold) {
             $this->getLogger()->info(
                 sprintf(
-                    '[MailChimp] Data count (%d) is below batch threshold (%d), sending one request per entry...',
+                    '[MailChimp][%s] Data count (%d) is below batch threshold (%d), sending one request per entry...',
+                    $this->getShortcut(),
                     $itemCount,
                     $this->batchThreshold
                 )
@@ -177,7 +180,8 @@ class Mailchimp implements NewsletterProviderHandlerInterface
         } else {
             $this->getLogger()->info(
                 sprintf(
-                    '[MailChimp] Sending data as batch request'
+                    '[MailChimp][%s] Sending data as batch request',
+                    $this->getShortcut()
                 )
             );
             $this->customerExportBatch($regularItems);
@@ -241,20 +245,44 @@ class Mailchimp implements NewsletterProviderHandlerInterface
                     } else {
                         $this->getLogger()->info(
                             sprintf(
-                                '[MailChimp][CUSTOMER %s] Export not needed as the export data did not change.',
-                                $item->getCustomer()->getId()
+                                '[MailChimp][CUSTOMER %s][%s] Export not needed as the export data did not change (customer is not in export list).',
+                                $item->getCustomer()->getId(),
+                                $this->getShortcut()
                             )
                         );
 
                         $item->setSuccessfullyProcessed(true);
                     }
                 } elseif ($forceUpdate || $this->exportService->didExportDataChangeSinceLastExport($item->getCustomer(), $this->getListId(), $this->buildEntry($item->getCustomer()))) {
-                    $updateNeededItems[] = $item;
+
+                    $mailchimpStatus = $this->getMailchimpStatus($item->getCustomer());
+                    if (!$mailchimpStatus) {
+                        $entry = $this->buildEntry($item->getCustomer());
+
+                        $setStatus = isset($entry['status_if_new']) ? : $entry['status'];
+
+                        if($setStatus == self::STATUS_UNSUBSCRIBED) {
+                            $this->getLogger()->info(
+                                sprintf(
+                                    '[MailChimp][CUSTOMER %s][%s] Export not needed as the customer is unsubscribed and was not exported yet.',
+                                    $item->getCustomer()->getId(),
+                                    $this->getShortcut()
+                                )
+                            );
+                            $item->setSuccessfullyProcessed(true);;
+                        } else {
+                            $updateNeededItems[] = $item;
+                        }
+                    } else {
+                        $updateNeededItems[] = $item;
+                    }
+
                 } else {
                     $this->getLogger()->info(
                         sprintf(
-                            '[MailChimp][CUSTOMER %s] Export not needed as the export data did not change.',
-                            $item->getCustomer()->getId()
+                            '[MailChimp][CUSTOMER %s][%s] Export not needed as the export data did not change.',
+                            $item->getCustomer()->getId(),
+                            $this->getShortcut()
                         )
                     );
 
@@ -361,6 +389,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
 
             $segmentIds = [];
             foreach ($segments as $segment) {
+
                 $forceCreate = false;
                 if ($remoteGroupId && ($this->segmentExporter->getLastCreatedGroupRemoteId() == $remoteGroupId)) {
                     $forceCreate = true;
@@ -471,9 +500,12 @@ class Mailchimp implements NewsletterProviderHandlerInterface
 
         $result = [
             'email_address' => $emailCleaner->transform($customer->getEmail()),
-            'merge_fields' => $mergeFields,
-            'interests' => $this->buildCustomerSegmentData($customer)
+            'merge_fields' => $mergeFields
         ];
+
+        if($interests = $this->buildCustomerSegmentData($customer)) {
+            $result['interests'] = $interests;
+        }
 
         $result = $this->addNewsletterStatusToEntry($customer, $result);
 
@@ -507,7 +539,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
             }
         }
 
-        return $data;
+        return sizeof($data) ? $data : null;
     }
 
     public function updateMailchimpStatus(MailchimpAwareCustomerInterface $customer, $status, $saveCustomer = true)

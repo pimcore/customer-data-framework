@@ -29,7 +29,7 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
      */
     public function customerFieldListAction(Request $request)
     {
-        $class = \Pimcore\Model\Object\ClassDefinition::getById(\Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassId());
+        $class = \Pimcore\Model\DataObject\ClassDefinition::getById(\Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassId());
 
         $result = [];
 
@@ -39,12 +39,12 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
             if (in_array(
                 $class,
                 [
-                    \Pimcore\Model\Object\ClassDefinition\Data\Checkbox::class,
-                    \Pimcore\Model\Object\ClassDefinition\Data\Input::class,
-                    \Pimcore\Model\Object\ClassDefinition\Data\Select::class,
-                    \Pimcore\Model\Object\ClassDefinition\Data\Numeric::class,
-                    \Pimcore\Model\Object\ClassDefinition\Data\Textarea::class,
-                    \Pimcore\Model\Object\ClassDefinition\Data\Slider::class,
+                    \Pimcore\Model\DataObject\ClassDefinition\Data\Checkbox::class,
+                    \Pimcore\Model\DataObject\ClassDefinition\Data\Input::class,
+                    \Pimcore\Model\DataObject\ClassDefinition\Data\Select::class,
+                    \Pimcore\Model\DataObject\ClassDefinition\Data\Numeric::class,
+                    \Pimcore\Model\DataObject\ClassDefinition\Data\Textarea::class,
+                    \Pimcore\Model\DataObject\ClassDefinition\Data\Slider::class,
                 ]
             )) {
                 $result[] = [$fieldDefinition->getName(), $fieldDefinition->getTitle() ?: $fieldDefinition->getName()];

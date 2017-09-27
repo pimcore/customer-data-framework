@@ -12,8 +12,8 @@
 namespace CustomerManagementFrameworkBundle\CustomerList\Exporter;
 
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
-use Pimcore\Model\Object\ClassDefinition;
-use Pimcore\Model\Object\Customer;
+use Pimcore\Model\DataObject\ClassDefinition;
+use Pimcore\Model\DataObject\Customer;
 
 abstract class AbstractExporter implements ExporterInterface
 {

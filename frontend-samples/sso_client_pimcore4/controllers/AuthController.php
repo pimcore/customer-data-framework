@@ -124,7 +124,7 @@ class AuthController extends Action
         $registrationFormHandler = new RegistrationFormHandler();
 
         // create a new, empty customer instance
-        /** @var \CustomerManagementFrameworkBundle\Model\CustomerInterface|\Pimcore\Model\Object\Customer $customer */
+        /** @var \CustomerManagementFrameworkBundle\Model\CustomerInterface|\Pimcore\Model\DataObject\Customer $customer */
         $customer = \Pimcore::getContainer()->get('cmf.customer_provider')
             ->create();
 
@@ -144,7 +144,7 @@ class AuthController extends Action
             }
 
             // update customer to be registered with auth response (SSO identity, profile data)
-            /** @var \Pimcore\Model\Object\SsoIdentity $ssoIdentity */
+            /** @var \Pimcore\Model\DataObject\SsoIdentity $ssoIdentity */
             $ssoIdentity = $hybridAuthHandler->updateCustomerFromAuthResponse($customer, $this->getRequest());
         }
 

@@ -12,8 +12,8 @@
 namespace Website\Auth\Adapter;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use Pimcore\Model\Object\ClassDefinition\Data\Password;
-use Pimcore\Model\Object\Customer as CustomerModel;
+use Pimcore\Model\DataObject\ClassDefinition\Data\Password;
+use Pimcore\Model\DataObject\Customer as CustomerModel;
 use Zend_Auth_Adapter_Exception;
 use Zend_Auth_Result;
 

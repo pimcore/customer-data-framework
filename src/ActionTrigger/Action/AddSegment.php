@@ -12,7 +12,7 @@
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Action;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use Pimcore\Model\Object\CustomerSegment;
+use Pimcore\Model\DataObject\CustomerSegment;
 
 class AddSegment extends AbstractAction
 {

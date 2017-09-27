@@ -16,7 +16,7 @@ use CustomerManagementFrameworkBundle\RESTApi\Traits\ResourceUrlGenerator;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResponseGenerator;
 use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Pimcore\Model\Object\CustomerSegmentGroup;
+use Pimcore\Model\DataObject\CustomerSegmentGroup;
 use Symfony\Component\HttpFoundation\Request;
 use Zend\Paginator\Paginator;
 

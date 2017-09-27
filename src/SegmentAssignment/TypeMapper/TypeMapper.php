@@ -11,7 +11,7 @@ namespace CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\ElementInterface;
-use Pimcore\Model\Object\AbstractObject;
+use Pimcore\Model\DataObject\AbstractObject;
 
 class TypeMapper implements TypeMapperInterface {
 

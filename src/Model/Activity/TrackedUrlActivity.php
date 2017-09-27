@@ -15,7 +15,7 @@ use CustomerManagementFrameworkBundle\Model\AbstractActivity;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\DataObject\LinkActivityDefinition;
-use Pimcore\Model\Object\ActivityDefinition;
+
 
 class TrackedUrlActivity extends AbstractActivity
 {

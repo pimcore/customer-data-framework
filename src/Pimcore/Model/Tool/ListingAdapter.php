@@ -16,7 +16,7 @@ use Zend\Paginator\Adapter\ArrayAdapter;
 
 class ListingAdapter implements AdapterInterface
 {
-    /** @var \Pimcore\Model\Object\Listing\Concrete */
+    /** @var \Pimcore\Model\DataObject\Listing\Concrete */
     protected $listing;
 
     /** @var ArrayAdapter */
@@ -25,9 +25,9 @@ class ListingAdapter implements AdapterInterface
     /**
      * ListingAdapter constructor.
      *
-     * @param \Pimcore\Model\Object\Listing\Concrete $listing
+     * @param \Pimcore\Model\DataObject\Listing\Concrete $listing
      */
-    public function __construct(\Pimcore\Model\Object\Listing\Concrete $listing)
+    public function __construct(\Pimcore\Model\DataObject\Listing\Concrete $listing)
     {
         $this->listing = $listing;
     }
@@ -58,13 +58,13 @@ class ListingAdapter implements AdapterInterface
      * @param int $offset
      * @param int $itemCountPerPage
      *
-     * @return \Pimcore\Model\Object\Concrete[]
+     * @return \Pimcore\Model\DataObject\Concrete[]
      */
     public function getItems($offset, $itemCountPerPage)
     {
         return array_map(
             function ($id) {
-                return \Pimcore\Model\Object\Concrete::getById($id);
+                return \Pimcore\Model\DataObject\Concrete::getById($id);
             },
             $this->adapter()->getItems($offset, $itemCountPerPage)
         );

@@ -14,7 +14,7 @@ namespace CustomerManagementFrameworkBundle\ActivityView;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\View\Formatter\ViewFormatterInterface;
-use Pimcore\Model\Object\ClassDefinition;
+use Pimcore\Model\DataObject\ClassDefinition;
 
 class DefaultActivityView implements ActivityViewInterface
 {

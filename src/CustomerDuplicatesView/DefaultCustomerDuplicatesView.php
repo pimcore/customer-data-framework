@@ -13,7 +13,7 @@ namespace CustomerManagementFrameworkBundle\CustomerDuplicatesView;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\View\Formatter\ViewFormatterInterface;
-use Pimcore\Model\Object\ClassDefinition;
+use Pimcore\Model\DataObject\ClassDefinition;
 
 class DefaultCustomerDuplicatesView implements CustomerDuplicatesViewInterface
 {

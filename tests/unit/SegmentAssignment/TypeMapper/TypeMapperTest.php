@@ -11,7 +11,7 @@ namespace CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper;
 use PHPUnit\Framework\TestCase;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Document;
-use Pimcore\Model\Object\AbstractObject;
+use Pimcore\Model\DataObject\AbstractObject;
 
 class TypeMapperTest extends TestCase {
 

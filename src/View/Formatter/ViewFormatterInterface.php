@@ -12,8 +12,8 @@
 namespace CustomerManagementFrameworkBundle\View\Formatter;
 
 use CustomerManagementFrameworkBundle\Translate\TranslatorInterface;
-use Pimcore\Model\Object\ClassDefinition;
-use Pimcore\Model\Object\ClassDefinition\Data;
+use Pimcore\Model\DataObject\ClassDefinition;
+use Pimcore\Model\DataObject\ClassDefinition\Data;
 
 interface ViewFormatterInterface extends TranslatorInterface
 {

@@ -14,7 +14,7 @@ namespace CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\Default
 use CustomerManagementFrameworkBundle\Helper\Objects;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\DefaultSegmentMerger;
-use Pimcore\Model\Object\Data\ObjectMetadata;
+use Pimcore\Model\DataObject\Data\ObjectMetadata;
 
 class MetadataFiller
 {

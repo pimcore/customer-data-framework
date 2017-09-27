@@ -58,7 +58,7 @@ class TermSegmentBuilder extends Sql
 
         $sql = $this->buildQueryString($this->config, $ignoreSelectAndGroupBy, $drillDownFilters, $selectField);
 
-        if (!$termDefinition = Model\Object\TermSegmentBuilderDefinition::getById($this->config->termDefinition)) {
+        if (!$termDefinition = Model\DataObject\TermSegmentBuilderDefinition::getById($this->config->termDefinition)) {
             throw new \Exception('please select a term definition');
         }
 

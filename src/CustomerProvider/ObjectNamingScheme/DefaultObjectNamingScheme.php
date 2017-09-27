@@ -14,9 +14,9 @@ namespace CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme;
 use CustomerManagementFrameworkBundle\Helper\Objects;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Pimcore\Model\Object\Folder;
-use Pimcore\Model\Object\Listing;
-use Pimcore\Model\Object\Service;
+use Pimcore\Model\DataObject\Folder;
+use Pimcore\Model\DataObject\Listing;
+use Pimcore\Model\DataObject\Service;
 
 class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
 {

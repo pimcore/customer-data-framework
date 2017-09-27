@@ -16,9 +16,9 @@ use CustomerManagementFrameworkBundle\RESTApi\Exception\ResourceNotFoundExceptio
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResourceUrlGenerator;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResponseGenerator;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Pimcore\Model\Object\Concrete;
-use Pimcore\Model\Object\CustomerSegment;
-use Pimcore\Model\Object\CustomerSegmentGroup;
+use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\DataObject\CustomerSegment;
+use Pimcore\Model\DataObject\CustomerSegmentGroup;
 use Symfony\Component\HttpFoundation\Request;
 use Zend\Paginator\Paginator;
 

@@ -11,7 +11,7 @@
 
 namespace CustomerManagementFrameworkBundle\Service;
 
-use Pimcore\Model\Object\Concrete;
+use Pimcore\Model\DataObject\Concrete;
 
 class ObjectToArray
 {

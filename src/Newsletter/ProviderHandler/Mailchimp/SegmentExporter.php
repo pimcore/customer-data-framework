@@ -13,8 +13,8 @@ namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp
 
 use CustomerManagementFrameworkBundle\Traits\ApplicationLoggerAware;
 use DrewM\MailChimp\MailChimp;
-use Pimcore\Model\Object\CustomerSegment;
-use Pimcore\Model\Object\CustomerSegmentGroup;
+use Pimcore\Model\DataObject\CustomerSegment;
+use Pimcore\Model\DataObject\CustomerSegmentGroup;
 
 class SegmentExporter
 {

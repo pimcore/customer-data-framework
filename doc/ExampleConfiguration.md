@@ -197,6 +197,12 @@ pimcore_customer_management_framework:
         duplicateCheckFields:
           - [email]
           - [firstname, lastname]
+        
+         # Performance improvement: add duplicate check fields which are trimmed (trim() called on the field value) by a customer save handler. No trim operation will be needed in the resulting query.
+        duplicateCheckTrimmedFields:
+            - email
+            - firstname
+            - lastname
           
         duplicates_view:
             enabled: true # the feature will be visible in the backend only if it is enabled

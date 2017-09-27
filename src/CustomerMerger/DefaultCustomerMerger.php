@@ -17,7 +17,7 @@ use CustomerManagementFrameworkBundle\Helper\Objects;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Pimcore\Model\Object\ClassDefinition;
+use Pimcore\Model\DataObject\ClassDefinition;
 
 class DefaultCustomerMerger implements CustomerMergerInterface
 {

@@ -11,9 +11,9 @@
 
 namespace CustomerManagementFrameworkBundle\Model;
 
-use Pimcore\Model\Object\CustomerSegmentGroup;
+use Pimcore\Model\DataObject\CustomerSegmentGroup;
 
-abstract class AbstractTermSegmentBuilderDefinition extends \Pimcore\Model\Object\Concrete
+abstract class AbstractTermSegmentBuilderDefinition extends \Pimcore\Model\DataObject\Concrete
 {
     /**
      * @return array

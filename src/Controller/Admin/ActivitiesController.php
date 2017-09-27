@@ -38,7 +38,7 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
         $activities = null;
         $paginator = null;
 
-        if ($customer = \Pimcore\Model\Object\Customer::getById($request->get('customerId'))) {
+        if ($customer = \Pimcore\Model\DataObject\Customer::getById($request->get('customerId'))) {
             $list = \Pimcore::getContainer()->get('cmf.activity_store')->getActivityList();
             $list->setCondition('customerId = ' . $customer->getId());
             $list->setOrderKey('activityDate');

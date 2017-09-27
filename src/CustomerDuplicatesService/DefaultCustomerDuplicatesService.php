@@ -15,8 +15,8 @@ use Carbon\Carbon;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\Element\ElementInterface;
-use Pimcore\Model\Object\ClassDefinition;
-use Pimcore\Model\Object\Listing\Concrete;
+use Pimcore\Model\DataObject\ClassDefinition;
+use Pimcore\Model\DataObject\Listing\Concrete;
 
 class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInterface
 {
@@ -28,11 +28,17 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
     /**
      * @var array
      */
+    private $duplicateCheckTrimmedFields;
+
+    /**
+     * @var array
+     */
     protected $matchedDuplicateFields;
 
-    public function __construct(array $duplicateCheckFields = [])
+    public function __construct(array $duplicateCheckFields = [], array $duplicateCheckTrimmedFields = [])
     {
         $this->duplicateCheckFields = $duplicateCheckFields;
+        $this->duplicateCheckTrimmedFields = $duplicateCheckTrimmedFields;
     }
 
     /**
@@ -42,7 +48,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
      * @param CustomerInterface $customer
      * @param int $limit
      *
-     * @return \Pimcore\Model\Object\Listing\Concrete|null
+     * @return \Pimcore\Model\DataObject\Listing\Concrete|null
      */
     public function getDuplicatesOfCustomer(CustomerInterface $customer, $limit = 0)
     {
@@ -68,7 +74,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
      * @param array $data
      * @param int $limit
      *
-     * @return \Pimcore\Model\Object\Listing\Concrete|null
+     * @return \Pimcore\Model\DataObject\Listing\Concrete|null
      */
     public function getDuplicatesByData(array $data, $limit = 0)
     {
@@ -83,7 +89,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
             ->addConditionParam('active = ?', 1);
 
         foreach ($data as $field => $value) {
-            if (is_null($value)) {
+            if (is_null($value) || $value === '') {
                 return null;
             } else {
                 $this->addNormalizedMysqlCompareCondition($list, $field, $value);
@@ -103,7 +109,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
      * @param array $data
      * @param int $limit
      *
-     * @return \Pimcore\Model\Object\Listing\Concrete|null
+     * @return \Pimcore\Model\DataObject\Listing\Concrete|null
      */
     public function getDuplicatesOfCustomerByFields(CustomerInterface $customer, array $fields, $limit = 0)
     {
@@ -116,7 +122,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
             $getter = 'get'.ucfirst($field);
             $value = $customer->$getter();
 
-            if (is_null($value)) {
+            if (is_null($value) || $value === '') {
                 return null;
             } else {
                 $data[$field] = $value;
@@ -212,7 +218,11 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
      */
     protected function addNormalizedMysqlCompareConditionForStringFields(Concrete &$list, $field, $value)
     {
-        $list->addConditionParam('TRIM(LCASE('.$field.')) = ?', trim(mb_strtolower($value, 'UTF-8')));
+        if (in_array($field, $this->duplicateCheckTrimmedFields)) {
+            $list->addConditionParam($field . ' like ?', trim(mb_strtolower($value, 'UTF-8')));
+        } else {
+            $list->addConditionParam('TRIM(LCASE('.$field.')) = ?', trim(mb_strtolower($value, 'UTF-8')));
+        }
     }
 
     /**

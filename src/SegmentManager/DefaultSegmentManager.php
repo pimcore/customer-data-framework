@@ -21,23 +21,23 @@ use CustomerManagementFrameworkBundle\SegmentBuilder\SegmentBuilderInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db;
 use Pimcore\Model\Element\ElementInterface;
-use Pimcore\Model\Object\Concrete;
-use Pimcore\Model\Object\CustomerSegment;
-use Pimcore\Model\Object\CustomerSegmentGroup;
-use Pimcore\Model\Object\Data\ObjectMetadata;
-use Pimcore\Model\Object\Service;
+use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\DataObject\CustomerSegment;
+use Pimcore\Model\DataObject\CustomerSegmentGroup;
+use Pimcore\Model\DataObject\Data\ObjectMetadata;
+use Pimcore\Model\DataObject\Service;
 
 class DefaultSegmentManager implements SegmentManagerInterface
 {
     use LoggerAware;
 
     /**
-     * @var string|\Pimcore\Model\Object\Folder
+     * @var string|\Pimcore\Model\DataObject\Folder
      */
     protected $segmentFolderCalculated;
 
     /**
-     * @var string|\Pimcore\Model\Object\Folder
+     * @var string|\Pimcore\Model\DataObject\Folder
      */
     protected $segmentFolderManual;
 

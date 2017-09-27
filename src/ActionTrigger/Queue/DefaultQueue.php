@@ -16,7 +16,7 @@ use CustomerManagementFrameworkBundle\Model\ActionTrigger\ActionDefinition;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db;
-use Pimcore\Model\Object\Customer;
+use Pimcore\Model\DataObject\AbstractObject;
 
 class DefaultQueue implements QueueInterface
 {
@@ -30,7 +30,7 @@ class DefaultQueue implements QueueInterface
 
         $time = time();
 
-        $this->logger->debug(
+        $this->getLogger()->debug(
             sprintf('add action id %s for customer %s to queue', $action->getId(), $customer->getId())
         );
 
@@ -69,13 +69,13 @@ class DefaultQueue implements QueueInterface
 
     private function processQueueItem(array $item)
     {
-        $logger = $this->logger;
+        $logger = $this->getLogger();
         $logger->notice(sprintf('proccess entry ID %s', $item['id']));
 
         $action = ActionDefinition::getById($item['actionId']);
-        $customer = Customer::getById($item['customerId']);
+        $customer = AbstractObject::getById($item['customerId']);
 
-        if ($action && $customer) {
+        if ($action && $customer instanceof CustomerInterface) {
             \Pimcore::getContainer()->get('cmf.action_trigger.action_manager')->processAction($action, $customer);
         }
 

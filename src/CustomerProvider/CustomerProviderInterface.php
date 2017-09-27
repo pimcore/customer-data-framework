@@ -28,7 +28,7 @@ interface CustomerProviderInterface
     /**
      * Get an object listing
      *
-     * @return \Pimcore\Model\Object\Listing\Concrete
+     * @return \Pimcore\Model\DataObject\Listing\Concrete
      */
     public function getList();
 

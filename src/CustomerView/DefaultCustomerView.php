@@ -15,7 +15,7 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\View\Formatter\ObjectWrapper;
 use CustomerManagementFrameworkBundle\View\Formatter\ViewFormatterInterface;
 use Pimcore\Model\Element\ElementInterface;
-use Pimcore\Model\Object\Concrete;
+use Pimcore\Model\DataObject\Concrete;
 
 class DefaultCustomerView implements CustomerViewInterface
 {

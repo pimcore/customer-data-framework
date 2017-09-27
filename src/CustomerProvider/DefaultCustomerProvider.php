@@ -14,8 +14,7 @@ namespace CustomerManagementFrameworkBundle\CustomerProvider;
 use CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\Element\ElementInterface;
-use Pimcore\Model\Object\Concrete;
-use Pimcore\Model\Object\Folder;
+use Pimcore\Model\DataObject\Concrete;
 
 class DefaultCustomerProvider implements CustomerProviderInterface
 {
@@ -62,7 +61,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     protected function getDiClassName()
     {
-        return sprintf('Pimcore\Model\Object\%s', $this->pimcoreClass);
+        return sprintf('Pimcore\Model\DataObject\%s', $this->pimcoreClass);
     }
 
     /**
@@ -70,7 +69,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     protected function getDiListingClassName()
     {
-        return sprintf('Pimcore\Model\Object\%s\Listing', $this->pimcoreClass);
+        return sprintf('Pimcore\Model\DataObject\%s\Listing', $this->pimcoreClass);
     }
 
     /**
@@ -95,7 +94,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     /**
      * Get an object listing
      *
-     * @return \Pimcore\Model\Object\Listing\Concrete
+     * @return \Pimcore\Model\DataObject\Listing\Concrete
      */
     public function getList()
     {

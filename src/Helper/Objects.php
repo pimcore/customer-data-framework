@@ -14,8 +14,8 @@ namespace CustomerManagementFrameworkBundle\Helper;
 use Pimcore\File;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Element\Service;
-use Pimcore\Model\Object\Concrete;
-use Pimcore\Model\Object\Data\ObjectMetadata;
+use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\DataObject\Data\ObjectMetadata;
 
 class Objects
 {
@@ -37,7 +37,7 @@ class Objects
     {
         $origKey = is_null($origKey) ? self::getValidKey($object->getKey()) : $origKey;
 
-        $list = new \Pimcore\Model\Object\Listing;
+        $list = new \Pimcore\Model\DataObject\Listing;
         $list->setUnpublished(true);
         $list->setCondition(
             "o_path = '".(string)$object->getParent()."/' and o_key = '".$object->getKey(

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\DependencyInjection;
 
-use Pimcore\Model\Object\AbstractObject;
+use Pimcore\Model\DataObject\AbstractObject;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -358,6 +358,13 @@ class Configuration implements ConfigurationInterface
                     ->prototype('array')
                         ->prototype('scalar')->end()
                     ->end()
+                ->end()
+
+
+
+                ->arrayNode('duplicateCheckTrimmedFields')
+                    ->info('Performance improvement: add duplicate check fields which are trimmed (trim() called on the field value) by a customer save handler. No trim operation will be needed in the resulting query.')
+                    ->prototype('scalar')->end()
                 ->end()
 
                 ->arrayNode('duplicates_view')

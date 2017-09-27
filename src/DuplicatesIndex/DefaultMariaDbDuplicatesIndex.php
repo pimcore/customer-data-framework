@@ -242,7 +242,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
             }
 
             if (sizeof($customers) != 2) {
-                continue;
+                throw new \Exception(sprintf('Invalid duplicate customer combination. A combination needs to consist of 2 customers. %s customer(s) found. Customer IDs: %s', sizeof($customers), $row['duplicateCustomerIds']));
             }
 
             $fieldCombinations = [];
