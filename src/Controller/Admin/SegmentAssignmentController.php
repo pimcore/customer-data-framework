@@ -28,20 +28,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class SegmentAssignmentController extends AdminController {
 
     /**
-     *
-     * @Route("/index-test")
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function indexTest(Request $request) {
-        $test = $this->get(IndexerInterface::class);
-
-        $test->processQueue();
-
-        return $this->json(true);
-    }
-
-    /**
      * @Route("/inheritable-segments")
      * @param Request $request
      * @return JsonResponse

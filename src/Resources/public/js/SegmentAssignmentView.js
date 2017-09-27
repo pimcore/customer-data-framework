@@ -224,26 +224,15 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
             return;
         }
 
-        for (var i = 0; i < items.length; i++) {
-            if (!this.elementAlreadyExists(items[i].id, items[i].type)) {
-
-                var subtype = items[i].subtype;
-                if (items[i].type === "object") {
-                    if (items[i].subtype === "object") {
-                        if (items[i].classname) {
-                            subtype = items[i].classname;
-                        }
-                    }
-                }
-
+        items.forEach(function(item, index, array) {
+            if (!this.assignedStore.getById(item)) {
                 this.assignedStore.add({
-                    id: items[i].id,
-                    path: items[i].fullpath,
-                    type: items[i].type,
-                    subtype: subtype
+                    id: item.id,
+                    name: item.text,
+                    type: item.type
                 });
             }
-        }
+        });
 
     }
 });
