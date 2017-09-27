@@ -8,13 +8,12 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
-use CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\IndexerInterface;
 use CustomerManagementFrameworkBundle\SegmentAssignment\SegmentAssigner\SegmentAssignerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse;
 use Pimcore\Db\Connection;
-use Pimcore\Model\Object\CustomerSegment;
+use Pimcore\Model\DataObject\CustomerSegment;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
