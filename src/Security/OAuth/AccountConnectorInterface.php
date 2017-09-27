@@ -15,7 +15,7 @@ namespace CustomerManagementFrameworkBundle\Security\OAuth;
 
 use CustomerManagementFrameworkBundle\Model\SsoIdentityInterface;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
-use Pimcore\Model\Object\SsoIdentity;
+use Pimcore\Model\DataObject\SsoIdentity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 interface AccountConnectorInterface extends \HWI\Bundle\OAuthBundle\Connect\AccountConnectorInterface

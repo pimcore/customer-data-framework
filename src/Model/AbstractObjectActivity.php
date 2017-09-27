@@ -14,7 +14,7 @@ namespace CustomerManagementFrameworkBundle\Model;
 use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 
-abstract class AbstractObjectActivity extends \Pimcore\Model\Object\Concrete implements PersistentActivityInterface
+abstract class AbstractObjectActivity extends \Pimcore\Model\DataObject\Concrete implements PersistentActivityInterface
 {
     public function cmfIsActive()
     {

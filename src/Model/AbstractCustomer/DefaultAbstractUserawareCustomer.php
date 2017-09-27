@@ -12,7 +12,7 @@
 namespace CustomerManagementFrameworkBundle\Model\AbstractCustomer;
 
 use CustomerManagementFrameworkBundle\Model\AbstractCustomer;
-use Pimcore\Model\Object\ClassDefinition\Data\Password;
+use Pimcore\Model\DataObject\ClassDefinition\Data\Password;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 abstract class DefaultAbstractUserawareCustomer extends AbstractCustomer implements UserInterface

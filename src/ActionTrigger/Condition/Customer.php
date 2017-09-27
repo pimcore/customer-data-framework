@@ -12,7 +12,7 @@
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Condition;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use Pimcore\Model\Object\AbstractObject;
+use Pimcore\Model\DataObject\AbstractObject;
 
 class Customer extends AbstractCondition
 {

@@ -4,7 +4,7 @@ pimcore:
     security:
         # The encoder factory as defined in services.yml
         encoder_factories:
-            Pimcore\Model\Object\Customer: cmf.security.user_password_encoder_factory
+            Pimcore\Model\DataObject\Customer: cmf.security.user_password_encoder_factory
 
 security:
     # The user provider is responsible for loading users from the DB. We use the OAuth aware user

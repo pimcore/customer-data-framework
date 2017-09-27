@@ -14,8 +14,8 @@ namespace CustomerManagementFrameworkBundle\Model;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\SaveOptions;
 use Pimcore\Model\Element\ElementInterface;
-use Pimcore\Model\Object\CustomerSegment;
-use Pimcore\Model\Object\Data\ObjectMetadata;
+use Pimcore\Model\DataObject\CustomerSegment;
+use Pimcore\Model\DataObject\Data\ObjectMetadata;
 
 interface CustomerInterface extends ElementInterface
 {

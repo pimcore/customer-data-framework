@@ -15,8 +15,8 @@ use Carbon\Carbon;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\Element\ElementInterface;
-use Pimcore\Model\Object\ClassDefinition;
-use Pimcore\Model\Object\Listing\Concrete;
+use Pimcore\Model\DataObject\ClassDefinition;
+use Pimcore\Model\DataObject\Listing\Concrete;
 
 class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInterface
 {
@@ -48,7 +48,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
      * @param CustomerInterface $customer
      * @param int $limit
      *
-     * @return \Pimcore\Model\Object\Listing\Concrete|null
+     * @return \Pimcore\Model\DataObject\Listing\Concrete|null
      */
     public function getDuplicatesOfCustomer(CustomerInterface $customer, $limit = 0)
     {
@@ -74,7 +74,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
      * @param array $data
      * @param int $limit
      *
-     * @return \Pimcore\Model\Object\Listing\Concrete|null
+     * @return \Pimcore\Model\DataObject\Listing\Concrete|null
      */
     public function getDuplicatesByData(array $data, $limit = 0)
     {
@@ -109,7 +109,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
      * @param array $data
      * @param int $limit
      *
-     * @return \Pimcore\Model\Object\Listing\Concrete|null
+     * @return \Pimcore\Model\DataObject\Listing\Concrete|null
      */
     public function getDuplicatesOfCustomerByFields(CustomerInterface $customer, array $fields, $limit = 0)
     {

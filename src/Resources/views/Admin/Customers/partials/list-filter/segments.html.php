@@ -20,7 +20,7 @@ $cv = $this->customerView;
         <div class="row">
 
             <?php
-            /** @var \Pimcore\Model\Object\CustomerSegmentGroup $segmentGroup */
+            /** @var \Pimcore\Model\DataObject\CustomerSegmentGroup $segmentGroup */
             foreach ($this->segmentGroups as $segmentGroup): ?>
 
                 <div class="col-md-6 col-xs-12">

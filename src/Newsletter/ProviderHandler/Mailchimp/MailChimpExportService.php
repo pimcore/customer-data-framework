@@ -16,8 +16,8 @@ use DrewM\MailChimp\MailChimp;
 use Pimcore\Db;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Element\Note;
-use Pimcore\Model\Object\AbstractObject;
-use Pimcore\Model\Object\Concrete;
+use Pimcore\Model\DataObject\AbstractObject;
+use Pimcore\Model\DataObject\Concrete;
 
 class MailChimpExportService
 {
@@ -179,12 +179,12 @@ class MailChimpExportService
      * @param string $listId
      * @param bool $refresh
      *
-     * @return Note[]|Note\Listing|\Pimcore\Model\Object\Listing\Dao
+     * @return Note[]|Note\Listing|\Pimcore\Model\DataObject\Listing\Dao
      */
     public function getExportNotes(ElementInterface $object, $listId, $refresh = false)
     {
         if (!isset($this->notes[$listId][$object->getId()]) || $refresh) {
-            /** @var Note\Listing|\Pimcore\Model\Object\Listing\Dao $list */
+            /** @var Note\Listing|\Pimcore\Model\DataObject\Listing\Dao $list */
             $list = new Note\Listing();
             $list->setOrderKey('date');
             $list->setOrder('desc');

@@ -16,7 +16,7 @@ use CustomerManagementFrameworkBundle\Listing\Filter\AbstractFilter;
 use CustomerManagementFrameworkBundle\Listing\Filter\OnCreateQueryFilterInterface;
 use Phlexy\LexingException;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
-use Pimcore\Model\Object\Listing as CoreListing;
+use Pimcore\Model\DataObject\Listing as CoreListing;
 use SearchQueryParser\ParserException;
 use SearchQueryParser\QueryBuilder\ZendCompatibility;
 use SearchQueryParser\SearchQueryParser;

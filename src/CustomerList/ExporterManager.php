@@ -12,7 +12,7 @@
 namespace CustomerManagementFrameworkBundle\CustomerList;
 
 use CustomerManagementFrameworkBundle\CustomerList\Exporter\ExporterInterface;
-use Pimcore\Model\Object\Listing;
+use Pimcore\Model\DataObject\Listing;
 use Symfony\Component\HttpFoundation\Request;
 
 class ExporterManager implements ExporterManagerInterface

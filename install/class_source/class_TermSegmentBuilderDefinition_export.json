@@ -68,7 +68,7 @@
                         "collapsed": false,
                         "queryColumnType": "longtext",
                         "columnType": "longtext",
-                        "phpdocType": "\\Pimcore\\Model\\Object\\Data\\Block",
+                        "phpdocType": "\\Pimcore\\Model\\DataObject\\Data\\Block",
                         "childs": [
                             {
                                 "fieldtype": "input",

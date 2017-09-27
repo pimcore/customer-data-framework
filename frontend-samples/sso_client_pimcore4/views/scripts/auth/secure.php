@@ -1,5 +1,5 @@
 <?php
-/** @var \CustomerManagementFrameworkBundle\Model\CustomerInterface|\Pimcore\Model\Object\Customer $customer */
+/** @var \CustomerManagementFrameworkBundle\Model\CustomerInterface|\Pimcore\Model\DataObject\Customer $customer */
 $customer = $this->customer;
 
 /** @var \CustomerManagementFrameworkBundle\Authentication\SsoIdentity\SsoIdentityServiceInterface $ssoIdentityService */
@@ -29,7 +29,7 @@ foreach ($ssoIdentities as $ssoIdentity) {
     <h2>SSO Identities</h2>
 
     <?php
-    /** @var \Pimcore\Model\Object\SsoIdentity $ssoIdentity */
+    /** @var \Pimcore\Model\DataObject\SsoIdentity $ssoIdentity */
     foreach ($ssoIdentities as $ssoIdentity): ?>
 
         <div class="panel panel-default">

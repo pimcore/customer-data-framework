@@ -12,7 +12,7 @@
 namespace CustomerManagementFrameworkBundle\Security\UserProvider;
 
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
-use Pimcore\Model\Object\AbstractObject;
+use Pimcore\Model\DataObject\AbstractObject;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;

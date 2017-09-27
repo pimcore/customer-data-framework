@@ -11,7 +11,7 @@
 
 namespace CustomerManagementFrameworkBundle\Model;
 
-use Pimcore\Model\Object\CustomerSegmentGroup;
+use Pimcore\Model\DataObject\CustomerSegmentGroup;
 
 interface CustomerSegmentInterface
 {

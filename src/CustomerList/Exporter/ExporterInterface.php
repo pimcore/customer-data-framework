@@ -11,7 +11,7 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerList\Exporter;
 
-use Pimcore\Model\Object\Customer;
+use Pimcore\Model\DataObject\Customer;
 
 interface ExporterInterface
 {

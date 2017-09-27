@@ -21,8 +21,8 @@ use CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\DefaultSegmen
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Cache;
 use Pimcore\Model\Element\Note;
-use Pimcore\Model\Object\ClassDefinition;
-use Pimcore\Model\Object\Data\ObjectMetadata;
+use Pimcore\Model\DataObject\ClassDefinition;
+use Pimcore\Model\DataObject\Data\ObjectMetadata;
 
 class DefaultSegmentMerger implements SegmentMergerInterface
 {
@@ -280,7 +280,7 @@ class DefaultSegmentMerger implements SegmentMergerInterface
      * @param CustomerInterface $customer
      * @param bool $calculated
      *
-     * @return \CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface[]|\Pimcore\Model\Object\Data\ObjectMetadata[]
+     * @return \CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface[]|\Pimcore\Model\DataObject\Data\ObjectMetadata[]
      */
     public function getSegmentsDataFromCustomer(CustomerInterface $customer, $calculated = false)
     {
@@ -293,7 +293,7 @@ class DefaultSegmentMerger implements SegmentMergerInterface
 
     /**
      * @param CustomerInterface $customer
-     * @param \CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface[]|\Pimcore\Model\Object\Data\ObjectMetadata[] $segments
+     * @param \CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface[]|\Pimcore\Model\DataObject\Data\ObjectMetadata[] $segments
      * @param bool $calculated
      */
     protected function setSegmentsDataOfCustomer(CustomerInterface $customer, array $segments, $calculated = false)

@@ -11,7 +11,7 @@
 
 namespace CustomerManagementFrameworkBundle\Listing;
 
-use Pimcore\Model\Object\Listing as CoreListing;
+use Pimcore\Model\DataObject\Listing as CoreListing;
 
 interface ListingFilterInterface extends FilterInterface
 {

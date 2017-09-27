@@ -18,8 +18,7 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use Pimcore\Event\Model\DataObjectEvent;
 use Pimcore\Event\Model\ElementEventInterface;
-use Pimcore\Event\Model\ObjectEvent;
-use Pimcore\Model\Object\ActivityDefinition;
+use Pimcore\Model\DataObject\LinkActivityDefinition;
 
 class PimcoreObjectEventListener
 {
@@ -83,7 +82,7 @@ class PimcoreObjectEventListener
 
         if ($object instanceof CustomerInterface) {
             $this->customerSaveManager->preAdd($object);
-        } elseif ($object instanceof ActivityDefinition) {
+        } elseif ($object instanceof LinkActivityDefinition) {
             $object->setCode(uniqid());
         }
     }

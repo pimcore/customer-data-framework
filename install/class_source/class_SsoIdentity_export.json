@@ -107,7 +107,7 @@
                     },
                     {
                         "fieldtype": "objectbricks",
-                        "phpdocType": "\\Pimcore\\Model\\Object\\Objectbrick",
+                        "phpdocType": "\\Pimcore\\Model\\DataObject\\Objectbrick",
                         "allowedTypes": [
                             "OAuth2Token",
                             "OAuth1Token"

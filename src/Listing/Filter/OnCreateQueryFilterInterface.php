@@ -13,7 +13,7 @@ namespace CustomerManagementFrameworkBundle\Listing\Filter;
 
 use CustomerManagementFrameworkBundle\Listing\FilterInterface;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
-use Pimcore\Model\Object\Listing as CoreListing;
+use Pimcore\Model\DataObject\Listing as CoreListing;
 
 interface OnCreateQueryFilterInterface extends FilterInterface
 {

@@ -12,7 +12,7 @@
 namespace CustomerManagementFrameworkBundle\Model\Objectbrick;
 
 use CustomerManagementFrameworkBundle\Model\OAuth\OAuth2TokenInterface;
-use Pimcore\Model\Object\Objectbrick\Data\AbstractData;
+use Pimcore\Model\DataObject\Objectbrick\Data\AbstractData;
 
 abstract class AbstractOAuth2Token extends AbstractData implements OAuth2TokenInterface
 {

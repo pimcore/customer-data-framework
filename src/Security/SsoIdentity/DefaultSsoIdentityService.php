@@ -18,8 +18,8 @@ use CustomerManagementFrameworkBundle\Model\SsoIdentityInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db;
 use Pimcore\File;
-use Pimcore\Model\Object\Concrete;
-use Pimcore\Model\Object\SsoIdentity;
+use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\DataObject\SsoIdentity;
 
 /**
  * SSO identity service handling SsoIdentities as objects on a SsoAwareCustomerInterface

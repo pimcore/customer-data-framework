@@ -24,8 +24,8 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use Pimcore\Db;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
-use Pimcore\Model\Object\CustomerSegmentGroup;
-use Pimcore\Model\Object\Listing;
+use Pimcore\Model\DataObject\CustomerSegmentGroup;
+use Pimcore\Model\DataObject\Listing;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -45,7 +45,7 @@ class CustomersController extends Admin
         parent::onKernelController($event);
         $this->checkPermission('plugin_customermanagementframework_customerview');
 
-        \Pimcore\Model\Object\AbstractObject::setHideUnpublished(true);
+        \Pimcore\Model\DataObject\AbstractObject::setHideUnpublished(true);
     }
 
     /**
@@ -332,7 +332,7 @@ class CustomersController extends Admin
             foreach ($filters['segments'] as $groupId => $segmentIds) {
                 $segmentGroup = null;
                 if ($groupId !== 'default') {
-                    /** @var \Pimcore\Model\Object\CustomerSegmentGroup $segmentGroup */
+                    /** @var \Pimcore\Model\DataObject\CustomerSegmentGroup $segmentGroup */
                     $segmentGroup = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentGroupById($groupId);
                     if (!$segmentGroup) {
                         throw new \Exception(sprintf('Segment group %d was not found', $groupId));

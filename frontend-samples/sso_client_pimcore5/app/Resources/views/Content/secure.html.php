@@ -17,7 +17,7 @@ $this->extend('Layout/layout.html.php');
 
 $this->headTitle('Secure Area');
 
-/** @var CustomerInterface|\Pimcore\Model\Object\Customer $customer */
+/** @var CustomerInterface|\Pimcore\Model\DataObject\Customer $customer */
 $customer = $app->getUser();
 
 /** @var SsoIdentity $ssoIdentityHelper */
@@ -57,11 +57,11 @@ $cloner = new VarCloner();
     /** @var Encryption $encryptionHelper */
     $encryptionHelper = $this->cmfEncryption();
 
-    /** @var \Pimcore\Model\Object\SsoIdentity $ssoIdentity */
+    /** @var \Pimcore\Model\DataObject\SsoIdentity $ssoIdentity */
     foreach ($ssoIdentities as $ssoIdentity): ?>
 
         <?php
-        /** @var \Pimcore\Model\Object\SsoIdentity\Credentials $credentials */
+        /** @var \Pimcore\Model\DataObject\SsoIdentity\Credentials $credentials */
         $credentials = $ssoIdentity->getCredentials();
         ?>
 

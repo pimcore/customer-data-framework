@@ -18,7 +18,7 @@ use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityL
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Db;
-use Pimcore\Model\Object\Concrete;
+use Pimcore\Model\DataObject\Concrete;
 use Zend\Paginator\Paginator;
 
 class MariaDb implements ActivityStoreInterface

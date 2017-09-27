@@ -39,7 +39,7 @@ class StateSegmentBuilder extends AbstractSegmentBuilder
      *
      * @param SegmentManagerInterface $segmentManager
      *
-     * @return \Pimcore\Model\Object\Customer\Listing
+     * @return \Pimcore\Model\DataObject\Customer\Listing
      */
     public function prepare(SegmentManagerInterface $segmentManager)
     {

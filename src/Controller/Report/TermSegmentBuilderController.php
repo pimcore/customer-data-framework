@@ -24,9 +24,9 @@ class TermSegmentBuilderController extends AdminController
      */
     public function getSegmentBuilderDefinitionsAction()
     {
-        \Pimcore\Model\Object\AbstractObject::setHideUnpublished(true);
+        \Pimcore\Model\DataObject\AbstractObject::setHideUnpublished(true);
 
-        $list = new \Pimcore\Model\Object\TermSegmentBuilderDefinition\Listing;
+        $list = new \Pimcore\Model\DataObject\TermSegmentBuilderDefinition\Listing;
         $list = $list->load();
 
         $result = ['data' => []];

@@ -15,8 +15,8 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentBuilder\SegmentBuilderInterface;
 use Pimcore\Model\Element\ElementInterface;
-use Pimcore\Model\Object\CustomerSegment;
-use Pimcore\Model\Object\CustomerSegmentGroup;
+use Pimcore\Model\DataObject\CustomerSegment;
+use Pimcore\Model\DataObject\CustomerSegmentGroup;
 
 interface SegmentManagerInterface
 {
@@ -29,7 +29,7 @@ interface SegmentManagerInterface
      * @param int[] $segmentIds
      * @param string $conditionMode
      *
-     * @return \Pimcore\Model\Object\Listing\Concrete
+     * @return \Pimcore\Model\DataObject\Listing\Concrete
      */
     public function getCustomersBySegmentIds(array $segmentIds, $conditionMode = self::CONDITION_AND);
 
@@ -89,7 +89,7 @@ interface SegmentManagerInterface
     /**
      * @param bool $calculated
      *
-     * @return \Pimcore\Model\Object\Folder
+     * @return \Pimcore\Model\DataObject\Folder
      */
     public function getSegmentsFolder($calculated = true);
 

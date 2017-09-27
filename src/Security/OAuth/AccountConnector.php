@@ -24,9 +24,9 @@ use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\GenericOAuth1ResourceOwner;
 use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\GenericOAuth2ResourceOwner;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
-use Pimcore\Model\Object\Objectbrick\Data\OAuth1Token;
-use Pimcore\Model\Object\Objectbrick\Data\OAuth2Token;
-use Pimcore\Model\Object\SsoIdentity;
+use Pimcore\Model\DataObject\Objectbrick\Data\OAuth1Token;
+use Pimcore\Model\DataObject\Objectbrick\Data\OAuth2Token;
+use Pimcore\Model\DataObject\SsoIdentity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class AccountConnector implements AccountConnectorInterface

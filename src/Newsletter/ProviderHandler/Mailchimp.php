@@ -30,7 +30,7 @@ use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\File;
-use Pimcore\Model\Object\CustomerSegment;
+use Pimcore\Model\DataObject\CustomerSegment;
 use Psr\Log\LoggerInterface;
 
 class Mailchimp implements NewsletterProviderHandlerInterface

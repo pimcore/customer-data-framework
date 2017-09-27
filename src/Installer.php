@@ -245,15 +245,15 @@ class Installer extends AbstractInstaller
 
     public static function installClass($classname, $filepath)
     {
-        $class = \Pimcore\Model\Object\ClassDefinition::getByName($classname);
+        $class = \Pimcore\Model\DataObject\ClassDefinition::getByName($classname);
         if (!$class) {
-            $class = new \Pimcore\Model\Object\ClassDefinition();
+            $class = new \Pimcore\Model\DataObject\ClassDefinition();
             $class->setName($classname);
             $class->setGroup('CustomerManagement');
         }
         $json = file_get_contents($filepath);
 
-        $success = \Pimcore\Model\Object\ClassDefinition\Service::importClassDefinitionFromJson($class, $json);
+        $success = \Pimcore\Model\DataObject\ClassDefinition\Service::importClassDefinitionFromJson($class, $json);
         if (!$success) {
             Logger::err("Could not import $classname Class.");
         }

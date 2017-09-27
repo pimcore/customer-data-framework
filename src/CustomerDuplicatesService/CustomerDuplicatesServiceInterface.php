@@ -22,7 +22,7 @@ interface CustomerDuplicatesServiceInterface
      * @param CustomerInterface $customer
      * @param int $limit
      *
-     * @return \Pimcore\Model\Object\Listing\Concrete|null
+     * @return \Pimcore\Model\DataObject\Listing\Concrete|null
      */
     public function getDuplicatesOfCustomer(CustomerInterface $customer, $limit = 0);
 
@@ -32,7 +32,7 @@ interface CustomerDuplicatesServiceInterface
      * @param array $data
      * @param int $limit
      *
-     * @return \Pimcore\Model\Object\Listing\Concrete|null
+     * @return \Pimcore\Model\DataObject\Listing\Concrete|null
      */
     public function getDuplicatesOfCustomerByFields(CustomerInterface $customer, array $fields, $limit = 0);
 
@@ -42,7 +42,7 @@ interface CustomerDuplicatesServiceInterface
      * @param array $data
      * @param int $limit
      *
-     * @return \Pimcore\Model\Object\Listing\Concrete|null
+     * @return \Pimcore\Model\DataObject\Listing\Concrete|null
      */
     public function getDuplicatesByData(array $data, $limit = 0);
 

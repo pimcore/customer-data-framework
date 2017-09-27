@@ -17,7 +17,7 @@ use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProvi
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 
-abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implements CustomerInterface
+abstract class AbstractCustomer extends \Pimcore\Model\DataObject\Concrete implements CustomerInterface
 {
     public function cmfToArray()
     {
