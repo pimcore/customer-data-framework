@@ -128,8 +128,8 @@ class SegmentAssigner implements SegmentAssignerInterface {
 
             $statement = vsprintf(
                 'START TRANSACTION;'.
-                'INSERT INTO `%1$s` VALUES (%3$s, "%4$s", %5$s, "%6$s") ON DUPLICATE KEY UPDATE `breaksInheritance` = %5$s, `segments` = "%6$s";'.
-                'INSERT INTO `%2$s` VALUES (%3$s, "%4$s") ON DUPLICATE KEY UPDATE `elementId` = `elementId`;'.
+                'INSERT INTO `%1$s` (`elementId`, `elementType`, `breaksInheritance`, `segments`) VALUES (%3$s, "%4$s", %5$s, "%6$s") ON DUPLICATE KEY UPDATE `breaksInheritance` = %5$s, `segments` = "%6$s";'.
+                'INSERT INTO `%2$s` (`elementId`, `elementType`) VALUES (%3$s, "%4$s") ON DUPLICATE KEY UPDATE `elementId` = `elementId`;'.
                 'COMMIT;', $formatArguments);
 
             $this->getDb()->query($statement);
