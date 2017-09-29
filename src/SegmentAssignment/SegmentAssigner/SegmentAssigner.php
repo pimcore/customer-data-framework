@@ -10,7 +10,9 @@ namespace CustomerManagementFrameworkBundle\SegmentAssignment\SegmentAssigner;
 
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapperInterface;
+use function PHPSTORM_META\elementType;
 use Pimcore\Db\Connection;
+use Pimcore\Logger;
 use Pimcore\Model\Element\ElementInterface;
 use function Sabre\Event\Loop\instance;
 
@@ -37,11 +39,17 @@ class SegmentAssigner implements SegmentAssignerInterface {
     private $segmentAssignmentQueueTable = '';
 
     /**
+     * @var string
+     */
+    private $segmentAssignmentIndexTable = '';
+
+    /**
      * @inheritDoc
      */
-    public function __construct(string $segmentAssignmentTable, string $segmentAssignmentQueueTable, Connection $db, TypeMapperInterface $typeMapper) {
+    public function __construct(string $segmentAssignmentTable, string $segmentAssignmentQueueTable, string $segmentAssignmentIndexTable, Connection $db, TypeMapperInterface $typeMapper) {
         $this->setSegmentAssignmentTable($segmentAssignmentTable);
         $this->setSegmentAssignmentQueueTable($segmentAssignmentQueueTable);
+        $this->setSegmentAssignmentIndexTable($segmentAssignmentIndexTable);
         $this->setDb($db);
         $this->setTypeMapper($typeMapper);
     }
@@ -103,6 +111,20 @@ class SegmentAssigner implements SegmentAssignerInterface {
     }
 
     /**
+     * @return string
+     */
+    public function getSegmentAssignmentIndexTable(): string {
+        return $this->segmentAssignmentIndexTable;
+    }
+
+    /**
+     * @param string $segmentAssignmentIndexTable
+     */
+    public function setSegmentAssignmentIndexTable(string $segmentAssignmentIndexTable) {
+        $this->segmentAssignmentIndexTable = $segmentAssignmentIndexTable;
+    }
+
+    /**
      * @inheritDoc
      */
     public function assign(ElementInterface $element, bool $breaksInheritance, array $segments): bool {
@@ -137,6 +159,37 @@ class SegmentAssigner implements SegmentAssignerInterface {
 
             return true;
         } catch (\Throwable $exception) {
+            Logger::error($exception->getMessage());
+
+            return false;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeElementById(string $elementId, string $type): bool {
+        try {
+            $deletePattern = 'DELETE FROM %s WHERE `elementId` = %s AND `elementType` = "%s";';
+
+            $formatArguments = [
+                1 => sprintf($deletePattern, $this->getSegmentAssignmentTable(), $elementId, $type),
+                2 => sprintf($deletePattern, $this->getSegmentAssignmentQueueTable(), $elementId, $type),
+                3 => sprintf($deletePattern, $this->getSegmentAssignmentIndexTable(), $elementId, $type),
+            ];
+
+            $statement = vsprintf('START TRANSACTION;' .
+                '%1$s' .
+                '%2$s' .
+                '%3$s' .
+                'COMMIT;', $formatArguments);
+
+            $this->getDb()->query($statement);
+
+            return true;
+        } catch (\Throwable $exception) {
+            Logger::error($exception->getMessage());
+
             return false;
         }
     }
@@ -148,23 +201,27 @@ class SegmentAssigner implements SegmentAssignerInterface {
         try {
             $formatArguments = [
                 1 => $this->getSegmentAssignmentQueueTable(),
-                2 => $type == 'object' ? 'o_id' : 'id',
+                2 => $type === 'object' ? 'o_id' : 'id',
                 3 => $type,
                 4 => $type . 's',
-                5 => $type == 'object' ? 'o_path' : 'path',
-                6 => $type == 'object' ? 'o_key' : 'key',
+                5 => $type === 'object' ? 'o_path' : 'path',
+                6 => $type === 'object' ? 'o_key' : 'key',
                 7 => $elementId
             ];
 
-            $enqueueStatement = vsprintf('INSERT INTO `%1$s` (`elementId`, `elementType`) ' .
+            $enqueueStatement = vsprintf('START TRANSACTION; ' .
+                'INSERT INTO `%1$s` (`elementId`, `elementType`) ' .
                 'SELECT `%2$s` AS elementId, "%3$s" AS elementType FROM `%4$s` ' .
                 'WHERE `%5$s` LIKE CONCAT( ' .
-                '(SELECT CONCAT(`%5$s`, `%6$s`) FROM `%4$s` WHERE `%2$s` = "%7$s")' .
-                ', "%%") ON DUPLICATE KEY UPDATE `elementId` = `elementId`', $formatArguments);
+                    '(SELECT CONCAT(`%5$s`, `%6$s`) FROM `%4$s` WHERE `%2$s` = "%7$s")' .
+                ', "%%") ON DUPLICATE KEY UPDATE `elementId` = `elementId`; ' .
+                'COMMIT;', $formatArguments);
 
             $this->getDb()->query($enqueueStatement);
             return true;
         } catch (\Throwable $exception) {
+            Logger::error($exception->getMessage());
+
             return false;
         }
     }

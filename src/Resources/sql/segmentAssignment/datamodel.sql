@@ -14,7 +14,7 @@ CREATE TABLE `plugin_cmf_segment_assignment_queue` (
 CREATE TABLE `plugin_cmf_segment_assignment` (
   `elementId` INT(11),
   `elementType` ENUM('document', 'asset', 'object'),
-  `segments` VARCHAR(1023),
+  `segments` TEXT,
   `breaksInheritance` TINYINT,
   PRIMARY KEY (`elementId`, `elementType`)
 );

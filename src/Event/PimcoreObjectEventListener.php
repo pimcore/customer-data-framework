@@ -16,6 +16,7 @@ use CustomerManagementFrameworkBundle\Model\AbstractObjectActivity;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Event\Model\DataObjectEvent;
 use Pimcore\Event\Model\ElementEventInterface;
 use Pimcore\Model\DataObject\LinkActivityDefinition;
@@ -44,7 +45,7 @@ class PimcoreObjectEventListener
         if ($object instanceof CustomerInterface) {
             $this->customerSaveManager->preUpdate($object);
         } elseif($object instanceof CustomerSegmentInterface) {
-            \Pimcore::getContainer()->get('cmf.segment_manager')->preSegmentUpdate($object);
+            \Pimcore::getContainer()->get(SegmentManagerInterface::class)->preSegmentUpdate($object);
         }
     }
 

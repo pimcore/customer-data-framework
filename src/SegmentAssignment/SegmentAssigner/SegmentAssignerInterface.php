@@ -42,6 +42,15 @@ interface SegmentAssignerInterface {
     public function assignById(string $elementId, string $type, bool $breaksInheritance, array $segmentIds): bool;
 
     /**
+     * removes all references to the given element from assignment, queue and index tables
+     *
+     * @param string $elementId
+     * @param string $type
+     * @return bool
+     */
+    public function removeElementById(string $elementId, string $type): bool;
+
+    /**
      * adds an element's children to the segment assignment queue
      *
      * @param string $elementId

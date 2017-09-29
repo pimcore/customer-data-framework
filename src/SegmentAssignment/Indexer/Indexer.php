@@ -79,6 +79,8 @@ class Indexer implements IndexerInterface {
     }
 
     /**
+     * @param string $segmentAssignmentIndexTable
+     * @param string $segmentAssignmentQueueTable
      * @param Connection $db
      */
     public function __construct(string $segmentAssignmentIndexTable, string $segmentAssignmentQueueTable, Connection $db) {
@@ -94,7 +96,7 @@ class Indexer implements IndexerInterface {
         $chunkStatement = sprintf('SELECT * FROM `%s` LIMIT %s', $this->getSegmentAssignmentQueueTable(), static::PAGE_SIZE);
 
         $queuedElements = $this->getDb()->fetchAll($chunkStatement);
-
+var_dump($queuedElements);
         while(sizeof($queuedElements) > 0) {
             foreach($queuedElements as $element) {
                 $this->processElement($element);
@@ -120,10 +122,14 @@ class Indexer implements IndexerInterface {
 
         $segmentIds = explode(',', $this->getDb()->fetchColumn(sprintf('SELECT %s(%s)', static::STORED_FUNCTIONS[$elementType], $elementId)));
 
+        if(1 === sizeof($segmentIds) && "" === $segmentIds[0]) {
+            $segmentIds[0] = 0;
+        }
+
         $values = join(',', array_map(function($segmentId) use ($elementId, $elementType) {
             return sprintf('(%s, "%s", %s)', $elementId, $elementType, $segmentId);
         }, $segmentIds));
-
+echo $values;
         $formatArguments = [
             1 => $this->getSegmentAssignmentIndexTable(),
             2 => $this->getSegmentAssignmentQueueTable(),

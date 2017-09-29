@@ -8,7 +8,7 @@ CREATE FUNCTION PLUGIN_CMF_COLLECT_DOCUMENT_SEGMENT_ASSIGNMENTS(elementIdent INT
     SELECT `segments` FROM `plugin_cmf_segment_assignment` WHERE `elementId` = elementIdent AND `elementType` = 'document' INTO segmentIds;
     SELECT `breaksInheritance` FROM `plugin_cmf_segment_assignment` WHERE `elementId` = elementIdent AND `elementType` = 'document' INTO breaks;
 
-    WHILE breaks <> 1 AND elementIdent <> 1 DO
+    WHILE breaks <> 1 AND elementIdent > 1 DO
       SELECT `parentId`  FROM `documents` WHERE `id` = elementIdent INTO elementIdent;
       SELECT CONCAT_WS(',', segmentIds, (SELECT `segments` FROM `plugin_cmf_segment_assignment` WHERE `elementId` = elementIdent AND `elementType` = 'document')) INTO segmentIds;
       SELECT `breaksInheritance` INTO breaks FROM `plugin_cmf_segment_assignment` WHERE `elementId` = elementIdent AND `elementType` = 'document';

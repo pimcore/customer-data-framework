@@ -91,6 +91,7 @@ services:
         arguments:
             $segmentAssignmentTable: '%cmf.segmentAssignment.table.raw%'
             $segmentAssignmentQueueTable: '%cmf.segmentAssignment.table.queue%'
+            $segmentAssignmentIndexTable: '%cmf.segmentAssignment.table.index%'
 
     CustomerManagementFrameworkBundle\Maintenance\MaintenanceWorker:
         arguments:

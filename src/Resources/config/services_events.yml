@@ -38,3 +38,10 @@ services:
             - { name: kernel.event_listener, event: plugin.cmf.after-track-activity, method: handleEvent }
         calls:
             - [setLogger, ['@cmf.logger']]
+
+    CustomerManagementFrameworkBundle\Event\PimcoreElementRemovalListenerInterface:
+        class: CustomerManagementFrameworkBundle\Event\PimcoreElementRemovalListener
+        tags:
+            - { name: kernel.event_listener, event: pimcore.document.postDelete, method: onPostDelete }
+            - { name: kernel.event_listener, event: pimcore.asset.postDelete, method: onPostDelete }
+            - { name: kernel.event_listener, event: pimcore.dataobject.postDelete, method: onPostDelete }
