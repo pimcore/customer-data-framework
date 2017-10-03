@@ -12,14 +12,18 @@ return PhpCsFixer\Config::create()
         '@PSR2'                               => true,
         'array_syntax'                        => ['syntax' => 'short'],
 
-        'header_comment'                      => ['commentType' => 'PHPDoc',
-                                                  'header' => 'Pimcore Customer Management Framework Bundle' . PHP_EOL .
-                                                              'Full copyright and license information is available in' . PHP_EOL .
-                                                              'License.md which is distributed with this source code.' . PHP_EOL .
-                                                              PHP_EOL .
-                                                              '@copyright  Copyright (C) Elements.at New Media Solutions GmbH' . PHP_EOL .
-                                                              '@license    GPLv3'
-                                                  ],
+        'header_comment'         => [
+                                        'commentType' => 'PHPDoc',
+                                        'header' => 'Pimcore' . PHP_EOL . PHP_EOL .
+                                            'This source file is available under two different licenses:' . PHP_EOL .
+                                            '- GNU General Public License version 3 (GPLv3)' . PHP_EOL .
+                                            '- Pimcore Enterprise License (PEL)' . PHP_EOL .
+                                            'Full copyright and license information is available in' . PHP_EOL .
+                                            'LICENSE.md which is distributed with this source code.' . PHP_EOL .
+                                            PHP_EOL .
+                                            ' @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)' . PHP_EOL .
+                                            ' @license    http://www.pimcore.org/license     GPLv3 and PEL'
+                                    ],
 
         // keep aligned = and => operators as they are: do not force aligning, but do not remove it
         'binary_operator_spaces'              => ['align_double_arrow' => null, 'align_equals' => null],
@@ -30,6 +34,7 @@ return PhpCsFixer\Config::create()
         'hash_to_slash_comment'               => true,
         'lowercase_cast'                      => true,
         'magic_constant_casing'               => true,
+        'method_argument_space'               => ['ensure_fully_multiline' => false],
         'method_separation'                   => true,
         'native_function_casing'              => true,
         'no_blank_lines_after_class_opening'  => true,
