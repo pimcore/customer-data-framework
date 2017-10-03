@@ -7,7 +7,7 @@
     },
     "require": {
         "drewm/mailchimp-api": "*",
-        "elements/object-merger-bundle": "^1.0",
+        "pimcore/object-merger": "dev-master",
         "guzzlehttp/guzzle": ">=4.1.4 <7.0",
         "hwi/oauth-bundle": "^0.5.3",
         "mtdowling/cron-expression": "^1.1.0",
@@ -34,12 +34,6 @@
             "bundles": [
                 "CustomerManagementFrameworkBundle\\PimcoreCustomerManagementFrameworkBundle"
             ]
-        }
-    },
-    "repositories": {
-        "elements": {
-            "type": "composer",
-            "url": "https://composer-packages.elements.at/"
         }
     }
 }
