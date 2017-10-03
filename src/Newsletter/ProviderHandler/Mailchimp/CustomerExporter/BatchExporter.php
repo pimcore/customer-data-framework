@@ -313,37 +313,39 @@ class BatchExporter extends AbstractExporter
                 $this->processSuccessfullItem($mailchimpProviderHandler, $item);
             }
         } else {
-            // TODO in case the batch response contains errored operations - fetch the detailed result from response_body_url
-            // which is a tar.gz containing JSON file(s), parse those results and show which records failed
 
-            $data = gzdecode(file_get_contents($result['response_body_url']));
-            $temp = tempnam('', '') . '.tar';
-            file_put_contents($temp, $data);
-            $tar_object = new \Archive_Tar($temp);
-            $v_list  =  $tar_object->listContent();
-            $contents = null;
+            try {
+                $data = gzdecode(file_get_contents($result['response_body_url']));
+                $temp = tempnam('', '') . '.tar';
+                file_put_contents($temp, $data);
+                $tar_object = new \Archive_Tar($temp);
+                $v_list  =  $tar_object->listContent();
+                $contents = null;
 
-            foreach ($v_list as $item) {
-                if (strpos($item['filename'], '.json') !== false) {
-                    $contents = $tar_object->extractInString($item['filename']);
+                foreach ($v_list as $item) {
+                    if (strpos($item['filename'], '.json') !== false) {
+                        $contents = $tar_object->extractInString($item['filename']);
+                    }
                 }
-            }
-            unlink($temp);
-            $contents = json_decode($contents, true);
+                unlink($temp);
+                $contents = json_decode($contents, true);
 
-            $failedOperations = [];
-            foreach ($contents as $operation) {
-                if ($operation['status_code'] != 200) {
-                    $failedOperations[$operation['operation_id']] = $operation;
+                $failedOperations = [];
+                foreach ($contents as $operation) {
+                    if ($operation['status_code'] != 200) {
+                        $failedOperations[$operation['operation_id']] = $operation;
+                    }
                 }
-            }
 
-            foreach ($items as $item) {
-                if (!isset($failedOperations[$item->getCustomerId()])) {
-                    $this->processSuccessfullItem($mailchimpProviderHandler, $item);
-                } else {
-                    $this->processFailedItem($mailchimpProviderHandler, $item, $failedOperations[$item->getCustomerId()]['response']);
+                foreach ($items as $item) {
+                    if (!isset($failedOperations[$item->getCustomerId()])) {
+                        $this->processSuccessfullItem($mailchimpProviderHandler, $item);
+                    } else {
+                        $this->processFailedItem($mailchimpProviderHandler, $item, $failedOperations[$item->getCustomerId()]['response']);
+                    }
                 }
+            } catch(\Exception $e) {
+                $this->getLogger()->error($e->getMessage());
             }
         }
     }
