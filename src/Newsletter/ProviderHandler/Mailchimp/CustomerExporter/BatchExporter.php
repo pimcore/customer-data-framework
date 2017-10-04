@@ -410,6 +410,11 @@ class BatchExporter extends AbstractExporter
 
         /** @var MailchimpAwareCustomerInterface|ElementInterface $customer */
         $customer = $item->getCustomer();
+
+        if(!$customer) {
+            return;
+        }
+
         $entry = $mailchimpProviderHandler->buildEntry($customer);
         $remoteId = $apiClient->subscriberHash($entry['email_address']);
 
