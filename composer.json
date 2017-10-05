@@ -7,7 +7,7 @@
     },
     "require": {
         "drewm/mailchimp-api": "*",
-        "pimcore/object-merger": "dev-master",
+        "pimcore/object-merger": "^1.0",
         "guzzlehttp/guzzle": ">=4.1.4 <7.0",
         "hwi/oauth-bundle": "^0.5.3",
         "mtdowling/cron-expression": "^1.1.0",
