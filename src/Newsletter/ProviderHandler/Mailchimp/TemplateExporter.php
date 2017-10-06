@@ -57,8 +57,8 @@ class TemplateExporter
         $html = Mail::setAbsolutePaths($html, $document);
 
         //dirty hack to make sure mailchimp merge tags are not url-encoded
-        $html = str_replace('*%7C', '*|', $html);
-        $html = str_replace('%7C*', '|*', $html);
+        $html = str_replace("*%7C", "*|", $html);
+        $html = str_replace("%7C*", "|*", $html);
 
         $templateExists = false;
 
@@ -70,30 +70,32 @@ class TemplateExporter
             }
         }
 
+        $templateName = substr($document->getKey(), 0, 35) . ' [ID ' . $document->getID() . ']';
+
         if ($remoteId && $templateExists) {
             $this->getLogger()->info(
                 sprintf(
                     '[MailChimp] Updating new Template with name %s based on document id %s',
-                    $document->getFullPath(),
+                    $templateName,
                     $document->getId()
                 )
             );
 
             $result = $apiClient->patch("templates/$remoteId", [
-                'name' => $document->getFullPath(),
+                'name' => $templateName,
                 'html' => $html
             ]);
         } else {
             $this->getLogger()->info(
                 sprintf(
                     '[MailChimp][Template] Creating new template with name %s based on document id %s',
-                    $document->getFullPath(),
+                    $templateName,
                     $document->getId()
                 )
             );
 
             $result = $apiClient->post('templates', [
-                'name' => $document->getFullPath(),
+                'name' => $templateName,
                 'html' => $html
             ]);
         }
@@ -106,7 +108,7 @@ class TemplateExporter
             $this->getLogger()->error(
                 sprintf(
                     '[MailChimp][Template] Failed to export template %s: %s %s',
-                    $document->getFullPath(),
+                    $templateName,
                     json_encode($apiClient->getLastError()),
                     $apiClient->getLastResponse()['body']
                 ),
