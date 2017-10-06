@@ -24,6 +24,7 @@ services:
            class: CustomerManagementFrameworkBundle\Event\CustomerMergerEventListener
            tags:
                - { name: kernel.event_listener, event: plugin.ObjectMerger.postMerge, method: onPostMerge }
+               - { name: kernel.event_listener, event: plugin.ObjectMerger.preMerge, method: onPreMerge }
 
     cmf.event_listener.maintenance:
           class: CustomerManagementFrameworkBundle\Event\MaintenanceEventListener
