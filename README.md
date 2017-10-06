@@ -1,45 +1,50 @@
-# Customer Management Framework Pimcore plugin
+# Customer Management Framework Bundle for Pimcore
 
-### Documentation topics:
+Pimcore allows to manage any kind of data - unstructured, digital assets and structured content. The most obvious 
+structured content is product data and all data that is related to products like categories, technologies, brands, etc. 
+The built-in E-Commerce-Framework supports with building e-commerce applications and managing transactional data like 
+orders.
 
-* [Activities (ActivityManager, ActivityStore, ActivityView)](./doc/Activities.md)
-* [Customer Segments](./doc/CustomerSegments.md)
-* [Segment Assignment](./doc/SegmentAssignment.md)
+The third big group of structured data besides products and transaction is customer data. 
+The Customer Management Framework (CMF) for Pimcore adds additional functionality  for customer data management, 
+segmentation, personalization and marketing automation. So it allows to aggregate customer data and user profiles, 
+enrich data, link social profiles, build audience segments, trigger events, personalize experience, execute marketing 
+automation and much more.
+
+Like Pimcore itself and die E-Commerce-Framework, the CMF is also a Framework for developers to develop customer management
+solutions and is tightly integrated into Pimcore core functionality. 
+
+## Provided Functionality in a Nutshell
+- Customer Data Management based on Pimcore data objects 
+- Storage of Customer Activities from different data feeds
+- Customer Segmentation based on data, activities and other criteria
+- Duplicates detection and merging
+- SSO and connection to social profiles like Google, Facebook, Twitter, etc. 
+- Enhancement of Pimcores on-site Personalization
+- Marketing Automation with built-in rule engine and triggers
+- Default integration to external newsletter systems like MailChimp
+- Rest API for integration of external systems for data import or data export
+
+For a first impression have a look at our [Advanced Demo](https://demo-advanced.pimcore.org/). For more complex solutions
+have a look at our [case studies](https://pimcore.com/en/customers).
+
+
+## Working with Customer Management Framework 
+
+Following aspects are short cuts into the documentation for start working with the Customer Management Framework (CMF): 
+
+* [Architecture Overview](./doc/Architecture-Overview.md)
+* Installation and Configuration
+* [Working with Customers](./doc/Working-with-Customers.md)
+* [Working with Activities (ActivityManager, ActivityStore, ActivityView)](./doc/Activities.md)
+* [Working with Customer Segments](./doc/CustomerSegments.md)
 * [Customer Duplicates Service](./doc/CustomerDuplicatesService.md)
-* [Customer Save Manager](./doc/CustomerSaveManager.md)
-* [Webservice](./doc/Webservice.md)
-* [Cronjobs](./doc/Cronjobs.md)
-* [Single Sign On](./doc/Single_Sign_On.md)
-* [Example Configuration](./doc/ExampleConfiguration.md)
+* [Working with integrated Single Sign On](./doc/Single_Sign_On.md)
+* [Built-In Marketing Automation Engine](./doc/ActionTrigger.md)
+* [Newsletter System Integration](./doc/NewsletterSync.md)
+* [Rest API Webservice](./doc/Webservice.md)
 
 
-## Development
+## Contributing and Development
 
-### Frontend
-
-Frontend assets for the admin iframes (`src/Resources/public/admin`) are built via gulp and generated from the `frontend/`
-directory. If you need to change something frontend specific, please update the source files, run gulp and commit the 
-generated files (for easier redistribution).
-
-Assuming you have Node, NPM and Gulp installed, you can run the following from the root of the repository:
-
-```bash
-# install libraries
-$ npm install
-
-# run gulp
-$ gulp
-
-# or run gulp watch while developing
-$ gulp watch
-
-# or just build CSS (see gulp --tasks for a list of valid tasks)
-$ gulp frontend:styles
-
-# when you're done commit the generated files
-$ git add src/Resources/public/admin && git commit
-```
-
-#### TODOs/nice to haves
-
-* Port frontend build from gulp to webpack + make use of Symfony's webpack encore
+For details see our [Contributing guide](CONTRIBUTING.md).
