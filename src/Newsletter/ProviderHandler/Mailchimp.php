@@ -229,7 +229,19 @@ class Mailchimp implements NewsletterProviderHandlerInterface
     {
         $updateNeededItems = [];
         foreach ($items as $item) {
-            if (!$item->getCustomer()) {
+
+            if($item->getCustomer() && !$item->getCustomer()->getEmail() && !$item->getEmail()) {
+                $this->getLogger()->info(
+                    sprintf(
+                        '[MailChimp][CUSTOMER %s][%s] Export not needed as the customer has no email address.',
+                        $item->getCustomer() ? $item->getCustomer()->getId() : '',
+                        $this->getShortcut()
+                    )
+                );
+
+                $item->setSuccessfullyProcessed(true);
+            } elseif (!$item->getCustomer()) {
+
                 $updateNeededItems[] = $item;
             } elseif ($item->getOperation() == NewsletterQueueInterface::OPERATION_UPDATE) {
                 if (!$item->getCustomer()->needsExportByNewsletterProviderHandler($this)) {
