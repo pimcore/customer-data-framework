@@ -4,7 +4,7 @@ The following architecture overview shows available framework components. The co
 `pimcore_customer_management_framework` configuration node. Optionally for each component a custom implementation can be 
 configured and used.
 
-![Architecture Overview](./img/architecture-overview.jpg)
+![Architecture Overview](./img/architecture-overview.png)
 
 For Details for the components see additional documentation pages like: 
 
