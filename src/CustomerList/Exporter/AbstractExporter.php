@@ -17,7 +17,7 @@ namespace CustomerManagementFrameworkBundle\CustomerList\Exporter;
 
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use Pimcore\Model\DataObject\ClassDefinition;
-use Pimcore\Model\DataObject\Customer;
+use Pimcore\Model\DataObject\Listing\Concrete;
 
 abstract class AbstractExporter implements ExporterInterface
 {
@@ -27,7 +27,7 @@ abstract class AbstractExporter implements ExporterInterface
     protected $name;
 
     /**
-     * @var Customer\Listing
+     * @var Concrete
      */
     protected $listing;
 
@@ -100,7 +100,7 @@ abstract class AbstractExporter implements ExporterInterface
     }
 
     /**
-     * @return Customer\Listing
+     * @return Concrete
      */
     public function getListing()
     {
@@ -108,9 +108,9 @@ abstract class AbstractExporter implements ExporterInterface
     }
 
     /**
-     * @param Customer\Listing $listing
+     * @param Concrete $listing
      */
-    public function setListing(Customer\Listing $listing)
+    public function setListing(Concrete $listing)
     {
         $this->reset();
         $this->listing = $listing;

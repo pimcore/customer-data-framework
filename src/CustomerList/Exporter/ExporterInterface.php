@@ -15,7 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerList\Exporter;
 
-use Pimcore\Model\DataObject\Customer;
+use Pimcore\Model\DataObject\Listing\Concrete;
 
 interface ExporterInterface
 {
@@ -40,14 +40,14 @@ interface ExporterInterface
     public function setProperties(array $properties);
 
     /**
-     * @return Customer\Listing
+     * @return Concrete
      */
     public function getListing();
 
     /**
-     * @param Customer\Listing $listing
+     * @param Concrete $listing
      */
-    public function setListing(Customer\Listing $listing);
+    public function setListing(Concrete $listing);
 
     /**
      * Get file MIME type

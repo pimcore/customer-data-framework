@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -42,7 +43,12 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
         $activities = null;
         $paginator = null;
 
-        if ($customer = \Pimcore\Model\DataObject\Customer::getById($request->get('customerId'))) {
+        /**
+         * @var CustomerProviderInterface $customerProvier
+         */
+        $customerProvier = \Pimcore::getContainer()->get('cmf.customer_provider');
+
+        if ($customer = $customerProvier->getById($request->get('customerId'))) {
             $list = \Pimcore::getContainer()->get('cmf.activity_store')->getActivityList();
             $list->setCondition('customerId = ' . $customer->getId());
             $list->setOrderKey('activityDate');
