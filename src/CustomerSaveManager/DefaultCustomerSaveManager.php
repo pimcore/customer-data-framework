@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\CustomerSaveManager;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveHandler\CustomerSaveHandlerInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface;
+use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface;
@@ -197,6 +198,12 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         $this->addToDeletionsTable($customer);
 
         $this->handleNewsletterQueue($customer, NewsletterQueueInterface::OPERATION_DELETE);
+
+        /**
+         * @var DuplicatesIndexInterface $duplicatesIndex
+         */
+        $duplicatesIndex = \Pimcore::getContainer()->get(DuplicatesIndexInterface::class);
+        $duplicatesIndex->deleteCustomerFromDuplicateIndex($customer);
     }
 
     public function validateOnSave(CustomerInterface $customer, $withDuplicatesCheck = true)

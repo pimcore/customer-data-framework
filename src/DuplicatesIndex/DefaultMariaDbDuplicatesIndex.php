@@ -135,6 +135,12 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
     public function deleteCustomerFromDuplicateIndex(CustomerInterface $customer)
     {
+        if (!$this->enableDuplicatesIndex) {
+            $this->getLogger()->debug('duplicate index disabled');
+
+            return;
+        }
+
         $db = Db::get();
         $db->query(
             sprintf('delete from %s where customer_id = ?', self::DUPLICATESINDEX_CUSTOMERS_TABLE),
