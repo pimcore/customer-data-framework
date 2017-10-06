@@ -1,18 +1,24 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: kzumueller
- * Date: 2017-09-12
- * Time: 4:14 PM
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\SegmentAssignment\Indexer;
 
+use Pimcore\Db\Connection;
 
-use \Pimcore\Db\Connection;
-
-class Indexer implements IndexerInterface {
-
+class Indexer implements IndexerInterface
+{
     const STORED_FUNCTIONS = [
         'document' => 'PLUGIN_CMF_COLLECT_DOCUMENT_SEGMENT_ASSIGNMENTS',
         'asset' => 'PLUGIN_CMF_COLLECT_ASSET_SEGMENT_ASSIGNMENTS',
@@ -39,42 +45,48 @@ class Indexer implements IndexerInterface {
     /**
      * @return string
      */
-    public function getSegmentAssignmentIndexTable(): string {
+    public function getSegmentAssignmentIndexTable(): string
+    {
         return $this->segmentAssignmentIndexTable;
     }
 
     /**
      * @param string $segmentAssignmentIndexTable
      */
-    public function setSegmentAssignmentIndexTable(string $segmentAssignmentIndexTable) {
+    public function setSegmentAssignmentIndexTable(string $segmentAssignmentIndexTable)
+    {
         $this->segmentAssignmentIndexTable = $segmentAssignmentIndexTable;
     }
 
     /**
      * @return string
      */
-    public function getSegmentAssignmentQueueTable(): string {
+    public function getSegmentAssignmentQueueTable(): string
+    {
         return $this->segmentAssignmentQueueTable;
     }
 
     /**
      * @param string $segmentAssignmentQueueTable
      */
-    public function setSegmentAssignmentQueueTable(string $segmentAssignmentQueueTable) {
+    public function setSegmentAssignmentQueueTable(string $segmentAssignmentQueueTable)
+    {
         $this->segmentAssignmentQueueTable = $segmentAssignmentQueueTable;
     }
 
     /**
      * @return Connection
      */
-    public function getDb() {
+    public function getDb()
+    {
         return $this->db;
     }
 
     /**
      * @param Connection $db
      */
-    public function setDb($db) {
+    public function setDb($db)
+    {
         $this->db = $db;
     }
 
@@ -83,7 +95,8 @@ class Indexer implements IndexerInterface {
      * @param string $segmentAssignmentQueueTable
      * @param Connection $db
      */
-    public function __construct(string $segmentAssignmentIndexTable, string $segmentAssignmentQueueTable, Connection $db) {
+    public function __construct(string $segmentAssignmentIndexTable, string $segmentAssignmentQueueTable, Connection $db)
+    {
         $this->setSegmentAssignmentIndexTable($segmentAssignmentIndexTable);
         $this->setSegmentAssignmentQueueTable($segmentAssignmentQueueTable);
         $this->setDb($db);
@@ -92,13 +105,14 @@ class Indexer implements IndexerInterface {
     /**
      * @inheritDoc
      */
-    public function processQueue(): bool {
+    public function processQueue(): bool
+    {
         $chunkStatement = sprintf('SELECT * FROM `%s` LIMIT %s', $this->getSegmentAssignmentQueueTable(), static::PAGE_SIZE);
 
         $queuedElements = $this->getDb()->fetchAll($chunkStatement);
-var_dump($queuedElements);
-        while(sizeof($queuedElements) > 0) {
-            foreach($queuedElements as $element) {
+        var_dump($queuedElements);
+        while (sizeof($queuedElements) > 0) {
+            foreach ($queuedElements as $element) {
                 $this->processElement($element);
             }
 
@@ -116,20 +130,21 @@ var_dump($queuedElements);
      *
      * @param array $element
      */
-    private function processElement(array $element) {
+    private function processElement(array $element)
+    {
         $elementId = $element['elementId'];
         $elementType = $element['elementType'];
 
         $segmentIds = explode(',', $this->getDb()->fetchColumn(sprintf('SELECT %s(%s)', static::STORED_FUNCTIONS[$elementType], $elementId)));
 
-        if(1 === sizeof($segmentIds) && "" === $segmentIds[0]) {
+        if (1 === sizeof($segmentIds) && '' === $segmentIds[0]) {
             $segmentIds[0] = 0;
         }
 
-        $values = join(',', array_map(function($segmentId) use ($elementId, $elementType) {
+        $values = join(',', array_map(function ($segmentId) use ($elementId, $elementType) {
             return sprintf('(%s, "%s", %s)', $elementId, $elementType, $segmentId);
         }, $segmentIds));
-echo $values;
+        echo $values;
         $formatArguments = [
             1 => $this->getSegmentAssignmentIndexTable(),
             2 => $this->getSegmentAssignmentQueueTable(),

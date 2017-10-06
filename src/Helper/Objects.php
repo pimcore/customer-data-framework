@@ -1,21 +1,25 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Helper;
 
 use Pimcore\File;
-use Pimcore\Model\Element\ElementInterface;
-use Pimcore\Model\Element\Service;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
+use Pimcore\Model\Element\ElementInterface;
+use Pimcore\Model\Element\Service;
 
 class Objects
 {
@@ -56,7 +60,7 @@ class Objects
     /**
      * add pimcore objects to given array if element are not already part of the array
      * works with arrays of objects and arrays of objects with metadata
-     * 
+     *
      * - returns false if no data in array was changed
      * - returns array with added objects if object where added
      *
@@ -69,9 +73,7 @@ class Objects
     {
         $added = [];
         foreach ($addObjects as $add) {
-
             $addObject = $add instanceof ObjectMetadata ? $add->getObject() : $add;
-
 
             if (!method_exists($addObject, 'getId')) {
                 continue;
@@ -80,7 +82,6 @@ class Objects
             $found = false;
             foreach ($array as $object) {
                 $object = $object instanceof ObjectMetadata ? $object->getObject() : $object;
-
 
                 if ($addObject->getId() == $object->getId()) {
                     $found = true;
@@ -96,8 +97,6 @@ class Objects
 
         return sizeof($added) ? $added : false;
     }
-
-
 
     /**
      * remove pimcore objects from given array
@@ -119,7 +118,6 @@ class Objects
             $object = $object instanceof ObjectMetadata ? $object->getObject() : $object;
 
             foreach ($removeObjects as $remove) {
-
                 $removeObject = $remove instanceof ObjectMetadata ? $remove->getObject() : $remove;
 
                 if (!method_exists($removeObject, 'getId')) {
@@ -140,7 +138,6 @@ class Objects
         return sizeof($removed) ? $removed : false;
     }
 
-
     public static function objectArrayUnique($array)
     {
         $result = [];
@@ -151,6 +148,7 @@ class Objects
 
         return array_values($result);
     }
+
     /**
      * Returns IDs of an array of objects
      *
@@ -180,21 +178,21 @@ class Objects
     public static function objectInArray($object, array $objects)
     {
         $object = $object instanceof ObjectMetadata ? $object->getObject() : $object;
-        if(!$object instanceof ElementInterface) {
+        if (!$object instanceof ElementInterface) {
             return false;
         }
 
-        if(!$object->getId()) {
+        if (!$object->getId()) {
             return false;
         }
 
-        foreach($objects as $_object) {
+        foreach ($objects as $_object) {
             $_object = $_object instanceof ObjectMetadata ? $_object->getObject() : $_object;
-            if(!$_object instanceof ElementInterface) {
+            if (!$_object instanceof ElementInterface) {
                 continue;
             }
 
-            if($_object->getId() == $object->getId()) {
+            if ($_object->getId() == $object->getId()) {
                 return true;
             }
         }

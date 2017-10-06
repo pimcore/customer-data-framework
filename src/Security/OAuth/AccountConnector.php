@@ -3,12 +3,16 @@
 declare(strict_types=1);
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Security\OAuth;
@@ -46,7 +50,7 @@ class AccountConnector implements AccountConnectorInterface
         EncryptionServiceInterface $encryptionService
     ) {
         $this->ssoIdentityService = $ssoIdentityService;
-        $this->encryptionService  = $encryptionService;
+        $this->encryptionService = $encryptionService;
     }
 
     public function connectToSsoIdentity(UserInterface $user, UserResponseInterface $response): SsoIdentityInterface
@@ -55,7 +59,7 @@ class AccountConnector implements AccountConnectorInterface
             throw new \InvalidArgumentException('User is not supported');
         }
 
-        $provider   = $response->getResourceOwner()->getName();
+        $provider = $response->getResourceOwner()->getName();
         $identifier = $response->getUsername();
 
         $ssoIdentity = $this->ssoIdentityService->getSsoIdentity(
@@ -167,9 +171,9 @@ class AccountConnector implements AccountConnectorInterface
             $token,
             $response->getOAuthToken(),
             [
-                'accessToken'  => 'accessToken',
+                'accessToken' => 'accessToken',
                 'refreshToken' => 'refreshToken',
-                'expiresAt'    => 'expiresAt',
+                'expiresAt' => 'expiresAt',
             ]
         );
     }
@@ -220,9 +224,9 @@ class AccountConnector implements AccountConnectorInterface
     protected function applyProfileToCustomer(CustomerInterface $customer, UserResponseInterface $response)
     {
         $properties = [
-            'email'       => $response->getEmail(),
-            'firstname'   => $response->getFirstName(),
-            'lastname'    => $response->getLastName(),
+            'email' => $response->getEmail(),
+            'firstname' => $response->getFirstName(),
+            'lastname' => $response->getLastName(),
         ];
 
         foreach ($properties as $property => $value) {

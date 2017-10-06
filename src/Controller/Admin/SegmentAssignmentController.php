@@ -1,9 +1,16 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: kzumueller
- * Date: 2017-09-12
- * Time: 2:03 PM
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
@@ -24,14 +31,17 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @package CustomerManagementFrameworkBundle\Controller\Admin
  */
-class SegmentAssignmentController extends AdminController {
-
+class SegmentAssignmentController extends AdminController
+{
     /**
      * @Route("/inheritable-segments")
+     *
      * @param Request $request
+     *
      * @return JsonResponse
      */
-    public function inheritableSegments(Request $request) {
+    public function inheritableSegments(Request $request)
+    {
         $id = $request->get('id') ?? '';
         $type = $request->get('type') ?? '';
 
@@ -50,17 +60,21 @@ class SegmentAssignmentController extends AdminController {
      * returns directly assigned segmentIds for the pimcore backend
      *
      * @Route("/assigned-segments")
+     *
      * @param Request $request
+     *
      * @return JsonResponse
      */
-    public function assignedSegments(Request $request) {
+    public function assignedSegments(Request $request)
+    {
         $id = $request->get('id') ?? '';
         $type = $request->get('type') ?? '';
         $assignmentTable = $this->getParameter('cmf.segmentAssignment.table.raw');
         $segmentIds = $this->get(Connection::class)->fetchOne("SELECT `segments` FROM $assignmentTable WHERE `elementId` = ? AND `elementType` = ?", [$id, $type]);
 
-        $data = array_map(function($id){
+        $data = array_map(function ($id) {
             $segment = CustomerSegment::getById($id);
+
             return $this->dehydrateSegment($segment);
         }, explode(',', $segmentIds));
 
@@ -71,10 +85,13 @@ class SegmentAssignmentController extends AdminController {
      * saves assignments asynchronously
      *
      * @Route("/assign")
+     *
      * @param Request $request
+     *
      * @return JsonResponse
      */
-    public function assign(Request $request) {
+    public function assign(Request $request)
+    {
         $id = $request->get('id') ?? '';
         $type = $request->get('type') ?? '';
         $breaksInheritance = $request->get('breaksInheritance') === 'true';
@@ -88,10 +105,13 @@ class SegmentAssignmentController extends AdminController {
 
     /**
      * @Route("/breaks-inheritance")
+     *
      * @param Request $request
+     *
      * @return JsonResponse
      */
-    public function breaksInheritance(Request $request) {
+    public function breaksInheritance(Request $request)
+    {
         $id = $request->get('id') ?? '';
         $type = $request->get('type') ?? '';
         $assignmentTable = $this->getParameter('cmf.segmentAssignment.table.raw');
@@ -103,10 +123,12 @@ class SegmentAssignmentController extends AdminController {
 
     /**
      * @param CustomerSegment $segment
+     *
      * @return array
      */
-    private function dehydrateSegment($segment): array {
-        if(!($segment instanceof CustomerSegment)) {
+    private function dehydrateSegment($segment): array
+    {
+        if (!($segment instanceof CustomerSegment)) {
             return [];
         }
 

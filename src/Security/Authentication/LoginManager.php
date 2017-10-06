@@ -3,12 +3,16 @@
 declare(strict_types=1);
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Security\Authentication;
@@ -73,12 +77,12 @@ class LoginManager implements LoginManagerInterface
         UserCheckerInterface $defaultUserChecker,
         ContainerInterface $container
     ) {
-        $this->firewallMap        = $firewallMap;
-        $this->requestHelper      = $requestHelper;
-        $this->sessionStrategy    = $sessionStrategy;
-        $this->tokenStorage       = $tokenStorage;
+        $this->firewallMap = $firewallMap;
+        $this->requestHelper = $requestHelper;
+        $this->sessionStrategy = $sessionStrategy;
+        $this->tokenStorage = $tokenStorage;
         $this->defaultUserChecker = $defaultUserChecker;
-        $this->container          = $container;
+        $this->container = $container;
     }
 
     /**
@@ -90,8 +94,8 @@ class LoginManager implements LoginManagerInterface
             $request = $this->requestHelper->getCurrentRequest();
         }
 
-        $firewallConfig    = $this->firewallMap->getFirewallConfig($request);
-        $userChecker       = $this->getUserChecker($firewallConfig);
+        $firewallConfig = $this->firewallMap->getFirewallConfig($request);
+        $userChecker = $this->getUserChecker($firewallConfig);
         $rememberMeService = $this->getRememberMeService($firewallConfig);
 
         $userChecker->checkPreAuth($user);

@@ -4,7 +4,6 @@
  * @var \Pimcore\Templating\PhpEngine $view
  * @var \Pimcore\Templating\GlobalVariables $app
  */
-
 $this->extend('PimcoreCustomerManagementFrameworkBundle::layout.html.php');
 
 $this->headLink()->appendStylesheet('/plugins/CustomerManagementFramework/static/css/activity-list.css');
@@ -38,7 +37,7 @@ $av = $this->activityView;
                     </h3>
 
                     <div>
-                        <a href="<?=$this->url('customermanagementframework_admin_activities_list', ["customerId"=>$this->getParam("customerId")])?>" class="btn btn-default btn-xs">&laquo; back</a>
+                        <a href="<?=$this->url('customermanagementframework_admin_activities_list', ['customerId' => $this->getParam('customerId')])?>" class="btn btn-default btn-xs">&laquo; back</a>
                     </div>
                 </div>
 

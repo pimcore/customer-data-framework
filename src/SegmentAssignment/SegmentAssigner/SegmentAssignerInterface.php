@@ -1,9 +1,16 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: kzumueller
- * Date: 2017-09-12
- * Time: 1:05 PM
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\SegmentAssignment\SegmentAssigner;
@@ -18,14 +25,15 @@ use Pimcore\Model\Element\ElementInterface;
  *
  * @package CustomerManagementFrameworkBundle\SegmentAssigner
  */
-interface SegmentAssignerInterface {
-
+interface SegmentAssignerInterface
+{
     /**
      * Assigns segments to an element
      *
      * @param ElementInterface $element
      * @param bool $breaksInheritance
      * @param CustomerSegmentInterface[] $segments
+     *
      * @return bool true on success, false on failure
      */
     public function assign(ElementInterface $element, bool $breaksInheritance, array $segments): bool;
@@ -37,6 +45,7 @@ interface SegmentAssignerInterface {
      * @param string $type
      * @param bool $breaksInheritance
      * @param string[] $segmentIds
+     *
      * @return bool true on success, false on failure
      */
     public function assignById(string $elementId, string $type, bool $breaksInheritance, array $segmentIds): bool;
@@ -46,6 +55,7 @@ interface SegmentAssignerInterface {
      *
      * @param string $elementId
      * @param string $type
+     *
      * @return bool
      */
     public function removeElementById(string $elementId, string $type): bool;
@@ -55,6 +65,7 @@ interface SegmentAssignerInterface {
      *
      * @param string $elementId
      * @param string $type
+     *
      * @return bool
      */
     public function enqueueChildren(string $elementId, string $type): bool;

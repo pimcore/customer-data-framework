@@ -1,21 +1,25 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Model;
 
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\SaveOptions;
-use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
+use Pimcore\Model\Element\ElementInterface;
 
 interface CustomerInterface extends ElementInterface
 {

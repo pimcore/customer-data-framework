@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Newsletter\Queue;
@@ -46,9 +50,9 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
         $db->query(
             'insert into ' . self::QUEUE_TABLE . ' (customerId, email, operation, modificationDate) values (:customerId,:email,:operation,:modificationDate) on duplicate key update operation = :operation, modificationDate = :modificationDate',
             [
-                'customerId'=>$customer->getId(),
-                'email'=>$email,
-                'operation'=>$operation,
+                'customerId' => $customer->getId(),
+                'email' => $email,
+                'operation' => $operation,
                 'modificationDate' => $modificationDate,
             ]
         );
@@ -163,7 +167,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
         $pageCount = $paginator->getPages()->pageCount;
 
-        for ($i=1; $i <= $pageCount; $i++) {
+        for ($i = 1; $i <= $pageCount; $i++) {
             $paginator->setCurrentPageNumber($i);
             $items = [];
             foreach ($paginator as $customer) {
@@ -202,7 +206,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
         $pageCount = $paginator->getPages()->pageCount;
 
-        for ($i=1; $i <= $pageCount; $i++) {
+        for ($i = 1; $i <= $pageCount; $i++) {
             $paginator->setCurrentPageNumber($i);
             $items = [];
             foreach ($paginator as $row) {

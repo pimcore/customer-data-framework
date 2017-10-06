@@ -3,12 +3,16 @@
 declare(strict_types=1);
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\DependencyInjection;
@@ -228,9 +232,9 @@ class Configuration implements ConfigurationInterface
 
         $defaultExporters = [
             'csv' => [
-                'name'       => 'CSV',
-                'icon'       => 'fa fa-file-text-o',
-                'exporter'   => \CustomerManagementFrameworkBundle\CustomerList\Exporter\Csv::class,
+                'name' => 'CSV',
+                'icon' => 'fa fa-file-text-o',
+                'exporter' => \CustomerManagementFrameworkBundle\CustomerList\Exporter\Csv::class,
                 'properties' => [
                     'id',
                     'active',
@@ -249,9 +253,9 @@ class Configuration implements ConfigurationInterface
             ],
 
             'xlsx' => [
-                'name'       => 'XLSX',
-                'icon'       => 'fa fa-file-excel-o',
-                'exporter'   => \CustomerManagementFrameworkBundle\CustomerList\Exporter\Xlsx::class,
+                'name' => 'XLSX',
+                'icon' => 'fa fa-file-excel-o',
+                'exporter' => \CustomerManagementFrameworkBundle\CustomerList\Exporter\Xlsx::class,
                 'properties' => [
                     'id',
                     'active',
@@ -271,7 +275,7 @@ class Configuration implements ConfigurationInterface
         ];
 
         $defaultFilterPropertiesEquals = [
-            'id'     => 'o_id',
+            'id' => 'o_id',
             'active' => 'active',
         ];
 
@@ -279,7 +283,7 @@ class Configuration implements ConfigurationInterface
             'email' => [
                 'email'
             ],
-            'name'  => [
+            'name' => [
                 'firstname',
                 'lastname'
             ],
@@ -359,8 +363,6 @@ class Configuration implements ConfigurationInterface
                         ->prototype('scalar')->end()
                     ->end()
                 ->end()
-
-
 
                 ->arrayNode('duplicateCheckTrimmedFields')
                     ->info('Performance improvement: add duplicate check fields which are trimmed (trim() called on the field value) by a customer save handler. No trim operation will be needed in the resulting query.')
@@ -457,7 +459,8 @@ class Configuration implements ConfigurationInterface
         return $tracker;
     }
 
-    private function buildSegmentAssignmentClassPermission() {
+    private function buildSegmentAssignmentClassPermission()
+    {
         $treeBuilder = new TreeBuilder();
 
         $assignment = $treeBuilder->root('segment_assignment_classes');

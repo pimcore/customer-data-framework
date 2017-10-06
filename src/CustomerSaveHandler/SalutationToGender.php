@@ -1,17 +1,20 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\CustomerSaveHandler;
 
-use CustomerManagementFrameworkBundle\DataValidator\EmailValidator;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
 /**
@@ -21,7 +24,6 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
  */
 class SalutationToGender extends AbstractCustomerSaveHandler
 {
-
     /**
      * @var string
      */
@@ -32,7 +34,7 @@ class SalutationToGender extends AbstractCustomerSaveHandler
      */
     private $genderMap;
 
-    public function __construct($salutationField = 'salutation', $genderMap = ['mr'=>'male', 'mrs'=>'female'])
+    public function __construct($salutationField = 'salutation', $genderMap = ['mr' => 'male', 'mrs' => 'female'])
     {
         $this->salutationField = $salutationField;
         $this->genderMap = $genderMap;
@@ -49,7 +51,7 @@ class SalutationToGender extends AbstractCustomerSaveHandler
         $salutation = $customer->$getter();
 
         if (isset($this->genderMap[$salutation])) {
-           $customer->setGender($this->genderMap[$salutation]);
+            $customer->setGender($this->genderMap[$salutation]);
         }
     }
 }

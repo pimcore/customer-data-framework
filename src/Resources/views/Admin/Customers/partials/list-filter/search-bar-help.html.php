@@ -18,14 +18,14 @@ $modifiers = [
     'Exact search (field must match exactly)' => [
         '"<term>"',
     ],
-    'Negation'     => [
+    'Negation' => [
         '!<term>',
         '!(<query>)'
     ]
 ];
 
 $codify = function (array $values) {
-    return array_map(function($value) {
+    return array_map(function ($value) {
         return '<code>' . $this->escape($value) . '</code>';
     }, $values);
 };

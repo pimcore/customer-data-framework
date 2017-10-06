@@ -8,7 +8,8 @@
 <div class="container">
     <table class="table">
 
-        <?php foreach($this->paginator as $row) {?>
+        <?php foreach ($this->paginator as $row) {
+    ?>
 
                 <tr>
 
@@ -27,13 +28,14 @@
 
                     </td>
                 </tr>
-        <?php }?>
+        <?php
+}?>
 
     </table>
 
-    <?php if($this->paginator->getPages()->pageCount > 1): ?>
+    <?php if ($this->paginator->getPages()->pageCount > 1): ?>
         <div class="text-center">
-            <?= $this->paginationControl($paginator, 'Sliding', 'includes/pagination/default.php', ['params'=>$this->getAllParams()]); ?>
+            <?= $this->paginationControl($paginator, 'Sliding', 'includes/pagination/default.php', ['params' => $this->getAllParams()]); ?>
         </div>
     <?php endif; ?>
 </div>

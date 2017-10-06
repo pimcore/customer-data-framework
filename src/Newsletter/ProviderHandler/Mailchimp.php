@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler;
@@ -229,8 +233,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
     {
         $updateNeededItems = [];
         foreach ($items as $item) {
-
-            if($item->getCustomer() && !$item->getCustomer()->getEmail() && !$item->getEmail()) {
+            if ($item->getCustomer() && !$item->getCustomer()->getEmail() && !$item->getEmail()) {
                 $this->getLogger()->info(
                     sprintf(
                         '[MailChimp][CUSTOMER %s][%s] Export not needed as the customer has no email address.',
@@ -241,7 +244,6 @@ class Mailchimp implements NewsletterProviderHandlerInterface
 
                 $item->setSuccessfullyProcessed(true);
             } elseif (!$item->getCustomer()) {
-
                 $updateNeededItems[] = $item;
             } elseif ($item->getOperation() == NewsletterQueueInterface::OPERATION_UPDATE) {
                 if (!$item->getCustomer()->needsExportByNewsletterProviderHandler($this)) {
@@ -266,14 +268,13 @@ class Mailchimp implements NewsletterProviderHandlerInterface
                         $item->setSuccessfullyProcessed(true);
                     }
                 } elseif ($forceUpdate || $this->exportService->didExportDataChangeSinceLastExport($item->getCustomer(), $this->getListId(), $this->buildEntry($item->getCustomer()))) {
-
                     $mailchimpStatus = $this->getMailchimpStatus($item->getCustomer());
                     if (!$mailchimpStatus) {
                         $entry = $this->buildEntry($item->getCustomer());
 
-                        $setStatus = isset($entry['status_if_new']) ? : $entry['status'];
+                        $setStatus = isset($entry['status_if_new']) ?: $entry['status'];
 
-                        if($setStatus == self::STATUS_UNSUBSCRIBED) {
+                        if ($setStatus == self::STATUS_UNSUBSCRIBED) {
                             $this->getLogger()->info(
                                 sprintf(
                                     '[MailChimp][CUSTOMER %s][%s] Export not needed as the customer is unsubscribed and was not exported yet.',
@@ -281,14 +282,13 @@ class Mailchimp implements NewsletterProviderHandlerInterface
                                     $this->getShortcut()
                                 )
                             );
-                            $item->setSuccessfullyProcessed(true);;
+                            $item->setSuccessfullyProcessed(true);
                         } else {
                             $updateNeededItems[] = $item;
                         }
                     } else {
                         $updateNeededItems[] = $item;
                     }
-
                 } else {
                     $this->getLogger()->info(
                         sprintf(
@@ -401,7 +401,6 @@ class Mailchimp implements NewsletterProviderHandlerInterface
 
             $segmentIds = [];
             foreach ($segments as $segment) {
-
                 $forceCreate = false;
                 if ($remoteGroupId && ($this->segmentExporter->getLastCreatedGroupRemoteId() == $remoteGroupId)) {
                     $forceCreate = true;
@@ -515,7 +514,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
             'merge_fields' => $mergeFields
         ];
 
-        if($interests = $this->buildCustomerSegmentData($customer)) {
+        if ($interests = $this->buildCustomerSegmentData($customer)) {
             $result['interests'] = $interests;
         }
 
@@ -584,7 +583,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
 
     protected function trackStatusChangeActivity(MailchimpAwareCustomerInterface $customer, $status)
     {
-        $activity = new MailchimpStatusChangeActivity($customer, $status, ['listId'=>$this->getListId(), 'shortcut'=>$this->getShortcut()]);
+        $activity = new MailchimpStatusChangeActivity($customer, $status, ['listId' => $this->getListId(), 'shortcut' => $this->getShortcut()]);
         /**
          * @var ActivityManagerInterface $activityManager
          */

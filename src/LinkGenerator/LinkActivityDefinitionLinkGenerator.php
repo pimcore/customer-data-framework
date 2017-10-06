@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\LinkGenerator;
@@ -30,6 +34,7 @@ class LinkActivityDefinitionLinkGenerator implements LinkGeneratorInterface
     /**
      * @param LinkActivityDefinition $object
      * @param array $params
+     *
      * @return string
      */
     public function generate(Concrete $object, array $params = []): string
@@ -46,16 +51,15 @@ class LinkActivityDefinitionLinkGenerator implements LinkGeneratorInterface
 
         $url = new \Net_URL2($href);
 
-        if(!$url->getHost()) {
+        if (!$url->getHost()) {
             $url->setHost(Tool::getHostname());
-            $url->setScheme(isset($_SERVER['HTTPS']) ? "https" : "http");
+            $url->setScheme(isset($_SERVER['HTTPS']) ? 'https' : 'http');
         }
-
 
         foreach (['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'] as $gaParam) {
             $getter = 'get' . ucfirst($gaParam);
 
-            if($value = $object->$getter()) {
+            if ($value = $object->$getter()) {
                 $url->setQueryVariable($gaParam, $value);
             }
         }
@@ -70,5 +74,4 @@ class LinkActivityDefinitionLinkGenerator implements LinkGeneratorInterface
 
         return $url;
     }
-
 }

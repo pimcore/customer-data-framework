@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
@@ -136,7 +140,7 @@ class CustomersController extends Admin
         ]);
 
         return $this->json([
-            'url' => $this->generateUrl('customermanagementframework_admin_customers_exportstep', ['jobId'=>$jobId]),
+            'url' => $this->generateUrl('customermanagementframework_admin_customers_exportstep', ['jobId' => $jobId]),
             'jobId' => $jobId,
             'exporter' => $request->get('exporter')
         ]);
@@ -163,7 +167,7 @@ class CustomersController extends Admin
         if (!sizeof($data['processIds'])) {
             return $this->json([
                 'finished' => true,
-                'url' => $this->generateUrl('customermanagementframework_admin_customers_downloadfinishedexport', ['jobId'=>$request->get('jobId')]),
+                'url' => $this->generateUrl('customermanagementframework_admin_customers_downloadfinishedexport', ['jobId' => $request->get('jobId')]),
                 'jobId' => $request->get('jobId')
             ]);
         }

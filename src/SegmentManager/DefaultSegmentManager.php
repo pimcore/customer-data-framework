@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\SegmentManager;
@@ -20,12 +24,12 @@ use CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapperInt
 use CustomerManagementFrameworkBundle\SegmentBuilder\SegmentBuilderInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db;
-use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
 use Pimcore\Model\DataObject\Service;
+use Pimcore\Model\Element\ElementInterface;
 
 class DefaultSegmentManager implements SegmentManagerInterface
 {
@@ -58,12 +62,14 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
     /**
      * maps actual types of elements implementing ElementInterface to type strings used with db tables
+     *
      * @var TypeMapperInterface
      */
     private $typeMapper = null;
 
     /**
      * index table to get segments assigned to elements
+     *
      * @var string
      */
     private $segmentAssignmentIndexTable = '';
@@ -91,28 +97,32 @@ class DefaultSegmentManager implements SegmentManagerInterface
     /**
      * @return TypeMapperInterface
      */
-    public function getTypeMapper(): TypeMapperInterface {
+    public function getTypeMapper(): TypeMapperInterface
+    {
         return $this->typeMapper;
     }
 
     /**
      * @param TypeMapperInterface $typeMapper
      */
-    public function setTypeMapper(TypeMapperInterface $typeMapper) {
+    public function setTypeMapper(TypeMapperInterface $typeMapper)
+    {
         $this->typeMapper = $typeMapper;
     }
 
     /**
      * @return string
      */
-    public function getSegmentAssignmentIndexTable(): string {
+    public function getSegmentAssignmentIndexTable(): string
+    {
         return $this->segmentAssignmentIndexTable;
     }
 
     /**
      * @param string $segmentAssignmentIndexTable
      */
-    public function setSegmentAssignmentIndexTable(string $segmentAssignmentIndexTable) {
+    public function setSegmentAssignmentIndexTable(string $segmentAssignmentIndexTable)
+    {
         $this->segmentAssignmentIndexTable = $segmentAssignmentIndexTable;
     }
 
@@ -135,7 +145,8 @@ class DefaultSegmentManager implements SegmentManagerInterface
     /**
      * @inheritdoc
      */
-    public function getSegmentsForElement(ElementInterface $element): array {
+    public function getSegmentsForElement(ElementInterface $element): array
+    {
         $id = $element->getId();
         $type = $this->getTypeMapper()->getTypeStringByObject($element);
 
@@ -145,10 +156,11 @@ class DefaultSegmentManager implements SegmentManagerInterface
     /**
      * @inheritdoc
      */
-    public function getSegmentsForElementId(string $id, string $type): array {
+    public function getSegmentsForElementId(string $id, string $type): array
+    {
         $segmentIds = Db::get()->fetchCol(sprintf('SELECT `segmentId` FROM %s WHERE `elementId` = %s AND `elementType` = "%s"', $this->getSegmentAssignmentIndexTable(), $id, $type));
 
-        return array_map(function($id){
+        return array_map(function ($id) {
             return CustomerSegment::getById($id);
         }, $segmentIds);
     }

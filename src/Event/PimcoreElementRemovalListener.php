@@ -1,8 +1,16 @@
 <?php
+
 /**
- * @var \Pimcore\Templating\PhpEngine $this
- * @var \Pimcore\Templating\PhpEngine $view
- * @var \Pimcore\Templating\GlobalVariables $app
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Event;
@@ -13,10 +21,11 @@ use Pimcore\Event\Model\ElementEventInterface;
 
 /**
  * Class PimcoreElementRemovalListener
+ *
  * @package CustomerManagementFrameworkBundle\Event
  */
-class PimcoreElementRemovalListener implements PimcoreElementRemovalListenerInterface {
-
+class PimcoreElementRemovalListener implements PimcoreElementRemovalListenerInterface
+{
     /**
      * @var SegmentAssignerInterface
      */
@@ -31,7 +40,8 @@ class PimcoreElementRemovalListener implements PimcoreElementRemovalListenerInte
      * @param SegmentAssignerInterface $segmentAssigner
      * @param TypeMapperInterface $typeMapper
      */
-    public function __construct(SegmentAssignerInterface $segmentAssigner, TypeMapperInterface $typeMapper) {
+    public function __construct(SegmentAssignerInterface $segmentAssigner, TypeMapperInterface $typeMapper)
+    {
         $this->setSegmentAssigner($segmentAssigner);
         $this->setTypeMapper($typeMapper);
     }
@@ -39,39 +49,43 @@ class PimcoreElementRemovalListener implements PimcoreElementRemovalListenerInte
     /**
      * @return SegmentAssignerInterface
      */
-    public function getSegmentAssigner(): SegmentAssignerInterface {
+    public function getSegmentAssigner(): SegmentAssignerInterface
+    {
         return $this->segmentAssigner;
     }
 
     /**
      * @param SegmentAssignerInterface $segmentAssigner
      */
-    public function setSegmentAssigner(SegmentAssignerInterface $segmentAssigner) {
+    public function setSegmentAssigner(SegmentAssignerInterface $segmentAssigner)
+    {
         $this->segmentAssigner = $segmentAssigner;
     }
 
     /**
      * @return TypeMapperInterface
      */
-    public function getTypeMapper(): TypeMapperInterface {
+    public function getTypeMapper(): TypeMapperInterface
+    {
         return $this->typeMapper;
     }
 
     /**
      * @param TypeMapperInterface $typeMapper
      */
-    public function setTypeMapper(TypeMapperInterface $typeMapper) {
+    public function setTypeMapper(TypeMapperInterface $typeMapper)
+    {
         $this->typeMapper = $typeMapper;
     }
 
     /**
      * @inheritdoc
      */
-    public function onPostDelete(ElementEventInterface $event){
+    public function onPostDelete(ElementEventInterface $event)
+    {
         $id = $event->getElement()->getId();
         $type = $this->getTypeMapper()->getTypeStringByObject($event->getElement());
 
         $this->getSegmentAssigner()->removeElementById($id, $type);
     }
-
 }

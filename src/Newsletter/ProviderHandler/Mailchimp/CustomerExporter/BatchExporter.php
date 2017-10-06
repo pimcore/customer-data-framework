@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CustomerExporter;
@@ -313,13 +317,12 @@ class BatchExporter extends AbstractExporter
                 $this->processSuccessfullItem($mailchimpProviderHandler, $item);
             }
         } else {
-
             try {
                 $data = gzdecode(file_get_contents($result['response_body_url']));
                 $temp = tempnam('', '') . '.tar';
                 file_put_contents($temp, $data);
                 $tar_object = new \Archive_Tar($temp);
-                $v_list  =  $tar_object->listContent();
+                $v_list = $tar_object->listContent();
                 $contents = null;
 
                 foreach ($v_list as $item) {
@@ -344,7 +347,7 @@ class BatchExporter extends AbstractExporter
                         $this->processFailedItem($mailchimpProviderHandler, $item, $failedOperations[$item->getCustomerId()]['response']);
                     }
                 }
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 $this->getLogger()->error($e->getMessage());
             }
         }
@@ -411,7 +414,7 @@ class BatchExporter extends AbstractExporter
         /** @var MailchimpAwareCustomerInterface|ElementInterface $customer */
         $customer = $item->getCustomer();
 
-        if(!$customer) {
+        if (!$customer) {
             return;
         }
 

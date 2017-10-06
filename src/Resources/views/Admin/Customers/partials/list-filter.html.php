@@ -68,11 +68,15 @@ $cv = $this->customerView;
             </div>
         </div>
 
-    <?php if(sizeof($this->clearUrlParams)) {?>
-        <?php foreach($this->clearUrlParams as $key => $value) {?>
+    <?php if (sizeof($this->clearUrlParams)) {
+    ?>
+        <?php foreach ($this->clearUrlParams as $key => $value) {
+        ?>
             <input type="hidden" name="<?=$key?>" value="<?=$value?>"/>
-        <?php }?>
-    <?php } ?>
+        <?php
+    } ?>
+    <?php
+} ?>
 
     <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Partial/Box:footer.html.php') ?>
 

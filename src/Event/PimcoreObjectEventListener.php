@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Event;
@@ -35,7 +39,6 @@ class PimcoreObjectEventListener
 
     public function onPreUpdate(ElementEventInterface $e)
     {
-
         if (!$e instanceof DataObjectEvent) {
             return;
         }
@@ -44,7 +47,7 @@ class PimcoreObjectEventListener
 
         if ($object instanceof CustomerInterface) {
             $this->customerSaveManager->preUpdate($object);
-        } elseif($object instanceof CustomerSegmentInterface) {
+        } elseif ($object instanceof CustomerSegmentInterface) {
             \Pimcore::getContainer()->get(SegmentManagerInterface::class)->preSegmentUpdate($object);
         }
     }
