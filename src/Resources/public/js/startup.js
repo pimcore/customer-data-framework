@@ -144,7 +144,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
             return;
         }
 
-        if (object.data.general.o_className === pimcore.settings.cmf && pimcore.globalmanager.get("user").isAllowed(ActivityView.config.PERMISSION)) {
+        if (object.data.general.o_className === pimcore.settings.cmf.customerClassName && pimcore.globalmanager.get("user").isAllowed(ActivityView.config.PERMISSION)) {
             var panel = new ActivityView.ActivityTab(object, type).getPanel();
 
             object.tab.items.items[1].insert(1, panel);
