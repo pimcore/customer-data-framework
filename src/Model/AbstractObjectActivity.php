@@ -75,13 +75,13 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\DataObject\Concrete
 
     public static function cmfCreate(array $data, $fromWebservice = false)
     {
+        $object = null;
         if (!empty($data['o_id'])) {
             $object = self::getById($data['o_id']);
 
-            if (!$object) {
-                throw new \Exception(sprintf('object with o_id %s not found', $data['o_id']));
-            }
-        } else {
+        }
+
+        if(is_null($object)) {
             $object = new static;
         }
 
