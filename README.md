@@ -33,8 +33,8 @@ have a look at our [case studies](https://pimcore.com/en/customers).
 
 Following aspects are short cuts into the documentation for start working with the Customer Management Framework (CMF): 
 
-* [Architecture Overview](./doc/Architecture-Overview.md)
-* Installation and Configuration
+* [Architecture Overview](./doc/01_Architecture-Overview.md)
+* [Installation](./doc/02_Installation.md) and [Configuration](./doc/Configuration.md)
 * [Working with Customers](./doc/Working-with-Customers.md)
 * [Working with Activities (ActivityManager, ActivityStore, ActivityView)](./doc/Activities.md)
 * [Working with Customer Segments](./doc/CustomerSegments.md)
