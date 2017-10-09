@@ -17,6 +17,7 @@ namespace CustomerManagementFrameworkBundle;
 
 use Pimcore\Extension\Bundle\Installer\AbstractInstaller;
 use Pimcore\Logger;
+use Pimcore\Model\Object\Objectbrick\Definition;
 
 class Installer extends AbstractInstaller
 {
@@ -25,12 +26,14 @@ class Installer extends AbstractInstaller
         $this->installPermissions();
         $this->installDatabaseTables();
         $this->installClasses();
+        $this->installBricks();
 
         return true;
     }
 
     public function isInstalled()
     {
+
         $result = \Pimcore\Db::get()->fetchAll('SHOW TABLES LIKE "plugin_cmf_segment_assignment"');
 
         return !empty($result);
@@ -230,7 +233,7 @@ class Installer extends AbstractInstaller
         }
     }
 
-    public static function installClasses()
+    public function installClasses()
     {
         $sourcePath = __DIR__.'/../install/class_source';
 
@@ -245,6 +248,14 @@ class Installer extends AbstractInstaller
         self::installClass('LinkActivityDefinition', $sourcePath.'/class_LinkActivityDefinition_export.json');
     }
 
+    public function installBricks()
+    {
+        $sourcePath = __DIR__.'/../install/objectbrick_source';
+
+        self::installBrick('OAuth1Token', $sourcePath.'/objectbrick_OAuth1Token_export.json');
+        self::installBrick('OAuth2Token', $sourcePath.'/objectbrick_OAuth2Token_export.json');
+    }
+
     public static function installClass($classname, $filepath)
     {
         $class = \Pimcore\Model\DataObject\ClassDefinition::getByName($classname);
@@ -252,12 +263,34 @@ class Installer extends AbstractInstaller
             $class = new \Pimcore\Model\DataObject\ClassDefinition();
             $class->setName($classname);
             $class->setGroup('CustomerManagement');
-        }
-        $json = file_get_contents($filepath);
 
-        $success = \Pimcore\Model\DataObject\ClassDefinition\Service::importClassDefinitionFromJson($class, $json);
-        if (!$success) {
-            Logger::err("Could not import $classname Class.");
+            $json = file_get_contents($filepath);
+
+            $success = \Pimcore\Model\DataObject\ClassDefinition\Service::importClassDefinitionFromJson($class, $json);
+            if (!$success) {
+                Logger::err("Could not import $classname Class.");
+            }
+        }
+    }
+
+    public static function installBrick($brickKey, $filepath)
+    {
+        try {
+            $brick = \Pimcore\Model\DataObject\Objectbrick\Definition::getByKey($brickKey);
+        } catch (\Exception $e) {
+            $brick = null;
+        }
+
+        if (!$brick) {
+            $brick = new \Pimcore\Model\DataObject\Objectbrick\Definition;
+            $brick->setKey($brickKey);
+
+            $json = file_get_contents($filepath);
+
+            $success = \Pimcore\Model\DataObject\ClassDefinition\Service::importObjectBrickFromJson($brick, $json);
+            if (!$success) {
+                Logger::err("Could not import $brickKey brick.");
+            }
         }
     }
 }
