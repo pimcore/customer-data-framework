@@ -35,7 +35,7 @@ Following aspects are short cuts into the documentation for start working with t
 
 * [Architecture Overview](./doc/01_Architecture-Overview.md)
 * [Installation](./doc/02_Installation.md) and [Configuration](./doc/03_Configuration.md)
-* [Working with Customers](./doc/Working-with-Customers.md)
+* [Working with Customers](./doc/05_Working-with-Customers.md)
 * [Working with Activities (ActivityManager, ActivityStore, ActivityView)](./doc/Activities.md)
 * [Working with Customer Segments](./doc/CustomerSegments.md)
 * [Customer Duplicates Service](./doc/CustomerDuplicatesService.md)

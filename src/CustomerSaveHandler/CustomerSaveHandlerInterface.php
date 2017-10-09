@@ -21,7 +21,7 @@ interface CustomerSaveHandlerInterface
 {
     /**
      * If this returns true, the CustomerSaveHandler is provided with an original instance of the customer how it looks like in the database.
-     * This could be useful i.e. to compare if a field has changed. If the original customer is not needed this should return false to improve performance.
+     * This could be useful e.g. to compare if a field has changed. If the original customer is not needed this should return false to improve performance.
      *
      * @return bool
      */
@@ -35,7 +35,7 @@ interface CustomerSaveHandlerInterface
     public function getOriginalCustomer();
 
     /**
-     * setter for the originalCustomer property
+     * Setter for the originalCustomer property
      *
      * @param CustomerInterface $originalCustomer
      *
@@ -44,7 +44,7 @@ interface CustomerSaveHandlerInterface
     public function setOriginalCustomer(CustomerInterface $originalCustomer);
 
     /**
-     * called in preAdd and preUpdate hook of customer objects
+     * Called in preAdd and preUpdate hook of customer objects
      *
      * @param CustomerInterface $customer
      *
@@ -53,7 +53,7 @@ interface CustomerSaveHandlerInterface
     public function preSave(CustomerInterface $customer);
 
     /**
-     * called in postAdd and postUpdate hook of customer objects
+     * Called in postAdd and postUpdate hook of customer objects
      *
      * @param CustomerInterface $customer
      *
@@ -62,7 +62,7 @@ interface CustomerSaveHandlerInterface
     public function postSave(CustomerInterface $customer);
 
     /**
-     * called in preAdd hook of customer objects
+     * Called in preAdd hook of customer objects
      *
      * @param CustomerInterface $customer
      *
@@ -71,7 +71,7 @@ interface CustomerSaveHandlerInterface
     public function preAdd(CustomerInterface $customer);
 
     /**
-     * called in postAdd hook of customer objects
+     * Called in postAdd hook of customer objects
      *
      * @param CustomerInterface $customer
      *
@@ -80,7 +80,7 @@ interface CustomerSaveHandlerInterface
     public function postAdd(CustomerInterface $customer);
 
     /**
-     * called in preUpdate hook of customer objects
+     * Called in preUpdate hook of customer objects
      *
      * @param CustomerInterface $customer
      *
@@ -89,7 +89,7 @@ interface CustomerSaveHandlerInterface
     public function preUpdate(CustomerInterface $customer);
 
     /**
-     * called in postUpdate hook of customer objects
+     * Called in postUpdate hook of customer objects
      *
      * @param CustomerInterface $customer
      *
@@ -98,7 +98,7 @@ interface CustomerSaveHandlerInterface
     public function postUpdate(CustomerInterface $customer);
 
     /**
-     * called in preDelete hook of customer objects
+     * Called in preDelete hook of customer objects
      *
      * @param CustomerInterface $customer
      *
@@ -107,7 +107,7 @@ interface CustomerSaveHandlerInterface
     public function preDelete(CustomerInterface $customer);
 
     /**
-     * called in postDelete hook of customer objects
+     * Called in postDelete hook of customer objects
      *
      * @param CustomerInterface $customer
      *
