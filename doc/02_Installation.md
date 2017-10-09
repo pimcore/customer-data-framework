@@ -70,8 +70,21 @@ Following options to prepare the customer class are available:
   * `ssoIdentities`: objects relation to `SsoIdentity`
  
  
-* Minimal Requirements (not suggested): If you want to be complete independent, you just need to make sure the Customer 
-  Class somehow implements the interface `CustomerManagementFrameworkBundle\Model\CustomerInterface`
+* Minimal Requirements (not suggested): If you want to be complete independent from any base classes, you just need to 
+  make sure the customer class somehow implements the interface `CustomerManagementFrameworkBundle\Model\CustomerInterface`
 
  
 Of course your customer class can have additional attributes as needed.   
+
+
+## Configuration
+
+The CMF ships with an default configuration for basic functionality. To start up, no additional configuration should be 
+needed. To activate additional or customize existing functionality, please have a look at the 
+[configuration chapter](03_Configuration.md).  
+
+
+## (Optional) Prerequisites for SSO
+
+If SSO functionality of CMF should be integrated, please follow the steps for [Integration of Single Sign On](./Single_Sign_On.md). 
+
