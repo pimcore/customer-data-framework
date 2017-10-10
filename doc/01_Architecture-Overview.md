@@ -8,11 +8,11 @@ configured and used.
 
 For Details for the components see additional documentation pages like: 
 
-* Data Entities for [Customer](./05_Working-with-Customers.md) and [Customer Segments](./CustomerSegments.md)
-* [Activity Manager](./Activities.md)
-* [Customer Duplicates Service](./CustomerDuplicatesService.md)
-* [Segment Manager](./CustomerSegments.md)
-* [Customer Save Manager](./CustomerSaveManager.md)
+* Data Entities for [Customer](./05_Working-with-Customers.md) and [Customer Segments](./11_CustomerSegments.md)
+* [Activity Manager](./09_Activities.md)
+* [Customer Duplicates Service](./15_CustomerDuplicatesService.md)
+* [Segment Manager](./11_CustomerSegments.md)
+* [Customer Save Manager](./06_CustomerSaveManager.md)
 * [Rest API Webservice](./Webservice.md)
 * [Action Trigger Service](./ActionTrigger.md)
 * [List Views](./ListViews.md)

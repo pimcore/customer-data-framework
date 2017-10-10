@@ -155,22 +155,24 @@ it's a false positive.
 custom threshold which will be handed over to the SimilarityMatcher.
 
 
-### console command
+### Console Command
+
+Following console command is available to calculate and update the duplicates index. If needed, it should be configured
+as [CronJob](./04_Cronjobs.md).
 
 ```
 php pimcore/cli/console.php cmf:duplicates-index
 ```
 
-#### options:
-
--c - calculate potential duplicates. This needs to run as cron job for example once a day.
-
--a - analyse false positives. If set false positives will be logged (by default in the plugin_cmf_duplicates_false_positives table).
-
--r - reacreate index. Recreate the total index for all customers.
-
+**Options:**
+- `-c` - Calculate potential duplicates. This needs to run as cron job for example once a day.
+- `-a` - Analyse false positives. If set false positives will be logged (by default in the plugin_cmf_duplicates_false_positives table).
+- `-r` - Recreate index. Recreate the total index for all customers.
 
 
 ## Part 3 - Duplicates View
+The duplicates view is the frontend for manually checking, merging or declining potential duplicates found based on the
+duplicates index. 
+It gets populated when the console commands of the duplicates index are executed and its usage should be quite self explaining. 
 
- ![DuplicatesView](./img/DuplicatesView.png)
+![DuplicatesView](./img/DuplicatesView.png)
