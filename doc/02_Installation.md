@@ -86,6 +86,10 @@ The CMF ships with an default configuration for basic functionality. To start up
 needed. To activate additional or customize existing functionality, please have a look at the 
 [configuration chapter](03_Configuration.md).  
 
+## Setting Up necessary cron jobs
+There are several cron jobs needed by the CMF. These need to be configured and setup based on the solution requirements. 
+See [CronJob Docs](./04_Cronjobs.md) for details. 
+
 
 ## (Optional) Prerequisites for SSO
 

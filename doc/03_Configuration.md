@@ -289,7 +289,7 @@ pimcore_customer_management_framework:
                 - email:
                   metaphone: true
                   similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
-                  similarityTreshold: 90
+                  similarityThreshold: 90
     
             dataTransformers:
               street: \CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Street

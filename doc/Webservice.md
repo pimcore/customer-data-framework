@@ -17,7 +17,7 @@ The customers API implements standard REST calls for customer CRUD actions:
 | /webservice/cmf/customers/{id} | PATCH  | Partially update a customer |
 | /webservice/cmf/customers/{id} | DELETE | Delete a customer           |
 
-The `GET` requests can be filtered by passing the follwing params as query params:
+The `GET` requests can be filtered by passing the following params as query params:
 
 | Parameter             | Possible Values               | Description                                                 |
 | --------------------- |-----------------------------  |-----------------------------------------------------------  |

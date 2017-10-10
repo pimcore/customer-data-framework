@@ -1,2 +1,2 @@
-# Newsletter/Mailchimp Sync
+# Newsletter/MailChimp Sync
 

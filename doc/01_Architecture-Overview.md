@@ -8,7 +8,7 @@ configured and used.
 
 For Details for the components see additional documentation pages like: 
 
-* Data Entities for [Customer](./Working-with-Customers.md) and [Customer Segments](./CustomerSegments.md)
+* Data Entities for [Customer](./05_Working-with-Customers.md) and [Customer Segments](./CustomerSegments.md)
 * [Activity Manager](./Activities.md)
 * [Customer Duplicates Service](./CustomerDuplicatesService.md)
 * [Segment Manager](./CustomerSegments.md)

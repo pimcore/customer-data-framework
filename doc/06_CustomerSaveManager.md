@@ -77,7 +77,6 @@ There are two customer folders which can be configured. `parentPath` is the regu
 will be applied for customers which are unpublished and inactive.
 
 
-
 ## Customer Save Validator
 If enabled the customer save validator will throw exceptions when the customer is invalid according to it's implementation. 
 These exception can be used in try/catch blocks in order to check if the customer is valid. In the Pimcore backend an 
