@@ -1,7 +1,7 @@
 # Customer Duplicates Service
 
 The CMF ships with a Customer Duplicates Service which helps to find, merge and avoid duplicate entries. It consists of 
-two major parts:
+three major parts:
  - Part 1 - Mechanisms for Searching Duplicates of a given Customer
  - Part 2 - Duplicates Index 
  - Part 3 - Duplicates View
