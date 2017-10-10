@@ -140,16 +140,12 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
     },
 
     postOpenObject: function (object, type) {
-        if ("object" !== type) {
-            return;
-        }
-
-        if (object.data.general.o_className === pimcore.settings.cmf.customerClassName && pimcore.globalmanager.get("user").isAllowed(ActivityView.config.PERMISSION)) {
+        if ("object" === type && object.data.general.o_className === pimcore.settings.cmf.customerClassName && pimcore.globalmanager.get("user").isAllowed(ActivityView.config.PERMISSION)) {
             var panel = new ActivityView.ActivityTab(object, type).getPanel();
 
             object.tab.items.items[1].insert(1, panel);
             panel.updateLayout();
-        } else if (object.data.general.o_className === "CustomerSegment" && pimcore.globalmanager.get("user").isAllowed(CustomerView.config.PERMISSION)) {
+        } else if ("object" === type && object.data.general.o_className === "CustomerSegment" && pimcore.globalmanager.get("user").isAllowed(CustomerView.config.PERMISSION)) {
             var panel = new CustomerView.CustomerTab(object, type).getPanel();
 
             object.tab.items.items[1].insert(1, panel);
@@ -218,7 +214,6 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
     postOpenDocument: function (document, type) {
 
         if (pimcore.settings.cmf.newsletterSyncEnabled && type === 'email') {
-
             document.tab.items.items[0].add({
                 text: t('plugin_cmf_newsletter_export_template'),
                 iconCls: 'plugin_cmf_icon_export_action',
@@ -258,7 +253,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
     addSegmentAssignmentTab: function (element, type, subType) {
         var addTab = Boolean(pimcore.settings.cmf.segmentAssignment[type][subType]);
 
-        if('object' === type) {
+        if('object' === type && 'folder' !== subType) {
             addTab &= pimcore.settings.cmf.segmentAssignment[type][subType][element.data.general.o_className];
         }
 
