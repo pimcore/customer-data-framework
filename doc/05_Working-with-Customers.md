@@ -16,6 +16,7 @@ As a result, working with customers is pretty much like working with Pimcore dat
     - Customer Save Handlers
     - Automatic Object Naming Scheme
     - Customer Save Validator 
+    - Save Customer with Disabled Hooks
   
   For Details see [Customer Save Manager Chapter](./06_CustomerSaveManager.md) of the docs. 
 

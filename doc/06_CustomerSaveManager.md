@@ -7,16 +7,16 @@ It consists of several parts:
 
 Customer save handlers special PHP classes that are executed when a customer gets saved and can be used to normalize, 
 validate, optimize or modify customers on save.
- 
-It's possible to add multiple customer save handlers to one project. Take a look at the 
+
+Customer save handlers need to be registered as symfony services with the tag `"cmf.customer_save_handler"`. 
+So it is possible to add multiple customer save handlers to one project. Take a look at the 
 [`CustomerSaveHandlerInterface`](https://github.com/pimcore/customer-data-framework/blob/master/src/CustomerSaveHandler/CustomerSaveHandlerInterface.php) 
-to find out how they can be implemented. The interface consists of methods for each Pimcore object event (`preAdd`, 
+for how to implement them. The interface consists of methods for each Pimcore object event (`preAdd`, 
 `postAdd`, `preUpdate` etc.). 
 
-Additionally it is possible to get the original customer object from the database. This could be useful if you would like 
-to compare if some fields got changed.
+Additionally it is possible to get the original customer object from the database. This is handy to compare if some fields 
+got changed.
 
-Customer save handlers need to be registered as symfony services with the tag `"cmf.customer_save_handler"`.
 
 ###### Example service definition
 ```yaml
@@ -45,7 +45,7 @@ It would be possible to extend the logic for other countries.
 Maps a salutation field to a gender field. This can automatically adjust the gender based on the salutation.
 
 #### RemoveBlacklistedEmails
-Sets the email field to a empty value if the given email address is in a defined blacklist. 
+Sets the email field to an empty value if the given email address is in a defined blacklist. 
 
 #### MarkEmailAddressAsValid
 Marks an email address as valid if it has a valid format. Marking as valid means that a special checkbox get checked. 
@@ -54,7 +54,7 @@ Marks an email address as valid if it has a valid format. Marking as valid means
 
 ## Automatic Object Naming Scheme
 The CMF automatically applies a naming scheme for customer objects depending on a configured logic. This automatic naming 
-scheme could be disabled if not needed.
+scheme can be disabled if not needed.
  
 ###### Example configuration
 ```yaml
@@ -68,19 +68,19 @@ pimcore_customer_management_framework:
        namingScheme: '{countryCode}/{zip}/{firstname}-{lastname}'
 ```
 
-If the CMF is configured like this example all customer objects would be automatically saved within the folder `/customers` 
+If the CMF is configured like this example, all customer objects would be automatically saved within the folder `/customers` 
 as sub folders starting with the `countryCode` of the customer object then the `zip` code as second level and the customer 
-object itself would get a object key with `{firstname}-{lastname}`. The CMF automatically would add some postfixes if a 
+object itself would get a object key with `{firstname}-{lastname}`. The CMF automatically will add some postfixes if a 
 customer object with the same key exists in the folder hierarchy.
  
-There are two customer folders which could be configured. `parentPath` is the regular customer folder and `archiveDir` 
+There are two customer folders which can be configured. `parentPath` is the regular customer folder and `archiveDir` 
 will be applied for customers which are unpublished and inactive.
 
 
 
 ## Customer Save Validator
 If enabled the customer save validator will throw exceptions when the customer is invalid according to it's implementation. 
-These exception could be used in try/catch blocks in order to check if the customer is valid. In the Pimcore backend an 
+These exception can be used in try/catch blocks in order to check if the customer is valid. In the Pimcore backend an 
 error message will alert if somebody tries to save an invalid customer.
 
 ###### Example configuration
@@ -99,7 +99,7 @@ pimcore_customer_management_framework:
             - [firstname, lastname, zip, street]
 ```
 
-In this example a customer will be validated on save by 2 different ways. 
+In this example a customer will be validated during save by 2 different ways. 
 1) First it would be checked if either the `email address` or the field combination `firstname+name+zip` is filled up. 
   It's possible to define 1 to x field combinations here.
 2) Second the CMF also searches for duplicate customers and declines saving the customer if duplicates exist. Here again 
@@ -114,10 +114,11 @@ segment builders.
 
 The CMF offers a special `SaveOptions` class to handle the enabled state of all hooks when a customer gets saved.
 
-**Caution: only disable parts of the save options if you are sure that it's needed!**
+> **Caution: only disable parts of the save options if you are sure that it is needed!**
 
 ###### Examples
 ```php
+<?php
     $customer = Customer::getById(1234);
 
     // Disable all hooks and also Pimcore versioning.
@@ -126,18 +127,18 @@ The CMF offers a special `SaveOptions` class to handle the enabled state of all 
     // Disable all hooks but enable Pimcore versioning.
     $customer->saveDirty(true);
 
-    // globally disable on save segment building and also the segment builder queue
+    // Globally disable on save segment building and also the segment builder queue
     $customer->getSaveManager()->getSaveOptions()
         ->disableOnSaveSegmentBuilders()
         ->disableSegmentBuilderQueue();
 
-    // save customer with disabled object naming scheme but let the global state untouched
-    // (getSaveOptions(true) will deliver a cloned instance of the save options)
+    // Save customer with disabled object naming scheme but let the global state untouched
+    // (`getSaveOptions(true)` will deliver a cloned instance of the save options)
     $saveOptions = $customer->getSaveManager()->getSaveOptions(true)
                         ->disableObjectNamingScheme();
     $customer->saveWithOptions($saveOptions);
 
-    // save customer with enabled object naming scheme even if it is disabled by default in the config
+    // Save customer with enabled object naming scheme even if it is disabled by default in the config
     $saveOptions = $customer->getSaveManager()->getSaveOptions(true)
                         ->enableObjectNamingScheme();
     $customer->saveWithOptions($saveOptions);
