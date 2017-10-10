@@ -73,9 +73,12 @@ Following options to prepare the customer class are available:
 * Minimal Requirements (not suggested): If you want to be complete independent from any base classes, you just need to 
   make sure the customer class somehow implements the interface `CustomerManagementFrameworkBundle\Model\CustomerInterface`
 
- 
-Of course your customer class can have additional attributes as needed.   
-
+> It is recommended to use `Customer` as name for the customer class. But it is also possible to use any other name. 
+> In this case, the configuration `general.customerPimcoreClass` for the customer class name has to be adapted. For details
+> see [Configuration chapter](./03_Configuration.md). 
+      
+Of course your customer class can have additional attributes as needed.
+   
 
 ## Configuration
 
