@@ -36,7 +36,7 @@ shown in the potential duplicates list view.
 ```
 
 ### CMF Maintenance
-This crontjob should be configured to be executed on a regular basis. It performs various tasks configured in `services.yml` 
+This crontob should be configured to be executed on a regular basis. It performs various tasks configured in `services.yml` 
  and tagged with `cmf.maintenance.serviceCalls`.  
 
 ```
