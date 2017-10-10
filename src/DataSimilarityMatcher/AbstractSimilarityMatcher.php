@@ -17,14 +17,14 @@ namespace CustomerManagementFrameworkBundle\DataSimilarityMatcher;
 
 abstract class AbstractSimilarityMatcher implements DataSimilarityMatcherInterface
 {
-    protected $defaultTreshold = 90;
+    protected $defaultThreshold = 90;
 
-    public function isSimilar($value1, $value2, $treshold = null)
+    public function isSimilar($value1, $value2, $threshold = null)
     {
         $similarity = $this->calculateSimilarity($value1, $value2);
 
-        $treshold = is_int($treshold) ? $treshold : $this->defaultTreshold;
+        $threshold = is_int($threshold) ? $threshold : $this->defaultThreshold;
 
-        return $similarity >= $treshold;
+        return $similarity >= $threshold;
     }
 }

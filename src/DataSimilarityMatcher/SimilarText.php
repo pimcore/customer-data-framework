@@ -17,7 +17,7 @@ namespace CustomerManagementFrameworkBundle\DataSimilarityMatcher;
 
 class SimilarText extends AbstractSimilarityMatcher
 {
-    protected $defaultTreshold = 80;
+    protected $defaultThreshold = 80;
 
     public function calculateSimilarity($value1, $value2)
     {

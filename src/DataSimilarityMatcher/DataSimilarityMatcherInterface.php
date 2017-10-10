@@ -28,9 +28,9 @@ interface DataSimilarityMatcherInterface
     /**
      * @param $value1
      * @param $value2
-     * @param int $treshold
+     * @param int $threshold
      *
      * @return bool
      */
-    public function isSimilar($value1, $value2, $treshold = null);
+    public function isSimilar($value1, $value2, $threshold = null);
 }

@@ -396,7 +396,7 @@ class Configuration implements ConfigurationInterface
                                         ->booleanNode('soundex')->defaultFalse()->end()
                                         ->booleanNode('metaphone')->defaultFalse()->end()
                                         ->scalarNode('similarity')->defaultValue('\CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText')->end()
-                                        ->scalarNode('similarityTreshold')->defaultNull()->end()
+                                        ->scalarNode('similarityThreshold')->defaultNull()->end()
                                     ->end()
                                 ->end()
                             ->end()

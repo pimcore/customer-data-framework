@@ -562,9 +562,9 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
                 $dataRow1 = json_decode($row1['duplicateData'], true);
                 $dataRow2 = json_decode($row2['duplicateData'], true);
 
-                $treshold = isset($options['similarityTreshold']) ? $options['similarityTreshold'] : null;
+                $threshold = isset($options['similarityThreshold']) ? $options['similarityThreshold'] : null;
 
-                if (!$similarityMatcher->isSimilar($dataRow1[$field], $dataRow2[$field], $treshold)) {
+                if (!$similarityMatcher->isSimilar($dataRow1[$field], $dataRow2[$field], $threshold)) {
                     return false;
                 }
             }

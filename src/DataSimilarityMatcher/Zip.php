@@ -17,5 +17,5 @@ namespace CustomerManagementFrameworkBundle\DataSimilarityMatcher;
 
 class Zip extends SimilarText
 {
-    protected $defaultTreshold = 60;
+    protected $defaultThreshold = 60;
 }

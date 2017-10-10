@@ -17,7 +17,7 @@ namespace CustomerManagementFrameworkBundle\DataSimilarityMatcher;
 
 class BirthDate extends AbstractSimilarityMatcher
 {
-    protected $defaultTreshold = 50;
+    protected $defaultThreshold = 50;
 
     /**
      * @param int $value1
