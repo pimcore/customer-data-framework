@@ -5,7 +5,7 @@
 			"fieldname":"credentials"
 		}
 	],
-	"parentClass":"CustomerManagementFramework\\Model\\Objectbrick\\AbstractOAuth2Token",
+	"parentClass":"CustomerManagementFrameworkBundle\\Model\\Objectbrick\\AbstractOAuth2Token",
 	"layoutDefinitions":{
 		"fieldtype":"panel",
 		"labelWidth":100,
