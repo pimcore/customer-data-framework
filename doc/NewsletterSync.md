@@ -36,9 +36,9 @@ Add a checkbox called `exportNewsletterProvider{PROVIDER_HANDLER_SHORTCUT}` for 
 
 ### Newsletter Queue
 
-Exporting customer data to Mailchimp is handled asynchronously. This means that every time when a customer get's saved it will be added to the newsletter queue (represented by a database table).
+Exporting customer data to Mailchimp is handled asynchronously. This means that each time when a customer get's saved it will be added to the newsletter queue (represented by a database table).
 
-A cronjob in the background which should run every few minutes then processes the queue items and if they could be successfully processed they will be removed from the queue. 
+A cronjob in the background which should run every few minutes then processes the queue items. If they could be successfully processed they will be removed from the queue. 
 If the sync currently does not work they stay in the queue and will be executed later. See also [CronJobs](04_Cronjobs.md).
 
 
@@ -80,3 +80,10 @@ As soon as the newsletter sync is enabled a "Export Template to MailChimp" butto
 ![Webhook options](./img/mailchimp/mailchimp-export-template.png)
 
 With this it's possible to create the newsletter within Pimcore and then use it for emailing campaigns within mailchimp.
+
+## Logging
+
+The CMF logs Mailchimp sync related changes on three different levels:
+- Customer activities are tracked on each Mailchimp status change
+- In the notes and events tab of the customer a list of successfull exports will be shown.
+- Errors are logged into the application logger.  
