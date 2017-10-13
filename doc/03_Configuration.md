@@ -26,7 +26,7 @@ services:
          tags: [cmf.segment_builder]
 
 
-    # example newsletter provider handler (mailchimp sync) config
+    # example newsletter provider handler (mailchimp sync) config for one Mailchimp receiver list
     appbundle.cmf.mailchimp.birthdate-transformer:
           class: CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\DataTransformer\Date
           arguments:
@@ -37,25 +37,38 @@ services:
         class: CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp
         autowire: true
         arguments:
+            # Shortcut of the handler/list for internal use
             - list1
-            - 1ea29442a8
+            
+            # List ID within Mailchimp
+            - ls938393f
+            
+            # Mapping of Pimcore status field => Mailchimp status
             - manuallySubscribed: subscribed
               singleOptIn: subscribed
               doubleOptIn: subscribed
               unsubscribed: unsubscribed
               pending: pending
+              
+            # Reverse mapping of Mailchimp status => Pimcore status field
             - subscribed: doubleOptIn
               unsubscribed: unsubscribed
               pending: pending
 
+            # Mapping of Pimcore data object attributes => Mailchimp merge fields
             - firstname: FNAME
               lastname: LNAME
               street: STREET
               birthDate: BIRTHDATE
 
+            # Special data transfromer for the birthDate field. This ensures that the correct data format will be used.
             - birthDate: '@appbundle.cmf.mailchimp.birthdate-transformer'
 
         tags: [cmf.newsletter_provider_handler]
+        
+        
+    # example mailchimp newsletter provider handler for one Mailchimp export list
+    
 ```        
 
 
@@ -74,6 +87,18 @@ pimcore_customer_management_framework:
     general:
         customerPimcoreClass: Customer
         mailBlackListFile:    /home/customerdataframework/www/var/config/cmf/mail-blacklist.txt
+
+    
+    # Newsletter/Mailchimp sync related settings
+    newsletter:
+        newsletterSyncEnabled: true
+        
+        # Immidiate execution of customer data export on customer save.
+        newsletterQueueImmidiateAsyncExecutionEnabled: true
+
+        mailchimp:
+          apiKey: d1a40ajzf41d5154455a9455cc7b71b9-us14
+          cliUpdatesPimcoreUserName: mailchimp-cli
 
     # Configuration of EncryptionService
     encryption:
