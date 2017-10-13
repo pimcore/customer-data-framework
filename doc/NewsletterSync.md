@@ -2,7 +2,7 @@
 
 The CMF offers built-in support for synchronizing customer data with Mailchimp. 
 
-> Other newsletter systems could be integrated too by implementing the ´NewsletterProviderHandlerInterface´.
+> Other newsletter systems could be integrated too by implementing the `NewsletterProviderHandlerInterface`.
 
 ## Configuration
 
@@ -34,7 +34,7 @@ If the Mailchimp sync feature is enabled the Customer data object class needs to
 
 This interface offers one method: 
 
-`needsExportByNewsletterProviderHandler(NewsletterProviderHandlerInterface $newsletterProviderHandler)`. 
+`needsExportByNewsletterProviderHandler(NewsletterProviderHandlerInterface $newsletterProviderHandler)`
 
 
 This method could be used to decide if a customer needs to be exported to a given Mailchimp list (most time you will do this by the configured shortcut of the Mailchimp provider handler). With this mechanism it's possible to create different lists with different customers based on some kind of rules. 
