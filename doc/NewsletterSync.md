@@ -16,6 +16,7 @@ See [Configuration](03_Configuration.md) for an example configuration of such a 
 ### Customer
 
 It's needed to add a `newslettStatus` and `mailchimpStatus` field into the customer class (for each Mailchimp list):  
+
 ![Customer newsletter status](./img/mailchimp/customer-newsletter-status.png)
 
 The fields need to be named with the shortcut of the associated provider handler as a suffix (e.g. `newsletterStatusList1` and `mailchimpStatusList1`). 

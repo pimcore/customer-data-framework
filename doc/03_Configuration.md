@@ -61,13 +61,12 @@ services:
               street: STREET
               birthDate: BIRTHDATE
 
-            # Special data transfromer for the birthDate field. This ensures that the correct data format will be used.
+            # Special data transfromer for the birthDate field. 
+            # This ensures that the correct data format will be used.
             - birthDate: '@appbundle.cmf.mailchimp.birthdate-transformer'
 
         tags: [cmf.newsletter_provider_handler]
         
-        
-    # example mailchimp newsletter provider handler for one Mailchimp export list
     
 ```        
 
