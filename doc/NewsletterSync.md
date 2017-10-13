@@ -30,7 +30,12 @@ The mailchimp status needs to be a read only field with the following options:
 - cleaned
 
 
-If the Mailchimp sync feature is enabled the Customer data object class needs to implement the `MailchimpAwareCustomerInterface`. This interface offers one method: `needsExportByNewsletterProviderHandler(NewsletterProviderHandlerInterface $newsletterProviderHandler)`. This method could be used to decide if a customer needs to be exported to a given Mailchimp list (most time you will do this by the configured shortcut of the Mailchimp provider handler). With this mechanism it's possible to create different lists with different customers based on some kind of rules. 
+If the Mailchimp sync feature is enabled the Customer data object class needs to implement the `MailchimpAwareCustomerInterface`. 
+
+This interface offers one method: 
+`needsExportByNewsletterProviderHandler(NewsletterProviderHandlerInterface $newsletterProviderHandler)`. 
+
+This method could be used to decide if a customer needs to be exported to a given Mailchimp list (most time you will do this by the configured shortcut of the Mailchimp provider handler). With this mechanism it's possible to create different lists with different customers based on some kind of rules. 
 
 ### CustomerSegmentGroup
 Add a checkbox called `exportNewsletterProvider{PROVIDER_HANDLER_SHORTCUT}` for each list to the CustomerSegmentGroup class. See below for more details.
