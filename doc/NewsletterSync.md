@@ -33,6 +33,7 @@ The mailchimp status needs to be a read only field with the following options:
 If the Mailchimp sync feature is enabled the Customer data object class needs to implement the `MailchimpAwareCustomerInterface`. 
 
 This interface offers one method: 
+
 `needsExportByNewsletterProviderHandler(NewsletterProviderHandlerInterface $newsletterProviderHandler)`. 
 
 
