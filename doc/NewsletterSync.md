@@ -8,7 +8,7 @@ The CMF offers built-in support for synchronizing customer data with Mailchimp.
 
 The CMF can handle multiple Mailchimp lists. Each list is one separate symfony service tagged with `cmf.newsletter_provider_handler`. 
 
-See [Configuration](Configuration.md) for an example configuration of such a service and for a list of general newsletter related settings.
+See [Configuration](03_Configuration.md) for an example configuration of such a service and for a list of general newsletter related settings.
 
 
 ## Prepare data objects for Mailchimp sync
@@ -43,7 +43,7 @@ If the sync currently does not work they stay in the queue and will be executed 
 
 ##### Immediate execution of export on customer save
 
-Allthough the export is handled asynchronously it is possible to enable that a queue entry will be processed immediately after a customer get's saved. But this will still run as background task. The queue will be only triggered asynchronously for exactly the saved customer. If the export is not successful the entry will stay in the queue. The config option for this behaviour is called `newsletterQueueImmidiateAsyncExecutionEnabled` (see [Configuration](Configuration.md)).
+Allthough the export is handled asynchronously it is possible to enable that a queue entry will be processed immediately after a customer get's saved. But this will still run as background task. The queue will be only triggered asynchronously for exactly the saved customer. If the export is not successful the entry will stay in the queue. The config option for this behaviour is called `newsletterQueueImmidiateAsyncExecutionEnabled` (see [Configuration](03_Configuration.md)).
 
 ### Webhook
 
