@@ -6,7 +6,8 @@ The CMF can be used to store all these customer related activity data and use it
 information for the customer service team.
 
 
-Activities in the CMF are stored all together in a generic json store called ActivityStore - by default aMariaDB table (`plugin_cmf_activities`). 
+Activities in the CMF are stored all together in a generic json store called ActivityStore - by default a 
+MariaDB table (`plugin_cmf_activities`). 
 
 
 ## Using Pimcore Data Objects and other Data Entities as Activities
@@ -15,7 +16,7 @@ Additionally to the generic activity store, it's possible to use Pimcore data ob
 activities too. They just need to implement the 
 [`ActivityInterface`](https://github.com/pimcore/customer-data-framework/blob/master/src/Model/ActivityInterface.php) 
 (for Pimcore data objects extend the 
-[`AbstractActivity`](https://github.com/pimcore/customer-data-framework/blob/master/src/Model/AbstractActivity.php) class).
+[`AbstractObjectActivity`](https://github.com/pimcore/customer-data-framework/blob/master/src/Model/AbstractObjectActivity.php) class).
 
 Although these activities have their own data persistence they are additionally stored in the generic ActivityStore. 
 The idea is that the ActivityStore saves all activities in a standardized way and represents a history of all customer 
@@ -40,6 +41,10 @@ a nested, associative array of data which is only saved in the ActivityStore.
 
 But this doesn't mean that only this `GenericActivity` implementation can be used for activities without it's own 
 persistence. It definitely makes sense to implement a separate activity class to track logins for example.
+
+How to do so, just have a look at implementations like 
+[MailchimpStatusChangeActivity](https://github.com/pimcore/customer-data-framework/blob/master/src/Model/Activity/MailchimpStatusChangeActivity.php)
+or [TrackedUrlActivity](https://github.com/pimcore/customer-data-framework/blob/master/src/Model/Activity/TrackedUrlActivity.php). 
 
 
 ## ActivityStore

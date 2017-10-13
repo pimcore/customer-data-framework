@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * Utility class supporting registration process from OAuth responses. This is mostly a facade pipipng
+ * Utility class supporting registration process from OAuth responses. This is mostly a facade piping
  * requests to other services.
  */
 class OAuthRegistrationHandler

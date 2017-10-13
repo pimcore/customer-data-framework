@@ -16,5 +16,5 @@ For Details for the components see additional documentation pages like:
 * [Rest API Webservice](./Webservice.md)
 * [Action Trigger Service](./ActionTrigger.md)
 * [List Views](./ListViews.md)
-* [SSO and Social Logins](./Single_Sign_On.md)
+* [SSO and Social Logins](./18_Single_Sign_On.md)
 * [MailChimp Integration](./NewsletterSync.md)
