@@ -53,7 +53,7 @@ Processes the newsletter queue. This job should run once every x minutes (e.g. e
 
 ### Mailchimp status sync
 Should run as a night job. Synchronizes status updates from Mailchimp to Pimcore if webhook calls failed. This is important to ensure data integrity also when the system is down for several hours.
-Setup a Pimcore user name (e.g. mailchimp-cli) in the CMF config - this user will be visible in the versions history (see [Configuration](Configuration.md)).
+Setup a Pimcore user name (e.g. mailchimp-cli) in the CMF config - this user will be visible in the versions history (see [Configuration](Configuration.md)). The CLI user needs no special rights - it's just needed to identify the updates in the versions history.
 ```
 * * * * * php /home/project/www/bin/console.php cmf:newsletter-sync -m > /home/project/www/log/cmf-mailchimp-status-sync-lastrun.log 
 ```
