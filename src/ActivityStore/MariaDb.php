@@ -341,6 +341,10 @@ class MariaDb implements ActivityStoreInterface
      */
     public function deleteCustomer(CustomerInterface $customer)
     {
+        $db = Db::get();
+        $db->exec(
+            sprintf('delete from %s where customerId = %d', self::ACTIVITIES_TABLE, $customer->getId())
+        );
     }
 
     /**

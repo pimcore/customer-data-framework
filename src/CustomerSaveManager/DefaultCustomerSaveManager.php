@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerSaveManager;
 
+use CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveHandler\CustomerSaveHandlerInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface;
@@ -204,6 +205,12 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
          */
         $duplicatesIndex = \Pimcore::getContainer()->get(DuplicatesIndexInterface::class);
         $duplicatesIndex->deleteCustomerFromDuplicateIndex($customer);
+
+        /**
+         * @var ActivityStoreInterface $activityStore
+         */
+        $activityStore = \Pimcore::getContainer()->get(ActivityStoreInterface::class);
+        $activityStore->deleteCustomer($customer);
     }
 
     public function validateOnSave(CustomerInterface $customer, $withDuplicatesCheck = true)

@@ -108,11 +108,16 @@ services:
         class: CustomerManagementFrameworkBundle\ActivityView\DefaultActivityView
         arguments: ['@cmf.view_formatter']
 
-    cmf.activity_store:
+    CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface:
         class: CustomerManagementFrameworkBundle\ActivityStore\MariaDb
 
-    cmf.activity_manager:
+    cmf.activity_store:
+        alias: CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface
+
+    CustomerManagementFrameworkBundle\ActivityStore\ActivityManagerInterface:
         class: CustomerManagementFrameworkBundle\ActivityManager\DefaultActivityManager
+    cmf.activity_manager:
+        alias: CustomerManagementFrameworkBundle\ActivityStore\ActivityManagerInterface
 
     cmf.activity_store_entry:
         class: CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\DefaultActivityStoreEntry
