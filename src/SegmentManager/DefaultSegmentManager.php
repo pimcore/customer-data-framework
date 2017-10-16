@@ -175,7 +175,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
         $conditions = [];
         foreach ($segmentIds as $segmentId) {
-            $conditions[] = '(o_id in (select src_id from object_relations_' . CustomerSegment::classId() . ' where dest_id = ' . intval($segmentId) . '))';
+            $conditions[] = '(o_id in (select distinct src_id from object_relations_' . $this->customerProvider->getCustomerClassId() . ' where (fieldname = "manualSegments" or fieldname = "calculatedSegments") and dest_id = ' . intval($segmentId) . '))';
         }
 
         if (sizeof($conditions)) {
