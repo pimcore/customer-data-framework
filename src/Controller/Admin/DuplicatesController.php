@@ -39,7 +39,7 @@ class DuplicatesController extends Admin
     {
         $paginator = \Pimcore::getContainer()->get('cmf.customer_duplicates_index')->getPotentialDuplicates(
             $request->get('page', 1),
-            100,
+            50,
             $request->get('declined')
         );
 
