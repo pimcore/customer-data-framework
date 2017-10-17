@@ -210,7 +210,6 @@ pimcore_customer_management_framework:
         # TODO add description here      
         filter_properties:
             equals:
-
                 id:                  o_id
                 active:              active
             search:
@@ -219,7 +218,6 @@ pimcore_customer_management_framework:
                 name:
                   - firstname
                   - lastname
-                  
                 search:
                   - o_id
                   - idEncoded

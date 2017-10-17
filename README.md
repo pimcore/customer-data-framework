@@ -42,7 +42,7 @@ Following aspects are short cuts into the documentation for start working with t
 * [Working with integrated Single Sign On](./doc/18_Single_Sign_On.md)
 * [Built-In Marketing Automation Engine](./doc/22_ActionTrigger.md)
 * [Newsletter System Integration](./doc/24_NewsletterSync.md)
-* [Rest API Webservice](./doc/Webservice.md)
+* [Rest API Webservice](./doc/26_Webservice.md)
 
 
 ## Contributing and Development

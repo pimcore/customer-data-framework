@@ -39,7 +39,7 @@ The activities API implements standard REST calls for activity CRUD actions:
 | /webservice/cmf/activities/{id} | PATCH  | Partially update a activity  |
 | /webservice/cmf/activities/{id} | DELETE | Delete a activity            |
 
-The `GET` requests can be filtered by passing the follwing params as query params:
+The `GET` requests can be filtered by passing the following params as query params:
 
 | Parameter             | Possible Values               | Description                                                    |
 | --------------------- |-----------------------------  |--------------------------------------------------------------- |
@@ -56,7 +56,7 @@ The deletions API delivers information about deletions of customers and activiti
 |--------------------------|--------|-------------------------------|
 | /webservice/cmf/deletions       | GET    | Fetch all segments            |
 
-The request can be filtered by passing the follwing params as query params:
+The request can be filtered by passing the following params as query params:
 
 | Parameter               | Possible Values               | Description                                                    |
 | ----------------------- |-----------------------------  |--------------------------------------------------------------- |
@@ -95,7 +95,7 @@ The segment groups API implements standard REST calls for customer segment group
 | /webservice/cmf/segment-groups/{id}   | PATCH  | Partially update a segment group      |
 | /webservice/cmf/segment-groups/{id}   | DELETE | Delete a segment group                |
 
-The `GET` requests can be filtered by passing the follwing params as query params:
+The `GET` requests can be filtered by passing the following params as query params:
 
 | Parameter             | Possible Values               | Description                                                    |
 | --------------------- |-----------------------------  |--------------------------------------------------------------- |

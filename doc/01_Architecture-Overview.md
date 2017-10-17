@@ -15,6 +15,6 @@ For Details for the components see additional documentation pages like:
 * [Customer Save Manager](./06_CustomerSaveManager.md)
 * [Rest API Webservice](./Webservice.md)
 * [Action Trigger Service](./22_ActionTrigger.md)
-* [List Views](./ListViews.md)
+* [List Views](./28_ListViews.md)
 * [SSO and Social Logins](./18_Single_Sign_On.md)
 * [MailChimp Integration](./24_NewsletterSync.md)
