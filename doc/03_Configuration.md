@@ -88,12 +88,12 @@ pimcore_customer_management_framework:
         mailBlackListFile:    /home/customerdataframework/www/var/config/cmf/mail-blacklist.txt
 
     
-    # Newsletter/Mailchimp sync related settings
+    # Newsletter/MailChimp sync related settings
     newsletter:
         newsletterSyncEnabled: true
         
-        # Immidiate execution of customer data export on customer save.
-        newsletterQueueImmidiateAsyncExecutionEnabled: true
+        # Immediate execution of customer data export on customer save. 
+        newsletterQueueImmediateAsyncExecutionEnabled: true
 
         mailchimp:
           apiKey: d1a40ajzf41d5154455a9455cc7b71b9-us14
@@ -144,17 +144,6 @@ pimcore_customer_management_framework:
 
             # parent folder of calculated segments + segment groups
             calculated:           /segments/calculated
-
-    newsletter:
-      newsletterSyncEnabled: true
-
-      # if enabled the queue console command for a single item will be executed as background cli command on customer save
-      newsletterQueueImmidiateAsyncExecutionEnabled: true
-
-      # API settings for mailchimp
-      mailchimp:
-          apiKey: d1a46n87d7fsd51f8e98a9decc7b71b9-us15
-          cliUpdatesPimcoreUserName: mailchimp-cli
 
     activity_url_tracker:
           enabled: true
