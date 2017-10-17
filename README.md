@@ -40,7 +40,7 @@ Following aspects are short cuts into the documentation for start working with t
 * [Working with Customer Segments](./doc/11_CustomerSegments.md)
 * [Customer Duplicates Service](./doc/15_CustomerDuplicatesService.md)
 * [Working with integrated Single Sign On](./doc/18_Single_Sign_On.md)
-* [Built-In Marketing Automation Engine](./doc/ActionTrigger.md)
+* [Built-In Marketing Automation Engine](./doc/22_ActionTrigger.md)
 * [Newsletter System Integration](./doc/NewsletterSync.md)
 * [Rest API Webservice](./doc/Webservice.md)
 
