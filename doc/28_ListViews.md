@@ -56,8 +56,8 @@ implementation with the method
 [`public static function cmfGetOverviewData(ActivityStoreEntryInterface $entry)`](https://github.com/pimcore/customer-data-framework/blob/master/src/Model/ActivityInterface.php#L112). 
 It should return an associative array of all data that should be shown.  
 - **Activity Detail Page**: There are two ways of configuring the content of the activity detail page. 
-    1) Implement the method [public static function cmfGetDetailviewData(ActivityStoreEntryInterface $entry);](https://github.com/pimcore/customer-data-framework/blob/master/src/Model/ActivityInterface.php#L121) 
+    1) Implement the method [`public static function cmfGetDetailviewData(ActivityStoreEntryInterface $entry);`](https://github.com/pimcore/customer-data-framework/blob/master/src/Model/ActivityInterface.php#L121) 
        which should return an associative array of all data. This data is shown in a two-column list by default.  
-    2) Implement the method [public static function cmfGetDetailviewTemplate(ActivityStoreEntryInterface $entry);](https://github.com/pimcore/customer-data-framework/blob/master/src/Model/ActivityInterface.php#L130)
+    2) Implement the method [`public static function cmfGetDetailviewTemplate(ActivityStoreEntryInterface $entry);`](https://github.com/pimcore/customer-data-framework/blob/master/src/Model/ActivityInterface.php#L130)
        which can return the path to a template file in order to implement a complete custom template.
        
