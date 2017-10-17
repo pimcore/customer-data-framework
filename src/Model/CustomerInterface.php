@@ -1,18 +1,25 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Model;
 
+use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
+use CustomerManagementFrameworkBundle\CustomerSaveManager\SaveOptions;
+use Pimcore\Model\DataObject\CustomerSegment;
+use Pimcore\Model\DataObject\Data\ObjectMetadata;
 use Pimcore\Model\Element\ElementInterface;
-use Pimcore\Model\Object\CustomerSegment;
 
 interface CustomerInterface extends ElementInterface
 {
@@ -26,6 +33,9 @@ interface CustomerInterface extends ElementInterface
      */
     public static function classId();
 
+    /**
+     * @return mixed
+     */
     public function save();
 
     /**
@@ -154,7 +164,7 @@ interface CustomerInterface extends ElementInterface
     public function setPhone($phone);
 
     /**
-     * @return CustomerSegment[]
+     * @return CustomerSegmentInterface[]|ObjectMetadata[]|null
      */
     public function getManualSegments();
 
@@ -166,7 +176,7 @@ interface CustomerInterface extends ElementInterface
     public function setManualSegments($segments);
 
     /**
-     * @return CustomerSegment[]
+     * @return CustomerSegmentInterface[]|ObjectMetadata[]|null
      */
     public function getCalculatedSegments();
 
@@ -203,4 +213,24 @@ interface CustomerInterface extends ElementInterface
      * @return array
      */
     public function getRelatedCustomerGroups();
+
+    /**
+     * @param bool $disableVersions
+     *
+     * @return mixed
+     */
+    public function saveDirty($disableVersions = true);
+
+    /**
+     * @param SaveOptions $saveOptions
+     * @param bool $disableVersions
+     *
+     * @return mixed
+     */
+    public function saveWithOptions(SaveOptions $saveOptions, $disableVersions = false);
+
+    /**
+     * @return CustomerSaveManagerInterface
+     */
+    public function getSaveManager();
 }

@@ -1,18 +1,22 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Security\UserProvider;
 
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
-use Pimcore\Model\Object\AbstractObject;
+use Pimcore\Model\DataObject\AbstractObject;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;

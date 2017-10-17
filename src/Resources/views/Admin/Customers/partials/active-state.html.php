@@ -2,7 +2,7 @@
 /** @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $cv */
 $cv = $this->customerView;
 
-/** @var \Pimcore\Model\Object\Customer $customer */
+/** @var \Pimcore\Model\DataObject\Customer $customer */
 $customer = $this->customer;
 ?>
 

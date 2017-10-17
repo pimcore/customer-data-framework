@@ -1,18 +1,22 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
-use CustomerManagementFrameworkBundle\Config;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -28,7 +32,7 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
      */
     public function customerFieldListAction(Request $request)
     {
-        $class = \Pimcore\Model\Object\ClassDefinition::getById(\Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassId());
+        $class = \Pimcore\Model\DataObject\ClassDefinition::getById(\Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassId());
 
         $result = [];
 
@@ -38,12 +42,12 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
             if (in_array(
                 $class,
                 [
-                    \Pimcore\Model\Object\ClassDefinition\Data\Checkbox::class,
-                    \Pimcore\Model\Object\ClassDefinition\Data\Input::class,
-                    \Pimcore\Model\Object\ClassDefinition\Data\Select::class,
-                    \Pimcore\Model\Object\ClassDefinition\Data\Numeric::class,
-                    \Pimcore\Model\Object\ClassDefinition\Data\Textarea::class,
-                    \Pimcore\Model\Object\ClassDefinition\Data\Slider::class,
+                    \Pimcore\Model\DataObject\ClassDefinition\Data\Checkbox::class,
+                    \Pimcore\Model\DataObject\ClassDefinition\Data\Input::class,
+                    \Pimcore\Model\DataObject\ClassDefinition\Data\Select::class,
+                    \Pimcore\Model\DataObject\ClassDefinition\Data\Numeric::class,
+                    \Pimcore\Model\DataObject\ClassDefinition\Data\Textarea::class,
+                    \Pimcore\Model\DataObject\ClassDefinition\Data\Slider::class,
                 ]
             )) {
                 $result[] = [$fieldDefinition->getName(), $fieldDefinition->getTitle() ?: $fieldDefinition->getName()];
@@ -76,5 +80,29 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
         }
 
         return $this->json($result);
+    }
+
+    /**
+     * @return Response
+     * @Route("/settings-json")
+     */
+    public function settingJsonAction()
+    {
+        $customerClassName = explode('\\', \Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassName());
+
+        $settings = [
+            'newsletterSyncEnabled' => $this->container->getParameter('pimcore_customer_management_framework.newsletter.newsletterSyncEnabled'),
+            'duplicatesViewEnabled' => $this->container->getParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.enabled'),
+            'segmentAssignment' => $this->getParameter('pimcore_customer_management_framework.segment_assignment_classes.types'),
+            'customerClassName' => $customerClassName[sizeof($customerClassName) - 1]
+        ];
+
+        $content = '
+            pimcore = pimcore || {};
+            pimcore.settings = pimcore.settings || {};
+            pimcore.settings.cmf = ' . json_encode($settings) . ';
+        ';
+
+        return new Response($content, 200, ['content-type' => 'application/javascript']);
     }
 }

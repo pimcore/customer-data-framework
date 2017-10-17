@@ -1,16 +1,21 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -38,7 +43,12 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
         $activities = null;
         $paginator = null;
 
-        if ($customer = \Pimcore\Model\Object\Customer::getById($request->get('customerId'))) {
+        /**
+         * @var CustomerProviderInterface $customerProvier
+         */
+        $customerProvier = \Pimcore::getContainer()->get('cmf.customer_provider');
+
+        if ($customer = $customerProvier->getById($request->get('customerId'))) {
             $list = \Pimcore::getContainer()->get('cmf.activity_store')->getActivityList();
             $list->setCondition('customerId = ' . $customer->getId());
             $list->setOrderKey('activityDate');

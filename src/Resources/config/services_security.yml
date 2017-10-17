@@ -9,7 +9,7 @@ services:
 
     # The user provider loads users by Username.
     # Pimcore provides a simple ObjectUserProvider which is able to load users from a specified class by a configured
-    # field. The website_demo.security.user_provider will load users from the AppBundle\Model\Object\User by looking at
+    # field. The website_demo.security.user_provider will load users from the AppBundle\Model\DataObject\User by looking at
     # their username field.
     cmf.security.user_provider:
         class: CustomerManagementFrameworkBundle\Security\UserProvider\CustomerObjectUserProvider

@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
@@ -24,8 +28,8 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use Pimcore\Db;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
-use Pimcore\Model\Object\CustomerSegmentGroup;
-use Pimcore\Model\Object\Listing;
+use Pimcore\Model\DataObject\CustomerSegmentGroup;
+use Pimcore\Model\DataObject\Listing;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -45,7 +49,7 @@ class CustomersController extends Admin
         parent::onKernelController($event);
         $this->checkPermission('plugin_customermanagementframework_customerview');
 
-        \Pimcore\Model\Object\AbstractObject::setHideUnpublished(true);
+        \Pimcore\Model\DataObject\AbstractObject::setHideUnpublished(true);
     }
 
     /**
@@ -136,7 +140,7 @@ class CustomersController extends Admin
         ]);
 
         return $this->json([
-            'url' => $this->generateUrl('customermanagementframework_admin_customers_exportstep', ['jobId'=>$jobId]),
+            'url' => $this->generateUrl('customermanagementframework_admin_customers_exportstep', ['jobId' => $jobId]),
             'jobId' => $jobId,
             'exporter' => $request->get('exporter')
         ]);
@@ -163,7 +167,7 @@ class CustomersController extends Admin
         if (!sizeof($data['processIds'])) {
             return $this->json([
                 'finished' => true,
-                'url' => $this->generateUrl('customermanagementframework_admin_customers_downloadfinishedexport', ['jobId'=>$request->get('jobId')]),
+                'url' => $this->generateUrl('customermanagementframework_admin_customers_downloadfinishedexport', ['jobId' => $request->get('jobId')]),
                 'jobId' => $request->get('jobId')
             ]);
         }
@@ -332,7 +336,7 @@ class CustomersController extends Admin
             foreach ($filters['segments'] as $groupId => $segmentIds) {
                 $segmentGroup = null;
                 if ($groupId !== 'default') {
-                    /** @var \Pimcore\Model\Object\CustomerSegmentGroup $segmentGroup */
+                    /** @var \Pimcore\Model\DataObject\CustomerSegmentGroup $segmentGroup */
                     $segmentGroup = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentGroupById($groupId);
                     if (!$segmentGroup) {
                         throw new \Exception(sprintf('Segment group %d was not found', $groupId));
@@ -426,7 +430,7 @@ class CustomersController extends Admin
      */
     protected function getConfiguredSearchBarFields()
     {
-        $filterProperties = \Pimcore::getContainer()->getParameter('pimcore_customer_management_framework.customer_list.filter_properties');;
+        $filterProperties = \Pimcore::getContainer()->getParameter('pimcore_customer_management_framework.customer_list.filter_properties');
         $searchProperties = $filterProperties['search'];
 
         $searchBarFields = [];

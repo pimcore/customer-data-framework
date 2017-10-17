@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\SegmentBuilder;
@@ -14,13 +18,11 @@ namespace CustomerManagementFrameworkBundle\SegmentBuilder;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 
-
 class GenderSegmentBuilder extends AbstractSegmentBuilder
 {
     const MALE = 'male';
     const FEMALE = 'female';
     const NOT_SET = 'not-set';
-
 
     private $maleSegment;
     private $femaleSegment;
@@ -39,15 +41,14 @@ class GenderSegmentBuilder extends AbstractSegmentBuilder
         $femaleSegmentName = self::FEMALE,
         $notsetSegmentName = self::NOT_SET,
         $valueMapping = []
-    )
-    {
+    ) {
         $this->segmentGroupName = $segmentGroupName;
         $this->maleSegmentName = $maleSegmentName;
         $this->femaleSegmentName = $femaleSegmentName;
         $this->notsetSegmentName = $notsetSegmentName;
         $this->valueMapping = sizeof($valueMapping) ? $valueMapping : [
             'male' => \CustomerManagementFrameworkBundle\SegmentBuilder\GenderSegmentBuilder::MALE,
-            'female' =>\CustomerManagementFrameworkBundle\SegmentBuilder\GenderSegmentBuilder::FEMALE,
+            'female' => \CustomerManagementFrameworkBundle\SegmentBuilder\GenderSegmentBuilder::FEMALE,
         ];
     }
 

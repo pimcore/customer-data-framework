@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\CustomerProvider;
@@ -28,7 +32,7 @@ interface CustomerProviderInterface
     /**
      * Get an object listing
      *
-     * @return \Pimcore\Model\Object\Listing\Concrete
+     * @return \Pimcore\Model\DataObject\Listing\Concrete
      */
     public function getList();
 
@@ -71,6 +75,18 @@ interface CustomerProviderInterface
     public function getById($id, $force = false);
 
     /**
+     * Get active customer by email
+     *
+     * @param int $id
+     * @param bool $foce
+     *
+     * @return CustomerInterface|null
+     *
+     * @throws \RuntimeException
+     */
+    public function getActiveCustomerByEmail($email);
+
+    /**
      * Sets the correct parent folder and object key for the given customer.
      *
      * @param CustomerInterface $customer
@@ -86,6 +102,7 @@ interface CustomerProviderInterface
 
     /**
      * @param string $parentPath
+     *
      * @return void
      */
     public function setParentPath($parentPath);

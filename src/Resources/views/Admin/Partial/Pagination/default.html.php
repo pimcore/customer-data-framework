@@ -4,8 +4,6 @@
  * @var \Pimcore\Templating\PhpEngine $view
  * @var \Pimcore\Templating\GlobalVariables $app
  */
-
-
 if ($this->pageCount): ?>
     <ul class="pagination">
         <?php if (isset($this->previous)): ?>

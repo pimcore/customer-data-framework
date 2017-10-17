@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\ActionManager;
@@ -23,18 +27,18 @@ class DefaultActionManager implements ActionManagerInterface
 
     public function processAction(ActionDefinitionInterface $action, CustomerInterface $customer)
     {
-        $this->logger->info(sprintf('process action ID %s', $action->getId()));
+        $this->getLogger()->info(sprintf('process action ID %s', $action->getId()));
 
         if (class_exists($action->getImplementationClass())) {
             $actionImpl = Factory::getInstance()->createObject(
                 $action->getImplementationClass(),
                 ActionInterface::class,
-                ['logger' => $this->logger]
+                ['logger' => $this->getLogger()]
             );
 
             $actionImpl->process($action, $customer);
         } else {
-            $this->logger->error(
+            $this->getLogger()->error(
                 sprintf('action implementation class %s not found', $action->getImplementationClass())
             );
         }

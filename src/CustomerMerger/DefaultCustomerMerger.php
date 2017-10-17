@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\CustomerMerger;
@@ -17,13 +21,11 @@ use CustomerManagementFrameworkBundle\Helper\Objects;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Pimcore\Model\Object\ClassDefinition;
-use Pimcore\Model\Object\Service;
+use Pimcore\Model\DataObject\ClassDefinition;
 
 class DefaultCustomerMerger implements CustomerMergerInterface
 {
     use LoggerAware;
-
 
     /**
      * @var CustomerSaveManagerInterface
@@ -32,7 +34,6 @@ class DefaultCustomerMerger implements CustomerMergerInterface
 
     public function __construct(CustomerSaveManagerInterface $customerSaveManager)
     {
-
         $this->customerSaveManager = $customerSaveManager;
     }
 
@@ -51,16 +52,17 @@ class DefaultCustomerMerger implements CustomerMergerInterface
         CustomerInterface $targetCustomer,
         $mergeAttributes = true
     ) {
-        $saveValidatorBackup = $this->customerSaveManager->getCustomerSaveValidatorEnabled();
-        $segmentBuilderHookBackup = $this->customerSaveManager->getSegmentBuildingHookEnabled();
 
-        $this->customerSaveManager->setCustomerSaveValidatorEnabled(false);
-        $this->customerSaveManager->setSegmentBuildingHookEnabled(false);
+        //backup save options
+        $saveOptions = $this->customerSaveManager->getSaveOptions(true);
+
+        // disable unneeded components
+        $this->customerSaveManager->getSaveOptions()
+            ->disableValidator()
+            ->disableOnSaveSegmentBuilders();
 
         $this->mergeCustomerValues($sourceCustomer, $targetCustomer, $mergeAttributes);
         $targetCustomer->save();
-
-        $this->customerSaveManager->setEnableAutomaticObjectNamingScheme(false);
 
         if (!$sourceCustomer->getId()) {
             $note = Notes::createNote($targetCustomer, 'cmf.CustomerMerger', 'customer merged');
@@ -72,10 +74,8 @@ class DefaultCustomerMerger implements CustomerMergerInterface
             $note->addData('mergedCustomer', 'object', $sourceCustomer);
             $note->save();
 
-
             $sourceCustomer->setPublished(false);
             $sourceCustomer->setActive(false);
-            $sourceCustomer->setKey($sourceCustomer->getId());
 
             $sourceCustomer->save();
 
@@ -84,8 +84,8 @@ class DefaultCustomerMerger implements CustomerMergerInterface
             $note->save();
         }
 
-        $this->customerSaveManager->setCustomerSaveValidatorEnabled( $saveValidatorBackup );
-        $this->customerSaveManager->setSegmentBuildingHookEnabled( $segmentBuilderHookBackup );
+        // restore save options
+        $this->customerSaveManager->setSaveOptions($saveOptions);
 
         $logAddon = '';
         if (!$mergeAttributes) {
@@ -127,8 +127,6 @@ class DefaultCustomerMerger implements CustomerMergerInterface
         $manualSegments = (array)$sourceCustomer->getManualSegments();
         Objects::addObjectsToArray($manualSegments, (array)$targetCustomer->getManualSegments());
         $targetCustomer->setManualSegments($manualSegments);
-
-        $this->customerSaveManager->setCustomerSaveValidatorEnabled(false);
 
         $this->mergeActivities($sourceCustomer, $targetCustomer);
     }

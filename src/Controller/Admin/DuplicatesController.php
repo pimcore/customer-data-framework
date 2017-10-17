@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
@@ -24,9 +28,7 @@ class DuplicatesController extends Admin
 {
     public function init()
     {
-        parent::init();
-
-        \Pimcore\Model\Object\AbstractObject::setHideUnpublished(true);
+        \Pimcore\Model\DataObject\AbstractObject::setHideUnpublished(true);
     }
 
     /**
@@ -37,7 +39,7 @@ class DuplicatesController extends Admin
     {
         $paginator = \Pimcore::getContainer()->get('cmf.customer_duplicates_index')->getPotentialDuplicates(
             $request->get('page', 1),
-            100,
+            50,
             $request->get('declined')
         );
 

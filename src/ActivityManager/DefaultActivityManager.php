@@ -1,23 +1,42 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\ActivityManager;
 
 use Carbon\Carbon;
+use CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface;
 
 class DefaultActivityManager implements ActivityManagerInterface
 {
+    /**
+     * @var ActivityStoreInterface
+     */
+    protected $activityStore;
+
+    /**
+     * @var bool
+     */
     protected $disableEvents = false;
+
+    public function __construct(ActivityStoreInterface $activityStore)
+    {
+        $this->activityStore = $activityStore;
+    }
 
     /**
      * @return bool
@@ -53,7 +72,7 @@ class DefaultActivityManager implements ActivityManagerInterface
      */
     public function trackActivity(ActivityInterface $activity)
     {
-        $store = \Pimcore::getContainer()->get('cmf.activity_store');
+        $store = $this->activityStore;
 
         if (!($activity->cmfGetActivityDate() instanceof Carbon)) {
             throw new \Exception(
@@ -67,7 +86,7 @@ class DefaultActivityManager implements ActivityManagerInterface
             return;
         }
 
-        \Pimcore::getContainer()->get('cmf.segment_manager')->addCustomerToChangesQueue($activity->getCustomer());
+        \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class)->addCustomerToChangesQueue($activity->getCustomer());
 
         if (!$activity->cmfIsActive()) {
             $store->deleteActivity($activity);
@@ -109,7 +128,7 @@ class DefaultActivityManager implements ActivityManagerInterface
      */
     public function deleteActivity(ActivityInterface $activity)
     {
-        $store = \Pimcore::getContainer()->get('cmf.activity_store');
+        $store = $this->activityStore;
 
         $store->deleteActivity($activity);
     }

@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\SegmentManager;
@@ -14,8 +18,9 @@ namespace CustomerManagementFrameworkBundle\SegmentManager;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentBuilder\SegmentBuilderInterface;
-use Pimcore\Model\Object\CustomerSegment;
-use Pimcore\Model\Object\CustomerSegmentGroup;
+use Pimcore\Model\DataObject\CustomerSegment;
+use Pimcore\Model\DataObject\CustomerSegmentGroup;
+use Pimcore\Model\Element\ElementInterface;
 
 interface SegmentManagerInterface
 {
@@ -23,12 +28,12 @@ interface SegmentManagerInterface
     const CONDITION_OR = 'or';
 
     /**
-     * Returns a list of customers which are within the given customer segments.
+     * Returns a list of customers filtered by segment IDs
      *
      * @param int[] $segmentIds
      * @param string $conditionMode
      *
-     * @return CustomerSegment\Listing
+     * @return \Pimcore\Model\DataObject\Listing\Concrete
      */
     public function getCustomersBySegmentIds(array $segmentIds, $conditionMode = self::CONDITION_AND);
 
@@ -51,7 +56,26 @@ interface SegmentManagerInterface
     public function getSegmentGroupById($id);
 
     /**
-     * Returns an array with all customer segments.
+     * Returns all segments assigned to $element
+     *
+     * @param ElementInterface $element
+     *
+     * @return CustomerSegmentInterface[]
+     */
+    public function getSegmentsForElement(ElementInterface $element): array;
+
+    /**
+     * Returns all segments assigned to $id with $type
+     *
+     * @param string $id
+     * @param string $type
+     *
+     * @return CustomerSegmentInterface[]
+     */
+    public function getSegmentsForElementId(string $id, string $type): array;
+
+    /**
+     * Returns an object list of all customer segments.
      *
      * @param array $params
      *
@@ -60,7 +84,7 @@ interface SegmentManagerInterface
     public function getSegments();
 
     /**
-     * Returns an object list with all customer segment groups. Optionally this could be filtered by given params.
+     * Returns an object list with all customer segment groups.
      *
      * @param array $params
      *
@@ -69,46 +93,55 @@ interface SegmentManagerInterface
     public function getSegmentGroups();
 
     /**
-     * Applies all SegmentBuilders to customers. If the param $changesQueue only is set to true this is done only for customers which where changed since the last run.
-     * If $segmentBuilderServiceId is given (php class name) then only this SegmentBuilder will be executed.
+     * @param bool $calculated
      *
-     * @param bool $changesQueueOnly
-     * @param string|null $segmentBuilderServiceId
-     * @param int[]|null $customQueue Process only customer from given queue
-     * @param bool|null $activeState Consider active-state, null : ignore, false -> inactive only, true -> active only
-     * @param array $options
-     *
-     * @return void
+     * @return \Pimcore\Model\DataObject\Folder
      */
-    public function buildCalculatedSegments(
-        $changesQueueOnly = true,
-        $segmentBuilderServiceId = null,
-        array $customQueue = null,
-        $activeState = null,
-        $options = []
-    );
+    public function getSegmentsFolder($calculated = true);
 
     /**
      * @param SegmentBuilderInterface $segmentBuilder
+     *
      * @return void
      */
     public function addSegmentBuilder(SegmentBuilderInterface $segmentBuilder);
 
     /**
-     * Calls all maintenance methods of all SegmentBuilders
-     *
-     * @return void
+     * @return SegmentBuilderInterface[]
      */
-    public function executeSegmentBuilderMaintenance();
+    public function getSegmentBuilders();
 
     /**
-     * Could be used to add/remove segments to/from customers. If segments are added or removed this will be tracked in the notes/events tab of the customer. With the optional $hintForNotes parameter it's possible to add an iditional hint to the notes/event entries.
+     * Could be used to add/remove segments to/from customers.
+     * If segments are added or removed this will be tracked in the notes/events tab of the customer.
      * The changes of this method will be persisted when saveMergedSegments() gets called.
      *
      * @param CustomerInterface $customer
      * @param array $addSegments
      * @param array $deleteSegments
-     * @param string|null $hintForNotes
+     * @param string|null $hintForNotes additional hint for the notes/event entries
+     * @param int|true|null $segmentCreatedTimestamp
+     *  Optional. Can be used to store the date when the segment was added (for potentially expiring segments).
+     *  This feature will only work if you use an object with metadata field to store the segment relations.
+     *  Take a look at the docs for more information.
+     *  - If true was passed the timestamp will be set to the current time if the segment was added,
+     *    otherwise the timestamp will be untouched.
+     *  - If a timestamp (int) was passed this timestamp will be stored.
+     *    Be careful: if you use this in SegmentBuilders it's not predicatable when/how often the SegmentBuilder will run.
+     *    Therefore it's not a good idea to rely on the execution timestamp (time()) here.
+     *    It's necessary to do this based on other criterias (for example activities).
+     *  - If null was passed the timestamp will be set to null
+     * @param int|true|null $segmentApplicationCounter
+     *  Optional. Can be used to store a counter how often the segment applies or how often the segment has been added.
+     *  This feature will only work if you use an object with metadata field to store the segment relations.
+     *  Take a look at the docs for more information.
+     *  - If true was passed the counter will increment by one each time the timestamp changes,
+     *    otherwise it stay's untouched.
+     *  - If a counter (int) was passed this counter will be used as new value.
+     *    Be careful: if you use this in SegmentBuilders it's not predicatable when/how often the SegmentBuilder will run.
+     *    Therefore it's not a good idea to just always increment it by one here.
+     *    It's necessary to do this based on other criterias (for example activities).
+     *  - If null was passed the timestamp will be set to null.
      *
      * @return void
      */
@@ -116,11 +149,13 @@ interface SegmentManagerInterface
         CustomerInterface $customer,
         array $addSegments,
         array $deleteSegments = [],
-        $hintForNotes = null
+        $hintForNotes = null,
+        $segmentCreatedTimestamp = null,
+        $segmentApplicationCounter = null
     );
 
     /**
-     * Needs to be called after segments are merged with mergeSegments() in order to persist the segments in the customer object
+     * Needs to be called after segments are merged with mergeSegments() in order to persist the segments in the customer object.
      *
      * @param CustomerInterface $customer
      *
@@ -129,27 +164,27 @@ interface SegmentManagerInterface
     public function saveMergedSegments(CustomerInterface $customer);
 
     /**
-     * Create a calculated segment within the given $segmentGroup. The $segmentGroup needs to be either a CustomerSegmentGroup object or a reference to a calculated CustomerSegmentGroup object.
-     * With the (optional) $subFolder parameter it's possible to create subfolders within the CustomerSegmentGroup for better a better overview.
+     * Create a calculated segment within the given $segmentGroup.
+     * The $segmentGroup needs to be either a CustomerSegmentGroup object or a reference string to a calculated CustomerSegmentGroup object.
      *
      * @param string $segmentReference
      * @param string|CustomerSegmentGroup $segmentGroup
      * @param string $segmentName
-     * @param string $subFolder
+     * @param string|null $subFolder Optional. If passed a subfolder within the CustomerSegmentGroup will be created.
      *
      * @return CustomerSegmentInterface
      */
     public function createCalculatedSegment($segmentReference, $segmentGroup, $segmentName = null, $subFolder = null);
 
     /**
-     * * Create a customer segment within the given $segmentGroup. The $segmentGroup needs to be either a CustomerSegmentGroup object or a reference to a CustomerSegmentGroup object.
-     * With the (optional) $subFolder parameter it's possible to create subfolders within the CustomerSegmentGroup for better a better overview.
+     * Create a customer segment within the given $segmentGroup.
+     * The $segmentGroup needs to be either a CustomerSegmentGroup object or a reference string to a CustomerSegmentGroup object.
      *
      * @param string $segmentReference
      * @param string|CustomerSegmentGroup $segmentGroup
      * @param string $segmentName
      * @param bool $calculated
-     * @param string $subFolder
+     * @param string|null $subFolder Optional. If passed a subfolder within the CustomerSegmentGroup will be created.
      *
      * @return CustomerSegmentInterface
      */
@@ -162,7 +197,8 @@ interface SegmentManagerInterface
     );
 
     /**
-     * Returns the CustomerSegment with given reference within given CustomerSegmentGroup. If no CustomerSegmentGroup is given it will search globally.
+     * Returns the CustomerSegment with given reference within given CustomerSegmentGroup.
+     * If no CustomerSegmentGroup is given it will search globally.
      *
      * @param string $segmentReference
      * @param CustomerSegmentGroup $segmentGroup
@@ -175,7 +211,7 @@ interface SegmentManagerInterface
     /**
      * Creates a segment group.
      *
-     * @param       $segmentGroupName
+     * @param string $segmentGroupName
      * @param null $segmentGroupReference
      * @param bool $calculated
      * @param array $values
@@ -200,14 +236,14 @@ interface SegmentManagerInterface
     public function updateSegmentGroup(CustomerSegmentGroup $segmentGroup, array $values = []);
 
     /**
-     * Updates a sgement.
+     * Updates a segment.
      *
-     * @param CustomerSegment $segment
+     * @param CustomerSegmentInterface $segment
      * @param array $values
      *
      * @return mixed
      */
-    public function updateSegment(CustomerSegment $segment, array $values = []);
+    public function updateSegment(CustomerSegmentInterface $segment, array $values = []);
 
     /**
      * Returns the SegmentGroup with the given reference.
@@ -218,13 +254,6 @@ interface SegmentManagerInterface
      * @return CustomerSegmentGroup
      */
     public function getSegmentGroupByReference($segmentGroupReference, $calculated);
-
-    /**
-     * @param CustomerInterface $customer
-     *
-     * @return void
-     */
-    public function buildCalculatedSegmentsOnCustomerSave(CustomerInterface $customer);
 
     /**
      * @param CustomerSegmentGroup $segmentGroup
@@ -243,6 +272,20 @@ interface SegmentManagerInterface
     public function customerHasSegment(CustomerInterface $customer, CustomerSegmentInterface $segment);
 
     /**
+     * @param CustomerInterface $customer
+     *
+     * @return CustomerSegmentInterface[]
+     */
+    public function getCalculatedSegmentsFromCustomer(CustomerInterface $customer);
+
+    /**
+     * @param CustomerInterface $customer
+     *
+     * @return CustomerSegmentInterface[]
+     */
+    public function getManualSegmentsFromCustomer(CustomerInterface $customer);
+
+    /**
      * Return segments of given customers which are within given customer segment group.
      *
      * @param CustomerInterface $customer
@@ -251,13 +294,6 @@ interface SegmentManagerInterface
      * @return CustomerSegmentInterface[]
      */
     public function getCustomersSegmentsFromGroup(CustomerInterface $customer, $group);
-
-    /**
-     * @param CustomerInterface $customer
-     *
-     * @return void
-     */
-    public function addCustomerToChangesQueue(CustomerInterface $customer);
 
     /**
      * Called in pimcore's pre object update hook for CustomerSegment objects.

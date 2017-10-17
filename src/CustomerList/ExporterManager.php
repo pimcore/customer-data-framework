@@ -1,19 +1,22 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\CustomerList;
 
-use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\CustomerList\Exporter\ExporterInterface;
-use Pimcore\Model\Object\Listing;
+use Pimcore\Model\DataObject\Listing;
 use Symfony\Component\HttpFoundation\Request;
 
 class ExporterManager implements ExporterManagerInterface
@@ -32,7 +35,6 @@ class ExporterManager implements ExporterManagerInterface
     {
         return $this->exporterConfig;
     }
-
 
     /**
      * @param $key

@@ -1,19 +1,27 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Model;
 
+use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
+use CustomerManagementFrameworkBundle\CustomerSaveManager\SaveOptions;
+use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProviderHandlerInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 
-abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implements CustomerInterface
+abstract class AbstractCustomer extends \Pimcore\Model\DataObject\Concrete implements CustomerInterface
 {
     public function cmfToArray()
     {
@@ -36,11 +44,66 @@ abstract class AbstractCustomer extends \Pimcore\Model\Object\Concrete implement
      */
     public function getAllSegments()
     {
-        return array_merge((array)$this->getCalculatedSegments(), (array)$this->getManualSegments());
+        /**
+         * @var SegmentManagerInterface $segmentManager
+         */
+        $segmentManager = \Pimcore::getContainer()->get('cmf.segment_manager');
+
+        return array_merge(
+            $segmentManager->getCalculatedSegmentsFromCustomer($this),
+            $segmentManager->getManualSegmentsFromCustomer($this)
+        );
     }
 
     public function getRelatedCustomerGroups()
     {
         return [];
+    }
+
+    /**
+     * @param bool $disableVersions
+     *
+     * @return mixed
+     */
+    public function saveDirty($disableVersions = true)
+    {
+        return $this->getSaveManager()->saveDirty($this, $disableVersions);
+    }
+
+    /**
+     * @param SaveOptions $saveOptions
+     * @param bool $disableVersions
+     *
+     * @return mixed
+     */
+    public function saveWithOptions(SaveOptions $saveOptions, $disableVersions = false)
+    {
+        return $this->getSaveManager()->saveWithOptions($this, $saveOptions, $disableVersions);
+    }
+
+    /**
+     * @return CustomerSaveManagerInterface
+     */
+    public function getSaveManager()
+    {
+        /**
+         * @var CustomerSaveManagerInterface $saveManager
+         */
+        $saveManager = \Pimcore::getContainer()->get('cmf.customer_save_manager');
+
+        return $saveManager;
+    }
+
+    /**
+     * If this method returns true the customer will be exported by the provider handler with the given shortcut.
+     * Otherwise the provider handler will delete the customer in the target system if it exists.
+     *
+     * @param NewsletterProviderHandlerInterface $newsletterProviderHandler
+     *
+     * @return bool
+     */
+    public function needsExportByNewsletterProviderHandler(NewsletterProviderHandlerInterface $newsletterProviderHandler)
+    {
+        return $this->getPublished() && $this->getActive();
     }
 }

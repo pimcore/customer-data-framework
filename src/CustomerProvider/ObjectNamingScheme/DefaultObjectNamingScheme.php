@@ -1,24 +1,26 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme;
 
-use CustomerManagementFrameworkBundle\Config;
-use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Helper\Objects;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Pimcore\Model\Object\Folder;
-use Pimcore\Model\Object\Listing;
-use Pimcore\Model\Object\Service;
+use Pimcore\Model\DataObject\Folder;
+use Pimcore\Model\DataObject\Listing;
+use Pimcore\Model\DataObject\Service;
 
 class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
 {
@@ -39,9 +41,9 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
      */
     private $archiveDir;
 
-
     /**
      * DefaultObjectNamingScheme constructor.
+     *
      * @param string $namingScheme
      * @param string $parentPath
      * @param string $archiveDir
@@ -87,20 +89,20 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
 
     public function cleanupEmptyFolders()
     {
-        if(!$this->parentPath) {
+        if (!$this->parentPath) {
             return;
         }
 
-        if(!$this->namingScheme) {
+        if (!$this->namingScheme) {
             return;
         }
 
         $folders = new Listing;
 
         // apply it for folders older then 10 minutes only
-        $timestamp = time() - 60*10;
+        $timestamp = time() - 60 * 10;
 
-        $archiveDir = $this->archiveDir ? : $this->parentPath;
+        $archiveDir = $this->archiveDir ?: $this->parentPath;
 
         $folders->setCondition(
             "o_id in (select o_id from (select o_id, o_path, o_key, o_type, (select count(*) from objects where o_parentId = o.o_id) as counter from objects o) as temp where counter=0 and o_type = 'folder' and (o_path like ? or o_path like ?) and o_creationDate < ?)",
@@ -111,25 +113,23 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
             ]
         );
 
-        foreach($folders as $folder) {
-            if($folder instanceof Folder) {
+        foreach ($folders as $folder) {
+            if ($folder instanceof Folder) {
                 $folder->delete();
-                $this->getLogger()->info("delete empty folder ". (string) $folder);
+                $this->getLogger()->info('delete empty folder '. (string) $folder);
             }
         }
     }
 
     /**
      * @param CustomerInterface $customer
+     *
      * @return string
      */
     public function determineNamingScheme(CustomerInterface $customer)
     {
         return $this->namingScheme;
     }
-
-
-
 
     private function correctPath($path)
     {
@@ -149,7 +149,7 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
             preg_match_all('/{([a-zA-Z0-9]*)}/', $namingSchemeItem, $matchedPlaceholder);
 
             if (sizeof($matchedPlaceholder)) {
-                foreach($matchedPlaceholder[0] as $j => $placeholder) {
+                foreach ($matchedPlaceholder[0] as $j => $placeholder) {
                     $field = $matchedPlaceholder[1][$j];
 
                     $getter = 'get'.ucfirst($field);
@@ -159,7 +159,7 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
                     }
                 }
             }
-            $namingScheme[$i] = trim($namingScheme[$i]) ? : '--';
+            $namingScheme[$i] = trim($namingScheme[$i]) ?: '--';
             $namingScheme[$i] = Objects::getValidKey($namingScheme[$i]);
         }
 

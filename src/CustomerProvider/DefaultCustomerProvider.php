@@ -1,22 +1,24 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\CustomerProvider;
 
-use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\Element\ElementInterface;
-use Pimcore\Model\Object\Concrete;
-use Pimcore\Model\Object\Folder;
 
 class DefaultCustomerProvider implements CustomerProviderInterface
 {
@@ -37,9 +39,10 @@ class DefaultCustomerProvider implements CustomerProviderInterface
 
     /**
      * DefaultCustomerProvider constructor.
-     * @param $pimcoreClass
-     * @param $parentPath
-     * @param $namingScheme
+     *
+     * @param string $pimcoreClass
+     * @param string $parentPath
+     * @param ObjectNamingSchemeInterface $namingScheme
      */
     public function __construct($pimcoreClass, $parentPath, ObjectNamingSchemeInterface $namingScheme)
     {
@@ -62,7 +65,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     protected function getDiClassName()
     {
-        return sprintf('Pimcore\Model\Object\%s', $this->pimcoreClass);
+        return sprintf('Pimcore\Model\DataObject\%s', $this->pimcoreClass);
     }
 
     /**
@@ -70,7 +73,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     protected function getDiListingClassName()
     {
-        return sprintf('Pimcore\Model\Object\%s\Listing', $this->pimcoreClass);
+        return sprintf('Pimcore\Model\DataObject\%s\Listing', $this->pimcoreClass);
     }
 
     /**
@@ -95,7 +98,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     /**
      * Get an object listing
      *
-     * @return \Pimcore\Model\Object\Listing\Concrete
+     * @return \Pimcore\Model\DataObject\Listing\Concrete
      */
     public function getList()
     {
@@ -164,6 +167,29 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     }
 
     /**
+     * Get active customer by email
+     *
+     * @param int $id
+     * @param bool $foce
+     *
+     * @return CustomerInterface|null
+     *
+     * @throws \RuntimeException
+     */
+    public function getActiveCustomerByEmail($email)
+    {
+        $list = $this->getList();
+        $list->setUnpublished(false);
+        $list->addConditionParam('active = 1 and trim(lower(email)) = ?', [$email]);
+
+        if ($list->count() > 1) {
+            throw new \Exception(sprintf('multiple active and published customers with email %s found', $email));
+        }
+
+        return $list->current();
+    }
+
+    /**
      * Sets the correct parent folder and object key for the given customer.
      *
      * @param CustomerInterface $customer
@@ -184,7 +210,6 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     {
         $this->parentPath = $parentPath;
     }
-
 
     /**
      * @param string $method

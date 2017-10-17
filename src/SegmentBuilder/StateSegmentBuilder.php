@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\SegmentBuilder;
@@ -19,20 +23,17 @@ use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 
 class StateSegmentBuilder extends AbstractSegmentBuilder
 {
-
     private $countryTransformers;
     private $groupName;
     private $segmentGroup;
 
     public function __construct($groupName = 'State', array $countryTransformers = [])
     {
-
         $this->countryTransformers = sizeof($countryTransformers) ? $countryTransformers : [
             'AT' => \CustomerManagementFrameworkBundle\DataTransformer\Zip2State\At::class,
             'DE' => \CustomerManagementFrameworkBundle\DataTransformer\Zip2State\De::class,
             'CH' => \CustomerManagementFrameworkBundle\DataTransformer\Zip2State\Ch::class,
         ];
-
 
         $this->groupName = $groupName ?: 'State';
     }
@@ -42,14 +43,17 @@ class StateSegmentBuilder extends AbstractSegmentBuilder
      *
      * @param SegmentManagerInterface $segmentManager
      *
-     * @return \Pimcore\Model\Object\Customer\Listing
+     * @return \Pimcore\Model\DataObject\Listing\Concrete
      */
     public function prepare(SegmentManagerInterface $segmentManager)
     {
         $this->segmentGroup = $segmentManager->createSegmentGroup($this->groupName, $this->groupName, true);
 
         foreach ($this->countryTransformers as $key => $transformer) {
-            $transformer = Factory::getInstance()->createObject($transformer, DataTransformerInterface::class);
+            if (is_object($transformer)) {
+                continue;
+            }
+            $transformer = Factory::getInstance()->createObject((string) $transformer, DataTransformerInterface::class);
             $this->countryTransformers[$key] = $transformer;
         }
     }

@@ -1,19 +1,23 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Model;
 
-use Pimcore\Model\Object\CustomerSegmentGroup;
+use Pimcore\Model\DataObject\CustomerSegmentGroup;
 
-abstract class AbstractTermSegmentBuilderDefinition extends \Pimcore\Model\Object\Concrete
+abstract class AbstractTermSegmentBuilderDefinition extends \Pimcore\Model\DataObject\Concrete
 {
     /**
      * @return array

@@ -24,7 +24,7 @@ $showPageSelector = (isset($this->showPageSelector)) ? (bool)$this->showPageSele
 
                                 <?php
                                 $countParams = [
-                                    'page'    => null,
+                                    'page' => null,
                                     'perPage' => null
                                 ];
 
@@ -51,8 +51,8 @@ $showPageSelector = (isset($this->showPageSelector)) ? (bool)$this->showPageSele
         <div class="pagination-footer__pagination col-md-8">
             <?php if ($paginator->getPages()->pageCount > 1): ?>
                 <?= $this->render(
-                    "PimcoreCustomerManagementFrameworkBundle:Admin/Partial/Pagination:default.html.php",
-                    get_object_vars($paginator->getPages("Sliding"))
+                    'PimcoreCustomerManagementFrameworkBundle:Admin/Partial/Pagination:default.html.php',
+                    get_object_vars($paginator->getPages('Sliding'))
                 ); ?>
             <?php endif; ?>
         </div>

@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Event;
@@ -15,9 +19,11 @@ use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInt
 use CustomerManagementFrameworkBundle\Model\AbstractObjectActivity;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
+use Pimcore\Event\Model\DataObjectEvent;
 use Pimcore\Event\Model\ElementEventInterface;
-use Pimcore\Event\Model\ObjectEvent;
-use Pimcore\Model\Object\ActivityDefinition;
+use Pimcore\Model\DataObject\LinkActivityDefinition;
 
 class PimcoreObjectEventListener
 {
@@ -33,7 +39,7 @@ class PimcoreObjectEventListener
 
     public function onPreUpdate(ElementEventInterface $e)
     {
-        if (!$e instanceof ObjectEvent) {
+        if (!$e instanceof DataObjectEvent) {
             return;
         }
 
@@ -41,12 +47,14 @@ class PimcoreObjectEventListener
 
         if ($object instanceof CustomerInterface) {
             $this->customerSaveManager->preUpdate($object);
+        } elseif ($object instanceof CustomerSegmentInterface) {
+            \Pimcore::getContainer()->get(SegmentManagerInterface::class)->preSegmentUpdate($object);
         }
     }
 
     public function onPostUpdate(ElementEventInterface $e)
     {
-        if (!$e instanceof ObjectEvent) {
+        if (!$e instanceof DataObjectEvent) {
             return;
         }
 
@@ -70,7 +78,7 @@ class PimcoreObjectEventListener
 
     public function onPreAdd(ElementEventInterface $e)
     {
-        if (!$e instanceof ObjectEvent) {
+        if (!$e instanceof DataObjectEvent) {
             return;
         }
 
@@ -78,14 +86,14 @@ class PimcoreObjectEventListener
 
         if ($object instanceof CustomerInterface) {
             $this->customerSaveManager->preAdd($object);
-        } elseif ($object instanceof ActivityDefinition) {
+        } elseif ($object instanceof LinkActivityDefinition) {
             $object->setCode(uniqid());
         }
     }
 
     public function onPostAdd(ElementEventInterface $e)
     {
-        if (!$e instanceof ObjectEvent) {
+        if (!$e instanceof DataObjectEvent) {
             return;
         }
 
@@ -98,7 +106,7 @@ class PimcoreObjectEventListener
 
     public function onPreDelete(ElementEventInterface $e)
     {
-        if (!$e instanceof ObjectEvent) {
+        if (!$e instanceof DataObjectEvent) {
             return;
         }
 
@@ -111,7 +119,7 @@ class PimcoreObjectEventListener
 
     public function onPostDelete(ElementEventInterface $e)
     {
-        if (!$e instanceof ObjectEvent) {
+        if (!$e instanceof DataObjectEvent) {
             return;
         }
 

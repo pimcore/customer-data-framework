@@ -1,0 +1,28 @@
+imports:
+    - { resource: security.yml }
+
+pimcore_customer_management_framework:
+    oauth_client:
+        enabled: true
+
+# Configure the HWIOAuth bundle
+hwi_oauth:
+    firewall_names: [main]
+
+    # the credential parameters need to be set somewhere. as we don't want to version client credentials
+    # we add those secrets to parameters.yml and reference the parameters here
+    resource_owners:
+        google:
+            type:                google
+            client_id:           '%google_client_id%'
+            client_secret:       '%google_client_secret%'
+            scope:               "openid email profile"
+            options:
+                csrf: true
+        twitter:
+            type:                twitter
+            client_id:           '%twitter_client_id%'
+            client_secret:       '%twitter_client_secret%'
+            options:
+                csrf: true
+

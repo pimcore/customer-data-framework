@@ -3,12 +3,16 @@
 declare(strict_types=1);
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Security\OAuth;
@@ -52,7 +56,7 @@ class SessionTokenStorage implements TokenStorageInterface
     public function loadToken(string $key, int $maxLifetime = 300)
     {
         $timestamp = $this->getAndRemoveValueFromSession($this->buildSessionKey('timestamp', $key));
-        $token     = $this->getAndRemoveValueFromSession($this->buildSessionKey('token', $key));
+        $token = $this->getAndRemoveValueFromSession($this->buildSessionKey('token', $key));
 
         if (null !== $timestamp && (time() - $timestamp) <= $maxLifetime) {
             return $token;

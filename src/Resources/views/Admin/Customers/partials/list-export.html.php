@@ -19,7 +19,7 @@ if (count($exporterConfigs) === 0) {
 
                     <?php
                     $exportParams = array_merge([
-                        'exporter'   => $exporter,
+                        'exporter' => $exporter,
                     ], $this->clearUrlParams ?: []);
 
                     $exportUrl = $this->formQueryString($this->request, $this->url('customermanagementframework_admin_customers_export', $exportParams));

@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Model\Activity;
@@ -14,14 +18,14 @@ namespace CustomerManagementFrameworkBundle\Model\Activity;
 use CustomerManagementFrameworkBundle\Model\AbstractActivity;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use Pimcore\Model\Object\ActivityDefinition;
+use Pimcore\Model\DataObject\LinkActivityDefinition;
 
 class TrackedUrlActivity extends AbstractActivity
 {
     protected $customer;
     private $activityDefinition;
 
-    public function __construct(CustomerInterface $customer, ActivityDefinition $activityDefinition)
+    public function __construct(CustomerInterface $customer, LinkActivityDefinition $activityDefinition)
     {
         $this->customer = $customer;
         $this->activityDefinition = $activityDefinition;
@@ -37,12 +41,12 @@ class TrackedUrlActivity extends AbstractActivity
         $attributes = [
             'label' => $this->activityDefinition->getLabel(),
             'code' => $this->activityDefinition->getCode(),
+            'activityDefinitionId' => $this->activityDefinition->getId(),
         ];
 
         if ($additionalAttributes = $this->activityDefinition->getAttributes()) {
             foreach ($additionalAttributes as $additionalAttribute) {
-                $attributes[$additionalAttribute['attribute']->getData(
-                )] = $additionalAttribute['attributeValue']->getData();
+                $attributes[$additionalAttribute['attribute']->getData()] = $additionalAttribute['attributeValue']->getData();
             }
         }
 
@@ -56,20 +60,24 @@ class TrackedUrlActivity extends AbstractActivity
 
     public function cmfWebserviceUpdateAllowed()
     {
-        return true;
+        return false;
     }
 
     /**
      * @param array $data
      * @param bool $fromWebservice
      *
-     * @return bool
+     * @return static|null
      */
     public static function cmfCreate(array $data, $fromWebservice = false)
     {
+        if (!isset($data['activityDefinitionId'])) {
+            return null;
+        }
+
         return new static(
             \Pimcore::getContainer()->get('cmf.customer_provider')->getById($data['customerId']),
-            ActivityDefinition::getById('6697057')
+            LinkActivityDefinition::getById($data['activityDefinitionId'])
         );
     }
 }

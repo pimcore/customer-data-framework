@@ -1,27 +1,32 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle;
 
-use Pimcore\Db;
 use Pimcore\Extension\Bundle\Installer\AbstractInstaller;
 use Pimcore\Logger;
+use Pimcore\Model\Object\Objectbrick\Definition;
 
 class Installer extends AbstractInstaller
 {
     public function install()
     {
         $this->installPermissions();
-        $this->installClasses();
         $this->installDatabaseTables();
+        $this->installClasses();
+        $this->installBricks();
 
         return true;
     }
@@ -29,14 +34,9 @@ class Installer extends AbstractInstaller
     public function isInstalled()
     {
 
-        $db = Db::get();
-        try {
-            $db->fetchOne("select customerId from plugin_cmf_newsletter_queue limit 1");
+        $result = \Pimcore\Db::get()->fetchAll('SHOW TABLES LIKE "plugin_cmf_segment_assignment"');
 
-            return true;
-        } catch(\Exception $e) {
-            return false;
-        }
+        return !empty($result);
     }
 
     public function canBeInstalled()
@@ -57,6 +57,8 @@ class Installer extends AbstractInstaller
         $permissions = [
             'plugin_customermanagementframework_activityview',
             'plugin_customermanagementframework_customerview',
+            'plugin_customermanagementframework_customer_automation_rules',
+            'plugin_customermanagementframework_newsletter_enqueue_all_customers',
         ];
 
         foreach ($permissions as $key) {
@@ -212,45 +214,83 @@ class Installer extends AbstractInstaller
         );
 
         \Pimcore\Db::get()->query(
-            "CREATE TABLE `plugin_cmf_newsletter_queue` (
+            'CREATE TABLE IF NOT EXISTS `plugin_cmf_newsletter_queue` (
               `customerId` int(11) unsigned NOT NULL,
               `email` varchar(255) DEFAULT NULL,
               `operation` varchar(20) DEFAULT NULL,
               `modificationDate` bigint(20) DEFAULT NULL,
               UNIQUE KEY `customerId` (`customerId`),
               KEY `operation` (`operation`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
         );
+
+        $sqlPath = __DIR__ . '/Resources/sql/segmentAssignment/';
+        $sqlFileNames = ['datamodel.sql', 'storedFunctionDocument.sql', 'storedFunctionAsset.sql', 'storedFunctionObject.sql'];
+
+        foreach ($sqlFileNames as $fileName) {
+            $statement = file_get_contents($sqlPath.$fileName);
+            \Pimcore\Db::get()->query($statement);
+        }
     }
 
-    public static function installClasses()
+    public function installClasses()
     {
         $sourcePath = __DIR__.'/../install/class_source';
 
         self::installClass('CustomerSegmentGroup', $sourcePath.'/class_CustomerSegmentGroup_export.json');
         self::installClass('CustomerSegment', $sourcePath.'/class_CustomerSegment_export.json');
-        self::installClass('ActivityDefinition', $sourcePath.'/class_ActivityDefinition_export.json');
         self::installClass('SsoIdentity', $sourcePath.'/class_SsoIdentity_export.json');
         self::installClass(
             'TermSegmentBuilderDefinition',
             $sourcePath.'/class_TermSegmentBuilderDefinition_export.json'
         );
+
+        self::installClass('LinkActivityDefinition', $sourcePath.'/class_LinkActivityDefinition_export.json');
+    }
+
+    public function installBricks()
+    {
+        $sourcePath = __DIR__.'/../install/objectbrick_source';
+
+        self::installBrick('OAuth1Token', $sourcePath.'/objectbrick_OAuth1Token_export.json');
+        self::installBrick('OAuth2Token', $sourcePath.'/objectbrick_OAuth2Token_export.json');
     }
 
     public static function installClass($classname, $filepath)
     {
-        $class = \Pimcore\Model\Object\ClassDefinition::getByName($classname);
+        $class = \Pimcore\Model\DataObject\ClassDefinition::getByName($classname);
         if (!$class) {
-            $class = new \Pimcore\Model\Object\ClassDefinition();
+            $class = new \Pimcore\Model\DataObject\ClassDefinition();
             $class->setName($classname);
             $class->setGroup('CustomerManagement');
-        }
-        $json = file_get_contents($filepath);
 
-        $success = \Pimcore\Model\Object\ClassDefinition\Service::importClassDefinitionFromJson($class, $json);
-        if (!$success) {
-            Logger::err("Could not import $classname Class.");
+            $json = file_get_contents($filepath);
+
+            $success = \Pimcore\Model\DataObject\ClassDefinition\Service::importClassDefinitionFromJson($class, $json);
+            if (!$success) {
+                Logger::err("Could not import $classname Class.");
+            }
         }
     }
 
+    public static function installBrick($brickKey, $filepath)
+    {
+        try {
+            $brick = \Pimcore\Model\DataObject\Objectbrick\Definition::getByKey($brickKey);
+        } catch (\Exception $e) {
+            $brick = null;
+        }
+
+        if (!$brick) {
+            $brick = new \Pimcore\Model\DataObject\Objectbrick\Definition;
+            $brick->setKey($brickKey);
+
+            $json = file_get_contents($filepath);
+
+            $success = \Pimcore\Model\DataObject\ClassDefinition\Service::importObjectBrickFromJson($brick, $json);
+            if (!$success) {
+                Logger::err("Could not import $brickKey brick.");
+            }
+        }
+    }
 }

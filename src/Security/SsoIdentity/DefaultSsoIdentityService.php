@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Security\SsoIdentity;
@@ -18,8 +22,8 @@ use CustomerManagementFrameworkBundle\Model\SsoIdentityInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db;
 use Pimcore\File;
-use Pimcore\Model\Object\Concrete;
-use Pimcore\Model\Object\SsoIdentity;
+use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\DataObject\SsoIdentity;
 
 /**
  * SSO identity service handling SsoIdentities as objects on a SsoAwareCustomerInterface

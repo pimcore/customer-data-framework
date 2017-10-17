@@ -3,16 +3,21 @@
 declare(strict_types=1);
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\DependencyInjection;
 
+use Pimcore\Model\DataObject\AbstractObject;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -41,6 +46,8 @@ class Configuration implements ConfigurationInterface
         $rootNode->append($this->buildCustomerListNode());
         $rootNode->append($this->buildCustomerDuplicatesServicesNode());
         $rootNode->append($this->buildNewsletterNode());
+        $rootNode->append($this->buildActivityUrlTrackerNode());
+        $rootNode->append($this->buildSegmentAssignmentClassPermission());
 
         return $treeBuilder;
     }
@@ -66,6 +73,16 @@ class Configuration implements ConfigurationInterface
             ->end()
         ;
 
+        $general
+            ->children()
+            ->scalarNode('customerPimcoreClass')
+            ->defaultValue('Customer')
+            ->end()
+            ->scalarNode('mailBlackListFile')
+            ->defaultValue(PIMCORE_CONFIGURATION_DIRECTORY . '/cmf/mail-blacklist.txt')
+            ->end()
+            ->end();
+
         return $general;
     }
 
@@ -82,7 +99,8 @@ class Configuration implements ConfigurationInterface
         $general
             ->children()
             ->scalarNode('secret')
-                ->info('echo \Defuse\Crypto\Key::createNewRandomKey()->saveToAsciiSafeString();' . PHP_EOL .
+                ->info(
+                    'echo \Defuse\Crypto\Key::createNewRandomKey()->saveToAsciiSafeString();' . PHP_EOL .
                     'keep it secret'
                 )
                 ->defaultValue('')
@@ -214,9 +232,9 @@ class Configuration implements ConfigurationInterface
 
         $defaultExporters = [
             'csv' => [
-                'name'       => 'CSV',
-                'icon'       => 'fa fa-file-text-o',
-                'exporter'   => \CustomerManagementFrameworkBundle\CustomerList\Exporter\Csv::class,
+                'name' => 'CSV',
+                'icon' => 'fa fa-file-text-o',
+                'exporter' => \CustomerManagementFrameworkBundle\CustomerList\Exporter\Csv::class,
                 'properties' => [
                     'id',
                     'active',
@@ -235,9 +253,9 @@ class Configuration implements ConfigurationInterface
             ],
 
             'xlsx' => [
-                'name'       => 'XLSX',
-                'icon'       => 'fa fa-file-excel-o',
-                'exporter'   => \CustomerManagementFrameworkBundle\CustomerList\Exporter\Xlsx::class,
+                'name' => 'XLSX',
+                'icon' => 'fa fa-file-excel-o',
+                'exporter' => \CustomerManagementFrameworkBundle\CustomerList\Exporter\Xlsx::class,
                 'properties' => [
                     'id',
                     'active',
@@ -257,7 +275,7 @@ class Configuration implements ConfigurationInterface
         ];
 
         $defaultFilterPropertiesEquals = [
-            'id'     => 'o_id',
+            'id' => 'o_id',
             'active' => 'active',
         ];
 
@@ -265,7 +283,7 @@ class Configuration implements ConfigurationInterface
             'email' => [
                 'email'
             ],
-            'name'  => [
+            'name' => [
                 'firstname',
                 'lastname'
             ],
@@ -346,8 +364,14 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
 
+                ->arrayNode('duplicateCheckTrimmedFields')
+                    ->info('Performance improvement: add duplicate check fields which are trimmed (trim() called on the field value) by a customer save handler. No trim operation will be needed in the resulting query.')
+                    ->prototype('scalar')->end()
+                ->end()
+
                 ->arrayNode('duplicates_view')
                     ->children()
+                        ->booleanNode('enabled')->defaultFalse()->end()
                         ->arrayNode('listFields')
                             ->prototype('array')
                                 ->prototype('scalar')
@@ -372,7 +396,7 @@ class Configuration implements ConfigurationInterface
                                         ->booleanNode('soundex')->defaultFalse()->end()
                                         ->booleanNode('metaphone')->defaultFalse()->end()
                                         ->scalarNode('similarity')->defaultValue('\CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText')->end()
-                                        ->scalarNode('similarityTreshold')->defaultNull()->end()
+                                        ->scalarNode('similarityThreshold')->defaultNull()->end()
                                     ->end()
                                 ->end()
                             ->end()
@@ -404,15 +428,92 @@ class Configuration implements ConfigurationInterface
         $newsletter
             ->children()
                 ->booleanNode('newsletterSyncEnabled')->defaultFalse()->end()
+                ->booleanNode('newsletterQueueImmediateAsyncExecutionEnabled')->defaultTrue()->end()
                 ->arrayNode('mailchimp')
                     ->children()
-                        ->scalarNode('listId')->end()
                         ->scalarNode('apiKey')->end()
+                        ->scalarNode('cliUpdatesPimcoreUserName')->end()
                     ->end()
                 ->end()
             ->end();
 
-
         return $newsletter;
+    }
+
+    private function buildActivityUrlTrackerNode()
+    {
+        $treeBuilder = new TreeBuilder();
+
+        $tracker = $treeBuilder->root('activity_url_tracker');
+
+        $tracker
+            ->addDefaultsIfNotSet()
+            ->info('Configuration of activity url tracker services');
+
+        $tracker
+            ->children()
+                ->booleanNode('enabled')->defaultTrue()->end()
+                ->scalarNode('linkCmfcPlaceholder')->defaultValue('*|ID_ENCODED|*')->info('used for automatic link generation of LinkActivityDefinition data objects')->end()
+            ->end();
+
+        return $tracker;
+    }
+
+    private function buildSegmentAssignmentClassPermission()
+    {
+        $treeBuilder = new TreeBuilder();
+
+        $assignment = $treeBuilder->root('segment_assignment_classes');
+
+        $assignment
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->arrayNode('types')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('document')->info('expects sub types of document')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('folder')->defaultFalse()->end()
+                                ->scalarNode('page')->defaultFalse()->end()
+                                ->scalarNode('snippet')->defaultFalse()->end()
+                                ->scalarNode('link')->defaultFalse()->end()
+                                ->scalarNode('hardlink')->defaultFalse()->end()
+                                ->scalarNode('email')->defaultFalse()->end()
+                                ->scalarNode('newsletter')->defaultFalse()->end()
+                                ->scalarNode('printpage')->defaultFalse()->end()
+                                ->scalarNode('printcontainer')->defaultFalse()->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('asset')->info('expects sub types of asset')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('folder')->defaultFalse()->end()
+                                ->scalarNode('image')->defaultFalse()->end()
+                                ->scalarNode('text')->defaultFalse()->end()
+                                ->scalarNode('audio')->defaultFalse()->end()
+                                ->scalarNode('video')->defaultFalse()->end()
+                                ->scalarNode('document')->defaultFalse()->end()
+                                ->scalarNode('archive')->defaultFalse()->end()
+                                ->scalarNode('unknown')->defaultFalse()->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('object')->info('expects sub types of object')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode(AbstractObject::OBJECT_TYPE_FOLDER)->defaultFalse()->end()
+                                ->arrayNode(AbstractObject::OBJECT_TYPE_OBJECT)
+                                    ->prototype('boolean')->end()
+                                ->end()
+                                ->arrayNode(AbstractObject::OBJECT_TYPE_VARIANT)
+                                    ->prototype('boolean')->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
+
+        return $assignment;
     }
 }

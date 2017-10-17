@@ -1,7 +1,9 @@
 parameters:
     cmf.customer_export.items_per_request: 500
 
-
+    cmf.segmentAssignment.table.raw: plugin_cmf_segment_assignment
+    cmf.segmentAssignment.table.index: plugin_cmf_segment_assignment_index
+    cmf.segmentAssignment.table.queue: plugin_cmf_segment_assignment_queue
 
 services:
     _defaults:
@@ -9,10 +11,21 @@ services:
         autowire: true
         autoconfigure: true
 
+    CustomerManagementFrameworkBundle\CustomerSaveManager\SaveOptions:
+        arguments:
+          - true
+          - true
+          - true
+          - true
+          - '%pimcore_customer_management_framework.customer_save_manager.enableAutomaticObjectNamingScheme%'
+          - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.enableDuplicatesIndex%'
+          - '%pimcore_customer_management_framework.newsletter.newsletterSyncEnabled%' # needs to be modified when newsletter queue feature is finished
+          - '%pimcore_customer_management_framework.newsletter.newsletterQueueImmediateAsyncExecutionEnabled%' # needs to be modified when newsletter queue feature is finished
+
+
     CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface:
         class: CustomerManagementFrameworkBundle\CustomerSaveManager\DefaultCustomerSaveManager
-        arguments:
-            - '%pimcore_customer_management_framework.customer_save_manager.enableAutomaticObjectNamingScheme%'
+
 
 
     CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface:
@@ -42,7 +55,10 @@ services:
         arguments:
             - '%pimcore_customer_management_framework.segment_manager.segmentFolder.calculated%'
             - '%pimcore_customer_management_framework.segment_manager.segmentFolder.manual%'
+            - '%cmf.segmentAssignment.table.index%'
 
+    CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface:
+        class: CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\DefaultSegmentBuilderExecutor
 
     CustomerManagementFrameworkBundle\CustomerMerger\CustomerMergerInterface:
         class: CustomerManagementFrameworkBundle\CustomerMerger\DefaultCustomerMerger
@@ -52,6 +68,7 @@ services:
         class: CustomerManagementFrameworkBundle\CustomerDuplicatesService\DefaultCustomerDuplicatesService
         arguments:
             - '%pimcore_customer_management_framework.customer_duplicates_services.duplicateCheckFields%'
+            - '%pimcore_customer_management_framework.customer_duplicates_services.duplicateCheckTrimmedFields%'
 
     CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface:
         class: CustomerManagementFrameworkBundle\DuplicatesIndex\DefaultMariaDbDuplicatesIndex
@@ -60,8 +77,29 @@ services:
             - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.duplicateCheckFields%'
             - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.dataTransformers%'
 
+    CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\IndexerInterface:
+        class: CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\Indexer
+        arguments:
+            $segmentAssignmentIndexTable: '%cmf.segmentAssignment.table.index%'
+            $segmentAssignmentQueueTable: '%cmf.segmentassignment.table.queue%'
+
+    CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapperInterface:
+        class: CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapper
+
+    CustomerManagementFrameworkBundle\SegmentAssignment\SegmentAssigner\SegmentAssignerInterface:
+        class: CustomerManagementFrameworkBundle\SegmentAssignment\SegmentAssigner\SegmentAssigner
+        arguments:
+            $segmentAssignmentTable: '%cmf.segmentAssignment.table.raw%'
+            $segmentAssignmentQueueTable: '%cmf.segmentAssignment.table.queue%'
+            $segmentAssignmentIndexTable: '%cmf.segmentAssignment.table.index%'
+
+    CustomerManagementFrameworkBundle\Maintenance\MaintenanceWorker:
+        arguments:
+            $serviceConfiguration:
+                'processQueue': '@CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\IndexerInterface'
+
     cmf.logger:
-        alias: logger
+        alias: monolog.logger.cmf
 
     cmf.view_formatter:
         class: CustomerManagementFrameworkBundle\View\Formatter\DefaultViewFormatter
@@ -70,11 +108,16 @@ services:
         class: CustomerManagementFrameworkBundle\ActivityView\DefaultActivityView
         arguments: ['@cmf.view_formatter']
 
-    cmf.activity_store:
+    CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface:
         class: CustomerManagementFrameworkBundle\ActivityStore\MariaDb
 
-    cmf.activity_manager:
+    cmf.activity_store:
+        alias: CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface
+
+    CustomerManagementFrameworkBundle\ActivityStore\ActivityManagerInterface:
         class: CustomerManagementFrameworkBundle\ActivityManager\DefaultActivityManager
+    cmf.activity_manager:
+        alias: CustomerManagementFrameworkBundle\ActivityStore\ActivityManagerInterface
 
     cmf.activity_store_entry:
         class: CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\DefaultActivityStoreEntry
@@ -83,11 +126,15 @@ services:
     cmf.activity_url_tracker:
         class: CustomerManagementFrameworkBundle\ActivityUrlTracker\DefaultActivityUrlTracker
 
-
+    cmf.link-activity-definition.linkgenerator:
+        class: CustomerManagementFrameworkBundle\LinkGenerator\LinkActivityDefinitionLinkGenerator
+        arguments:
+          - '%pimcore_customer_management_framework.url_activity_tracker.linkCmfcPlaceholder%'
 
     cmf.segment_manager.segment_merger:
         class: CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\DefaultSegmentMerger
 
+    CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\DefaultSegmentMerger\MetadataFiller: ~
 
     cmf.customer_duplicates_view:
         class: CustomerManagementFrameworkBundle\CustomerDuplicatesView\DefaultCustomerDuplicatesView

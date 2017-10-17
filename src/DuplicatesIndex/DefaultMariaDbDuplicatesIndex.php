@@ -1,17 +1,20 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\DuplicatesIndex;
 
-use CustomerManagementFrameworkBundle\Config;
 use CustomerManagementFrameworkBundle\DataSimilarityMatcher\DataSimilarityMatcherInterface;
 use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 use CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Standard;
@@ -50,6 +53,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
     /**
      * DefaultMariaDbDuplicatesIndex constructor.
+     *
      * @param bool $enableDuplicatesIndex
      * @param array $duplicateCheckFields
      * @param array $dataTransformers
@@ -91,15 +95,14 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
             foreach ($paginator as $customer) {
                 $logger->notice(sprintf('update index for %s', (string)$customer));
 
-                $this->updateDuplicateIndexForCustomer( $customer, true);
+                $this->updateDuplicateIndexForCustomer($customer, true);
             }
         }
     }
 
     public function updateDuplicateIndexForCustomer(CustomerInterface $customer, $force = false)
     {
-
-        if(!$force && !$this->enableDuplicatesIndex) {
+        if (!$force && !$this->enableDuplicatesIndex) {
             $this->getLogger()->debug('duplicate index disabled');
 
             return;
@@ -132,6 +135,12 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
     public function deleteCustomerFromDuplicateIndex(CustomerInterface $customer)
     {
+        if (!$this->enableDuplicatesIndex) {
+            $this->getLogger()->debug('duplicate index disabled');
+
+            return;
+        }
+
         $db = Db::get();
         $db->query(
             sprintf('delete from %s where customer_id = ?', self::DUPLICATESINDEX_CUSTOMERS_TABLE),
@@ -243,7 +252,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
             }
 
             if (sizeof($customers) != 2) {
-                continue;
+                throw new \Exception(sprintf('Invalid duplicate customer combination. A combination needs to consist of 2 customers. %s customer(s) found. Customer IDs: %s', sizeof($customers), $row['duplicateCustomerIds']));
             }
 
             $fieldCombinations = [];
@@ -553,9 +562,9 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
                 $dataRow1 = json_decode($row1['duplicateData'], true);
                 $dataRow2 = json_decode($row2['duplicateData'], true);
 
-                $treshold = isset($options['similarityTreshold']) ? $options['similarityTreshold'] : null;
+                $threshold = isset($options['similarityThreshold']) ? $options['similarityThreshold'] : null;
 
-                if (!$similarityMatcher->isSimilar($dataRow1[$field], $dataRow2[$field], $treshold)) {
+                if (!$similarityMatcher->isSimilar($dataRow1[$field], $dataRow2[$field], $threshold)) {
                     return false;
                 }
             }

@@ -1,23 +1,26 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\DataTransformer\Cleanup;
 
-use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 
 class Email implements DataTransformerInterface
 {
     public function transform($data, $options = [])
     {
-        return trim(filter_var($data, FILTER_SANITIZE_EMAIL), " \t\n\r\0\x0B.-_@");
+        return trim(filter_var($data, FILTER_SANITIZE_EMAIL), " \t\n\r\0\x0B.-_@'$|");
     }
 }

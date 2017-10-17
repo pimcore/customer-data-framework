@@ -4,7 +4,6 @@
  * @var \Pimcore\Templating\PhpEngine $view
  * @var \Pimcore\Templating\GlobalVariables $app
  */
-
 $this->extend('PimcoreCustomerManagementFrameworkBundle::layout.html.php');
 
 $this->headScript()->appendFile('/bundles/pimcorecustomermanagementframework/js/CustomerView/frontend.js');

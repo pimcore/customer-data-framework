@@ -1,4 +1,4 @@
-var ActivityView = pimcore.registerNS("pimcore.plugin.CustomerManagementFramework.ActivityView");
+var ActivityView = pimcore.registerNS("pimcore.plugin.customermanagementframework.ActivityView");
 
 ActivityView.config = {
     PERMISSION: "plugin_customermanagementframework_activityview"

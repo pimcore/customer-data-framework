@@ -3,12 +3,16 @@
 declare(strict_types=1);
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Security\OAuth;
@@ -24,7 +28,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * Utility class supporting registration process from OAuth responses. This is mostly a facade pipipng
+ * Utility class supporting registration process from OAuth responses. This is mostly a facade piping
  * requests to other services.
  */
 class OAuthRegistrationHandler
@@ -55,10 +59,10 @@ class OAuthRegistrationHandler
         SsoIdentityServiceInterface $ssoIdentityService,
         AccountConnectorInterface $accountConnector
     ) {
-        $this->oAuthUtils         = $oAuthUtils;
-        $this->tokenStorage       = $tokenStorage;
+        $this->oAuthUtils = $oAuthUtils;
+        $this->tokenStorage = $tokenStorage;
         $this->ssoIdentityService = $ssoIdentityService;
-        $this->accountConnector   = $accountConnector;
+        $this->accountConnector = $accountConnector;
     }
 
     /**

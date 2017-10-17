@@ -1,19 +1,25 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Helper;
 
 use Pimcore\File;
+use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\DataObject\Data\ObjectMetadata;
+use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Element\Service;
-use Pimcore\Model\Object\Concrete;
 
 class Objects
 {
@@ -35,7 +41,8 @@ class Objects
     {
         $origKey = is_null($origKey) ? self::getValidKey($object->getKey()) : $origKey;
 
-        $list = new \Pimcore\Model\Object\Listing;
+        $list = new \Pimcore\Model\DataObject\Listing;
+        $list->setUnpublished(true);
         $list->setCondition(
             "o_path = '".(string)$object->getParent()."/' and o_key = '".$object->getKey(
             )."' and o_id != ".$object->getId()
@@ -52,7 +59,10 @@ class Objects
 
     /**
      * add pimcore objects to given array if element are not already part of the array
-     * - returns true if data in array got changed
+     * works with arrays of objects and arrays of objects with metadata
+     *
+     * - returns false if no data in array was changed
+     * - returns array with added objects if object where added
      *
      * @param array $array
      * @param array $addObjects
@@ -62,9 +72,17 @@ class Objects
     public static function addObjectsToArray(array &$array, array $addObjects)
     {
         $added = [];
-        foreach ($addObjects as $addObject) {
+        foreach ($addObjects as $add) {
+            $addObject = $add instanceof ObjectMetadata ? $add->getObject() : $add;
+
+            if (!method_exists($addObject, 'getId')) {
+                continue;
+            }
+
             $found = false;
             foreach ($array as $object) {
+                $object = $object instanceof ObjectMetadata ? $object->getObject() : $object;
+
                 if ($addObject->getId() == $object->getId()) {
                     $found = true;
                     break;
@@ -72,12 +90,52 @@ class Objects
             }
 
             if (!$found) {
-                $added[] = $addObject;
-                $array[] = $addObject;
+                $added[] = $add;
+                $array[] = $add;
             }
         }
 
         return sizeof($added) ? $added : false;
+    }
+
+    /**
+     * remove pimcore objects from given array
+     * works with arrays of objects and arrays of objects with metadata
+     *
+     * - returns false if no data in array was changed
+     * - returns array with removed objects if object where removed
+     *
+     * @param array $array
+     * @param array $removeObjects
+     *
+     * @return false|array
+     */
+    public static function removeObjectsFromArray(array &$array, array $removeObjects)
+    {
+        $removed = [];
+
+        foreach ($array as $key => $object) {
+            $object = $object instanceof ObjectMetadata ? $object->getObject() : $object;
+
+            foreach ($removeObjects as $remove) {
+                $removeObject = $remove instanceof ObjectMetadata ? $remove->getObject() : $remove;
+
+                if (!method_exists($removeObject, 'getId')) {
+                    continue;
+                }
+
+                if ($object->getId() == $removeObject->getId()) {
+                    $removed[] = $remove;
+                    unset($array[$key]);
+                }
+            }
+        }
+
+        if (sizeof($removed)) {
+            $array = array_values($array);
+        }
+
+        return sizeof($removed) ? $removed : false;
     }
 
     public static function objectArrayUnique($array)
@@ -92,35 +150,53 @@ class Objects
     }
 
     /**
-     * remove pimcore objects from given array
-     * - returns true if data in array got changed
+     * Returns IDs of an array of objects
      *
      * @param array $array
-     * @param array $removeObjects
      *
-     * @return false|array
+     * @return array
      */
-    public static function removeObjectsFromArray(array &$array, array $removeObjects)
+    public static function getIdsFromArray(array &$array)
     {
-        $removed = [];
+        $ids = [];
+        foreach ($array as $object) {
+            $ids[] = $object->getId();
+        }
 
-        foreach ($array as $key => $object) {
-            foreach ($removeObjects as $removeObject) {
-                if (!method_exists($removeObject, 'getId')) {
-                    continue;
-                }
+        return $ids;
+    }
 
-                if ($object->getId() == $removeObject->getId()) {
-                    $removed[] = $removeObject;
-                    unset($array[$key]);
-                }
+    /**
+     * Returns true if the given object or (object with metadata item) is contained in the $addSegments array.
+     * Objects with metdata are only matched by object IDs (not by metadata or concrete instances).
+     *
+     * @param $object
+     * @param array $objects
+     *
+     * @return bool;
+     */
+    public static function objectInArray($object, array $objects)
+    {
+        $object = $object instanceof ObjectMetadata ? $object->getObject() : $object;
+        if (!$object instanceof ElementInterface) {
+            return false;
+        }
+
+        if (!$object->getId()) {
+            return false;
+        }
+
+        foreach ($objects as $_object) {
+            $_object = $_object instanceof ObjectMetadata ? $_object->getObject() : $_object;
+            if (!$_object instanceof ElementInterface) {
+                continue;
+            }
+
+            if ($_object->getId() == $object->getId()) {
+                return true;
             }
         }
 
-        if (sizeof($removed)) {
-            $array = array_values($array);
-        }
-
-        return sizeof($removed) ? $removed : false;
+        return false;
     }
 }

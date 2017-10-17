@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger;
@@ -16,13 +20,15 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 interface SegmentMergerInterface
 {
     /**
-     * Could be used to add/remove segments to/from customers. If segments are added or removed this will be tracked in the notes/events tab of the customer. With the optional $hintForNotes parameter it's possible to add an iditional hint to the notes/event entries.
-     * The changes of this method will be persisted when saveMergedSegments() gets called.
+     * Could be used to add/remove segments to/from customers.
+     * Take a look at the same method with the same name in the SegmentManagerInterface for further details.
      *
      * @param CustomerInterface $customer
      * @param array $addSegments
      * @param array $deleteSegments
      * @param string|null $hintForNotes
+     * @param int|true|null $segmentCreatedTimestamp
+     * @param int|true|null $segmentApplicationCounter
      *
      * @return void
      */
@@ -30,7 +36,9 @@ interface SegmentMergerInterface
         CustomerInterface $customer,
         array $addSegments,
         array $deleteSegments = [],
-        $hintForNotes = null
+        $hintForNotes = null,
+        $segmentCreatedTimestamp = null,
+        $segmentApplicationCounter = null
     );
 
     /**

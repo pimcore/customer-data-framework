@@ -7,12 +7,13 @@
     },
     "require": {
         "drewm/mailchimp-api": "*",
-        "elements/object-merger-bundle": "^1.0",
+        "pimcore/object-merger": "^1.0.1",
         "guzzlehttp/guzzle": ">=4.1.4 <7.0",
         "hwi/oauth-bundle": "^0.5.3",
         "mtdowling/cron-expression": "^1.1.0",
         "pimcore/search-query-parser": "^1.2.4",
-        "box/spout": "^2.7"
+        "box/spout": "^2.7",
+        "pear/archive_tar": "^1.4.3"
     },
     "require-dev": {
         "codeception/codeception": "^2.2"
@@ -33,12 +34,6 @@
             "bundles": [
                 "CustomerManagementFrameworkBundle\\PimcoreCustomerManagementFrameworkBundle"
             ]
-        }
-    },
-    "repositories": {
-        "elements": {
-            "type": "composer",
-            "url": "https://composer-packages.elements.at/"
         }
     }
 }

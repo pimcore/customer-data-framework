@@ -1,0 +1,49 @@
+# To get started with security, check out the documentation:
+# http://symfony.com/doc/current/security.html
+pimcore:
+    security:
+        # The encoder factory as defined in services.yml
+        encoder_factories:
+            Pimcore\Model\DataObject\Customer: cmf.security.user_password_encoder_factory
+
+security:
+    # The user provider is responsible for loading users from the DB. We use the OAuth aware user
+    # provider here as we want to use OAuth logins.
+    providers:
+        cmf:
+            id: cmf.security.user_provider.oauth
+
+    firewalls:
+        main:
+            # a user is not mandatory on every page (this is necessary as soon as there's
+            # something like a form login which needs unauthenticated pages)
+            anonymous: ~
+
+            # the user provider specified above
+            provider: cmf
+
+            # configure a form login authenticator
+            form_login:
+                login_path: app_auth_login
+                check_path: app_auth_login
+                default_target_path: app_index
+
+            # configure the OAuth authenticator (HWIOAuthBundle)
+            oauth:
+                resource_owners:
+                    google: app_auth_oauth_check_google
+                    twitter: app_auth_oauth_check_twitter
+                login_path: app_auth_login
+                failure_path: app_auth_login
+                default_target_path: app_index
+                oauth_user_provider:
+                    service: cmf.security.user_provider.oauth
+
+            # the logout handler listens on the given route and handles
+            # logout if the route is matched
+            logout:
+                path: app_auth_logout
+                target: app_auth_login
+
+    # Depending on your use case, you probably want to specify global authorization rules via URL patterns
+    # by using the access_control configuration. Please see the Symfony's security documentation for details.

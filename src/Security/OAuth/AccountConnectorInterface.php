@@ -3,19 +3,23 @@
 declare(strict_types=1);
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Security\OAuth;
 
 use CustomerManagementFrameworkBundle\Model\SsoIdentityInterface;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
-use Pimcore\Model\Object\SsoIdentity;
+use Pimcore\Model\DataObject\SsoIdentity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 interface AccountConnectorInterface extends \HWI\Bundle\OAuthBundle\Connect\AccountConnectorInterface

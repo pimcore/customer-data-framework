@@ -1,0 +1,20 @@
+# Architecture Overview
+
+The following architecture overview shows available framework components. The component configuration takes place in the 
+`pimcore_customer_management_framework` configuration node. Optionally for each component a custom implementation can be 
+configured and used.
+
+![Architecture Overview](./img/architecture-overview.png)
+
+For Details for the components see additional documentation pages like: 
+
+* Data Entities for [Customer](./05_Working-with-Customers.md) and [Customer Segments](./11_CustomerSegments.md)
+* [Activity Manager](./09_Activities.md)
+* [Customer Duplicates Service](./15_CustomerDuplicatesService.md)
+* [Segment Manager](./11_CustomerSegments.md)
+* [Customer Save Manager](./06_CustomerSaveManager.md)
+* [Rest API Webservice](./Webservice.md)
+* [Action Trigger Service](./22_ActionTrigger.md)
+* [List Views](./ListViews.md)
+* [SSO and Social Logins](./18_Single_Sign_On.md)
+* [MailChimp Integration](./24_NewsletterSync.md)

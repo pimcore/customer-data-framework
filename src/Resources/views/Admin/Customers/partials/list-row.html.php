@@ -8,11 +8,10 @@ $customer = $this->customer;
 $userDetailUrl = null;
 if ($cv->hasDetailView($customer)) {
     $userDetailUrl = $this->url('customermanagementframework_admin_customers_detail', [
-        'id'         => $customer->getId()
+        'id' => $customer->getId()
     ]);
 
     $userDetailUrl = $this->formQueryString($this->request, $userDetailUrl);
-
 }
 ?>
 
@@ -33,8 +32,8 @@ if ($cv->hasDetailView($customer)) {
     <td class="icon-column icon-column--center">
         <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials:active-state.html.php', [
             'customerView' => $cv,
-            'customer'     => $customer,
-            'language'     => $this->language
+            'customer' => $customer,
+            'language' => $this->language
         ]); ?>
     </td>
     <td>

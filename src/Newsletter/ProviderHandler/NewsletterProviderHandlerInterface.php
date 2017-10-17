@@ -1,48 +1,65 @@
 <?php
 
 /**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * License.md which is distributed with this source code.
+ * Pimcore
  *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler;
 
-use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use Pimcore\Model\Object\CustomerSegmentGroup;
+use CustomerManagementFrameworkBundle\Model\NewsletterAwareCustomerInterface;
+use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
 
 interface NewsletterProviderHandlerInterface
 {
     /**
-     * update customer in mail provider
+     * Returns a unique identifier/short name of the provider handler.
      *
-     * @param CustomerInterface $customer
-     * @return void
+     * @return string
      */
-    public function updateCustomer(CustomerInterface $customer);
+    public function getShortcut();
 
     /**
-     * update customer in mail provider when email address has changed
+     * Update given NewsletterQueueItems in newsletter provider.
+     * Needs to set $item->setSuccsessfullyProcessed(true) if it was successfull otherwise the item will never be removed from the newsletter queue.
      *
-     * @param CustomerInterface $customer
+     * @param NewsletterQueueItemInterface[] $array
+     * @param bool $forceUpdate
+     *
      * @return void
      */
-    public function updateCustomerEmail(CustomerInterface $customer, $oldEmail);
+    public function processCustomerQueueItems(array $items, $forceUpdate = false);
 
     /**
-     * delete customer in mail provider
+     * @param bool $forceUpdate
      *
-     * @param CustomerInterface $customer
      * @return void
      */
-    public function deleteCustomer();
+    public function updateSegmentGroups($forceUpdate = false);
 
     /**
-     * @param CustomerSegmentGroup[] $groups
-     * @return void
+     * Subscribe customer to newsletter (for example via web form). Returns true if it was successful.
+     *
+     * @param NewsletterAwareCustomerInterface $customer
+     *
+     * @return bool
      */
-    public function updateSegmentGroups(array $groups);
+    public function subscribeCustomer(NewsletterAwareCustomerInterface $customer);
+
+    /**
+     * Unsubscribe customer from newsletter (for example via web form). Returns true if it was successful.
+     *
+     * @param NewsletterAwareCustomerInterface $customer
+     *
+     * @return bool
+     */
+    public function unsubscribeCustomer(NewsletterAwareCustomerInterface $customer);
 }

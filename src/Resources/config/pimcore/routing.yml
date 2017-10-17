@@ -13,3 +13,9 @@ _pimcore_customermanagementframework_rest:
     type:     annotation
     prefix:   /webservice/cmf
 
+_pimcore_customermanagementframework_preview:
+    resource: "@PimcoreCustomerManagementFrameworkBundle/Controller/Preview"
+    type:     annotation
+    prefix:   /__customermanagementframework
+
+
