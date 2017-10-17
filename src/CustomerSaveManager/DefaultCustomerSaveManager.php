@@ -234,7 +234,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
              * @var NewsletterQueueInterface $newsletterQueue
              */
             $newsletterQueue = \Pimcore::getContainer()->get('cmf.newsletter.queue');
-            $newsletterQueue->enqueueCustomer($customer, $operation, $this->originalCustomer ? $this->originalCustomer->getEmail() : $customer->getEmail(), $this->saveOptions->isNewsletterQueueImmidiateAsyncExecutionEnabled());
+            $newsletterQueue->enqueueCustomer($customer, $operation, $this->originalCustomer ? $this->originalCustomer->getEmail() : $customer->getEmail(), $this->saveOptions->isNewsletterQueueImmediateAsyncExecutionEnabled());
         }
     }
 

@@ -55,7 +55,7 @@ class SaveOptions
     /**
      * @var bool
      */
-    private $newsletterQueueImmidiateAsyncExecutionEnabled;
+    private $newsletterQueueImmediateAsyncExecutionEnabled;
 
     /**
      * SaveOptions constructor.
@@ -75,7 +75,7 @@ class SaveOptions
         $objectNamingSchemeEnabled = false,
         $duplicatesIndexEnabled = false,
         $newsletterQueueEnabled = false,
-        $newsletterQueueImmidiateAsyncExecutionEnabled = false
+        $newsletterQueueImmediateAsyncExecutionEnabled = false
     ) {
         $this->onSaveSegmentBuildersEnabled = $onSaveSegmentBuildersEnabled;
         $this->validatorEnabled = $validatorEnabled;
@@ -84,7 +84,7 @@ class SaveOptions
         $this->objectNamingSchemeEnabled = $objectNamingSchemeEnabled;
         $this->duplicatesIndexEnabled = $duplicatesIndexEnabled;
         $this->newsletterQueueEnabled = $newsletterQueueEnabled;
-        $this->newsletterQueueImmidiateAsyncExecutionEnabled = $newsletterQueueImmidiateAsyncExecutionEnabled;
+        $this->newsletterQueueImmediateAsyncExecutionEnabled = $newsletterQueueImmediateAsyncExecutionEnabled;
     }
 
     /**
@@ -146,9 +146,9 @@ class SaveOptions
     /**
      * @return bool
      */
-    public function isNewsletterQueueImmidiateAsyncExecutionEnabled()
+    public function isNewsletterQueueImmediateAsyncExecutionEnabled()
     {
-        return $this->newsletterQueueImmidiateAsyncExecutionEnabled;
+        return $this->newsletterQueueImmediateAsyncExecutionEnabled;
     }
 
     /**
@@ -294,9 +294,9 @@ class SaveOptions
     /**
      * @return $this
      */
-    public function disableNewsletterQueueImmidiateAsyncExecution()
+    public function disableNewsletterQueueImmediateAsyncExecution()
     {
-        $this->newsletterQueueImmidiateAsyncExecutionEnabled = false;
+        $this->newsletterQueueImmediateAsyncExecutionEnabled = false;
 
         return $this;
     }
@@ -304,9 +304,9 @@ class SaveOptions
     /**
      * @return $this
      */
-    public function enableNewsletterQueueImmidiateAsyncExecution()
+    public function enableNewsletterQueueImmediateAsyncExecution()
     {
-        $this->newsletterQueueImmidiateAsyncExecutionEnabled = true;
+        $this->newsletterQueueImmediateAsyncExecutionEnabled = true;
 
         return $this;
     }

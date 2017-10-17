@@ -20,7 +20,7 @@ services:
           - '%pimcore_customer_management_framework.customer_save_manager.enableAutomaticObjectNamingScheme%'
           - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.enableDuplicatesIndex%'
           - '%pimcore_customer_management_framework.newsletter.newsletterSyncEnabled%' # needs to be modified when newsletter queue feature is finished
-          - '%pimcore_customer_management_framework.newsletter.newsletterQueueImmidiateAsyncExecutionEnabled%' # needs to be modified when newsletter queue feature is finished
+          - '%pimcore_customer_management_framework.newsletter.newsletterQueueImmediateAsyncExecutionEnabled%' # needs to be modified when newsletter queue feature is finished
 
 
     CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface:

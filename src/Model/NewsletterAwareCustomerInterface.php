@@ -22,7 +22,7 @@ interface NewsletterAwareCustomerInterface extends CustomerInterface
     /**
      * If this method returns true the customer will be exported by the provider handler with the given shortcut.
      * Otherwise the provider handler will delete the customer in the target system if it exists.
-     * To ensure a consistant handling inactive or unpublished customers should never be exported.
+     * To ensure a consistent handling inactive or unpublished customers should never be exported.
      *
      * @param NewsletterProviderHandlerInterface $newsletterProviderHandler
      *

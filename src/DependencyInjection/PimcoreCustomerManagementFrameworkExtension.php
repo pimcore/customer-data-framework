@@ -137,7 +137,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
     {
         $container->setParameter('pimcore_customer_management_framework.newsletter.newsletterSyncEnabled', (bool) $config['newsletterSyncEnabled']);
         $container->setParameter('pimcore_customer_management_framework.newsletter.newsletterSyncEnabled', (bool) $config['newsletterSyncEnabled']);
-        $container->setParameter('pimcore_customer_management_framework.newsletter.newsletterQueueImmidiateAsyncExecutionEnabled', (bool) $config['newsletterQueueImmidiateAsyncExecutionEnabled']);
+        $container->setParameter('pimcore_customer_management_framework.newsletter.newsletterQueueImmediateAsyncExecutionEnabled', (bool) $config['newsletterQueueImmediateAsyncExecutionEnabled']);
 
         if ($config['newsletterSyncEnabled']) {
             $container->setAlias('cmf.newsletter.queue', NewsletterQueueInterface::class);
