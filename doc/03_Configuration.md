@@ -207,17 +207,26 @@ pimcore_customer_management_framework:
                    - countryCode
                    - idEncoded
               
-        # TODO add description here      
+        # Configuration of filters in the customer list view      
         filter_properties:
+            # Filter fields which must match exactly
             equals:
                 id:                  o_id
                 active:              active
+                
+            # Searched fields in customer view search filters
+            # (enhanced search syntax (AND/OR/!/*...) could be used in these fields)
             search:
+                # email search filter
                 email:
                   - email
+                  
+                # name search filter
                 name:
                   - firstname
                   - lastname
+                  
+                # main search filter
                 search:
                   - o_id
                   - idEncoded
@@ -245,7 +254,8 @@ pimcore_customer_management_framework:
         
         duplicates_view:
             enabled: true # the feature will be visible in the backend only if it is enabled
-            # TODO add description here
+            # Visible fields in the customer duplicates view. 
+            # Each single group/array is one separate column in the view table.
             listFields:
               - [id]
               - [email]
@@ -253,54 +263,56 @@ pimcore_customer_management_framework:
               - [street]
               - [zip, city]
               
-        # TODO add description here
+        # Index used for a global search of customer duplicates. 
+        # Matching field combinations can be configured here.
+        # See "Customer Duplicates Service" docs chapter for more details.
         duplicates_index:
             enableDuplicatesIndex: false
             duplicateCheckFields:
                 - firstname:
-                  soundex: true
-                  metaphone: true
-                  similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
-                
-                zip:
-                  similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\Zip
-                
-                street:
-                  soundex: true
-                  metaphone: true
-                  similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
-                
-                birthDate:
-                  similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\BirthDate::class
+                      soundex: true
+                      metaphone: true
+                      similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
+
+                  zip:
+                      similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\Zip
+
+                  street:
+                      soundex: true
+                      metaphone: true
+                      similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
+
+                  birthDate:
+                      similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\BirthDate::class
                 
                 - lastname:
-                  soundex: true
-                  metaphone: true
-                  similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
-                
-                firstname:
-                  soundex: true
-                  metaphone: true
-                  similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
-                
-                zip:
-                  similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\Zip
-                
-                city:
-                  soundex: true
-                  metaphone: true
-                  similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
-                
-                street:
-                  soundex: true
-                  metaphone: true
-                  similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
+                      soundex: true
+                      metaphone: true
+                      similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
+
+                  firstname:
+                      soundex: true
+                      metaphone: true
+                      similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
+
+                  zip:
+                      similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\Zip
+
+                  city:
+                      soundex: true
+                      metaphone: true
+                      similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
+
+                  street:
+                      soundex: true
+                      metaphone: true
+                      similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
                 
                 
                 - email:
-                  metaphone: true
-                  similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
-                  similarityThreshold: 90
+                      metaphone: true
+                      similarity: \CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText
+                      similarityThreshold: 90
     
             dataTransformers:
               street: \CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Street
