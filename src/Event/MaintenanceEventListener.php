@@ -21,7 +21,6 @@ class MaintenanceEventListener
 {
     public function onMaintenance(\Pimcore\Event\System\MaintenanceEvent $e)
     {
-        \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class)->executeSegmentBuilderMaintenance();
         \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->cleanupExportTmpData();
         \Pimcore::getContainer()->get('cmf.customer_provider.object_naming_scheme')->cleanupEmptyFolders();
     }

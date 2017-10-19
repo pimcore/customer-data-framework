@@ -96,6 +96,7 @@ services:
     CustomerManagementFrameworkBundle\Maintenance\MaintenanceWorker:
         arguments:
             $serviceConfiguration:
+                'executeSegmentBuilderMaintenance': '@CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface'
                 'processQueue': '@CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\IndexerInterface'
 
     cmf.logger:
