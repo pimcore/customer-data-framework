@@ -57,11 +57,9 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
         $container->addCompilerPass(new NewsletterManagerPass());
     }
 
-    /**
-     * @return Installer
-     */
+
     public function getInstaller()
     {
-        return new Installer();
+        return $this->container->get(Installer::class);
     }
 }

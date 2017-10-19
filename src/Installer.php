@@ -15,13 +15,14 @@
 
 namespace CustomerManagementFrameworkBundle;
 
-use Pimcore\Extension\Bundle\Installer\AbstractInstaller;
+use Doctrine\DBAL\Migrations\Version;
+use Doctrine\DBAL\Schema\Schema;
+use Pimcore\Extension\Bundle\Installer\MigrationInstaller;
 use Pimcore\Logger;
-use Pimcore\Model\Object\Objectbrick\Definition;
 
-class Installer extends AbstractInstaller
+class Installer extends MigrationInstaller
 {
-    public function install()
+    public function migrateInstall(Schema $schema, Version $version)
     {
         $this->installPermissions();
         $this->installDatabaseTables();
@@ -29,6 +30,11 @@ class Installer extends AbstractInstaller
         $this->installBricks();
 
         return true;
+    }
+
+    public function migrateUninstall(Schema $schema, Version $version)
+    {
+
     }
 
     public function isInstalled()
@@ -55,10 +61,10 @@ class Installer extends AbstractInstaller
     public function installPermissions()
     {
         $permissions = [
-            'plugin_customermanagementframework_activityview',
-            'plugin_customermanagementframework_customerview',
-            'plugin_customermanagementframework_customer_automation_rules',
-            'plugin_customermanagementframework_newsletter_enqueue_all_customers',
+            'plugin_cmf_perm_activityview',
+            'plugin_cmf_perm_customerview',
+            'plugin_cmf_perm_customer_automation_rules',
+            'plugin_cmf_perm_newsletter_enqueue_all_customers',
         ];
 
         foreach ($permissions as $key) {

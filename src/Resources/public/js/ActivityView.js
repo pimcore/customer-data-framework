@@ -1,7 +1,7 @@
 var ActivityView = pimcore.registerNS("pimcore.plugin.customermanagementframework.ActivityView");
 
 ActivityView.config = {
-    PERMISSION: "plugin_customermanagementframework_activityview"
+    PERMISSION: "plugin_cmf_activityview"
 };
 
 ActivityView.ActivityTab = Class.create({
