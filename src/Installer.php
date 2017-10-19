@@ -22,6 +22,12 @@ use Pimcore\Logger;
 
 class Installer extends MigrationInstaller
 {
+    public function getMigrationVersion(): string
+    {
+        return '20171019130865';
+    }
+
+
     public function migrateInstall(Schema $schema, Version $version)
     {
         $this->installPermissions();
