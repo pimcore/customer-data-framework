@@ -14,6 +14,9 @@ Please feel free to re-open issues we've closed if there's something we've misse
 
 ## Development 
 
+### Migrations
+Database and other updates outside of the file system or the vendor folders need to be handled by Pimcore's bundle migrations feature.
+
 ### Frontend
 
 Frontend assets for the admin iframes (`src/Resources/public/admin`) are built via gulp and generated from the `frontend/`
