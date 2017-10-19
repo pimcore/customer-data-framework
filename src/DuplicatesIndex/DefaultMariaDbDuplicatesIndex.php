@@ -159,6 +159,8 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
             $db->query('truncate table '.self::FALSE_POSITIVES_TABLE);
         }
 
+        $this->cleanupDuplicatesIndex();
+
         $this->getLogger()->notice('start calculating exact duplicate matches');
         $exakt = $this->calculateExactDuplicateMatches();
 
@@ -322,6 +324,19 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
     {
         $db = Db::get();
         $db->query(sprintf('update %s set declined = 1 where id = ?', self::POTENTIAL_DUPLICATES_TABLE), [$id]);
+    }
+
+    protected function cleanupDuplicatesIndex()
+    {
+        $this->getLogger()->notice('cleanup duplicates index');
+        $db = Db::get();
+
+        $db->exec(
+            sprintf(
+                'delete from %s where id not in(select distinct duplicate_id from %s )',
+                self::DUPLICATESINDEX_TABLE,
+                self::DUPLICATESINDEX_CUSTOMERS_TABLE
+        ));
     }
 
     protected function calculateExactDuplicateMatches()
