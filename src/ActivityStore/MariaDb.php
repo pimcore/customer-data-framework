@@ -369,7 +369,7 @@ class MariaDb implements ActivityStoreInterface
      * @param CustomerInterface $customer
      * @param null $activityType
      *
-     * @return string
+     * @return int
      */
     public function countActivitiesOfCustomer(CustomerInterface $customer, $activityType = null)
     {
@@ -380,7 +380,7 @@ class MariaDb implements ActivityStoreInterface
             $and = ' and type='.$db->quote($activityType);
         }
 
-        return $db->fetchOne(
+        return (int) $db->fetchOne(
             'select count(id) from '.self::ACTIVITIES_TABLE." where customerId = ? $and",
             $customer->getId()
         );

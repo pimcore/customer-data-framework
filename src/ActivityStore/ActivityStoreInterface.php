@@ -122,7 +122,7 @@ interface ActivityStoreInterface
      * @param CustomerInterface $customer
      * @param null $activityType
      *
-     * @return mixed
+     * @return int
      */
     public function countActivitiesOfCustomer(CustomerInterface $customer, $activityType = null);
 
