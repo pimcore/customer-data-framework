@@ -76,7 +76,6 @@ services:
 e.g. in `config.yml`: 
 
 ```yaml
-
 pimcore_customer_management_framework:
     # Enable/Disable SSO oauth client. If enabled additional steps are necessary, see SSO docs for details. 
     oauth_client:
@@ -207,15 +206,20 @@ pimcore_customer_management_framework:
                    - countryCode
                    - idEncoded
               
-        # Configuration of filters in the customer list view      
+        # Configuration of filters in the customer list view. The properties configured here will 
+        # be handled if passed as ?filter[] query parameter.
         filter_properties:
-            # Filter fields which must match exactly
+            # Filter fields which must match exactly.
             equals:
+                # ?filter[id]=8 will result in a SQL condition of "WHERE o_id=8"
                 id:                  o_id
                 active:              active
                 
             # Searched fields in customer view search filters
-            # (enhanced search syntax (AND/OR/!/*...) could be used in these fields)
+            # (enhanced search syntax (AND/OR/!/*...) could be used in these fields).
+            # Search will be applied to all fields in the list, e.g. 
+            # ?filter[name]=val will result in a SQL condition of "WHERE (firstname LIKE "%val%" OR lastname LIKE "%val")
+            # See https://github.com/pimcore/search-query-parser for detailed search syntax. 
             search:
                 # email search filter
                 email:
@@ -250,7 +254,6 @@ pimcore_customer_management_framework:
             - email
             - firstname
             - lastname
-          
         
         duplicates_view:
             enabled: true # the feature will be visible in the backend only if it is enabled
@@ -320,5 +323,4 @@ pimcore_customer_management_framework:
               city: \CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Simplify
               lastname: \CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Simplify
               birthDate: \CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Date
-
 ```
