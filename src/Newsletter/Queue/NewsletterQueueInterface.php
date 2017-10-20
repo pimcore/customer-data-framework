@@ -15,7 +15,6 @@
 
 namespace CustomerManagementFrameworkBundle\Newsletter\Queue;
 
-use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\NewsletterAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProviderHandlerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
@@ -26,9 +25,10 @@ interface NewsletterQueueInterface
     const OPERATION_DELETE = 'delete';
 
     /**
-     * @param CustomerInterface $customer
+     * @param NewsletterAwareCustomerInterface $customer
      * @param $operation
      * @param string|null $email
+     * @param bool $immediateAsyncProcessQueueItem
      *
      * @return void
      */

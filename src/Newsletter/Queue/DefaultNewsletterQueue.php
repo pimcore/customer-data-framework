@@ -41,6 +41,12 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
         $this->setLoggerComponent('NewsletterSync');
     }
 
+    /**
+     * @param NewsletterAwareCustomerInterface $customer
+     * @param $operation
+     * @param null $email
+     * @param bool $immediateAsyncProcessQueueItem
+     */
     public function enqueueCustomer(NewsletterAwareCustomerInterface $customer, $operation, $email = null, $immediateAsyncProcessQueueItem = false)
     {
         $modificationDate = round(microtime(true) * 1000);
