@@ -26,9 +26,10 @@ interface NewsletterQueueInterface
     const OPERATION_DELETE = 'delete';
 
     /**
-     * @param CustomerInterface $customer
+     * @param NewsletterAwareCustomerInterface $customer
      * @param $operation
      * @param string|null $email
+     * @param bool $immediateAsyncProcessQueueItem
      *
      * @return void
      */
