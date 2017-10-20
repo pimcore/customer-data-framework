@@ -17,7 +17,6 @@ namespace CustomerManagementFrameworkBundle\Newsletter\Queue;
 
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use CustomerManagementFrameworkBundle\Model\NewsletterAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProviderHandlerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\DefaultNewsletterQueueItem;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
@@ -41,7 +40,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
         $this->setLoggerComponent('NewsletterSync');
     }
 
-    public function enqueueCustomer(NewsletterAwareCustomerInterface $customer, $operation, $email = null, $immediateAsyncProcessQueueItem = false)
+    public function enqueueCustomer(CustomerInterface $customer, $operation, $email = null, $immediateAsyncProcessQueueItem = false)
     {
         $modificationDate = round(microtime(true) * 1000);
         $email = !is_null($email) ? $email : $customer->getEmail();
