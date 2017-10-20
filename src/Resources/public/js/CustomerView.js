@@ -1,7 +1,7 @@
 var CustomerView = pimcore.registerNS("pimcore.plugin.customermanagementframework.CustomerView");
 
 CustomerView.config = {
-    PERMISSION: "plugin_cmf_customerview"
+    PERMISSION: "plugin_cmf_perm_customerview"
 };
 
 CustomerView.CustomerTab = Class.create({

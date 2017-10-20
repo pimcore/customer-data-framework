@@ -29,7 +29,7 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
 {
     public function onKernelController(FilterControllerEvent $event)
     {
-        $this->checkPermission('plugin_cmf_activityview');
+        $this->checkPermission('plugin_cmf_perm_activityview');
     }
 
     /**

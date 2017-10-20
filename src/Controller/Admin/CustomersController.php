@@ -47,7 +47,7 @@ class CustomersController extends Admin
     public function onKernelController(FilterControllerEvent $event)
     {
         parent::onKernelController($event);
-        $this->checkPermission('plugin_cmf_customerview');
+        $this->checkPermission('plugin_cmf_perm_customerview');
 
         \Pimcore\Model\DataObject\AbstractObject::setHideUnpublished(true);
     }

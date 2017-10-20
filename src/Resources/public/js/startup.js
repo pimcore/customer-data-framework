@@ -28,7 +28,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
         }
 
         // customer view
-        if (user.isAllowed('plugin_cmf_customerview')) {
+        if (user.isAllowed('plugin_cmf_perm_customerview')) {
             var customerViewPanelId = 'plugin_cmf_customerview';
             var item = {
                 text: t('plugin_cmf_customerview'),
@@ -56,7 +56,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
         }
 
         // customer duplicates view
-        if (pimcore.settings.cmf.duplicatesViewEnabled && user.isAllowed('plugin_cmf_customerview')) {
+        if (pimcore.settings.cmf.duplicatesViewEnabled && user.isAllowed('plugin_cmf_perm_customerview')) {
             var customerDuplicateViewPanelId = 'plugin_cmf_customerduplicatesview';
             var item = {
                 text: t('plugin_cmf_customerduplicatesview'),
@@ -83,7 +83,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
             menuItems.add(item);
         }
 
-        if (user.isAllowed('plugin_cmf_customer_automation_rules')) {
+        if (user.isAllowed('plugin_cmf_perm_customer_automation_rules')) {
             var customerAutomationRulesPanelId = 'plugin_cmf_customerautomationrules';
             var item = {
                 text: t('plugin_cmf_customerautomationrules'),
@@ -101,7 +101,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
             menuItems.add(item);
         }
 
-        if (pimcore.settings.cmf.newsletterSyncEnabled && user.isAllowed('plugin_cmf_newsletter_enqueue_all_customers')) {
+        if (pimcore.settings.cmf.newsletterSyncEnabled && user.isAllowed('plugin_cmf_perm_newsletter_enqueue_all_customers')) {
             var item = {
                 text: t('plugin_cmf_newsletter_enqueue_all_customers'),
                 iconCls: 'pimcore_icon_newsletter_enqueue_all_customers',
