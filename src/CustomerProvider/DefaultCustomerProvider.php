@@ -19,6 +19,7 @@ use CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\Object
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\Element\ElementInterface;
+use Pimcore\Model\Factory;
 
 class DefaultCustomerProvider implements CustomerProviderInterface
 {
@@ -38,13 +39,18 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     protected $namingScheme;
 
     /**
+     * @var Factory
+     */
+    protected $modelFactory;
+
+    /**
      * DefaultCustomerProvider constructor.
      *
      * @param string $pimcoreClass
      * @param string $parentPath
      * @param ObjectNamingSchemeInterface $namingScheme
      */
-    public function __construct($pimcoreClass, $parentPath, ObjectNamingSchemeInterface $namingScheme)
+    public function __construct($pimcoreClass, $parentPath, ObjectNamingSchemeInterface $namingScheme, Factory $modelFactory)
     {
         $this->pimcoreClass = $pimcoreClass;
         if (empty($this->pimcoreClass)) {
@@ -58,6 +64,8 @@ class DefaultCustomerProvider implements CustomerProviderInterface
         }
 
         $this->namingScheme = $namingScheme;
+
+        $this->modelFactory = $modelFactory;
     }
 
     /**
@@ -90,7 +98,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     public function getCustomerClassName()
     {
         $class = $this->getDiClassName();
-        $customer = new $class;
+        $customer = $this->modelFactory->build($class);
 
         return get_class($customer);
     }
@@ -119,7 +127,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
         $className = $this->getDiClassName();
 
         /** @var CustomerInterface|ElementInterface|Concrete $customer */
-        $customer = new $className;
+        $customer = $this->modelFactory->build($className);
         $customer->setPublished(true);
         $customer->setValues($data);
         $this->applyObjectNamingScheme($customer);
