@@ -9,13 +9,13 @@
  * @license    GPLv3
  */
 
-namespace Pimcore\Model\Tool\CustomReport\Adapter;
+namespace CustomerManagementFrameworkBundle\Adapter;
 
 use CustomerManagementFrameworkBundle\Model\AbstractTermSegmentBuilderDefinition;
 use Pimcore\Db;
 use Pimcore\Model;
 
-class TermSegmentBuilder extends Sql
+class TermSegmentBuilder extends Model\Tool\CustomReport\Adapter\Sql
 {
     /**
      * @param $configuration
