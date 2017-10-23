@@ -45,7 +45,7 @@ Following you find the three flows the implementation follows for login, registr
            error to show an error message when re-rendering the form).  
 
 
-##### Registration Flow
+## Registration Flow
    
 After the login flow threw an `AccountNotLinkedException`, we can use the exception to link the granted OAuth account
 during registration (see `AuthController` in the sample for details) to the new registered user:
@@ -66,18 +66,17 @@ exceptions. The login page fetches and deletes the last authentication error fro
        provided in the OAuth profile).
     4) When the form is submitted and valid, the submission is handled by the same registration action as the one rendering the
        form. 
-        1) If the form is valid, the customer object created before is saved. 
-        2) If a token was found, the `OAuthRegistrationHandler` will delegate connecting the OAuth profile to the user object. 
+        1) If the form is valid, the customer object created before will be saved. 
+        2) If a token was found, the `OAuthRegistrationHandler` will delegate connecting the OAuth profile to the customer object. 
            In this process the registration handler uses the `AccountConnector` to apply profile data (e.g. birthday) to 
-           the customer object and to create a `SsoIdentity` containing all the needed data to re-identify the user on 
-           subsequent logins. After this step the customer is created and has the OAuth profile data and the `SsoIdentity` 
+           the user object and to create a `SsoIdentity` containing all the needed data to re-identify the user on 
+           subsequent logins. After this step the customer object is created and has the OAuth profile data and the `SsoIdentity` 
            linked to the account. 
-    5) As last step, the customer will be logged in by creating a security token and saving it on symfony's token storage. After that
-       he will be redirected to the final URL `/secure` in our case. This step is optional and heavily depends on your use case
-      you could also flag the user as newly registered and send him an confirmation email to activate the account.
+    5) As last step, the user will be logged in by creating a security token and saving it on symfony's token storage. After that
+       he will be redirected to the final URL `/secure` in our case. This step is optional and heavily depends on your use case. You could also flag the user as newly registered and send him an confirmation email to activate the account.
 
 
-##### Connect Flow
+## Connect Flow
    
 When a logged in user wants to connect its account to an additional OAuth provider, the connect flow looks like the following:
 
