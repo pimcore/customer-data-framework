@@ -1,8 +1,8 @@
 # Activities
 
-An important part of the customer management framework are customer activities. They can be pretty every activity a 
+An important part of the customer management framework are customer activities. They can be pretty much every activity a 
 customer can perform - and therefore very simple (for example customer logged in) or quite complex (orders, bookings...). 
-The CMF can be used to store all these customer related activity data and use it for example for segment building or as 
+The CMF can be used to store all customer related activity data and use it for example for segment building or as 
 information for the customer service team.
 
 
@@ -63,7 +63,7 @@ By implementing the [`ActivityStoreInterface`](https://github.com/pimcore/custom
 
 On top of the ActivityStore the ActivityManager is responsible for handling activities in the CMF. It's a relatively 
 lightweight component which just handles the process of tracking activities. Most of the work is done within the 
-ActivityStore - the ActivityManager is just responsible for putting everything together independently of the concrete 
+ActivityStore - the ActivityManager is just responsible for putting everything together independently of the actual 
 implementation of the ActivityStore.
 
 ### Tracking an activity
@@ -84,7 +84,7 @@ The CMF plugin contains a list view for displaying activities. This is added as 
 
 ### Handle how activities are displayed in the ActivityView
 
-It's possible to handle how activities are displayed within the ActivityView by implementing the following tree methods 
+It's possible to handle how activities are displayed within the ActivityView by implementing the following three methods 
 of the `ActivityInterface`:
 
 ```php
