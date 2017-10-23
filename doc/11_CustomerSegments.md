@@ -82,9 +82,9 @@ $segmentManager->saveMergedSegments($customer);
 ##### Optional: Store the Creation Date and How Often a Segment was Added
 
 The CMF offers a mechanism to handle potentially expiring segments by storing the creation date and a counter how often
- a segment was added if it applies multiple time. For example, if there is a segment "interested in hiking", it might 
- be important that it will expire/removed at some point in the future. Also a counter could be useful to store the 
- information on how often a customer performed an activity which leads to the segment "interested in hiking".
+ a segment was added if it applies multiple times. For example, if there is a segment "interested in hiking", it might 
+ be important that it will expire or have to be removed at some point in the future. Also a counter could be useful to store the 
+ information on how often a customer performed an activity which led to the segment "interested in hiking".
 
 
 The CMF supports objects and objects with metadata fields to store the manual and calculated segment relations of a customer.
@@ -150,7 +150,7 @@ services:
 
 #### Built-in Segment Builders
 
-The CMF framework includes some SegmentBuilders which could be used out of the box:
+The CMF framework includes some SegmentBuilders which can be used out of the box:
  
 ##### AgeSegmentBuilder
 
