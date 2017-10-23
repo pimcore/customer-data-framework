@@ -79,7 +79,7 @@ will be applied for customers which are unpublished and inactive.
 
 ## Customer Save Validator
 If enabled the customer save validator will throw exceptions when the customer is invalid according to it's implementation. 
-These exception can be used in try/catch blocks in order to check if the customer is valid. In the Pimcore backend an 
+These exceptions can be used in try/catch blocks in order to check if the customer is valid. In the Pimcore backend an 
 error message will alert if somebody tries to save an invalid customer.
 
 ###### Example configuration
