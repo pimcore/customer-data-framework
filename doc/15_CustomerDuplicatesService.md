@@ -6,8 +6,8 @@ three major parts:
  - Part 2 - Duplicates Index 
  - Part 3 - Duplicates View
 
-The first two Parts are more configuration and running things in background. The Duplicates View on the other hand is a 
-view for the user to see, validate and merge or decline potential customer duplicates in Pimcore backend UI. 
+The first two Parts are for configurating things running in the background. The Duplicates View on the other hand is a 
+view for the user to see, validate, merge or decline potential customer duplicates in the Pimcore backend UI. 
 
 
 ## Part 1 - Mechanisms for Searching Duplicates of a given Customer: 
@@ -17,7 +17,7 @@ comparisons are case insensitive.
 
 The field combination(s) which should match could be defined in the [CMF configuration file](./03_Configuration.md) in the 
 `customer_duplicates_services.duplicateCheckFields` section. (Optional) multiple field combinations are supported 
-(for example first check for duplicates based on `firstname/lastname/street/zip/city` - if no duplicates where found, 
+(for example first check for duplicates based on `firstname/lastname/street/zip/city` - if no duplicates are found, 
 check for `firstname/street/zip/city/birthDate`).
 
 > ### Performance tip:
@@ -63,11 +63,11 @@ $duplicates = $service->getDuplicatesOfCustomer($existingCustomer, 1);
 The duplicates index is used for searching globally for (fuzzy matching) duplicates. The found duplicates will be visible 
 in the customer duplicates view (see Part 3) and the user has the possibility to merge these duplicates manually.
 
-In order to make a performing search for duplicates possible, the data is stored in a special format in the duplicate 
-index. By default this is done via several MariaDB-Tables. But it would be possible to for example create a 
+In order to make a performant search for duplicates possible, the data is stored in a special format in the duplicate 
+index. By default this is done via several MariaDB-Tables. But it would also be possible to create a 
 DuplicateIndex for ElasticSearch by implementing the `DuplicateIndexInterface`.
 
-The duplicates index can be configured in the [configuration file](./03_Configuration.md). There data and logic how for 
+The duplicates index can be configured in the [configuration file](./03_Configuration.md). Data and logic for 
 storing duplicates within the index is configured as follows: 
  
 ### Example Config
@@ -134,7 +134,7 @@ duplicates_index:
 It's possible to define the field combinations which should match within the 
 `customer_duplicates_services.duplicates_index.duplicateCheckFields` section.
 
-For each field in these field combination it is possible to define how it should be indexed with the following four options:
+For each field in these field combinations it is possible to define how it should be indexed with the following four options:
 - **soundex**: If set to `true`, the field should be relevant for soundex matching. This should be enabled for text fields 
 where a soundex matching could make sense. For example for a `zip` field it's not really useful whereas for `firstname` it 
 would be a good idea to enable it :-).
@@ -165,8 +165,8 @@ php pimcore/cli/console.php cmf:duplicates-index
 ```
 
 **Options:**
-- `-c` - Calculate potential duplicates. This needs to run as cron job for example once a day.
-- `-a` - Analyse false positives. If set false positives will be logged (by default in the plugin_cmf_duplicates_false_positives table).
+- `-c` - Calculate potential duplicates. This needs to run as cron job, for example once a day.
+- `-a` - Analyse false positives. If set, false positives will be logged (by default in the plugin_cmf_duplicates_false_positives table).
 - `-r` - Recreate index. Recreate the total index for all customers.
 
 
