@@ -93,5 +93,5 @@ See [CronJob Docs](./04_Cronjobs.md) for details.
 
 ## (Optional) Prerequisites for SSO
 
-If SSO functionality of CMF should be integrated, please follow the steps for [Integration of Single Sign On](./Single_Sign_On.md). 
+If SSO functionality of CMF should be integrated, please follow the steps for [Integration of Single Sign On](./18_Single_Sign_On.md). 
 
