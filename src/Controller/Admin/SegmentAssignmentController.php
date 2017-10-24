@@ -51,9 +51,9 @@ class SegmentAssignmentController extends AdminController
         $parentId = $db->fetchOne($parentIdStatement);
 
         $segments = $this->get(SegmentManagerInterface::class)->getSegmentsForElementId($parentId, $type);
-        $data = array_map([$this, 'dehydrateSegment'], $segments);
+        $data = array_map([$this, 'dehydrateSegment'], array_filter($segments));
 
-        return $this->json(['data' => $data]);
+        return $this->json(['data' => array_values($data)]);
     }
 
     /**
@@ -76,9 +76,9 @@ class SegmentAssignmentController extends AdminController
             $segment = CustomerSegment::getById($id);
 
             return $this->dehydrateSegment($segment);
-        }, explode(',', $segmentIds));
+        }, array_filter(explode(',', $segmentIds)));
 
-        return $this->json(['data' => array_filter($data)]);
+        return $this->json(['data' => array_values($data)]);
     }
 
     /**
@@ -122,6 +122,8 @@ class SegmentAssignmentController extends AdminController
     }
 
     /**
+     * dehydrates a CustomerSegment for display in the pimcore backend
+     *
      * @param CustomerSegment $segment
      *
      * @return array

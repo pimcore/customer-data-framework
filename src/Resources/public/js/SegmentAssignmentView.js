@@ -80,7 +80,8 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
                     handler: function (target, checkedState) {
                         inheritableGrid.setDisabled(checkedState);
                         inheritableGrid.updateLayout();
-                    }
+                        this.saveSegmentAssignments().bind(this);
+                    }.bind(this)
                 }
             ]
         });
@@ -113,6 +114,11 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
                     type: 'json',
                     rootProperty: 'data'
                 }
+            },
+            listeners: {
+                add: this.saveSegmentAssignments.bind(this),
+                remove: this.saveSegmentAssignments.bind(this),
+                clear: this.saveSegmentAssignments.bind(this)
             },
             fields: ['id', 'name', 'type']
         });
@@ -234,5 +240,33 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
             }
         }, this);
 
+    },
+
+    saveSegmentAssignments: function () {
+        var breaksInheritance = this.breaksInheritance.items.items[0].checked;
+        var segmentIds = [];
+
+        this.assignedStore.data.items.forEach(function(item){
+            segmentIds.push(item.id);
+        });
+
+        Ext.Ajax.request(
+            {
+                url: "/admin/customermanagementframework/segment-assignment/assign",
+                method: "post",
+                params: {
+                    id: this.object.id,
+                    type: this.type,
+                    breaksInheritance: breaksInheritance,
+                    segmentIds: JSON.stringify(segmentIds)
+                },
+                success: function (response) {
+                    console.log(response.responseText);
+                },
+                failure: function(response) {
+                    pimcore.helpers.showNotification(t("error"), t("plugin_cmf_segment_assignment_error"), "error", response.responseText);
+                }
+            }
+        );
     }
 });

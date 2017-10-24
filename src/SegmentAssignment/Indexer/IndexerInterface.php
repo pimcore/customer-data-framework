@@ -15,14 +15,10 @@
 
 namespace CustomerManagementFrameworkBundle\SegmentAssignment\Indexer;
 
-use Pimcore\Model\Element\ElementInterface;
-
 interface IndexerInterface
 {
     /**
-     * indexes all elements in currently stored in the queue
-     *
-     * @param ElementInterface $rootNode
+     * indexes all elements in currently stored in the queue table
      *
      * @return bool
      */

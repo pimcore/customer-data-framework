@@ -59,14 +59,4 @@ interface SegmentAssignerInterface
      * @return bool
      */
     public function removeElementById(string $elementId, string $type): bool;
-
-    /**
-     * adds an element's children to the segment assignment queue
-     *
-     * @param string $elementId
-     * @param string $type
-     *
-     * @return bool
-     */
-    public function enqueueChildren(string $elementId, string $type): bool;
 }

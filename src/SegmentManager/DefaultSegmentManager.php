@@ -20,6 +20,7 @@ use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInt
 use CustomerManagementFrameworkBundle\Helper\Objects;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
+use CustomerManagementFrameworkBundle\SegmentAssignment\StoredFunctions\StoredFunctionsInterface;
 use CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapperInterface;
 use CustomerManagementFrameworkBundle\SegmentBuilder\SegmentBuilderInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
@@ -65,24 +66,22 @@ class DefaultSegmentManager implements SegmentManagerInterface
      *
      * @var TypeMapperInterface
      */
-    private $typeMapper = null;
+    protected $typeMapper = null;
 
     /**
-     * index table to get segments assigned to elements
-     *
-     * @var string
+     * @var StoredFunctionsInterface
      */
-    private $segmentAssignmentIndexTable = '';
+    protected $storedFunctions = null;
 
     /**
      * @param $segmentFolderCalculated
      * @param $segmentFolderManual
-     * @param string $segmentAssignmentIndexTable
      * @param CustomerSaveManagerInterface $customerSaveManager
      * @param CustomerProviderInterface $customerProvider
      * @param TypeMapperInterface $typeMapper
+     * @param StoredFunctionsInterface $storedFunctions
      */
-    public function __construct($segmentFolderCalculated, $segmentFolderManual, string $segmentAssignmentIndexTable, CustomerSaveManagerInterface $customerSaveManager, CustomerProviderInterface $customerProvider, TypeMapperInterface $typeMapper)
+    public function __construct($segmentFolderCalculated, $segmentFolderManual, CustomerSaveManagerInterface $customerSaveManager, CustomerProviderInterface $customerProvider, TypeMapperInterface $typeMapper, StoredFunctionsInterface $storedFunctions)
     {
         $this->segmentFolderCalculated = $segmentFolderCalculated;
         $this->segmentFolderManual = $segmentFolderManual;
@@ -91,7 +90,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
         $this->customerProvider = $customerProvider;
 
         $this->setTypeMapper($typeMapper);
-        $this->setSegmentAssignmentIndexTable($segmentAssignmentIndexTable);
+        $this->setStoredFunctions($storedFunctions);
     }
 
     /**
@@ -111,19 +110,17 @@ class DefaultSegmentManager implements SegmentManagerInterface
     }
 
     /**
-     * @return string
+     * @return StoredFunctionsInterface
      */
-    public function getSegmentAssignmentIndexTable(): string
-    {
-        return $this->segmentAssignmentIndexTable;
+    public function getStoredFunctions(): StoredFunctionsInterface {
+        return $this->storedFunctions;
     }
 
     /**
-     * @param string $segmentAssignmentIndexTable
+     * @param StoredFunctionsInterface $storedFunctions
      */
-    public function setSegmentAssignmentIndexTable(string $segmentAssignmentIndexTable)
-    {
-        $this->segmentAssignmentIndexTable = $segmentAssignmentIndexTable;
+    public function setStoredFunctions(StoredFunctionsInterface $storedFunctions) {
+        $this->storedFunctions = $storedFunctions;
     }
 
     /**
@@ -158,7 +155,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     public function getSegmentsForElementId(string $id, string $type): array
     {
-        $segmentIds = Db::get()->fetchCol(sprintf('SELECT `segmentId` FROM %s WHERE `elementId` = %s AND `elementType` = "%s"', $this->getSegmentAssignmentIndexTable(), $id, $type));
+        $segmentIds = $this->getStoredFunctions()->retrieve($id, $type);
 
         return array_map(function ($id) {
             return CustomerSegment::getById($id);

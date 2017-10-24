@@ -56,7 +56,8 @@ interface SegmentManagerInterface
     public function getSegmentGroupById($id);
 
     /**
-     * Returns all segments assigned to $element
+     * Returns all segments assigned to $element or one of its parents
+     * uses the directly assigned segments, not the indexed ones
      *
      * @param ElementInterface $element
      *
@@ -65,7 +66,8 @@ interface SegmentManagerInterface
     public function getSegmentsForElement(ElementInterface $element): array;
 
     /**
-     * Returns all segments assigned to $id with $type
+     * Returns all segments assigned to $id with $type or one of its parents
+     * uses the directly assigned segments, not the indexed ones
      *
      * @param string $id
      * @param string $type
@@ -77,16 +79,12 @@ interface SegmentManagerInterface
     /**
      * Returns an object list of all customer segments.
      *
-     * @param array $params
-     *
      * @return CustomerSegment\Listing
      */
     public function getSegments();
 
     /**
      * Returns an object list with all customer segment groups.
-     *
-     * @param array $params
      *
      * @return CustomerSegmentGroup\Listing
      */

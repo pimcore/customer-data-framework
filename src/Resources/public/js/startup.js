@@ -265,47 +265,6 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
         var tabPanel = element.tab.items.items[1];
         tabPanel.insert(tabPanel.items.length, this.segmentTab.getLayout());
         tabPanel.updateLayout();
-    },
-
-    preSaveDocument: function (element, type, task, only) {
-        this.saveSegmentAssignments(element, 'document', task, only);
-    },
-
-    preSaveAsset: function(element, type, task, only) {
-        this.saveSegmentAssignments(element, 'asset', task, only);
-    },
-
-    preSaveObject: function(element, type, task, only) {
-        this.saveSegmentAssignments(element, 'object', task, only);
-    },
-
-    saveSegmentAssignments: function (element, type, task, only) {
-        var segmentTab = this.segmentTab;
-        var breaksInheritance = segmentTab.breaksInheritance.items.items[0].checked;
-        var segmentIds = [];
-
-        segmentTab.assignedStore.data.items.forEach(function(item){
-            segmentIds.push(item.id);
-        });
-
-        Ext.Ajax.request(
-            {
-                url: "/admin/customermanagementframework/segment-assignment/assign",
-                method: "post",
-                params: {
-                    id: element.id,
-                    type: type,
-                    breaksInheritance: breaksInheritance,
-                    segmentIds: JSON.stringify(segmentIds)
-                },
-                success: function (response) {
-                    console.log(response.responseText);
-                },
-                failure: function(response) {
-                    pimcore.helpers.showNotification(t("error"), t("plugin_cmf_segment_assignment_error"), "error", response.responseText);
-                }
-            }
-        );
     }
 });
 

@@ -161,20 +161,19 @@ class SegmentAssigner implements SegmentAssignerInterface
         try {
             $formatArguments = [
                 1 => $this->getSegmentAssignmentTable(),
-                2 => $this->getSegmentAssignmentQueueTable(),
-                3 => $elementId,
-                4 => $type,
-                5 => (int) $breaksInheritance,
-                6 => join(',', $segmentIds)];
+                2 => $elementId,
+                3 => $type,
+                4 => join(',', $segmentIds),
+                5 => (int) $breaksInheritance];
 
             $statement = vsprintf(
                 'START TRANSACTION;'.
-                'INSERT INTO `%1$s` (`elementId`, `elementType`, `breaksInheritance`, `segments`) VALUES (%3$s, "%4$s", %5$s, "%6$s") ON DUPLICATE KEY UPDATE `breaksInheritance` = %5$s, `segments` = "%6$s";'.
-                'INSERT INTO `%2$s` (`elementId`, `elementType`) VALUES (%3$s, "%4$s") ON DUPLICATE KEY UPDATE `elementId` = `elementId`;'.
+                'INSERT INTO `%1$s` (`elementId`, `elementType`, `segments`, `breaksInheritance`, `inPreparation`) '.
+                'VALUES (%2$s, "%3$s", "%4$s", %5$s, 1) '.
+                'ON DUPLICATE KEY UPDATE `segments` = "%4$s", `breaksInheritance` = %5$s, `inPreparation` = 1;'.
                 'COMMIT;', $formatArguments);
 
             $this->getDb()->query($statement);
-            $this->enqueueChildren($elementId, $type);
 
             return true;
         } catch (\Throwable $exception) {
@@ -205,40 +204,6 @@ class SegmentAssigner implements SegmentAssignerInterface
                 'COMMIT;', $formatArguments);
 
             $this->getDb()->query($statement);
-
-            return true;
-        } catch (\Throwable $exception) {
-            Logger::error($exception->getMessage());
-
-            return false;
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function enqueueChildren(string $elementId, string $type): bool
-    {
-        try {
-            $formatArguments = [
-                1 => $this->getSegmentAssignmentQueueTable(),
-                2 => $type === 'object' ? 'o_id' : 'id',
-                3 => $type,
-                4 => $type . 's',
-                5 => $type === 'object' ? 'o_path' : 'path',
-                6 => $type === 'object' ? 'o_key' : 'key',
-                7 => $elementId
-            ];
-
-            $enqueueStatement = vsprintf('START TRANSACTION; ' .
-                'INSERT INTO `%1$s` (`elementId`, `elementType`) ' .
-                'SELECT `%2$s` AS elementId, "%3$s" AS elementType FROM `%4$s` ' .
-                'WHERE `%5$s` LIKE CONCAT( ' .
-                    '(SELECT CONCAT(`%5$s`, `%6$s`) FROM `%4$s` WHERE `%2$s` = "%7$s")' .
-                ', "%%") ON DUPLICATE KEY UPDATE `elementId` = `elementId`; ' .
-                'COMMIT;', $formatArguments);
-
-            $this->getDb()->query($enqueueStatement);
 
             return true;
         } catch (\Throwable $exception) {

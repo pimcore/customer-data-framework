@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper;
 
 use Pimcore\Model\Element\ElementInterface;
+use Pimcore\Model\Listing\AbstractListing;
 
 /**
  * Interface TypeMapperInterface
@@ -26,6 +27,10 @@ use Pimcore\Model\Element\ElementInterface;
  */
 interface TypeMapperInterface
 {
+    const TYPE_DOCUMENT = 'document';
+    const TYPE_ASSET = 'asset';
+    const TYPE_OBJECT = 'object';
+
     /**
      * returns a type string (e.g. 'document'|'asset'|'object') for the provided element
      *
@@ -43,4 +48,12 @@ interface TypeMapperInterface
      * @return string
      */
     public function getTypeStringBySubType(string $subType): string;
+
+    /**
+     * returns a type string (e.g. 'document'|'asset'|'object') based on the type of Listing provided
+     *
+     * @param AbstractListing $listing
+     * @return string
+     */
+    public function getTypeStringByListing(AbstractListing $listing): string;
 }

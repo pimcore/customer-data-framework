@@ -37,7 +37,7 @@ All types default to `false` so only those required need to be configured.
 
 ## Segment Assignment 
 To assign segments to elements, just open the additional `Segment Assignment` tab (which is visible as soon as the 
-segment assignment is activated for the certain type) and assign segments via drag & drop. 
+segment assignment is activated for the certain type) and assign segments via drag & drop or the search function. 
 
 TODO add screenshot
 
@@ -97,9 +97,27 @@ Whenever an element's assigned segments are saved using `SegmentAssignerInterfac
 that element and its children are queued to be indexed by `IndexerInterface` which can be called via 
 the `cmf:maintenance` cli command (e.g. as a [CronJob](./04_Cronjobs.md)).
 
+## Working with assignments
 
-## Retrieving assigned segments
+### Retrieving assigned segments for an element
 To retrieve segments assigned to a certain element,
-[`SegmentManagerInterface::getSegmentsForElement`](https://github.com/pimcore/customer-data-framework/blob/master/src/SegmentManager/SegmentManagerInterface.php#L65) and 
-[`SegmentManagerInterface::getSegmentsForElementId`](https://github.com/pimcore/customer-data-framework/blob/master/src/SegmentManager/SegmentManagerInterface.php#L75)
+[`SegmentManagerInterface::getSegmentsForElement`](https://github.com/pimcore/customer-data-framework/blob/master/src/SegmentManager/SegmentManagerInterface.php#L66) and 
+[`SegmentManagerInterface::getSegmentsForElementId`](https://github.com/pimcore/customer-data-framework/blob/master/src/SegmentManager/SegmentManagerInterface.php#L77)
 return an array of fully hydrated CustomerSegments.
+
+### Filter elements by assigned segments
+When working with Pimcore listings, [`QueryServiceInterface`](https://github.com/pimcore/customer-data-framework/blob/master/src/QueryService/QueryServiceInterface.php)
+can provide you with a condition narrowing the results down to elements that are assigned a specific single segment, 
+one or more, or all segments in an array of ids.  
+The relevant element type is determined by the type of the provided Listing and the condition is directly added to it.  
+Usage:
+```php
+<?php
+$queryService = \Pimcore::getContainer()->get(QueryServiceInterface::class); //or however you access your services
+$listing = new Listing();
+$queryService->bySegmentIds($listing, [1, 2, 3], $concatMode = QueryServiceInterface::MODE_DISJUNCTION); // OR-concatenation
+$queryService->bySegmentIds($listing, [4, 5], $concatMode = QueryServiceInterface::MODE_CONJUNCTION); // AND-concatenation
+
+```
+
+33

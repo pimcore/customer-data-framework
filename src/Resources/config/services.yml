@@ -55,7 +55,6 @@ services:
         arguments:
             - '%pimcore_customer_management_framework.segment_manager.segmentFolder.calculated%'
             - '%pimcore_customer_management_framework.segment_manager.segmentFolder.manual%'
-            - '%cmf.segmentAssignment.table.index%'
 
     CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface:
         class: CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\DefaultSegmentBuilderExecutor
@@ -80,8 +79,9 @@ services:
     CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\IndexerInterface:
         class: CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\Indexer
         arguments:
+            $segmentAssignmentTable: '%cmf.segmentAssignment.table.raw%'
             $segmentAssignmentIndexTable: '%cmf.segmentAssignment.table.index%'
-            $segmentAssignmentQueueTable: '%cmf.segmentassignment.table.queue%'
+            $segmentAssignmentQueueTable: '%cmf.segmentAssignment.table.queue%'
 
     CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapperInterface:
         class: CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapper
@@ -92,6 +92,19 @@ services:
             $segmentAssignmentTable: '%cmf.segmentAssignment.table.raw%'
             $segmentAssignmentQueueTable: '%cmf.segmentAssignment.table.queue%'
             $segmentAssignmentIndexTable: '%cmf.segmentAssignment.table.index%'
+
+    CustomerManagementFrameworkBundle\SegmentAssignment\QueueBuilder\QueueBuilderInterface:
+        class: CustomerManagementFrameworkBundle\SegmentAssignment\QueueBuilder\DefaultQueueBuilder
+        arguments:
+            $segmentAssignmentQueueTable: '%cmf.segmentAssignment.table.queue%'
+
+    CustomerManagementFrameworkBundle\SegmentAssignment\StoredFunctions\StoredFunctionsInterface:
+        class: CustomerManagementFrameworkBundle\SegmentAssignment\StoredFunctions\DefaultStoredFunctions
+
+    CustomerManagementFrameworkBundle\SegmentAssignment\QueryService\QueryServiceInterface:
+        class: CustomerManagementFrameworkBundle\SegmentAssignment\QueryService\DefaultQueryService
+        arguments:
+            $segmentAssignmentIndexTable: '%cmf.segmentassignment.table.index%'
 
     CustomerManagementFrameworkBundle\Maintenance\MaintenanceWorker:
         arguments:

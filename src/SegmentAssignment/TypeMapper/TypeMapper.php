@@ -17,15 +17,13 @@ namespace CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper;
 
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject\AbstractObject;
+use Pimcore\Model\DataObject\Listing\Concrete;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\ElementInterface;
+use Pimcore\Model\Listing\AbstractListing;
 
 class TypeMapper implements TypeMapperInterface
 {
-    const TYPE_DOCUMENT = 'document';
-    const TYPE_ASSET = 'asset';
-    const TYPE_OBJECT = 'object';
-
     /**
      * @inheritdoc
      */
@@ -65,4 +63,24 @@ class TypeMapper implements TypeMapperInterface
 
         return '';
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getTypeStringByListing(AbstractListing $listing): string {
+        if($listing instanceof Document\Listing) {
+            return static::TYPE_DOCUMENT;
+        }
+
+        if($listing instanceof Asset\Listing) {
+            return static::TYPE_ASSET;
+        }
+
+        if($listing instanceof Concrete) {
+            return static::TYPE_OBJECT;
+        }
+
+        return '';
+    }
+
 }

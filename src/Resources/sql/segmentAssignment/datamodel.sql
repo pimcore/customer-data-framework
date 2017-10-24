@@ -16,5 +16,6 @@ CREATE TABLE IF NOT EXISTS `plugin_cmf_segment_assignment` (
   `elementType` ENUM('document', 'asset', 'object'),
   `segments` TEXT,
   `breaksInheritance` TINYINT,
+  `inPreparation` TINYINT,
   PRIMARY KEY (`elementId`, `elementType`)
 );
