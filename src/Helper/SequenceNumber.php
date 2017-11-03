@@ -39,7 +39,9 @@ class SequenceNumber
 
     /**
      * Sets current number of sequence to $sequenceValue
-     *
+     * Take care: this method should only be used to set values initially, or to
+     * reset values, if specific sequence limits are not reached. This is not
+     * transactional safe!!
      * @param $sequenceName
      * @param int $sequenceValue
      *
@@ -47,24 +49,11 @@ class SequenceNumber
      */
     public static function setCurrent($sequenceName, $sequenceValue = 10000)
     {
-        $handle = self::SemaphoreWait();
-        $current = self::getCurrent($sequenceName, $sequenceValue);
-
+        $db = Db::get();
         try {
-            if ($current > $sequenceValue) {
-                throw new \RuntimeException(
-                    sprintf(
-                        'Current sequence value of %d is greater then desired %d, preventing update!'
-                    )
-                );
-            }
-            Db::get()->query(
-                'insert into '.self::TABLE_NAME.' (name, number) values (?,?) on duplicate key update number = ?',
-                [$sequenceName, $sequenceValue, $sequenceValue]
-            );
-
-            $logger = \Pimcore::getContainer()->get('cmf.logger');
-
+            $sql = sprintf ("REPLACE INTO %s (name,number) VALUES (?,?)", self::$TABLE_NAME);
+            $db->executeQuery($sql,[$register, $sequenceValue ]);
+            
             $logger->info(
                 sprintf(
                     "Updated Sequence Number '%s' from %d to %d (pid :%s)",
@@ -74,10 +63,15 @@ class SequenceNumber
                     getmypid()
                 )
             );
-
-            return self::getCurrent($sequenceName, $sequenceValue);
-        } finally {
-            self::SemaphoreSignal($handle);
+            
+            return $sequenceValue;
+        } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
+            //already existing
+            throw new \RuntimeException(
+                    sprintf(
+                        'Sequence value of %d already exists!'
+                    )
+                );
         }
     }
 
@@ -91,50 +85,22 @@ class SequenceNumber
      */
     public static function getNext($sequenceName, $startingNumber = 10000)
     {
+        //transactional save see https://dev.mysql.com/doc/refman/5.7/en/innodb-locking-reads.html
+        //the select last_insert_id() does not access any table. merely retrieves identifier information
+        $sql = sprintf ("UPDATE %s SET number = LAST_INSERT_ID(number + 1) WHERE name=?", self::TABLE_NAME);
         $db = Db::get();
-
-        $handle = self::SemaphoreWait();
-
-        $number = self::getCurrent($sequenceName, $startingNumber);
-        $number += 1;
-
-        $db->query(
-            'insert into '.self::TABLE_NAME.' (name, number) values (?,?) on duplicate key update number = ?',
-            [$sequenceName, $number, $number]
-        );
-
-        self::SemaphoreSignal($handle);
-
-        $logger = \Pimcore::getContainer()->get('cmf.logger');
-
-        $logger->info('Generated Sequence Number '.$sequenceName.' '.$number.' (pid : '.getmypid().')');
-
-        return $number;
-    }
-
-    protected static function getLockFilename()
-    {
-        $lockFilename = PIMCORE_SYSTEM_TEMP_DIRECTORY.'/cmf-sequence-number.pid';
-
-        return $lockFilename;
-    }
-
-    private static function SemaphoreWait()
-    {
-        $filename = self::getLockFilename();
-
-        $handle = fopen($filename, 'w') or die('Error opening file.');
-        if (flock($handle, LOCK_EX)) {
-            //nothing...
-        } else {
-            die('Could not lock file.');
+        $db->executeQuery($sql, [$sequenceName]);
+        $nextNumber = $db->fetchOne('select LAST_INSERT_ID()');
+        if ($nextNumber == 0) {
+            try {
+                $sql = sprintf ("INSERT  INTO %s (name,number) VALUES (?,?)", self::TABLE_NAME);
+                $db->executeQuery($sql,[$sequenceName, $startingNumber ]);
+                return $startingNumber;
+            } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
+                //already existing; try again (avoid transactional collision)
+                return self::getNext($sequenceName, $startingNumber);
+            }
         }
-
-        return $handle;
-    }
-
-    private static function SemaphoreSignal($handle)
-    {
-        fclose($handle);
+        return $nextNumber;
     }
 }
