@@ -39,7 +39,11 @@ trait ApplicationLoggerAware
         if (null === $this->logger) {
             $logger = new ApplicationLogger();
 
-            $dbWriter = new ApplicationLoggerDb('notice');
+            if(\Pimcore\Version::getRevision() < 143) {
+                $dbWriter = new ApplicationLoggerDb('notice');
+            } else {
+                $dbWriter = new ApplicationLoggerDb(Db::get(),'notice');
+            }
             $logger->addWriter($dbWriter);
 
             if ($this->loggerComponent) {
