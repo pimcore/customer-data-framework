@@ -24,7 +24,7 @@ class Installer extends MigrationInstaller
 {
     public function getMigrationVersion(): string
     {
-        return '20171019130865';
+        return '20171102160547';
     }
 
 
