@@ -3,5 +3,12 @@ pimcore:
         adapters:
             termSegmentBuilder: cmf.custom_report.adapter.term_segment_builder
 
+    targeting:
+        conditions:
+            cmf_segment_tracked: CustomerManagementFrameworkBundle\Targeting\Condition\SegmentTracked
+        action_handlers:
+            cmf_track_segment: CustomerManagementFrameworkBundle\Targeting\ActionHandler\TrackSegment
+            cmf_track_element_segments: CustomerManagementFrameworkBundle\Targeting\ActionHandler\TrackElementSegments
+
 monolog:
     channels: ['cmf']

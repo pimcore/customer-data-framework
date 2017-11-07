@@ -1,0 +1,9 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    CustomerManagementFrameworkBundle\Targeting\ActionHandler\TrackSegment: ~
+    CustomerManagementFrameworkBundle\Targeting\ActionHandler\TrackElementSegments: ~
+
