@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CustomerManagementFrameworkBundle\Targeting\ActionHandler;
 
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
+use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
 use Pimcore\Http\Request\Resolver\DocumentResolver;
 use Pimcore\Model\Tool\Targeting\Rule;
 use Pimcore\Targeting\ActionHandler\ActionHandlerInterface;
@@ -36,19 +37,19 @@ class TrackElementSegments implements ActionHandlerInterface
     private $segmentManager;
 
     /**
-     * @var TrackSegment
+     * @var SegmentTracker
      */
-    private $segmentActionHandler;
+    private $segmentTracker;
 
     public function __construct(
         DocumentResolver $documentResolver,
         SegmentManagerInterface $segmentManager,
-        TrackSegment $segmentActionHandler
+        SegmentTracker $segmentTracker
     )
     {
-        $this->documentResolver     = $documentResolver;
-        $this->segmentManager       = $segmentManager;
-        $this->segmentActionHandler = $segmentActionHandler;
+        $this->documentResolver = $documentResolver;
+        $this->segmentManager   = $segmentManager;
+        $this->segmentTracker   = $segmentTracker;
     }
 
     /**
@@ -57,6 +58,7 @@ class TrackElementSegments implements ActionHandlerInterface
     public function apply(VisitorInfo $visitorInfo, Rule\Actions $actions, Rule $rule)
     {
         // TODO enable only if configured
+        // TODO do this always as visitor info event handler or as action?
 
         $document = $this->documentResolver->getDocument($visitorInfo->getRequest());
         if (!$document) {
@@ -70,6 +72,6 @@ class TrackElementSegments implements ActionHandlerInterface
             $assignments[$segment->getId()] = 1;
         }
 
-        $this->segmentActionHandler->assignSegments($assignments);
+        $this->segmentTracker->trackSegments($assignments);
     }
 }

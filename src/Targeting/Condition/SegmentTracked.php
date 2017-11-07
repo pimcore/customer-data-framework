@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CustomerManagementFrameworkBundle\Targeting\Condition;
 
 use CustomerManagementFrameworkBundle\Targeting\ActionHandler\TrackSegment;
+use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
 use Pimcore\Targeting\Condition\DataProviderDependentConditionInterface;
 use Pimcore\Targeting\DataProvider\Session;
 use Pimcore\Targeting\Model\VisitorInfo;
@@ -86,7 +87,7 @@ class SegmentTracked implements DataProviderDependentConditionInterface
             return false;
         }
 
-        $segments = $bag->get(TrackSegment::KEY_SEGMENTS, []);
+        $segments = $bag->get(SegmentTracker::KEY_SEGMENTS, []);
 
         if (isset($segments[$this->segmentId])) {
             return $segments[$this->segmentId] >= $this->threshold;

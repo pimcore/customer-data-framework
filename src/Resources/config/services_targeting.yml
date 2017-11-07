@@ -4,6 +4,8 @@ services:
         autoconfigure: true
         public: false
 
+    CustomerManagementFrameworkBundle\Targeting\SegmentTracker: ~
+
     CustomerManagementFrameworkBundle\Targeting\ActionHandler\TrackSegment: ~
     CustomerManagementFrameworkBundle\Targeting\ActionHandler\TrackElementSegments: ~
 
