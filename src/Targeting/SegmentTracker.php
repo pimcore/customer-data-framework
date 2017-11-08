@@ -18,46 +18,61 @@ declare(strict_types=1);
 namespace CustomerManagementFrameworkBundle\Targeting;
 
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
+use Pimcore\Targeting\Model\VisitorInfo;
 use Pimcore\Targeting\Session\SessionConfigurator;
 use Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
+/**
+ * Handles storage of tracked segments to session
+ */
 class SegmentTracker
 {
     const KEY_SEGMENTS = 'cmf_segments';
 
-    /**
-     * @var SessionInterface
-     */
-    private $session;
-
-    public function __construct(SessionInterface $session)
+    public function trackSegment(VisitorInfo $visitorInfo, CustomerSegmentInterface $segment)
     {
-        $this->session = $session;
+        $this->trackSegments($visitorInfo, [$segment]);
     }
 
     /**
-     * @param CustomerSegmentInterface|int $segment
-     * @param int $count
+     * @param VisitorInfo $visitorInfo
+     * @param CustomerSegmentInterface[] $segments
      */
-    public function trackSegment($segment, int $count = 1)
+    public function trackSegments(VisitorInfo $visitorInfo, array $segments)
     {
-        if ($segment instanceof CustomerSegmentInterface) {
-            $segment = $segment->getId();
+        $assignments = [];
+        foreach ($segments as $segment) {
+            if (!$segment instanceof CustomerSegmentInterface) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Segments is expected to be an array of CustomerSegmentInterface instances, but got a %s',
+                    is_object($segment) ? get_class($segment) : gettype($segment)
+                ));
+            }
+
+            $assignments[$segment->getId()] = 1;
         }
 
-        $this->trackSegments([
-            $segment => $count
-        ]);
+        $this->trackAssignments($visitorInfo, $assignments);
     }
 
     /**
+     * Raw method to track ID to count assignments. Use trackSegment(s) if possible.
+     *
+     * @param VisitorInfo $visitorInfo
      * @param array $assignments Segment ID as key, count as value
      */
-    public function trackSegments(array $assignments)
+    public function trackAssignments(VisitorInfo $visitorInfo, array $assignments)
     {
+        $request = $visitorInfo->getRequest();
+        if (!$request->hasSession()) {
+            return;
+        }
+
+        $session = $request->getSession();
+
         /** @var NamespacedAttributeBag $bag */
-        $bag = $this->session->getBag(SessionConfigurator::TARGETING_BAG);
+        $bag = $session->getBag(SessionConfigurator::TARGETING_BAG);
 
         $segments = $bag->get(self::KEY_SEGMENTS, []);
         foreach ($assignments as $segmentId => $count) {
@@ -69,5 +84,29 @@ class SegmentTracker
         }
 
         $bag->set(self::KEY_SEGMENTS, $segments);
+    }
+
+    /**
+     * Read ID <-> count assignment mapping from storage
+     *
+     * @param VisitorInfo $visitorInfo
+     *
+     * @return array
+     */
+    public function getAssignments(VisitorInfo $visitorInfo): array
+    {
+        $request = $visitorInfo->getRequest();
+
+        // do not read session if there was no previously started session
+        if (!$request->hasPreviousSession()) {
+            return [];
+        }
+
+        $session = $request->getSession();
+
+        /** @var NamespacedAttributeBag $bag */
+        $bag = $session->getBag(SessionConfigurator::TARGETING_BAG);
+
+        return $bag->get(self::KEY_SEGMENTS, []);
     }
 }

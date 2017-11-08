@@ -4,8 +4,10 @@ services:
         autoconfigure: true
         public: false
 
-    CustomerManagementFrameworkBundle\Targeting\SegmentTracker: ~
+    CustomerManagementFrameworkBundle\Targeting\EventListener\ElementSegmentsListener:
+        arguments:
+            $segmentAssignmentTypes: '%pimcore_customer_management_framework.segment_assignment_classes.types%'
 
+    CustomerManagementFrameworkBundle\Targeting\SegmentTracker: ~
     CustomerManagementFrameworkBundle\Targeting\ActionHandler\TrackSegment: ~
-    CustomerManagementFrameworkBundle\Targeting\ActionHandler\TrackElementSegments: ~
 

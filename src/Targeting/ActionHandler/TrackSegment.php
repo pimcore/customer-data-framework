@@ -48,7 +48,7 @@ class TrackSegment implements ActionHandlerInterface
     /**
      * @inheritDoc
      */
-    public function apply(VisitorInfo $visitorInfo, Rule $rule, array $action)
+    public function apply(VisitorInfo $visitorInfo, array $action, Rule $rule = null)
     {
         // TODO log errors (e.g. segment not found)
 
@@ -62,6 +62,6 @@ class TrackSegment implements ActionHandlerInterface
             return;
         }
 
-        $this->segmentTracker->trackSegment($segment);
+        $this->segmentTracker->trackSegment($visitorInfo, $segment);
     }
 }
