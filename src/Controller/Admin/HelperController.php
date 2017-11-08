@@ -16,6 +16,8 @@
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
+use Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -81,6 +83,33 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
         }
 
         return $this->adminJson($result);
+    }
+
+    /**
+     * @Route("/grouped-segments")
+     *
+     * @param SegmentManagerInterface $segmentManager
+     *
+     * @return JsonResponse
+     */
+    public function groupedSegmentsAction(SegmentManagerInterface $segmentManager)
+    {
+        $segments = [];
+
+        foreach ($segmentManager->getSegmentGroups() as $group) {
+            $groupSegments = $segmentManager->getSegmentsFromSegmentGroup($group);
+
+            foreach ($groupSegments as $groupSegment) {
+                $segments[] = [
+                    'id'        => $groupSegment->getId(),
+                    'name'      => $groupSegment->getName(),
+                    'groupId'   => $group->getId(),
+                    'groupName' => $group->getName()
+                ];
+            }
+        }
+
+        return $this->adminJson($segments);
     }
 
     /**

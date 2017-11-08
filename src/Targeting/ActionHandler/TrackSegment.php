@@ -17,6 +17,8 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Targeting\ActionHandler;
 
+use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
 use Pimcore\Model\Tool\Targeting\Rule;
 use Pimcore\Targeting\ActionHandler\ActionHandlerInterface;
@@ -25,21 +27,41 @@ use Pimcore\Targeting\Model\VisitorInfo;
 class TrackSegment implements ActionHandlerInterface
 {
     /**
+     * @var SegmentManagerInterface
+     */
+    private $segmentManager;
+
+    /**
      * @var SegmentTracker
      */
     private $segmentTracker;
 
-    public function __construct(SegmentTracker $segmentTracker)
+    public function __construct(
+        SegmentManagerInterface $segmentManager,
+        SegmentTracker $segmentTracker
+    )
     {
+        $this->segmentManager = $segmentManager;
         $this->segmentTracker = $segmentTracker;
     }
 
     /**
      * @inheritDoc
      */
-    public function apply(VisitorInfo $visitorInfo, Rule\Actions $actions, Rule $rule)
+    public function apply(VisitorInfo $visitorInfo, Rule $rule, array $action)
     {
-        // TODO enable only if configured
-        // TODO make configurable and assign configured segment
+        // TODO log errors (e.g. segment not found)
+
+        $segmentId = $action['segmentId'];
+        if (empty($segmentId)) {
+            return;
+        }
+
+        $segment = $this->segmentManager->getSegmentById($segmentId);
+        if (!$segment instanceof CustomerSegmentInterface) {
+            return;
+        }
+
+        $this->segmentTracker->trackSegment($segment);
     }
 }

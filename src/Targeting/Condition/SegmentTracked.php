@@ -56,7 +56,7 @@ class SegmentTracked implements DataProviderDependentConditionInterface
     public static function fromConfig(array $config)
     {
         return new self(
-            $config['segment_id'],
+            $config['segmentId'],
             null !== $config['threshold'] ? (int)$config['threshold'] : 1
         );
     }

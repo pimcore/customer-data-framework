@@ -55,9 +55,8 @@ class TrackElementSegments implements ActionHandlerInterface
     /**
      * @inheritDoc
      */
-    public function apply(VisitorInfo $visitorInfo, Rule\Actions $actions, Rule $rule)
+    public function apply(VisitorInfo $visitorInfo, Rule $rule, array $action)
     {
-        // TODO enable only if configured
         // TODO do this always as visitor info event handler or as action?
 
         $document = $this->documentResolver->getDocument($visitorInfo->getRequest());
