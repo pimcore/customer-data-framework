@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\Traits;
 
+use Pimcore\Db;
 use Pimcore\Log\ApplicationLogger;
 use Pimcore\Log\Handler\ApplicationLoggerDb;
 use Psr\Log\LoggerInterface;
