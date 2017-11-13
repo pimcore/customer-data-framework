@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Targeting;
 
+use CustomerManagementFrameworkBundle\ActionTrigger\Event\SegmentTracked;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use Pimcore\Targeting\Model\VisitorInfo;
 use Pimcore\Targeting\Session\SessionConfigurator;

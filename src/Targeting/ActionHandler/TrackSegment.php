@@ -17,14 +17,19 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Targeting\ActionHandler;
 
+use CustomerManagementFrameworkBundle\ActionTrigger\Event\SegmentTracked;
+use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
+use CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer;
 use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
 use Pimcore\Model\Tool\Targeting\Rule;
 use Pimcore\Targeting\ActionHandler\ActionHandlerInterface;
+use Pimcore\Targeting\DataProviderDependentInterface;
 use Pimcore\Targeting\Model\VisitorInfo;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class TrackSegment implements ActionHandlerInterface
+class TrackSegment implements ActionHandlerInterface, DataProviderDependentInterface
 {
     /**
      * @var SegmentManagerInterface
@@ -36,13 +41,28 @@ class TrackSegment implements ActionHandlerInterface
      */
     private $segmentTracker;
 
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
     public function __construct(
         SegmentManagerInterface $segmentManager,
-        SegmentTracker $segmentTracker
+        SegmentTracker $segmentTracker,
+        EventDispatcherInterface $eventDispatcher
     )
     {
-        $this->segmentManager = $segmentManager;
-        $this->segmentTracker = $segmentTracker;
+        $this->segmentManager  = $segmentManager;
+        $this->segmentTracker  = $segmentTracker;
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDataProviderKeys(): array
+    {
+        return [Customer::PROVIDER_KEY];
     }
 
     /**
@@ -63,5 +83,19 @@ class TrackSegment implements ActionHandlerInterface
         }
 
         $this->segmentTracker->trackSegment($visitorInfo, $segment);
+
+        $this->dispatchTrackEvent($visitorInfo, $segment);
+    }
+
+    private function dispatchTrackEvent(VisitorInfo $visitorInfo, CustomerSegmentInterface $segment)
+    {
+        /** @var CustomerInterface $customer */
+        $customer = $visitorInfo->get(Customer::PROVIDER_KEY);
+        if (null === $customer) {
+            return;
+        }
+
+        $event = SegmentTracked::create($customer, $segment);
+        $this->eventDispatcher->dispatch($event->getName(), $event);
     }
 }

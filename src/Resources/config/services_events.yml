@@ -37,6 +37,7 @@ services:
             - { name: kernel.event_listener, event: plugin.cmf.new-activity, method: handleEvent }
             - { name: kernel.event_listener, event: plugin.cmf.execute-segment-builders, method: handleEvent }
             - { name: kernel.event_listener, event: plugin.cmf.after-track-activity, method: handleEvent }
+            - { name: kernel.event_listener, event: plugin.cmf.segment-tracked, method: handleEvent }
         calls:
             - [setLogger, ['@cmf.logger']]
 
