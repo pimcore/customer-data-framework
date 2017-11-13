@@ -20,7 +20,7 @@ solutions and is tightly integrated into Pimcore core functionality.
 - Customer Segmentation based on data, activities and other criteria
 - Duplicates detection and merging
 - SSO and connection to social profiles like Google, Facebook, Twitter, etc. 
-- Enhancement of Pimcores on-site Personalization
+- Enhancement of Pimcore's on-site personalization
 - Marketing Automation with built-in rule engine and triggers
 - Default integration to external newsletter systems like MailChimp
 - Rest API for integration of external systems for data import or data export
