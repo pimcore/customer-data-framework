@@ -8,6 +8,9 @@ services:
         arguments:
             $segmentAssignmentTypes: '%pimcore_customer_management_framework.segment_assignment_classes.types%'
 
+    CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer: ~
+    CustomerManagementFrameworkBundle\Targeting\DataProvider\CustomerSegments: ~
+
     CustomerManagementFrameworkBundle\Targeting\SegmentTracker: ~
     CustomerManagementFrameworkBundle\Targeting\ActionHandler\TrackSegment: ~
 

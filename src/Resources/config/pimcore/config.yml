@@ -4,6 +4,9 @@ pimcore:
             termSegmentBuilder: cmf.custom_report.adapter.term_segment_builder
 
     targeting:
+        data_providers:
+            cmf_customer: CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer
+            cmf_customer_segments: CustomerManagementFrameworkBundle\Targeting\DataProvider\CustomerSegments
         conditions:
             cmf_segment_tracked: CustomerManagementFrameworkBundle\Targeting\Condition\SegmentTracked
         action_handlers:
