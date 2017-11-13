@@ -8,7 +8,7 @@ pimcore:
             cmf_customer: CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer
             cmf_customer_segments: CustomerManagementFrameworkBundle\Targeting\DataProvider\CustomerSegments
         conditions:
-            cmf_segment_tracked: CustomerManagementFrameworkBundle\Targeting\Condition\SegmentTracked
+            cmf_has_segment: CustomerManagementFrameworkBundle\Targeting\Condition\HasSegment
         action_handlers:
             cmf_track_segment: CustomerManagementFrameworkBundle\Targeting\ActionHandler\TrackSegment
 
