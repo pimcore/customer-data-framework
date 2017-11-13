@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Targeting\EventListener;
 
+use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
 use Pimcore\Event\Targeting\TargetingEvent;
@@ -108,6 +109,10 @@ class ElementSegmentsListener implements EventSubscriberInterface
         }
 
         $segments = $this->segmentManager->getSegmentsForElement($document);
+        $segments = array_filter($segments, function($segment) {
+            return $segment && $segment instanceof CustomerSegmentInterface;
+        });
+
         if (count($segments) > 0) {
             $this->segmentTracker->trackSegments($visitorInfo, $segments);
         }
