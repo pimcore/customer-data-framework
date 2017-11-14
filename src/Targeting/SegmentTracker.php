@@ -17,19 +17,26 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Targeting;
 
-use CustomerManagementFrameworkBundle\ActionTrigger\Event\SegmentTracked;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use Pimcore\Targeting\Model\VisitorInfo;
-use Pimcore\Targeting\Session\SessionConfigurator;
-use Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Pimcore\Targeting\Storage\TargetingStorageInterface;
 
 /**
- * Handles storage of tracked segments to session
+ * Handles storage of tracked segments to request-persistent targeting storage (e.g. session)
  */
 class SegmentTracker
 {
     const KEY_SEGMENTS = 'cmf_segments';
+
+    /**
+     * @var TargetingStorageInterface
+     */
+    private $targetingStorage;
+
+    public function __construct(TargetingStorageInterface $targetingStorage)
+    {
+        $this->targetingStorage = $targetingStorage;
+    }
 
     public function trackSegment(VisitorInfo $visitorInfo, CustomerSegmentInterface $segment)
     {
@@ -65,17 +72,7 @@ class SegmentTracker
      */
     public function trackAssignments(VisitorInfo $visitorInfo, array $assignments)
     {
-        $request = $visitorInfo->getRequest();
-        if (!$request->hasSession()) {
-            return;
-        }
-
-        $session = $request->getSession();
-
-        /** @var NamespacedAttributeBag $bag */
-        $bag = $session->getBag(SessionConfigurator::TARGETING_BAG);
-
-        $segments = $bag->get(self::KEY_SEGMENTS, []);
+        $segments = $this->getAssignments($visitorInfo);
         foreach ($assignments as $segmentId => $count) {
             if (!isset($segments[$segmentId])) {
                 $segments[$segmentId] = 0;
@@ -84,7 +81,7 @@ class SegmentTracker
             $segments[$segmentId] += $count;
         }
 
-        $bag->set(self::KEY_SEGMENTS, $segments);
+        $this->targetingStorage->set($visitorInfo, self::KEY_SEGMENTS, $segments);
     }
 
     /**
@@ -96,18 +93,6 @@ class SegmentTracker
      */
     public function getAssignments(VisitorInfo $visitorInfo): array
     {
-        $request = $visitorInfo->getRequest();
-
-        // do not read session if there was no previously started session
-        if (!$request->hasPreviousSession()) {
-            return [];
-        }
-
-        $session = $request->getSession();
-
-        /** @var NamespacedAttributeBag $bag */
-        $bag = $session->getBag(SessionConfigurator::TARGETING_BAG);
-
-        return $bag->get(self::KEY_SEGMENTS, []);
+        return $this->targetingStorage->get($visitorInfo, self::KEY_SEGMENTS, []);
     }
 }

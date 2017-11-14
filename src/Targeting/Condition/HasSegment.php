@@ -20,9 +20,9 @@ namespace CustomerManagementFrameworkBundle\Targeting\Condition;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\CustomerSegments;
 use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
 use Pimcore\Targeting\Condition\DataProviderDependentConditionInterface;
-use Pimcore\Targeting\DataProvider\Session;
+use Pimcore\Targeting\DataProvider\TargetingStorage;
 use Pimcore\Targeting\Model\VisitorInfo;
-use Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag;
+use Pimcore\Targeting\Storage\TargetingStorageInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class HasSegment implements DataProviderDependentConditionInterface
@@ -95,7 +95,7 @@ class HasSegment implements DataProviderDependentConditionInterface
         }
 
         if ($this->options['considerTrackedSegments']) {
-            $providers[] = Session::PROVIDER_KEY;
+            $providers[] = TargetingStorage::PROVIDER_KEY;
         }
 
         return $providers;
@@ -134,12 +134,10 @@ class HasSegment implements DataProviderDependentConditionInterface
 
     private function matchTrackedSegments(VisitorInfo $visitorInfo): bool
     {
-        $bag = $visitorInfo->get(Session::PROVIDER_KEY);
-        if (!($bag && $bag instanceof NamespacedAttributeBag)) {
-            return false;
-        }
+        /** @var TargetingStorageInterface $storage */
+        $storage = $visitorInfo->get(TargetingStorage::PROVIDER_KEY);
 
-        $segments = $bag->get(SegmentTracker::KEY_SEGMENTS, []);
+        $segments = $storage->get($visitorInfo, SegmentTracker::KEY_SEGMENTS, []);
 
         return $this->matchSegments($segments);
     }
