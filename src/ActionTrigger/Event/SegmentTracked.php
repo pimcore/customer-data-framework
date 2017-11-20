@@ -24,6 +24,7 @@ use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 
 class SegmentTracked extends AbstractSingleCustomerEvent implements RuleEnvironmentAwareEventInterface
 {
+    const EVENT_NAME = 'plugin.cmf.segment-tracked';
     const STORAGE_KEY = 'segment_tracked';
 
     /**
@@ -58,7 +59,7 @@ class SegmentTracked extends AbstractSingleCustomerEvent implements RuleEnvironm
 
     public function getName()
     {
-        return 'plugin.cmf.segment-tracked';
+        return self::EVENT_NAME;
     }
 
     public function appliesToTrigger(TriggerDefinitionInterface $trigger)
