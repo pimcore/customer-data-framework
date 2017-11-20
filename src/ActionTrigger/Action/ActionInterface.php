@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Action;
 
+use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -22,7 +23,11 @@ interface ActionInterface
 {
     public function __construct(LoggerInterface $logger);
 
-    public function process(ActionDefinitionInterface $actionDefinition, CustomerInterface $customer);
+    public function process(
+        ActionDefinitionInterface $actionDefinition,
+        CustomerInterface $customer,
+        RuleEnvironmentInterface $environment
+    );
 
     public static function createActionDefinitionFromEditmode(\stdClass $data);
 

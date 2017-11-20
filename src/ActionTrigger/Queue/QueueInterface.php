@@ -16,11 +16,16 @@
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Queue;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\Action\ActionDefinitionInterface;
+use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
 interface QueueInterface
 {
-    public function addToQueue(ActionDefinitionInterface $action, CustomerInterface $customer);
+    public function addToQueue(
+        ActionDefinitionInterface $action,
+        CustomerInterface $customer,
+        RuleEnvironmentInterface $environment
+    );
 
     public function processQueue();
 }

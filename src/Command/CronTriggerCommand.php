@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\Command;
 
+use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironment;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -37,7 +38,8 @@ class CronTriggerCommand extends AbstractCommand
         $logger->notice('cron trigger');
 
         $event = new \CustomerManagementFrameworkBundle\ActionTrigger\Event\Cron();
+        $environment = new RuleEnvironment();
 
-        \Pimcore::getContainer()->get('cmf.event_listener.action_trigger')->handleCustomerListEvent($event);
+        \Pimcore::getContainer()->get('cmf.event_listener.action_trigger')->handleCustomerListEvent($event, $environment);
     }
 }

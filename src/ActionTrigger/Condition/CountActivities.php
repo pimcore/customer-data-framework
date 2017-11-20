@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Condition;
 
+use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
 class CountActivities extends AbstractCondition
@@ -23,7 +24,11 @@ class CountActivities extends AbstractCondition
     const OPTION_COUNT = 'count';
     const OPTION_OPERATOR = 'operator';
 
-    public function check(ConditionDefinitionInterface $conditionDefinition, CustomerInterface $customer)
+    public function check(
+        ConditionDefinitionInterface $conditionDefinition,
+        CustomerInterface $customer,
+        RuleEnvironmentInterface $environment
+    )
     {
         $options = $conditionDefinition->getOptions();
 

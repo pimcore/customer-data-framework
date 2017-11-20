@@ -16,11 +16,16 @@
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Condition;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\Event\SingleCustomerEventInterface;
+use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
 
 class Checker
 {
-    public static function checkConditionsForRuleAndEvent(Rule $rule, SingleCustomerEventInterface $event)
+    public static function checkConditionsForRuleAndEvent(
+        Rule $rule,
+        SingleCustomerEventInterface $event,
+        RuleEnvironmentInterface $environment
+    )
     {
         $expression = '';
         $openBrackets = 0;
@@ -31,7 +36,7 @@ class Checker
                 $conditionImplementation = $cond->getImplementationObject();
 
                 if ($conditionImplementation) {
-                    $res = $conditionImplementation->check($cond, $event->getCustomer());
+                    $res = $conditionImplementation->check($cond, $event->getCustomer(), $environment);
 
                     if ($res) {
                         $res = 'true';

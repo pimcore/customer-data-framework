@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Action;
 
+use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\DataObject\CustomerSegment;
 
@@ -23,7 +24,11 @@ class AddSegment extends AbstractAction
     const OPTION_SEGMENT_ID = 'segmentId';
     const OPTION_REMOVE_OTHER_SEGMENTS_FROM_SEGMENT_GROUP = 'removeOtherSegmentsFromGroup';
 
-    public function process(ActionDefinitionInterface $actionDefinition, CustomerInterface $customer)
+    public function process(
+        ActionDefinitionInterface $actionDefinition,
+        CustomerInterface $customer,
+        RuleEnvironmentInterface $environment
+    )
     {
         $options = $actionDefinition->getOptions();
 
