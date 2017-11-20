@@ -20,12 +20,13 @@ namespace CustomerManagementFrameworkBundle\Targeting\Condition;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\CustomerSegments;
 use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
 use Pimcore\Targeting\Condition\DataProviderDependentConditionInterface;
+use Pimcore\Targeting\Condition\VariableConditionInterface;
 use Pimcore\Targeting\DataProvider\TargetingStorage;
 use Pimcore\Targeting\Model\VisitorInfo;
 use Pimcore\Targeting\Storage\TargetingStorageInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class HasSegment implements DataProviderDependentConditionInterface
+class HasSegment implements DataProviderDependentConditionInterface, VariableConditionInterface
 {
     /**
      * @var int|null
@@ -114,40 +115,64 @@ class HasSegment implements DataProviderDependentConditionInterface
      */
     public function match(VisitorInfo $visitorInfo): bool
     {
-        if ($this->options['considerCustomerSegments'] && $this->matchCustomerSegments($visitorInfo)) {
-            return true;
-        }
+        $segments = $this->loadSegments($visitorInfo);
 
-        if ($this->options['considerTrackedSegments'] && $this->matchTrackedSegments($visitorInfo)) {
-            return true;
+        if (isset($segments[$this->segmentId])) {
+            return $segments[$this->segmentId] >= $this->options['threshold'];
         }
 
         return false;
     }
 
-    private function matchCustomerSegments(VisitorInfo $visitorInfo): bool
+    private function loadSegments(VisitorInfo $visitorInfo): array
     {
-        $segments = $visitorInfo->get(CustomerSegments::PROVIDER_KEY);
+        $segments = [];
 
-        return $this->matchSegments($segments);
+        if ($this->options['considerCustomerSegments']) {
+            $segments = $this->mergeSegments(
+                $segments,
+                $visitorInfo->get(CustomerSegments::PROVIDER_KEY)
+            );
+        }
+
+        if ($this->options['considerTrackedSegments']) {
+            $segments = $this->mergeSegments(
+                $segments,
+                $this->loadTrackedSegments($visitorInfo)
+            );
+        }
+
+        return $segments;
     }
 
-    private function matchTrackedSegments(VisitorInfo $visitorInfo): bool
+    private function loadTrackedSegments(VisitorInfo $visitorInfo): array
     {
         /** @var TargetingStorageInterface $storage */
         $storage = $visitorInfo->get(TargetingStorage::PROVIDER_KEY);
 
         $segments = $storage->get($visitorInfo, SegmentTracker::KEY_SEGMENTS, []);
 
-        return $this->matchSegments($segments);
+        return $segments;
     }
 
-    private function matchSegments(array $segments): bool
+    private function mergeSegments(array $segments, array $data): array
     {
-        if (isset($segments[$this->segmentId])) {
-            return $segments[$this->segmentId] >= $this->options['threshold'];
+        foreach ($data as $segmentId => $count) {
+            if (!isset($segments[$segmentId])) {
+                $segments[$segmentId] = 0;
+            }
+
+            $segments[$segmentId] += $count;
         }
 
-        return false;
+        return $segments;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getVariables(VisitorInfo $visitorInfo): array
+    {
+        return $this->loadSegments($visitorInfo);
     }
 }
