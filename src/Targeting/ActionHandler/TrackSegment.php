@@ -17,8 +17,6 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Targeting\ActionHandler;
 
-use CustomerManagementFrameworkBundle\ActionTrigger\Event\SegmentTracked;
-use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer;
@@ -42,20 +40,14 @@ class TrackSegment implements ActionHandlerInterface, DataProviderDependentInter
      */
     private $segmentTracker;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
     public function __construct(
         SegmentManagerInterface $segmentManager,
         SegmentTracker $segmentTracker,
         EventDispatcherInterface $eventDispatcher
     )
     {
-        $this->segmentManager  = $segmentManager;
-        $this->segmentTracker  = $segmentTracker;
-        $this->eventDispatcher = $eventDispatcher;
+        $this->segmentManager = $segmentManager;
+        $this->segmentTracker = $segmentTracker;
     }
 
     /**
@@ -88,21 +80,6 @@ class TrackSegment implements ActionHandlerInterface, DataProviderDependentInter
             return;
         }
 
-        $eventData = $this->segmentTracker->trackSegment($visitorInfo, $segment);
-
-        $this->dispatchTrackEvent($visitorInfo, $segment, $eventData[$segment->getId()]);
-    }
-
-    private function dispatchTrackEvent(VisitorInfo $visitorInfo, CustomerSegmentInterface $segment, int $count)
-    {
-        /** @var CustomerInterface $customer */
-        $customer = $visitorInfo->get(Customer::PROVIDER_KEY);
-        if (null === $customer) {
-            return;
-        }
-
-        $event = SegmentTracked::create($customer, $segment, $count);
-
-        $this->eventDispatcher->dispatch($event->getName(), $event);
+        $this->segmentTracker->trackSegment($visitorInfo, $segment);
     }
 }

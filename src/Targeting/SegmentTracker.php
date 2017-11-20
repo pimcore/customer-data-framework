@@ -17,9 +17,15 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Targeting;
 
+use CustomerManagementFrameworkBundle\ActionTrigger\Event\SegmentTracked;
+use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
+use CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer;
+use Pimcore\Targeting\DataLoaderInterface;
 use Pimcore\Targeting\Model\VisitorInfo;
 use Pimcore\Targeting\Storage\TargetingStorageInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Handles storage of tracked segments to request-persistent targeting storage (e.g. session)
@@ -33,27 +39,42 @@ class SegmentTracker
      */
     private $targetingStorage;
 
-    public function __construct(TargetingStorageInterface $targetingStorage)
-    {
-        $this->targetingStorage = $targetingStorage;
-    }
+    /**
+     * @var DataLoaderInterface
+     */
+    private $dataLoader;
 
     /**
-     * @param VisitorInfo $visitorInfo
-     * @param CustomerSegmentInterface $segment
-     *
-     * @return array Final count for assigned segment ID
+     * @var SegmentManagerInterface
      */
-    public function trackSegment(VisitorInfo $visitorInfo, CustomerSegmentInterface $segment): array
+    private $segmentManager;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    public function __construct(
+        TargetingStorageInterface $targetingStorage,
+        DataLoaderInterface $dataLoader,
+        SegmentManagerInterface $segmentManager,
+        EventDispatcherInterface $eventDispatcher
+    )
     {
-        return $this->trackSegments($visitorInfo, [$segment]);
+        $this->targetingStorage = $targetingStorage;
+        $this->dataLoader       = $dataLoader;
+        $this->segmentManager   = $segmentManager;
+        $this->eventDispatcher  = $eventDispatcher;
+    }
+
+    public function trackSegment(VisitorInfo $visitorInfo, CustomerSegmentInterface $segment)
+    {
+        $this->trackSegments($visitorInfo, [$segment]);
     }
 
     /**
      * @param VisitorInfo $visitorInfo
      * @param CustomerSegmentInterface[] $segments
-     *
-     * @return array Final count for assigned segment IDs
      */
     public function trackSegments(VisitorInfo $visitorInfo, array $segments)
     {
@@ -69,7 +90,7 @@ class SegmentTracker
             $assignments[$segment->getId()] = 1;
         }
 
-        return $this->trackAssignments($visitorInfo, $assignments);
+        $this->trackAssignments($visitorInfo, $assignments);
     }
 
     /**
@@ -77,12 +98,10 @@ class SegmentTracker
      *
      * @param VisitorInfo $visitorInfo
      * @param array $assignments Segment ID as key, count as value
-     *
-     * @return array Final count for assigned segment IDs
      */
-    public function trackAssignments(VisitorInfo $visitorInfo, array $assignments): array
+    public function trackAssignments(VisitorInfo $visitorInfo, array $assignments)
     {
-        $results = [];
+        $eventData = [];
 
         $segments = $this->getAssignments($visitorInfo);
         foreach ($assignments as $segmentId => $count) {
@@ -91,12 +110,14 @@ class SegmentTracker
             }
 
             $segments[$segmentId] += $count;
-            $results[$segmentId] = $segments[$segmentId];
+            $eventData[$segmentId] = $segments[$segmentId];
         }
 
         $this->targetingStorage->set($visitorInfo, self::KEY_SEGMENTS, $segments);
 
-        return $results;
+        foreach ($eventData as $segmentId => $count) {
+            $this->dispatchTrackEvent($visitorInfo, $segmentId, $count);
+        }
     }
 
     /**
@@ -109,5 +130,25 @@ class SegmentTracker
     public function getAssignments(VisitorInfo $visitorInfo): array
     {
         return $this->targetingStorage->get($visitorInfo, self::KEY_SEGMENTS, []);
+    }
+
+    private function dispatchTrackEvent(VisitorInfo $visitorInfo, int $segmentId, int $count)
+    {
+        $this->dataLoader->loadDataFromProviders($visitorInfo, [Customer::PROVIDER_KEY]);
+
+        /** @var CustomerInterface $customer */
+        $customer = $visitorInfo->get(Customer::PROVIDER_KEY);
+        if (null === $customer) {
+            return;
+        }
+
+        $segment = $this->segmentManager->getSegmentById($segmentId);
+        if (null === $segment) {
+            return;
+        }
+
+        $event = SegmentTracked::create($customer, $segment, $count);
+
+        $this->eventDispatcher->dispatch($event->getName(), $event);
     }
 }
