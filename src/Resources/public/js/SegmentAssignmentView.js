@@ -11,20 +11,36 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
             return this.layout;
         }
 
-        var classStore = pimcore.globalmanager.get("object_types_store");
+
+        var inheritancePanel = new Ext.create('Ext.form.FieldSet', {
+            title: t('cmf_segmentAssignment_inheritanceSettings'),
+            items: [
+                this.getInheritablePanel(), this.getCheckBox()
+            ]
+        });
+
+        var assignmentPanel = new Ext.create('Ext.form.FieldSet', {
+            title: t('cmf_segmentAssignment_assignment'),
+            items: [
+                this.getAssignedPanel()
+            ]
+        });
 
         return this.layout = new Ext.Panel({
             title: t('segmentAssignment'),
             border: false,
             iconCls: "plugin_cmf_icon_actiontriggerrule_ExecuteSegmentBuilders",
+            bodyStyle:'padding:0 10px 0 10px;',
+            cls: "pimcore_object_panel_edit",
             tbar: [],
-            items: [this.getInheritablePanel(), this.getCheckBox(), this.getAssignedPanel()]
+            items: [inheritancePanel, assignmentPanel]
         });
     },
 
     getInheritablePanel: function () {
         this.inheritableStore = new Ext.data.Store({
             autoDestroy: true,
+            autoLoad: true,
             proxy: {
                 type: 'ajax',
                 url: '/admin/customermanagementframework/segment-assignment/inheritable-segments?id=' + this.object.id + '&type=' + this.type,
@@ -36,16 +52,21 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
             fields: ['id', 'name', 'type']
         });
 
-        this.inheritableStore.load();
-
         this.inheritableGrid = Ext.create('Ext.grid.Panel', {
+            minHeight: 80,
+            border: true,
             tbar: {
                 items: [
-                    Ext.create('Ext.toolbar.TextItem', {
-                        text: t('inheritableAssignments')
-                    })
-                ]
+                    {
+                        xtype: "tbtext",
+                        text: "<b>" + t('cmf_segmentAssignment_inheritableAssignments') + "</b>"
+                    }
+                ],
+                ctCls: "pimcore_force_auto_width",
+                cls: "pimcore_force_auto_width",
+                minHeight: 36
             },
+            bodyCssClass: "pimcore_object_tag_objects",
             store: this.inheritableStore,
             columns: [
                 {header: 'Id', sortable: false, dataIndex: 'id', flex: 1},
@@ -61,6 +82,7 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
             pimcore.helpers.openObject(data.data.id, data.data.type);
         });
 
+
         return this.inheritableGrid;
     },
 
@@ -68,14 +90,12 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
         var inheritableGrid = this.inheritableGrid;
 
         this.breaksInheritance = Ext.create('Ext.form.FormPanel', {
-            bodyStyle: {
-                "background-color": '#ececec'
-            },
             items: [
                 {
                     xtype: 'checkbox',
-                    boxLabel: t('cmf.breaksInheritance'),
+                    boxLabel: t('cmf_segmentAssignment_breakInheritance'),
                     inputValue: '1',
+                    style: "padding-top: 10px",
                     checked: false,
                     handler: function (target, checkedState) {
                         inheritableGrid.setDisabled(checkedState);
@@ -97,7 +117,7 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
                 checkBox.setValue(data.breaksInheritance === '1');
             },
             failure: function (response) {
-                pimcore.helpers.showNotification(t("error"), t("plugin_cmf_segment_assignment_error"), "error", response.responseText);
+                pimcore.helpers.showNotification(t("error"), t("cmf_segmentAssignment_segment_assignment_error"), "error", response.responseText);
             }
         });
 
@@ -126,6 +146,9 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
         this.assignedStore.load();
 
         var assignedGrid = Ext.create('Ext.grid.Panel', {
+            minHeight: 90,
+            border: true,
+            cls: 'object_field',
             tbar: {
                 items: [
                     Ext.create('Ext.toolbar.Spacer', {
@@ -133,17 +156,23 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
                         height: 16,
                         cls: "pimcore_icon_droptarget"
                     }),
-                    Ext.create('Ext.toolbar.TextItem', {
-                        text: t('assignedSegments')
-                    }),
+                    {
+                        xtype: "tbtext",
+                        text: "<b>" + t('cmf_segmentAssignment_assignedSegments') + "</b>"
+                    },
+                    "->",
                     {
                         xtype: "button",
                         iconCls: "pimcore_icon_search",
                         handler: this.openSearchEditor.bind(this)
                     }
-                ]
+                ],
+                ctCls: "pimcore_force_auto_width",
+                cls: "pimcore_force_auto_width"
             },
+            bodyCssClass: "pimcore_object_tag_objects",
             store: this.assignedStore,
+
             columns: [
                 {header: 'Id', sortable: false, dataIndex: 'id', flex: 1},
                 {header: 'Name', sortable: false, dataIndex: 'name', flex: 3},
@@ -264,7 +293,7 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
                     console.log(response.responseText);
                 },
                 failure: function(response) {
-                    pimcore.helpers.showNotification(t("error"), t("plugin_cmf_segment_assignment_error"), "error", response.responseText);
+                    pimcore.helpers.showNotification(t("error"), t("cmf_segmentAssignment_segment_assignment_error"), "error", response.responseText);
                 }
             }
         );
