@@ -38,7 +38,7 @@
                             triggerAction: 'all',
                             listWidth: 200,
                             mode: "local",
-                            value: data.segmentId,
+                            value: getDataValue('segmentId'),
                             emptyText: t("plugin_cmf_select_a_segment")
                         },
                         {
@@ -67,15 +67,15 @@
                             items: [
                                 {
                                     xtype: "combobox",
-                                    name: "operator",
+                                    name: "condition_operator",
                                     width: 80,
                                     store: Ext.data.ArrayStore({
-                                        fields: ['operator'],
+                                        fields: ['condition_operator'],
                                         data: [['%'], ['='], ['<'], ['<='], ['>'], ['>=']]
                                     }),
-                                    value: getDataValue('operator', '>='),
-                                    displayField: 'operator',
-                                    valueField: 'operator'
+                                    value: getDataValue('condition_operator', '>='),
+                                    displayField: 'condition_operator',
+                                    valueField: 'condition_operator'
                                 },
                                 {
                                     xtype: 'numberfield',

@@ -81,7 +81,7 @@ class HasSegment implements DataProviderDependentConditionInterface, VariableCon
         return new self(
             $config['segmentId'],
             [
-                'operator'                 => $config['operator'] ?? '>=',
+                'operator'                 => $config['condition_operator'] ?? '>=',
                 'value'                    => $config['value'] ?? 1,
                 'considerCustomerSegments' => $config['considerCustomerSegments'] ?? true,
                 'considerTrackedSegments'  => $config['considerTrackedSegments'] ?? true
