@@ -17,8 +17,10 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Targeting\Condition;
 
+use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\CustomerSegments;
 use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
+use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Targeting\Condition\DataProviderDependentConditionInterface;
 use Pimcore\Targeting\Condition\VariableConditionInterface;
 use Pimcore\Targeting\DataProvider\TargetingStorage;
@@ -78,8 +80,19 @@ class HasSegment implements DataProviderDependentConditionInterface, VariableCon
      */
     public static function fromConfig(array $config)
     {
+        $segmentId = null;
+        if (is_numeric($config['segment'])) {
+            $segmentId = (int)$config['segment'];
+        } else {
+            // TODO load from segment manager?
+            $segment = CustomerSegment::getByPath($config['segment']);
+            if ($segment instanceof CustomerSegmentInterface) {
+                $segmentId = $segment->getId();
+            }
+        }
+
         return new self(
-            $config['segmentId'],
+            $segmentId,
             [
                 'operator'                 => $config['condition_operator'] ?? '>=',
                 'value'                    => $config['value'] ?? 1,

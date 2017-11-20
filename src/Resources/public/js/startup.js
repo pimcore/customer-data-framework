@@ -15,7 +15,6 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
 
         this.initToolbar();
         this.initNewsletterQueueInfo();
-        this.initSegmentStore();
     },
 
     initToolbar: function () {
@@ -174,26 +173,6 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
 
             this.navEl.on('mousedown', toolbar.showSubMenu.bind(menuItems));
         }
-    },
-
-    initSegmentStore: function() {
-        Ext.define("pimcore.model.cmf.segments", {
-            extend: "Ext.data.Model",
-            fields: ["id", "name", "group"]
-        });
-
-        var segmentStore = Ext.create("Ext.data.JsonStore", {
-            model: "pimcore.model.cmf.segments",
-            proxy: {
-                type: "ajax",
-                url: "/admin/customermanagementframework/helper/grouped-segments",
-                reader: {
-                    type: "json"
-                }
-            }
-        });
-
-        pimcore.globalmanager.add("cmf.segment_store", segmentStore);
     },
 
     postOpenObject: function (object, type) {

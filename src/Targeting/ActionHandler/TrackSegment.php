@@ -23,6 +23,7 @@ use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer;
 use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
+use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Model\Tool\Targeting\Rule;
 use Pimcore\Targeting\ActionHandler\ActionHandlerInterface;
 use Pimcore\Targeting\DataProviderDependentInterface;
@@ -70,21 +71,26 @@ class TrackSegment implements ActionHandlerInterface, DataProviderDependentInter
      */
     public function apply(VisitorInfo $visitorInfo, array $action, Rule $rule = null)
     {
-        // TODO log errors (e.g. segment not found)
-
-        $segmentId = $action['segmentId'];
-        if (empty($segmentId)) {
+        $segmentOption = $action['segment'];
+        if (empty($segmentOption)) {
             return;
         }
 
-        $segment = $this->segmentManager->getSegmentById($segmentId);
+        if (is_numeric($segmentOption)) {
+            $segment = $this->segmentManager->getSegmentById((int)$segmentOption);
+        } else {
+            // TODO load from segment manager?
+            $segment = CustomerSegment::getByPath($segmentOption);
+        }
+
+        // TODO log errors (e.g. segment not found)
         if (!$segment instanceof CustomerSegmentInterface) {
             return;
         }
 
         $eventData = $this->segmentTracker->trackSegment($visitorInfo, $segment);
 
-        $this->dispatchTrackEvent($visitorInfo, $segment, $eventData[$segmentId]);
+        $this->dispatchTrackEvent($visitorInfo, $segment, $eventData[$segment->getId()]);
     }
 
     private function dispatchTrackEvent(VisitorInfo $visitorInfo, CustomerSegmentInterface $segment, int $count)

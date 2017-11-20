@@ -27,19 +27,52 @@
                     tbar: pimcore.settings.targeting.conditions.getTopBar(this, id, panel, data),
                     items: [
                         {
-                            xtype: "combo",
-                            fieldLabel: t('plugin_cmf_segment'),
-                            name: "segmentId",
-                            displayField: "name",
-                            valueField: "id",
-                            store: pimcore.globalmanager.get("cmf.segment_store"),
-                            editable: false,
-                            width: 400,
-                            triggerAction: 'all',
-                            listWidth: 200,
-                            mode: "local",
-                            value: getDataValue('segmentId'),
-                            emptyText: t("plugin_cmf_select_a_segment")
+                            name: "segment",
+                            fieldLabel: t('segment'),
+                            xtype: "textfield",
+                            width: 500,
+                            cls: "input_drop_target",
+                            value: getDataValue('segment'),
+                            listeners: {
+                                "render": function (el) {
+                                    new Ext.dd.DropZone(el.getEl(), {
+                                        reference: this,
+                                        ddGroup: "element",
+                                        getTargetFromEvent: function (e) {
+                                            return this.getEl();
+                                        }.bind(el),
+
+                                        onNodeOver: function (target, dd, e, data) {
+                                            data = data.records[0].data;
+
+                                            if (data.type !== 'object') {
+                                                return Ext.dd.DropZone.prototype.dropNotAllowed;
+                                            }
+
+                                            if (data.className !== 'CustomerSegment') {
+                                                return Ext.dd.DropZone.prototype.dropNotAllowed;
+                                            }
+
+                                            return Ext.dd.DropZone.prototype.dropAllowed;
+                                        },
+
+                                        onNodeDrop: function (target, dd, e, data) {
+                                            data = data.records[0].data;
+
+                                            if (data.type !== 'object') {
+                                                return false;
+                                            }
+
+                                            if (data.className !== 'CustomerSegment') {
+                                                return false;
+                                            }
+
+                                            this.setValue(data.path);
+                                            return true;
+                                        }.bind(el)
+                                    });
+                                }
+                            }
                         },
                         {
                             name: "considerTrackedSegments",
