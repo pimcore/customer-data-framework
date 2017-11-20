@@ -116,20 +116,5 @@ pimcore.plugin.cmf.rule.triggers.ExecuteSegmentBuilders = Class.create(pimcore.p
 pimcore.registerNS("pimcore.plugin.cmf.rule.triggers.SegmentTracked");
 pimcore.plugin.cmf.rule.triggers.SegmentTracked = Class.create(pimcore.plugin.cmf.rule.triggers.AbstractTrigger, {
     name: 'SegmentTracked',
-    eventName: 'plugin.cmf.segment-tracked',
-    getFormItems: function () {
-        return [{
-            xtype: "combo",
-            name: "segmentId",
-            fieldLabel: t("plugin_cmf_segment"),
-            width: 350,
-            value: this.options.type,
-            triggerAction: "all",
-            mode: "local",
-            disableKeyFilter: true,
-            displayField: "name",
-            valueField: "id",
-            store: pimcore.globalmanager.get("cmf.segment_store")
-        }];
-    }
+    eventName: 'plugin.cmf.segment-tracked'
 });

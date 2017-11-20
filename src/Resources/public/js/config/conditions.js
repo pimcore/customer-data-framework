@@ -210,6 +210,47 @@ pimcore.plugin.cmf.rule.conditions.CountActivities = Class.create(pimcore.plugin
     }
 });
 
+pimcore.registerNS("pimcore.plugin.cmf.rule.conditions.CountTrackedSegment");
+pimcore.plugin.cmf.rule.conditions.CountActivities = Class.create(pimcore.plugin.cmf.rule.conditions.AbstractCondition,{
+    name: 'CountTrackedSegment',
+    implementationClass: '\\CustomerManagementFrameworkBundle\\ActionTrigger\\Condition\\CountTrackedSegment',
+    getFormItems: function () {
+        return [
+            {
+                xtype: "fieldcontainer",
+                fieldLabel: t("plugin_cmf_actiontriggerrule_countactivities_must_be"),
+                labelWidth: 160,
+                layout: {
+                    type: 'table',
+                    tdAttrs: {
+                        valign: 'center'
+                    }
+                },
+                items: [
+                    {
+                        xtype: "combobox",
+                        name: "operator",
+                        width: 60,
+                        store: Ext.data.ArrayStore({
+                            fields: ['operator'],
+                            data: [['%'], ['='], ['<'], ['<='], ['>'], ['>=']]
+                        }),
+                        value: this.options.operator ? this.options.operator : '>=',
+                        displayField: 'operator',
+                        valueField: 'operator'
+                    },
+                    {
+                        xtype: "numberfield",
+                        name: "count",
+                        width: 90,
+                        value: this.options.count
+                    }
+                ]
+            }
+        ];
+    }
+});
+
 pimcore.registerNS("pimcore.plugin.cmf.rule.conditions.Segment");
 pimcore.plugin.cmf.rule.conditions.Segment = Class.create(pimcore.plugin.cmf.rule.conditions.AbstractCondition,{
     name: 'Segment',

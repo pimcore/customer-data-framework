@@ -38,14 +38,22 @@ class SegmentTracker
         $this->targetingStorage = $targetingStorage;
     }
 
-    public function trackSegment(VisitorInfo $visitorInfo, CustomerSegmentInterface $segment)
+    /**
+     * @param VisitorInfo $visitorInfo
+     * @param CustomerSegmentInterface $segment
+     *
+     * @return array Final count for assigned segment ID
+     */
+    public function trackSegment(VisitorInfo $visitorInfo, CustomerSegmentInterface $segment): array
     {
-        $this->trackSegments($visitorInfo, [$segment]);
+        return $this->trackSegments($visitorInfo, [$segment]);
     }
 
     /**
      * @param VisitorInfo $visitorInfo
      * @param CustomerSegmentInterface[] $segments
+     *
+     * @return array Final count for assigned segment IDs
      */
     public function trackSegments(VisitorInfo $visitorInfo, array $segments)
     {
@@ -61,7 +69,7 @@ class SegmentTracker
             $assignments[$segment->getId()] = 1;
         }
 
-        $this->trackAssignments($visitorInfo, $assignments);
+        return $this->trackAssignments($visitorInfo, $assignments);
     }
 
     /**
@@ -69,9 +77,13 @@ class SegmentTracker
      *
      * @param VisitorInfo $visitorInfo
      * @param array $assignments Segment ID as key, count as value
+     *
+     * @return array Final count for assigned segment IDs
      */
-    public function trackAssignments(VisitorInfo $visitorInfo, array $assignments)
+    public function trackAssignments(VisitorInfo $visitorInfo, array $assignments): array
     {
+        $results = [];
+
         $segments = $this->getAssignments($visitorInfo);
         foreach ($assignments as $segmentId => $count) {
             if (!isset($segments[$segmentId])) {
@@ -79,9 +91,12 @@ class SegmentTracker
             }
 
             $segments[$segmentId] += $count;
+            $results[$segmentId] = $segments[$segmentId];
         }
 
         $this->targetingStorage->set($visitorInfo, self::KEY_SEGMENTS, $segments);
+
+        return $results;
     }
 
     /**

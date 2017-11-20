@@ -82,12 +82,12 @@ class TrackSegment implements ActionHandlerInterface, DataProviderDependentInter
             return;
         }
 
-        $this->segmentTracker->trackSegment($visitorInfo, $segment);
+        $eventData = $this->segmentTracker->trackSegment($visitorInfo, $segment);
 
-        $this->dispatchTrackEvent($visitorInfo, $segment);
+        $this->dispatchTrackEvent($visitorInfo, $segment, $eventData[$segmentId]);
     }
 
-    private function dispatchTrackEvent(VisitorInfo $visitorInfo, CustomerSegmentInterface $segment)
+    private function dispatchTrackEvent(VisitorInfo $visitorInfo, CustomerSegmentInterface $segment, int $count)
     {
         /** @var CustomerInterface $customer */
         $customer = $visitorInfo->get(Customer::PROVIDER_KEY);
@@ -95,7 +95,8 @@ class TrackSegment implements ActionHandlerInterface, DataProviderDependentInter
             return;
         }
 
-        $event = SegmentTracked::create($customer, $segment);
+        $event = SegmentTracked::create($customer, $segment, $count);
+
         $this->eventDispatcher->dispatch($event->getName(), $event);
     }
 }

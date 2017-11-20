@@ -17,21 +17,31 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Event;
 
+use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 
-class SegmentTracked extends AbstractSingleCustomerEvent
+class SegmentTracked extends AbstractSingleCustomerEvent implements RuleEnvironmentAwareEventInterface
 {
+    const STORAGE_KEY = 'segment_tracked';
+
     /**
      * @var CustomerSegmentInterface
      */
     private $segment;
 
-    public static function create(CustomerInterface $customer, CustomerSegmentInterface $segment)
+    /**
+     * @var int
+     */
+    private $count;
+
+    public static function create(CustomerInterface $customer, CustomerSegmentInterface $segment, int $count)
     {
         $event = new self($customer);
+
         $event->segment = $segment;
+        $event->count   = $count;
 
         return $event;
     }
@@ -41,6 +51,11 @@ class SegmentTracked extends AbstractSingleCustomerEvent
         return $this->segment;
     }
 
+    public function getCount(): int
+    {
+        return $this->count;
+    }
+
     public function getName()
     {
         return 'plugin.cmf.segment-tracked';
@@ -48,15 +63,18 @@ class SegmentTracked extends AbstractSingleCustomerEvent
 
     public function appliesToTrigger(TriggerDefinitionInterface $trigger)
     {
-        if ($trigger->getEventName() !== $this->getName()) {
-            return false;
+        if ($trigger->getEventName() === $this->getName()) {
+            return true;
         }
 
-        $configuredSegmentId = $trigger->getOptions()['segmentId'] ?? null;
-        if (!$configuredSegmentId) {
-            return false;
-        }
+        return false;
+    }
 
-        return $configuredSegmentId === $this->segment->getId();
+    public function updateEnvironment(TriggerDefinitionInterface $trigger, RuleEnvironmentInterface $environment)
+    {
+        $environment->set(self::STORAGE_KEY, [
+            'id'    => $this->segment->getId(),
+            'count' => $this->count
+        ]);
     }
 }
