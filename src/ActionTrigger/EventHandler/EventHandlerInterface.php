@@ -21,7 +21,7 @@ use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 
 interface EventHandlerInterface
 {
-    public function handleEvent($event, RuleEnvironmentInterface $environment = null);
+    public function handleEvent($event);
 
     public function handleSingleCustomerEvent(SingleCustomerEventInterface $event, RuleEnvironmentInterface $environment);
 

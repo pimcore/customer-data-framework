@@ -52,11 +52,9 @@ class DefaultEventHandler implements EventHandlerInterface
         $this->rulesGroupedByEvents = $rulesGroupedByEvents;
     }
 
-    public function handleEvent($event, RuleEnvironmentInterface $environment = null)
+    public function handleEvent($event)
     {
-        if (null === $environment) {
-            $environment = new RuleEnvironment();
-        }
+        $environment = new RuleEnvironment();
 
         if ($event instanceof SingleCustomerEventInterface) {
             $this->handleSingleCustomerEvent($event, $environment);
