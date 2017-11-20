@@ -54,13 +54,38 @@
                             checked: getDataValue('considerCustomerSegments', true)
                         },
                         {
-                            xtype: 'numberfield',
-                            fieldLabel: t("threshold"),
-                            name: "threshold",
-                            value: getDataValue('threshold', 1),
-                            width: 200,
-                            minValue: 1,
-                            allowDecimals: false
+                            xtype: "fieldcontainer",
+                            fieldLabel: t("condition"),
+                            labelWidth: 160,
+                            layout: {
+                                type: 'table',
+                                tdAttrs: {
+                                    valign: 'center',
+                                    align: 'left'
+                                }
+                            },
+                            items: [
+                                {
+                                    xtype: "combobox",
+                                    name: "operator",
+                                    width: 80,
+                                    store: Ext.data.ArrayStore({
+                                        fields: ['operator'],
+                                        data: [['%'], ['='], ['<'], ['<='], ['>'], ['>=']]
+                                    }),
+                                    value: getDataValue('operator', '>='),
+                                    displayField: 'operator',
+                                    valueField: 'operator'
+                                },
+                                {
+                                    xtype: 'numberfield',
+                                    name: "value",
+                                    value: getDataValue('value', 1),
+                                    width: 160,
+                                    minValue: 1,
+                                    allowDecimals: false
+                                }
+                            ]
                         },
                         {
                             xtype: "hidden",

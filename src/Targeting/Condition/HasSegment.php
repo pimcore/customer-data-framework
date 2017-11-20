@@ -55,13 +55,17 @@ class HasSegment implements DataProviderDependentConditionInterface, VariableCon
     private function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'threshold'                => 1,
+            'operator'                 => '>=',
+            'value'                    => 1,
             'considerCustomerSegments' => true,
             'considerTrackedSegments'  => true
         ]);
 
-        $resolver->setAllowedTypes('threshold', 'int');
-        $resolver->setAllowedValues('threshold', function ($value) {
+        $resolver->setAllowedTypes('operator', 'string');
+        $resolver->setAllowedValues('operator', ['%', '=', '<', '<=', '>', '>=']);
+
+        $resolver->setAllowedTypes('value', 'int');
+        $resolver->setAllowedValues('value', function ($value) {
             return $value > 0;
         });
 
@@ -77,7 +81,8 @@ class HasSegment implements DataProviderDependentConditionInterface, VariableCon
         return new self(
             $config['segmentId'],
             [
-                'threshold'                => $config['threshold'] ?? 1,
+                'operator'                 => $config['operator'] ?? '>=',
+                'value'                    => $config['value'] ?? 1,
                 'considerCustomerSegments' => $config['considerCustomerSegments'] ?? true,
                 'considerTrackedSegments'  => $config['considerTrackedSegments'] ?? true
             ]
@@ -118,10 +123,39 @@ class HasSegment implements DataProviderDependentConditionInterface, VariableCon
         $segments = $this->loadSegments($visitorInfo);
 
         if (isset($segments[$this->segmentId])) {
-            return $segments[$this->segmentId] >= $this->options['threshold'];
+            return $this->matchCondition(
+                $segments[$this->segmentId],
+                $this->options['operator'],
+                $this->options['value']
+            );
         }
 
         return false;
+    }
+
+    private function matchCondition(int $segmentCount, string $operator, int $value): bool
+    {
+        switch ($operator) {
+            case '%':
+                return $segmentCount % $value === 0;
+
+            case '=':
+                return $segmentCount === $value;
+
+            case '>':
+                return $segmentCount > $value;
+
+            case '>=':
+                return $segmentCount >= $value;
+
+            case '<':
+                return $segmentCount < $value;
+
+            case '<=':
+                return $segmentCount <= $value;
+        }
+
+        throw new \InvalidArgumentException(sprintf('Unsupported operator "%s"', $operator));
     }
 
     private function loadSegments(VisitorInfo $visitorInfo): array
