@@ -33,7 +33,7 @@ class Installer extends MigrationInstaller
     {
         $this->installPermissions();
         $this->installDatabaseTables();
-        $this->installClasses();$this->install();
+        $this->installClasses();
         $this->installBricks();
 
         return true;
