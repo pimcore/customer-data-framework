@@ -73,6 +73,22 @@ interface CustomerSegmentInterface
     public function setCalculated($calculated);
 
     /**
+     * @return bool
+     */
+    public function getUseAsTargetGroup();
+
+    /**
+     * @return string
+     */
+    public function getTargetGroup();
+
+    /**
+     * @param string $targetGroup
+     * @return $this
+     */
+    public function setTargetGroup($targetGroup);
+
+    /**
      * @return []
      */
     public function getDataForWebserviceExport();

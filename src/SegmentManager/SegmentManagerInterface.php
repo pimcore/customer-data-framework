@@ -301,4 +301,12 @@ interface SegmentManagerInterface
      * @return void
      */
     public function preSegmentUpdate(CustomerSegmentInterface $segment);
+
+    /**
+     * Called in pimcore's post object delete hook for CustomerSegment objects.
+     *
+     * @param CustomerSegmentInterface $segment
+     * @return void
+     */
+    public function postSegmentDelete(CustomerSegmentInterface $segment);
 }

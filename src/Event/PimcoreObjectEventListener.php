@@ -129,6 +129,8 @@ class PimcoreObjectEventListener
             $this->customerSaveManager->postDelete($object);
         } elseif ($object instanceof ActivityInterface) {
             \Pimcore::getContainer()->get('cmf.activity_manager')->deleteActivity($object);
+        } elseif ($object instanceof CustomerSegmentInterface) {
+            \Pimcore::getContainer()->get(SegmentManagerInterface::class)->postSegmentDelete($object);
         }
     }
 }

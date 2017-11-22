@@ -25,9 +25,8 @@ class Installer extends MigrationInstaller
 {
     public function getMigrationVersion(): string
     {
-        return '20171207150300';
+        return '20171218194028';
     }
-
 
     public function migrateInstall(Schema $schema, Version $version)
     {
