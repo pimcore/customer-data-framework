@@ -32,7 +32,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class SegmentTracker
 {
-    const KEY_SEGMENTS = 'cmf_segments';
+    const KEY_SEGMENTS = 'cmf:sg';
 
     /**
      * @var TargetingStorageInterface
