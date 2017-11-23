@@ -15,12 +15,11 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Condition;
 
-use CustomerManagementFrameworkBundle\ActionTrigger\Event\SegmentTracked;
+use CustomerManagementFrameworkBundle\ActionTrigger\Event\TargetGroupAssigned;
 use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 
-class CountTrackedSegment extends AbstractMatchCondition
+class CountTargetGroupWeight extends AbstractMatchCondition
 {
     const OPTION_OPERATOR = 'operator';
     const OPTION_COUNT = 'count';
@@ -33,28 +32,17 @@ class CountTrackedSegment extends AbstractMatchCondition
     {
         $options = $conditionDefinition->getOptions();
 
-        $trackedSegment = $environment->get(SegmentTracked::STORAGE_KEY);
-        if (null === $trackedSegment) {
+        $targetGroupAssigned = $environment->get(TargetGroupAssigned::STORAGE_KEY);
+        if (null === $targetGroupAssigned) {
             return false;
         }
-
-        $segmentManager = \Pimcore::getContainer()->get('cmf.segment_manager');
-
-        $segment = $segmentManager->getSegmentById($trackedSegment['id'] ?? null);
-        if (!$segment instanceof CustomerSegmentInterface) {
-            return false;
-        }
-
-        $trackedCount = $trackedSegment['count'] ?? null;
-        if (null === $trackedCount) {
-            return false;
-        }
-
-        return $this->matchCondition($trackedCount, $options[self::OPTION_OPERATOR], (int)$options[self::OPTION_COUNT]);
+        return $this->matchCondition($targetGroupAssigned['targetGroupWeight'], $options[self::OPTION_OPERATOR], (int)$options[self::OPTION_COUNT]);
     }
 
     public function getDbCondition(ConditionDefinitionInterface $conditionDefinition)
     {
-        return ''; // TODO what do to here?
+        //return a condition that does not match any customer since this condition can only be used
+        //when assigned target group trigger appeared
+        return '1=2';
     }
 }

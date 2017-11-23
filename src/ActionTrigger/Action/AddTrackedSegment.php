@@ -25,6 +25,8 @@ class AddTrackedSegment extends AbstractAction
 {
     const OPTION_REMOVE_OTHER_SEGMENTS_FROM_SEGMENT_GROUP = 'removeOtherSegmentsFromGroup';
 
+    protected $name = 'AddTrackedSegment';
+
     public function process(
         ActionDefinitionInterface $actionDefinition,
         CustomerInterface $customer,
@@ -46,7 +48,7 @@ class AddTrackedSegment extends AbstractAction
         $this->addSegment($segmentManager, $actionDefinition, $customer, $segment);
     }
 
-    private function addSegment(
+    protected function addSegment(
         SegmentManagerInterface $segmentManager,
         ActionDefinitionInterface $actionDefinition,
         CustomerInterface $customer,
@@ -57,7 +59,7 @@ class AddTrackedSegment extends AbstractAction
 
         $this->logger->info(
             sprintf(
-                'AddTrackedSegment action: add segment %s (%s) to customer %s (%s)',
+                $this->name . ' action: add segment %s (%s) to customer %s (%s)',
                 (string)$segment,
                 $segment->getId(),
                 (string)$customer,
@@ -78,7 +80,7 @@ class AddTrackedSegment extends AbstractAction
             $customer,
             [$segment],
             $deleteSegments,
-            'AddTrackedSegment action trigger action'
+            $this->name . ' action trigger action'
         );
 
         $segmentManager->saveMergedSegments($customer);

@@ -146,6 +146,25 @@ pimcore.plugin.cmf.rule.actions.AddTrackedSegment = Class.create(pimcore.plugin.
     }
 });
 
+pimcore.registerNS("pimcore.plugin.cmf.rule.actions.AddTargetGroupSegment");
+pimcore.plugin.cmf.rule.actions.AddTargetGroupSegment = Class.create(pimcore.plugin.cmf.rule.actions.AbstractAction,{
+    name: 'AddTargetGroupSegment',
+    implementationClass: '\\CustomerManagementFrameworkBundle\\ActionTrigger\\Action\\AddTargetGroupSegment',
+    getFormItems: function() {
+        return [
+            {
+                name: "removeOtherSegmentsFromGroup",
+                fieldLabel: t('plugin_cmf_actiontriggerrule_addsegment_remove-other-segments-from-group'),
+                xtype: "checkbox",
+                width: 500,
+                labelWidth: 350,
+                value: this.options.removeOtherSegmentsFromGroup
+            }
+        ];
+    }
+});
+
+
 pimcore.registerNS("pimcore.plugin.cmf.rule.actions.ChangeFieldValue");
 pimcore.plugin.cmf.rule.actions.ChangeFieldValue = Class.create(pimcore.plugin.cmf.rule.actions.AbstractAction,{
     name: 'ChangeFieldValue',

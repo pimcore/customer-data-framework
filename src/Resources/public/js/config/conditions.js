@@ -211,7 +211,7 @@ pimcore.plugin.cmf.rule.conditions.CountActivities = Class.create(pimcore.plugin
 });
 
 pimcore.registerNS("pimcore.plugin.cmf.rule.conditions.CountTrackedSegment");
-pimcore.plugin.cmf.rule.conditions.CountActivities = Class.create(pimcore.plugin.cmf.rule.conditions.AbstractCondition,{
+pimcore.plugin.cmf.rule.conditions.CountTrackedSegment = Class.create(pimcore.plugin.cmf.rule.conditions.AbstractCondition,{
     name: 'CountTrackedSegment',
     implementationClass: '\\CustomerManagementFrameworkBundle\\ActionTrigger\\Condition\\CountTrackedSegment',
     getFormItems: function () {
@@ -395,6 +395,47 @@ pimcore.plugin.cmf.rule.conditions.Customer = Class.create(pimcore.plugin.cmf.ru
             }
 
 
+        ];
+    }
+});
+
+pimcore.registerNS("pimcore.plugin.cmf.rule.conditions.CountTargetGroupWeight");
+pimcore.plugin.cmf.rule.conditions.CountTargetGroupWeight = Class.create(pimcore.plugin.cmf.rule.conditions.AbstractCondition,{
+    name: 'CountTargetGroupWeight',
+    implementationClass: '\\CustomerManagementFrameworkBundle\\ActionTrigger\\Condition\\CountTargetGroupWeight',
+    getFormItems: function () {
+        return [
+            {
+                xtype: "fieldcontainer",
+                fieldLabel: t("plugin_cmf_actiontriggerrule_assigned_target_group_weight"),
+                labelWidth: 160,
+                layout: {
+                    type: 'table',
+                    tdAttrs: {
+                        valign: 'center'
+                    }
+                },
+                items: [
+                    {
+                        xtype: "combobox",
+                        name: "operator",
+                        width: 100,
+                        store: Ext.data.ArrayStore({
+                            fields: ['operator'],
+                            data: [['%'], ['='], ['<'], ['<='], ['>'], ['>=']]
+                        }),
+                        value: this.options.operator ? this.options.operator : '>=',
+                        displayField: 'operator',
+                        valueField: 'operator'
+                    },
+                    {
+                        xtype: "numberfield",
+                        name: "count",
+                        width: 90,
+                        value: this.options.count
+                    }
+                ]
+            }
         ];
     }
 });

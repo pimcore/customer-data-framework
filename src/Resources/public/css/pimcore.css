@@ -65,6 +65,13 @@
     background: url(/bundles/pimcorecustomermanagementframework/icons/segment.svg) center center no-repeat !important;
 }
 
+
+.plugin_cmf_icon_actiontriggerrule_TargetGroupAssigned,
+.plugin_cmf_icon_actiontriggerrule_CountTargetGroupWeight,
+.plugin_cmf_icon_actiontriggerrule_AddTargetGroupSegment {
+    background: url(/pimcore/static6/img/flat-color-icons/manager.svg) center center no-repeat !important;
+}
+
 .plugin_cmf_icon_actiontriggerrule_ChangeFieldValue,.plugin_cmf_icon_actiontriggerrule_Customer {
     background: url(/bundles/pimcorecustomermanagementframework/icons/customer.svg) center center no-repeat !important;
 }
