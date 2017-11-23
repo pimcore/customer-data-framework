@@ -25,6 +25,7 @@ plugin_cmf_actiontriggerrule_actionChangeFieldValue: "Change customer field valu
 plugin_cmf_actiontriggerrule_cron_definition: "Definition"
 plugin_cmf_actiontriggerrule_cron_croneditor: "online cron format generator"
 plugin_cmf_actiontriggerrule_addsegment_remove-other-segments-from-group: "remove other segments from selected segment group"
+plugin_cmf_actiontriggerrule_addsegment_increase-segment-application-counter: "increase segment application counter"
 plugin_cmf_customer: "Customer"
 plugin_cmf_segment: "Segment"
 plugin_cmf_select_a_segment: "Select a Segment"

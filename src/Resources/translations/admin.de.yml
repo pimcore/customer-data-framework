@@ -23,6 +23,7 @@ plugin_cmf_actiontriggerrule_actionChangeFieldValue: "Wert eines Feldes des Kund
 plugin_cmf_actiontriggerrule_cron_definition: "Definition"
 plugin_cmf_actiontriggerrule_cron_croneditor: "Online cron Format Generator"
 plugin_cmf_actiontriggerrule_addsegment_remove-other-segments-from-group: "andere Segmente der gewählten Segmentgruppe entfernen"
+plugin_cmf_actiontriggerrule_addsegment_increase-segment-application-counter: "Zähler für Segment Zuweisung erhöhen"
 plugin_cmf_customer: "Kunde"
 custom_report_adapter_termSegmentBuilder: "TermSegmentBuilderDefinition"
 plugin_cmf_custom_reports_termsegmentbuilder_sql: "SQL (die erste Spalte muss 'term' heißen und sollte alle verfügbaren und eindeutigen Begriffe zurückliefern)"

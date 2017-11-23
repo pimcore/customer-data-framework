@@ -19,10 +19,11 @@ use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\DataObject\CustomerSegment;
 
-class AddSegment extends AbstractAction
+class AddSegment extends AddTrackedSegment
 {
     const OPTION_SEGMENT_ID = 'segmentId';
-    const OPTION_REMOVE_OTHER_SEGMENTS_FROM_SEGMENT_GROUP = 'removeOtherSegmentsFromGroup';
+
+    protected $name = 'AddSegment';
 
     public function process(
         ActionDefinitionInterface $actionDefinition,
@@ -33,38 +34,13 @@ class AddSegment extends AbstractAction
         $options = $actionDefinition->getOptions();
 
         if (empty($options[self::OPTION_SEGMENT_ID])) {
-            $this->logger->error('AddSegment action: segmentId option not set');
+            $this->logger->error($this->name . ' action: segmentId option not set');
         }
 
         if ($segment = CustomerSegment::getById(intval($options[self::OPTION_SEGMENT_ID]))) {
-            $this->logger->info(
-                sprintf(
-                    'AddSegment action: add segment %s (%s) to customer %s (%s)',
-                    (string)$segment,
-                    $segment->getId(),
-                    (string)$customer,
-                    $customer->getId()
-                )
-            );
 
-            $deleteSegments = [];
+            $this->addSegment(\Pimcore::getContainer()->get('cmf.segment_manager'), $actionDefinition, $customer, $segment);
 
-            if ($options{self::OPTION_REMOVE_OTHER_SEGMENTS_FROM_SEGMENT_GROUP} && ($segmentGroup = $segment->getGroup(
-                ))
-            ) {
-                $deleteSegments = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentsFromSegmentGroup(
-                    $segmentGroup,
-                    [$segment]
-                );
-            }
-
-            \Pimcore::getContainer()->get('cmf.segment_manager')->mergeSegments(
-                $customer,
-                [$segment],
-                $deleteSegments,
-                'AddSegment action trigger action'
-            );
-            \Pimcore::getContainer()->get('cmf.segment_manager')->saveMergedSegments($customer);
         } else {
             $this->logger->error(
                 sprintf('AddSegment action: segment with ID %s not found', $options[self::OPTION_SEGMENT_ID])

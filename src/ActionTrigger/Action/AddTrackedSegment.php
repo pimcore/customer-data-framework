@@ -24,6 +24,7 @@ use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 class AddTrackedSegment extends AbstractAction
 {
     const OPTION_REMOVE_OTHER_SEGMENTS_FROM_SEGMENT_GROUP = 'removeOtherSegmentsFromGroup';
+    const OPTION_INCREASE_SEGMENT_APPLICATION_COUNTER = 'increaseSegmentApplicationCounter';
 
     protected $name = 'AddTrackedSegment';
 
@@ -76,11 +77,20 @@ class AddTrackedSegment extends AbstractAction
             );
         }
 
+        $timestamp = null;
+        $countApplications = false;
+        if($options[self::OPTION_INCREASE_SEGMENT_APPLICATION_COUNTER]) {
+            $timestamp = time();
+            $countApplications = true;
+        }
+
         $segmentManager->mergeSegments(
             $customer,
             [$segment],
             $deleteSegments,
-            $this->name . ' action trigger action'
+            $this->name . ' action trigger action',
+            $timestamp,
+            $countApplications
         );
 
         $segmentManager->saveMergedSegments($customer);

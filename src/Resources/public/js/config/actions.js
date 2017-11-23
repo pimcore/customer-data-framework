@@ -123,6 +123,14 @@ pimcore.plugin.cmf.rule.actions.AddSegment = Class.create(pimcore.plugin.cmf.rul
                 width: 500,
                 labelWidth: 350,
                 value: this.options.removeOtherSegmentsFromGroup
+            },
+            {
+                name: "increaseSegmentApplicationCounter",
+                fieldLabel: t('plugin_cmf_actiontriggerrule_addsegment_increase-segment-application-counter'),
+                xtype: "checkbox",
+                width: 500,
+                labelWidth: 350,
+                value: this.options.increaseSegmentApplicationCounter
             }
         ];
     }
@@ -141,6 +149,14 @@ pimcore.plugin.cmf.rule.actions.AddTrackedSegment = Class.create(pimcore.plugin.
                 width: 500,
                 labelWidth: 350,
                 value: this.options.removeOtherSegmentsFromGroup
+            },
+            {
+                name: "increaseSegmentApplicationCounter",
+                fieldLabel: t('plugin_cmf_actiontriggerrule_addsegment_increase-segment-application-counter'),
+                xtype: "checkbox",
+                width: 500,
+                labelWidth: 350,
+                value: this.options.increaseSegmentApplicationCounter
             }
         ];
     }
@@ -159,6 +175,14 @@ pimcore.plugin.cmf.rule.actions.AddTargetGroupSegment = Class.create(pimcore.plu
                 width: 500,
                 labelWidth: 350,
                 value: this.options.removeOtherSegmentsFromGroup
+            },
+            {
+                name: "increaseSegmentApplicationCounter",
+                fieldLabel: t('plugin_cmf_actiontriggerrule_addsegment_increase-segment-application-counter'),
+                xtype: "checkbox",
+                width: 500,
+                labelWidth: 350,
+                value: this.options.increaseSegmentApplicationCounter
             }
         ];
     }

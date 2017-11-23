@@ -21,8 +21,6 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
 class AddTargetGroupSegment extends AddTrackedSegment
 {
-    const OPTION_REMOVE_OTHER_SEGMENTS_FROM_SEGMENT_GROUP = 'removeOtherSegmentsFromGroup';
-
     protected $name = 'AddTargetGroupSegment';
 
     public function process(
