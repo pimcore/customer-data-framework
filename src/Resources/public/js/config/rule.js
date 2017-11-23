@@ -296,7 +296,6 @@ pimcore.plugin.cmf.config.rule = Class.create({
         if(typeof data == "undefined") {
             data = {};
         }
-console.log(event);
         var trigger = new pimcore.plugin.cmf.rule.triggers[event](data);
 
         var myId = Ext.id();
@@ -321,7 +320,6 @@ console.log(event);
      * @param data
      */
     addCondition: function (type, data) {
-console.log(type);
         // create condition
         var condition = new pimcore.plugin.cmf.rule.conditions[type](data);
 
