@@ -118,3 +118,8 @@ cmf_duplicates_decline_duplicate: "Duplikat ablehnen"
 
 cmf_gdpr_export_customers: "Kunden"
 
+plugin_cmf_targetingaction_assign_segments: "Verknüpftes Kundensegment zu eingeloggtem Kunden zuweisen"
+plugin_cmf_targetingaction_assign_segments_no: "Nein"
+plugin_cmf_targetingaction_assign_segments_assign_only: "Nur zuweisen"
+plugin_cmf_targetingaction_assign_segments_assign_consider_weight: "Zuweisen und Gewichtung berücksichtigen"
+plugin_cmf_targetingaction_track_activity: "Kundenaktivität zu eingeloggtem Kunden speichern"

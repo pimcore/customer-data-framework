@@ -11,6 +11,7 @@ pimcore:
             cmf_has_segment: CustomerManagementFrameworkBundle\Targeting\Condition\HasSegment
         action_handlers:
             cmf_track_segment: CustomerManagementFrameworkBundle\Targeting\ActionHandler\TrackSegment
+            assign_target_group: CustomerManagementFrameworkBundle\Targeting\ActionHandler\AssignTargetGroupAndSegment
 
 monolog:
     channels: ['cmf']
