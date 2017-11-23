@@ -175,8 +175,8 @@ pimcore.plugin.cmf.rule.conditions.CountActivities = Class.create(pimcore.plugin
             },
             {
                 xtype: "fieldcontainer",
-                fieldLabel: t("plugin_cmf_actiontriggerrule_countactivities_must_be"),
-                labelWidth: 160,
+                fieldLabel: t("plugin_cmf_actiontriggerrule_number_condition"),
+                labelWidth: 50,
                 layout: {
                     type: 'table',
                     tdAttrs: {
@@ -187,13 +187,20 @@ pimcore.plugin.cmf.rule.conditions.CountActivities = Class.create(pimcore.plugin
                     {
                         xtype: "combobox",
                         name: "operator",
-                        width: 60,
+                        width: 270,
                         store: Ext.data.ArrayStore({
-                            fields: ['operator'],
-                            data: [['>'], ['<'], ['=']]
+                            fields: ['operator', 'label'],
+                            data: [
+                                ['%', t('plugin_cmf_actiontriggerrule_number_condition_%')],
+                                ['=', t('plugin_cmf_actiontriggerrule_number_condition_=')],
+                                ['<', t('plugin_cmf_actiontriggerrule_number_condition_<')],
+                                ['<=', t('plugin_cmf_actiontriggerrule_number_condition_<=')],
+                                ['>', t('plugin_cmf_actiontriggerrule_number_condition_>')],
+                                ['>=', t('plugin_cmf_actiontriggerrule_number_condition_>=')]
+                            ]
                         }),
                         value: this.options.operator ? this.options.operator : '=',
-                        displayField: 'operator',
+                        displayField: 'label',
                         valueField: 'operator'
                     },
                     {
@@ -206,47 +213,6 @@ pimcore.plugin.cmf.rule.conditions.CountActivities = Class.create(pimcore.plugin
             }
 
 
-        ];
-    }
-});
-
-pimcore.registerNS("pimcore.plugin.cmf.rule.conditions.CountTrackedSegment");
-pimcore.plugin.cmf.rule.conditions.CountTrackedSegment = Class.create(pimcore.plugin.cmf.rule.conditions.AbstractCondition,{
-    name: 'CountTrackedSegment',
-    implementationClass: '\\CustomerManagementFrameworkBundle\\ActionTrigger\\Condition\\CountTrackedSegment',
-    getFormItems: function () {
-        return [
-            {
-                xtype: "fieldcontainer",
-                fieldLabel: t("plugin_cmf_actiontriggerrule_countactivities_must_be"),
-                labelWidth: 160,
-                layout: {
-                    type: 'table',
-                    tdAttrs: {
-                        valign: 'center'
-                    }
-                },
-                items: [
-                    {
-                        xtype: "combobox",
-                        name: "operator",
-                        width: 60,
-                        store: Ext.data.ArrayStore({
-                            fields: ['operator'],
-                            data: [['%'], ['='], ['<'], ['<='], ['>'], ['>=']]
-                        }),
-                        value: this.options.operator ? this.options.operator : '>=',
-                        displayField: 'operator',
-                        valueField: 'operator'
-                    },
-                    {
-                        xtype: "numberfield",
-                        name: "count",
-                        width: 90,
-                        value: this.options.count
-                    }
-                ]
-            }
         ];
     }
 });
@@ -399,16 +365,16 @@ pimcore.plugin.cmf.rule.conditions.Customer = Class.create(pimcore.plugin.cmf.ru
     }
 });
 
-pimcore.registerNS("pimcore.plugin.cmf.rule.conditions.CountTargetGroupWeight");
-pimcore.plugin.cmf.rule.conditions.CountTargetGroupWeight = Class.create(pimcore.plugin.cmf.rule.conditions.AbstractCondition,{
-    name: 'CountTargetGroupWeight',
-    implementationClass: '\\CustomerManagementFrameworkBundle\\ActionTrigger\\Condition\\CountTargetGroupWeight',
+pimcore.registerNS("pimcore.plugin.cmf.rule.conditions.CountTrackedSegment");
+pimcore.plugin.cmf.rule.conditions.CountTrackedSegment = Class.create(pimcore.plugin.cmf.rule.conditions.AbstractCondition,{
+    name: 'CountTrackedSegment',
+    implementationClass: '\\CustomerManagementFrameworkBundle\\ActionTrigger\\Condition\\CountTrackedSegment',
     getFormItems: function () {
         return [
             {
                 xtype: "fieldcontainer",
-                fieldLabel: t("plugin_cmf_actiontriggerrule_assigned_target_group_weight"),
-                labelWidth: 160,
+                fieldLabel: t("plugin_cmf_actiontriggerrule_number_condition"),
+                labelWidth: 50,
                 layout: {
                     type: 'table',
                     tdAttrs: {
@@ -419,13 +385,68 @@ pimcore.plugin.cmf.rule.conditions.CountTargetGroupWeight = Class.create(pimcore
                     {
                         xtype: "combobox",
                         name: "operator",
-                        width: 100,
+                        width: 270,
                         store: Ext.data.ArrayStore({
-                            fields: ['operator'],
-                            data: [['%'], ['='], ['<'], ['<='], ['>'], ['>=']]
+                            fields: ['operator', 'label'],
+                            data: [
+                                ['%', t('plugin_cmf_actiontriggerrule_number_condition_%')],
+                                ['=', t('plugin_cmf_actiontriggerrule_number_condition_=')],
+                                ['<', t('plugin_cmf_actiontriggerrule_number_condition_<')],
+                                ['<=', t('plugin_cmf_actiontriggerrule_number_condition_<=')],
+                                ['>', t('plugin_cmf_actiontriggerrule_number_condition_>')],
+                                ['>=', t('plugin_cmf_actiontriggerrule_number_condition_>=')]
+                            ]
                         }),
                         value: this.options.operator ? this.options.operator : '>=',
-                        displayField: 'operator',
+                        displayField: 'label',
+                        valueField: 'operator'
+                    },
+                    {
+                        xtype: "numberfield",
+                        name: "count",
+                        width: 90,
+                        value: this.options.count
+                    }
+                ]
+            }
+        ];
+    }
+});
+
+pimcore.registerNS("pimcore.plugin.cmf.rule.conditions.CountTargetGroupWeight");
+pimcore.plugin.cmf.rule.conditions.CountTargetGroupWeight = Class.create(pimcore.plugin.cmf.rule.conditions.AbstractCondition,{
+    name: 'CountTargetGroupWeight',
+    implementationClass: '\\CustomerManagementFrameworkBundle\\ActionTrigger\\Condition\\CountTargetGroupWeight',
+    getFormItems: function () {
+        return [
+            {
+                xtype: "fieldcontainer",
+                fieldLabel: t("plugin_cmf_actiontriggerrule_number_condition"),
+                labelWidth: 50,
+                layout: {
+                    type: 'table',
+                    tdAttrs: {
+                        valign: 'center'
+                    }
+                },
+                items: [
+                    {
+                        xtype: "combobox",
+                        name: "operator",
+                        width: 270,
+                        store: Ext.data.ArrayStore({
+                            fields: ['operator', 'label'],
+                            data: [
+                                ['%', t('plugin_cmf_actiontriggerrule_number_condition_%')],
+                                ['=', t('plugin_cmf_actiontriggerrule_number_condition_=')],
+                                ['<', t('plugin_cmf_actiontriggerrule_number_condition_<')],
+                                ['<=', t('plugin_cmf_actiontriggerrule_number_condition_<=')],
+                                ['>', t('plugin_cmf_actiontriggerrule_number_condition_>')],
+                                ['>=', t('plugin_cmf_actiontriggerrule_number_condition_>=')]
+                            ]
+                        }),
+                        value: this.options.operator ? this.options.operator : '>=',
+                        displayField: 'label',
                         valueField: 'operator'
                     },
                     {

@@ -379,7 +379,6 @@ pimcore.plugin.cmf.config.rule = Class.create({
             // make ident
             tab.recalculateBracketIdent(tab.conditionsContainer.items);
         });
-console.log(item);
         this.conditionsContainer.add(item);
         item.updateLayout();
         this.conditionsContainer.updateLayout();

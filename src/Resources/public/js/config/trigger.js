@@ -107,6 +107,18 @@ pimcore.plugin.cmf.rule.triggers.CronTrigger = Class.create(pimcore.plugin.cmf.r
     }
 });
 
+pimcore.registerNS("pimcore.plugin.cmf.rule.triggers.ExecuteSegmentBuilders");
+pimcore.plugin.cmf.rule.triggers.ExecuteSegmentBuilders = Class.create(pimcore.plugin.cmf.rule.triggers.AbstractTrigger,{
+    name: 'ExecuteSegmentBuilders',
+    eventName: 'plugin.cmf.execute-segment-builders'
+});
+
+pimcore.registerNS("pimcore.plugin.cmf.rule.triggers.SegmentTracked");
+pimcore.plugin.cmf.rule.triggers.SegmentTracked = Class.create(pimcore.plugin.cmf.rule.triggers.AbstractTrigger, {
+    name: 'SegmentTracked',
+    eventName: 'plugin.cmf.segment-tracked'
+});
+
 pimcore.registerNS("pimcore.plugin.cmf.rule.triggers.TargetGroupAssigned");
 pimcore.plugin.cmf.rule.triggers.TargetGroupAssigned = Class.create(pimcore.plugin.cmf.rule.triggers.AbstractTrigger,{
     name: 'TargetGroupAssigned',
@@ -134,16 +146,4 @@ pimcore.plugin.cmf.rule.triggers.TargetGroupAssigned = Class.create(pimcore.plug
             }
         ];
     }
-});
-
-pimcore.registerNS("pimcore.plugin.cmf.rule.triggers.ExecuteSegmentBuilders");
-pimcore.plugin.cmf.rule.triggers.ExecuteSegmentBuilders = Class.create(pimcore.plugin.cmf.rule.triggers.AbstractTrigger,{
-    name: 'ExecuteSegmentBuilders',
-    eventName: 'plugin.cmf.execute-segment-builders'
-});
-
-pimcore.registerNS("pimcore.plugin.cmf.rule.triggers.SegmentTracked");
-pimcore.plugin.cmf.rule.triggers.SegmentTracked = Class.create(pimcore.plugin.cmf.rule.triggers.AbstractTrigger, {
-    name: 'SegmentTracked',
-    eventName: 'plugin.cmf.segment-tracked'
 });
