@@ -25,6 +25,7 @@ use Pimcore\Model\Tool\Targeting\Rule;
 use Pimcore\Model\Tool\Targeting\TargetGroup;
 use Pimcore\Targeting\ActionHandler\AssignTargetGroup;
 use Pimcore\Targeting\ConditionMatcherInterface;
+use Pimcore\Targeting\DataLoaderInterface;
 use Pimcore\Targeting\Model\VisitorInfo;
 use Pimcore\Targeting\Storage\TargetingStorageInterface;
 
@@ -40,6 +41,11 @@ class AssignTargetGroupAndSegment extends AssignTargetGroup {
      */
     protected $activityManager;
 
+    /**
+     * @var DataLoaderInterface
+     */
+    protected $dataLoader;
+
 
     /**
      * AssignTargetGroupAndSegment constructor.
@@ -52,12 +58,14 @@ class AssignTargetGroupAndSegment extends AssignTargetGroup {
         ConditionMatcherInterface $conditionMatcher,
         TargetingStorageInterface $storage,
         SegmentManagerInterface $segmentManager,
-        ActivityManagerInterface $activityManager
+        ActivityManagerInterface $activityManager,
+        DataLoaderInterface $dataLoader
     )
     {
         parent::__construct($conditionMatcher, $storage);
         $this->segmentManager = $segmentManager;
         $this->activityManager = $activityManager;
+        $this->dataLoader = $dataLoader;
     }
 
 
@@ -69,6 +77,7 @@ class AssignTargetGroupAndSegment extends AssignTargetGroup {
         parent::apply($visitorInfo, $action, $rule);
 
         //get customer
+        $this->dataLoader->loadDataFromProviders($visitorInfo, [Customer::PROVIDER_KEY]);
         $customer = $visitorInfo->get(Customer::PROVIDER_KEY);
         if(!$customer) {
             return;
@@ -96,32 +105,34 @@ class AssignTargetGroupAndSegment extends AssignTargetGroup {
             $segments->setCondition("targetGroup = ?", $targetGroupId);
             $segments->load();
 
-            if($action['assignSegment'] == 'assign_consider_weight') {
+            if($segments->getObjects()) {
+                if($action['assignSegment'] == 'assign_consider_weight') {
 
-                //loop needed to make sure segment is assigned weight-times
-                //strange things with timestamp are needed in order to make sure assignments have different timestamps so they count correctly
-                $timestamp = time() - $action['weight'];
-                $segmentApplicationCounter = true;
+                    //loop needed to make sure segment is assigned weight-times
+                    //strange things with timestamp are needed in order to make sure assignments have different timestamps so they count correctly
+                    $timestamp = time() - $action['weight'];
+                    $segmentApplicationCounter = true;
 
-                for($i = 0; $i < $action['weight']; $i++) {
+                    for($i = 0; $i < $action['weight']; $i++) {
+                        $this->segmentManager->mergeSegments(
+                            $customer,
+                            $segments->getObjects(),
+                            [],
+                            'AssignPersonGroupAndSegment action trigger action based on rule ' . $rule->getName(),
+                            $timestamp + $i,
+                            $segmentApplicationCounter
+                        );
+                    }
+
+                } else {
+
                     $this->segmentManager->mergeSegments(
                         $customer,
                         $segments->getObjects(),
                         [],
-                        'AssignPersonGroupAndSegment action trigger action based on rule ' . $rule->getName(),
-                        $timestamp + $i,
-                        $segmentApplicationCounter
+                        'AssignPersonGroupAndSegment action trigger action based on rule ' . $rule->getName()
                     );
                 }
-
-            } else {
-
-                $this->segmentManager->mergeSegments(
-                    $customer,
-                    $segments->getObjects(),
-                    [],
-                    'AssignPersonGroupAndSegment action trigger action based on rule ' . $rule->getName()
-                );
             }
 
             $this->segmentManager->saveMergedSegments($customer);
