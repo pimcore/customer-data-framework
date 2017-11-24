@@ -22,7 +22,7 @@
                             name: "segment",
                             fieldLabel: t('segment'),
                             xtype: "textfield",
-                            width: 500,
+                            width: 600,
                             cls: "input_drop_target",
                             value: data.segment,
                             listeners: {

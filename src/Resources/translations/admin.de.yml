@@ -147,3 +147,12 @@ plugin_cmf_actiontriggerrule_conditionCountTargetGroupWeight: "[Targeting] Prüf
 plugin_cmf_actiontriggerrule_assigned_target_group_weight: "Bedingung"
 
 plugin_cmf_actiontriggerrule_actionAddTargetGroupSegment: "[Targeting] Zielgruppen Segment zuweisen"
+
+plugin_cmf_actiontriggerrule_number_condition: "Ausführen wenn"
+plugin_cmf_actiontriggerrule_number_condition_%: "alle x mal"
+plugin_cmf_actiontriggerrule_number_condition_=: "wenn Anzahl gleich"
+plugin_cmf_actiontriggerrule_number_condition_<: "wenn Anzahl kleiner"
+plugin_cmf_actiontriggerrule_number_condition_<=: "wenn Anzahl kleiner/gleich"
+plugin_cmf_actiontriggerrule_number_condition_>: "wenn Anzahl größer"
+plugin_cmf_actiontriggerrule_number_condition_>=: "wenn Anzahl größer/gleich"
+
