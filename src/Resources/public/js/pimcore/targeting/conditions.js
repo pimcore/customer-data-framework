@@ -30,7 +30,7 @@
                             name: "segment",
                             fieldLabel: t('segment'),
                             xtype: "textfield",
-                            width: 500,
+                            width: 600,
                             cls: "input_drop_target",
                             value: getDataValue('segment'),
                             listeners: {
@@ -88,8 +88,7 @@
                         },
                         {
                             xtype: "fieldcontainer",
-                            fieldLabel: t("condition"),
-                            labelWidth: 160,
+                            fieldLabel: t("plugin_cmf_actiontriggerrule_number_condition"),
                             layout: {
                                 type: 'table',
                                 tdAttrs: {
@@ -101,13 +100,20 @@
                                 {
                                     xtype: "combobox",
                                     name: "condition_operator",
-                                    width: 80,
+                                    width: 270,
                                     store: Ext.data.ArrayStore({
-                                        fields: ['condition_operator'],
-                                        data: [['%'], ['='], ['<'], ['<='], ['>'], ['>=']]
+                                        fields: ['condition_operator', 'label'],
+                                        data: [
+                                            ['%', t('plugin_cmf_actiontriggerrule_number_condition_%')],
+                                            ['=', t('plugin_cmf_actiontriggerrule_number_condition_=')],
+                                            ['<', t('plugin_cmf_actiontriggerrule_number_condition_<')],
+                                            ['<=', t('plugin_cmf_actiontriggerrule_number_condition_<=')],
+                                            ['>', t('plugin_cmf_actiontriggerrule_number_condition_>')],
+                                            ['>=', t('plugin_cmf_actiontriggerrule_number_condition_>=')]
+                                        ]
                                     }),
                                     value: getDataValue('condition_operator', '>='),
-                                    displayField: 'condition_operator',
+                                    displayField: 'label',
                                     valueField: 'condition_operator'
                                 },
                                 {
