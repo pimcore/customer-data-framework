@@ -21,14 +21,14 @@ use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\CustomerSegments;
 use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
 use Pimcore\Model\DataObject\CustomerSegment;
-use Pimcore\Targeting\Condition\DataProviderDependentConditionInterface;
-use Pimcore\Targeting\Condition\VariableConditionInterface;
+use Pimcore\Targeting\Condition\AbstractVariableCondition;
 use Pimcore\Targeting\DataProvider\TargetingStorage;
+use Pimcore\Targeting\DataProviderDependentInterface;
 use Pimcore\Targeting\Model\VisitorInfo;
 use Pimcore\Targeting\Storage\TargetingStorageInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class HasSegment implements DataProviderDependentConditionInterface, VariableConditionInterface
+class HasSegment extends AbstractVariableCondition implements DataProviderDependentInterface
 {
     /**
      * @var int|null
@@ -136,11 +136,17 @@ class HasSegment implements DataProviderDependentConditionInterface, VariableCon
         $segments = $this->loadSegments($visitorInfo);
 
         if (isset($segments[$this->segmentId])) {
-            return $this->matchCondition(
+            $result = $this->matchCondition(
                 $segments[$this->segmentId],
                 $this->options['operator'],
                 $this->options['value']
             );
+
+            if ($result) {
+                $this->setMatchedVariables($segments);
+            }
+
+            return $result;
         }
 
         return false;
@@ -213,13 +219,5 @@ class HasSegment implements DataProviderDependentConditionInterface, VariableCon
         }
 
         return $segments;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getVariables(VisitorInfo $visitorInfo): array
-    {
-        return $this->loadSegments($visitorInfo);
     }
 }
