@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler;
 
 use CustomerManagementFrameworkBundle\ActivityManager\ActivityManagerInterface;
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\DataTransformer\Cleanup\Email;
 use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 use CustomerManagementFrameworkBundle\Model\Activity\MailchimpStatusChangeActivity;
@@ -758,5 +759,37 @@ class Mailchimp implements NewsletterProviderHandlerInterface
         }
 
         return $this->fieldTransformers[$pimcoreField]->didMergeFieldDataChange($pimcoreData, $mailchimpImportData);
+    }
+
+    /**
+     * @param $email
+     * @param int|false $customerId
+     * @return bool
+     */
+    public function doesOtherSubscribedCustomerWithEmailExist($email, $customerId = false)
+    {
+
+        if(!$email) {
+            return false;
+        }
+        /**
+         * @var CustomerProviderInterface $customerProvider
+         */
+        $customerProvider = \Pimcore::getContainer()->get(CustomerProviderInterface::class);
+        $list = $customerProvider->getList();
+        if($customerId) {
+            $list->setCondition('trim(lower(email)) = ? and o_id != ?', [trim(strtolower($email)), $customerId]);
+        } else {
+            $list->setCondition('trim(lower(email)) = ?', [trim(strtolower($email))]);
+        }
+
+
+        foreach($list as $_customer) {
+            if(in_array($this->getMailchimpStatus($_customer), array(self::STATUS_PENDING, self::STATUS_SUBSCRIBED))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

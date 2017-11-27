@@ -197,6 +197,20 @@ class BatchExporter extends AbstractExporter
      */
     protected function createBatchDeleteOperation(Batch $batch, NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler)
     {
+        if($mailchimpProviderHandler->doesOtherSubscribedCustomerWithEmailExist($item->getEmail(), $item->getCustomerId())) {
+
+            $this->getLogger()->info(
+                sprintf(
+                    '[MailChimp][CUSTOMER %s][%s] Deletion skipped as another subscribed customer with the same email exists.',
+                    $item->getCustomerId(),
+                    $mailchimpProviderHandler->getShortcut()
+                )
+            );
+
+            $item->setSuccessfullyProcessed(true);
+            return;
+        }
+
         $exportService = $this->exportService;
         $apiClient = $this->apiClient;
 
@@ -360,13 +374,16 @@ class BatchExporter extends AbstractExporter
 
         /** @var MailchimpAwareCustomerInterface|ElementInterface $customer */
         $customer = $item->getCustomer();
-        $entry = $mailchimpProviderHandler->buildEntry($customer);
-        $remoteId = $apiClient->subscriberHash($entry['email_address']);
+
 
         $operation = $item->getOverruledOperation() ?: $item->getOperation();
 
         // add note
         if ($operation == NewsletterQueueInterface::OPERATION_UPDATE) {
+
+            $entry = $mailchimpProviderHandler->buildEntry($customer);
+            $remoteId = $apiClient->subscriberHash($entry['email_address']);
+
             $exportService
                 ->createExportNote($customer, $mailchimpProviderHandler->getListId(), $remoteId, null, 'Mailchimp Export [' . $mailchimpProviderHandler->getShortcut() . ']', ['exportdataMd5' => $exportService->getMd5($entry)])
                 ->save();
@@ -383,6 +400,9 @@ class BatchExporter extends AbstractExporter
                 ]
             );
         } elseif ($customer) {
+            $entry = $mailchimpProviderHandler->buildEntry($customer);
+            $remoteId = $apiClient->subscriberHash($entry['email_address']);
+
             $exportService
                 ->createExportNote($customer, $mailchimpProviderHandler->getListId(), $remoteId, null, 'Mailchimp Deletion [' . $mailchimpProviderHandler->getShortcut() . ']')
                 ->save();
@@ -400,9 +420,14 @@ class BatchExporter extends AbstractExporter
             );
         }
 
-        $status = isset($entry['status']) ? $entry['status'] : $entry['status_if_new'];
-        $mailchimpProviderHandler->updateMailchimpStatus($customer, $status);
+        if($customer) {
 
+            $entry = $mailchimpProviderHandler->buildEntry($customer);
+
+            $status = isset($entry['status']) ? $entry['status'] : $entry['status_if_new'];
+            $mailchimpProviderHandler->updateMailchimpStatus($customer, $status);
+
+        }
         $item->setSuccessfullyProcessed(true);
     }
 

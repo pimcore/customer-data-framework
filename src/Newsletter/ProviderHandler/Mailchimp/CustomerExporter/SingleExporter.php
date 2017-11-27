@@ -221,6 +221,19 @@ class SingleExporter extends AbstractExporter
         $exportService = $this->exportService;
         $apiClient = $this->apiClient;
 
+        if($mailchimpProviderHandler->doesOtherSubscribedCustomerWithEmailExist($customer->getEmail(), $customer->getId())) {
+            $this->getLogger()->debug(
+                sprintf(
+                    '[MailChimp][CUSTOMER %s][%s] Skip deletion of customer as another subscribed customer with email %s exists.',
+                    $customer->getId(),
+                    $mailchimpProviderHandler->getShortcut(),
+                    $customer->getEmail()
+                )
+            );
+            $item->setSuccessfullyProcessed(true);
+            return;
+        }
+
         // entry to send to API
         $entry = $mailchimpProviderHandler->buildEntry($customer);
         $remoteId = $this->apiClient->subscriberHash($item->getEmail());
@@ -296,6 +309,19 @@ class SingleExporter extends AbstractExporter
     {
         $exportService = $this->exportService;
         $apiClient = $this->apiClient;
+
+        if($mailchimpProviderHandler->doesOtherSubscribedCustomerWithEmailExist($item->getEmail(), $item->getCustomerId())) {
+            $this->getLogger()->info(
+                sprintf(
+                    '[MailChimp][CUSTOMER %s][%s] Deletion skipped as another subscribed customer with the same email exists.',
+                    $item->getCustomerId(),
+                    $mailchimpProviderHandler->getShortcut()
+                )
+            );
+
+            $item->setSuccessfullyProcessed(true);
+            return;
+        }
 
         // entry to send to API
         $remoteId = $this->apiClient->subscriberHash($item->getEmail());
