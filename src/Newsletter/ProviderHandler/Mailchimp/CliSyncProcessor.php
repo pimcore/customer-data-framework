@@ -178,6 +178,10 @@ class CliSyncProcessor
                                 continue;
                             }
 
+                            if($row['status'] === Mailchimp::STATUS_UNSUBSCRIBED || $row['status'] === Mailchimp::STATUS_CLEANED) {
+                                continue;
+                            }
+
                             $remoteId = $client->subscriberHash($row['email_address']);
 
                             $this->getLogger()->notice(
