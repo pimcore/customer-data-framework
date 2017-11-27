@@ -163,8 +163,9 @@ class CliSyncProcessor
                 $count = 20;
                 $page = 0;
                 while(true) {
+                    $url = $this->exportService->getListResourceUrl($newsletterProviderHandler->getListId(), 'members/?count=' . $count . '&offset=' . ($page * $count) );
                     $result = $client->get(
-                        $this->exportService->getListResourceUrl($newsletterProviderHandler->getListId(), 'members/?count=' . $count . '&offset=' . ($page * $count) )
+                        $url
                     );
 
                     if ($client->success() && sizeof($result['members'])) {
@@ -219,6 +220,11 @@ class CliSyncProcessor
                         }
                         $page++;
                     } else {
+                        if(!$client->success()) {
+                            $this->getLogger()->error(
+                                'get members failed: ' . $url
+                            );
+                        }
                         break;
                     }
                 }
