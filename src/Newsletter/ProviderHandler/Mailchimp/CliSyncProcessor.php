@@ -70,7 +70,7 @@ class CliSyncProcessor
         $this->newsletterManager = $newsletterManager;
     }
 
-    public function process()
+    public function syncStatusChanges()
     {
         $client = $this->exportService->getApiClient();
 
@@ -78,50 +78,147 @@ class CliSyncProcessor
             if ($newsletterProviderHandler instanceof Mailchimp) {
 
                 // get updates from the last 3 days
-                $date = Carbon::createFromTimestamp(time() - (60 * 60 * 24 * 3));
+                $date = Carbon::createFromTimestamp(time() - (60 * 60 * 24 * 300));
                 $date = $date->toIso8601String();
 
-                $result = $client->get(
-                    $this->exportService->getListResourceUrl($newsletterProviderHandler->getListId(), 'members/?since_last_changed=' . urlencode($date))
-                );
+                $count = 20;
+                $page = 0;
+                while(true) {
+                    $result = $client->get(
+                        $this->exportService->getListResourceUrl(
+                            $newsletterProviderHandler->getListId(),
+                            'members/?since_last_changed='.urlencode($date) . '&count=' . $count . '&offset=' . ($page * $count)
+                        )
+                    );
 
-                if ($client->success() && sizeof($result['members'])) {
-                    foreach ($result['members'] as $row) {
+                    if ($client->success() && sizeof($result['members'])) {
+                        foreach ($result['members'] as $row) {
 
-                        // var_dump($row);
-                        /**
-                         * @var MailchimpAwareCustomerInterface $customer
-                         */
-                        try {
-                            if (!$customer = $this->customerProvider->getActiveCustomerByEmail($row['email_address'])) {
-                                $this->getLogger()->error(sprintf('no active customer with email %s found', $row['email_address']));
+                            // var_dump($row);
+                            /**
+                             * @var MailchimpAwareCustomerInterface $customer
+                             */
+                            try {
+                                if (!$customer = $this->customerProvider->getActiveCustomerByEmail(
+                                    $row['email_address']
+                                )) {
+                                    $this->getLogger()->error(
+                                        sprintf('no active customer with email %s found', $row['email_address'])
+                                    );
+                                }
+                            } catch (\Exception $e) {
+                                $this->getLogger()->error(
+                                    sprintf('multiple active customers with email %s found', $row['email_address'])
+                                );
                             }
-                        } catch (\RuntimeException $e) {
-                            if (!$customer = $this->customerProvider->getActiveCustomerByEmail($row['email_address'])) {
-                                $this->getLogger()->error(sprintf('multiple active customers with email %s found', $row['email_address']));
+
+                            if (!$customer) {
+                                continue;
                             }
+
+                            $status = $row['status'];
+
+                            $statusChanged = $this->updateFromMailchimpProcessor->updateNewsletterStatus(
+                                $newsletterProviderHandler,
+                                $customer,
+                                $status
+                            );
+                            $mergeFieldsChanged = $this->updateFromMailchimpProcessor->processMergeFields(
+                                $newsletterProviderHandler,
+                                $customer,
+                                $row['merge_fields']
+                            );
+
+                            $changed = $statusChanged || $mergeFieldsChanged;
+
+                            if ($changed) {
+                                $this->getLogger()->info(
+                                    sprintf('customer id %s changed - updating...', $customer->getId())
+                                );
+                            } else {
+                                $this->getLogger()->info(
+                                    sprintf('customer id %s did not change - no update needed.', $customer->getId())
+                                );
+                            }
+
+                            $this->updateFromMailchimpProcessor->saveCustomerIfChanged($customer, $changed);
                         }
 
-                        if (!$customer) {
-                            continue;
-                        }
-
-                        $status = $row['status'];
-
-                        $statusChanged = $this->updateFromMailchimpProcessor->updateNewsletterStatus($newsletterProviderHandler, $customer, $status);
-                        $mergeFieldsChanged = $this->updateFromMailchimpProcessor->processMergeFields($newsletterProviderHandler, $customer, $row['merge_fields']);
-
-                        $changed = $statusChanged || $mergeFieldsChanged;
-
-                        if ($changed) {
-                            $this->getLogger()->info(sprintf('customer id %s changed - updating...', $customer->getId()));
-                        } else {
-                            $this->getLogger()->info(sprintf('customer id %s did not change - no update needed.', $customer->getId()));
-                        }
-
-                        $this->updateFromMailchimpProcessor->saveCustomerIfChanged($customer, $changed);
+                        $page++;
+                    } else {
+                        break;
                     }
                 }
+            }
+        }
+    }
+
+    public function deleteNonExistingItems()
+    {
+        $client = $this->exportService->getApiClient();
+
+        foreach ($this->newsletterManager->getNewsletterProviderHandlers() as $newsletterProviderHandler) {
+            if ($newsletterProviderHandler instanceof Mailchimp) {
+
+                $count = 20;
+                $page = 0;
+                while(true) {
+                    $result = $client->get(
+                        $this->exportService->getListResourceUrl($newsletterProviderHandler->getListId(), 'members/?count=' . $count . '&offset=' . ($page * $count) )
+                    );
+
+                    if ($client->success() && sizeof($result['members'])) {
+                        foreach ($result['members'] as $row) {
+
+                            $list = $this->customerProvider->getList();
+                            $list->setCondition('email = ?', $row['email_address']);
+
+                            $this->getLogger()->info(sprintf('check email %s', $row['email_address']));
+                            if ($list->count()) {
+                                continue;
+                            }
+
+                            $remoteId = $client->subscriberHash($row['email_address']);
+
+                            $this->getLogger()->notice(
+                                sprintf(
+                                    '[MailChimp][CUSTOMER %s][%s] Delete email in mailchimp. Remote ID is %s',
+                                    $row['email_address'],
+                                    $newsletterProviderHandler->getShortcut(),
+                                    $remoteId
+                                )
+                            );
+
+                            $client->delete(
+                                $this->exportService->getListResourceUrl($newsletterProviderHandler->getListId(), sprintf('members/%s', $remoteId))
+                            );
+
+                            if ($client->success()) {
+                                $this->getLogger()->notice(
+                                    sprintf(
+                                        '[MailChimp][CUSTOMER %s][%s] Deletion was successful. Remote ID is %s',
+                                        $row['email_address'],
+                                        $newsletterProviderHandler->getShortcut(),
+                                        $remoteId
+                                    )
+                                );
+                            } else {
+                                $this->getLogger()->error(
+                                    sprintf(
+                                        '[MailChimp][CUSTOMER %s][%s] Deletion failed. Remote ID is %s',
+                                        $row['email_address'],
+                                        $newsletterProviderHandler->getShortcut(),
+                                        $remoteId
+                                    )
+                                );
+                            }
+                        }
+                        $page++;
+                    } else {
+                        break;
+                    }
+                }
+
             }
         }
     }

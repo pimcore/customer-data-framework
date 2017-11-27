@@ -42,6 +42,7 @@ class NewsletterSyncCommand extends AbstractCommand
             ->addOption('force-segments', 's', null, 'force update of segments (otherwise only changed segments will be exported)')
             ->addOption('force-customers', 'f', null, 'force update of customers (otherwise only changed customers will be exported)')
             ->addOption('mailchimp-status-sync', 'm', null, 'mailchimp status sync (direction mailchimp => pimcore) for all mailchimp newsletter provider handlers')
+            ->addOption('delete-non-existing-items-in-mailchimp', null, null, 'delete email addresses in mailchimp which do not exist in the CMF database any more (only for maintenance purpose, should not be needed when the system is running regularly)')
             ->addOption('process-queue-item', null, InputOption::VALUE_REQUIRED, 'process single queue item (provide json data of queue item)');
     }
 
@@ -82,6 +83,10 @@ class NewsletterSyncCommand extends AbstractCommand
             $this->mailchimpStatusSync();
         }
 
+        if($input->getOption('delete-non-existing-items-in-mailchimp')) {
+            $this->deleteNonExistingItemsInMailchimp();
+        }
+
         if ($processQueueItem = $input->getOption('process-queue-item')) {
             $data = json_decode($processQueueItem, true);
 
@@ -106,6 +111,16 @@ class NewsletterSyncCommand extends AbstractCommand
          */
         $cliSyncProcessor = \Pimcore::getContainer()->get(Mailchimp\CliSyncProcessor::class);
 
-        $cliSyncProcessor->process();
+        $cliSyncProcessor->syncStatusChanges();
+    }
+
+    protected function deleteNonExistingItemsInMailchimp()
+    {
+        /**
+         * @var Mailchimp\CliSyncProcessor $cliSyncProcessor
+         */
+        $cliSyncProcessor = \Pimcore::getContainer()->get(Mailchimp\CliSyncProcessor::class);
+
+        $cliSyncProcessor->deleteNonExistingItems();
     }
 }
