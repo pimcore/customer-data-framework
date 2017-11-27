@@ -165,7 +165,7 @@ class SingleExporter extends AbstractExporter
             if ($apiClient->success()) {
                 $this->getLogger()->notice(
                     sprintf(
-                        '[MailChimp][CUSTOMER %s][%s] Deletion and recreation needed as email address changed and the status was not "subscribed". Deletion successfull. Remote ID is %s',
+                        '[MailChimp][CUSTOMER %s][%s] Deletion and recreation needed as email address changed. Deletion successfull. Remote ID is %s',
                         $customer->getId(),
                         $mailchimpProviderHandler->getShortcut(),
                         $remoteId
