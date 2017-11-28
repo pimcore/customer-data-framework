@@ -2,6 +2,8 @@
 
 This section describes the installation of the Customer Management Framework and the first steps of configuration.
 
+> Please note that Customer Management Framework requires MariaDB as database. I currently will not work with default MySQL. 
+
 ## Installation
 
 1) Add dependency for CMF to your composer.json and run composer update. 
