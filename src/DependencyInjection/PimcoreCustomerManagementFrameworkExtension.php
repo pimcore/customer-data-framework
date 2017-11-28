@@ -66,6 +66,8 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $this->registerNewsletterConfiguration($container, $config['newsletter']);
         $this->registerActivityUrlTrackerConfiguration($container, $config['activity_url_tracker']);
         $this->registerSegmentAssignmentConfiguration($container, $config['segment_assignment_classes']);
+
+        $this->configureGDPRDataProvider($container, $config['gdprDataProvider']);
     }
 
     private function registerGeneralConfiguration(ContainerBuilder $container, array $config)
@@ -157,5 +159,12 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
     private function registerSegmentAssignmentConfiguration(ContainerBuilder $container, array $config)
     {
         $container->setParameter('pimcore_customer_management_framework.segment_assignment_classes.types', $config['types']);
+    }
+
+
+    private function configureGDPRDataProvider(ContainerBuilder $container, array $config) {
+        //Set configs
+        $container->setParameter('pimcore.gdpr-data-extrator.customers', $config['customer']);
+
     }
 }

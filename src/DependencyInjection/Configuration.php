@@ -48,6 +48,7 @@ class Configuration implements ConfigurationInterface
         $rootNode->append($this->buildNewsletterNode());
         $rootNode->append($this->buildActivityUrlTrackerNode());
         $rootNode->append($this->buildSegmentAssignmentClassPermission());
+        $rootNode->append($this->buildGDPRConfigNode());
 
         return $treeBuilder;
     }
@@ -519,5 +520,37 @@ class Configuration implements ConfigurationInterface
             ->end();
 
         return $assignment;
+    }
+
+    private function buildGDPRConfigNode() {
+
+        $treeBuilder = new TreeBuilder();
+
+        $dataObjects = $treeBuilder->root('gdprDataProvider');
+        $dataObjects
+            ->addDefaultsIfNotSet()
+            ->info('Settings for GDPR DataProvider for customers');
+
+        $dataObjects
+            ->children()
+                ->arrayNode('customer')
+                    ->addDefaultsIfNotSet()
+                    ->info('Configure which classes should be considered, array key is class name')
+                    ->children()
+                        ->booleanNode("allowDelete")
+                            ->info("Allow delete of objects directly in preview grid.")
+                            ->defaultFalse()
+                        ->end()
+                        ->arrayNode('includedRelations')
+                            ->info('List relation attributes that should be included recursively into export.')
+                            ->prototype('scalar')->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+
+        return $dataObjects;
+
     }
 }
