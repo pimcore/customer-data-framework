@@ -203,7 +203,12 @@ class HasSegment extends AbstractVariableCondition implements DataProviderDepend
         /** @var TargetingStorageInterface $storage */
         $storage = $visitorInfo->get(TargetingStorage::PROVIDER_KEY);
 
-        $segments = $storage->get($visitorInfo, SegmentTracker::KEY_SEGMENTS, []);
+        $segments = $storage->get(
+            $visitorInfo,
+            TargetingStorageInterface::SCOPE_VISITOR,
+            SegmentTracker::KEY_SEGMENTS,
+            []
+        );
 
         return $segments;
     }

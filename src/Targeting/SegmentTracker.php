@@ -113,7 +113,12 @@ class SegmentTracker
             $eventData[$segmentId] = $segments[$segmentId];
         }
 
-        $this->targetingStorage->set($visitorInfo, self::KEY_SEGMENTS, $segments);
+        $this->targetingStorage->set(
+            $visitorInfo,
+            TargetingStorageInterface::SCOPE_VISITOR,
+            self::KEY_SEGMENTS,
+            $segments
+        );
 
         foreach ($eventData as $segmentId => $count) {
             $this->dispatchTrackEvent($visitorInfo, $segmentId, $count);
@@ -129,7 +134,12 @@ class SegmentTracker
      */
     public function getAssignments(VisitorInfo $visitorInfo): array
     {
-        return $this->targetingStorage->get($visitorInfo, self::KEY_SEGMENTS, []);
+        return $this->targetingStorage->get(
+            $visitorInfo,
+            TargetingStorageInterface::SCOPE_VISITOR,
+            self::KEY_SEGMENTS,
+            []
+        );
     }
 
     private function dispatchTrackEvent(VisitorInfo $visitorInfo, int $segmentId, int $count)

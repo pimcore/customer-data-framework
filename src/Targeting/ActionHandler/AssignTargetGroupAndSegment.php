@@ -63,6 +63,7 @@ class AssignTargetGroupAndSegment extends AssignTargetGroup {
     )
     {
         parent::__construct($conditionMatcher, $storage);
+
         $this->segmentManager = $segmentManager;
         $this->activityManager = $activityManager;
         $this->dataLoader = $dataLoader;
