@@ -12,11 +12,13 @@
  *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
+declare(strict_types=1);
+
 namespace CustomerManagementFrameworkBundle\GDPR\DataProvider;
 
 use CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
-use GDPRDataExtractorBundle\DataProvider\DataObjects;
+use Pimcore\Bundle\AdminBundle\GDPR\DataProvider\DataObjects;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\DataObject\ClassDefinition\Data\MultihrefMetadata;
@@ -56,12 +58,26 @@ class Customers extends DataObjects
         ];
     }
 
-    public function getName() {
+    /**
+     * @inheritdoc
+     */
+    public function getName(): string {
         return "customers";
     }
 
-    public function getJsClassName() {
+    /**
+     * @inheritdoc
+     */
+    public function getJsClassName(): string {
         return "pimcore.plugin.GDPRDataExtractorBundle.dataproviders.customers";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSortPriority(): int
+    {
+        return 5;
     }
 
 
@@ -71,7 +87,7 @@ class Customers extends DataObjects
      * @param AbstractObject $object
      * @return array
      */
-    public function doExportData(AbstractObject $object) {
+    public function doExportData(AbstractObject $object): array {
         $this->exportIds = [];
 
         $this->fillIds($object);

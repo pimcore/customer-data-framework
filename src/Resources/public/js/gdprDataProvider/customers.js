@@ -12,7 +12,7 @@
  */
 
 pimcore.registerNS("pimcore.plugin.GDPRDataExtractorBundle.dataproviders.customers");
-pimcore.plugin.GDPRDataExtractorBundle.dataproviders.customers = Class.create(pimcore.plugin.GDPRDataExtractorBundle.dataproviders.dataObjects, {
+pimcore.plugin.GDPRDataExtractorBundle.dataproviders.customers = Class.create(pimcore.settings.gdpr.dataproviders.dataObjects, {
 
     title: t("cmf_gdpr_export_customers"),
     iconCls: "pimcore_icon_customers",
