@@ -231,8 +231,6 @@ services:
           - 'CustomerManagementFrameworkBundle\Adapter\TermSegmentBuilder'
 
     CustomerManagementFrameworkBundle\GDPR\DataProvider\Customers:
-        public: true
+        public: false
         arguments:
             $config: '%pimcore.gdpr-data-extrator.customers%'
-        tags:
-            - {name: pimcore.gdpr.data-provider, id: customers}
