@@ -129,7 +129,6 @@ services:
         alias: CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface
 
     cmf.activity_manager: '@CustomerManagementFrameworkBundle\ActivityManager\ActivityManagerInterface'
-    CustomerManagementFrameworkBundle\ActivityStore\ActivityManagerInterface: '@CustomerManagementFrameworkBundle\ActivityManager\ActivityManagerInterface'
     CustomerManagementFrameworkBundle\ActivityManager\ActivityManagerInterface: '@CustomerManagementFrameworkBundle\ActivityManager\DefaultActivityManager'
     CustomerManagementFrameworkBundle\ActivityManager\DefaultActivityManager: ~
 
