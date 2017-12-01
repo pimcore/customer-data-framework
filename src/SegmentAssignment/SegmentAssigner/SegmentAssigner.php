@@ -9,8 +9,8 @@
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ * @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\SegmentAssignment\SegmentAssigner;
@@ -159,21 +159,20 @@ class SegmentAssigner implements SegmentAssignerInterface
     public function assignById(string $elementId, string $type, bool $breaksInheritance, array $segmentIds): bool
     {
         try {
-            $formatArguments = [
-                1 => $this->getSegmentAssignmentTable(),
-                2 => $elementId,
-                3 => $type,
-                4 => join(',', $segmentIds),
-                5 => (int) $breaksInheritance];
+            $statement = "INSERT INTO `{$this->getSegmentAssignmentTable()}` (`elementId`, `elementType`, `segments`, `breaksInheritance`, `inPreparation`) " .
+                "VALUES (:elementId, :elementType, :segmentIds, :breaksInheritance, 1) " .
+                "ON DUPLICATE KEY UPDATE `segments` = :segmentIds, `breaksInheritance` = :breaksInheritance, `inPreparation` = 1;";
 
-            $statement = vsprintf(
-                'START TRANSACTION;'.
-                'INSERT INTO `%1$s` (`elementId`, `elementType`, `segments`, `breaksInheritance`, `inPreparation`) '.
-                'VALUES (%2$s, "%3$s", "%4$s", %5$s, 1) '.
-                'ON DUPLICATE KEY UPDATE `segments` = "%4$s", `breaksInheritance` = %5$s, `inPreparation` = 1;'.
-                'COMMIT;', $formatArguments);
+            $this->db->beginTransaction();
 
-            $this->getDb()->query($statement);
+            $this->db->executeQuery($statement, [
+                'elementId' => $elementId,
+                'elementType' => $type,
+                'segmentIds' => join(',', $segmentIds),
+                'breaksInheritance' => (int)$breaksInheritance
+            ]);
+
+            $this->db->commit();
 
             return true;
         } catch (\Throwable $exception) {
@@ -189,21 +188,22 @@ class SegmentAssigner implements SegmentAssignerInterface
     public function removeElementById(string $elementId, string $type): bool
     {
         try {
-            $deletePattern = 'DELETE FROM %s WHERE `elementId` = %s AND `elementType` = "%s";';
+            $deletePattern = 'DELETE FROM %s WHERE `elementId` = :elementId AND `elementType` = :elementType; ';
 
-            $formatArguments = [
-                1 => sprintf($deletePattern, $this->getSegmentAssignmentTable(), $elementId, $type),
-                2 => sprintf($deletePattern, $this->getSegmentAssignmentQueueTable(), $elementId, $type),
-                3 => sprintf($deletePattern, $this->getSegmentAssignmentIndexTable(), $elementId, $type),
-            ];
+            $statement = sprintf($deletePattern, $this->getSegmentAssignmentTable()) .
+                sprintf($deletePattern, $this->getSegmentAssignmentQueueTable()) .
+                sprintf($deletePattern, $this->getSegmentAssignmentIndexTable());
 
-            $statement = vsprintf('START TRANSACTION;' .
-                '%1$s' .
-                '%2$s' .
-                '%3$s' .
-                'COMMIT;', $formatArguments);
+            $this->getDb()->beginTransaction();
 
-            $this->getDb()->query($statement);
+            $this->getDb()->executeQuery($statement,
+                [
+                    'elementId' => $elementId,
+                    'elementType' => $type
+                ]
+            );
+
+            $this->getDb()->commit();
 
             return true;
         } catch (\Throwable $exception) {

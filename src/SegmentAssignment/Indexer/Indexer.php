@@ -19,6 +19,7 @@ use CustomerManagementFrameworkBundle\SegmentAssignment\QueueBuilder\QueueBuilde
 use CustomerManagementFrameworkBundle\SegmentAssignment\StoredFunctions\StoredFunctionsInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db\Connection;
+use Pimcore\Logger;
 
 class Indexer implements IndexerInterface
 {
@@ -213,18 +214,30 @@ class Indexer implements IndexerInterface
             1 => $this->getSegmentAssignmentIndexTable(),
             2 => $this->getSegmentAssignmentQueueTable(),
             3 => $this->getSegmentAssignmentTable(),
-            4 => $elementId,
-            5 => $elementType,
-            6 => $values,
-            7 => join(',', $segmentIds)
+            4 => $values
         ];
 
-        $this->getDb()->query(vsprintf('START TRANSACTION;'.
-        'INSERT INTO `%1$s` VALUES %6$s ON DUPLICATE KEY UPDATE `elementId` = `elementId`;'.
-        'DELETE FROM `%1$s` WHERE `elementId` = %4$s AND `elementType` = "%5$s" AND FIND_IN_SET(`segmentId`, "%7$s") = 0;'.
-        'DELETE FROM `%2$s` WHERE `elementId` = "%4$s" AND `elementType` = "%5$s";'.
-        'UPDATE %3$s SET `inPreparation` = 0 WHERE `elementId` = "%4$s" AND `elementType` = "%5$s";'.
-        'COMMIT;', $formatArguments));
+        $statement = vsprintf(
+            'INSERT INTO `%1$s` VALUES %4$s ON DUPLICATE KEY UPDATE `elementId` = `elementId`;'.
+            'DELETE FROM `%1$s` WHERE `elementId` = :elementId AND `elementType` = :elementType AND FIND_IN_SET(`segmentId`, :segmentIds) = 0;'.
+            'DELETE FROM `%2$s` WHERE `elementId` = :elementId AND `elementType` = :elementType;'.
+            'UPDATE %3$s SET `inPreparation` = 0 WHERE `elementId` = :elementId AND `elementType` = :elementType;',
+            $formatArguments);
+
+        $this->getDb()->beginTransaction();
+
+        $this->getDb()->executeQuery($statement,
+            [
+                'elementId' => $elementId,
+                'elementType' => $elementType,
+                'segmentIds' => join(',', $segmentIds)
+            ]);
+
+        try {
+            $this->getDb()->commit();
+        } catch (\Throwable $exception) {
+            $this->getLogger()->error($exception->getMessage());
+        }
     }
 
     /**
@@ -233,7 +246,7 @@ class Indexer implements IndexerInterface
      * This is done so elements do not have to be enqueued during the saving process in the pimcore backend
      */
     private function buildQueue() {
-        $parentElements = $this->getDb()->fetchAll(sprintf('SELECT * FROM `%s` WHERE `inPreparation` = 1', $this->getSegmentAssignmentTable()));
+        $parentElements = $this->getDb()->fetchAll("SELECT * FROM `{$this->getSegmentAssignmentTable()}` WHERE `inPreparation` = 1");
 
         foreach ($parentElements as $element) {
             $id = $element['elementId'] ?? '';

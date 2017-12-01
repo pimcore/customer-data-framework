@@ -157,9 +157,11 @@ class DefaultSegmentManager implements SegmentManagerInterface
     {
         $segmentIds = $this->getStoredFunctions()->retrieve($id, $type);
 
-        return array_map(function ($id) {
+        $segments = array_map(function (string $id) {
             return CustomerSegment::getById($id);
         }, $segmentIds);
+
+        return array_filter($segments);
     }
 
     /**

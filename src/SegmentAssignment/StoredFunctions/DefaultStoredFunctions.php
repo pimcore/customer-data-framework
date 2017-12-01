@@ -20,6 +20,7 @@ class DefaultStoredFunctions implements StoredFunctionsInterface {
      * @inheritdoc
      */
     public function retrieve(string $elementId, string $elementType): array {
-         return explode(',', Db::get()->fetchColumn(sprintf('SELECT %s(%s)', static::STORED_FUNCTIONS_MAPPING[$elementType], $elementId)));
+        $storedFunction = static::STORED_FUNCTIONS_MAPPING[$elementType];
+         return explode(',', Db::get()->fetchColumn("SELECT $storedFunction(:elementId)", ['elementId' => $elementId|0]));
     }
 }

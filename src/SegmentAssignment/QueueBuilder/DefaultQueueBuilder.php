@@ -90,22 +90,28 @@ class DefaultQueueBuilder implements QueueBuilderInterface {
             $formatArguments = [
                 1 => $this->getSegmentAssignmentQueueTable(),
                 2 => $type === 'object' ? 'o_id' : 'id',
-                3 => $type,
-                4 => $type . 's',
-                5 => $type === 'object' ? 'o_path' : 'path',
-                6 => $type === 'object' ? 'o_key' : 'key',
-                7 => $elementId
+                3 => $type . 's',
+                4 => $type === 'object' ? 'o_path' : 'path',
+                5 => $type === 'object' ? 'o_key' : 'key',
             ];
 
-            $enqueueStatement = vsprintf('START TRANSACTION; ' .
+            $enqueueStatement = vsprintf(
                 'INSERT INTO `%1$s` (`elementId`, `elementType`) ' .
-                'SELECT `%2$s` AS elementId, "%3$s" AS elementType FROM `%4$s` ' .
-                'WHERE `%5$s` LIKE CONCAT( ' .
-                '(SELECT CONCAT(`%5$s`, `%6$s`) FROM `%4$s` WHERE `%2$s` = "%7$s")' .
-                ', "%%") ON DUPLICATE KEY UPDATE `elementId` = `elementId`; ' .
-                'COMMIT;', $formatArguments);
+                'SELECT `%2$s` AS elementId, :elementType AS elementType FROM `%3$s` ' .
+                'WHERE `%4$s` LIKE CONCAT( ' .
+                '(SELECT CONCAT(`%4$s`, `%5$s`) FROM `%3$s` WHERE `%2$s` = :elementId)' .
+                ', "%%") ON DUPLICATE KEY UPDATE `elementId` = `elementId`; ',
+                $formatArguments);
 
-            $this->getDb()->query($enqueueStatement);
+            $this->getDb()->beginTransaction();
+
+            $this->getDb()->query($enqueueStatement,
+                [
+                    'elementType' => $type,
+                    'elementId' => (int) $elementId
+                ]);
+
+            $this->getDb()->commit();
 
             return true;
         } catch (Throwable $exception) {
