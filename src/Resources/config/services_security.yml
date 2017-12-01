@@ -3,8 +3,11 @@ services:
         autowire: true
         autoconfigure: true
 
+    CustomerManagementFrameworkBundle\Security\Authentication\LoginManagerInterface: '@CustomerManagementFrameworkBundle\Security\Authentication\LoginManager'
     CustomerManagementFrameworkBundle\Security\Authentication\LoginManager:
         arguments:
+            $firewallMap: '@security.firewall.map'
+            $sessionStrategy: '@security.authentication.session_strategy'
             $defaultUserChecker: '@security.user_checker'
 
     # The user provider loads users by Username.
@@ -26,8 +29,9 @@ services:
             - Pimcore\Security\Encoder\PasswordFieldEncoder
             - ['password']
 
-    cmf.security.sso.identity_service:
-        class: CustomerManagementFrameworkBundle\Security\SsoIdentity\DefaultSsoIdentityService
+    cmf.security.sso.identity_service: '@CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface'
+    CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface: '@CustomerManagementFrameworkBundle\Security\SsoIdentity\DefaultSsoIdentityService'
+    CustomerManagementFrameworkBundle\Security\SsoIdentity\DefaultSsoIdentityService:
         arguments: ['@cmf.customer_provider']
         calls:
              - [setLogger, ['@cmf.logger']]

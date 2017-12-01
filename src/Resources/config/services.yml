@@ -128,10 +128,9 @@ services:
     cmf.activity_store:
         alias: CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface
 
-    CustomerManagementFrameworkBundle\ActivityStore\ActivityManagerInterface:
-        class: CustomerManagementFrameworkBundle\ActivityManager\DefaultActivityManager
-    cmf.activity_manager:
-        alias: CustomerManagementFrameworkBundle\ActivityStore\ActivityManagerInterface
+    cmf.activity_manager: '@CustomerManagementFrameworkBundle\ActivityManager\ActivityManagerInterface'
+    CustomerManagementFrameworkBundle\ActivityManager\ActivityManagerInterface: '@CustomerManagementFrameworkBundle\ActivityManager\DefaultActivityManager'
+    CustomerManagementFrameworkBundle\ActivityManager\DefaultActivityManager: ~
 
     cmf.activity_store_entry:
         class: CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\DefaultActivityStoreEntry
@@ -204,8 +203,9 @@ services:
     cmf.rest.deletions_handler:
         class: CustomerManagementFrameworkBundle\RESTApi\DeletionsHandler
 
-    cmf.encryption_service:
-        class: CustomerManagementFrameworkBundle\Encryption\DefaultEncryptionService
+    cmf.encryption_service: '@CustomerManagementFrameworkBundle\Encryption\EncryptionServiceInterface'
+    CustomerManagementFrameworkBundle\Encryption\EncryptionServiceInterface: '@CustomerManagementFrameworkBundle\Encryption\DefaultEncryptionService'
+    CustomerManagementFrameworkBundle\Encryption\DefaultEncryptionService:
         arguments:
             - '%pimcore_customer_management_framework.encryption.secret%'
 
