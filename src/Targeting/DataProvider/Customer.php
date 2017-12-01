@@ -20,18 +20,18 @@ namespace CustomerManagementFrameworkBundle\Targeting\DataProvider;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Targeting\DataProvider\DataProviderInterface;
 use Pimcore\Targeting\Model\VisitorInfo;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class Customer implements DataProviderInterface
 {
     const PROVIDER_KEY = 'cmf_customer';
 
     /**
-     * @var TokenStorage
+     * @var TokenStorageInterface
      */
     private $tokenStorage;
 
-    public function __construct(TokenStorage $tokenStorage)
+    public function __construct(TokenStorageInterface $tokenStorage)
     {
         $this->tokenStorage = $tokenStorage;
     }

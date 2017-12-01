@@ -20,10 +20,9 @@ use CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer;
 use Pimcore\Event\Targeting\AssignDocumentTargetGroupEvent;
 use Pimcore\Event\Targeting\TargetingRuleEvent;
 use Pimcore\Model\Tool\Targeting\TargetGroup;
-use Pimcore\Targeting\ActionHandler\AssignTargetGroup;
 use Pimcore\Targeting\DataLoaderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class TargetingEventListener
 {
@@ -36,7 +35,7 @@ class TargetingEventListener
 
     protected $securityToken;
 
-    public function __construct(EventDispatcherInterface $eventDispatcher, TokenStorage $token, DataLoaderInterface $dataLoader)
+    public function __construct(EventDispatcherInterface $eventDispatcher, TokenStorageInterface $token, DataLoaderInterface $dataLoader)
     {
         $this->eventDispatcher = $eventDispatcher;
         $this->securityToken = $token;
