@@ -57,6 +57,10 @@ class DefaultCustomerProvider implements CustomerProviderInterface
             throw new \RuntimeException('Customer class is not defined');
         }
 
+        if(!class_exists('Pimcore\\Model\\DataObject\\' . $pimcoreClass)) {
+            throw new \RuntimeException(sprintf('Configured CMF customer data object class "%s" does not exist.', $pimcoreClass));
+        }
+
         $this->parentPath = $parentPath;
 
         if (empty($this->parentPath)) {
