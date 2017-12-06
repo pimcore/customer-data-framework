@@ -62,6 +62,7 @@ class Installer extends MigrationInstaller
         $permissions = [
             'plugin_cmf_perm_activityview',
             'plugin_cmf_perm_customerview',
+            'plugin_cmf_perm_customerview_admin',
             'plugin_cmf_perm_customer_automation_rules',
             'plugin_cmf_perm_newsletter_enqueue_all_customers',
         ];
@@ -228,6 +229,8 @@ class Installer extends MigrationInstaller
               KEY `operation` (`operation`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
         );
+
+        // TODO add customer filter definition
 
         $sqlPath = __DIR__ . '/Resources/sql/segmentAssignment/';
         $sqlFileNames = ['datamodel.sql', 'storedFunctionDocument.sql', 'storedFunctionAsset.sql', 'storedFunctionObject.sql'];

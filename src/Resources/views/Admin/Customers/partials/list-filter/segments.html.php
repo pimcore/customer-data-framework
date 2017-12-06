@@ -3,57 +3,67 @@
  * @var \Pimcore\Templating\PhpEngine $this
  * @var \Pimcore\Templating\PhpEngine $view
  * @var \Pimcore\Templating\GlobalVariables $app
+ *
+ * @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $customerView
+ * @var array $filters
+ * @var \CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition $filterDefinition
+ * @var \Pimcore\Model\DataObject\CustomerSegmentGroup[] $segmentGroups
  */
 
-/** @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $cv */
-$cv = $this->customerView;
-
+$filteredSegmentGroups = [];
+foreach ($segmentGroups as $segmentGroup) {
+    if(in_array($segmentGroup->getId(), $filters['showSegments'])) $filteredSegmentGroups[] = $segmentGroup;
+}
 ?>
 
-<?php if (isset($this->segmentGroups)): ?>
+<?php if (isset($segmentGroups)): ?>
 
     <fieldset>
         <legend>
-            <?= $cv->translate('Segments') ?>
+            <?= $customerView->translate('Segments') ?>
         </legend>
 
-        <div class="row">
 
-            <?php
-            /** @var \Pimcore\Model\DataObject\CustomerSegmentGroup $segmentGroup */
-            foreach ($this->segmentGroups as $segmentGroup): ?>
+        <?php
+        /** @var \Pimcore\Model\DataObject\CustomerSegmentGroup $segmentGroup */
+        foreach (array_chunk($filteredSegmentGroups, 2) as $chunk): ?>
+            <div class="row">
+                <?php foreach ($chunk as $segmentGroup): ?>
+                    <div class="col-md-6 col-xs-12">
+                        <div class="form-group">
+                            <label for="form-filter-segment-<?= $segmentGroup->getId() ?>"><?= $segmentGroup->getName() ?></label>
+                            <select
+                                    id="form-filter-segment-<?= $segmentGroup->getId() ?>"
+                                    name="filter[segments][<?= $segmentGroup->getId() ?>][]"
+                                    class="form-control plugin-select2"
+                                    multiple="multiple"
+                                    data-placeholder="<?= $segmentGroup->getName() ?>"
+                                    data-select2-options='<?= json_encode([
+                                        'allowClear' => false,
+                                        'disabled' => $filterDefinition->isLockedSegment($segmentGroup->getId()),
+                                    ]) ?>'>
+                                <?php
+                                $segments = \Pimcore::getContainer()
+                                    ->get('cmf.segment_manager')
+                                    ->getSegmentsFromSegmentGroup($segmentGroup);
 
-                <div class="col-md-6 col-xs-12">
-                    <div class="form-group">
-                        <label for="form-filter-segment-<?= $segmentGroup->getId() ?>"><?= $segmentGroup->getName() ?></label>
-                        <select
-                            id="form-filter-segment-<?= $segmentGroup->getId() ?>"
-                            name="filter[segments][<?= $segmentGroup->getId() ?>][]"
-                            class="form-control plugin-select2"
-                            multiple="multiple"
-                            data-placeholder="<?= $segmentGroup->getName() ?>"
-                            data-select2-options='<?= json_encode(['allowClear' => false]) ?>'>
+                                /** @var \CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface|\Pimcore\Model\Element\ElementInterface $segment */
+                                foreach ($segments as $segment): ?>
 
-                            <?php
-                            $segments = \Pimcore::getContainer()
-                                ->get('cmf.segment_manager')
-                                ->getSegmentsFromSegmentGroup($segmentGroup);
+                                    <option value="<?= $segment->getId() ?>" <?= isset($filters['segments'][$segmentGroup->getId()]) && array_search($segment->getId(),
+                                        $filters['segments'][$segmentGroup->getId()]) !== false ? 'selected="selected"' : '' ?>>
+                                        <?= $segment->getName() ?>
+                                    </option>
 
-                            /** @var \CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface|\Pimcore\Model\Element\ElementInterface $segment */
-                            foreach ($segments as $segment): ?>
+                                <?php endforeach; ?>
 
-                                <option value="<?= $segment->getId() ?>" <?= isset($this->filters['segments'][$segmentGroup->getId()]) && array_search($segment->getId(), $this->filters['segments'][$segmentGroup->getId()]) !== false ? 'selected="selected"' : ''?>>
-                                    <?= $segment->getName() ?>
-                                </option>
-
-                            <?php endforeach; ?>
-
-                        </select>
+                            </select>
+                        </div>
                     </div>
-                </div>
 
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
+        <?php endforeach; ?>
 
-        </div>
     </fieldset>
 <?php endif; ?>

@@ -133,6 +133,7 @@ app.PimcoreLinks = (function () {
     };
 }());
 
+
 app.ToggleGroup = (function() {
     return {
         initialize: function ($scope) {
@@ -716,6 +717,20 @@ app.SearchFilter.DateRangePicker = (function () {
                         }
                     }
                 });
+            });
+        }
+    });
+})(jQuery);
+
+;(function ($) {
+    'use strict';
+
+    // cmf functions
+    $.extend(window.app, {
+        selectedSegmentsChanged: function ($scope) {
+            var showSegmentsChanged = false;
+            $('#show-segments-modal').find('input').on('ifChecked ifUnchecked', function(){
+                console.log("click or change");
             });
         }
     });

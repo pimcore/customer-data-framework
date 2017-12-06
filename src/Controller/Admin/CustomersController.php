@@ -22,14 +22,17 @@ use CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface;
 use CustomerManagementFrameworkBundle\CustomerList\Filter\CustomerSegment as CustomerSegmentFilter;
 use CustomerManagementFrameworkBundle\CustomerList\Filter\Exception\SearchQueryException;
 use CustomerManagementFrameworkBundle\CustomerList\Filter\SearchQuery;
+use CustomerManagementFrameworkBundle\Helper\Objects;
 use CustomerManagementFrameworkBundle\Listing\Filter;
 use CustomerManagementFrameworkBundle\Listing\FilterHandler;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use Pimcore\Db;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
 use Pimcore\Model\DataObject\Listing;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -44,6 +47,11 @@ class CustomersController extends Admin
     // params still needed when clearing all filters
     protected $clearUrlParams = [];
 
+    /**
+     * @var CustomerSegmentGroup[]|null
+     */
+    private $segmentGroups = null;
+
     public function onKernelController(FilterControllerEvent $event)
     {
         parent::onKernelController($event);
@@ -55,14 +63,41 @@ class CustomersController extends Admin
     /**
      * @param Request $request
      * @Route("/list")
+     * @return Response
      */
     public function listAction(Request $request)
     {
         $filters = $this->fetchListFilters($request);
-
         $errors = [];
         $paginator = null;
         $customerView = \Pimcore::getContainer()->get('cmf.customer_view');
+
+        // TODO check not to be able to manipulate FilterDefinition id -> check allowed user ids!
+
+        if($request->get('save-filter-definition')) {
+
+            // TODO continue here!
+
+            /*
+            // check parameters
+            if(empty($request->get('filter_definition_name'))) {
+                $errors[] = $customerView->translate('Please provide a filter name.');
+            }
+
+            // Save new FilterDefinition object
+            echo "<pre>";
+            var_dump($request->get('filter_definition_name'));
+            var_dump($filters);
+            echo "</pre>";
+            die();
+            $newFilterDefinition = new FilterDefinition();
+
+            $newFilterDefinition->setName('');
+            $newFilterDefinition->setShowSegments($filters['showSegments']);
+            // redirect to filter view with new FilterDefinition selected
+            return $this->redirect($this->generateUrl($request->get('_route'), ['filter'=>['definition'=>2]]));
+            */
+        }
 
         try {
             $listing = $this->buildListing($filters);
@@ -81,7 +116,7 @@ class CustomersController extends Admin
         return $this->render(
             'PimcoreCustomerManagementFrameworkBundle:Admin\Customers:list.html.php',
             [
-                'segmentGroups' => $this->loadSegmentGroups(),
+                'segmentGroups' => $this->loadSegmentGroups(), // TODO filter by parameter and FilterDefinition object
                 'filters' => $filters,
                 'errors' => $errors,
                 'paginator' => $paginator,
@@ -89,6 +124,8 @@ class CustomersController extends Admin
                 'searchBarFields' => $this->getConfiguredSearchBarFields(),
                 'request' => $request,
                 'clearUrlParams' => $this->clearUrlParams,
+                'filterDefinitions' => $this->getFilterDefinitions(),
+                'filterDefinition' => $this->getFilterDefinition($filters),
             ]
         );
     }
@@ -96,6 +133,7 @@ class CustomersController extends Admin
     /**
      * @param Request $request
      * @Route("/detail")
+     * @return Response
      */
     public function detailAction(Request $request)
     {
@@ -122,6 +160,7 @@ class CustomersController extends Admin
     /**
      * @param Request $request
      * @Route("/export")
+     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
      */
     public function exportAction(Request $request)
     {
@@ -149,6 +188,7 @@ class CustomersController extends Admin
     /**
      * @param Request $request
      * @route("/export-step")
+     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
      */
     public function exportStepAction(Request $request)
     {
@@ -208,6 +248,7 @@ class CustomersController extends Admin
     /**
      * @param Request $request
      * @route("/download-finished-export")
+     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse|Response
      */
     public function downloadFinishedExportAction(Request $request)
     {
@@ -256,9 +297,11 @@ class CustomersController extends Admin
     }
 
     /**
-     * @param Request $request
-     *
+     * @param Listing\Concrete $listing
+     * @param $exporterName
      * @return ExporterInterface
+     * @internal param Request $request
+     *
      */
     protected function getExporter(Listing\Concrete $listing, $exporterName)
     {
@@ -279,17 +322,19 @@ class CustomersController extends Admin
      *
      * @return CustomerSegmentGroup[]
      */
+
     protected function loadSegmentGroups()
     {
-        $segmentGroups = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentGroups();
-        $segmentGroups->addConditionParam('showAsFilter = 1');
-
-        return $segmentGroups->load();
+        if(is_null($this->segmentGroups)) {
+            $segmentGroups = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentGroups();
+            $segmentGroups->addConditionParam('showAsFilter = 1');
+            $this->segmentGroups = $segmentGroups->load();
+        }
+        return $this->segmentGroups;
     }
 
     /**
      * @param array $filters
-     *
      * @return Listing\Concrete
      */
     protected function buildListing(array $filters = [])
@@ -307,6 +352,7 @@ class CustomersController extends Admin
     /**
      * @param Listing\Concrete $listing
      * @param array $filters
+     * @throws \Exception
      */
     protected function addListingFilters(Listing\Concrete $listing, array $filters = [])
     {
@@ -371,6 +417,9 @@ class CustomersController extends Admin
         $filters = $request->get('filter', []);
         $filters = $this->addPrefilteredSegmentToFilters($request, $filters);
 
+        // add FilterDefinition filters for customer fields
+        $filters = $this->addFilterDefinitionCustomer($filters);
+
         return $filters;
     }
 
@@ -400,6 +449,8 @@ class CustomersController extends Admin
 
             $filters['segments'][$groupId] = $groupSegmentIds;
         }
+
+        $filters = $this->addFilterDefinitionSegments($request, $filters);
 
         return $filters;
     }
@@ -443,5 +494,133 @@ class CustomersController extends Admin
         }
 
         return $searchBarFields;
+    }
+
+    /**
+     * Fetch all filter definitions available for current user
+     *
+     * @return \CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition[]
+     */
+    protected function getFilterDefinitions() {
+        // load filter definitions
+        $FilterDefinitionListing = new FilterDefinition\Listing();
+        if(!$this->getUser()->isAllowed('plugin_cmf_perm_customerview_admin')) {
+            // build user ids condition for filter definition
+            $FilterDefinitionListing->setUserIdsCondition($this->getUserIds());
+        }
+        // return loaded filter definitions array
+        return $FilterDefinitionListing->load();
+    }
+
+    /**
+     * Fetch the definition of a FilterDefinition object
+     *
+     * @param array $filters
+     * @return null|FilterDefinition Returns FilterDefinition object if definition key is defined in filters array,
+     * FilterDefinition with id in DB and user is allowed to use FilterDefinition. Otherwise returns null.
+     */
+    protected function getFilterDefinition(array $filters) {
+        // build default FilterDefinition object if no selected
+        $DefaultFilterDefinition = (new FilterDefinition())->setShowSegments(Objects::getIdsFromArray($this->loadSegmentGroups()));
+        // check if filter definition given
+        if(!array_key_exists('definition', $filters)){
+            // no filter definition found
+            return $DefaultFilterDefinition;
+        }
+        // check if filter definition object exists
+        $filterDefinition = FilterDefinition::getById((int)$filters['definition']);
+        if(!$filterDefinition instanceof FilterDefinition) {
+            // no filter definition available
+            return $DefaultFilterDefinition;
+        }
+        // check if current user is allowed to use FilterDefinition
+        if(!$filterDefinition->isAnyUserAllowed($this->getUserIds()) && !$this->getUser()->isAllowed('plugin_cmf_perm_customerview_admin')) {
+            // user is not allowed to use FilterDefinition
+            return $DefaultFilterDefinition;
+        }
+        // return FilterDefinition definition
+        return $filterDefinition;
+    }
+
+    /**
+     * Fetch all user ids of current user
+     *
+     * @return array
+     */
+    protected function getUserIds() {
+        // fetch roles of user
+        $userIds = $this->getUser()->getRoles();
+        // fetch id of user
+        $userIds[] = $this->getUser()->getId();
+        // return user ids
+        return $userIds;
+    }
+
+    /**
+     * Merge FilterDefinition for customer fields
+     *
+     * @param array $filters
+     * @return array
+     */
+    protected function addFilterDefinitionCustomer(array $filters) {
+        // merge filters with filters of filter definition
+        $filterDefinition = $this->getFilterDefinition($filters);
+
+        // check if filter definitions found
+        if(is_null($filterDefinition)) return $filters;
+
+        // fetch definitions for customer / root without segments
+        $filterDefinitionCustomer = $filterDefinition->getDefinition();
+        unset($filterDefinitionCustomer['segments']);
+
+        if($filterDefinition->isReadOnly()) {
+            // overwrite filters with FilterDefinition definition
+            $filters = array_merge($filters, $filterDefinitionCustomer);
+            // lock read only filters
+            foreach ($filterDefinitionCustomer as $key => $value) {
+                $this->readonlyFilterFields[] = $key;
+            }
+        } else {
+            // filter of user more important than filter definition
+            $filters = array_merge($filterDefinitionCustomer, $filters);
+        }
+        // return merged filters array
+        return $filters;
+    }
+
+    /**
+     * Add segment filters from FilterDefinition
+     *
+     * @param Request $request
+     * @param array $filters
+     * @return array
+     */
+    protected function addFilterDefinitionSegments(Request $request, array $filters) {
+
+        $filters['showSegments'] = $filters['showSegments'] ?? [];
+
+        // merge filters with filters of filter definition
+        $filterDefinition = $this->getFilterDefinition($filters);
+
+        // check if filter definitions found
+        if(is_null($filterDefinition)) return $filters;
+
+        // fetch definitions for segments / only segments array
+        $filterDefinition->cleanUp(false);
+        $filterDefinitionSegments = @$filterDefinition->getDefinition()['segments']?:[];
+
+        if($filterDefinition->isReadOnly()) {
+            // overwrite filters with FilterDefinition definition
+            $filters['segments'] = $filterDefinitionSegments;
+        } else {
+            // filter of user more important than filter definition
+            $filters['segments'] = array_replace_recursive($filterDefinitionSegments, @$filters['segments']?:[]);
+        }
+
+        // set to filter which segments to show
+        $filters['showSegments'] = $request->get('apply-segment-selection') ? $filters['showSegments'] : $filterDefinition->getShowSegments();
+
+        // return merged filters array
+        return $filters;
     }
 }
