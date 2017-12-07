@@ -11,6 +11,8 @@ namespace CustomerManagementFrameworkBundle\Controller\Admin\Customers;
 
 use CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
+use Pimcore\Model\User\Listing;
+use Pimcore\Model\User\Role;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -26,6 +28,7 @@ class FilterDefinitionController extends Admin {
      */
     public function testAction(Request $request)
     {
+        /*
         $item = new FilterDefinition;
         $item->setName('First Filter');
         $item->setDefinition([
@@ -57,6 +60,7 @@ class FilterDefinitionController extends Admin {
             'id' => $item->getId(),
             'id2' => $item2->getId(),
         ]);
+        */
 
         /*
         $listing = new FilterDefinition\Listing();
@@ -80,6 +84,13 @@ class FilterDefinitionController extends Admin {
 
         //return $this->json([]);
         */
+
+        $filterDefinitions = FilterDefinition::getAllShortcutAvailable(tru);
+
+        var_dump($filterDefinitions);
+        die;
+
+        return $this->json([]);
     }
 
     /**

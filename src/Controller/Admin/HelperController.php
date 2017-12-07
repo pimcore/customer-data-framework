@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
+use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -93,7 +94,7 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
             'duplicatesViewEnabled' => $this->container->getParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.enabled'),
             'segmentAssignment' => $this->getParameter('pimcore_customer_management_framework.segment_assignment_classes.types'),
             'customerClassName' => $this->getParameter('pimcore_customer_management_framework.general.customerPimcoreClass'),
-            // TODO Add shortcutted FilterDefinitions
+            'shortcutFilterDefinitions' => FilterDefinition::prepareDataForMenu(FilterDefinition::getAllShortcutAvailableForUser($this->getUser()))
         ];
 
         $content = '

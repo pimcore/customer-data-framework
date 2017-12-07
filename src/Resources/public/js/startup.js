@@ -55,6 +55,34 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
             menuItems.add(item);
         }
 
+        // TODO check if user is allowed to access filter
+        $(pimcore.settings.cmf.shortcutFilterDefinitions).each(function(){
+            var filterId = this.id;
+            var filterKey = 'plugin_cmf_customerview_filter_' + this.id;
+            var filterName = this.name;
+            var filterItem = {
+                text: filterName,
+                iconCls: 'pimcore_icon_customers',
+                handler: function () {
+                    try {
+                        pimcore.globalmanager.get(filterKey).activate();
+                    }
+                    catch (e) {
+                        pimcore.globalmanager.add(
+                            filterKey,
+                            new pimcore.tool.genericiframewindow(
+                                filterKey,
+                                '/admin/customermanagementframework/customers/list?filterDefinition[id]=' + filterId,
+                                'pimcore_icon_customers',
+                                filterName
+                            )
+                        );
+                    }
+                }
+            };
+            menuItems.add(filterItem);
+        });
+
         // customer duplicates view
         if (pimcore.settings.cmf.duplicatesViewEnabled && user.isAllowed('plugin_cmf_perm_customerview')) {
             var customerDuplicateViewPanelId = 'plugin_cmf_customerduplicatesview';

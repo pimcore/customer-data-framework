@@ -8,19 +8,34 @@
 
 namespace CustomerManagementFrameworkBundle\Model\CustomerView;
 
+use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition\Dao;
+use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition\Listing;
+use PHPUnit\Util\Filter;
 use Pimcore\Cache\Runtime;
 use Pimcore\Logger;
 use Pimcore\Model\AbstractModel;
 use Pimcore\Model\User;
 use Pimcore\Model\User\Role;
 
+/**
+ * Class FilterDefinition
+ * @package CustomerManagementFrameworkBundle\Model\CustomerView
+ *
+ * @property int|null $id
+ * @property string $name
+ * @property array $definition
+ * @property array $allowedUserIds
+ * @property bool $readOnly
+ * @property bool $shortcutAvailable
+ * @property string $creationDate
+ * @property string $modificationDate
+ */
 class FilterDefinition extends AbstractModel
 {
     private $id = null;
     private $name = '';
     private $definition = [];
     private $allowedUserIds = [];
-    private $showSegments = [];
     private $readOnly = false;
     private $shortcutAvailable = false;
     private $creationDate = null;
@@ -31,7 +46,8 @@ class FilterDefinition extends AbstractModel
     /**
      * @return int
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -42,6 +58,7 @@ class FilterDefinition extends AbstractModel
     public function setId($id)
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -49,7 +66,8 @@ class FilterDefinition extends AbstractModel
     /**
      * @return string
      */
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->name;
     }
 
@@ -57,15 +75,18 @@ class FilterDefinition extends AbstractModel
      * @param $name
      * @return FilterDefinition
      */
-    public function setName($name):FilterDefinition {
+    public function setName($name): FilterDefinition
+    {
         $this->name = $name;
+
         return $this;
     }
 
     /**
      * @return array
      */
-    public function getDefinition(): array {
+    public function getDefinition(): array
+    {
         return $this->definition;
     }
 
@@ -73,8 +94,10 @@ class FilterDefinition extends AbstractModel
      * @param $definition
      * @return FilterDefinition
      */
-    public function setDefinition(array $definition):FilterDefinition {
+    public function setDefinition(array $definition): FilterDefinition
+    {
         $this->definition = $definition;
+
         return $this;
     }
 
@@ -93,6 +116,7 @@ class FilterDefinition extends AbstractModel
     public function setAllowedUserIds(array $allowedUserIds)
     {
         $this->allowedUserIds = $allowedUserIds;
+
         return $this;
     }
 
@@ -102,12 +126,14 @@ class FilterDefinition extends AbstractModel
      * @param int $allowedUserId
      * @return $this
      */
-    public function addAllowedUserId(int $allowedUserId) {
+    public function addAllowedUserId(int $allowedUserId)
+    {
         // check if allowed user id already set
-        if(!in_array($allowedUserId, $this->allowedUserIds)) {
+        if (!in_array($allowedUserId, $this->allowedUserIds)) {
             // add user id to array
             $this->allowedUserIds[] = $allowedUserId;
         }
+
         // return current object
         return $this;
     }
@@ -118,11 +144,13 @@ class FilterDefinition extends AbstractModel
      * @param array $allowedUserIds
      * @return $this
      */
-    public function addAllowedUserIds(array $allowedUserIds) {
+    public function addAllowedUserIds(array $allowedUserIds)
+    {
         // go through all user ids and add them
         foreach ($allowedUserIds as $userId) {
             $this->addAllowedUserId($userId);
         }
+
         // return current object
         return $this;
     }
@@ -132,7 +160,7 @@ class FilterDefinition extends AbstractModel
      */
     public function getShowSegments(): array
     {
-        return $this->showSegments;
+        return $this->getDefinition()['showSegments'] ?? [];
     }
 
     /**
@@ -141,14 +169,16 @@ class FilterDefinition extends AbstractModel
      */
     public function setShowSegments(array $showSegments)
     {
-        $this->showSegments = $showSegments;
+        $this->definition['showSegments'] = $showSegments;
+
         return $this;
     }
 
     /**
      * @return bool
      */
-    public function isReadOnly(): bool {
+    public function isReadOnly(): bool
+    {
         return boolval($this->readOnly);
     }
 
@@ -156,15 +186,18 @@ class FilterDefinition extends AbstractModel
      * @param $readOnly
      * @return self
      */
-    public function setReadOnly(bool $readOnly):FilterDefinition {
+    public function setReadOnly(bool $readOnly): FilterDefinition
+    {
         $this->readOnly = $readOnly;
+
         return $this;
     }
 
     /**
      * @return bool
      */
-    public function isShortcutAvailable(): bool {
+    public function isShortcutAvailable(): bool
+    {
         return boolval($this->shortcutAvailable);
     }
 
@@ -172,8 +205,10 @@ class FilterDefinition extends AbstractModel
      * @param $shortcutAvailable
      * @return self
      */
-    public function setShortcutAvailable(bool $shortcutAvailable):FilterDefinition {
+    public function setShortcutAvailable(bool $shortcutAvailable): FilterDefinition
+    {
         $this->shortcutAvailable = $shortcutAvailable;
+
         return $this;
     }
 
@@ -185,11 +220,11 @@ class FilterDefinition extends AbstractModel
      */
     public static function getById($id)
     {
-        $cacheKey = 'cmf_customerlist_filterdefinition_' . $id;
+        $cacheKey = 'cmf_customerlist_filterdefinition_'.$id;
         try {
             $filterDefinition = Runtime::get($cacheKey);
             if (!$filterDefinition) {
-                throw new \Exception('Route in registry is null');
+                throw new \Exception('FilterDefinition with id '.$id.' not found in cache');
             }
         } catch (\Exception $e) {
             try {
@@ -205,6 +240,30 @@ class FilterDefinition extends AbstractModel
                 return null;
             }
         }
+
+        // return loaded FilterDefinition object
+        return $filterDefinition;
+    }
+
+    /**
+     * Load FilterDefinition object by id
+     *
+     * @param string $name
+     * @return self
+     */
+    public static function getByName(string $name)
+    {
+        try {
+            // create object and set id
+            $filterDefinition = new self();
+            // load filter definition by id
+            /** @noinspection PhpUndefinedMethodInspection */
+            $filterDefinition->getDao()->getByName($name);
+        } catch (\Exception $e) {
+            // return null to indicate object not found
+            return null;
+        }
+
         // return loaded FilterDefinition object
         return $filterDefinition;
     }
@@ -224,6 +283,7 @@ class FilterDefinition extends AbstractModel
     public function setCreationDate($creationDate)
     {
         $this->creationDate = $creationDate;
+
         return $this;
     }
 
@@ -242,6 +302,7 @@ class FilterDefinition extends AbstractModel
     public function setModificationDate($modificationDate)
     {
         $this->modificationDate = $modificationDate;
+
         return $this;
     }
 
@@ -262,14 +323,23 @@ class FilterDefinition extends AbstractModel
     }
 
     /**
-     *
+     * Saves object and reset isDirty flag
      */
     public function save()
     {
-        /** @noinspection PhpUndefinedMethodInspection */
         $this->getDao()->save();
         // reset dirty state
         $this->setIsDirty(false);
+    }
+
+    /**
+     * Delete object
+     *
+     * @return bool Returns true on deletion success otherwise false
+     */
+    public function delete()
+    {
+        return $this->getDao()->delete();
     }
 
     /**
@@ -278,8 +348,9 @@ class FilterDefinition extends AbstractModel
      * @param int $userId
      * @return bool
      */
-    public function isUserAllowed(int $userId) {
-        return in_array($userId,$this->getAllowedUserIds());
+    public function isUserAllowed(int $userId)
+    {
+        return in_array($userId, $this->getAllowedUserIds());
     }
 
     /**
@@ -288,12 +359,16 @@ class FilterDefinition extends AbstractModel
      * @param array $userIds
      * @return bool
      */
-    public function isAnyUserAllowed(array $userIds) {
+    public function isAnyUserAllowed(array $userIds)
+    {
         // loop through all given user ids
         foreach ($userIds as $userId) {
             // check if single user id is allowed
-            if($this->isUserAllowed($userId)) return true;
+            if ($this->isUserAllowed($userId)) {
+                return true;
+            }
         }
+
         // none of the user ids is allowed
         return false;
     }
@@ -304,8 +379,12 @@ class FilterDefinition extends AbstractModel
      * @param $fieldName
      * @return bool
      */
-    public function isLocked($fieldName) {
-        if($this->isReadOnly() && array_key_exists($fieldName, $this->getDefinition())) return true;
+    public function isLocked($fieldName)
+    {
+        if ($this->isReadOnly() && array_key_exists($fieldName, $this->getDefinition())) {
+            return true;
+        }
+
         return false;
     }
 
@@ -314,8 +393,12 @@ class FilterDefinition extends AbstractModel
      * @param $segmentId
      * @return bool
      */
-    public function isLockedSegment($segmentId) {
-        if($this->isReadOnly() && array_key_exists($segmentId, @$this->getDefinition()['segments']?:[])) return true;
+    public function isLockedSegment($segmentId)
+    {
+        if ($this->isReadOnly() && array_key_exists($segmentId, @$this->getDefinition()['segments'] ?: [])) {
+            return true;
+        }
+
         return false;
     }
 
@@ -325,8 +408,12 @@ class FilterDefinition extends AbstractModel
      * @param $segmentId
      * @return bool
      */
-    public function isSegmentVisible($segmentId) {
-        if(in_array($segmentId, $this->getShowSegments())) return true;
+    public function isSegmentVisible($segmentId)
+    {
+        if (in_array($segmentId, $this->getShowSegments())) {
+            return true;
+        }
+
         return false;
     }
 
@@ -337,7 +424,8 @@ class FilterDefinition extends AbstractModel
      * @param bool $forceSave Enforce object to be saved regardless
      * @return bool Returns true if object changed otherwise false
      */
-    public function cleanUp($saveOnChange = true, $forceSave = false) {
+    public function cleanUp($saveOnChange = true, $forceSave = false)
+    {
         // do all cleanup jobs
         $this
             ->cleanUpDefinition()
@@ -346,7 +434,10 @@ class FilterDefinition extends AbstractModel
         // fetch change state
         $isChanged = $this->isDirty();
         // save changes if wanted
-        if(($isChanged && $saveOnChange) || $forceSave) $this->save();
+        if (($isChanged && $saveOnChange) || $forceSave) {
+            $this->save();
+        }
+
         // return if object changed
         return $isChanged;
     }
@@ -354,11 +445,14 @@ class FilterDefinition extends AbstractModel
     /**
      * @return $this
      */
-    protected function cleanUpDefinition() {
+    protected function cleanUpDefinition()
+    {
         // check if definition contains segments -> no segments means nothing to do
-        if(!array_key_exists('segments', $this->getDefinition())) return $this;
+        if (!array_key_exists('segments', $this->getDefinition())) {
+            return $this;
+        }
         // fetch segments
-        $segments = $this->getDefinition()['segments']?:[];
+        $segments = $this->getDefinition()['segments'] ?: [];
         // validate segments exist and belongs to group
         foreach ($segments as $groupId => $segmentIds) {
             // try to load segment group
@@ -376,7 +470,7 @@ class FilterDefinition extends AbstractModel
                 // fetch segment
                 $segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId);
                 // check if segment found
-                if(!$segment) {
+                if (!$segment) {
                     // delete segment id from segment group
                     if (($key = array_search($segmentId, $segments[$groupId])) !== false) {
                         unset($segments[$groupId][$key]);
@@ -389,7 +483,7 @@ class FilterDefinition extends AbstractModel
         // fetch full definition
         $definition = $this->getDefinition();
         // if segments left update otherwise remove from definition
-        if($segments) {
+        if ($segments) {
             // update segments part of definition
             $definition['segments'] = $segments;
         } else {
@@ -400,6 +494,7 @@ class FilterDefinition extends AbstractModel
         }
         // update segments for current object
         $this->setDefinition($definition);
+
         // return current object
         return $this;
     }
@@ -409,23 +504,25 @@ class FilterDefinition extends AbstractModel
      *
      * @return $this
      */
-    protected function cleanUpAllowedUserIds() {
+    protected function cleanUpAllowedUserIds()
+    {
         // create cleaned array
         $cleanedAllowedUserIds = [];
         // go through all user ids and check if exists
         foreach ($allowedUserIds = $this->getAllowedUserIds() as $userId) {
             // check if user or role exists
-            if(User::getById($userId) || Role::getById($userId)) {
+            if (User::getById($userId) || Role::getById($userId)) {
                 $cleanedAllowedUserIds[] = $userId;
             }
         }
         // check for changes
-        if(count($allowedUserIds) !== count($cleanedAllowedUserIds)) {
+        if (count($allowedUserIds) !== count($cleanedAllowedUserIds)) {
             // update allowed user ids
             $this->setAllowedUserIds($cleanedAllowedUserIds);
             // set object needs to be saved
             $this->setIsDirty(true);
         }
+
         // return current object instance
         return $this;
     }
@@ -435,7 +532,8 @@ class FilterDefinition extends AbstractModel
      *
      * @return $this
      */
-    protected function cleanUpShowSegments() {
+    protected function cleanUpShowSegments()
+    {
         // create cleaned array
         $cleanedShowSegments = [];
         // go through show segments
@@ -447,13 +545,79 @@ class FilterDefinition extends AbstractModel
             }
         }
         // check for changes
-        if(count($showSegments) !== count($cleanedShowSegments)) {
+        if (count($showSegments) !== count($cleanedShowSegments)) {
             // update show segment ids
             $this->setShowSegments($cleanedShowSegments);
             // set object needs to be saved
             $this->setIsDirty(true);
         }
+
         // return current object instance
         return $this;
+    }
+
+    /**
+     * @return Dao
+     */
+    public function getDao()
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return parent::getDao();
+    }
+
+    /**
+     * Fetch all FilterDefinition objects with shortcut
+     *
+     * @return FilterDefinition[]
+     */
+    public static function getAllShortcutAvailable()
+    {
+        $filterDefinitions = (new Listing())->load();
+        $shortcutFilterDefinitions = [];
+        foreach ($filterDefinitions as $filterDefinition) {
+            if ($filterDefinition->isShortcutAvailable()) {
+                $shortcutFilterDefinitions[] = $filterDefinition;
+            }
+        }
+
+        return $shortcutFilterDefinitions;
+    }
+
+    /**
+     * Fetch all FilterDefinition objects with shortcut for specific user
+     *
+     * @param User $user
+     * @return array
+     */
+    public static function getAllShortcutAvailableForUser(User $user)
+    {
+        $filterDefinitions = [];
+        foreach (self::getAllShortcutAvailable() as $filterDefinition) {
+            if (/*$user->isAdmin() || */$filterDefinition->isUserAllowed($user->getId())) {
+                $filterDefinitions[] = $filterDefinition;
+            }
+        }
+
+        return $filterDefinitions;
+    }
+
+    /**
+     * Prepare FilterDefinition objects for menu representation with id and name
+     *
+     * @param array $filterDefinitions
+     * @return array
+     */
+    public static function prepareDataForMenu(array $filterDefinitions)
+    {
+        $data = [];
+        /** @var FilterDefinition $filterDefinition */
+        foreach ($filterDefinitions as $filterDefinition) {
+            $data[] = [
+                Dao::ATTRIBUTE_ID => $filterDefinition->getId(),
+                Dao::ATTRIBUTE_NAME => $filterDefinition->getName(),
+            ];
+        }
+
+        return $data;
     }
 }
