@@ -23,6 +23,7 @@ class CountTargetGroupWeight extends AbstractMatchCondition
 {
     const OPTION_OPERATOR = 'operator';
     const OPTION_COUNT = 'count';
+    const OPTION_TARGET_GROUP = 'targetGroup';
 
     public function check(
         ConditionDefinitionInterface $conditionDefinition,
@@ -36,7 +37,10 @@ class CountTargetGroupWeight extends AbstractMatchCondition
         if (null === $targetGroupAssigned) {
             return false;
         }
-        return $this->matchCondition($targetGroupAssigned['targetGroupWeight'], $options[self::OPTION_OPERATOR], (int)$options[self::OPTION_COUNT]);
+
+        $targetGroupCheck = empty($options[self::OPTION_TARGET_GROUP]) || in_array($targetGroupAssigned['targetGroupId'], $options[self::OPTION_TARGET_GROUP]);
+
+        return $targetGroupCheck && $this->matchCondition($targetGroupAssigned['targetGroupWeight'], $options[self::OPTION_OPERATOR], (int)$options[self::OPTION_COUNT]);
     }
 
     public function getDbCondition(ConditionDefinitionInterface $conditionDefinition)
@@ -46,3 +50,4 @@ class CountTargetGroupWeight extends AbstractMatchCondition
         return '1=2';
     }
 }
+

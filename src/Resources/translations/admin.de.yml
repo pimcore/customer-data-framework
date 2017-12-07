@@ -156,3 +156,6 @@ plugin_cmf_actiontriggerrule_number_condition_<=: "wenn Anzahl kleiner/gleich"
 plugin_cmf_actiontriggerrule_number_condition_>: "wenn Anzahl größer"
 plugin_cmf_actiontriggerrule_number_condition_>=: "wenn Anzahl größer/gleich"
 
+plugin_cmf_actiontriggerrule_for_condition: "Für"
+plugin_cmf_actiontriggerrule_for_condition_empty_all: "Leere Auswahl bedeutet alle."
+plugin_cmf_actiontriggerrule_for_condition_segments: "Segmente"

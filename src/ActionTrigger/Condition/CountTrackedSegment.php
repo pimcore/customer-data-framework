@@ -19,12 +19,17 @@ use CustomerManagementFrameworkBundle\ActionTrigger\Event\SegmentTracked;
 use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
+use Pimcore\Model\DataObject\CustomerSegment;
 
 class CountTrackedSegment extends AbstractMatchCondition
 {
     const OPTION_OPERATOR = 'operator';
     const OPTION_COUNT = 'count';
+    const OPTION_SEGMENTS = 'segments';
 
+    /**
+     * @inheritdoc
+     */
     public function check(
         ConditionDefinitionInterface $conditionDefinition,
         CustomerInterface $customer,
@@ -45,6 +50,10 @@ class CountTrackedSegment extends AbstractMatchCondition
             return false;
         }
 
+        if(!empty($options[self::OPTION_SEGMENTS]) && !in_array($trackedSegment['id'], $options[self::OPTION_SEGMENTS])) {
+            return false;
+        }
+
         $trackedCount = $trackedSegment['count'] ?? null;
         if (null === $trackedCount) {
             return false;
@@ -53,8 +62,58 @@ class CountTrackedSegment extends AbstractMatchCondition
         return $this->matchCondition($trackedCount, $options[self::OPTION_OPERATOR], (int)$options[self::OPTION_COUNT]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getDbCondition(ConditionDefinitionInterface $conditionDefinition)
     {
-        return ''; // TODO what do to here?
+        //return a condition that does not match any customer since this condition can only be used
+        //when assigned target group trigger appeared
+        return '1=2';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function createConditionDefinitionFromEditmode($setting)
+    {
+        $segmentDataArray = $setting->options->segments;
+        $segmentIds = [];
+        if($segmentDataArray) {
+            foreach($segmentDataArray as $segmentData) {
+                $segmentIds[] = $segmentData->id;
+            }
+        }
+
+        $setting->options->segments = $segmentIds;
+        $setting = json_decode(json_encode($setting), true);
+
+        return new \CustomerManagementFrameworkBundle\Model\ActionTrigger\ConditionDefinition($setting);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function getDataForEditmode(ConditionDefinitionInterface $conditionDefinition)
+    {
+        $segmentManager = \Pimcore::getContainer()->get('cmf.segment_manager');
+
+        $dataArray = $conditionDefinition->toArray();
+        $options = $conditionDefinition->getOptions();
+        $originalSegments = $options[self::OPTION_SEGMENTS];
+        $dataSegments = [];
+        foreach($originalSegments as $originalSegmentData) {
+            $segment = $segmentManager->getSegmentById($originalSegmentData);
+            if($segment) {
+                $dataSegments[] = [
+                    $segment->getId(),
+                    $segment->getFullPath()
+                ];
+            }
+        }
+
+        $dataArray['options'][self::OPTION_SEGMENTS] = $dataSegments;
+
+        return $dataArray;
     }
 }

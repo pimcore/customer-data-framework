@@ -94,11 +94,16 @@ a target group is assigned.
 This condition can check how often the tracked segment is tracked in the Targeting Storage. It always uses the segment 
 stored by the `Segment Tracked` trigger. 
 
+Optionally the condition can be restricted to certain segments by adding segments to the list. 
+
+
 ![Tracked Segments Count](./img/track-segment-count.jpg)
 
 ## Condition `[Targeting] Check Weight of Assigned Target Group`
 This condition can check how often the target group is assigned to the current user in the Targeting Storage (weight). 
 It always uses the target group stored by the `Assigned Target Group` trigger. 
+
+Optionally the condition can be restricted to certain target groups by selecting them in the list. 
 
 ![Check Weight of Assigned Target Group](./img/check-weight-assigned-target-group.jpg)
 
