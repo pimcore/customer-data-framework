@@ -58,7 +58,7 @@ Following options to prepare the customer class are available:
      `created_timestamp` and `application_counter` as numeric meta fields
   * `idEncoded`: input field
   
-  As starting point this [class definition](..) can be used. 
+  As starting point this [class definition](https://github.com/pimcore/customer-data-framework/blob/master/install/class_source/optional/class_Customer_export.json) can be used. 
  
  
 * When using customer objects as users for Symfony security: In this case the customer class needs to extend the 
