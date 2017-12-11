@@ -10,13 +10,45 @@
  * @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $customerView
  * @var \CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition $filterDefinition
  */
+$this->jsConfig()->add('registerSaveFilterDefinition', true);
+$this->jsConfig()->add('registerShareFilterDefinition', true);
 ?>
 
 </div>
 <!-- /.box-body -->
 
 <div class="box-footer text-right">
-    <?php if (\Pimcore\Tool\Admin::getCurrentUser()->isAllowed('plugin_cmf_perm_customerview_admin')): ?>
+    <?php
+        // check if user is allowed user for filter and doesn't have admin permission
+        if ($filterDefinition->getId()
+            && $filterDefinition->isUserAllowed(\Pimcore\Tool\Admin::getCurrentUser()->getId())
+            && !\Pimcore\Tool\Admin::getCurrentUser()->isAllowed('plugin_cmf_perm_customerview_admin')) :
+        ?>
+        <button type="button" class="btn btn-primary" data-toggle="modal"
+                data-target="#share-filter-definition-modal">
+            <i class="fa fa-share"></i>&nbsp;<?= $customerView->translate('Share Filter') ?></button>
+        <div id="share-filter-definition-modal" class="modal fade text-left" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title pull-left"><?= $customerView->translate('Share the filter') ?></h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter:user-roles.html.php') ?>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" value="Cancel" data-dismiss="modal"/>
+                        <input type="submit" class="btn btn-primary" value="Share" name="share-filter-definition"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php
+    // check if user is customer view admin
+    if (\Pimcore\Tool\Admin::getCurrentUser()->isAllowed('plugin_cmf_perm_customerview_admin')): ?>
         <?php if ($filterDefinition->getId()): ?>
             <button type="button" class="btn btn-danger" data-toggle="modal"
                     data-target="#delete-filter-definition-modal">
@@ -29,8 +61,10 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-footer">
-                            <input type="submit" class="btn btn-danger" value="Delete" name="delete-filter-definition"/>
-                            <input type="button" class="btn btn-default" value="Close" data-dismiss="modal"/>
+                            <input type="button" class="btn btn-default" value="Cancel" data-dismiss="modal"/>
+                            <a class="btn btn-danger" href="<?= $this->url('cmf_filter_definition_delete',['filterDefinition' => ['id' => $filterDefinition->getId()]]); ?>" name="delete-filter-definition">
+                                <?= $customerView->translate('Delete') ?>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -38,7 +72,7 @@
         <?php endif; ?>
 
         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#save-filter-definition-modal"><i
-                    class="fa fa-save"></i>&nbsp;<?= $customerView->translate('Save Filter') ?></button>
+                    class="fa fa-save"></i>&nbsp;<?= $customerView->translate('Save & Share Filter') ?></button>
         <div id="save-filter-definition-modal" class="modal fade text-left" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -47,70 +81,24 @@
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
+
+                        <div class="alert alert-danger" style="display: none;" id="name-required-message">
+                            <?= $customerView->translate('Name is required') ?>
+                        </div>
+
                         <div class="row">
                             <div class="col-xs-12">
                                 <div class="form-group">
-                                    <label for="filterDefinition[name]"><?= $customerView->translate('Name') ?></label>
+                                    <label for="filterDefinition[name]"><?= $customerView->translate('Filter name') ?></label>
                                     <input type="text" name="filterDefinition[name]" id="filterDefinition[name]"
-                                           class="form-control" placeholder="<?= $customerView->translate('Name') ?>"
+                                           class="form-control" placeholder="<?= $customerView->translate('Filter name') ?>"
                                            value="<?= $this->escapeFormValue($filterDefinition->getName()) ?>">
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="form-group">
-                                    <label for="filterDefinition[allowedUserIds]"><?= $customerView->translate('Share with user') ?></label>
-                                    <select
-                                            id="filterDefinition[allowedUserIds]"
-                                            name="filterDefinition[allowedUserIds][]"
-                                            class="form-control plugin-select2"
-                                            multiple="multiple"
-                                            data-placeholder=""
-                                            data-select2-options='<?= json_encode(['allowClear' => false]) ?>'>
-                                        <?php
-                                        $users = (new \Pimcore\Model\User\Listing())->load();
 
-                                        /** @var Pimcore\Model\User $user */
-                                        foreach ($users as $user):
-                                            if($user->getType() !== 'user') continue;
-                                            ?>
+                        <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter:user-roles.html.php') ?>
 
-                                            <option value="<?= $user->getId() ?>"<?= in_array($user->getId(), $filterDefinition->getAllowedUserIds()) ? ' selected="selected"' : '' ?>>
-                                                <?= !empty($user->getFirstname().$user->getLastname()) ? trim($user->getFirstname() . ' ' . $user->getLastname()) : $user->getName() ?>
-                                            </option>
-
-                                        <?php endforeach; ?>
-
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-xs-12">
-                                <div class="form-group">
-                                    <label for="filterDefinition[allowedRoleIds]"><?= $customerView->translate('Share with user') ?></label>
-                                    <select
-                                            id="filterDefinition[allowedRoleIds]"
-                                            name="filterDefinition[allowedRoleIds][]"
-                                            class="form-control plugin-select2"
-                                            multiple="multiple"
-                                            data-placeholder=""
-                                            data-select2-options='<?= json_encode(['allowClear' => false]) ?>'>
-                                        <?php
-                                        $roles = (new \Pimcore\Model\User\Role\Listing())->load();
-
-                                        /** @var Pimcore\Model\User\Role $role */
-                                        foreach ($roles as $role): ?>
-
-                                            <option value="<?= $role->getId() ?>"<?= in_array($role->getId(), $filterDefinition->getAllowedUserIds()) ? ' selected="selected"' : '' ?>>
-                                                <?= $role->getName() ?>
-                                            </option>
-
-                                        <?php endforeach; ?>
-
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
                         <div class="row">
                             <div class="col-xs-6">
                                 <div class="checkbox plugin-icheck">
@@ -133,8 +121,10 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <input type="submit" class="btn btn-primary" value="<?= $customerView->translate('Save'); ?>" name="save-filter-definition"/>
-                        <input type="button" class="btn btn-default" value="<?= $customerView->translate('Close'); ?>" data-dismiss="modal"/>
+                        <input type="button" class="btn btn-default" value="<?= $customerView->translate('Cancel'); ?>" data-dismiss="modal"/>
+                        <a type="button" class="btn btn-primary" name="save-filter-definition" id="save-filter-definition">
+                            <?= $customerView->translate('Save'); ?>
+                        </a>
                     </div>
                 </div>
             </div>

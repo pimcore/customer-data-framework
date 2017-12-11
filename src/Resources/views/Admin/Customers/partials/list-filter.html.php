@@ -22,17 +22,7 @@ $cv = $this->customerView;
 
     <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter/Box:header.html.php', ['identifier' => 'customer-search-filter']) ?>
 
-        <div class="row">
-            <div class="col-md-4">
-                <?= $this->template($cv->getFieldsFilterTemplate()) ?>
-            </div>
-
-            <div class="col-md-8">
-
-                <?= $this->template($cv->getSegmentsFilterTemplate()) ?>
-
-            </div>
-        </div>
+    <?= $this->template($cv->getFilterWrapperTemplate()) ?>
 
     <?php if (sizeof($this->clearUrlParams)) {
     ?>

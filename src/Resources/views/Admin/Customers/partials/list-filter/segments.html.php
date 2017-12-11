@@ -12,7 +12,9 @@
 
 $filteredSegmentGroups = [];
 foreach ($segmentGroups as $segmentGroup) {
-    if(in_array($segmentGroup->getId(), $filters['showSegments'])) $filteredSegmentGroups[] = $segmentGroup;
+    if (in_array($segmentGroup->getId(), $filters['showSegments'])) {
+        $filteredSegmentGroups[] = $segmentGroup;
+    }
 }
 ?>
 
@@ -20,9 +22,58 @@ foreach ($segmentGroups as $segmentGroup) {
 
     <fieldset>
         <legend>
-            <?= $customerView->translate('Segments') ?>
+            <div class="row">
+                <div class="col-md-2">
+                    <?= $customerView->translate('Segments') ?>
+                </div>
+                <?php if (\Pimcore\Tool\Admin::getCurrentUser()->isAllowed('plugin_cmf_perm_customerview_admin')): ?>
+                    <div class="col-md-10 text-right">
+                        <a type="button" class="btn btn-sm" data-toggle="modal"
+                           data-target="#show-segments-modal"><?= $customerView->translate('Edit') ?>
+                        </a>
+                    </div>
+                <?php endif; ?>
+            </div>
         </legend>
 
+        <?php if (\Pimcore\Tool\Admin::getCurrentUser()->isAllowed('plugin_cmf_perm_customerview_admin')): ?>
+            <div id="show-segments-modal" class="modal fade text-left" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;
+                            </button>
+                            <h4 class="modal-title"><?= $customerView->translate('Select your segments') ?></h4>
+                        </div>
+                        <div class="modal-body">
+                            <?php foreach ($segmentGroups as $segmentGroup): ?>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="checkbox plugin-icheck">
+                                            <label>
+                                                <input name="filter[showSegments][]"
+                                                       value="<?= $segmentGroup->getId() ?>"
+                                                       type="checkbox"
+                                                    <?= (in_array($segmentGroup->getId(),
+                                                        $filters['showSegments'])) ? ' checked="checked"' : '' ?>><?= $segmentGroup->getName() ?>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" class="btn btn-primary"
+                                   value="<?= $customerView->translate('Apply'); ?>"
+                                   name="apply-segment-selection"/>
+                            <input type="button" class="btn btn-default"
+                                   value="<?= $customerView->translate('Close'); ?>"
+                                   data-dismiss="modal"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
 
         <?php
         /** @var \Pimcore\Model\DataObject\CustomerSegmentGroup $segmentGroup */

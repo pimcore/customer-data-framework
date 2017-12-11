@@ -727,11 +727,28 @@ app.SearchFilter.DateRangePicker = (function () {
 
     // cmf functions
     $.extend(window.app, {
-        selectedSegmentsChanged: function ($scope) {
-            var showSegmentsChanged = false;
-            $('#show-segments-modal').find('input').on('ifChecked ifUnchecked', function(){
-                console.log("click or change");
+        registerSaveFilterDefinition: function ($scope) {
+            $('#save-filter-definition').on('click', function(e) {
+                e.preventDefault();
+                var $input = $('input[name="filterDefinition[name]"]');
+                if($input.val().length < 1) {
+                    $($input).focus();
+                    $('#name-required-message').slideDown();
+                    setTimeout(function(){
+                        $('#name-required-message').slideUp();
+                    }, 5000);
+                    return;
+                } else {
+                    $('#name-required-message').addClass('hidden');
+                }
+                var $form = $(this).closest("form");
+                var originalAction = $form.attr('action');
+                $form.attr('action', '/admin/customermanagementframework/customers/filter-definition/save').submit();
+                $form.attr('action', originalAction);
             });
+        },
+        registerShareFilterDefinition: function ($scope) {
+            console.log('share registered');
         }
     });
 })(jQuery);

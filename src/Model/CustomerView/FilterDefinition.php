@@ -148,9 +148,10 @@ class FilterDefinition extends AbstractModel
     {
         // go through all user ids and add them
         foreach ($allowedUserIds as $userId) {
-            $this->addAllowedUserId($userId);
+            if(!$this->isUserAllowed($userId)) {
+                $this->addAllowedUserId($userId);
+            }
         }
-
         // return current object
         return $this;
     }

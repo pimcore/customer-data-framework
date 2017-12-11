@@ -230,27 +230,26 @@ class Installer extends MigrationInstaller
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
         );
 
-        // TODO add customer filter definition
-        Db::get()->query(
-            'CREATE TABLE IF NOT EXISTS `plugin_cmf_customer_filter_definition` (
-              `id` int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-              `name` varchar(255) NOT NULL,
-              `definition` text NOT NULL,
-              `allowedUserIds` text,
-              `readOnly` BIT(1) DEFAULT 0,
-              `shortcutAvailable` BIT(1) DEFAULT 0,
-              `creationDate` DATETIME DEFAULT CURRENT_TIMESTAMP,
-              `modificationDate` DATETIME DEFAULT CURRENT_TIMESTAMP
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;'
-        );
 
-        $sqlPath = __DIR__ . '/Resources/sql/segmentAssignment/';
-        $sqlFileNames = ['datamodel.sql', 'storedFunctionDocument.sql', 'storedFunctionAsset.sql', 'storedFunctionObject.sql'];
+        $sqlFiles = [
+            __DIR__ . '/Resources/sql/filterDefinition/' => [
+                'datamodel.sql'
+            ],
+            __DIR__ . '/Resources/sql/segmentAssignment/' => [
+                'datamodel.sql',
+                'storedFunctionDocument.sql',
+                'storedFunctionAsset.sql',
+                'storedFunctionObject.sql',
+            ]
+        ];
+
         $db = Db::get();
 
-        foreach ($sqlFileNames as $fileName) {
-            $statement = file_get_contents($sqlPath.$fileName);
-            $db->query($statement);
+        foreach ($sqlFiles as $folder => $files) {
+            foreach($files as $file) {
+                $statement = file_get_contents($folder.$file);
+                $db->query($statement);
+            }
         }
     }
 
