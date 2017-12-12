@@ -63,7 +63,7 @@ class CustomersController extends Admin
 
     /**
      * @param Request $request
-     * @Route("/list", name="cmf_customer_list")
+     * @Route("/list")
      * @return Response
      */
     public function listAction(Request $request)

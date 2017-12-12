@@ -172,7 +172,7 @@ class FilterDefinitionController extends Admin
     protected function getRedirectToFilter(int $filterDefinitionId = 0, array $errors = [])
     {
         // redirect to filter view with new FilterDefinition selected
-        return $this->redirect($this->generateUrl('cmf_customer_list', [
+        return $this->redirect($this->generateUrl('customermanagementframework_admin_customers_list', [
             'filterDefinition' =>
                 [
                     'id' => $filterDefinitionId,

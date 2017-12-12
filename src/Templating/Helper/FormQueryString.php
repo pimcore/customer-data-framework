@@ -75,6 +75,10 @@ class FormQueryString extends Helper
 
         if ($includeFilters) {
             $params['filter'] = $this->getFilterParams($request);
+
+            if($fd = $request->get('filterDefinition')) {
+                $params['filterDefinition'] = ['id'=>$fd['id']];
+            }
         }
 
         return $params;
