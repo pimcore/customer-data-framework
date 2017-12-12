@@ -726,29 +726,54 @@ app.SearchFilter.DateRangePicker = (function () {
     'use strict';
 
     // cmf functions
+    // noinspection JSUnusedGlobalSymbols
     $.extend(window.app, {
-        registerSaveFilterDefinition: function ($scope) {
+        registerSaveFilterDefinition: function () {
             $('#save-filter-definition').on('click', function(e) {
                 e.preventDefault();
                 var $input = $('input[name="filterDefinition[name]"]');
-                if($input.val().length < 1) {
-                    $($input).focus();
-                    $('#name-required-message').slideDown();
+                var $requiredMessage = $('#name-required-message');
+                if($($input).val().length < 1) {
+                    $input.focus();
+                    $requiredMessage.slideDown();
                     setTimeout(function(){
-                        $('#name-required-message').slideUp();
-                    }, 5000);
+                        $requiredMessage.slideUp();
+                    }, 3000);
                     return;
-                } else {
-                    $('#name-required-message').addClass('hidden');
-                }
+                } else $requiredMessage.hide();
                 var $form = $(this).closest("form");
                 var originalAction = $form.attr('action');
                 $form.attr('action', '/admin/customermanagementframework/customers/filter-definition/save').submit();
                 $form.attr('action', originalAction);
             });
         },
-        registerShareFilterDefinition: function ($scope) {
-            console.log('share registered');
+        registerUpdateFilterDefinition: function () {
+            $('#update-filter-definition').on('click', function(e) {
+                e.preventDefault();
+                var $input = $('input[name="filterDefinition[name]"]');
+                var $requiredMessage = $('#name-required-message');
+                if($($input).val().length < 1) {
+                    $input.focus();
+                    $requiredMessage.slideDown();
+                    setTimeout(function(){
+                        $requiredMessage.slideUp();
+                    }, 3000);
+                    return;
+                } else $requiredMessage.hide();
+                var $form = $(this).closest("form");
+                var originalAction = $form.attr('action');
+                $form.attr('action', '/admin/customermanagementframework/customers/filter-definition/update').submit();
+                $form.attr('action', originalAction);
+            });
+        },
+        registerShareFilterDefinition: function () {
+            $('#share-filter-definition').on('click', function(e) {
+                e.preventDefault();
+                var $form = $(this).closest("form");
+                var originalAction = $form.attr('action');
+                $form.attr('action', '/admin/customermanagementframework/customers/filter-definition/share').submit();
+                $form.attr('action', originalAction);
+            });
         }
     });
 })(jQuery);

@@ -1,18 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dschroffner
- * Date: 04.12.2017
- * Time: 14:51
- */
 
 namespace CustomerManagementFrameworkBundle\Model\CustomerView;
 
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition\Dao;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition\Listing;
-use PHPUnit\Util\Filter;
 use Pimcore\Cache\Runtime;
-use Pimcore\Logger;
 use Pimcore\Model\AbstractModel;
 use Pimcore\Model\User;
 use Pimcore\Model\User\Role;
@@ -110,13 +102,18 @@ class FilterDefinition extends AbstractModel
     }
 
     /**
+     * Set allowed user ids. Also removes duplicates and sorts ids ascending
+     *
      * @param array $allowedUserIds
      * @return $this
      */
     public function setAllowedUserIds(array $allowedUserIds)
     {
-        $this->allowedUserIds = $allowedUserIds;
-
+        // prevent duplicate ids
+        $preparedAllowedUserIds = array_unique($allowedUserIds);
+        // sort ascending
+        sort($preparedAllowedUserIds);
+        $this->allowedUserIds = $preparedAllowedUserIds;
         return $this;
     }
 
@@ -128,30 +125,20 @@ class FilterDefinition extends AbstractModel
      */
     public function addAllowedUserId(int $allowedUserId)
     {
-        // check if allowed user id already set
-        if (!in_array($allowedUserId, $this->allowedUserIds)) {
-            // add user id to array
-            $this->allowedUserIds[] = $allowedUserId;
-        }
-
+        $this->setAllowedUserIds(array_merge($this->allowedUserIds,[$allowedUserId]));
         // return current object
         return $this;
     }
 
     /**
-     * Add multiple user ids to allowd user ids array
+     * Add multiple user ids to allowed user ids array
      *
      * @param array $allowedUserIds
      * @return $this
      */
     public function addAllowedUserIds(array $allowedUserIds)
     {
-        // go through all user ids and add them
-        foreach ($allowedUserIds as $userId) {
-            if(!$this->isUserAllowed($userId)) {
-                $this->addAllowedUserId($userId);
-            }
-        }
+        $this->setAllowedUserIds(array_merge($this->allowedUserIds, $allowedUserIds));
         // return current object
         return $this;
     }
@@ -594,7 +581,8 @@ class FilterDefinition extends AbstractModel
     {
         $filterDefinitions = [];
         foreach (self::getAllShortcutAvailable() as $filterDefinition) {
-            if (/*$user->isAdmin() || */$filterDefinition->isUserAllowed($user->getId())) {
+            if (/*$user->isAdmin() || */
+            $filterDefinition->isUserAllowed($user->getId())) {
                 $filterDefinitions[] = $filterDefinition;
             }
         }

@@ -9,6 +9,7 @@
  * @var array $filters
  * @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $customerView
  * @var \CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition $filterDefinition
+ * @var bool $preselected
  */
 ?>
 <div class="row">
@@ -23,15 +24,12 @@
                 data-placeholder="<?= $customerView->translate('Share with user') ?>"
                 data-select2-options='<?= json_encode(['allowClear' => false]) ?>'>
                 <?php
+                /** @noinspection PhpUndefinedMethodInspection */
                 $users = (new \Pimcore\Model\User\Listing())->load();
                 /** @var Pimcore\Model\User $user */
                 foreach ($users as $user):
                     if($user->getType() !== 'user') continue;
-                    ?>
-                    <option value="<?= $user->getId() ?>"<?= in_array($user->getId(), $filterDefinition->getAllowedUserIds()) ? ' selected="selected"' : '' ?>>
-                        <?= $user->getName() . (!empty($user->getFirstname().$user->getLastname()) ? ' (' . trim($user->getFirstname() . ' ' . $user->getLastname()) . ')' : '') ?>
-                    </option>
-                <?php endforeach; ?>
+                    ?><option value="<?= $user->getId() ?>"<?= ((boolval($preselected) && in_array($user->getId(), $filterDefinition->getAllowedUserIds())) ? ' selected="selected"' : '') ?>><?= $user->getName() . (!empty($user->getFirstname().$user->getLastname()) ? ' (' . trim($user->getFirstname() . ' ' . $user->getLastname()) . ')' : '') ?></option><?php endforeach; ?>
             </select>
         </div>
     </div>
@@ -46,13 +44,10 @@
                 data-placeholder="<?= $customerView->translate('Share with roles') ?>"
                 data-select2-options='<?= json_encode(['allowClear' => false]) ?>'>
                 <?php
+                /** @noinspection PhpUndefinedMethodInspection */
                 $roles = (new \Pimcore\Model\User\Role\Listing())->load();
                 /** @var Pimcore\Model\User\Role $role */
-                foreach ($roles as $role): ?>
-                    <option value="<?= $role->getId() ?>"<?= in_array($role->getId(), $filterDefinition->getAllowedUserIds()) ? ' selected="selected"' : '' ?>>
-                        <?= $role->getName() ?>
-                    </option>
-                <?php endforeach; ?>
+                foreach ($roles as $role): ?><option value="<?= $role->getId() ?>"<?= ((boolval($preselected) && in_array($role->getId(), $filterDefinition->getAllowedUserIds())) ? ' selected="selected"' : '') ?>><?= $role->getName() ?></option><?php endforeach; ?>
             </select>
         </div>
     </div>

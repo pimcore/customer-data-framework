@@ -26,8 +26,9 @@
             </div>
 
             <div class="col-sm-9 col-md-6 text-right">
+                <?php if(false): // Temporary disabled ?>
                 <button type="button" class="btn btn-primary"><?= $customerView->translate('New Customer'); ?></button>
-
+                <?php endif; ?>
                 <select
                         id="filterDefinition[id]"
                         name="filterDefinition[id]"

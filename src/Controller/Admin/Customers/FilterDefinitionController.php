@@ -1,15 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dschroffner
- * Date: 04.12.2017
- * Time: 15:03
- */
-
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin\Customers;
 
 use CustomerManagementFrameworkBundle\Controller\Admin;
+use CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,75 +14,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class FilterDefinitionController extends Admin
 {
-
-    /**
-     * @param Request $request
-     * @Route("/test")
-     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
-     */
-    public function testAction(Request $request)
-    {
-        /*
-        $item = new FilterDefinition;
-        $item->setName('First Filter');
-        $item->setDefinition([
-            'name' => 'test',
-            'email' => 'test@test.at',
-            'segments' => [
-                6692924 => [6697161]
-            ],
-        ]);
-        $item->setAllowedUserIds([2,3,5,7,9,11,13,17]);
-        $item->setShowSegments([6692924,6692950,6694248,6697154,6697869]);
-        $item->setReadOnly(true);
-        $item->setShortcutAvailable(true);
-        $item->save();
-
-        $item2 = new FilterDefinition;
-        $item2->setName('Second Filter');
-        $item2->setDefinition([
-            'name' => 'test2',
-            'email' => 'test2@test2.at',
-        ]);
-        $item2->setAllowedUserIds([11,13,17]);
-        $item2->setShowSegments([6692924,6692950,6694248]);
-        $item2->setReadOnly(false);
-        $item2->setShortcutAvailable(false);
-        $item2->save();
-
-        return $this->json([
-            'id' => $item->getId(),
-            'id2' => $item2->getId(),
-        ]);
-        */
-
-        /*
-        $listing = new FilterDefinition\Listing();
-
-        if(!$this->getUser()->isAllowed('plugin_cmf_perm_customerview_admin')) {
-            var_dump("filtering");
-            die;
-            // fetch roles of user
-            $userIds = $this->getUser()->getRoles();
-            // fetch id of user
-            $userIds[] = $this->getUser()->getId();
-            // build user ids condition for filter definition
-            $listing->setUserIdsCondition($userIds);
-        }
-
-        foreach($listing->load() as $item) {
-            var_dump($item->getName());
-            var_dump($item->getShowSegments());
-        }
-        die();
-
-        //return $this->json([]);
-        */
-
-
-        die;
-    }
-
     /**
      * @param Request $request
      * @Route("/delete", name="cmf_filter_definition_delete")
@@ -99,7 +24,7 @@ class FilterDefinitionController extends Admin
         // fetch CustomerView object
         $customerView = \Pimcore::getContainer()->get('cmf.customer_view');
         // fetch object parameters from request
-        $id = intval($request->get('filterDefinition', [])['id'] ?? 0);
+        $id = $this->getIdFromRequest($request);
         // check if FilterDefinition id provided
         if (empty($id)) {
             return $this->getRedirectToFilter();
@@ -114,6 +39,7 @@ class FilterDefinitionController extends Admin
         if (!$this->getUser()->isAllowed('plugin_cmf_perm_customerview_admin')) {
             // add error message for user not allowed to access FilterDefinition object
             $errors[] = $customerView->translate('Not allowed to access filter.');
+
             return $this->getRedirectToFilter($filterDefinition->getId());
         }
         // try to delete the FilterDefinition
@@ -123,61 +49,118 @@ class FilterDefinitionController extends Admin
             // add error message for deletion failed
             $errors[] = $customerView->translate('Deletion of filter failed. '.$e->getMessage());
         }
+
         // redirect to filter view with no FilterDefinition selected
         return $this->getRedirectToFilter();
     }
 
     /**
+     * Save new FilterDefinition object
+     *
      * @Route("/save", name="cmf_filter_definition_save")
      * @param Request $request
+     * @param CustomerViewInterface $customerView
+     * @return RedirectResponse
      */
-    public function saveAction(Request $request) {
-        // initialize errors array
-        $errors = [];
-        // fetch CustomerView object
-        $customerView = \Pimcore::getContainer()->get('cmf.customer_view');
-
+    public function saveAction(Request $request, CustomerViewInterface $customerView)
+    {
         // fetch object parameters from request
-        $name = strval($request->get('filterDefinition', [])['name'] ?? '');
-        $definition = $request->get('filter', []);
-        $allowedUserIds = $this->getAllowedUserIdsFromRequest($request);
-        $showSegments = ($request->get('filter', [])['showSegments'] ?? []);
-        $readOnly = boolval($request->get('filterDefinition', [])['readOnly'] ?? false);
-        $shortcutAvailable = boolval($request->get('filterDefinition', [])['shortcutAvailable'] ?? false);
+        $filterDefinition = $this->getFilterDefinitionFromRequest($request, true);
 
         // check mandatory FilterDefinition name
-        if (empty($name)) {
-            // add error messsage for missing filter name
+        if (empty($filterDefinition->getName())) {
+            // add error message for missing filter name
             $errors[] = $customerView->translate('Please provide a filter name.');
+
             return $this->getRedirectToFilter(0, $errors);
         }
-
-        $filterDefinition = new FilterDefinition();
-        $filterDefinition->setName($name);
-        $filterDefinition->setDefinition($definition);
-        $filterDefinition->setAllowedUserIds($allowedUserIds);
-        $filterDefinition->setShowSegments($showSegments);
-        $filterDefinition->setReadOnly($readOnly);
-        $filterDefinition->setShortcutAvailable($shortcutAvailable);
-
         try {
             $filterDefinition->save();
         } catch (\Exception $e) {
             // add error message for failed save
             $errors[] = $customerView->translate('Save of filter failed. '.$e->getMessage());
+
             return $this->getRedirectToFilter(0, $errors);
         }
 
         // redirect to filter view with new FilterDefinition selected
-        return $this->redirect($this->generateUrl('cmf_customer_list', [
-            'filterDefinition' =>
-                [
-                    'id' => $filterDefinition->getId(),
-                ],
-        ]));
+        return $this->getRedirectToFilter($filterDefinition->getId());
     }
 
-    // TODO add share action from CustomersController
+    /**
+     * Update existing FilterDefinition object
+     *
+     * @Route("/update", name="cmf_filter_definition_update")
+     * @param Request $request
+     * @param CustomerViewInterface $customerView
+     * @return RedirectResponse
+     */
+    public function updateAction(Request $request, CustomerViewInterface $customerView)
+    {
+        // fetch object parameters from request
+        $filterDefinition = $this->getFilterDefinitionFromRequest($request, true, true);
+        // check mandatory FilterDefinition name
+        if (empty($filterDefinition->getName())) {
+            // add error message for missing filter name
+            $errors[] = $customerView->translate('Please provide a filter name.');
+
+            return $this->getRedirectToFilter(0, $errors);
+        }
+        try {
+            $filterDefinition->save();
+        } catch (\Exception $e) {
+            // add error message for failed save
+            $errors[] = $customerView->translate('Save of filter failed. '.$e->getMessage());
+
+            return $this->getRedirectToFilter(0, $errors);
+        }
+
+        // redirect to filter view with new FilterDefinition selected
+        return $this->getRedirectToFilter($filterDefinition->getId());
+    }
+
+    /**
+     * Share the filter definition with new users or roles. Customer view admins will use updateFilterDefinition.
+     * This action is only used by users which are in allowed users for FilterDefinition object.
+     *
+     * @Route("/share", name="cmf_filter_definition_share")
+     * @param Request $request
+     * @param CustomerViewInterface $customerView
+     * @return bool|RedirectResponse
+     */
+    public function shareAction(Request $request, CustomerViewInterface $customerView)
+    {
+        // fetch object parameters from request
+        $filterDefinition = $this->getFilterDefinitionFromRequest($request, false, true);
+        // check if FilterDefinition id provided
+        if (!$filterDefinition instanceof FilterDefinition || empty($this->getAllowedUserIdsFromRequest($request))) {
+            return $this->getRedirectToFilter();
+        }
+        // initialize error array
+        $errors = [];
+        // check if user is allowed to access FilterDefinition object
+        if (!$filterDefinition->isUserAllowed($this->getUser()->getId()) && !$this->getUser()->isAllowed('plugin_cmf_perm_customerview_admin')) {
+            // add error message for user not allowed to access FilterDefinition object
+            $errors[] = $customerView->translate('Not allowed to access filter.');
+
+            return $this->getRedirectToFilter(0, $errors);
+        }
+        // try to update the FilterDefinition
+        try {
+            // add new allowed user ids
+            $filterDefinition->addAllowedUserIds($this->getAllowedUserIdsFromRequest($request));
+            // save changes to FilterDefinition object
+            $filterDefinition->save();
+        } catch (\Exception $e) {
+            // add error message for deletion failed
+            $errors[] = $customerView->translate('Sharing of filter failed. '.$e->getMessage());
+
+            return $this->getRedirectToFilter();
+        }
+
+        // redirect to filter view with new FilterDefinition selected
+        return $this->getRedirectToFilter($filterDefinition->getId());
+    }
 
     /**
      * Create redirect to customer view with selected filter
@@ -186,15 +169,70 @@ class FilterDefinitionController extends Admin
      * @param array $errors
      * @return RedirectResponse
      */
-    protected function getRedirectToFilter(int $filterDefinitionId = 0, array $errors  = []) {
+    protected function getRedirectToFilter(int $filterDefinitionId = 0, array $errors = [])
+    {
         // redirect to filter view with new FilterDefinition selected
         return $this->redirect($this->generateUrl('cmf_customer_list', [
             'filterDefinition' =>
                 [
                     'id' => $filterDefinitionId,
                 ],
-            'errors' => $errors
+            'errors' => $errors,
         ]));
+    }
+
+    /**
+     * @param Request $request
+     * @return int
+     */
+    protected function getIdFromRequest(Request $request)
+    {
+        return intval($request->get('filterDefinition', [])['id'] ?? 0);
+    }
+
+    /**
+     * @param Request $request
+     * @return string
+     */
+    protected function getNameFromRequest(Request $request)
+    {
+        return strval($request->get('filterDefinition', [])['name'] ?? '');
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    protected function getDefinitionFromRequest(Request $request)
+    {
+        return $request->get('filter', []);
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    protected function getShowSegmentsFromRequest(Request $request)
+    {
+        return $this->getDefinitionFromRequest($request)['showSegments'] ?? [];
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    protected function getReadOnlyFromRequest(Request $request)
+    {
+        return boolval($request->get('filterDefinition', [])['readOnly'] ?? false);
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    protected function getShortcutAvailableFromRequest(Request $request)
+    {
+        return boolval($request->get('filterDefinition', [])['shortcutAvailable'] ?? false);
     }
 
     /**
@@ -203,11 +241,56 @@ class FilterDefinitionController extends Admin
      * @param Request $request
      * @return array
      */
-    protected function getAllowedUserIdsFromRequest(Request $request) {
+    protected function getAllowedUserIdsFromRequest(Request $request)
+    {
         $allowedUserIds = $request->get('filterDefinition', [])['allowedUserIds'] ?? [];
         $allowedRoleIds = $request->get('filterDefinition', [])['allowedRoleIds'] ?? [];
-        $preparedAllowedUserIds =  array_unique(array_merge($allowedUserIds, $allowedRoleIds));
+        $preparedAllowedUserIds = array_unique(array_merge($allowedUserIds, $allowedRoleIds));
         sort($preparedAllowedUserIds);
         return $preparedAllowedUserIds;
+    }
+
+    /**
+     * Create FilterDefinition objects with parameters set from request
+     *
+     * @param Request $request
+     * @param bool $setParametersFromRequest Flag if all parameters should be set from request parameters
+     * @param bool $loadById True means load FilterDefinition by id provided in request. False means creating a new FilterDefinition object
+     * @return FilterDefinition|null Null will be returned if loadById set and no id provided or object with id not found
+     */
+    protected function getFilterDefinitionFromRequest(
+        Request $request,
+        bool $setParametersFromRequest = false,
+        bool $loadById = false
+    ) {
+        // fetch object parameters from request
+        $id = $this->getIdFromRequest($request);
+        // check mandatory FilterDefinition name
+        if ($loadById) {
+            // check if id exists
+            if (empty($id)) {
+                return null;
+            }
+            // try to load FilterDefinition by id
+            $filterDefinition = FilterDefinition::getById($id);
+            // check if FilterDefinition found
+            if (!$filterDefinition instanceof FilterDefinition) {
+                return null;
+            }
+        } else {
+            // create new filter definition from scratch
+            $filterDefinition = new FilterDefinition();
+        }
+        if ($setParametersFromRequest) {
+            // set parameters
+            $filterDefinition->setName($this->getNameFromRequest($request));
+            $filterDefinition->setDefinition($this->getDefinitionFromRequest($request));
+            $filterDefinition->setAllowedUserIds($this->getAllowedUserIdsFromRequest($request));
+            $filterDefinition->setShowSegments($this->getShowSegmentsFromRequest($request));
+            $filterDefinition->setReadOnly($this->getReadOnlyFromRequest($request));
+            $filterDefinition->setShortcutAvailable($this->getShortcutAvailableFromRequest($request));
+        }
+
+        return $filterDefinition;
     }
 }

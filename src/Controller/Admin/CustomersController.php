@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
+use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\CustomerList\Exporter\AbstractExporter;
 use CustomerManagementFrameworkBundle\CustomerList\Exporter\ExporterInterface;
@@ -28,17 +29,16 @@ use CustomerManagementFrameworkBundle\Listing\FilterHandler;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
-use function GuzzleHttp\Psr7\str;
 use Pimcore\Db;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
+use Pimcore\Model\DataObject\AbstractObject;
+use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
 use Pimcore\Model\DataObject\Listing;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\ValidatorBuilder;
 use Zend\Paginator\Adapter\ArrayAdapter;
 
 /**
@@ -58,8 +58,7 @@ class CustomersController extends Admin
     {
         parent::onKernelController($event);
         $this->checkPermission('plugin_cmf_perm_customerview');
-
-        \Pimcore\Model\DataObject\AbstractObject::setHideUnpublished(true);
+        AbstractObject::setHideUnpublished(true);
     }
 
     /**
@@ -70,18 +69,9 @@ class CustomersController extends Admin
     public function listAction(Request $request)
     {
         $filters = $this->fetchListFilters($request);
-        $errors = [];
+        $errors = $request->get('errors',[]);
         $paginator = null;
         $customerView = \Pimcore::getContainer()->get('cmf.customer_view');
-
-        // when filter share button was clicked
-        if ($request->get('share-filter-definition')) {
-            $return = $this->shareFilterDefinition($request, $errors);
-            // no errors return and select new filter
-            if ($return instanceof RedirectResponse) {
-                return $return;
-            }
-        }
 
         try {
             $listing = $this->buildListing($filters);
@@ -264,7 +254,7 @@ class CustomersController extends Admin
         $filename = sprintf(
             '%s-%s-segment-export.%s',
             $exporter->getName(),
-            \Carbon\Carbon::now()->format('YmdHis'),
+            Carbon::now()->format('YmdHis'),
             $exporter->getExtension()
         );
 
@@ -310,7 +300,7 @@ class CustomersController extends Admin
      *
      * @return CustomerSegmentGroup[]
      */
-    protected function loadSegmentGroups()
+    public function loadSegmentGroups()
     {
         if (is_null($this->segmentGroups)) {
             /** @var CustomerSegmentGroup\Listing $segmentGroups */
@@ -330,13 +320,12 @@ class CustomersController extends Admin
      */
     protected function buildListing(array $filters = [])
     {
+        /** @var Listing|Listing\Concrete $listing */
         $listing = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
         $listing
             ->setOrderKey('o_id')
             ->setOrder('ASC');
-
         $this->addListingFilters($listing, $filters);
-
         return $listing;
     }
 
@@ -361,10 +350,9 @@ class CustomersController extends Admin
         }
 
         foreach ($searchProperties as $property => $databaseFields) {
-            if (array_key_exists($property, $filters) && !empty($filters[$property]) && is_string(
-                    $filters[$property]
-                )
-            ) {
+            if (array_key_exists($property, $filters)
+                && !empty($filters[$property])
+                && is_string($filters[$property])) {
                 $handler->addFilter(new SearchQuery($databaseFields, $filters[$property]));
             }
         }
@@ -379,18 +367,14 @@ class CustomersController extends Admin
                         throw new \Exception(sprintf('Segment group %d was not found', $groupId));
                     }
                 }
-
                 $segments = [];
                 foreach ($segmentIds as $segmentId) {
                     $segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId);
-
                     if (!$segment) {
                         throw new \Exception(sprintf('Segment %d was not found', $segmentId));
                     }
-
                     $segments[] = $segment;
                 }
-
                 $handler->addFilter(new CustomerSegmentFilter($segments, $segmentGroup));
             }
         }
@@ -413,8 +397,8 @@ class CustomersController extends Admin
     }
 
     /**
+     * @param Request $request
      * @param array $filters
-     *
      * @return array
      */
     protected function addPrefilteredSegmentToFilters(Request $request, array $filters)
@@ -454,6 +438,7 @@ class CustomersController extends Admin
         $segmentId = $request->get('segmentId');
 
         if ($segmentId) {
+            /** @var CustomerSegment $segment */
             $segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId);
             if (!$segment) {
                 throw new \InvalidArgumentException(sprintf('Segment %d was not found', $segmentId));
@@ -463,6 +448,7 @@ class CustomersController extends Admin
 
             return $segment;
         }
+        return null;
     }
 
     /**
@@ -504,7 +490,7 @@ class CustomersController extends Admin
     }
 
     /**
-     * Fetch the definition of a FilterDefinition object
+     * Fetch the FilterDefinition object selected in request
      *
      * @param Request $request
      * @return null|FilterDefinition Returns FilterDefinition object if definition key is defined in filters array,
@@ -627,69 +613,5 @@ class CustomersController extends Admin
 
         // return merged filters array
         return $filters;
-    }
-
-    /**
-     * Share the filter definition with new users or roles. Customer view admins will use updateFilterDefinition.
-     *
-     * @param Request $request
-     * @param array $errors
-     * @return bool|RedirectResponse
-     */
-    protected function shareFilterDefinition(Request $request, array &$errors) {
-        // fetch CustomerView object
-        $customerView = \Pimcore::getContainer()->get('cmf.customer_view');
-        // fetch object parameters from request
-        $id = intval($request->get('filterDefinition', [])['id'] ?? 0);
-        $newAllowedUserIds = $this->getAllowedUserIdsFromRequest($request);
-        // check if FilterDefinition id provided
-        if (empty($id) || empty($newAllowedUserIds)) {
-            return false;
-        }
-        // fetch FilterDefinition by id
-        $filterDefinition = FilterDefinition::getById($id);
-        // check if FilterDefinition found
-        if (!$filterDefinition instanceof FilterDefinition) {
-            return false;
-        }
-        // check if user is allowed to access FilterDefinition object
-        if (!$filterDefinition->isUserAllowed($this->getUser()->getId()) && !$this->getUser()->isAllowed('plugin_cmf_perm_customerview_admin')) {
-            // add error message for user not allowed to access FilterDefinition object
-            $errors[] = $customerView->translate('Not allowed to access filter.');
-            return false;
-        }
-        // try to update the FilterDefinition
-        try {
-            // add new allowed user ids
-            $filterDefinition->addAllowedUserIds($newAllowedUserIds);
-            // save changes to FilterDefinition object
-            $filterDefinition->save();
-        } catch (\Exception $e) {
-            // add error message for deletion failed
-            $errors[] = $customerView->translate('Sharing of filter failed. ' . $e->getMessage());
-            return false;
-        }
-
-        // redirect to filter view with new FilterDefinition selected
-        return $this->redirect($this->generateUrl($request->get('_route'), [
-            'filterDefinition' =>
-                [
-                    'id' => $filterDefinition->getId(),
-                ],
-        ]));
-    }
-
-    /**
-     * Prepare allowed user ids from request. This parameter consists of allowedUserIds and allowedRoleIds
-     *
-     * @param Request $request
-     * @return array
-     */
-    protected function getAllowedUserIdsFromRequest(Request $request) {
-        $allowedUserIds = $request->get('filterDefinition', [])['allowedUserIds'] ?? [];
-        $allowedRoleIds = $request->get('filterDefinition', [])['allowedRoleIds'] ?? [];
-        $preparedAllowedUserIds =  array_unique(array_merge($allowedUserIds, $allowedRoleIds));
-        sort($preparedAllowedUserIds);
-        return $preparedAllowedUserIds;
     }
 }

@@ -10,7 +10,11 @@
  * @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $customerView
  * @var \CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition $filterDefinition
  */
+/** @noinspection PhpUndefinedMethodInspection */
 $this->jsConfig()->add('registerSaveFilterDefinition', true);
+/** @noinspection PhpUndefinedMethodInspection */
+$this->jsConfig()->add('registerUpdateFilterDefinition', true);
+/** @noinspection PhpUndefinedMethodInspection */
 $this->jsConfig()->add('registerShareFilterDefinition', true);
 ?>
 
@@ -19,10 +23,10 @@ $this->jsConfig()->add('registerShareFilterDefinition', true);
 
 <div class="box-footer text-right">
     <?php
-        // check if user is allowed user for filter and doesn't have admin permission
-        if ($filterDefinition->getId()
-            && $filterDefinition->isUserAllowed(\Pimcore\Tool\Admin::getCurrentUser()->getId())
-            && !\Pimcore\Tool\Admin::getCurrentUser()->isAllowed('plugin_cmf_perm_customerview_admin')) :
+    // check if user is allowed user for filter and doesn't have admin permission
+    if ($filterDefinition->getId()
+        && $filterDefinition->isUserAllowed(\Pimcore\Tool\Admin::getCurrentUser()->getId())
+        && !\Pimcore\Tool\Admin::getCurrentUser()->isAllowed('plugin_cmf_perm_customerview_admin')) :
         ?>
         <button type="button" class="btn btn-primary" data-toggle="modal"
                 data-target="#share-filter-definition-modal">
@@ -35,11 +39,14 @@ $this->jsConfig()->add('registerShareFilterDefinition', true);
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter:user-roles.html.php') ?>
+                        <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter:user-roles.html.php',['preselected' => false]) ?>
                     </div>
                     <div class="modal-footer">
                         <input type="button" class="btn btn-default" value="Cancel" data-dismiss="modal"/>
-                        <input type="submit" class="btn btn-primary" value="Share" name="share-filter-definition"/>
+                        <a type="button" class="btn btn-primary" name="share-filter-definition"
+                           id="share-filter-definition">
+                            <?= $customerView->translate('Share'); ?>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -62,7 +69,9 @@ $this->jsConfig()->add('registerShareFilterDefinition', true);
                         </div>
                         <div class="modal-footer">
                             <input type="button" class="btn btn-default" value="Cancel" data-dismiss="modal"/>
-                            <a class="btn btn-danger" href="<?= $this->url('cmf_filter_definition_delete',['filterDefinition' => ['id' => $filterDefinition->getId()]]); ?>" name="delete-filter-definition">
+                            <a class="btn btn-danger" href="<?= $this->url('cmf_filter_definition_delete',
+                                ['filterDefinition' => ['id' => $filterDefinition->getId()]]); ?>"
+                               name="delete-filter-definition">
                                 <?= $customerView->translate('Delete') ?>
                             </a>
                         </div>
@@ -91,13 +100,14 @@ $this->jsConfig()->add('registerShareFilterDefinition', true);
                                 <div class="form-group">
                                     <label for="filterDefinition[name]"><?= $customerView->translate('Filter name') ?></label>
                                     <input type="text" name="filterDefinition[name]" id="filterDefinition[name]"
-                                           class="form-control" placeholder="<?= $customerView->translate('Filter name') ?>"
-                                           value="<?= $this->escapeFormValue($filterDefinition->getName()) ?>">
+                                           class="form-control"
+                                           placeholder="<?= $customerView->translate('Filter name') ?>"
+                                           value="<?= $filterDefinition->getName() ?>">
                                 </div>
                             </div>
                         </div>
 
-                        <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter:user-roles.html.php') ?>
+                        <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter:user-roles.html.php', ['preselected' => true]) ?>
 
                         <div class="row">
                             <div class="col-xs-6">
@@ -121,10 +131,19 @@ $this->jsConfig()->add('registerShareFilterDefinition', true);
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <input type="button" class="btn btn-default" value="<?= $customerView->translate('Cancel'); ?>" data-dismiss="modal"/>
-                        <a type="button" class="btn btn-primary" name="save-filter-definition" id="save-filter-definition">
-                            <?= $customerView->translate('Save'); ?>
+                        <input type="button" class="btn btn-default" value="<?= $customerView->translate('Cancel'); ?>"
+                               data-dismiss="modal"/>
+                        <?php if ($filterDefinition->getId()): ?>
+                            <a type="button" class="btn btn-primary" name="update-filter-definition"
+                               id="update-filter-definition"><i class="fa fa-save"></i>
+                                <?= $customerView->translate('Update existing Filter'); ?>
+                            </a>
+                        <?php endif; ?>
+                        <a type="button" class="btn btn-success" name="save-filter-definition"
+                           id="save-filter-definition"><i class="fa fa-plus"></i>
+                            <?= $customerView->translate('Save as new filter'); ?>
                         </a>
+
                     </div>
                 </div>
             </div>
