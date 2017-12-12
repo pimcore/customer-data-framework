@@ -111,6 +111,7 @@ services:
             $serviceConfiguration:
                 'executeSegmentBuilderMaintenance': '@CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface'
                 'processQueue': '@CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\IndexerInterface'
+                'cleanUpFilterDefinitions': '@CustomerManagementFrameworkBundle\CustomerView\FilterDefinition\Maintenance'
 
     cmf.logger:
         alias: monolog.logger.cmf
@@ -156,9 +157,14 @@ services:
             - '@cmf.view_formatter'
 
 
-    cmf.customer_view:
+    CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface:
         class: CustomerManagementFrameworkBundle\CustomerView\DefaultCustomerView
         arguments: ['@cmf.view_formatter']
+
+    cmf.customer_view:
+        alias: 'CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface'
+
+    CustomerManagementFrameworkBundle\CustomerView\FilterDefinition\Maintenance: ~
 
     cmf.potential_duplicate_item:
         class: CustomerManagementFrameworkBundle\Model\CustomerDuplicates\PotentialDuplicateItem

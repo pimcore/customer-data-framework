@@ -25,7 +25,7 @@ class Installer extends MigrationInstaller
 {
     public function getMigrationVersion(): string
     {
-        return '20171113110855';
+        return '20171207150300';
     }
 
 
@@ -62,6 +62,7 @@ class Installer extends MigrationInstaller
         $permissions = [
             'plugin_cmf_perm_activityview',
             'plugin_cmf_perm_customerview',
+            'plugin_cmf_perm_customerview_admin',
             'plugin_cmf_perm_customer_automation_rules',
             'plugin_cmf_perm_newsletter_enqueue_all_customers',
         ];
@@ -229,13 +230,26 @@ class Installer extends MigrationInstaller
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
         );
 
-        $sqlPath = __DIR__ . '/Resources/sql/segmentAssignment/';
-        $sqlFileNames = ['datamodel.sql', 'storedFunctionDocument.sql', 'storedFunctionAsset.sql', 'storedFunctionObject.sql'];
+
+        $sqlFiles = [
+            __DIR__ . '/Resources/sql/filterDefinition/' => [
+                'datamodel.sql'
+            ],
+            __DIR__ . '/Resources/sql/segmentAssignment/' => [
+                'datamodel.sql',
+                'storedFunctionDocument.sql',
+                'storedFunctionAsset.sql',
+                'storedFunctionObject.sql',
+            ]
+        ];
+
         $db = Db::get();
 
-        foreach ($sqlFileNames as $fileName) {
-            $statement = file_get_contents($sqlPath.$fileName);
-            $db->query($statement);
+        foreach ($sqlFiles as $folder => $files) {
+            foreach($files as $file) {
+                $statement = file_get_contents($folder.$file);
+                $db->query($statement);
+            }
         }
     }
 
