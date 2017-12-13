@@ -37,13 +37,20 @@ interface CustomerProviderInterface
     public function getList();
 
     /**
-     * Create a customer instance
+     * Create a published customer instance and sets it's values from given data
      *
      * @param array $data
      *
      * @return CustomerInterface
      */
     public function create(array $data = []);
+
+    /**
+     * Create a customer instance
+     *
+     * @return CustomerInterface
+     */
+    public function createCustomerInstance();
 
     /**
      * Update a customer instance

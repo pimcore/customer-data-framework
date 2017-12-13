@@ -9,6 +9,7 @@
  * @var array $filters
  * @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $customerView
  * @var \CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition $filterDefinition
+ * @var bool $hideAdvancedFilterSettings
  */
 /** @noinspection PhpUndefinedMethodInspection */
 $this->jsConfig()->add('registerSaveFilterDefinition', true);
@@ -24,7 +25,8 @@ $this->jsConfig()->add('registerShareFilterDefinition', true);
 <div class="box-footer text-right">
     <?php
     // check if user is allowed user for filter and doesn't have admin permission
-    if ($filterDefinition->getId()
+    if (!$hideAdvancedFilterSettings
+        && $filterDefinition->getId()
         && $filterDefinition->isUserAllowed(\Pimcore\Tool\Admin::getCurrentUser()->getId())
         && !\Pimcore\Tool\Admin::getCurrentUser()->isAllowed('plugin_cmf_perm_customerview_admin')) :
         ?>
@@ -55,7 +57,7 @@ $this->jsConfig()->add('registerShareFilterDefinition', true);
 
     <?php
     // check if user is customer view admin
-    if (\Pimcore\Tool\Admin::getCurrentUser()->isAllowed('plugin_cmf_perm_customerview_admin')): ?>
+    if (!$hideAdvancedFilterSettings && \Pimcore\Tool\Admin::getCurrentUser()->isAllowed('plugin_cmf_perm_customerview_admin')): ?>
         <?php if ($filterDefinition->getId()): ?>
             <button type="button" class="btn btn-danger" data-toggle="modal"
                     data-target="#delete-filter-definition-modal">

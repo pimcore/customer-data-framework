@@ -10,7 +10,13 @@
  * @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $customerView
  * @var \CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition[] $filterDefinitions
  * @var \CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition $filterDefinition
+ * @var bool $accessToTempCustomerFolder
+ * @var bool $hideAdvancedFilterSettings
  */
+if($accessToTempCustomerFolder) {
+    /** @noinspection PhpUndefinedMethodInspection */
+    $this->jsConfig()->add('registerNewCustomerAction', true);
+}
 ?>
 <!-- Filters -->
 <div class="box box-default box-collapsible-state search-filters-box" data-identifier="<?= $identifier ?>">
@@ -25,27 +31,30 @@
                 </h3>
             </div>
 
-            <div class="col-sm-9 col-md-6 text-right">
-                <?php if(false): // Temporary disabled ?>
-                <button type="button" class="btn btn-primary"><?= $customerView->translate('New Customer'); ?></button>
-                <?php endif; ?>
-                <select
-                        id="filterDefinition[id]"
-                        name="filterDefinition[id]"
-                        onchange="this.form.submit()"
-                        class="form-control plugin-select2"
-                        data-select2-options='<?= json_encode(['width' => '50%']) ?>'
-                >
-                    <option value="0"><?= $customerView->translate('No filter') ?></option>
-                    <?php
-                    foreach ($filterDefinitions as $singleFilterDefinition): ?>
-                        <option value="<?= $singleFilterDefinition->getId() ?>"<?= ($singleFilterDefinition->getId() == $filterDefinition->getId()) ? " selected" : "" ?>><?= $singleFilterDefinition->getName(); ?></option>
-                    <?php endforeach; ?>
-                </select>
+            <?php if(!$hideAdvancedFilterSettings): ?>
+                <div class="col-sm-9 col-md-6 text-right">
+                    <?php if($accessToTempCustomerFolder): ?>
+                        <button type="button" class="btn btn-primary" id="add-new-customer"
+                                name="add-new-customer"><?= $customerView->translate('New Customer'); ?></button>
+                    <?php endif; ?>
+                    <select
+                            id="filterDefinition[id]"
+                            name="filterDefinition[id]"
+                            onchange="this.form.submit()"
+                            class="form-control plugin-select2"
+                            data-select2-options='<?= json_encode(['width' => '50%']) ?>'
+                    >
+                        <option value="0"><?= $customerView->translate('No filter') ?></option>
+                        <?php
+                        foreach($filterDefinitions as $singleFilterDefinition): ?>
+                            <option value="<?= $singleFilterDefinition->getId() ?>"<?= ($singleFilterDefinition->getId() == $filterDefinition->getId()) ? " selected" : "" ?>><?= $singleFilterDefinition->getName(); ?></option>
+                        <?php endforeach; ?>
+                    </select>
 
-                <a class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></a>
+                    <a class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></a>
 
-            </div>
+                </div>
+            <?php endif; ?>
         </div>
 
     </div>
