@@ -128,14 +128,26 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     public function create(array $data = [])
     {
+        /** @var CustomerInterface|ElementInterface|Concrete $customer */
+        $customer = $this->createCustomerInstance();
+        $customer->setValues($data);
+        $customer->setPublished(true);
+        $this->applyObjectNamingScheme($customer);
+
+        return $customer;
+    }
+
+    /**
+     * Create a customer instance
+     *
+     * @return CustomerInterface
+     */
+    public function createCustomerInstance()
+    {
         $className = $this->getDiClassName();
 
         /** @var CustomerInterface|ElementInterface|Concrete $customer */
         $customer = $this->modelFactory->build($className);
-        $customer->setPublished(true);
-        $customer->setValues($data);
-        $this->applyObjectNamingScheme($customer);
-
         return $customer;
     }
 

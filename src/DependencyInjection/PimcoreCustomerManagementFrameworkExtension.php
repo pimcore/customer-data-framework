@@ -111,6 +111,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $container->setParameter('pimcore_customer_management_framework.customer_provider.namingScheme', $config['namingScheme']);
         $container->setParameter('pimcore_customer_management_framework.customer_provider.parentPath', $config['parentPath']);
         $container->setParameter('pimcore_customer_management_framework.customer_provider.archiveDir', $config['archiveDir']);
+        $container->setParameter('pimcore_customer_management_framework.customer_provider.newCustomersTempDir', $config['newCustomersTempDir']);
     }
 
     private function registerCustomerListConfiguration(ContainerBuilder $container, array $config)

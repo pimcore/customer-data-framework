@@ -215,6 +215,10 @@ class Configuration implements ConfigurationInterface
                     ->example('{countryCode}/{zip}/{firstname}-{lastname}')
                     ->info('If a naming scheme is configured customer objects will be automatically renamend and moved to the configured folder structure as soon as the naming scheme gets applied.')
                 ->end()
+                ->scalarNode('newCustomersTempDir')
+                    ->defaultValue('/customers/_temp')
+                    ->info('parent folder for customers which are created via the "new customer" button in the customer list view')
+                ->end()
         ;
 
         return $customerProvider;
