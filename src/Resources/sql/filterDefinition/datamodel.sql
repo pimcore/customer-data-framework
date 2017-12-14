@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS `plugin_cmf_customer_filter_definition` (
   `id` int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `ownerId` int NOT NULL,
   `name` varchar(255) NOT NULL,
   `definition` text NOT NULL,
   `allowedUserIds` text,

@@ -14,6 +14,7 @@ use Pimcore\Model\User\Role;
  * @package CustomerManagementFrameworkBundle\Model\CustomerView
  *
  * @property int|null $id
+ * @property int|null $ownerId
  * @property string $name
  * @property array $definition
  * @property array $allowedUserIds
@@ -25,6 +26,7 @@ use Pimcore\Model\User\Role;
 class FilterDefinition extends AbstractModel
 {
     private $id = null;
+    private $ownerId = null;
     private $name = '';
     private $definition = [];
     private $allowedUserIds = [];
@@ -54,6 +56,21 @@ class FilterDefinition extends AbstractModel
         return $this;
     }
 
+    /**
+     * @return int|null
+     */
+    public function getOwnerId()
+    {
+        return $this->ownerId;
+    }
+
+    /**
+     * @param int|null $ownerId
+     */
+    public function setOwnerId($ownerId)
+    {
+        $this->ownerId = $ownerId;
+    }
 
     /**
      * @return string
@@ -331,14 +348,25 @@ class FilterDefinition extends AbstractModel
     }
 
     /**
-     * Check if single user id is allowed to use the FilterDefinition
+     * Check if single user id is allowed to use the FilterDefinition. Must be referenced in allowedUsers or must be owner
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function isUserAllowed(User $user)
+    {
+        return ($this->isAnyUserAllowed($this->getUserIds($user)) || $this->getOwnerId() === $user->getId());
+    }
+
+    /**
+     * Check if single user id is allowed to use the FilterDefinition. Must be referenced in allowedUsers or must be owner
      *
      * @param int $userId
      * @return bool
      */
-    public function isUserAllowed(int $userId)
+    public function isUserIdAllowed(int $userId)
     {
-        return in_array($userId, $this->getAllowedUserIds());
+        return (in_array($userId, $this->getAllowedUserIds()) || $this->getOwnerId() === $userId);
     }
 
     /**
@@ -352,11 +380,10 @@ class FilterDefinition extends AbstractModel
         // loop through all given user ids
         foreach ($userIds as $userId) {
             // check if single user id is allowed
-            if ($this->isUserAllowed($userId)) {
+            if ($this->isUserIdAllowed($userId)) {
                 return true;
             }
         }
-
         // none of the user ids is allowed
         return false;
     }
@@ -372,7 +399,6 @@ class FilterDefinition extends AbstractModel
         if ($this->isReadOnly() && array_key_exists($fieldName, $this->getDefinition())) {
             return true;
         }
-
         return false;
     }
 
@@ -409,23 +435,26 @@ class FilterDefinition extends AbstractModel
      * Cleans up ids from definition, allowed user ids and segments if the doesn't exist anymore
      *
      * @param bool $saveOnChange Save object if ids where removed
-     * @param bool $forceSave Enforce object to be saved regardless
      * @return bool Returns true if object changed otherwise false
      */
-    public function cleanUp($saveOnChange = true, $forceSave = false)
+    public function cleanUp($saveOnChange = true)
     {
         // do all cleanup jobs
         $this
             ->cleanUpDefinition()
             ->cleanUpAllowedUserIds()
             ->cleanUpShowSegments();
+        // check if object should be deleted
+        if($saveOnChange && $this->cleanUpOwner()) {
+            // return object was deleted
+            return true;
+        }
         // fetch change state
         $isChanged = $this->isDirty();
         // save changes if wanted
-        if (($isChanged && $saveOnChange) || $forceSave) {
+        if ($isChanged && $saveOnChange) {
             $this->save();
         }
-
         // return if object changed
         return $isChanged;
     }
@@ -444,6 +473,7 @@ class FilterDefinition extends AbstractModel
         // validate segments exist and belongs to group
         foreach ($segments as $groupId => $segmentIds) {
             // try to load segment group
+            /** @noinspection MissingService */
             $segmentGroup = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentGroupById($groupId);
             if (!$segmentGroup) {
                 // remove segment group from filter
@@ -456,6 +486,7 @@ class FilterDefinition extends AbstractModel
             // try to load each segment element of group
             foreach ($segmentIds as $segmentId) {
                 // fetch segment
+                /** @noinspection MissingService */
                 $segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId);
                 // check if segment found
                 if (!$segment) {
@@ -527,6 +558,7 @@ class FilterDefinition extends AbstractModel
         // go through show segments
         foreach ($showSegments = $this->getShowSegments() as $groupId) {
             // try to load segment group
+            /** @noinspection MissingService */
             if (\Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentGroupById($groupId)) {
                 // add to cleaned show segments
                 $cleanedShowSegments[] = $groupId;
@@ -542,6 +574,25 @@ class FilterDefinition extends AbstractModel
 
         // return current object instance
         return $this;
+    }
+
+    /**
+     * Check if FilterDefinition has no valid owner anymore and isn't shared with anybody and should be deleted.
+     *
+     * @return bool Returns true if object was deleted from database or false if object is still valid and in use
+     */
+    protected function cleanUpOwner()
+    {
+        // if user can not be loaded and doesn't exists
+        if(!$this->getOwner()) {
+            // and filter is not shared to anyone
+            if(empty($this->getAllowedUserIds())) {
+                // delete filter from database
+                $this->delete();
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -582,7 +633,7 @@ class FilterDefinition extends AbstractModel
         $filterDefinitions = [];
         foreach (self::getAllShortcutAvailable() as $filterDefinition) {
             if (/*$user->isAdmin() || */
-            $filterDefinition->isUserAllowed($user->getId())) {
+            $filterDefinition->isUserAllowed($user)) {
                 $filterDefinitions[] = $filterDefinition;
             }
         }
@@ -608,5 +659,91 @@ class FilterDefinition extends AbstractModel
         }
 
         return $data;
+    }
+
+    /**
+     * Try to load owner by owner id of object.
+     *
+     * @return null|User\AbstractUser Returns user if found otherwise returns null
+     */
+    public function getOwner() {
+        // check if owner id is set
+        if(is_null($this->ownerId) || !is_int($this->ownerId)) return null;
+        // try to load user by id
+        $user = User::getById($this->getOwnerId());
+        // check user found
+        if(!$user) return null;
+        // return found user
+        return $user;
+    }
+
+    /**
+     * Check if user is owner of filter
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function isOwner(User $user)
+    {
+        if($this->getOwnerId() === $user->getId()) return true;
+        return false;
+    }
+
+    /**
+     * Check if user is able to update existing filter definition
+     *
+     * @param User $user
+     * @return bool Returns true if user is owner of filter or filter admin
+     */
+    public function isUserAllowedToUpdate(User $user) {
+        return ($this->isOwner($user) || self::isFilterAdmin($user));
+    }
+
+    /**
+     * Check if user is allowed to share the filter
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function isUserAllowedToShare(User $user)
+    {
+        return $this->isUserAllowed($user) && self::isFilterSharer($user);
+    }
+
+    /**
+     * Fetch all user ids of current user
+     *
+     * @param User $user
+     * @return array
+     */
+    protected function getUserIds(User $user)
+    {
+        // fetch roles of user
+        $userIds = $user->getRoles();
+        // fetch id of user
+        $userIds[] = $user->getId();
+        // return user ids
+        return $userIds;
+    }
+
+    /**
+     * Check if user is filter admin
+     *
+     * @param User $user
+     * @return bool
+     */
+    public static function isFilterAdmin(User $user) {
+        return $user->isAllowed('plugin_cmf_perm_customerview_admin');
+    }
+
+    /**
+     * Check if user has permission to share
+     *
+     * @param User $user
+     * @return bool
+     */
+    public static function isFilterSharer(User $user)
+    {
+        return $user->isAllowed('share_configurations');
     }
 }

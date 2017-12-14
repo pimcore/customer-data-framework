@@ -3,7 +3,6 @@
  * @var \Pimcore\Templating\PhpEngine $this
  * @var \Pimcore\Templating\PhpEngine $view
  * @var \Pimcore\Templating\GlobalVariables $app
- *
  * @var array $clearUrlParams
  * @var \Pimcore\Model\DataObject\CustomerSegmentGroup[] $segmentGroups
  * @var array $filters
@@ -11,6 +10,10 @@
  * @var \CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition $filterDefinition
  * @var bool $hideAdvancedFilterSettings
  */
+
+$userAllowedToUpdate = ($filterDefinition->getId() && $filterDefinition->isUserAllowedToUpdate(\Pimcore\Tool\Admin::getCurrentUser()));
+$userAllowedToShare = ($filterDefinition->getId() && $filterDefinition->isUserAllowedToShare(\Pimcore\Tool\Admin::getCurrentUser()));
+
 /** @noinspection PhpUndefinedMethodInspection */
 $this->jsConfig()->add('registerSaveFilterDefinition', true);
 /** @noinspection PhpUndefinedMethodInspection */
@@ -24,11 +27,8 @@ $this->jsConfig()->add('registerShareFilterDefinition', true);
 
 <div class="box-footer text-right">
     <?php
-    // check if user is allowed user for filter and doesn't have admin permission
-    if (!$hideAdvancedFilterSettings
-        && $filterDefinition->getId()
-        && $filterDefinition->isUserAllowed(\Pimcore\Tool\Admin::getCurrentUser()->getId())
-        && !\Pimcore\Tool\Admin::getCurrentUser()->isAllowed('plugin_cmf_perm_customerview_admin')) :
+    // check if user is only allowed to share filter
+    if(!$hideAdvancedFilterSettings && $userAllowedToShare && !$userAllowedToUpdate) :
         ?>
         <button type="button" class="btn btn-primary" data-toggle="modal"
                 data-target="#share-filter-definition-modal">
@@ -41,7 +41,8 @@ $this->jsConfig()->add('registerShareFilterDefinition', true);
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter:user-roles.html.php',['preselected' => false]) ?>
+                        <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter:user-roles.html.php',
+                            ['preselected' => false]) ?>
                     </div>
                     <div class="modal-footer">
                         <input type="button" class="btn btn-default" value="Cancel" data-dismiss="modal"/>
@@ -56,9 +57,9 @@ $this->jsConfig()->add('registerShareFilterDefinition', true);
     <?php endif; ?>
 
     <?php
-    // check if user is customer view admin
-    if (!$hideAdvancedFilterSettings && \Pimcore\Tool\Admin::getCurrentUser()->isAllowed('plugin_cmf_perm_customerview_admin')): ?>
-        <?php if ($filterDefinition->getId()): ?>
+    // check if user has update permission on filter
+    if(!$hideAdvancedFilterSettings) : ?>
+        <?php if($userAllowedToUpdate): ?>
             <button type="button" class="btn btn-danger" data-toggle="modal"
                     data-target="#delete-filter-definition-modal">
                 <i class="fa fa-trash"></i>&nbsp;<?= $customerView->translate('Delete Filter') ?></button>
@@ -83,7 +84,8 @@ $this->jsConfig()->add('registerShareFilterDefinition', true);
         <?php endif; ?>
 
         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#save-filter-definition-modal"><i
-                    class="fa fa-save"></i>&nbsp;<?= $customerView->translate('Save & Share Filter') ?></button>
+                    class="fa fa-save"></i>&nbsp;<?= ($userAllowedToUpdate && $userAllowedToShare) ? $customerView->translate('Save & Share Filter') : $customerView->translate('Save Filter') ?>
+        </button>
         <div id="save-filter-definition-modal" class="modal fade text-left" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -109,7 +111,7 @@ $this->jsConfig()->add('registerShareFilterDefinition', true);
                             </div>
                         </div>
 
-                        <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter:user-roles.html.php', ['preselected' => true]) ?>
+                        <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter:user-roles.html.php',['preselected' => true]) ?>
 
                         <div class="row">
                             <div class="col-xs-6">
@@ -135,7 +137,7 @@ $this->jsConfig()->add('registerShareFilterDefinition', true);
                     <div class="modal-footer">
                         <input type="button" class="btn btn-default" value="<?= $customerView->translate('Cancel'); ?>"
                                data-dismiss="modal"/>
-                        <?php if ($filterDefinition->getId()): ?>
+                        <?php if($userAllowedToUpdate): ?>
                             <a type="button" class="btn btn-primary" name="update-filter-definition"
                                id="update-filter-definition"><i class="fa fa-save"></i>
                                 <?= $customerView->translate('Update existing Filter'); ?>

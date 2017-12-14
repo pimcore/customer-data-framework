@@ -62,7 +62,9 @@ class Listing extends Model\Listing\AbstractListing
      */
     public function load()
     {
-        return $this->getDao()->load();
+        /** @var FilterDefinition\Listing\Dao $dao */
+        $dao = $this->getDao();
+        return $dao->load();
     }
 
     /**
@@ -74,8 +76,8 @@ class Listing extends Model\Listing\AbstractListing
         // initialize conditions strings array
         $conditions = [];
         foreach ($userIds as $userId) {
-            $conditions[] = 'FIND_IN_SET('.strval($userId).', ' . Dao::ATTRIBUTE_ALLOWED_USER_IDS . ')';
+            $conditions[] = 'FIND_IN_SET('.strval($userId).', ' . Dao::ATTRIBUTE_ALLOWED_USER_IDS . ') OR ' . Dao::ATTRIBUTE_OWNER_ID . '=' . strval($userId);
         }
-        $this->addConditionParam('(' . implode(' or ', $conditions) .')');
+        $this->addConditionParam('(' . implode(' OR ', $conditions) .')');
     }
 }

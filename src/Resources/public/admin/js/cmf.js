@@ -743,8 +743,15 @@ app.SearchFilter.DateRangePicker = (function () {
                 } else $requiredMessage.hide();
                 var $form = $(this).closest("form");
                 var originalAction = $form.attr('action');
+                var $disabledSelects = $form.find('select:disabled');
+                $disabledSelects.each(function(){
+                    $(this).prop('disabled', false);
+                });
                 $form.attr('action', '/admin/customermanagementframework/customers/filter-definition/save').submit();
                 $form.attr('action', originalAction);
+                $disabledSelects.each(function(){
+                    $(this).prop('disabled', true);
+                });
             });
         },
         registerUpdateFilterDefinition: function () {
@@ -762,8 +769,15 @@ app.SearchFilter.DateRangePicker = (function () {
                 } else $requiredMessage.hide();
                 var $form = $(this).closest("form");
                 var originalAction = $form.attr('action');
+                var $disabledSelects = $form.find('select:disabled');
+                $disabledSelects.each(function(){
+                    $(this).prop('disabled', false);
+                });
                 $form.attr('action', '/admin/customermanagementframework/customers/filter-definition/update').submit();
                 $form.attr('action', originalAction);
+                $disabledSelects.each(function(){
+                    $(this).prop('disabled', true);
+                });
             });
         },
         registerShareFilterDefinition: function () {
@@ -776,7 +790,17 @@ app.SearchFilter.DateRangePicker = (function () {
             });
         },
         registerNewCustomerAction: function () {
-            $('#add-new-customer').on('click', function (e) {
+            var $newCustomerButton = $('#add-new-customer');
+            var isPimcoreAvailable = ('undefined' !== typeof window.top.pimcore);
+            if(!isPimcoreAvailable) $newCustomerButton.hide();
+            $newCustomerButton.on('click', function (e) {
+                if (!isPimcoreAvailable) {
+                    app.Logger.error(
+                        'Pimcore is not available (e.g. backend opened outside iframe) - can\'t load object with ID',
+                        objectId
+                    );
+                    return false;
+                }
                 $.ajax({
                     url: '/admin/customermanagementframework/customers/new',
                     success: function (data) {

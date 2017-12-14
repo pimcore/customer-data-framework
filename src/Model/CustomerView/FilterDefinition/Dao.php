@@ -32,6 +32,7 @@ class Dao extends AbstractDao {
     const TABLE_NAME = 'plugin_cmf_customer_filter_definition';
 
     const ATTRIBUTE_ID = 'id';
+    const ATTRIBUTE_OWNER_ID = 'ownerId';
     const ATTRIBUTE_NAME = 'name';
     const ATTRIBUTE_DEFINITION = 'definition';
     const ATTRIBUTE_ALLOWED_USER_IDS = 'allowedUserIds';
@@ -96,6 +97,7 @@ class Dao extends AbstractDao {
                 $data['id'] = $this->model->getId();
             } else $data = [];
             $data = array_merge($data,[
+                self::ATTRIBUTE_OWNER_ID => $this->model->getOwnerId(),
                 self::ATTRIBUTE_NAME => $this->model->getName(),
                 self::ATTRIBUTE_DEFINITION => json_encode($this->model->getDefinition()),
                 self::ATTRIBUTE_ALLOWED_USER_IDS => implode(',',$this->model->getAllowedUserIds()),

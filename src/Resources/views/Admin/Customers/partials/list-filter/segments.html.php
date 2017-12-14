@@ -27,7 +27,7 @@ foreach ($segmentGroups as $segmentGroup) {
                 <div class="col-md-2">
                     <?= $customerView->translate('Segments') ?>
                 </div>
-                <?php if (!$hideAdvancedFilterSettings && \Pimcore\Tool\Admin::getCurrentUser()->isAllowed('plugin_cmf_perm_customerview_admin')): ?>
+                <?php if (!$hideAdvancedFilterSettings): ?>
                     <div class="col-md-10 text-right">
                         <a type="button" class="btn btn-sm" data-toggle="modal"
                            data-target="#show-segments-modal"><?= $customerView->translate('Edit') ?>
@@ -37,7 +37,7 @@ foreach ($segmentGroups as $segmentGroup) {
             </div>
         </legend>
 
-        <?php if (!$hideAdvancedFilterSettings && \Pimcore\Tool\Admin::getCurrentUser()->isAllowed('plugin_cmf_perm_customerview_admin')): ?>
+        <?php if (!$hideAdvancedFilterSettings): ?>
             <div id="show-segments-modal" class="modal fade text-left" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -95,6 +95,7 @@ foreach ($segmentGroups as $segmentGroup) {
                                         'disabled' => $filterDefinition->isLockedSegment($segmentGroup->getId()),
                                     ]) ?>'>
                                 <?php
+                                /** @noinspection MissingService */
                                 $segments = \Pimcore::getContainer()
                                     ->get('cmf.segment_manager')
                                     ->getSegmentsFromSegmentGroup($segmentGroup);

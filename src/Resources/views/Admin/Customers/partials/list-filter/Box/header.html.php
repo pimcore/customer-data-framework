@@ -37,6 +37,7 @@ if($accessToTempCustomerFolder) {
                         <button type="button" class="btn btn-primary" id="add-new-customer"
                                 name="add-new-customer"><?= $customerView->translate('New Customer'); ?></button>
                     <?php endif; ?>
+                    <!--suppress HtmlFormInputWithoutLabel -->
                     <select
                             id="filterDefinition[id]"
                             name="filterDefinition[id]"
