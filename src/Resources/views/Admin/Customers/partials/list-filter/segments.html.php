@@ -27,7 +27,7 @@ foreach ($segmentGroups as $segmentGroup) {
                 <div class="col-md-2">
                     <?= $customerView->translate('Segments') ?>
                 </div>
-                <?php if (!$hideAdvancedFilterSettings): ?>
+                <?php if (!$hideAdvancedFilterSettings && !$filterDefinition->isReadOnly()) : ?>
                     <div class="col-md-10 text-right">
                         <a type="button" class="btn btn-sm" data-toggle="modal"
                            data-target="#show-segments-modal"><?= $customerView->translate('Edit') ?>
@@ -64,12 +64,12 @@ foreach ($segmentGroups as $segmentGroup) {
                             <?php endforeach; ?>
                         </div>
                         <div class="modal-footer">
-                            <input type="submit" class="btn btn-primary"
-                                   value="<?= $customerView->translate('Apply'); ?>"
-                                   name="apply-segment-selection"/>
                             <input type="button" class="btn btn-default"
                                    value="<?= $customerView->translate('Close'); ?>"
                                    data-dismiss="modal"/>
+                            <input type="submit" class="btn btn-primary"
+                                   value="<?= $customerView->translate('Apply'); ?>"
+                                   name="apply-segment-selection"/>
                         </div>
                     </div>
                 </div>

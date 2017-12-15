@@ -30,7 +30,7 @@ $this->jsConfig()->add('registerShareFilterDefinition', true);
     // check if user is only allowed to share filter
     if(!$hideAdvancedFilterSettings && $userAllowedToShare && !$userAllowedToUpdate) :
         ?>
-        <button type="button" class="btn btn-primary" data-toggle="modal"
+        <button type="button" class="btn btn-default" data-toggle="modal"
                 data-target="#share-filter-definition-modal">
             <i class="fa fa-share"></i>&nbsp;<?= $customerView->translate('Share Filter') ?></button>
         <div id="share-filter-definition-modal" class="modal fade text-left" role="dialog">

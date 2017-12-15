@@ -11,8 +11,8 @@ use Pimcore\Model\User\Role;
 
 /**
  * Class FilterDefinition
- * @package CustomerManagementFrameworkBundle\Model\CustomerView
  *
+ * @package CustomerManagementFrameworkBundle\Model\CustomerView
  * @property int|null $id
  * @property int|null $ownerId
  * @property string $name
@@ -142,7 +142,7 @@ class FilterDefinition extends AbstractModel
      */
     public function addAllowedUserId(int $allowedUserId)
     {
-        $this->setAllowedUserIds(array_merge($this->allowedUserIds,[$allowedUserId]));
+        $this->setAllowedUserIds(array_merge($this->allowedUserIds, [$allowedUserId]));
         // return current object
         return $this;
     }
@@ -228,10 +228,10 @@ class FilterDefinition extends AbstractModel
         $cacheKey = 'cmf_customerlist_filterdefinition_'.$id;
         try {
             $filterDefinition = Runtime::get($cacheKey);
-            if (!$filterDefinition) {
+            if(!$filterDefinition) {
                 throw new \Exception('FilterDefinition with id '.$id.' not found in cache');
             }
-        } catch (\Exception $e) {
+        } catch(\Exception $e) {
             try {
                 // create object and set id
                 $filterDefinition = (new self())->setId(intval($id));
@@ -240,7 +240,7 @@ class FilterDefinition extends AbstractModel
                 $filterDefinition->getDao()->getById(intval($id));
                 // save found object to cache -> Only if object was found
                 Runtime::set($cacheKey, $filterDefinition);
-            } catch (\Exception $e) {
+            } catch(\Exception $e) {
                 // return null to indicate object not found
                 return null;
             }
@@ -264,7 +264,7 @@ class FilterDefinition extends AbstractModel
             // load filter definition by id
             /** @noinspection PhpUndefinedMethodInspection */
             $filterDefinition->getDao()->getByName($name);
-        } catch (\Exception $e) {
+        } catch(\Exception $e) {
             // return null to indicate object not found
             return null;
         }
@@ -378,9 +378,9 @@ class FilterDefinition extends AbstractModel
     public function isAnyUserAllowed(array $userIds)
     {
         // loop through all given user ids
-        foreach ($userIds as $userId) {
+        foreach($userIds as $userId) {
             // check if single user id is allowed
-            if ($this->isUserIdAllowed($userId)) {
+            if($this->isUserIdAllowed($userId)) {
                 return true;
             }
         }
@@ -396,7 +396,7 @@ class FilterDefinition extends AbstractModel
      */
     public function isLocked($fieldName)
     {
-        if ($this->isReadOnly() && array_key_exists($fieldName, $this->getDefinition())) {
+        if($this->isReadOnly() && array_key_exists($fieldName, $this->getDefinition())) {
             return true;
         }
         return false;
@@ -404,12 +404,13 @@ class FilterDefinition extends AbstractModel
 
     /**
      * Check if a segment id is locked
+     *
      * @param $segmentId
      * @return bool
      */
     public function isLockedSegment($segmentId)
     {
-        if ($this->isReadOnly() && array_key_exists($segmentId, @$this->getDefinition()['segments'] ?: [])) {
+        if($this->isReadOnly() && array_key_exists($segmentId, @$this->getDefinition()['segments'] ?: [])) {
             return true;
         }
 
@@ -424,7 +425,7 @@ class FilterDefinition extends AbstractModel
      */
     public function isSegmentVisible($segmentId)
     {
-        if (in_array($segmentId, $this->getShowSegments())) {
+        if(in_array($segmentId, $this->getShowSegments())) {
             return true;
         }
 
@@ -452,7 +453,7 @@ class FilterDefinition extends AbstractModel
         // fetch change state
         $isChanged = $this->isDirty();
         // save changes if wanted
-        if ($isChanged && $saveOnChange) {
+        if($isChanged && $saveOnChange) {
             $this->save();
         }
         // return if object changed
@@ -465,17 +466,17 @@ class FilterDefinition extends AbstractModel
     protected function cleanUpDefinition()
     {
         // check if definition contains segments -> no segments means nothing to do
-        if (!array_key_exists('segments', $this->getDefinition())) {
+        if(!array_key_exists('segments', $this->getDefinition())) {
             return $this;
         }
         // fetch segments
         $segments = $this->getDefinition()['segments'] ?: [];
         // validate segments exist and belongs to group
-        foreach ($segments as $groupId => $segmentIds) {
+        foreach($segments as $groupId => $segmentIds) {
             // try to load segment group
             /** @noinspection MissingService */
             $segmentGroup = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentGroupById($groupId);
-            if (!$segmentGroup) {
+            if(!$segmentGroup) {
                 // remove segment group from filter
                 unset($segments[$groupId]);
                 // set object needs to be saved
@@ -484,14 +485,14 @@ class FilterDefinition extends AbstractModel
                 continue;
             }
             // try to load each segment element of group
-            foreach ($segmentIds as $segmentId) {
+            foreach($segmentIds as $segmentId) {
                 // fetch segment
                 /** @noinspection MissingService */
                 $segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId);
                 // check if segment found
-                if (!$segment) {
+                if(!$segment) {
                     // delete segment id from segment group
-                    if (($key = array_search($segmentId, $segments[$groupId])) !== false) {
+                    if(($key = array_search($segmentId, $segments[$groupId])) !== false) {
                         unset($segments[$groupId][$key]);
                         // set object needs to be saved
                         $this->setIsDirty(true);
@@ -502,7 +503,7 @@ class FilterDefinition extends AbstractModel
         // fetch full definition
         $definition = $this->getDefinition();
         // if segments left update otherwise remove from definition
-        if ($segments) {
+        if($segments) {
             // update segments part of definition
             $definition['segments'] = $segments;
         } else {
@@ -528,14 +529,14 @@ class FilterDefinition extends AbstractModel
         // create cleaned array
         $cleanedAllowedUserIds = [];
         // go through all user ids and check if exists
-        foreach ($allowedUserIds = $this->getAllowedUserIds() as $userId) {
+        foreach($allowedUserIds = $this->getAllowedUserIds() as $userId) {
             // check if user or role exists
-            if (User::getById($userId) || Role::getById($userId)) {
+            if(User::getById($userId) || Role::getById($userId)) {
                 $cleanedAllowedUserIds[] = $userId;
             }
         }
         // check for changes
-        if (count($allowedUserIds) !== count($cleanedAllowedUserIds)) {
+        if(count($allowedUserIds) !== count($cleanedAllowedUserIds)) {
             // update allowed user ids
             $this->setAllowedUserIds($cleanedAllowedUserIds);
             // set object needs to be saved
@@ -556,16 +557,16 @@ class FilterDefinition extends AbstractModel
         // create cleaned array
         $cleanedShowSegments = [];
         // go through show segments
-        foreach ($showSegments = $this->getShowSegments() as $groupId) {
+        foreach($showSegments = $this->getShowSegments() as $groupId) {
             // try to load segment group
             /** @noinspection MissingService */
-            if (\Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentGroupById($groupId)) {
+            if(\Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentGroupById($groupId)) {
                 // add to cleaned show segments
                 $cleanedShowSegments[] = $groupId;
             }
         }
         // check for changes
-        if (count($showSegments) !== count($cleanedShowSegments)) {
+        if(count($showSegments) !== count($cleanedShowSegments)) {
             // update show segment ids
             $this->setShowSegments($cleanedShowSegments);
             // set object needs to be saved
@@ -613,8 +614,8 @@ class FilterDefinition extends AbstractModel
     {
         $filterDefinitions = (new Listing())->load();
         $shortcutFilterDefinitions = [];
-        foreach ($filterDefinitions as $filterDefinition) {
-            if ($filterDefinition->isShortcutAvailable()) {
+        foreach($filterDefinitions as $filterDefinition) {
+            if($filterDefinition->isShortcutAvailable()) {
                 $shortcutFilterDefinitions[] = $filterDefinition;
             }
         }
@@ -631,8 +632,8 @@ class FilterDefinition extends AbstractModel
     public static function getAllShortcutAvailableForUser(User $user)
     {
         $filterDefinitions = [];
-        foreach (self::getAllShortcutAvailable() as $filterDefinition) {
-            if (/*$user->isAdmin() || */
+        foreach(self::getAllShortcutAvailable() as $filterDefinition) {
+            if(/*$user->isAdmin() || */
             $filterDefinition->isUserAllowed($user)) {
                 $filterDefinitions[] = $filterDefinition;
             }
@@ -651,7 +652,7 @@ class FilterDefinition extends AbstractModel
     {
         $data = [];
         /** @var FilterDefinition $filterDefinition */
-        foreach ($filterDefinitions as $filterDefinition) {
+        foreach($filterDefinitions as $filterDefinition) {
             $data[] = [
                 Dao::ATTRIBUTE_ID => $filterDefinition->getId(),
                 Dao::ATTRIBUTE_NAME => $filterDefinition->getName(),
@@ -666,13 +667,18 @@ class FilterDefinition extends AbstractModel
      *
      * @return null|User\AbstractUser Returns user if found otherwise returns null
      */
-    public function getOwner() {
+    public function getOwner()
+    {
         // check if owner id is set
-        if(is_null($this->ownerId) || !is_int($this->ownerId)) return null;
+        if(is_null($this->ownerId) || !is_int($this->ownerId)) {
+            return null;
+        }
         // try to load user by id
         $user = User::getById($this->getOwnerId());
         // check user found
-        if(!$user) return null;
+        if(!$user) {
+            return null;
+        }
         // return found user
         return $user;
     }
@@ -685,7 +691,9 @@ class FilterDefinition extends AbstractModel
      */
     public function isOwner(User $user)
     {
-        if($this->getOwnerId() === $user->getId()) return true;
+        if($this->getOwnerId() === $user->getId()) {
+            return true;
+        }
         return false;
     }
 
@@ -695,7 +703,8 @@ class FilterDefinition extends AbstractModel
      * @param User $user
      * @return bool Returns true if user is owner of filter or filter admin
      */
-    public function isUserAllowedToUpdate(User $user) {
+    public function isUserAllowedToUpdate(User $user)
+    {
         return ($this->isOwner($user) || self::isFilterAdmin($user));
     }
 
@@ -732,7 +741,8 @@ class FilterDefinition extends AbstractModel
      * @param User $user
      * @return bool
      */
-    public static function isFilterAdmin(User $user) {
+    public static function isFilterAdmin(User $user)
+    {
         return $user->isAllowed('plugin_cmf_perm_customerview_admin');
     }
 
