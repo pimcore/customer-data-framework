@@ -26,7 +26,7 @@ if($accessToTempCustomerFolder) {
                 <h3 class="box-title">
                     <a href="#" data-widget="collapse-trigger">
                         <i class="fa fa-filter"></i>
-                        <?= $customerView->translate('Filters'); ?>
+                        <?= $customerView->translate('cmf_filters_filters'); ?>
                     </a>
                 </h3>
             </div>
@@ -35,7 +35,7 @@ if($accessToTempCustomerFolder) {
                 <div class="col-sm-9 col-md-6 text-right">
                     <?php if($accessToTempCustomerFolder): ?>
                         <button type="button" class="btn btn-primary" id="add-new-customer"
-                                name="add-new-customer"><?= $customerView->translate('New Customer'); ?></button>
+                                name="add-new-customer"><?= $customerView->translate('cmf_filters_new_customer'); ?></button>
                     <?php endif; ?>
                     <!--suppress HtmlFormInputWithoutLabel -->
                     <select
@@ -45,7 +45,7 @@ if($accessToTempCustomerFolder) {
                             class="form-control plugin-select2"
                             data-select2-options='<?= json_encode(['width' => '50%']) ?>'
                     >
-                        <option value="0"><?= $customerView->translate('No filter') ?></option>
+                        <option value="0"><?= $customerView->translate('cmf_filters_no_filter_selected') ?></option>
                         <?php
                         foreach($filterDefinitions as $singleFilterDefinition): ?>
                             <option value="<?= $singleFilterDefinition->getId() ?>"<?= ($singleFilterDefinition->getId() == $filterDefinition->getId()) ? " selected" : "" ?>><?= $singleFilterDefinition->getName(); ?></option>

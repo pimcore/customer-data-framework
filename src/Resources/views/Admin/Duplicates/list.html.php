@@ -20,7 +20,7 @@ $this->jsConfig()->add('declineDuplicates', true);
 ?>
 <div class="container">
 
-    <h2><?=$duplicatesView->getViewFormatter()->translate('Potential customer duplicates')?></h2>
+    <h2><?=$duplicatesView->getViewFormatter()->translate('cmf_duplicates_potential_duplicates')?></h2>
 
     <div>
 
@@ -28,10 +28,10 @@ $this->jsConfig()->add('declineDuplicates', true);
         <ul class="nav nav-tabs" role="tablist" style="margin-bottom:20px;">
             <li role="presentation"<?php if (!$this->getParam('declined')) {
     ?> class="active"<?php
-} ?>><a href="<?=$this->pimcoreUrl(['declined' => 0])?>"><?=$duplicatesView->getViewFormatter()->translate('Current')?></a></li>
+} ?>><a href="<?=$this->pimcoreUrl(['declined' => 0])?>"><?=$duplicatesView->getViewFormatter()->translate('cmf_duplicates_current')?></a></li>
             <li role="presentation"<?php if ($this->getParam('declined')) {
         ?> class="active"<?php
-    } ?>><a href="<?=$this->pimcoreUrl(['declined' => 1])?>"><?=$duplicatesView->getViewFormatter()->translate('Declined')?></a></li>
+    } ?>><a href="<?=$this->pimcoreUrl(['declined' => 1])?>"><?=$duplicatesView->getViewFormatter()->translate('cmf_duplicates_declined')?></a></li>
         </ul>
 
     </div>
@@ -44,10 +44,10 @@ $this->jsConfig()->add('declineDuplicates', true);
                 <tr>
                     <td colspan="99">
 
-                        <a class="btn btn-primary btn-xs pull-right" onClick="new window.top.pimcore.plugin.objectmerger.panel(<?=$duplicate->getDuplicateCustomers()[0]->getId()?>, <?=$duplicate->getDuplicateCustomers()[1]->getId()?>); "><?=$duplicatesView->getViewFormatter()->translate('merge')?></a>
+                        <a class="btn btn-primary btn-xs pull-right" onClick="new window.top.pimcore.plugin.objectmerger.panel(<?=$duplicate->getDuplicateCustomers()[0]->getId()?>, <?=$duplicate->getDuplicateCustomers()[1]->getId()?>); "><?=$duplicatesView->getViewFormatter()->translate('cmf_duplicates_declined')?></a>
                         <?php if (!$this->getParam('declined')) {
             ?>
-                            <a class="btn btn-danger btn-xs pull-right js-decline-duplicate" data-id="<?=$duplicate->getId()?>" style="margin-right: 5px;"><?=$duplicatesView->getViewFormatter()->translate('decline duplicate')?></a>
+                            <a class="btn btn-danger btn-xs pull-right js-decline-duplicate" data-id="<?=$duplicate->getId()?>" style="margin-right: 5px;"><?=$duplicatesView->getViewFormatter()->translate('cmf_duplicates_decline_duplicate')?></a>
                         <?php
         } ?>
 

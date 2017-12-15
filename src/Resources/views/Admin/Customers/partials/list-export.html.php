@@ -27,7 +27,7 @@ if (count($exporterConfigs) === 0) {
 
                     <a href="#" data-href="<?= $exportUrl ?>" class="btn btn-default js-customer-export">
                         <i class="<?= isset($exporterConfig['icon']) ? $exporterConfig['icon'] : 'fa fa-download' ?>"></i>
-                        <?= $cv->translate('Export') ?>
+                        <?= $cv->translate('cmf_filters_export') ?>
                         <span class="label label-info"><?= $exporterConfig['name'] ?></span>
                     </a>
 
@@ -41,7 +41,7 @@ if (count($exporterConfigs) === 0) {
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="exportModalLabel"><i class="fa fa-clock-o"></i> <?=$this->customerView->translate('Generating export...')?></h4>
+                <h4 class="modal-title" id="exportModalLabel"><i class="fa fa-clock-o"></i> <?=$this->customerView->translate('cmf_filters_export_generating')?></h4>
             </div>
             <div class="modal-body center-block">
                 <span class="js-progress-label"></span>

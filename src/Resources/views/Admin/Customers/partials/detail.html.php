@@ -24,7 +24,7 @@ $this->extend('PimcoreCustomerManagementFrameworkBundle::layout.html.php');
 
         <div>
             <a href="<?= $backUrl ?>" class="btn btn-default btn-xs">
-                &laquo; <?= $cv->translate('back') ?>
+                &laquo; <?= $cv->translate('cmf_filters_customer_back') ?>
             </a>
         </div>
     </div>

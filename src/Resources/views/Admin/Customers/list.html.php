@@ -32,7 +32,7 @@ $cv = $this->customerView;
     <?php if ($paginator->getTotalItemCount() === 0): ?>
 
         <div class="callout callout-warning">
-            <p><?= $cv->translate('No results.') ?></p>
+            <p><?= $cv->translate('cmf_filters_no_results') ?></p>
         </div>
 
     <?php else: ?>
@@ -42,7 +42,7 @@ $cv = $this->customerView;
             <div class="box-header with-border">
                 <h3 class="box-title">
                     <i class="fa fa-user"></i>
-                    <?= $cv->translate('Customers') ?>
+                    <?= $cv->translate('cmf_filters_customers') ?>
                 </h3>
             </div>
             <!-- /.box-header -->
@@ -54,10 +54,10 @@ $cv = $this->customerView;
                         <th class="table-id-column">#</th>
                         <th class="reference-id-column">ID</th>
                         <th class="icon-column icon-column--center"></th>
-                        <th><?= $cv->translate('Name') ?></th>
-                        <th><?= $cv->translate('E-Mail') ?></th>
-                        <th><?= $cv->translate('Gender') ?></th>
-                        <th><?= $cv->translate('Segments') ?></th>
+                        <th><?= $cv->translate('cmf_filters_customer_name') ?></th>
+                        <th><?= $cv->translate('cmf_filters_customer_email') ?></th>
+                        <th><?= $cv->translate('cmf_filters_customer_gender') ?></th>
+                        <th><?= $cv->translate('cmf_filters_segments') ?></th>
                     </tr>
                     </thead>
 

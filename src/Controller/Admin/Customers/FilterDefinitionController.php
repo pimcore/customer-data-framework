@@ -38,7 +38,7 @@ class FilterDefinitionController extends Admin
         // check if user is allowed to change FilterDefinition object (must be owner or filter admin)
         if(!$filterDefinition->isUserAllowedToUpdate($this->getUser())) {
             // add error message for user not allowed to access FilterDefinition object
-            $errors[] = $customerView->translate('Not allowed to access filter.');
+            $errors[] = $customerView->translate('cmf_filter_definition_errors_access');
             return $this->getRedirectToFilter($filterDefinition->getId());
         }
         // try to delete the FilterDefinition
@@ -46,7 +46,7 @@ class FilterDefinitionController extends Admin
             $filterDefinition->delete();
         } catch(\Exception $e) {
             // add error message for deletion failed
-            $errors[] = $customerView->translate('Deletion of filter failed. '.$e->getMessage());
+            $errors[] = $customerView->translate('cmf_filter_definition_errors_deletion_failed', $e->getMessage());
         }
 
         // redirect to filter view with no FilterDefinition selected
@@ -68,14 +68,14 @@ class FilterDefinitionController extends Admin
         // check mandatory FilterDefinition name
         if(empty($filterDefinition->getName())) {
             // add error message for missing filter name
-            $errors[] = $customerView->translate('Please provide a filter name.');
+            $errors[] = $customerView->translate('cmf_filter_definition_errors_name_missing');
             return $this->getRedirectToFilter(0, $errors);
         }
         try {
             $filterDefinition->save();
         } catch(\Exception $e) {
             // add error message for failed save
-            $errors[] = $customerView->translate('Save of filter failed. '.$e->getMessage());
+            $errors[] = $customerView->translate('cmf_filter_definition_errors_save_failed', $e->getMessage());
             return $this->getRedirectToFilter(0, $errors);
         }
         // redirect to filter view with new FilterDefinition selected
@@ -97,20 +97,20 @@ class FilterDefinitionController extends Admin
         // check mandatory FilterDefinition name
         if(empty($filterDefinition->getName())) {
             // add error message for missing filter name
-            $errors[] = $customerView->translate('Please provide a filter name.');
+            $errors[] = $customerView->translate('cmf_filter_definition_errors_name_missing');
             return $this->getRedirectToFilter(0, $errors);
         }
         // check if user is allowed to update object
         if(!$filterDefinition->isUserAllowedToUpdate($this->getUser())) {
             // add error message for user not allowed to access FilterDefinition object
-            $errors[] = $customerView->translate('Not allowed to change filter.');
+            $errors[] = $customerView->translate('cmf_filter_definition_errors_change');
             return $this->getRedirectToFilter(0, $errors);
         }
         try {
             $filterDefinition->save();
         } catch(\Exception $e) {
             // add error message for failed save
-            $errors[] = $customerView->translate('Save of filter failed. '.$e->getMessage());
+            $errors[] = $customerView->translate('cmf_filter_definition_errors_save_failed', $e->getMessage());
             return $this->getRedirectToFilter(0, $errors);
         }
         // redirect to filter view with new FilterDefinition selected
@@ -139,7 +139,7 @@ class FilterDefinitionController extends Admin
         // check if user is allowed to share FilterDefinition object
         if(!$filterDefinition->isUserAllowedToShare($this->getUser())) {
             // add error message for user not allowed to access FilterDefinition object
-            $errors[] = $customerView->translate('Not allowed to access filter.');
+            $errors[] = $customerView->translate('cmf_filter_definition_errors_access.');
             return $this->getRedirectToFilter(0, $errors);
         }
         // try to update the FilterDefinition
@@ -150,7 +150,7 @@ class FilterDefinitionController extends Admin
             $filterDefinition->save();
         } catch(\Exception $e) {
             // add error message for deletion failed
-            $errors[] = $customerView->translate('Sharing of filter failed. '.$e->getMessage());
+            $errors[] = $customerView->translate('cmf_filter_definition_errors_share_failed', $e->getMessage());
             return $this->getRedirectToFilter();
         }
         // redirect to filter view with new FilterDefinition selected

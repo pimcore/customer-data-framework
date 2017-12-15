@@ -15,13 +15,13 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="form-group">
-                <label for="filterDefinition[allowedUserIds]"><?= $customerView->translate('Share with user') ?></label>
+                <label for="filterDefinition[allowedUserIds]"><?= $customerView->translate('cmf_filters_save_share_user') ?></label>
                 <select
                         id="filterDefinition[allowedUserIds]"
                         name="filterDefinition[allowedUserIds][]"
                         class="form-control plugin-select2"
                         multiple="multiple"
-                        data-placeholder="<?= $customerView->translate('Share with user') ?>"
+                        data-placeholder="<?= $customerView->translate('cmf_filters_save_share_user') ?>"
                         data-select2-options='<?= json_encode(['allowClear' => false]) ?>'>
                     <?php
                     /** @noinspection PhpUndefinedMethodInspection */
@@ -39,13 +39,13 @@
         </div>
         <div class="col-xs-12">
             <div class="form-group">
-                <label for="filterDefinition[allowedRoleIds]"><?= $customerView->translate('Share with roles') ?></label>
+                <label for="filterDefinition[allowedRoleIds]"><?= $customerView->translate('cmf_filters_save_share_role') ?></label>
                 <select
                         id="filterDefinition[allowedRoleIds]"
                         name="filterDefinition[allowedRoleIds][]"
                         class="form-control plugin-select2"
                         multiple="multiple"
-                        data-placeholder="<?= $customerView->translate('Share with roles') ?>"
+                        data-placeholder="<?= $customerView->translate('cmf_filters_save_share_role') ?>"
                         data-select2-options='<?= json_encode(['allowClear' => false]) ?>'>
                     <?php
                     /** @noinspection PhpUndefinedMethodInspection */

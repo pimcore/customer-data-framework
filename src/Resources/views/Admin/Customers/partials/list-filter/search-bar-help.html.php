@@ -38,25 +38,25 @@ $codeList = function (array $values) use ($codify) {
 <p class="help-block help-block-toggle">
     <a role="button" data-toggle="collapse" href="#searchBarHelp" aria-expanded="false" aria-controls="searchBarHelp">
         <i class="fa fa-question-circle"></i>
-        <?= $cv->translate('Show help') ?>
+        <?= $cv->translate('cmf_filters_search_show_help') ?>
     </a>.
 
-    <?= $cv->translate('Search query syntax can be used in the search bar and in filter inputs below.'); ?>
+    <?= $cv->translate('cmf_filters_search_info'); ?>
 </p>
 
 <div class="help-block collapse" id="searchBarHelp">
     <div id="searchBarFields">
-        <h4><?= $cv->translate('Fields included in search') ?></h4>
+        <h4><?= $cv->translate('cmf_filters_fields_include') ?></h4>
         <?= $codeList($this->searchBarFields); ?>
     </div>
 
     <div id="searchBarExamples">
-        <h4><?= $cv->translate('Example queries') ?></h4>
+        <h4><?= $cv->translate('cmf_filters_example_queries') ?></h4>
         <?= $codeList($exampleQueries) ?>
     </div>
 
     <div id="searchBarModifiers">
-        <h4><?= $cv->translate('Modifiers') ?></h4>
+        <h4><?= $cv->translate('cmf_filters_modifiers') ?></h4>
         <dl>
             <?php foreach ($modifiers as $modifierTitle => $modifierExamples): ?>
 

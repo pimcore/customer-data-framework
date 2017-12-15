@@ -19,45 +19,32 @@ use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\DataObject\ClassDefinition\Data;
-use Pimcore\Model\Translation\TranslationInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class DefaultViewFormatter implements ViewFormatterInterface
 {
     /**
-     * @var TranslationInterface[]
+     * @var TranslatorInterface
      */
-    protected $translate = [];
+    protected $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
+
     protected $locale;
 
     /**
      * @param string $messageId
-     * @param array|mixed $parameters
+     * @param array $parameters
      *
      * @return string
      */
     public function translate($messageId, $parameters = [])
     {
-        if (!is_array($parameters)) {
-            if (!empty($parameters)) {
-                $parameters = [$parameters];
-            } else {
-                $parameters = [];
-            }
-        }
-
-        $locale = $this->applyLocale();
-        $locale = $this->getLanguageFromLocale($locale);
-
-        if (!$ta = $this->translate[$locale]) {
-            $ta = new \Pimcore\Model\Translation\Admin();
-            $this->translate[$locale] = $ta;
-        }
-        $message = $ta->getByKeyLocalized($messageId, true, true, $locale);
-        if (count($parameters) > 0) {
-            $message = vsprintf($message, $parameters);
-        }
-
-        return $message;
+        return $this->translator->trans($messageId, $parameters, 'admin');
     }
 
     /**

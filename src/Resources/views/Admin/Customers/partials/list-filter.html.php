@@ -11,7 +11,7 @@ $cv = $this->customerView;
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="form-group" id="searchBar">
-                            <input type="text" name="filter[search]" class="form-control" placeholder="<?= $cv->translate('Search') ?>..." value="<?= $this->filters['search'] ?>">
+                            <input type="text" name="filter[search]" class="form-control" placeholder="<?= $cv->translate('cmf_filters_search') ?>..." value="<?= $this->filters['search'] ?>">
                             <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter:search-bar-help.html.php') ?>
                         </div>
                     </div>
