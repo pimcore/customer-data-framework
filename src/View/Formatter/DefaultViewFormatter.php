@@ -44,6 +44,14 @@ class DefaultViewFormatter implements ViewFormatterInterface
      */
     public function translate($messageId, $parameters = [])
     {
+        if (!is_array($parameters)) {
+            if (!empty($parameters)) {
+                $parameters = [$parameters];
+            } else {
+                $parameters = [];
+            }
+        }
+
         return $this->translator->trans($messageId, $parameters, 'admin');
     }
 
