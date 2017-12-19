@@ -73,7 +73,7 @@ class JsConfig extends Helper
      *
      * @return self
      */
-    public function __invoke(string $varName = null): JsConfig
+    public function __invoke(string $varName = null): self
     {
         if (null !== $varName) {
             return $this->jsConfig($varName);
@@ -89,7 +89,7 @@ class JsConfig extends Helper
      *
      * @return self
      */
-    public function jsConfig(string $varName = self::DEFAULT_VAR_NAME): JsConfig
+    public function jsConfig(string $varName = self::DEFAULT_VAR_NAME): self
     {
         if (!in_array($varName, $this->variables)) {
             $this->variables[] = $varName;

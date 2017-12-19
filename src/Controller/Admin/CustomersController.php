@@ -2,14 +2,15 @@
 
 /**
  * Pimcore
+ *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
  * - Pimcore Enterprise License (PEL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
@@ -20,16 +21,16 @@ use CustomerManagementFrameworkBundle\CustomerList\Exporter\AbstractExporter;
 use CustomerManagementFrameworkBundle\CustomerList\Exporter\ExporterInterface;
 use CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface;
 use CustomerManagementFrameworkBundle\CustomerList\Filter\CustomerSegment as CustomerSegmentFilter;
-use CustomerManagementFrameworkBundle\Listing\Filter\Permission as PermissionFilter;
 use CustomerManagementFrameworkBundle\CustomerList\Filter\Exception\SearchQueryException;
 use CustomerManagementFrameworkBundle\CustomerList\Filter\SearchQuery;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Helper\Objects;
 use CustomerManagementFrameworkBundle\Listing\Filter;
+use CustomerManagementFrameworkBundle\Listing\Filter\Permission as PermissionFilter;
 use CustomerManagementFrameworkBundle\Listing\FilterHandler;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
+use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Db;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
@@ -71,6 +72,7 @@ class CustomersController extends Admin
     /**
      * @param Request $request
      * @Route("/list")
+     *
      * @return Response
      */
     public function listAction(Request $request)
@@ -83,14 +85,14 @@ class CustomersController extends Admin
         try {
             $listing = $this->buildListing($filters);
             $paginator = $this->buildPaginator($request, $listing);
-        } catch(SearchQueryException $e) {
+        } catch (SearchQueryException $e) {
             $errors[] = $customerView->translate('There was an error in you search query: %s', $e->getMessage());
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $errors[] = $customerView->translate('Error while building customer list: %s', $e->getMessage());
         }
 
         //empty paginator as the view expects a valid paginator
-        if(null === $paginator) {
+        if (null === $paginator) {
             $paginator = $this->buildPaginator($request, new ArrayAdapter([]));
         }
 
@@ -116,21 +118,22 @@ class CustomersController extends Admin
     /**
      * @param Request $request
      * @Route("/detail")
+     *
      * @return Response
      */
     public function detailAction(Request $request)
     {
         $customer = $this->getCustomerProvider()->getById((int)$request->get('id'));
-        if($customer && $customer instanceof CustomerInterface) {
+        if ($customer && $customer instanceof CustomerInterface) {
             $customerView = \Pimcore::getContainer()->get('cmf.customer_view');
-            if(!$customerView->hasDetailView($customer)) {
+            if (!$customerView->hasDetailView($customer)) {
                 throw new \RuntimeException(sprintf('Customer %d has no detail view to show', $customer->getId()));
             }
 
             /**
              * @var Concrete $customer
              */
-            if(!$customer->isAllowed('view')) {
+            if (!$customer->isAllowed('view')) {
                 throw new \RuntimeException(sprintf('Not allowed to view customer %d', $customer->getId()));
             }
 
@@ -150,6 +153,7 @@ class CustomersController extends Admin
     /**
      * @param Request $request
      * @Route("/export")
+     *
      * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
      */
     public function exportAction(Request $request)
@@ -179,6 +183,7 @@ class CustomersController extends Admin
     /**
      * @param Request $request
      * @route("/export-step")
+     *
      * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
      */
     public function exportStepAction(Request $request)
@@ -188,7 +193,7 @@ class CustomersController extends Admin
 
         try {
             $data = \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->getExportTmpData($request);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return $this->json([
                 'error' => true,
                 'message' => $e->getMessage(),
@@ -196,7 +201,7 @@ class CustomersController extends Admin
         }
 
         //export finished
-        if(!sizeof($data['processIds'])) {
+        if (!sizeof($data['processIds'])) {
             /** @noinspection PhpRouteMissingInspection */
             return $this->json([
                 'finished' => true,
@@ -244,20 +249,21 @@ class CustomersController extends Admin
     /**
      * @param Request $request
      * @route("/download-finished-export")
+     *
      * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse|Response
      */
     public function downloadFinishedExportAction(Request $request)
     {
         try {
             $data = \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->getExportTmpData($request);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return $this->json([
                 'error' => true,
                 'message' => $e->getMessage(),
             ]);
         }
 
-        if(sizeof($data['processIds'])) {
+        if (sizeof($data['processIds'])) {
             return $this->json([
                 'error' => true,
                 'message' => 'export not finished yet',
@@ -294,16 +300,19 @@ class CustomersController extends Admin
 
     /**
      * Create new customer action
+     *
      * @Route("/new")
      *
      * @param CustomerProviderInterface $customerProvider
+     *
      * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
+     *
      * @throws ValidationException
      */
     public function createCustomerAction(CustomerProviderInterface $customerProvider)
     {
         // check permissions write to temp folder -> ValidationException
-        if(!$this->hasUserAccessToTempCustomerFolder()) {
+        if (!$this->hasUserAccessToTempCustomerFolder()) {
             throw new ValidationException(sprintf('No permissions to save customer to folder "%s"',
                 $this->getTemporaryCustomerFolder()->getParent()));
         }
@@ -352,7 +361,9 @@ class CustomersController extends Admin
     /**
      * @param Listing\Concrete $listing
      * @param $exporterName
+     *
      * @return ExporterInterface
+     *
      * @internal param Request $request
      */
     protected function getExporter(Listing\Concrete $listing, $exporterName)
@@ -362,7 +373,7 @@ class CustomersController extends Admin
          */
         $exporterManager = \Pimcore::getContainer()->get('cmf.customer_exporter_manager');
 
-        if(!$exporterManager->hasExporter($exporterName)) {
+        if (!$exporterManager->hasExporter($exporterName)) {
             throw new \InvalidArgumentException('Exporter does not exist');
         }
 
@@ -376,7 +387,7 @@ class CustomersController extends Admin
      */
     public function loadSegmentGroups()
     {
-        if(is_null($this->segmentGroups)) {
+        if (is_null($this->segmentGroups)) {
             /** @var CustomerSegmentGroup\Listing $segmentGroups */
             $segmentGroups = $this->getSegmentManager()->getSegmentGroups();
             $segmentGroups->addConditionParam('showAsFilter = 1');
@@ -390,6 +401,7 @@ class CustomersController extends Admin
 
     /**
      * @param array $filters
+     *
      * @return Listing\Concrete
      */
     protected function buildListing(array $filters = [])
@@ -407,6 +419,7 @@ class CustomersController extends Admin
     /**
      * @param Listing\Concrete $listing
      * @param array $filters
+     *
      * @throws \Exception
      */
     protected function addListingFilters(Listing\Concrete $listing, array $filters = [])
@@ -418,34 +431,34 @@ class CustomersController extends Admin
         $equalsProperties = isset($filterProperties['equals']) ? $filterProperties['equals'] : [];
         $searchProperties = isset($filterProperties['search']) ? $filterProperties['search'] : [];
 
-        foreach($equalsProperties as $property => $databaseField) {
-            if(array_key_exists($property, $filters)) {
+        foreach ($equalsProperties as $property => $databaseField) {
+            if (array_key_exists($property, $filters)) {
                 $handler->addFilter(new Filter\Equals($databaseField, $filters[$property]));
             }
         }
 
-        foreach($searchProperties as $property => $databaseFields) {
-            if(array_key_exists($property, $filters)
+        foreach ($searchProperties as $property => $databaseFields) {
+            if (array_key_exists($property, $filters)
                 && !empty($filters[$property])
                 && is_string($filters[$property])) {
                 $handler->addFilter(new SearchQuery($databaseFields, $filters[$property]));
             }
         }
 
-        if(array_key_exists('segments', $filters)) {
-            foreach($filters['segments'] as $groupId => $segmentIds) {
+        if (array_key_exists('segments', $filters)) {
+            foreach ($filters['segments'] as $groupId => $segmentIds) {
                 $segmentGroup = null;
-                if($groupId !== 'default') {
+                if ($groupId !== 'default') {
                     /** @var \Pimcore\Model\DataObject\CustomerSegmentGroup $segmentGroup */
                     $segmentGroup = $this->getSegmentManager()->getSegmentGroupById($groupId);
-                    if(!$segmentGroup) {
+                    if (!$segmentGroup) {
                         throw new \Exception(sprintf('Segment group %d was not found', $groupId));
                     }
                 }
                 $segments = [];
-                foreach($segmentIds as $segmentId) {
+                foreach ($segmentIds as $segmentId) {
                     $segment = $this->getSegmentManager()->getSegmentById($segmentId);
-                    if(!$segment) {
+                    if (!$segment) {
                         throw new \Exception(sprintf('Segment %d was not found', $segmentId));
                     }
                     $segments[] = $segment;
@@ -455,7 +468,7 @@ class CustomersController extends Admin
         }
 
         // add permission filter for non admin
-        if(!$this->getUser()->isAdmin()) {
+        if (!$this->getUser()->isAdmin()) {
             // only show customers which the user can access
             $handler->addFilter(new PermissionFilter($this->getUser()));
         }
@@ -465,6 +478,7 @@ class CustomersController extends Admin
      * Fetch filters and set them on view
      *
      * @param Request $request
+     *
      * @return array
      */
     protected function fetchListFilters(Request $request)
@@ -479,46 +493,49 @@ class CustomersController extends Admin
     /**
      * @param Request $request
      * @param array $filters
+     *
      * @return array
      */
     protected function addPrefilteredSegmentToFilters(Request $request, array $filters)
     {
         $segment = $this->fetchPrefilteredSegment($request);
-        if($segment) {
-            if(!isset($filters['segments'])) {
+        if ($segment) {
+            if (!isset($filters['segments'])) {
                 $filters['segments'] = [];
             }
 
             $groupId = $segment->getGroup() ? $segment->getGroup()->getId() : 'default';
 
             $groupSegmentIds = [];
-            if(isset($filters['segments'][$groupId])) {
+            if (isset($filters['segments'][$groupId])) {
                 $groupSegmentIds = $filters['segments'][$groupId];
             }
 
-            if(!in_array($segment->getId(), $groupSegmentIds)) {
+            if (!in_array($segment->getId(), $groupSegmentIds)) {
                 $groupSegmentIds[] = $segment->getId();
             }
 
             $filters['segments'][$groupId] = $groupSegmentIds;
         }
         $filters = $this->addFilterDefinitionSegments($request, $filters);
+
         return $filters;
     }
 
     /**
      * @param Request $request
+     *
      * @return CustomerSegmentInterface|null
      */
     protected function fetchPrefilteredSegment(Request $request)
     {
         $segmentId = $request->get('segmentId');
 
-        if($segmentId) {
+        if ($segmentId) {
             /** @var CustomerSegment $segment */
             /** @noinspection MissingService */
             $segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId);
-            if(!$segment) {
+            if (!$segment) {
                 throw new \InvalidArgumentException(sprintf('Segment %d was not found', $segmentId));
             }
 
@@ -539,10 +556,10 @@ class CustomersController extends Admin
         $searchProperties = $filterProperties['search'];
 
         $searchBarFields = [];
-        if(isset($searchProperties['search'])) {
+        if (isset($searchProperties['search'])) {
             $searchProperties = $searchProperties['search'];
 
-            if(is_array($searchProperties) && count($searchProperties) > 0) {
+            if (is_array($searchProperties) && count($searchProperties) > 0) {
                 $searchBarFields = array_values($searchProperties);
             }
         }
@@ -569,6 +586,7 @@ class CustomersController extends Admin
      * Fetch the FilterDefinition object selected in request
      *
      * @param Request $request
+     *
      * @return null|FilterDefinition Returns FilterDefinition object if definition key is defined in filters array,
      * FilterDefinition with id in DB and user is allowed to use FilterDefinition. Otherwise returns null.
      */
@@ -579,18 +597,18 @@ class CustomersController extends Admin
         // build default FilterDefinition object if no selected
         $DefaultFilterDefinition = (new FilterDefinition())->setShowSegments(Objects::getIdsFromArray($this->loadSegmentGroups()));
         // check if filter definition given
-        if(!array_key_exists('id', $filterDefinitionData)) {
+        if (!array_key_exists('id', $filterDefinitionData)) {
             // no filter definition found
             return $DefaultFilterDefinition;
         }
         // check if filter definition object exists
         $filterDefinition = FilterDefinition::getById((int)$filterDefinitionData['id']);
-        if(!$filterDefinition instanceof FilterDefinition) {
+        if (!$filterDefinition instanceof FilterDefinition) {
             // no filter definition available
             return $DefaultFilterDefinition;
         }
         // check if current user is allowed to use FilterDefinition
-        if(!$filterDefinition->isUserAllowed($this->getUser())) {
+        if (!$filterDefinition->isUserAllowed($this->getUser())) {
             // user is not allowed to use FilterDefinition
             return $DefaultFilterDefinition;
         }
@@ -619,6 +637,7 @@ class CustomersController extends Admin
      *
      * @param Request $request
      * @param array $filters
+     *
      * @return array
      */
     protected function addFilterDefinitionCustomer(Request $request, array $filters)
@@ -626,17 +645,17 @@ class CustomersController extends Admin
         // merge filters with filters of filter definition
         $filterDefinition = $this->getFilterDefinition($request);
         // check if filter definitions found
-        if(is_null($filterDefinition)) {
+        if (is_null($filterDefinition)) {
             return $filters;
         }
         // fetch definitions for customer / root without segments
         $filterDefinitionCustomer = $filterDefinition->getDefinition();
         unset($filterDefinitionCustomer['segments']);
-        if($filterDefinition->isReadOnly()) {
+        if ($filterDefinition->isReadOnly()) {
             // overwrite filters with FilterDefinition definition
             $filters = array_merge($filters, $filterDefinitionCustomer);
             // lock read only filters
-            foreach($filterDefinitionCustomer as $key => $value) {
+            foreach ($filterDefinitionCustomer as $key => $value) {
                 /** @noinspection PhpUndefinedFieldInspection */
                 $this->readonlyFilterFields[] = $key;
             }
@@ -653,17 +672,18 @@ class CustomersController extends Admin
      *
      * @param Request $request
      * @param array $filters
+     *
      * @return array
      */
     protected function addFilterDefinitionSegments(Request $request, array $filters)
     {
-        $filters['showSegments'] = @$filters['showSegments']?:[];
+        $filters['showSegments'] = @$filters['showSegments'] ?: [];
 
         // merge filters with filters of filter definition
         $filterDefinition = $this->getFilterDefinition($request);
 
         // check if filter definitions found
-        if(is_null($filterDefinition)) {
+        if (is_null($filterDefinition)) {
             return $filters;
         }
 
@@ -672,7 +692,7 @@ class CustomersController extends Admin
 
         $filterDefinitionSegments = @$filterDefinition->getDefinition()['segments'] ?: [];
 
-        if($filterDefinition->isReadOnly()) {
+        if ($filterDefinition->isReadOnly()) {
             // overwrite filters with FilterDefinition definition
             $filters['segments'] = $filterDefinitionSegments;
         } else {

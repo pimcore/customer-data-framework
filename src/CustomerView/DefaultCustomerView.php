@@ -69,7 +69,6 @@ class DefaultCustomerView implements CustomerViewInterface
         return 'PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter:segments.html.php';
     }
 
-
     /**
      * Determines if customer has a detail view or if pimcore object should be openend directly
      *

@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ */
+
 namespace CustomerManagementFrameworkBundle\Migrations;
 
 use Doctrine\DBAL\Schema\Schema;
@@ -40,7 +53,6 @@ class Version20171019130865 extends AbstractPimcoreMigration
         ];
 
         $this->migratePermissions($permissions, 'plugin_cmf_perm');
-
     }
 
     protected function migratePermissions($permissionsMapping, $permissionSearchKey = 'plugin_customermanagementframework')
@@ -52,9 +64,8 @@ class Version20171019130865 extends AbstractPimcoreMigration
             //delete old permission
             $db->query('delete from users_permission_definitions where `key` = ?', [$source]);
 
-
             // create new permission
-            if(!\Pimcore\Model\User\Permission\Definition::getByKey($target)) {
+            if (!\Pimcore\Model\User\Permission\Definition::getByKey($target)) {
                 $permission = new \Pimcore\Model\User\Permission\Definition();
                 $permission->setKey($target);
 
@@ -63,10 +74,7 @@ class Version20171019130865 extends AbstractPimcoreMigration
                 $res->setModel($permission);
                 $res->save();
             }
-
         }
-
-
 
         // migrate users/roles
         $users = new User\Listing;
@@ -75,16 +83,15 @@ class Version20171019130865 extends AbstractPimcoreMigration
         /**
          * @var User $user
          */
-        foreach($db->fetchCol("select id from users where permissions like '%$permissionSearchKey%'") as $userId) {
-
+        foreach ($db->fetchCol("select id from users where permissions like '%$permissionSearchKey%'") as $userId) {
             $user = User::getById($userId);
 
-            if(!$user) {
+            if (!$user) {
                 $user = User\Role::getById($userId);
             }
-            if($permissions = $user->getPermissions()) {
-                foreach($permissions as $key => $permission) {
-                    if(isset($permissionsMapping[$permission])) {
+            if ($permissions = $user->getPermissions()) {
+                foreach ($permissions as $key => $permission) {
+                    if (isset($permissionsMapping[$permission])) {
                         $permissions[$key] = $permissionsMapping[$permission];
                     }
                 }

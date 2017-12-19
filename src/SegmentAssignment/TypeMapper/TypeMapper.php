@@ -67,20 +67,20 @@ class TypeMapper implements TypeMapperInterface
     /**
      * @inheritDoc
      */
-    public function getTypeStringByListing(AbstractListing $listing): string {
-        if($listing instanceof Document\Listing) {
+    public function getTypeStringByListing(AbstractListing $listing): string
+    {
+        if ($listing instanceof Document\Listing) {
             return static::TYPE_DOCUMENT;
         }
 
-        if($listing instanceof Asset\Listing) {
+        if ($listing instanceof Asset\Listing) {
             return static::TYPE_ASSET;
         }
 
-        if($listing instanceof Concrete) {
+        if ($listing instanceof Concrete) {
             return static::TYPE_OBJECT;
         }
 
         return '';
     }
-
 }

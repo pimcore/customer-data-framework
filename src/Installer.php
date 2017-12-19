@@ -28,7 +28,6 @@ class Installer extends MigrationInstaller
         return '20171207150300';
     }
 
-
     public function migrateInstall(Schema $schema, Version $version)
     {
         $this->installPermissions();
@@ -41,7 +40,6 @@ class Installer extends MigrationInstaller
 
     public function migrateUninstall(Schema $schema, Version $version)
     {
-
     }
 
     public function canBeInstalled()
@@ -230,7 +228,6 @@ class Installer extends MigrationInstaller
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
         );
 
-
         $sqlFiles = [
             __DIR__ . '/Resources/sql/filterDefinition/' => [
                 'datamodel.sql'
@@ -246,7 +243,7 @@ class Installer extends MigrationInstaller
         $db = Db::get();
 
         foreach ($sqlFiles as $folder => $files) {
-            foreach($files as $file) {
+            foreach ($files as $file) {
                 $statement = file_get_contents($folder.$file);
                 $db->query($statement);
             }

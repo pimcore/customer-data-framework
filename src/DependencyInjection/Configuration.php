@@ -522,8 +522,8 @@ class Configuration implements ConfigurationInterface
         return $assignment;
     }
 
-    private function buildGDPRConfigNode() {
-
+    private function buildGDPRConfigNode()
+    {
         $treeBuilder = new TreeBuilder();
 
         $dataObjects = $treeBuilder->root('gdprDataProvider');
@@ -537,8 +537,8 @@ class Configuration implements ConfigurationInterface
                     ->addDefaultsIfNotSet()
                     ->info('Configure which classes should be considered, array key is class name')
                     ->children()
-                        ->booleanNode("allowDelete")
-                            ->info("Allow delete of objects directly in preview grid.")
+                        ->booleanNode('allowDelete')
+                            ->info('Allow delete of objects directly in preview grid.')
                             ->defaultFalse()
                         ->end()
                         ->arrayNode('includedRelations')
@@ -551,6 +551,5 @@ class Configuration implements ConfigurationInterface
         ;
 
         return $dataObjects;
-
     }
 }

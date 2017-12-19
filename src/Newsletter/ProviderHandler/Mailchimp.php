@@ -764,12 +764,12 @@ class Mailchimp implements NewsletterProviderHandlerInterface
     /**
      * @param $email
      * @param int|false $customerId
+     *
      * @return bool
      */
     public function doesOtherSubscribedCustomerWithEmailExist($email, $customerId = false)
     {
-
-        if(!$email) {
+        if (!$email) {
             return false;
         }
         /**
@@ -777,15 +777,14 @@ class Mailchimp implements NewsletterProviderHandlerInterface
          */
         $customerProvider = \Pimcore::getContainer()->get(CustomerProviderInterface::class);
         $list = $customerProvider->getList();
-        if($customerId) {
+        if ($customerId) {
             $list->setCondition('trim(lower(email)) = ? and o_id != ?', [trim(strtolower($email)), $customerId]);
         } else {
             $list->setCondition('trim(lower(email)) = ?', [trim(strtolower($email))]);
         }
 
-
-        foreach($list as $_customer) {
-            if(in_array($this->getMailchimpStatus($_customer), array(self::STATUS_PENDING, self::STATUS_SUBSCRIBED))) {
+        foreach ($list as $_customer) {
+            if (in_array($this->getMailchimpStatus($_customer), [self::STATUS_PENDING, self::STATUS_SUBSCRIBED])) {
                 return true;
             }
         }

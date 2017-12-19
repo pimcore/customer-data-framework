@@ -83,7 +83,7 @@ class CliSyncProcessor
 
                 $count = 20;
                 $page = 0;
-                while(true) {
+                while (true) {
                     $result = $client->get(
                         $this->exportService->getListResourceUrl(
                             $newsletterProviderHandler->getListId(),
@@ -159,18 +159,16 @@ class CliSyncProcessor
 
         foreach ($this->newsletterManager->getNewsletterProviderHandlers() as $newsletterProviderHandler) {
             if ($newsletterProviderHandler instanceof Mailchimp) {
-
                 $count = 20;
                 $page = 0;
-                while(true) {
-                    $url = $this->exportService->getListResourceUrl($newsletterProviderHandler->getListId(), 'members/?count=' . $count . '&offset=' . ($page * $count) );
+                while (true) {
+                    $url = $this->exportService->getListResourceUrl($newsletterProviderHandler->getListId(), 'members/?count=' . $count . '&offset=' . ($page * $count));
                     $result = $client->get(
                         $url
                     );
 
                     if ($client->success() && sizeof($result['members'])) {
                         foreach ($result['members'] as $row) {
-
                             $list = $this->customerProvider->getList();
                             $list->setCondition('email = ?', $row['email_address']);
 
@@ -179,7 +177,7 @@ class CliSyncProcessor
                                 continue;
                             }
 
-                            if($row['status'] === Mailchimp::STATUS_UNSUBSCRIBED || $row['status'] === Mailchimp::STATUS_CLEANED) {
+                            if ($row['status'] === Mailchimp::STATUS_UNSUBSCRIBED || $row['status'] === Mailchimp::STATUS_CLEANED) {
                                 continue;
                             }
 
@@ -220,7 +218,7 @@ class CliSyncProcessor
                         }
                         $page++;
                     } else {
-                        if(!$client->success()) {
+                        if (!$client->success()) {
                             $this->getLogger()->error(
                                 'get members failed: ' . $url
                             );
@@ -228,7 +226,6 @@ class CliSyncProcessor
                         break;
                     }
                 }
-
             }
         }
     }

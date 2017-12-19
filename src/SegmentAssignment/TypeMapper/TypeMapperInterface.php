@@ -53,6 +53,7 @@ interface TypeMapperInterface
      * returns a type string (e.g. 'document'|'asset'|'object') based on the type of Listing provided
      *
      * @param AbstractListing $listing
+     *
      * @return string
      */
     public function getTypeStringByListing(AbstractListing $listing): string;
