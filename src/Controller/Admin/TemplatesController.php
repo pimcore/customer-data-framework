@@ -43,7 +43,7 @@ class TemplatesController extends AdminController
         if ($document) {
             $templateExporter->exportTemplate($document);
 
-            return $this->json(['success' => true]);
+            return $this->adminJson(['success' => true]);
         } else {
             throw new \Exception(sprintf('Document {%s} not found!', $request->get('document_id')));
         }

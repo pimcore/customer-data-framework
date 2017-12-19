@@ -36,7 +36,7 @@ class FilterDefinitionController extends Admin
             return $this->getRedirectToFilter();
         }
         // check if user is allowed to change FilterDefinition object (must be owner or filter admin)
-        if(!$filterDefinition->isUserAllowedToUpdate($this->getUser())) {
+        if(!$filterDefinition->isUserAllowedToUpdate($this->getAdminUser())) {
             // add error message for user not allowed to access FilterDefinition object
             $errors[] = $customerView->translate('cmf_filter_definition_errors_access');
             return $this->getRedirectToFilter($filterDefinition->getId());
@@ -101,7 +101,7 @@ class FilterDefinitionController extends Admin
             return $this->getRedirectToFilter(0, $errors);
         }
         // check if user is allowed to update object
-        if(!$filterDefinition->isUserAllowedToUpdate($this->getUser())) {
+        if(!$filterDefinition->isUserAllowedToUpdate($this->getAdminUser())) {
             // add error message for user not allowed to access FilterDefinition object
             $errors[] = $customerView->translate('cmf_filter_definition_errors_change');
             return $this->getRedirectToFilter(0, $errors);
@@ -137,7 +137,7 @@ class FilterDefinitionController extends Admin
         // initialize error array
         $errors = [];
         // check if user is allowed to share FilterDefinition object
-        if(!$filterDefinition->isUserAllowedToShare($this->getUser())) {
+        if(!$filterDefinition->isUserAllowedToShare($this->getAdminUser())) {
             // add error message for user not allowed to access FilterDefinition object
             $errors[] = $customerView->translate('cmf_filter_definition_errors_access.');
             return $this->getRedirectToFilter(0, $errors);
@@ -280,7 +280,7 @@ class FilterDefinitionController extends Admin
             $filterDefinition->setShortcutAvailable($this->getShortcutAvailableFromRequest($request));
             // set owner only for new FilterDefinition object
             if(!$loadById) {
-                $filterDefinition->setOwnerId($this->getUser()->getId());
+                $filterDefinition->setOwnerId($this->getAdminUser()->getId());
             }
         }
 
