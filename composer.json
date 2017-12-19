@@ -6,16 +6,16 @@
         "sort-packages": true
     },
     "require": {
+        "box/spout": "^2.7",
         "drewm/mailchimp-api": "*",
-        "pimcore/object-merger": "^1.0.1",
         "guzzlehttp/guzzle": ">=4.1.4 <7.0",
         "hwi/oauth-bundle": "^0.5.3",
         "mtdowling/cron-expression": "^1.1.0",
-        "pimcore/search-query-parser": "^1.2.4",
-        "box/spout": "^2.7",
         "pear/archive_tar": "^1.4.3",
+        "pimcore/core-version": ">=5.0.4 <5.1.0",
         "pimcore/number-sequence-generator": "^1.0.1",
-        "pimcore/core-version": ">=5.0.4 <5.1.0"
+        "pimcore/object-merger": "^1.0.1",
+        "pimcore/search-query-parser": "^1.2.4"
     },
     "require-dev": {
         "codeception/codeception": "^2.2"
