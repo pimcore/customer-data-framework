@@ -176,8 +176,7 @@ table .label-column label {
   background-color: #fff; }
 
 .select2-selection__clear {
-  display: none;
-}
+  display: none; }
+
 .select2-selection__rendered {
-  text-align: left;
-}
+  text-align: left; }
