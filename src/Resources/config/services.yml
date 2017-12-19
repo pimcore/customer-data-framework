@@ -11,6 +11,11 @@ services:
         autowire: true
         autoconfigure: true
 
+    # auto-register all commands as services
+    CustomerManagementFrameworkBundle\Command\:
+        resource: '../../Command'
+        public: false
+
     CustomerManagementFrameworkBundle\CustomerSaveManager\SaveOptions:
         arguments:
           - true
