@@ -109,7 +109,7 @@ services:
     CustomerManagementFrameworkBundle\SegmentAssignment\QueryService\QueryServiceInterface:
         class: CustomerManagementFrameworkBundle\SegmentAssignment\QueryService\DefaultQueryService
         arguments:
-            $segmentAssignmentIndexTable: '%cmf.segmentassignment.table.index%'
+            $segmentAssignmentIndexTable: '%cmf.segmentAssignment.table.index%'
 
     CustomerManagementFrameworkBundle\Maintenance\MaintenanceWorker:
         arguments:
