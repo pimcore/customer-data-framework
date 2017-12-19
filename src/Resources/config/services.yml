@@ -229,3 +229,8 @@ services:
         class: Pimcore\Model\Tool\CustomReport\Adapter\DefaultCustomReportAdapterFactory
         arguments:
           - 'CustomerManagementFrameworkBundle\Adapter\TermSegmentBuilder'
+
+    CustomerManagementFrameworkBundle\GDPR\DataProvider\Customers:
+        public: false
+        arguments:
+            $config: '%pimcore.gdpr-data-extrator.customers%'

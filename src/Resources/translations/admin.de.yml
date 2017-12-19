@@ -115,3 +115,6 @@ cmf_duplicates_current: "Aktuell"
 cmf_duplicates_declined: "Ablehnen"
 cmf_duplicates_declined: "Zusammenführen"
 cmf_duplicates_decline_duplicate: "Duplikat ablehnen"
+
+cmf_gdpr_export_customers: "Kunden"
+

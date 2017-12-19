@@ -38,6 +38,7 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
             '/bundles/pimcorecustomermanagementframework/js/config/conditions.js',
             '/bundles/pimcorecustomermanagementframework/js/config/actions.js',
             '/bundles/pimcorecustomermanagementframework/js/config/actions.js',
+            '/bundles/pimcorecustomermanagementframework/js/gdprDataProvider/customers.js',
             '/bundles/pimcorecustomermanagementframework/js/pimcore/report/custom/definitions/termSegmentBuilder.js'
         ];
     }

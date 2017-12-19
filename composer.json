@@ -14,7 +14,8 @@
         "pimcore/search-query-parser": "^1.2.4",
         "box/spout": "^2.7",
         "pear/archive_tar": "^1.4.3",
-        "pimcore/number-sequence-generator": "^1.0.1"
+        "pimcore/number-sequence-generator": "^1.0.1",
+        "pimcore/core-version": ">=5.0.4"
     },
     "require-dev": {
         "codeception/codeception": "^2.2"
