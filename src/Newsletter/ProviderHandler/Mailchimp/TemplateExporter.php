@@ -57,8 +57,8 @@ class TemplateExporter
         $html = Mail::setAbsolutePaths($html, $document);
 
         //dirty hack to make sure mailchimp merge tags are not url-encoded
-        $html = str_replace("*%7C", "*|", $html);
-        $html = str_replace("%7C*", "|*", $html);
+        $html = str_replace('*%7C', '*|', $html);
+        $html = str_replace('%7C*', '|*', $html);
 
         $templateExists = false;
 

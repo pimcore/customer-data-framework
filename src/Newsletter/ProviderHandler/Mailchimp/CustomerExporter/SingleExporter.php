@@ -221,7 +221,7 @@ class SingleExporter extends AbstractExporter
         $exportService = $this->exportService;
         $apiClient = $this->apiClient;
 
-        if($mailchimpProviderHandler->doesOtherSubscribedCustomerWithEmailExist($customer->getEmail(), $customer->getId())) {
+        if ($mailchimpProviderHandler->doesOtherSubscribedCustomerWithEmailExist($customer->getEmail(), $customer->getId())) {
             $this->getLogger()->debug(
                 sprintf(
                     '[MailChimp][CUSTOMER %s][%s] Skip deletion of customer as another subscribed customer with email %s exists.',
@@ -231,6 +231,7 @@ class SingleExporter extends AbstractExporter
                 )
             );
             $item->setSuccessfullyProcessed(true);
+
             return;
         }
 
@@ -310,7 +311,7 @@ class SingleExporter extends AbstractExporter
         $exportService = $this->exportService;
         $apiClient = $this->apiClient;
 
-        if($mailchimpProviderHandler->doesOtherSubscribedCustomerWithEmailExist($item->getEmail(), $item->getCustomerId())) {
+        if ($mailchimpProviderHandler->doesOtherSubscribedCustomerWithEmailExist($item->getEmail(), $item->getCustomerId())) {
             $this->getLogger()->info(
                 sprintf(
                     '[MailChimp][CUSTOMER %s][%s] Deletion skipped as another subscribed customer with the same email exists.',
@@ -320,6 +321,7 @@ class SingleExporter extends AbstractExporter
             );
 
             $item->setSuccessfullyProcessed(true);
+
             return;
         }
 

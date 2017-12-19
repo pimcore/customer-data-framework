@@ -1,10 +1,22 @@
 <?php
 
+/**
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ */
+
 namespace CustomerManagementFrameworkBundle\Listing\Filter;
 
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\Model\DataObject\Listing as CoreListing;
-use Pimcore\Model\DataObject\Listing;
 use Pimcore\Model\User;
 use Pimcore\Model\User\Workspace\DataObject;
 
@@ -44,20 +56,21 @@ class Permission extends AbstractFilter implements OnCreateQueryFilterInterface
         // initialize workspaces array
         $workspaces = [];
         // fetch workspace paths from roles of user
-        foreach($this->user->getRoles() as $roleId) {
+        foreach ($this->user->getRoles() as $roleId) {
             /** @var User\Role $role */
             $role = User\Role::getById($roleId);
-            foreach($role->getWorkspacesObject() as $workspace) {
+            foreach ($role->getWorkspacesObject() as $workspace) {
                 /* @var User\Workspace\AbstractWorkspace $workspace */
                 $workspaces[$workspace->getCpath()] = $workspace;
             }
         }
         //  fetch workspaces of user directly
-        foreach($this->user->getWorkspacesObject() as $workspace) {
+        foreach ($this->user->getWorkspacesObject() as $workspace) {
             /* @var User\Workspace\AbstractWorkspace $workspace */
             $workspaces[$workspace->getCpath()] = $workspace;
         }
         krsort($workspaces);
+
         return $workspaces;
     }
 
@@ -74,9 +87,9 @@ class Permission extends AbstractFilter implements OnCreateQueryFilterInterface
         $allowConditions = [];
         // initialize deny conditions array
         $denyConditions = [];
-        foreach($workspaces as $workspace) {
+        foreach ($workspaces as $workspace) {
             // if user is allowed to list content -> add to allow conditions
-            if($workspace->getList()) {
+            if ($workspace->getList()) {
                 // prepare condition to allow sub paths (with wildcard) and path itself (with equation)
                 $condition = sprintf("(CONCAT(o_path,o_key) LIKE '%s/%%' OR CONCAT(o_path,o_key) = '%s')",
                     $workspace->getCpath(),
@@ -96,14 +109,14 @@ class Permission extends AbstractFilter implements OnCreateQueryFilterInterface
         // initialize all conditions
         $conditions = [];
         // add allow conditions
-        if(!empty($allowConditions)) {
+        if (!empty($allowConditions)) {
             $conditions[] = '('.implode(' OR ', $allowConditions).')';
             // add deny conditions
-            if(!empty($denyConditions)) {
+            if (!empty($denyConditions)) {
                 $conditions[] = '('.implode(' AND ', $denyConditions).')';
             }
         }
-        if(empty($conditions)) {
+        if (empty($conditions)) {
             $conditions[] = '0';
         }
         // add conditions

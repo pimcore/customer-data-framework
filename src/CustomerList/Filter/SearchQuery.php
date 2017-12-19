@@ -59,12 +59,13 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
     public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $query)
     {
         // for single fields directly check field content without overhead of parsing
-        if(sizeof($this->fields) === 1) {
-            if(strpos($this->query, '*') !== false) {
+        if (sizeof($this->fields) === 1) {
+            if (strpos($this->query, '*') !== false) {
                 $query->where(sprintf('%s like ?', $this->fields[0]), str_replace('*', '%', $this->query));
             } else {
                 $query->where(sprintf('%s = ?', $this->fields[0]), $this->query);
             }
+
             return;
         }
 

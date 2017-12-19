@@ -15,8 +15,6 @@
 
 namespace CustomerManagementFrameworkBundle\Event;
 
-use CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface;
-
 class MaintenanceEventListener
 {
     public function onMaintenance(\Pimcore\Event\System\MaintenanceEvent $e)

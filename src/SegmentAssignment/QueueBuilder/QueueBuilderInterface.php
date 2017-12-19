@@ -1,9 +1,16 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: kzumueller
- * Date: 23.10.2017
- * Time: 16:43
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\SegmentAssignment\QueueBuilder;
@@ -13,13 +20,14 @@ namespace CustomerManagementFrameworkBundle\SegmentAssignment\QueueBuilder;
  *
  * @package CustomerManagementFrameworkBundle\SegmentAssignment\QueueBuilder
  */
-interface QueueBuilderInterface {
-
+interface QueueBuilderInterface
+{
     /**
      * adds a single element to the segment assignment queue
      *
      * @param string $elementId
      * @param string $type
+     *
      * @return bool
      */
     public function enqueue(string $elementId, string $type): bool;

@@ -19,7 +19,6 @@ use CustomerManagementFrameworkBundle\SegmentAssignment\QueueBuilder\QueueBuilde
 use CustomerManagementFrameworkBundle\SegmentAssignment\StoredFunctions\StoredFunctionsInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db\Connection;
-use Pimcore\Logger;
 
 class Indexer implements IndexerInterface
 {
@@ -78,14 +77,16 @@ class Indexer implements IndexerInterface
     /**
      * @return string
      */
-    public function getSegmentAssignmentTable(): string {
+    public function getSegmentAssignmentTable(): string
+    {
         return $this->segmentAssignmentTable;
     }
 
     /**
      * @param string $segmentAssignmentTable
      */
-    public function setSegmentAssignmentTable(string $segmentAssignmentTable) {
+    public function setSegmentAssignmentTable(string $segmentAssignmentTable)
+    {
         $this->segmentAssignmentTable = $segmentAssignmentTable;
     }
 
@@ -124,28 +125,32 @@ class Indexer implements IndexerInterface
     /**
      * @return StoredFunctionsInterface
      */
-    public function getStoredFunctions(): StoredFunctionsInterface {
+    public function getStoredFunctions(): StoredFunctionsInterface
+    {
         return $this->storedFunctions;
     }
 
     /**
      * @param StoredFunctionsInterface $storedFunctions
      */
-    public function setStoredFunctions(StoredFunctionsInterface $storedFunctions) {
+    public function setStoredFunctions(StoredFunctionsInterface $storedFunctions)
+    {
         $this->storedFunctions = $storedFunctions;
     }
 
     /**
      * @return QueueBuilderInterface
      */
-    public function getQueueBuilder(): QueueBuilderInterface {
+    public function getQueueBuilder(): QueueBuilderInterface
+    {
         return $this->queueBuilder;
     }
 
     /**
      * @param QueueBuilderInterface $queueBuilder
      */
-    public function setQueueBuilder(QueueBuilderInterface $queueBuilder) {
+    public function setQueueBuilder(QueueBuilderInterface $queueBuilder)
+    {
         $this->queueBuilder = $queueBuilder;
     }
 
@@ -204,7 +209,6 @@ class Indexer implements IndexerInterface
 
         $segmentIds = $this->getStoredFunctions()->retrieve($elementId, $elementType);
 
-
         $values = join(',', array_map(function ($segmentId) use ($elementId, $elementType) {
             $segmentId = '' !== $segmentId ? $segmentId : 0; //filter empty string when nothing is assigned
             return sprintf('(%s, "%s", %s)', $elementId, $elementType, $segmentId);
@@ -245,7 +249,8 @@ class Indexer implements IndexerInterface
      *
      * This is done so elements do not have to be enqueued during the saving process in the pimcore backend
      */
-    private function buildQueue() {
+    private function buildQueue()
+    {
         $parentElements = $this->getDb()->fetchAll("SELECT * FROM `{$this->getSegmentAssignmentTable()}` WHERE `inPreparation` = 1");
 
         foreach ($parentElements as $element) {

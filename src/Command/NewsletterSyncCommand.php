@@ -83,7 +83,7 @@ class NewsletterSyncCommand extends AbstractCommand
             $this->mailchimpStatusSync();
         }
 
-        if($input->getOption('delete-non-existing-items-in-mailchimp')) {
+        if ($input->getOption('delete-non-existing-items-in-mailchimp')) {
             $this->deleteNonExistingItemsInMailchimp();
         }
 

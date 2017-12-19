@@ -1,26 +1,34 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: kzumueller
- * Date: 23.10.2017
- * Time: 13:10
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\SegmentAssignment\StoredFunctions;
-
 
 use Pimcore\Db;
 
 /**
  * @inheritdoc
  */
-class DefaultStoredFunctions implements StoredFunctionsInterface {
-
+class DefaultStoredFunctions implements StoredFunctionsInterface
+{
     /**
      * @inheritdoc
      */
-    public function retrieve(string $elementId, string $elementType): array {
+    public function retrieve(string $elementId, string $elementType): array
+    {
         $storedFunction = static::STORED_FUNCTIONS_MAPPING[$elementType];
-         return explode(',', Db::get()->fetchColumn("SELECT $storedFunction(:elementId)", ['elementId' => $elementId|0]));
+
+        return explode(',', Db::get()->fetchColumn("SELECT $storedFunction(:elementId)", ['elementId' => $elementId | 0]));
     }
 }

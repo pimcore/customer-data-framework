@@ -161,10 +161,9 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $container->setParameter('pimcore_customer_management_framework.segment_assignment_classes.types', $config['types']);
     }
 
-
-    private function configureGDPRDataProvider(ContainerBuilder $container, array $config) {
+    private function configureGDPRDataProvider(ContainerBuilder $container, array $config)
+    {
         //Set configs
         $container->setParameter('pimcore.gdpr-data-extrator.customers', $config['customer']);
-
     }
 }

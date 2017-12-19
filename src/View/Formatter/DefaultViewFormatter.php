@@ -33,7 +33,6 @@ class DefaultViewFormatter implements ViewFormatterInterface
         $this->translator = $translator;
     }
 
-
     protected $locale;
 
     /**

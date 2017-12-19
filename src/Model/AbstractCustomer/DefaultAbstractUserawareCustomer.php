@@ -16,8 +16,8 @@
 namespace CustomerManagementFrameworkBundle\Model\AbstractCustomer;
 
 use CustomerManagementFrameworkBundle\Model\AbstractCustomer;
-use Symfony\Component\Security\Core\User\UserInterface;
 use CustomerManagementFrameworkBundle\Model\Traits;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 abstract class DefaultAbstractUserawareCustomer extends AbstractCustomer implements UserInterface
 {

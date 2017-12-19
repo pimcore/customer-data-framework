@@ -35,7 +35,6 @@ class CustomerMergerEventListener
             ->getSaveOptions()
             ->disableOnSaveSegmentBuilders()
             ->disableValidator();
-
     }
 
     public function onPostMerge(\Symfony\Component\EventDispatcher\GenericEvent $e)

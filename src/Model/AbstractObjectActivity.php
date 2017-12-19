@@ -78,10 +78,9 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\DataObject\Concrete
         $object = null;
         if (!empty($data['o_id'])) {
             $object = self::getById($data['o_id']);
-
         }
 
-        if(is_null($object)) {
+        if (is_null($object)) {
             $object = new static;
         }
 

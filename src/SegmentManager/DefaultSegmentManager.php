@@ -112,14 +112,16 @@ class DefaultSegmentManager implements SegmentManagerInterface
     /**
      * @return StoredFunctionsInterface
      */
-    public function getStoredFunctions(): StoredFunctionsInterface {
+    public function getStoredFunctions(): StoredFunctionsInterface
+    {
         return $this->storedFunctions;
     }
 
     /**
      * @param StoredFunctionsInterface $storedFunctions
      */
-    public function setStoredFunctions(StoredFunctionsInterface $storedFunctions) {
+    public function setStoredFunctions(StoredFunctionsInterface $storedFunctions)
+    {
         $this->storedFunctions = $storedFunctions;
     }
 
