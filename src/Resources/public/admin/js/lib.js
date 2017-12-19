@@ -11094,481 +11094,6 @@ return jQuery;
 	}
 }());
 
-/*! Copyright (c) 2011 Piotr Rochala (http://rocha.la)
- * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
- * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
- *
- * Version: 1.3.8
- *
- */
-(function($) {
-
-  $.fn.extend({
-    slimScroll: function(options) {
-
-      var defaults = {
-
-        // width in pixels of the visible scroll area
-        width : 'auto',
-
-        // height in pixels of the visible scroll area
-        height : '250px',
-
-        // width in pixels of the scrollbar and rail
-        size : '7px',
-
-        // scrollbar color, accepts any hex/color value
-        color: '#000',
-
-        // scrollbar position - left/right
-        position : 'right',
-
-        // distance in pixels between the side edge and the scrollbar
-        distance : '1px',
-
-        // default scroll position on load - top / bottom / $('selector')
-        start : 'top',
-
-        // sets scrollbar opacity
-        opacity : .4,
-
-        // enables always-on mode for the scrollbar
-        alwaysVisible : false,
-
-        // check if we should hide the scrollbar when user is hovering over
-        disableFadeOut : false,
-
-        // sets visibility of the rail
-        railVisible : false,
-
-        // sets rail color
-        railColor : '#333',
-
-        // sets rail opacity
-        railOpacity : .2,
-
-        // whether  we should use jQuery UI Draggable to enable bar dragging
-        railDraggable : true,
-
-        // defautlt CSS class of the slimscroll rail
-        railClass : 'slimScrollRail',
-
-        // defautlt CSS class of the slimscroll bar
-        barClass : 'slimScrollBar',
-
-        // defautlt CSS class of the slimscroll wrapper
-        wrapperClass : 'slimScrollDiv',
-
-        // check if mousewheel should scroll the window if we reach top/bottom
-        allowPageScroll : false,
-
-        // scroll amount applied to each mouse wheel step
-        wheelStep : 20,
-
-        // scroll amount applied when user is using gestures
-        touchScrollStep : 200,
-
-        // sets border radius
-        borderRadius: '7px',
-
-        // sets border radius of the rail
-        railBorderRadius : '7px'
-      };
-
-      var o = $.extend(defaults, options);
-
-      // do it for every element that matches selector
-      this.each(function(){
-
-      var isOverPanel, isOverBar, isDragg, queueHide, touchDif,
-        barHeight, percentScroll, lastScroll,
-        divS = '<div></div>',
-        minBarHeight = 30,
-        releaseScroll = false;
-
-        // used in event handlers and for better minification
-        var me = $(this);
-
-        // ensure we are not binding it again
-        if (me.parent().hasClass(o.wrapperClass))
-        {
-            // start from last bar position
-            var offset = me.scrollTop();
-
-            // find bar and rail
-            bar = me.siblings('.' + o.barClass);
-            rail = me.siblings('.' + o.railClass);
-
-            getBarHeight();
-
-            // check if we should scroll existing instance
-            if ($.isPlainObject(options))
-            {
-              // Pass height: auto to an existing slimscroll object to force a resize after contents have changed
-              if ( 'height' in options && options.height == 'auto' ) {
-                me.parent().css('height', 'auto');
-                me.css('height', 'auto');
-                var height = me.parent().parent().height();
-                me.parent().css('height', height);
-                me.css('height', height);
-              } else if ('height' in options) {
-                var h = options.height;
-                me.parent().css('height', h);
-                me.css('height', h);
-              }
-
-              if ('scrollTo' in options)
-              {
-                // jump to a static point
-                offset = parseInt(o.scrollTo);
-              }
-              else if ('scrollBy' in options)
-              {
-                // jump by value pixels
-                offset += parseInt(o.scrollBy);
-              }
-              else if ('destroy' in options)
-              {
-                // remove slimscroll elements
-                bar.remove();
-                rail.remove();
-                me.unwrap();
-                return;
-              }
-
-              // scroll content by the given offset
-              scrollContent(offset, false, true);
-            }
-
-            return;
-        }
-        else if ($.isPlainObject(options))
-        {
-            if ('destroy' in options)
-            {
-            	return;
-            }
-        }
-
-        // optionally set height to the parent's height
-        o.height = (o.height == 'auto') ? me.parent().height() : o.height;
-
-        // wrap content
-        var wrapper = $(divS)
-          .addClass(o.wrapperClass)
-          .css({
-            position: 'relative',
-            overflow: 'hidden',
-            width: o.width,
-            height: o.height
-          });
-
-        // update style for the div
-        me.css({
-          overflow: 'hidden',
-          width: o.width,
-          height: o.height
-        });
-
-        // create scrollbar rail
-        var rail = $(divS)
-          .addClass(o.railClass)
-          .css({
-            width: o.size,
-            height: '100%',
-            position: 'absolute',
-            top: 0,
-            display: (o.alwaysVisible && o.railVisible) ? 'block' : 'none',
-            'border-radius': o.railBorderRadius,
-            background: o.railColor,
-            opacity: o.railOpacity,
-            zIndex: 90
-          });
-
-        // create scrollbar
-        var bar = $(divS)
-          .addClass(o.barClass)
-          .css({
-            background: o.color,
-            width: o.size,
-            position: 'absolute',
-            top: 0,
-            opacity: o.opacity,
-            display: o.alwaysVisible ? 'block' : 'none',
-            'border-radius' : o.borderRadius,
-            BorderRadius: o.borderRadius,
-            MozBorderRadius: o.borderRadius,
-            WebkitBorderRadius: o.borderRadius,
-            zIndex: 99
-          });
-
-        // set position
-        var posCss = (o.position == 'right') ? { right: o.distance } : { left: o.distance };
-        rail.css(posCss);
-        bar.css(posCss);
-
-        // wrap it
-        me.wrap(wrapper);
-
-        // append to parent div
-        me.parent().append(bar);
-        me.parent().append(rail);
-
-        // make it draggable and no longer dependent on the jqueryUI
-        if (o.railDraggable){
-          bar.bind("mousedown", function(e) {
-            var $doc = $(document);
-            isDragg = true;
-            t = parseFloat(bar.css('top'));
-            pageY = e.pageY;
-
-            $doc.bind("mousemove.slimscroll", function(e){
-              currTop = t + e.pageY - pageY;
-              bar.css('top', currTop);
-              scrollContent(0, bar.position().top, false);// scroll content
-            });
-
-            $doc.bind("mouseup.slimscroll", function(e) {
-              isDragg = false;hideBar();
-              $doc.unbind('.slimscroll');
-            });
-            return false;
-          }).bind("selectstart.slimscroll", function(e){
-            e.stopPropagation();
-            e.preventDefault();
-            return false;
-          });
-        }
-
-        // on rail over
-        rail.hover(function(){
-          showBar();
-        }, function(){
-          hideBar();
-        });
-
-        // on bar over
-        bar.hover(function(){
-          isOverBar = true;
-        }, function(){
-          isOverBar = false;
-        });
-
-        // show on parent mouseover
-        me.hover(function(){
-          isOverPanel = true;
-          showBar();
-          hideBar();
-        }, function(){
-          isOverPanel = false;
-          hideBar();
-        });
-
-        // support for mobile
-        me.bind('touchstart', function(e,b){
-          if (e.originalEvent.touches.length)
-          {
-            // record where touch started
-            touchDif = e.originalEvent.touches[0].pageY;
-          }
-        });
-
-        me.bind('touchmove', function(e){
-          // prevent scrolling the page if necessary
-          if(!releaseScroll)
-          {
-  		      e.originalEvent.preventDefault();
-		      }
-          if (e.originalEvent.touches.length)
-          {
-            // see how far user swiped
-            var diff = (touchDif - e.originalEvent.touches[0].pageY) / o.touchScrollStep;
-            // scroll content
-            scrollContent(diff, true);
-            touchDif = e.originalEvent.touches[0].pageY;
-          }
-        });
-
-        // set up initial height
-        getBarHeight();
-
-        // check start position
-        if (o.start === 'bottom')
-        {
-          // scroll content to bottom
-          bar.css({ top: me.outerHeight() - bar.outerHeight() });
-          scrollContent(0, true);
-        }
-        else if (o.start !== 'top')
-        {
-          // assume jQuery selector
-          scrollContent($(o.start).position().top, null, true);
-
-          // make sure bar stays hidden
-          if (!o.alwaysVisible) { bar.hide(); }
-        }
-
-        // attach scroll events
-        attachWheel(this);
-
-        function _onWheel(e)
-        {
-          // use mouse wheel only when mouse is over
-          if (!isOverPanel) { return; }
-
-          var e = e || window.event;
-
-          var delta = 0;
-          if (e.wheelDelta) { delta = -e.wheelDelta/120; }
-          if (e.detail) { delta = e.detail / 3; }
-
-          var target = e.target || e.srcTarget || e.srcElement;
-          if ($(target).closest('.' + o.wrapperClass).is(me.parent())) {
-            // scroll content
-            scrollContent(delta, true);
-          }
-
-          // stop window scroll
-          if (e.preventDefault && !releaseScroll) { e.preventDefault(); }
-          if (!releaseScroll) { e.returnValue = false; }
-        }
-
-        function scrollContent(y, isWheel, isJump)
-        {
-          releaseScroll = false;
-          var delta = y;
-          var maxTop = me.outerHeight() - bar.outerHeight();
-
-          if (isWheel)
-          {
-            // move bar with mouse wheel
-            delta = parseInt(bar.css('top')) + y * parseInt(o.wheelStep) / 100 * bar.outerHeight();
-
-            // move bar, make sure it doesn't go out
-            delta = Math.min(Math.max(delta, 0), maxTop);
-
-            // if scrolling down, make sure a fractional change to the
-            // scroll position isn't rounded away when the scrollbar's CSS is set
-            // this flooring of delta would happened automatically when
-            // bar.css is set below, but we floor here for clarity
-            delta = (y > 0) ? Math.ceil(delta) : Math.floor(delta);
-
-            // scroll the scrollbar
-            bar.css({ top: delta + 'px' });
-          }
-
-          // calculate actual scroll amount
-          percentScroll = parseInt(bar.css('top')) / (me.outerHeight() - bar.outerHeight());
-          delta = percentScroll * (me[0].scrollHeight - me.outerHeight());
-
-          if (isJump)
-          {
-            delta = y;
-            var offsetTop = delta / me[0].scrollHeight * me.outerHeight();
-            offsetTop = Math.min(Math.max(offsetTop, 0), maxTop);
-            bar.css({ top: offsetTop + 'px' });
-          }
-
-          // scroll content
-          me.scrollTop(delta);
-
-          // fire scrolling event
-          me.trigger('slimscrolling', ~~delta);
-
-          // ensure bar is visible
-          showBar();
-
-          // trigger hide when scroll is stopped
-          hideBar();
-        }
-
-        function attachWheel(target)
-        {
-          if (window.addEventListener)
-          {
-            target.addEventListener('DOMMouseScroll', _onWheel, false );
-            target.addEventListener('mousewheel', _onWheel, false );
-          }
-          else
-          {
-            document.attachEvent("onmousewheel", _onWheel)
-          }
-        }
-
-        function getBarHeight()
-        {
-          // calculate scrollbar height and make sure it is not too small
-          barHeight = Math.max((me.outerHeight() / me[0].scrollHeight) * me.outerHeight(), minBarHeight);
-          bar.css({ height: barHeight + 'px' });
-
-          // hide scrollbar if content is not long enough
-          var display = barHeight == me.outerHeight() ? 'none' : 'block';
-          bar.css({ display: display });
-        }
-
-        function showBar()
-        {
-          // recalculate bar height
-          getBarHeight();
-          clearTimeout(queueHide);
-
-          // when bar reached top or bottom
-          if (percentScroll == ~~percentScroll)
-          {
-            //release wheel
-            releaseScroll = o.allowPageScroll;
-
-            // publish approporiate event
-            if (lastScroll != percentScroll)
-            {
-                var msg = (~~percentScroll == 0) ? 'top' : 'bottom';
-                me.trigger('slimscroll', msg);
-            }
-          }
-          else
-          {
-            releaseScroll = false;
-          }
-          lastScroll = percentScroll;
-
-          // show only when required
-          if(barHeight >= me.outerHeight()) {
-            //allow window scroll
-            releaseScroll = true;
-            return;
-          }
-          bar.stop(true,true).fadeIn('fast');
-          if (o.railVisible) { rail.stop(true,true).fadeIn('fast'); }
-        }
-
-        function hideBar()
-        {
-          // only hide when options allow it
-          if (!o.alwaysVisible)
-          {
-            queueHide = setTimeout(function(){
-              if (!(o.disableFadeOut && isOverPanel) && !isOverBar && !isDragg)
-              {
-                bar.fadeOut('slow');
-                rail.fadeOut('slow');
-              }
-            }, 1000);
-          }
-        }
-
-      });
-
-      // maintain chainability
-      return this;
-    }
-  });
-
-  $.fn.extend({
-    slimscroll: $.fn.slimScroll
-  });
-
-})(jQuery);
-
 (function() {
   var AjaxMonitor, Bar, DocumentMonitor, ElementMonitor, ElementTracker, EventLagMonitor, Evented, Events, NoTargetError, Pace, RequestIntercept, SOURCE_KEYS, Scaler, SocketRequestTracker, XHRRequestTracker, animation, avgAmplitude, bar, cancelAnimation, cancelAnimationFrame, defaultOptions, extend, extendNative, getFromDOM, getIntercept, handlePushState, ignoreStack, init, now, options, requestAnimationFrame, result, runAnimation, scalers, shouldIgnoreURL, shouldTrack, source, sources, uniScaler, _WebSocket, _XDomainRequest, _XMLHttpRequest, _i, _intercept, _len, _pushState, _ref, _ref1, _replaceState,
     __slice = [].slice,
@@ -12506,7 +12031,7 @@ return jQuery;
 }).call(this);
 
 /*!
- * Select2 4.0.3
+ * Select2 4.0.5
  * https://select2.github.io
  *
  * Released under the MIT license
@@ -12516,19 +12041,33 @@ return jQuery;
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
     define(['jquery'], factory);
-  } else if (typeof exports === 'object') {
+  } else if (typeof module === 'object' && module.exports) {
     // Node/CommonJS
-    factory(require('jquery'));
+    module.exports = function (root, jQuery) {
+      if (jQuery === undefined) {
+        // require('jQuery') returns a factory that requires window to
+        // build a jQuery instance, we normalize how we use modules
+        // that require this pattern but the window provided is a noop
+        // if it's defined (how jquery works)
+        if (typeof window !== 'undefined') {
+          jQuery = require('jquery');
+        }
+        else {
+          jQuery = require('jquery')(root);
+        }
+      }
+      factory(jQuery);
+      return jQuery;
+    };
   } else {
     // Browser globals
     factory(jQuery);
   }
-}(function (jQuery) {
+} (function (jQuery) {
   // This is needed so we can catch the AMD loader configuration and use it
   // The inner file should be wrapped (by `banner.start.js`) in a function that
   // returns the AMD loader references.
-  var S2 =
-(function () {
+  var S2 =(function () {
   // Restore the Select2 AMD loader so it can be used
   // Needed mostly in the language files, where the loader is not inserted
   if (jQuery && jQuery.fn && jQuery.fn.select2 && jQuery.fn.select2.amd) {
@@ -12537,13 +12076,11 @@ return jQuery;
 var S2;(function () { if (!S2 || !S2.requirejs) {
 if (!S2) { S2 = {}; } else { require = S2; }
 /**
- * @license almond 0.3.1 Copyright (c) 2011-2014, The Dojo Foundation All Rights Reserved.
- * Available via the MIT or new BSD license.
- * see: http://github.com/jrburke/almond for details
+ * @license almond 0.3.3 Copyright jQuery Foundation and other contributors.
+ * Released under MIT license, http://github.com/requirejs/almond/LICENSE
  */
 //Going sloppy to avoid 'use strict' string cost, but strict practices should
 //be followed.
-/*jslint sloppy: true */
 /*global setTimeout: false */
 
 var requirejs, require, define;
@@ -12571,60 +12108,58 @@ var requirejs, require, define;
      */
     function normalize(name, baseName) {
         var nameParts, nameSegment, mapValue, foundMap, lastIndex,
-            foundI, foundStarMap, starI, i, j, part,
+            foundI, foundStarMap, starI, i, j, part, normalizedBaseParts,
             baseParts = baseName && baseName.split("/"),
             map = config.map,
             starMap = (map && map['*']) || {};
 
         //Adjust any relative paths.
-        if (name && name.charAt(0) === ".") {
-            //If have a base name, try to normalize against it,
-            //otherwise, assume it is a top-level require that will
-            //be relative to baseUrl in the end.
-            if (baseName) {
-                name = name.split('/');
-                lastIndex = name.length - 1;
+        if (name) {
+            name = name.split('/');
+            lastIndex = name.length - 1;
 
-                // Node .js allowance:
-                if (config.nodeIdCompat && jsSuffixRegExp.test(name[lastIndex])) {
-                    name[lastIndex] = name[lastIndex].replace(jsSuffixRegExp, '');
-                }
+            // If wanting node ID compatibility, strip .js from end
+            // of IDs. Have to do this here, and not in nameToUrl
+            // because node allows either .js or non .js to map
+            // to same file.
+            if (config.nodeIdCompat && jsSuffixRegExp.test(name[lastIndex])) {
+                name[lastIndex] = name[lastIndex].replace(jsSuffixRegExp, '');
+            }
 
-                //Lop off the last part of baseParts, so that . matches the
-                //"directory" and not name of the baseName's module. For instance,
-                //baseName of "one/two/three", maps to "one/two/three.js", but we
-                //want the directory, "one/two" for this normalization.
-                name = baseParts.slice(0, baseParts.length - 1).concat(name);
+            // Starts with a '.' so need the baseName
+            if (name[0].charAt(0) === '.' && baseParts) {
+                //Convert baseName to array, and lop off the last part,
+                //so that . matches that 'directory' and not name of the baseName's
+                //module. For instance, baseName of 'one/two/three', maps to
+                //'one/two/three.js', but we want the directory, 'one/two' for
+                //this normalization.
+                normalizedBaseParts = baseParts.slice(0, baseParts.length - 1);
+                name = normalizedBaseParts.concat(name);
+            }
 
-                //start trimDots
-                for (i = 0; i < name.length; i += 1) {
-                    part = name[i];
-                    if (part === ".") {
-                        name.splice(i, 1);
-                        i -= 1;
-                    } else if (part === "..") {
-                        if (i === 1 && (name[2] === '..' || name[0] === '..')) {
-                            //End of the line. Keep at least one non-dot
-                            //path segment at the front so it can be mapped
-                            //correctly to disk. Otherwise, there is likely
-                            //no path mapping for a path starting with '..'.
-                            //This can still fail, but catches the most reasonable
-                            //uses of ..
-                            break;
-                        } else if (i > 0) {
-                            name.splice(i - 1, 2);
-                            i -= 2;
-                        }
+            //start trimDots
+            for (i = 0; i < name.length; i++) {
+                part = name[i];
+                if (part === '.') {
+                    name.splice(i, 1);
+                    i -= 1;
+                } else if (part === '..') {
+                    // If at the start, or previous value is still ..,
+                    // keep them so that when converted to a path it may
+                    // still work when converted to a path, even though
+                    // as an ID it is less than ideal. In larger point
+                    // releases, may be better to just kick out an error.
+                    if (i === 0 || (i === 1 && name[2] === '..') || name[i - 1] === '..') {
+                        continue;
+                    } else if (i > 0) {
+                        name.splice(i - 1, 2);
+                        i -= 2;
                     }
                 }
-                //end trimDots
-
-                name = name.join("/");
-            } else if (name.indexOf('./') === 0) {
-                // No baseName, so this is ID is resolved relative
-                // to baseUrl, pull off the leading dot.
-                name = name.substring(2);
             }
+            //end trimDots
+
+            name = name.join('/');
         }
 
         //Apply map config if available.
@@ -12737,32 +12272,39 @@ var requirejs, require, define;
         return [prefix, name];
     }
 
+    //Creates a parts array for a relName where first part is plugin ID,
+    //second part is resource ID. Assumes relName has already been normalized.
+    function makeRelParts(relName) {
+        return relName ? splitPrefix(relName) : [];
+    }
+
     /**
      * Makes a name map, normalizing the name, and using a plugin
      * for normalization if necessary. Grabs a ref to plugin
      * too, as an optimization.
      */
-    makeMap = function (name, relName) {
+    makeMap = function (name, relParts) {
         var plugin,
             parts = splitPrefix(name),
-            prefix = parts[0];
+            prefix = parts[0],
+            relResourceName = relParts[1];
 
         name = parts[1];
 
         if (prefix) {
-            prefix = normalize(prefix, relName);
+            prefix = normalize(prefix, relResourceName);
             plugin = callDep(prefix);
         }
 
         //Normalize according
         if (prefix) {
             if (plugin && plugin.normalize) {
-                name = plugin.normalize(name, makeNormalize(relName));
+                name = plugin.normalize(name, makeNormalize(relResourceName));
             } else {
-                name = normalize(name, relName);
+                name = normalize(name, relResourceName);
             }
         } else {
-            name = normalize(name, relName);
+            name = normalize(name, relResourceName);
             parts = splitPrefix(name);
             prefix = parts[0];
             name = parts[1];
@@ -12809,13 +12351,14 @@ var requirejs, require, define;
     };
 
     main = function (name, deps, callback, relName) {
-        var cjsModule, depName, ret, map, i,
+        var cjsModule, depName, ret, map, i, relParts,
             args = [],
             callbackType = typeof callback,
             usingExports;
 
         //Use name if no relName
         relName = relName || name;
+        relParts = makeRelParts(relName);
 
         //Call the callback to define the module, if necessary.
         if (callbackType === 'undefined' || callbackType === 'function') {
@@ -12824,7 +12367,7 @@ var requirejs, require, define;
             //Default to [require, exports, module] if no deps
             deps = !deps.length && callback.length ? ['require', 'exports', 'module'] : deps;
             for (i = 0; i < deps.length; i += 1) {
-                map = makeMap(deps[i], relName);
+                map = makeMap(deps[i], relParts);
                 depName = map.f;
 
                 //Fast path CommonJS standard dependencies.
@@ -12880,7 +12423,7 @@ var requirejs, require, define;
             //deps arg is the module name, and second arg (if passed)
             //is just the relName.
             //Normalize module name, if it contains . or ..
-            return callDep(makeMap(deps, callback).f);
+            return callDep(makeMap(deps, makeRelParts(callback)).f);
         } else if (!deps.splice) {
             //deps is a config object, not an array.
             config = deps;
@@ -14344,7 +13887,7 @@ S2.define('select2/selection/search',[
     var $search = $(
       '<li class="select2-search select2-search--inline">' +
         '<input class="select2-search__field" type="search" tabindex="-1"' +
-        ' autocomplete="off" autocorrect="off" autocapitalize="off"' +
+        ' autocomplete="off" autocorrect="off" autocapitalize="none"' +
         ' spellcheck="false" role="textbox" aria-autocomplete="list" />' +
       '</li>'
     );
@@ -15698,7 +15241,7 @@ S2.define('select2/data/select',[
       }
     }
 
-    if (data.id) {
+    if (data.id !== undefined) {
       option.value = data.id;
     }
 
@@ -16057,7 +15600,10 @@ S2.define('select2/data/tags',[
           }, true)
         );
 
-        var checkText = option.text === params.term;
+        var optionText = (option.text || '').toUpperCase();
+        var paramsTerm = (params.term || '').toUpperCase();
+
+        var checkText = optionText === paramsTerm;
 
         if (checkText || checkChildren) {
           if (child) {
@@ -16395,7 +15941,7 @@ S2.define('select2/dropdown/search',[
     var $search = $(
       '<span class="select2-search select2-search--dropdown">' +
         '<input class="select2-search__field" type="search" tabindex="-1"' +
-        ' autocomplete="off" autocorrect="off" autocapitalize="off"' +
+        ' autocomplete="off" autocorrect="off" autocapitalize="none"' +
         ' spellcheck="false" role="textbox" />' +
       '</span>'
     );
@@ -16448,7 +15994,7 @@ S2.define('select2/dropdown/search',[
     });
 
     container.on('focus', function () {
-      if (container.isOpen()) {
+      if (!container.isOpen()) {
         self.$search.focus();
       }
     });
@@ -19422,12 +18968,12 @@ S2.define('jquery.select2',[
 })(window.jQuery || window.Zepto);
 
 //! moment.js
-//! version : 2.10.3
+//! version : 2.13.0
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
 
-(function (global, factory) {
+;(function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
     global.moment = factory()
@@ -19446,7 +18992,7 @@ S2.define('jquery.select2',[
     }
 
     function isArray(input) {
-        return Object.prototype.toString.call(input) === '[object Array]';
+        return input instanceof Array || Object.prototype.toString.call(input) === '[object Array]';
     }
 
     function isDate(input) {
@@ -19499,7 +19045,9 @@ S2.define('jquery.select2',[
             invalidMonth    : null,
             invalidFormat   : false,
             userInvalidated : false,
-            iso             : false
+            iso             : false,
+            parsedDateParts : [],
+            meridiem        : null
         };
     }
 
@@ -19510,16 +19058,39 @@ S2.define('jquery.select2',[
         return m._pf;
     }
 
+    var some;
+    if (Array.prototype.some) {
+        some = Array.prototype.some;
+    } else {
+        some = function (fun) {
+            var t = Object(this);
+            var len = t.length >>> 0;
+
+            for (var i = 0; i < len; i++) {
+                if (i in t && fun.call(this, t[i], i, t)) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+    }
+
     function valid__isValid(m) {
         if (m._isValid == null) {
             var flags = getParsingFlags(m);
+            var parsedParts = some.call(flags.parsedDateParts, function (i) {
+                return i != null;
+            });
             m._isValid = !isNaN(m._d.getTime()) &&
                 flags.overflow < 0 &&
                 !flags.empty &&
                 !flags.invalidMonth &&
+                !flags.invalidWeekday &&
                 !flags.nullInput &&
                 !flags.invalidFormat &&
-                !flags.userInvalidated;
+                !flags.userInvalidated &&
+                (!flags.meridiem || (flags.meridiem && parsedParts));
 
             if (m._strict) {
                 m._isValid = m._isValid &&
@@ -19543,39 +19114,45 @@ S2.define('jquery.select2',[
         return m;
     }
 
+    function isUndefined(input) {
+        return input === void 0;
+    }
+
+    // Plugins that add properties should also add the key here (null value),
+    // so we can properly clone ourselves.
     var momentProperties = utils_hooks__hooks.momentProperties = [];
 
     function copyConfig(to, from) {
         var i, prop, val;
 
-        if (typeof from._isAMomentObject !== 'undefined') {
+        if (!isUndefined(from._isAMomentObject)) {
             to._isAMomentObject = from._isAMomentObject;
         }
-        if (typeof from._i !== 'undefined') {
+        if (!isUndefined(from._i)) {
             to._i = from._i;
         }
-        if (typeof from._f !== 'undefined') {
+        if (!isUndefined(from._f)) {
             to._f = from._f;
         }
-        if (typeof from._l !== 'undefined') {
+        if (!isUndefined(from._l)) {
             to._l = from._l;
         }
-        if (typeof from._strict !== 'undefined') {
+        if (!isUndefined(from._strict)) {
             to._strict = from._strict;
         }
-        if (typeof from._tzm !== 'undefined') {
+        if (!isUndefined(from._tzm)) {
             to._tzm = from._tzm;
         }
-        if (typeof from._isUTC !== 'undefined') {
+        if (!isUndefined(from._isUTC)) {
             to._isUTC = from._isUTC;
         }
-        if (typeof from._offset !== 'undefined') {
+        if (!isUndefined(from._offset)) {
             to._offset = from._offset;
         }
-        if (typeof from._pf !== 'undefined') {
+        if (!isUndefined(from._pf)) {
             to._pf = getParsingFlags(from);
         }
-        if (typeof from._locale !== 'undefined') {
+        if (!isUndefined(from._locale)) {
             to._locale = from._locale;
         }
 
@@ -19583,7 +19160,7 @@ S2.define('jquery.select2',[
             for (i in momentProperties) {
                 prop = momentProperties[i];
                 val = from[prop];
-                if (typeof val !== 'undefined') {
+                if (!isUndefined(val)) {
                     to[prop] = val;
                 }
             }
@@ -19597,7 +19174,7 @@ S2.define('jquery.select2',[
     // Moment prototype object
     function Moment(config) {
         copyConfig(this, config);
-        this._d = new Date(+config._d);
+        this._d = new Date(config._d != null ? config._d.getTime() : NaN);
         // Prevent infinite loop in case updateOffset creates new moment
         // objects.
         if (updateInProgress === false) {
@@ -19611,21 +19188,26 @@ S2.define('jquery.select2',[
         return obj instanceof Moment || (obj != null && obj._isAMomentObject != null);
     }
 
+    function absFloor (number) {
+        if (number < 0) {
+            return Math.ceil(number);
+        } else {
+            return Math.floor(number);
+        }
+    }
+
     function toInt(argumentForCoercion) {
         var coercedNumber = +argumentForCoercion,
             value = 0;
 
         if (coercedNumber !== 0 && isFinite(coercedNumber)) {
-            if (coercedNumber >= 0) {
-                value = Math.floor(coercedNumber);
-            } else {
-                value = Math.ceil(coercedNumber);
-            }
+            value = absFloor(coercedNumber);
         }
 
         return value;
     }
 
+    // compare two arrays, return the number of differences
     function compareArrays(array1, array2, dontConvert) {
         var len = Math.min(array1.length, array2.length),
             lengthDiff = Math.abs(array1.length - array2.length),
@@ -19640,9 +19222,108 @@ S2.define('jquery.select2',[
         return diffs + lengthDiff;
     }
 
-    function Locale() {
+    function warn(msg) {
+        if (utils_hooks__hooks.suppressDeprecationWarnings === false &&
+                (typeof console !==  'undefined') && console.warn) {
+            console.warn('Deprecation warning: ' + msg);
+        }
     }
 
+    function deprecate(msg, fn) {
+        var firstTime = true;
+
+        return extend(function () {
+            if (utils_hooks__hooks.deprecationHandler != null) {
+                utils_hooks__hooks.deprecationHandler(null, msg);
+            }
+            if (firstTime) {
+                warn(msg + '\nArguments: ' + Array.prototype.slice.call(arguments).join(', ') + '\n' + (new Error()).stack);
+                firstTime = false;
+            }
+            return fn.apply(this, arguments);
+        }, fn);
+    }
+
+    var deprecations = {};
+
+    function deprecateSimple(name, msg) {
+        if (utils_hooks__hooks.deprecationHandler != null) {
+            utils_hooks__hooks.deprecationHandler(name, msg);
+        }
+        if (!deprecations[name]) {
+            warn(msg);
+            deprecations[name] = true;
+        }
+    }
+
+    utils_hooks__hooks.suppressDeprecationWarnings = false;
+    utils_hooks__hooks.deprecationHandler = null;
+
+    function isFunction(input) {
+        return input instanceof Function || Object.prototype.toString.call(input) === '[object Function]';
+    }
+
+    function isObject(input) {
+        return Object.prototype.toString.call(input) === '[object Object]';
+    }
+
+    function locale_set__set (config) {
+        var prop, i;
+        for (i in config) {
+            prop = config[i];
+            if (isFunction(prop)) {
+                this[i] = prop;
+            } else {
+                this['_' + i] = prop;
+            }
+        }
+        this._config = config;
+        // Lenient ordinal parsing accepts just a number in addition to
+        // number + (possibly) stuff coming from _ordinalParseLenient.
+        this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + (/\d{1,2}/).source);
+    }
+
+    function mergeConfigs(parentConfig, childConfig) {
+        var res = extend({}, parentConfig), prop;
+        for (prop in childConfig) {
+            if (hasOwnProp(childConfig, prop)) {
+                if (isObject(parentConfig[prop]) && isObject(childConfig[prop])) {
+                    res[prop] = {};
+                    extend(res[prop], parentConfig[prop]);
+                    extend(res[prop], childConfig[prop]);
+                } else if (childConfig[prop] != null) {
+                    res[prop] = childConfig[prop];
+                } else {
+                    delete res[prop];
+                }
+            }
+        }
+        return res;
+    }
+
+    function Locale(config) {
+        if (config != null) {
+            this.set(config);
+        }
+    }
+
+    var keys;
+
+    if (Object.keys) {
+        keys = Object.keys;
+    } else {
+        keys = function (obj) {
+            var i, res = [];
+            for (i in obj) {
+                if (hasOwnProp(obj, i)) {
+                    res.push(i);
+                }
+            }
+            return res;
+        };
+    }
+
+    // internal storage for locale config files
     var locales = {};
     var globalLocale;
 
@@ -19680,7 +19361,7 @@ S2.define('jquery.select2',[
     function loadLocale(name) {
         var oldLocale = null;
         // TODO: Find a better way to register and load all the locales in Node
-        if (!locales[name] && typeof module !== 'undefined' &&
+        if (!locales[name] && (typeof module !== 'undefined') &&
                 module && module.exports) {
             try {
                 oldLocale = globalLocale._abbr;
@@ -19699,7 +19380,7 @@ S2.define('jquery.select2',[
     function locale_locales__getSetGlobalLocale (key, values) {
         var data;
         if (key) {
-            if (typeof values === 'undefined') {
+            if (isUndefined(values)) {
                 data = locale_locales__getLocale(key);
             }
             else {
@@ -19715,13 +19396,25 @@ S2.define('jquery.select2',[
         return globalLocale._abbr;
     }
 
-    function defineLocale (name, values) {
-        if (values !== null) {
-            values.abbr = name;
-            if (!locales[name]) {
-                locales[name] = new Locale();
+    function defineLocale (name, config) {
+        if (config !== null) {
+            config.abbr = name;
+            if (locales[name] != null) {
+                deprecateSimple('defineLocaleOverride',
+                        'use moment.updateLocale(localeName, config) to change ' +
+                        'an existing locale. moment.defineLocale(localeName, ' +
+                        'config) should only be used for creating a new locale');
+                config = mergeConfigs(locales[name]._config, config);
+            } else if (config.parentLocale != null) {
+                if (locales[config.parentLocale] != null) {
+                    config = mergeConfigs(locales[config.parentLocale]._config, config);
+                } else {
+                    // treat as if there is no base config
+                    deprecateSimple('parentLocaleUndefined',
+                            'specified parentLocale is not defined yet');
+                }
             }
-            locales[name].set(values);
+            locales[name] = new Locale(config);
 
             // backwards compat for now: also set the locale
             locale_locales__getSetGlobalLocale(name);
@@ -19732,6 +19425,31 @@ S2.define('jquery.select2',[
             delete locales[name];
             return null;
         }
+    }
+
+    function updateLocale(name, config) {
+        if (config != null) {
+            var locale;
+            if (locales[name] != null) {
+                config = mergeConfigs(locales[name]._config, config);
+            }
+            locale = new Locale(config);
+            locale.parentLocale = locales[name];
+            locales[name] = locale;
+
+            // backwards compat for now: also set the locale
+            locale_locales__getSetGlobalLocale(name);
+        } else {
+            // pass null for config to unupdate, useful for tests
+            if (locales[name] != null) {
+                if (locales[name].parentLocale != null) {
+                    locales[name] = locales[name].parentLocale;
+                } else if (locales[name] != null) {
+                    delete locales[name];
+                }
+            }
+        }
+        return locales[name];
     }
 
     // returns locale data
@@ -19756,6 +19474,10 @@ S2.define('jquery.select2',[
         }
 
         return chooseLocale(key);
+    }
+
+    function locale_locales__listLocales() {
+        return keys(locales);
     }
 
     var aliases = {};
@@ -19799,11 +19521,14 @@ S2.define('jquery.select2',[
     }
 
     function get_set__get (mom, unit) {
-        return mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]();
+        return mom.isValid() ?
+            mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]() : NaN;
     }
 
     function get_set__set (mom, unit, value) {
-        return mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
+        if (mom.isValid()) {
+            mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
+        }
     }
 
     // MOMENTS
@@ -19816,7 +19541,7 @@ S2.define('jquery.select2',[
             }
         } else {
             units = normalizeUnits(units);
-            if (typeof this[units] === 'function') {
+            if (isFunction(this[units])) {
                 return this[units](value);
             }
         }
@@ -19824,16 +19549,14 @@ S2.define('jquery.select2',[
     }
 
     function zeroFill(number, targetLength, forceSign) {
-        var output = '' + Math.abs(number),
+        var absNumber = '' + Math.abs(number),
+            zerosToFill = targetLength - absNumber.length,
             sign = number >= 0;
-
-        while (output.length < targetLength) {
-            output = '0' + output;
-        }
-        return (sign ? (forceSign ? '+' : '') : '-') + output;
+        return (sign ? (forceSign ? '+' : '') : '-') +
+            Math.pow(10, Math.max(0, zerosToFill)).toString().substr(1) + absNumber;
     }
 
-    var formattingTokens = /(\[[^\[]*\])|(\\)?(Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Q|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|mm?|ss?|S{1,4}|x|X|zz?|ZZ?|.)/g;
+    var formattingTokens = /(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Qo?|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|kk?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g;
 
     var localFormattingTokens = /(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g;
 
@@ -19886,7 +19609,7 @@ S2.define('jquery.select2',[
         }
 
         return function (mom) {
-            var output = '';
+            var output = '', i;
             for (i = 0; i < length; i++) {
                 output += array[i] instanceof Function ? array[i].call(mom, format) : array[i];
             }
@@ -19901,10 +19624,7 @@ S2.define('jquery.select2',[
         }
 
         format = expandFormat(format, m.localeData());
-
-        if (!formatFunctions[format]) {
-            formatFunctions[format] = makeFormatFunction(format);
-        }
+        formatFunctions[format] = formatFunctions[format] || makeFormatFunction(format);
 
         return formatFunctions[format](m);
     }
@@ -19932,6 +19652,8 @@ S2.define('jquery.select2',[
     var match4         = /\d{4}/;         //    0000 - 9999
     var match6         = /[+-]?\d{6}/;    // -999999 - 999999
     var match1to2      = /\d\d?/;         //       0 - 99
+    var match3to4      = /\d\d\d\d?/;     //     999 - 9999
+    var match5to6      = /\d\d\d\d\d\d?/; //   99999 - 999999
     var match1to3      = /\d{1,3}/;       //       0 - 999
     var match1to4      = /\d{1,4}/;       //       0 - 9999
     var match1to6      = /[+-]?\d{1,6}/;  // -999999 - 999999
@@ -19940,16 +19662,19 @@ S2.define('jquery.select2',[
     var matchSigned    = /[+-]?\d+/;      //    -inf - inf
 
     var matchOffset    = /Z|[+-]\d\d:?\d\d/gi; // +00:00 -00:00 +0000 -0000 or Z
+    var matchShortOffset = /Z|[+-]\d\d(?::?\d\d)?/gi; // +00 -00 +00:00 -00:00 +0000 -0000 or Z
 
     var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; // 123456789 123456789.123
 
     // any word (or two) characters or numbers including two/three word month in arabic.
+    // includes scottish gaelic two word and hyphenated months
     var matchWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
+
 
     var regexes = {};
 
     function addRegexToken (token, regex, strictRegex) {
-        regexes[token] = typeof regex === 'function' ? regex : function (isStrict) {
+        regexes[token] = isFunction(regex) ? regex : function (isStrict, localeData) {
             return (isStrict && strictRegex) ? strictRegex : regex;
         };
     }
@@ -19964,9 +19689,13 @@ S2.define('jquery.select2',[
 
     // Code from http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
     function unescapeFormat(s) {
-        return s.replace('\\', '').replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (matched, p1, p2, p3, p4) {
+        return regexEscape(s.replace('\\', '').replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (matched, p1, p2, p3, p4) {
             return p1 || p2 || p3 || p4;
-        }).replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        }));
+    }
+
+    function regexEscape(s) {
+        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     }
 
     var tokens = {};
@@ -20006,6 +19735,25 @@ S2.define('jquery.select2',[
     var MINUTE = 4;
     var SECOND = 5;
     var MILLISECOND = 6;
+    var WEEK = 7;
+    var WEEKDAY = 8;
+
+    var indexOf;
+
+    if (Array.prototype.indexOf) {
+        indexOf = Array.prototype.indexOf;
+    } else {
+        indexOf = function (o) {
+            // I know
+            var i;
+            for (i = 0; i < this.length; ++i) {
+                if (this[i] === o) {
+                    return i;
+                }
+            }
+            return -1;
+        };
+    }
 
     function daysInMonth(year, month) {
         return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
@@ -20033,8 +19781,12 @@ S2.define('jquery.select2',[
 
     addRegexToken('M',    match1to2);
     addRegexToken('MM',   match1to2, match2);
-    addRegexToken('MMM',  matchWord);
-    addRegexToken('MMMM', matchWord);
+    addRegexToken('MMM',  function (isStrict, locale) {
+        return locale.monthsShortRegex(isStrict);
+    });
+    addRegexToken('MMMM', function (isStrict, locale) {
+        return locale.monthsRegex(isStrict);
+    });
 
     addParseToken(['M', 'MM'], function (input, array) {
         array[MONTH] = toInt(input) - 1;
@@ -20052,18 +19804,66 @@ S2.define('jquery.select2',[
 
     // LOCALES
 
+    var MONTHS_IN_FORMAT = /D[oD]?(\[[^\[\]]*\]|\s+)+MMMM?/;
     var defaultLocaleMonths = 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_');
-    function localeMonths (m) {
-        return this._months[m.month()];
+    function localeMonths (m, format) {
+        return isArray(this._months) ? this._months[m.month()] :
+            this._months[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
     }
 
     var defaultLocaleMonthsShort = 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_');
-    function localeMonthsShort (m) {
-        return this._monthsShort[m.month()];
+    function localeMonthsShort (m, format) {
+        return isArray(this._monthsShort) ? this._monthsShort[m.month()] :
+            this._monthsShort[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
+    }
+
+    function units_month__handleStrictParse(monthName, format, strict) {
+        var i, ii, mom, llc = monthName.toLocaleLowerCase();
+        if (!this._monthsParse) {
+            // this is not used
+            this._monthsParse = [];
+            this._longMonthsParse = [];
+            this._shortMonthsParse = [];
+            for (i = 0; i < 12; ++i) {
+                mom = create_utc__createUTC([2000, i]);
+                this._shortMonthsParse[i] = this.monthsShort(mom, '').toLocaleLowerCase();
+                this._longMonthsParse[i] = this.months(mom, '').toLocaleLowerCase();
+            }
+        }
+
+        if (strict) {
+            if (format === 'MMM') {
+                ii = indexOf.call(this._shortMonthsParse, llc);
+                return ii !== -1 ? ii : null;
+            } else {
+                ii = indexOf.call(this._longMonthsParse, llc);
+                return ii !== -1 ? ii : null;
+            }
+        } else {
+            if (format === 'MMM') {
+                ii = indexOf.call(this._shortMonthsParse, llc);
+                if (ii !== -1) {
+                    return ii;
+                }
+                ii = indexOf.call(this._longMonthsParse, llc);
+                return ii !== -1 ? ii : null;
+            } else {
+                ii = indexOf.call(this._longMonthsParse, llc);
+                if (ii !== -1) {
+                    return ii;
+                }
+                ii = indexOf.call(this._shortMonthsParse, llc);
+                return ii !== -1 ? ii : null;
+            }
+        }
     }
 
     function localeMonthsParse (monthName, format, strict) {
         var i, mom, regex;
+
+        if (this._monthsParseExact) {
+            return units_month__handleStrictParse.call(this, monthName, format, strict);
+        }
 
         if (!this._monthsParse) {
             this._monthsParse = [];
@@ -20071,6 +19871,9 @@ S2.define('jquery.select2',[
             this._shortMonthsParse = [];
         }
 
+        // TODO: add sorting
+        // Sorting makes sure if one month (or abbr) is a prefix of another
+        // see sorting in computeMonthsParse
         for (i = 0; i < 12; i++) {
             // make the regex if we don't have it already
             mom = create_utc__createUTC([2000, i]);
@@ -20098,12 +19901,20 @@ S2.define('jquery.select2',[
     function setMonth (mom, value) {
         var dayOfMonth;
 
-        // TODO: Move this out of here!
+        if (!mom.isValid()) {
+            // No op
+            return mom;
+        }
+
         if (typeof value === 'string') {
-            value = mom.localeData().monthsParse(value);
-            // TODO: Another silent failure?
-            if (typeof value !== 'number') {
-                return mom;
+            if (/^\d+$/.test(value)) {
+                value = toInt(value);
+            } else {
+                value = mom.localeData().monthsParse(value);
+                // TODO: Another silent failure?
+                if (typeof value !== 'number') {
+                    return mom;
+                }
             }
         }
 
@@ -20126,6 +19937,72 @@ S2.define('jquery.select2',[
         return daysInMonth(this.year(), this.month());
     }
 
+    var defaultMonthsShortRegex = matchWord;
+    function monthsShortRegex (isStrict) {
+        if (this._monthsParseExact) {
+            if (!hasOwnProp(this, '_monthsRegex')) {
+                computeMonthsParse.call(this);
+            }
+            if (isStrict) {
+                return this._monthsShortStrictRegex;
+            } else {
+                return this._monthsShortRegex;
+            }
+        } else {
+            return this._monthsShortStrictRegex && isStrict ?
+                this._monthsShortStrictRegex : this._monthsShortRegex;
+        }
+    }
+
+    var defaultMonthsRegex = matchWord;
+    function monthsRegex (isStrict) {
+        if (this._monthsParseExact) {
+            if (!hasOwnProp(this, '_monthsRegex')) {
+                computeMonthsParse.call(this);
+            }
+            if (isStrict) {
+                return this._monthsStrictRegex;
+            } else {
+                return this._monthsRegex;
+            }
+        } else {
+            return this._monthsStrictRegex && isStrict ?
+                this._monthsStrictRegex : this._monthsRegex;
+        }
+    }
+
+    function computeMonthsParse () {
+        function cmpLenRev(a, b) {
+            return b.length - a.length;
+        }
+
+        var shortPieces = [], longPieces = [], mixedPieces = [],
+            i, mom;
+        for (i = 0; i < 12; i++) {
+            // make the regex if we don't have it already
+            mom = create_utc__createUTC([2000, i]);
+            shortPieces.push(this.monthsShort(mom, ''));
+            longPieces.push(this.months(mom, ''));
+            mixedPieces.push(this.months(mom, ''));
+            mixedPieces.push(this.monthsShort(mom, ''));
+        }
+        // Sorting makes sure if one month (or abbr) is a prefix of another it
+        // will match the longer piece.
+        shortPieces.sort(cmpLenRev);
+        longPieces.sort(cmpLenRev);
+        mixedPieces.sort(cmpLenRev);
+        for (i = 0; i < 12; i++) {
+            shortPieces[i] = regexEscape(shortPieces[i]);
+            longPieces[i] = regexEscape(longPieces[i]);
+            mixedPieces[i] = regexEscape(mixedPieces[i]);
+        }
+
+        this._monthsRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
+        this._monthsShortRegex = this._monthsRegex;
+        this._monthsStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
+        this._monthsShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
+    }
+
     function checkOverflow (m) {
         var overflow;
         var a = m._a;
@@ -20143,6 +20020,12 @@ S2.define('jquery.select2',[
             if (getParsingFlags(m)._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
                 overflow = DATE;
             }
+            if (getParsingFlags(m)._overflowWeeks && overflow === -1) {
+                overflow = WEEK;
+            }
+            if (getParsingFlags(m)._overflowWeekday && overflow === -1) {
+                overflow = WEEKDAY;
+            }
 
             getParsingFlags(m).overflow = overflow;
         }
@@ -20150,52 +20033,39 @@ S2.define('jquery.select2',[
         return m;
     }
 
-    function warn(msg) {
-        if (utils_hooks__hooks.suppressDeprecationWarnings === false && typeof console !== 'undefined' && console.warn) {
-            console.warn('Deprecation warning: ' + msg);
-        }
-    }
+    // iso 8601 regex
+    // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
+    var extendedIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?/;
+    var basicIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?/;
 
-    function deprecate(msg, fn) {
-        var firstTime = true,
-            msgWithStack = msg + '\n' + (new Error()).stack;
-
-        return extend(function () {
-            if (firstTime) {
-                warn(msgWithStack);
-                firstTime = false;
-            }
-            return fn.apply(this, arguments);
-        }, fn);
-    }
-
-    var deprecations = {};
-
-    function deprecateSimple(name, msg) {
-        if (!deprecations[name]) {
-            warn(msg);
-            deprecations[name] = true;
-        }
-    }
-
-    utils_hooks__hooks.suppressDeprecationWarnings = false;
-
-    var from_string__isoRegex = /^\s*(?:[+-]\d{6}|\d{4})-(?:(\d\d-\d\d)|(W\d\d$)|(W\d\d-\d)|(\d\d\d))((T| )(\d\d(:\d\d(:\d\d(\.\d+)?)?)?)?([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/;
+    var tzRegex = /Z|[+-]\d\d(?::?\d\d)?/;
 
     var isoDates = [
-        ['YYYYYY-MM-DD', /[+-]\d{6}-\d{2}-\d{2}/],
-        ['YYYY-MM-DD', /\d{4}-\d{2}-\d{2}/],
-        ['GGGG-[W]WW-E', /\d{4}-W\d{2}-\d/],
-        ['GGGG-[W]WW', /\d{4}-W\d{2}/],
-        ['YYYY-DDD', /\d{4}-\d{3}/]
+        ['YYYYYY-MM-DD', /[+-]\d{6}-\d\d-\d\d/],
+        ['YYYY-MM-DD', /\d{4}-\d\d-\d\d/],
+        ['GGGG-[W]WW-E', /\d{4}-W\d\d-\d/],
+        ['GGGG-[W]WW', /\d{4}-W\d\d/, false],
+        ['YYYY-DDD', /\d{4}-\d{3}/],
+        ['YYYY-MM', /\d{4}-\d\d/, false],
+        ['YYYYYYMMDD', /[+-]\d{10}/],
+        ['YYYYMMDD', /\d{8}/],
+        // YYYYMM is NOT allowed by the standard
+        ['GGGG[W]WWE', /\d{4}W\d{3}/],
+        ['GGGG[W]WW', /\d{4}W\d{2}/, false],
+        ['YYYYDDD', /\d{7}/]
     ];
 
     // iso time formats and regexes
     var isoTimes = [
-        ['HH:mm:ss.SSSS', /(T| )\d\d:\d\d:\d\d\.\d+/],
-        ['HH:mm:ss', /(T| )\d\d:\d\d:\d\d/],
-        ['HH:mm', /(T| )\d\d:\d\d/],
-        ['HH', /(T| )\d\d/]
+        ['HH:mm:ss.SSSS', /\d\d:\d\d:\d\d\.\d+/],
+        ['HH:mm:ss,SSSS', /\d\d:\d\d:\d\d,\d+/],
+        ['HH:mm:ss', /\d\d:\d\d:\d\d/],
+        ['HH:mm', /\d\d:\d\d/],
+        ['HHmmss.SSSS', /\d\d\d\d\d\d\.\d+/],
+        ['HHmmss,SSSS', /\d\d\d\d\d\d,\d+/],
+        ['HHmmss', /\d\d\d\d\d\d/],
+        ['HHmm', /\d\d\d\d/],
+        ['HH', /\d\d/]
     ];
 
     var aspNetJsonRegex = /^\/?Date\((\-?\d+)/i;
@@ -20204,26 +20074,49 @@ S2.define('jquery.select2',[
     function configFromISO(config) {
         var i, l,
             string = config._i,
-            match = from_string__isoRegex.exec(string);
+            match = extendedIsoRegex.exec(string) || basicIsoRegex.exec(string),
+            allowTime, dateFormat, timeFormat, tzFormat;
 
         if (match) {
             getParsingFlags(config).iso = true;
+
             for (i = 0, l = isoDates.length; i < l; i++) {
-                if (isoDates[i][1].exec(string)) {
-                    // match[5] should be 'T' or undefined
-                    config._f = isoDates[i][0] + (match[6] || ' ');
+                if (isoDates[i][1].exec(match[1])) {
+                    dateFormat = isoDates[i][0];
+                    allowTime = isoDates[i][2] !== false;
                     break;
                 }
             }
-            for (i = 0, l = isoTimes.length; i < l; i++) {
-                if (isoTimes[i][1].exec(string)) {
-                    config._f += isoTimes[i][0];
-                    break;
+            if (dateFormat == null) {
+                config._isValid = false;
+                return;
+            }
+            if (match[3]) {
+                for (i = 0, l = isoTimes.length; i < l; i++) {
+                    if (isoTimes[i][1].exec(match[3])) {
+                        // match[2] should be 'T' or space
+                        timeFormat = (match[2] || ' ') + isoTimes[i][0];
+                        break;
+                    }
+                }
+                if (timeFormat == null) {
+                    config._isValid = false;
+                    return;
                 }
             }
-            if (string.match(matchOffset)) {
-                config._f += 'Z';
+            if (!allowTime && timeFormat != null) {
+                config._isValid = false;
+                return;
             }
+            if (match[4]) {
+                if (tzRegex.exec(match[4])) {
+                    tzFormat = 'Z';
+                } else {
+                    config._isValid = false;
+                    return;
+                }
+            }
+            config._f = dateFormat + (timeFormat || '') + (tzFormat || '');
             configFromStringAndFormat(config);
         } else {
             config._isValid = false;
@@ -20261,8 +20154,8 @@ S2.define('jquery.select2',[
         //http://stackoverflow.com/questions/181348/instantiating-a-javascript-object-by-calling-prototype-constructor-apply
         var date = new Date(y, m, d, h, M, s, ms);
 
-        //the date constructor doesn't accept years < 1970
-        if (y < 1970) {
+        //the date constructor remaps years 0-99 to 1900-1999
+        if (y < 100 && y >= 0 && isFinite(date.getFullYear())) {
             date.setFullYear(y);
         }
         return date;
@@ -20270,11 +20163,20 @@ S2.define('jquery.select2',[
 
     function createUTCDate (y) {
         var date = new Date(Date.UTC.apply(null, arguments));
-        if (y < 1970) {
+
+        //the Date.UTC function remaps years 0-99 to 1900-1999
+        if (y < 100 && y >= 0 && isFinite(date.getUTCFullYear())) {
             date.setUTCFullYear(y);
         }
         return date;
     }
+
+    // FORMATTING
+
+    addFormatToken('Y', 0, 0, function () {
+        var y = this.year();
+        return y <= 9999 ? '' + y : '+' + y;
+    });
 
     addFormatToken(0, ['YY', 2], 0, function () {
         return this.year() % 100;
@@ -20296,9 +20198,15 @@ S2.define('jquery.select2',[
     addRegexToken('YYYYY',  match1to6, match6);
     addRegexToken('YYYYYY', match1to6, match6);
 
-    addParseToken(['YYYY', 'YYYYY', 'YYYYYY'], YEAR);
+    addParseToken(['YYYYY', 'YYYYYY'], YEAR);
+    addParseToken('YYYY', function (input, array) {
+        array[YEAR] = input.length === 2 ? utils_hooks__hooks.parseTwoDigitYear(input) : toInt(input);
+    });
     addParseToken('YY', function (input, array) {
         array[YEAR] = utils_hooks__hooks.parseTwoDigitYear(input);
+    });
+    addParseToken('Y', function (input, array) {
+        array[YEAR] = parseInt(input, 10);
     });
 
     // HELPERS
@@ -20319,130 +20227,72 @@ S2.define('jquery.select2',[
 
     // MOMENTS
 
-    var getSetYear = makeGetSet('FullYear', false);
+    var getSetYear = makeGetSet('FullYear', true);
 
     function getIsLeapYear () {
         return isLeapYear(this.year());
     }
 
-    addFormatToken('w', ['ww', 2], 'wo', 'week');
-    addFormatToken('W', ['WW', 2], 'Wo', 'isoWeek');
+    // start-of-first-week - start-of-year
+    function firstWeekOffset(year, dow, doy) {
+        var // first-week day -- which january is always in the first week (4 for iso, 1 for other)
+            fwd = 7 + dow - doy,
+            // first-week day local weekday -- which local weekday is fwd
+            fwdlw = (7 + createUTCDate(year, 0, fwd).getUTCDay() - dow) % 7;
 
-    // ALIASES
-
-    addUnitAlias('week', 'w');
-    addUnitAlias('isoWeek', 'W');
-
-    // PARSING
-
-    addRegexToken('w',  match1to2);
-    addRegexToken('ww', match1to2, match2);
-    addRegexToken('W',  match1to2);
-    addRegexToken('WW', match1to2, match2);
-
-    addWeekParseToken(['w', 'ww', 'W', 'WW'], function (input, week, config, token) {
-        week[token.substr(0, 1)] = toInt(input);
-    });
-
-    // HELPERS
-
-    // firstDayOfWeek       0 = sun, 6 = sat
-    //                      the day of the week that starts the week
-    //                      (usually sunday or monday)
-    // firstDayOfWeekOfYear 0 = sun, 6 = sat
-    //                      the first week is the week that contains the first
-    //                      of this day of the week
-    //                      (eg. ISO weeks use thursday (4))
-    function weekOfYear(mom, firstDayOfWeek, firstDayOfWeekOfYear) {
-        var end = firstDayOfWeekOfYear - firstDayOfWeek,
-            daysToDayOfWeek = firstDayOfWeekOfYear - mom.day(),
-            adjustedMoment;
-
-
-        if (daysToDayOfWeek > end) {
-            daysToDayOfWeek -= 7;
-        }
-
-        if (daysToDayOfWeek < end - 7) {
-            daysToDayOfWeek += 7;
-        }
-
-        adjustedMoment = local__createLocal(mom).add(daysToDayOfWeek, 'd');
-        return {
-            week: Math.ceil(adjustedMoment.dayOfYear() / 7),
-            year: adjustedMoment.year()
-        };
+        return -fwdlw + fwd - 1;
     }
-
-    // LOCALES
-
-    function localeWeek (mom) {
-        return weekOfYear(mom, this._week.dow, this._week.doy).week;
-    }
-
-    var defaultLocaleWeek = {
-        dow : 0, // Sunday is the first day of the week.
-        doy : 6  // The week that contains Jan 1st is the first week of the year.
-    };
-
-    function localeFirstDayOfWeek () {
-        return this._week.dow;
-    }
-
-    function localeFirstDayOfYear () {
-        return this._week.doy;
-    }
-
-    // MOMENTS
-
-    function getSetWeek (input) {
-        var week = this.localeData().week(this);
-        return input == null ? week : this.add((input - week) * 7, 'd');
-    }
-
-    function getSetISOWeek (input) {
-        var week = weekOfYear(this, 1, 4).week;
-        return input == null ? week : this.add((input - week) * 7, 'd');
-    }
-
-    addFormatToken('DDD', ['DDDD', 3], 'DDDo', 'dayOfYear');
-
-    // ALIASES
-
-    addUnitAlias('dayOfYear', 'DDD');
-
-    // PARSING
-
-    addRegexToken('DDD',  match1to3);
-    addRegexToken('DDDD', match3);
-    addParseToken(['DDD', 'DDDD'], function (input, array, config) {
-        config._dayOfYear = toInt(input);
-    });
-
-    // HELPERS
 
     //http://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
-    function dayOfYearFromWeeks(year, week, weekday, firstDayOfWeekOfYear, firstDayOfWeek) {
-        var d = createUTCDate(year, 0, 1).getUTCDay();
-        var daysToAdd;
-        var dayOfYear;
+    function dayOfYearFromWeeks(year, week, weekday, dow, doy) {
+        var localWeekday = (7 + weekday - dow) % 7,
+            weekOffset = firstWeekOffset(year, dow, doy),
+            dayOfYear = 1 + 7 * (week - 1) + localWeekday + weekOffset,
+            resYear, resDayOfYear;
 
-        d = d === 0 ? 7 : d;
-        weekday = weekday != null ? weekday : firstDayOfWeek;
-        daysToAdd = firstDayOfWeek - d + (d > firstDayOfWeekOfYear ? 7 : 0) - (d < firstDayOfWeek ? 7 : 0);
-        dayOfYear = 7 * (week - 1) + (weekday - firstDayOfWeek) + daysToAdd + 1;
+        if (dayOfYear <= 0) {
+            resYear = year - 1;
+            resDayOfYear = daysInYear(resYear) + dayOfYear;
+        } else if (dayOfYear > daysInYear(year)) {
+            resYear = year + 1;
+            resDayOfYear = dayOfYear - daysInYear(year);
+        } else {
+            resYear = year;
+            resDayOfYear = dayOfYear;
+        }
 
         return {
-            year      : dayOfYear > 0 ? year      : year - 1,
-            dayOfYear : dayOfYear > 0 ? dayOfYear : daysInYear(year - 1) + dayOfYear
+            year: resYear,
+            dayOfYear: resDayOfYear
         };
     }
 
-    // MOMENTS
+    function weekOfYear(mom, dow, doy) {
+        var weekOffset = firstWeekOffset(mom.year(), dow, doy),
+            week = Math.floor((mom.dayOfYear() - weekOffset - 1) / 7) + 1,
+            resWeek, resYear;
 
-    function getSetDayOfYear (input) {
-        var dayOfYear = Math.round((this.clone().startOf('day') - this.clone().startOf('year')) / 864e5) + 1;
-        return input == null ? dayOfYear : this.add((input - dayOfYear), 'd');
+        if (week < 1) {
+            resYear = mom.year() - 1;
+            resWeek = week + weeksInYear(resYear, dow, doy);
+        } else if (week > weeksInYear(mom.year(), dow, doy)) {
+            resWeek = week - weeksInYear(mom.year(), dow, doy);
+            resYear = mom.year() + 1;
+        } else {
+            resYear = mom.year();
+            resWeek = week;
+        }
+
+        return {
+            week: resWeek,
+            year: resYear
+        };
+    }
+
+    function weeksInYear(year, dow, doy) {
+        var weekOffset = firstWeekOffset(year, dow, doy),
+            weekOffsetNext = firstWeekOffset(year + 1, dow, doy);
+        return (daysInYear(year) - weekOffset + weekOffsetNext) / 7;
     }
 
     // Pick the first defined of two or three arguments.
@@ -20457,11 +20307,12 @@ S2.define('jquery.select2',[
     }
 
     function currentDateArray(config) {
-        var now = new Date();
+        // hooks is actually the exported moment object
+        var nowValue = new Date(utils_hooks__hooks.now());
         if (config._useUTC) {
-            return [now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()];
+            return [nowValue.getUTCFullYear(), nowValue.getUTCMonth(), nowValue.getUTCDate()];
         }
-        return [now.getFullYear(), now.getMonth(), now.getDate()];
+        return [nowValue.getFullYear(), nowValue.getMonth(), nowValue.getDate()];
     }
 
     // convert an array to a date.
@@ -20531,7 +20382,7 @@ S2.define('jquery.select2',[
     }
 
     function dayOfYearFromWeekInfo(config) {
-        var w, weekYear, week, weekday, dow, doy, temp;
+        var w, weekYear, week, weekday, dow, doy, temp, weekdayOverflow;
 
         w = config._w;
         if (w.GG != null || w.W != null || w.E != null) {
@@ -20545,6 +20396,9 @@ S2.define('jquery.select2',[
             weekYear = defaults(w.GG, config._a[YEAR], weekOfYear(local__createLocal(), 1, 4).year);
             week = defaults(w.W, 1);
             weekday = defaults(w.E, 1);
+            if (weekday < 1 || weekday > 7) {
+                weekdayOverflow = true;
+            }
         } else {
             dow = config._locale._week.dow;
             doy = config._locale._week.doy;
@@ -20555,23 +20409,32 @@ S2.define('jquery.select2',[
             if (w.d != null) {
                 // weekday -- low day numbers are considered next week
                 weekday = w.d;
-                if (weekday < dow) {
-                    ++week;
+                if (weekday < 0 || weekday > 6) {
+                    weekdayOverflow = true;
                 }
             } else if (w.e != null) {
                 // local weekday -- counting starts from begining of week
                 weekday = w.e + dow;
+                if (w.e < 0 || w.e > 6) {
+                    weekdayOverflow = true;
+                }
             } else {
                 // default to begining of week
                 weekday = dow;
             }
         }
-        temp = dayOfYearFromWeeks(weekYear, week, weekday, doy, dow);
-
-        config._a[YEAR] = temp.year;
-        config._dayOfYear = temp.dayOfYear;
+        if (week < 1 || week > weeksInYear(weekYear, dow, doy)) {
+            getParsingFlags(config)._overflowWeeks = true;
+        } else if (weekdayOverflow != null) {
+            getParsingFlags(config)._overflowWeekday = true;
+        } else {
+            temp = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy);
+            config._a[YEAR] = temp.year;
+            config._dayOfYear = temp.dayOfYear;
+        }
     }
 
+    // constant that refers to the ISO standard
     utils_hooks__hooks.ISO_8601 = function () {};
 
     // date from string and format string
@@ -20596,6 +20459,8 @@ S2.define('jquery.select2',[
         for (i = 0; i < tokens.length; i++) {
             token = tokens[i];
             parsedInput = (string.match(getParseRegexForToken(token, config)) || [])[0];
+            // console.log('token', token, 'parsedInput', parsedInput,
+            //         'regex', getParseRegexForToken(token, config));
             if (parsedInput) {
                 skipped = string.substr(0, string.indexOf(parsedInput));
                 if (skipped.length > 0) {
@@ -20631,6 +20496,9 @@ S2.define('jquery.select2',[
                 config._a[HOUR] > 0) {
             getParsingFlags(config).bigHour = undefined;
         }
+
+        getParsingFlags(config).parsedDateParts = config._a.slice(0);
+        getParsingFlags(config).meridiem = config._meridiem;
         // handle meridiem
         config._a[HOUR] = meridiemFixWrap(config._locale, config._a[HOUR], config._meridiem);
 
@@ -20664,6 +20532,7 @@ S2.define('jquery.select2',[
         }
     }
 
+    // date from string and array of format strings
     function configFromStringAndArray(config) {
         var tempConfig,
             bestMoment,
@@ -20714,15 +20583,27 @@ S2.define('jquery.select2',[
         }
 
         var i = normalizeObjectUnits(config._i);
-        config._a = [i.year, i.month, i.day || i.date, i.hour, i.minute, i.second, i.millisecond];
+        config._a = map([i.year, i.month, i.day || i.date, i.hour, i.minute, i.second, i.millisecond], function (obj) {
+            return obj && parseInt(obj, 10);
+        });
 
         configFromArray(config);
     }
 
     function createFromConfig (config) {
+        var res = new Moment(checkOverflow(prepareConfig(config)));
+        if (res._nextDay) {
+            // Adding is smart enough around DST
+            res.add(1, 'd');
+            res._nextDay = undefined;
+        }
+
+        return res;
+    }
+
+    function prepareConfig (config) {
         var input = config._i,
-            format = config._f,
-            res;
+            format = config._f;
 
         config._locale = config._locale || locale_locales__getLocale(config._l);
 
@@ -20746,22 +20627,19 @@ S2.define('jquery.select2',[
             configFromInput(config);
         }
 
-        res = new Moment(checkOverflow(config));
-        if (res._nextDay) {
-            // Adding is smart enough around DST
-            res.add(1, 'd');
-            res._nextDay = undefined;
+        if (!valid__isValid(config)) {
+            config._d = null;
         }
 
-        return res;
+        return config;
     }
 
     function configFromInput(config) {
         var input = config._i;
         if (input === undefined) {
-            config._d = new Date();
+            config._d = new Date(utils_hooks__hooks.now());
         } else if (isDate(input)) {
-            config._d = new Date(+input);
+            config._d = new Date(input.valueOf());
         } else if (typeof input === 'string') {
             configFromString(config);
         } else if (isArray(input)) {
@@ -20803,18 +20681,26 @@ S2.define('jquery.select2',[
     }
 
     var prototypeMin = deprecate(
-         'moment().min is deprecated, use moment.min instead. https://github.com/moment/moment/issues/1548',
+         'moment().min is deprecated, use moment.max instead. https://github.com/moment/moment/issues/1548',
          function () {
              var other = local__createLocal.apply(null, arguments);
-             return other < this ? this : other;
+             if (this.isValid() && other.isValid()) {
+                 return other < this ? this : other;
+             } else {
+                 return valid__createInvalid();
+             }
          }
      );
 
     var prototypeMax = deprecate(
-        'moment().max is deprecated, use moment.max instead. https://github.com/moment/moment/issues/1548',
+        'moment().max is deprecated, use moment.min instead. https://github.com/moment/moment/issues/1548',
         function () {
             var other = local__createLocal.apply(null, arguments);
-            return other > this ? this : other;
+            if (this.isValid() && other.isValid()) {
+                return other > this ? this : other;
+            } else {
+                return valid__createInvalid();
+            }
         }
     );
 
@@ -20833,7 +20719,7 @@ S2.define('jquery.select2',[
         }
         res = moments[0];
         for (i = 1; i < moments.length; ++i) {
-            if (moments[i][fn](res)) {
+            if (!moments[i].isValid() || moments[i][fn](res)) {
                 res = moments[i];
             }
         }
@@ -20853,6 +20739,10 @@ S2.define('jquery.select2',[
         return pickBy('isAfter', args);
     }
 
+    var now = function () {
+        return Date.now ? Date.now() : +(new Date());
+    };
+
     function Duration (duration) {
         var normalizedInput = normalizeObjectUnits(duration),
             years = normalizedInput.year || 0,
@@ -20869,7 +20759,7 @@ S2.define('jquery.select2',[
         this._milliseconds = +milliseconds +
             seconds * 1e3 + // 1000
             minutes * 6e4 + // 1000 * 60
-            hours * 36e5; // 1000 * 60 * 60
+            hours * 1000 * 60 * 60; //using 1000 * 60 * 60 instead of 36e5 to avoid floating point rounding errors https://github.com/moment/moment/issues/2978
         // Because of dateAddRemove treats 24 hours as different from a
         // day when working around DST, we need to store them separately
         this._days = +days +
@@ -20892,6 +20782,8 @@ S2.define('jquery.select2',[
         return obj instanceof Duration;
     }
 
+    // FORMATTING
+
     function offset (token, separator) {
         addFormatToken(token, 0, 0, function () {
             var offset = this.utcOffset();
@@ -20909,11 +20801,11 @@ S2.define('jquery.select2',[
 
     // PARSING
 
-    addRegexToken('Z',  matchOffset);
-    addRegexToken('ZZ', matchOffset);
+    addRegexToken('Z',  matchShortOffset);
+    addRegexToken('ZZ', matchShortOffset);
     addParseToken(['Z', 'ZZ'], function (input, array, config) {
         config._useUTC = true;
-        config._tzm = offsetFromString(input);
+        config._tzm = offsetFromString(matchShortOffset, input);
     });
 
     // HELPERS
@@ -20923,8 +20815,8 @@ S2.define('jquery.select2',[
     // '-1530'  > ['-15', '30']
     var chunkOffset = /([\+\-]|\d\d)/gi;
 
-    function offsetFromString(string) {
-        var matches = ((string || '').match(matchOffset) || []);
+    function offsetFromString(matcher, string) {
+        var matches = ((string || '').match(matcher) || []);
         var chunk   = matches[matches.length - 1] || [];
         var parts   = (chunk + '').match(chunkOffset) || ['-', 0, 0];
         var minutes = +(parts[1] * 60) + toInt(parts[2]);
@@ -20937,15 +20829,14 @@ S2.define('jquery.select2',[
         var res, diff;
         if (model._isUTC) {
             res = model.clone();
-            diff = (isMoment(input) || isDate(input) ? +input : +local__createLocal(input)) - (+res);
+            diff = (isMoment(input) || isDate(input) ? input.valueOf() : local__createLocal(input).valueOf()) - res.valueOf();
             // Use low-level api, because this fn is low-level api.
-            res._d.setTime(+res._d + diff);
+            res._d.setTime(res._d.valueOf() + diff);
             utils_hooks__hooks.updateOffset(res, false);
             return res;
         } else {
             return local__createLocal(input).local();
         }
-        return model._isUTC ? local__createLocal(input).zone(model._offset || 0) : local__createLocal(input).local();
     }
 
     function getDateOffset (m) {
@@ -20975,11 +20866,13 @@ S2.define('jquery.select2',[
     function getSetOffset (input, keepLocalTime) {
         var offset = this._offset || 0,
             localAdjust;
+        if (!this.isValid()) {
+            return input != null ? this : NaN;
+        }
         if (input != null) {
             if (typeof input === 'string') {
-                input = offsetFromString(input);
-            }
-            if (Math.abs(input) < 16) {
+                input = offsetFromString(matchShortOffset, input);
+            } else if (Math.abs(input) < 16) {
                 input = input * 60;
             }
             if (!this._isUTC && keepLocalTime) {
@@ -21039,18 +20932,16 @@ S2.define('jquery.select2',[
         if (this._tzm) {
             this.utcOffset(this._tzm);
         } else if (typeof this._i === 'string') {
-            this.utcOffset(offsetFromString(this._i));
+            this.utcOffset(offsetFromString(matchOffset, this._i));
         }
         return this;
     }
 
     function hasAlignedHourOffset (input) {
-        if (!input) {
-            input = 0;
+        if (!this.isValid()) {
+            return false;
         }
-        else {
-            input = local__createLocal(input).utcOffset();
-        }
+        input = input ? local__createLocal(input).utcOffset() : 0;
 
         return (this.utcOffset() - input) % 60 === 0;
     }
@@ -21063,31 +20954,45 @@ S2.define('jquery.select2',[
     }
 
     function isDaylightSavingTimeShifted () {
-        if (this._a) {
-            var other = this._isUTC ? create_utc__createUTC(this._a) : local__createLocal(this._a);
-            return this.isValid() && compareArrays(this._a, other.toArray()) > 0;
+        if (!isUndefined(this._isDSTShifted)) {
+            return this._isDSTShifted;
         }
 
-        return false;
+        var c = {};
+
+        copyConfig(c, this);
+        c = prepareConfig(c);
+
+        if (c._a) {
+            var other = c._isUTC ? create_utc__createUTC(c._a) : local__createLocal(c._a);
+            this._isDSTShifted = this.isValid() &&
+                compareArrays(c._a, other.toArray()) > 0;
+        } else {
+            this._isDSTShifted = false;
+        }
+
+        return this._isDSTShifted;
     }
 
     function isLocal () {
-        return !this._isUTC;
+        return this.isValid() ? !this._isUTC : false;
     }
 
     function isUtcOffset () {
-        return this._isUTC;
+        return this.isValid() ? this._isUTC : false;
     }
 
     function isUtc () {
-        return this._isUTC && this._offset === 0;
+        return this.isValid() ? this._isUTC && this._offset === 0 : false;
     }
 
-    var aspNetRegex = /(\-)?(?:(\d*)\.)?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?)?/;
+    // ASP.NET json date format regex
+    var aspNetRegex = /^(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?\d*)?$/;
 
     // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
     // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
-    var create__isoRegex = /^(-)?P(?:(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?|([0-9,.]*)W)$/;
+    // and further modified to allow for strings containing both week and day
+    var isoRegex = /^(-)?P(?:(-?[0-9,.]*)Y)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)W)?(?:(-?[0-9,.]*)D)?(?:T(?:(-?[0-9,.]*)H)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)S)?)?$/;
 
     function create__createDuration (input, key) {
         var duration = input,
@@ -21120,16 +21025,16 @@ S2.define('jquery.select2',[
                 s  : toInt(match[SECOND])      * sign,
                 ms : toInt(match[MILLISECOND]) * sign
             };
-        } else if (!!(match = create__isoRegex.exec(input))) {
+        } else if (!!(match = isoRegex.exec(input))) {
             sign = (match[1] === '-') ? -1 : 1;
             duration = {
                 y : parseIso(match[2], sign),
                 M : parseIso(match[3], sign),
-                d : parseIso(match[4], sign),
-                h : parseIso(match[5], sign),
-                m : parseIso(match[6], sign),
-                s : parseIso(match[7], sign),
-                w : parseIso(match[8], sign)
+                w : parseIso(match[4], sign),
+                d : parseIso(match[5], sign),
+                h : parseIso(match[6], sign),
+                m : parseIso(match[7], sign),
+                s : parseIso(match[8], sign)
             };
         } else if (duration == null) {// checks for null or undefined
             duration = {};
@@ -21177,6 +21082,10 @@ S2.define('jquery.select2',[
 
     function momentsDifference(base, other) {
         var res;
+        if (!(base.isValid() && other.isValid())) {
+            return {milliseconds: 0, months: 0};
+        }
+
         other = cloneWithOffset(other, base);
         if (base.isBefore(other)) {
             res = positiveMomentsDifference(base, other);
@@ -21189,6 +21098,15 @@ S2.define('jquery.select2',[
         return res;
     }
 
+    function absRound (number) {
+        if (number < 0) {
+            return Math.round(-1 * number) * -1;
+        } else {
+            return Math.round(number);
+        }
+    }
+
+    // TODO: remove 'name' arg after deprecation is removed
     function createAdder(direction, name) {
         return function (val, period) {
             var dur, tmp;
@@ -21207,12 +21125,18 @@ S2.define('jquery.select2',[
 
     function add_subtract__addSubtract (mom, duration, isAdding, updateOffset) {
         var milliseconds = duration._milliseconds,
-            days = duration._days,
-            months = duration._months;
+            days = absRound(duration._days),
+            months = absRound(duration._months);
+
+        if (!mom.isValid()) {
+            // No op
+            return;
+        }
+
         updateOffset = updateOffset == null ? true : updateOffset;
 
         if (milliseconds) {
-            mom._d.setTime(+mom._d + milliseconds * isAdding);
+            mom._d.setTime(mom._d.valueOf() + milliseconds * isAdding);
         }
         if (days) {
             get_set__set(mom, 'Date', get_set__get(mom, 'Date') + days * isAdding);
@@ -21228,7 +21152,7 @@ S2.define('jquery.select2',[
     var add_subtract__add      = createAdder(1, 'add');
     var add_subtract__subtract = createAdder(-1, 'subtract');
 
-    function moment_calendar__calendar (time) {
+    function moment_calendar__calendar (time, formats) {
         // We want to compare the start of today, vs this.
         // Getting start-of-today depends on whether we're local/utc/offset or not.
         var now = time || local__createLocal(),
@@ -21240,7 +21164,10 @@ S2.define('jquery.select2',[
                 diff < 1 ? 'sameDay' :
                 diff < 2 ? 'nextDay' :
                 diff < 7 ? 'nextWeek' : 'sameElse';
-        return this.format(this.localeData().calendar(format, this, local__createLocal(now)));
+
+        var output = formats && (isFunction(formats[format]) ? formats[format]() : formats[format]);
+
+        return this.format(output || this.localeData().calendar(format, this, local__createLocal(now)));
     }
 
     function clone () {
@@ -21248,57 +21175,76 @@ S2.define('jquery.select2',[
     }
 
     function isAfter (input, units) {
-        var inputMs;
-        units = normalizeUnits(typeof units !== 'undefined' ? units : 'millisecond');
+        var localInput = isMoment(input) ? input : local__createLocal(input);
+        if (!(this.isValid() && localInput.isValid())) {
+            return false;
+        }
+        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
         if (units === 'millisecond') {
-            input = isMoment(input) ? input : local__createLocal(input);
-            return +this > +input;
+            return this.valueOf() > localInput.valueOf();
         } else {
-            inputMs = isMoment(input) ? +input : +local__createLocal(input);
-            return inputMs < +this.clone().startOf(units);
+            return localInput.valueOf() < this.clone().startOf(units).valueOf();
         }
     }
 
     function isBefore (input, units) {
-        var inputMs;
-        units = normalizeUnits(typeof units !== 'undefined' ? units : 'millisecond');
+        var localInput = isMoment(input) ? input : local__createLocal(input);
+        if (!(this.isValid() && localInput.isValid())) {
+            return false;
+        }
+        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
         if (units === 'millisecond') {
-            input = isMoment(input) ? input : local__createLocal(input);
-            return +this < +input;
+            return this.valueOf() < localInput.valueOf();
         } else {
-            inputMs = isMoment(input) ? +input : +local__createLocal(input);
-            return +this.clone().endOf(units) < inputMs;
+            return this.clone().endOf(units).valueOf() < localInput.valueOf();
         }
     }
 
-    function isBetween (from, to, units) {
-        return this.isAfter(from, units) && this.isBefore(to, units);
+    function isBetween (from, to, units, inclusivity) {
+        inclusivity = inclusivity || '()';
+        return (inclusivity[0] === '(' ? this.isAfter(from, units) : !this.isBefore(from, units)) &&
+            (inclusivity[1] === ')' ? this.isBefore(to, units) : !this.isAfter(to, units));
     }
 
     function isSame (input, units) {
-        var inputMs;
+        var localInput = isMoment(input) ? input : local__createLocal(input),
+            inputMs;
+        if (!(this.isValid() && localInput.isValid())) {
+            return false;
+        }
         units = normalizeUnits(units || 'millisecond');
         if (units === 'millisecond') {
-            input = isMoment(input) ? input : local__createLocal(input);
-            return +this === +input;
+            return this.valueOf() === localInput.valueOf();
         } else {
-            inputMs = +local__createLocal(input);
-            return +(this.clone().startOf(units)) <= inputMs && inputMs <= +(this.clone().endOf(units));
+            inputMs = localInput.valueOf();
+            return this.clone().startOf(units).valueOf() <= inputMs && inputMs <= this.clone().endOf(units).valueOf();
         }
     }
 
-    function absFloor (number) {
-        if (number < 0) {
-            return Math.ceil(number);
-        } else {
-            return Math.floor(number);
-        }
+    function isSameOrAfter (input, units) {
+        return this.isSame(input, units) || this.isAfter(input,units);
+    }
+
+    function isSameOrBefore (input, units) {
+        return this.isSame(input, units) || this.isBefore(input,units);
     }
 
     function diff (input, units, asFloat) {
-        var that = cloneWithOffset(input, this),
-            zoneDelta = (that.utcOffset() - this.utcOffset()) * 6e4,
+        var that,
+            zoneDelta,
             delta, output;
+
+        if (!this.isValid()) {
+            return NaN;
+        }
+
+        that = cloneWithOffset(input, this);
+
+        if (!that.isValid()) {
+            return NaN;
+        }
+
+        zoneDelta = (that.utcOffset() - this.utcOffset()) * 6e4;
 
         units = normalizeUnits(units);
 
@@ -21338,10 +21284,12 @@ S2.define('jquery.select2',[
             adjust = (b - anchor) / (anchor2 - anchor);
         }
 
-        return -(wholeMonthDiff + adjust);
+        //check for negative zero, return zero if negative zero
+        return -(wholeMonthDiff + adjust) || 0;
     }
 
     utils_hooks__hooks.defaultFormat = 'YYYY-MM-DDTHH:mm:ssZ';
+    utils_hooks__hooks.defaultFormatUtc = 'YYYY-MM-DDTHH:mm:ss[Z]';
 
     function toString () {
         return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
@@ -21350,7 +21298,7 @@ S2.define('jquery.select2',[
     function moment_format__toISOString () {
         var m = this.clone().utc();
         if (0 < m.year() && m.year() <= 9999) {
-            if ('function' === typeof Date.prototype.toISOString) {
+            if (isFunction(Date.prototype.toISOString)) {
                 // native implementation is ~50x faster, use it when we can
                 return this.toDate().toISOString();
             } else {
@@ -21362,15 +21310,21 @@ S2.define('jquery.select2',[
     }
 
     function format (inputString) {
-        var output = formatMoment(this, inputString || utils_hooks__hooks.defaultFormat);
+        if (!inputString) {
+            inputString = this.isUtc() ? utils_hooks__hooks.defaultFormatUtc : utils_hooks__hooks.defaultFormat;
+        }
+        var output = formatMoment(this, inputString);
         return this.localeData().postformat(output);
     }
 
     function from (time, withoutSuffix) {
-        if (!this.isValid()) {
+        if (this.isValid() &&
+                ((isMoment(time) && time.isValid()) ||
+                 local__createLocal(time).isValid())) {
+            return create__createDuration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
+        } else {
             return this.localeData().invalidDate();
         }
-        return create__createDuration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
     }
 
     function fromNow (withoutSuffix) {
@@ -21378,16 +21332,22 @@ S2.define('jquery.select2',[
     }
 
     function to (time, withoutSuffix) {
-        if (!this.isValid()) {
+        if (this.isValid() &&
+                ((isMoment(time) && time.isValid()) ||
+                 local__createLocal(time).isValid())) {
+            return create__createDuration({from: this, to: time}).locale(this.locale()).humanize(!withoutSuffix);
+        } else {
             return this.localeData().invalidDate();
         }
-        return create__createDuration({from: this, to: time}).locale(this.locale()).humanize(!withoutSuffix);
     }
 
     function toNow (withoutSuffix) {
         return this.to(local__createLocal(), withoutSuffix);
     }
 
+    // If passed a locale key, it will set the locale for this
+    // instance.  Otherwise, it will return the locale configuration
+    // variables for this instance.
     function locale (key) {
         var newLocaleData;
 
@@ -21432,6 +21392,7 @@ S2.define('jquery.select2',[
         case 'week':
         case 'isoWeek':
         case 'day':
+        case 'date':
             this.hours(0);
             /* falls through */
         case 'hour':
@@ -21465,24 +21426,48 @@ S2.define('jquery.select2',[
         if (units === undefined || units === 'millisecond') {
             return this;
         }
+
+        // 'date' is an alias for 'day', so it should be considered as such.
+        if (units === 'date') {
+            units = 'day';
+        }
+
         return this.startOf(units).add(1, (units === 'isoWeek' ? 'week' : units)).subtract(1, 'ms');
     }
 
     function to_type__valueOf () {
-        return +this._d - ((this._offset || 0) * 60000);
+        return this._d.valueOf() - ((this._offset || 0) * 60000);
     }
 
     function unix () {
-        return Math.floor(+this / 1000);
+        return Math.floor(this.valueOf() / 1000);
     }
 
     function toDate () {
-        return this._offset ? new Date(+this) : this._d;
+        return this._offset ? new Date(this.valueOf()) : this._d;
     }
 
     function toArray () {
         var m = this;
         return [m.year(), m.month(), m.date(), m.hour(), m.minute(), m.second(), m.millisecond()];
+    }
+
+    function toObject () {
+        var m = this;
+        return {
+            years: m.year(),
+            months: m.month(),
+            date: m.date(),
+            hours: m.hours(),
+            minutes: m.minutes(),
+            seconds: m.seconds(),
+            milliseconds: m.milliseconds()
+        };
+    }
+
+    function toJSON () {
+        // new Date(NaN).toJSON() === null
+        return this.isValid() ? this.toISOString() : null;
     }
 
     function moment_valid__isValid () {
@@ -21496,6 +21481,18 @@ S2.define('jquery.select2',[
     function invalidAt () {
         return getParsingFlags(this).overflow;
     }
+
+    function creationData() {
+        return {
+            input: this._i,
+            format: this._f,
+            locale: this._locale,
+            isUTC: this._isUTC,
+            strict: this._strict
+        };
+    }
+
+    // FORMATTING
 
     addFormatToken(0, ['gg', 2], 0, function () {
         return this.weekYear() % 100;
@@ -21538,22 +21535,20 @@ S2.define('jquery.select2',[
         week[token] = utils_hooks__hooks.parseTwoDigitYear(input);
     });
 
-    // HELPERS
-
-    function weeksInYear(year, dow, doy) {
-        return weekOfYear(local__createLocal([year, 11, 31 + dow - doy]), dow, doy).week;
-    }
-
     // MOMENTS
 
     function getSetWeekYear (input) {
-        var year = weekOfYear(this, this.localeData()._week.dow, this.localeData()._week.doy).year;
-        return input == null ? year : this.add((input - year), 'y');
+        return getSetWeekYearHelper.call(this,
+                input,
+                this.week(),
+                this.weekday(),
+                this.localeData()._week.dow,
+                this.localeData()._week.doy);
     }
 
     function getSetISOWeekYear (input) {
-        var year = weekOfYear(this, 1, 4).year;
-        return input == null ? year : this.add((input - year), 'y');
+        return getSetWeekYearHelper.call(this,
+                input, this.isoWeek(), this.isoWeekday(), 1, 4);
     }
 
     function getISOWeeksInYear () {
@@ -21565,7 +21560,32 @@ S2.define('jquery.select2',[
         return weeksInYear(this.year(), weekInfo.dow, weekInfo.doy);
     }
 
-    addFormatToken('Q', 0, 0, 'quarter');
+    function getSetWeekYearHelper(input, week, weekday, dow, doy) {
+        var weeksTarget;
+        if (input == null) {
+            return weekOfYear(this, dow, doy).year;
+        } else {
+            weeksTarget = weeksInYear(input, dow, doy);
+            if (week > weeksTarget) {
+                week = weeksTarget;
+            }
+            return setWeekAll.call(this, input, week, weekday, dow, doy);
+        }
+    }
+
+    function setWeekAll(weekYear, week, weekday, dow, doy) {
+        var dayOfYearData = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy),
+            date = createUTCDate(dayOfYearData.year, 0, dayOfYearData.dayOfYear);
+
+        this.year(date.getUTCFullYear());
+        this.month(date.getUTCMonth());
+        this.date(date.getUTCDate());
+        return this;
+    }
+
+    // FORMATTING
+
+    addFormatToken('Q', 0, 'Qo', 'quarter');
 
     // ALIASES
 
@@ -21583,6 +21603,62 @@ S2.define('jquery.select2',[
     function getSetQuarter (input) {
         return input == null ? Math.ceil((this.month() + 1) / 3) : this.month((input - 1) * 3 + this.month() % 3);
     }
+
+    // FORMATTING
+
+    addFormatToken('w', ['ww', 2], 'wo', 'week');
+    addFormatToken('W', ['WW', 2], 'Wo', 'isoWeek');
+
+    // ALIASES
+
+    addUnitAlias('week', 'w');
+    addUnitAlias('isoWeek', 'W');
+
+    // PARSING
+
+    addRegexToken('w',  match1to2);
+    addRegexToken('ww', match1to2, match2);
+    addRegexToken('W',  match1to2);
+    addRegexToken('WW', match1to2, match2);
+
+    addWeekParseToken(['w', 'ww', 'W', 'WW'], function (input, week, config, token) {
+        week[token.substr(0, 1)] = toInt(input);
+    });
+
+    // HELPERS
+
+    // LOCALES
+
+    function localeWeek (mom) {
+        return weekOfYear(mom, this._week.dow, this._week.doy).week;
+    }
+
+    var defaultLocaleWeek = {
+        dow : 0, // Sunday is the first day of the week.
+        doy : 6  // The week that contains Jan 1st is the first week of the year.
+    };
+
+    function localeFirstDayOfWeek () {
+        return this._week.dow;
+    }
+
+    function localeFirstDayOfYear () {
+        return this._week.doy;
+    }
+
+    // MOMENTS
+
+    function getSetWeek (input) {
+        var week = this.localeData().week(this);
+        return input == null ? week : this.add((input - week) * 7, 'd');
+    }
+
+    function getSetISOWeek (input) {
+        var week = weekOfYear(this, 1, 4).week;
+        return input == null ? week : this.add((input - week) * 7, 'd');
+    }
+
+    // FORMATTING
 
     addFormatToken('D', ['DD', 2], 'Do', 'date');
 
@@ -21606,6 +21682,8 @@ S2.define('jquery.select2',[
     // MOMENTS
 
     var getSetDayOfMonth = makeGetSet('Date', true);
+
+    // FORMATTING
 
     addFormatToken('d', 0, 'do', 'day');
 
@@ -21635,12 +21713,18 @@ S2.define('jquery.select2',[
     addRegexToken('d',    match1to2);
     addRegexToken('e',    match1to2);
     addRegexToken('E',    match1to2);
-    addRegexToken('dd',   matchWord);
-    addRegexToken('ddd',  matchWord);
-    addRegexToken('dddd', matchWord);
+    addRegexToken('dd',   function (isStrict, locale) {
+        return locale.weekdaysMinRegex(isStrict);
+    });
+    addRegexToken('ddd',   function (isStrict, locale) {
+        return locale.weekdaysShortRegex(isStrict);
+    });
+    addRegexToken('dddd',   function (isStrict, locale) {
+        return locale.weekdaysRegex(isStrict);
+    });
 
-    addWeekParseToken(['dd', 'ddd', 'dddd'], function (input, week, config) {
-        var weekday = config._locale.weekdaysParse(input);
+    addWeekParseToken(['dd', 'ddd', 'dddd'], function (input, week, config, token) {
+        var weekday = config._locale.weekdaysParse(input, token, config._strict);
         // if we didn't get a weekday name, mark the date as invalid
         if (weekday != null) {
             week.d = weekday;
@@ -21656,25 +21740,28 @@ S2.define('jquery.select2',[
     // HELPERS
 
     function parseWeekday(input, locale) {
-        if (typeof input === 'string') {
-            if (!isNaN(input)) {
-                input = parseInt(input, 10);
-            }
-            else {
-                input = locale.weekdaysParse(input);
-                if (typeof input !== 'number') {
-                    return null;
-                }
-            }
+        if (typeof input !== 'string') {
+            return input;
         }
-        return input;
+
+        if (!isNaN(input)) {
+            return parseInt(input, 10);
+        }
+
+        input = locale.weekdaysParse(input);
+        if (typeof input === 'number') {
+            return input;
+        }
+
+        return null;
     }
 
     // LOCALES
 
     var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_');
-    function localeWeekdays (m) {
-        return this._weekdays[m.day()];
+    function localeWeekdays (m, format) {
+        return isArray(this._weekdays) ? this._weekdays[m.day()] :
+            this._weekdays[this._weekdays.isFormat.test(format) ? 'format' : 'standalone'][m.day()];
     }
 
     var defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_');
@@ -21687,22 +21774,105 @@ S2.define('jquery.select2',[
         return this._weekdaysMin[m.day()];
     }
 
-    function localeWeekdaysParse (weekdayName) {
+    function day_of_week__handleStrictParse(weekdayName, format, strict) {
+        var i, ii, mom, llc = weekdayName.toLocaleLowerCase();
+        if (!this._weekdaysParse) {
+            this._weekdaysParse = [];
+            this._shortWeekdaysParse = [];
+            this._minWeekdaysParse = [];
+
+            for (i = 0; i < 7; ++i) {
+                mom = create_utc__createUTC([2000, 1]).day(i);
+                this._minWeekdaysParse[i] = this.weekdaysMin(mom, '').toLocaleLowerCase();
+                this._shortWeekdaysParse[i] = this.weekdaysShort(mom, '').toLocaleLowerCase();
+                this._weekdaysParse[i] = this.weekdays(mom, '').toLocaleLowerCase();
+            }
+        }
+
+        if (strict) {
+            if (format === 'dddd') {
+                ii = indexOf.call(this._weekdaysParse, llc);
+                return ii !== -1 ? ii : null;
+            } else if (format === 'ddd') {
+                ii = indexOf.call(this._shortWeekdaysParse, llc);
+                return ii !== -1 ? ii : null;
+            } else {
+                ii = indexOf.call(this._minWeekdaysParse, llc);
+                return ii !== -1 ? ii : null;
+            }
+        } else {
+            if (format === 'dddd') {
+                ii = indexOf.call(this._weekdaysParse, llc);
+                if (ii !== -1) {
+                    return ii;
+                }
+                ii = indexOf.call(this._shortWeekdaysParse, llc);
+                if (ii !== -1) {
+                    return ii;
+                }
+                ii = indexOf.call(this._minWeekdaysParse, llc);
+                return ii !== -1 ? ii : null;
+            } else if (format === 'ddd') {
+                ii = indexOf.call(this._shortWeekdaysParse, llc);
+                if (ii !== -1) {
+                    return ii;
+                }
+                ii = indexOf.call(this._weekdaysParse, llc);
+                if (ii !== -1) {
+                    return ii;
+                }
+                ii = indexOf.call(this._minWeekdaysParse, llc);
+                return ii !== -1 ? ii : null;
+            } else {
+                ii = indexOf.call(this._minWeekdaysParse, llc);
+                if (ii !== -1) {
+                    return ii;
+                }
+                ii = indexOf.call(this._weekdaysParse, llc);
+                if (ii !== -1) {
+                    return ii;
+                }
+                ii = indexOf.call(this._shortWeekdaysParse, llc);
+                return ii !== -1 ? ii : null;
+            }
+        }
+    }
+
+    function localeWeekdaysParse (weekdayName, format, strict) {
         var i, mom, regex;
+
+        if (this._weekdaysParseExact) {
+            return day_of_week__handleStrictParse.call(this, weekdayName, format, strict);
+        }
 
         if (!this._weekdaysParse) {
             this._weekdaysParse = [];
+            this._minWeekdaysParse = [];
+            this._shortWeekdaysParse = [];
+            this._fullWeekdaysParse = [];
         }
 
         for (i = 0; i < 7; i++) {
             // make the regex if we don't have it already
+
+            mom = create_utc__createUTC([2000, 1]).day(i);
+            if (strict && !this._fullWeekdaysParse[i]) {
+                this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\.?') + '$', 'i');
+                this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\.?') + '$', 'i');
+                this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\.?') + '$', 'i');
+            }
             if (!this._weekdaysParse[i]) {
-                mom = local__createLocal([2000, 1]).day(i);
                 regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
                 this._weekdaysParse[i] = new RegExp(regex.replace('.', ''), 'i');
             }
             // test the regex
-            if (this._weekdaysParse[i].test(weekdayName)) {
+            if (strict && format === 'dddd' && this._fullWeekdaysParse[i].test(weekdayName)) {
+                return i;
+            } else if (strict && format === 'ddd' && this._shortWeekdaysParse[i].test(weekdayName)) {
+                return i;
+            } else if (strict && format === 'dd' && this._minWeekdaysParse[i].test(weekdayName)) {
+                return i;
+            } else if (!strict && this._weekdaysParse[i].test(weekdayName)) {
                 return i;
             }
         }
@@ -21711,6 +21881,9 @@ S2.define('jquery.select2',[
     // MOMENTS
 
     function getSetDayOfWeek (input) {
+        if (!this.isValid()) {
+            return input != null ? this : NaN;
+        }
         var day = this._isUTC ? this._d.getUTCDay() : this._d.getDay();
         if (input != null) {
             input = parseWeekday(input, this.localeData());
@@ -21721,20 +21894,171 @@ S2.define('jquery.select2',[
     }
 
     function getSetLocaleDayOfWeek (input) {
+        if (!this.isValid()) {
+            return input != null ? this : NaN;
+        }
         var weekday = (this.day() + 7 - this.localeData()._week.dow) % 7;
         return input == null ? weekday : this.add(input - weekday, 'd');
     }
 
     function getSetISODayOfWeek (input) {
+        if (!this.isValid()) {
+            return input != null ? this : NaN;
+        }
         // behaves the same as moment#day except
         // as a getter, returns 7 instead of 0 (1-7 range instead of 0-6)
         // as a setter, sunday should belong to the previous week.
         return input == null ? this.day() || 7 : this.day(this.day() % 7 ? input : input - 7);
     }
 
-    addFormatToken('H', ['HH', 2], 0, 'hour');
-    addFormatToken('h', ['hh', 2], 0, function () {
+    var defaultWeekdaysRegex = matchWord;
+    function weekdaysRegex (isStrict) {
+        if (this._weekdaysParseExact) {
+            if (!hasOwnProp(this, '_weekdaysRegex')) {
+                computeWeekdaysParse.call(this);
+            }
+            if (isStrict) {
+                return this._weekdaysStrictRegex;
+            } else {
+                return this._weekdaysRegex;
+            }
+        } else {
+            return this._weekdaysStrictRegex && isStrict ?
+                this._weekdaysStrictRegex : this._weekdaysRegex;
+        }
+    }
+
+    var defaultWeekdaysShortRegex = matchWord;
+    function weekdaysShortRegex (isStrict) {
+        if (this._weekdaysParseExact) {
+            if (!hasOwnProp(this, '_weekdaysRegex')) {
+                computeWeekdaysParse.call(this);
+            }
+            if (isStrict) {
+                return this._weekdaysShortStrictRegex;
+            } else {
+                return this._weekdaysShortRegex;
+            }
+        } else {
+            return this._weekdaysShortStrictRegex && isStrict ?
+                this._weekdaysShortStrictRegex : this._weekdaysShortRegex;
+        }
+    }
+
+    var defaultWeekdaysMinRegex = matchWord;
+    function weekdaysMinRegex (isStrict) {
+        if (this._weekdaysParseExact) {
+            if (!hasOwnProp(this, '_weekdaysRegex')) {
+                computeWeekdaysParse.call(this);
+            }
+            if (isStrict) {
+                return this._weekdaysMinStrictRegex;
+            } else {
+                return this._weekdaysMinRegex;
+            }
+        } else {
+            return this._weekdaysMinStrictRegex && isStrict ?
+                this._weekdaysMinStrictRegex : this._weekdaysMinRegex;
+        }
+    }
+
+
+    function computeWeekdaysParse () {
+        function cmpLenRev(a, b) {
+            return b.length - a.length;
+        }
+
+        var minPieces = [], shortPieces = [], longPieces = [], mixedPieces = [],
+            i, mom, minp, shortp, longp;
+        for (i = 0; i < 7; i++) {
+            // make the regex if we don't have it already
+            mom = create_utc__createUTC([2000, 1]).day(i);
+            minp = this.weekdaysMin(mom, '');
+            shortp = this.weekdaysShort(mom, '');
+            longp = this.weekdays(mom, '');
+            minPieces.push(minp);
+            shortPieces.push(shortp);
+            longPieces.push(longp);
+            mixedPieces.push(minp);
+            mixedPieces.push(shortp);
+            mixedPieces.push(longp);
+        }
+        // Sorting makes sure if one weekday (or abbr) is a prefix of another it
+        // will match the longer piece.
+        minPieces.sort(cmpLenRev);
+        shortPieces.sort(cmpLenRev);
+        longPieces.sort(cmpLenRev);
+        mixedPieces.sort(cmpLenRev);
+        for (i = 0; i < 7; i++) {
+            shortPieces[i] = regexEscape(shortPieces[i]);
+            longPieces[i] = regexEscape(longPieces[i]);
+            mixedPieces[i] = regexEscape(mixedPieces[i]);
+        }
+
+        this._weekdaysRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
+        this._weekdaysShortRegex = this._weekdaysRegex;
+        this._weekdaysMinRegex = this._weekdaysRegex;
+
+        this._weekdaysStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
+        this._weekdaysShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
+        this._weekdaysMinStrictRegex = new RegExp('^(' + minPieces.join('|') + ')', 'i');
+    }
+
+    // FORMATTING
+
+    addFormatToken('DDD', ['DDDD', 3], 'DDDo', 'dayOfYear');
+
+    // ALIASES
+
+    addUnitAlias('dayOfYear', 'DDD');
+
+    // PARSING
+
+    addRegexToken('DDD',  match1to3);
+    addRegexToken('DDDD', match3);
+    addParseToken(['DDD', 'DDDD'], function (input, array, config) {
+        config._dayOfYear = toInt(input);
+    });
+
+    // HELPERS
+
+    // MOMENTS
+
+    function getSetDayOfYear (input) {
+        var dayOfYear = Math.round((this.clone().startOf('day') - this.clone().startOf('year')) / 864e5) + 1;
+        return input == null ? dayOfYear : this.add((input - dayOfYear), 'd');
+    }
+
+    // FORMATTING
+
+    function hFormat() {
         return this.hours() % 12 || 12;
+    }
+
+    function kFormat() {
+        return this.hours() || 24;
+    }
+
+    addFormatToken('H', ['HH', 2], 0, 'hour');
+    addFormatToken('h', ['hh', 2], 0, hFormat);
+    addFormatToken('k', ['kk', 2], 0, kFormat);
+
+    addFormatToken('hmm', 0, 0, function () {
+        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2);
+    });
+
+    addFormatToken('hmmss', 0, 0, function () {
+        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2) +
+            zeroFill(this.seconds(), 2);
+    });
+
+    addFormatToken('Hmm', 0, 0, function () {
+        return '' + this.hours() + zeroFill(this.minutes(), 2);
+    });
+
+    addFormatToken('Hmmss', 0, 0, function () {
+        return '' + this.hours() + zeroFill(this.minutes(), 2) +
+            zeroFill(this.seconds(), 2);
     });
 
     function meridiem (token, lowercase) {
@@ -21763,6 +22087,11 @@ S2.define('jquery.select2',[
     addRegexToken('HH', match1to2, match2);
     addRegexToken('hh', match1to2, match2);
 
+    addRegexToken('hmm', match3to4);
+    addRegexToken('hmmss', match5to6);
+    addRegexToken('Hmm', match3to4);
+    addRegexToken('Hmmss', match5to6);
+
     addParseToken(['H', 'HH'], HOUR);
     addParseToken(['a', 'A'], function (input, array, config) {
         config._isPm = config._locale.isPM(input);
@@ -21771,6 +22100,32 @@ S2.define('jquery.select2',[
     addParseToken(['h', 'hh'], function (input, array, config) {
         array[HOUR] = toInt(input);
         getParsingFlags(config).bigHour = true;
+    });
+    addParseToken('hmm', function (input, array, config) {
+        var pos = input.length - 2;
+        array[HOUR] = toInt(input.substr(0, pos));
+        array[MINUTE] = toInt(input.substr(pos));
+        getParsingFlags(config).bigHour = true;
+    });
+    addParseToken('hmmss', function (input, array, config) {
+        var pos1 = input.length - 4;
+        var pos2 = input.length - 2;
+        array[HOUR] = toInt(input.substr(0, pos1));
+        array[MINUTE] = toInt(input.substr(pos1, 2));
+        array[SECOND] = toInt(input.substr(pos2));
+        getParsingFlags(config).bigHour = true;
+    });
+    addParseToken('Hmm', function (input, array, config) {
+        var pos = input.length - 2;
+        array[HOUR] = toInt(input.substr(0, pos));
+        array[MINUTE] = toInt(input.substr(pos));
+    });
+    addParseToken('Hmmss', function (input, array, config) {
+        var pos1 = input.length - 4;
+        var pos2 = input.length - 2;
+        array[HOUR] = toInt(input.substr(0, pos1));
+        array[MINUTE] = toInt(input.substr(pos1, 2));
+        array[SECOND] = toInt(input.substr(pos2));
     });
 
     // LOCALES
@@ -21799,6 +22154,8 @@ S2.define('jquery.select2',[
     // this rule.
     var getSetHour = makeGetSet('Hours', true);
 
+    // FORMATTING
+
     addFormatToken('m', ['mm', 2], 0, 'minute');
 
     // ALIASES
@@ -21814,6 +22171,8 @@ S2.define('jquery.select2',[
     // MOMENTS
 
     var getSetMinute = makeGetSet('Minutes', false);
+
+    // FORMATTING
 
     addFormatToken('s', ['ss', 2], 0, 'second');
 
@@ -21831,6 +22190,8 @@ S2.define('jquery.select2',[
 
     var getSetSecond = makeGetSet('Seconds', false);
 
+    // FORMATTING
+
     addFormatToken('S', 0, 0, function () {
         return ~~(this.millisecond() / 100);
     });
@@ -21839,12 +22200,26 @@ S2.define('jquery.select2',[
         return ~~(this.millisecond() / 10);
     });
 
-    function millisecond__milliseconds (token) {
-        addFormatToken(0, [token, 3], 0, 'millisecond');
-    }
+    addFormatToken(0, ['SSS', 3], 0, 'millisecond');
+    addFormatToken(0, ['SSSS', 4], 0, function () {
+        return this.millisecond() * 10;
+    });
+    addFormatToken(0, ['SSSSS', 5], 0, function () {
+        return this.millisecond() * 100;
+    });
+    addFormatToken(0, ['SSSSSS', 6], 0, function () {
+        return this.millisecond() * 1000;
+    });
+    addFormatToken(0, ['SSSSSSS', 7], 0, function () {
+        return this.millisecond() * 10000;
+    });
+    addFormatToken(0, ['SSSSSSSS', 8], 0, function () {
+        return this.millisecond() * 100000;
+    });
+    addFormatToken(0, ['SSSSSSSSS', 9], 0, function () {
+        return this.millisecond() * 1000000;
+    });
 
-    millisecond__milliseconds('SSS');
-    millisecond__milliseconds('SSSS');
 
     // ALIASES
 
@@ -21855,14 +22230,24 @@ S2.define('jquery.select2',[
     addRegexToken('S',    match1to3, match1);
     addRegexToken('SS',   match1to3, match2);
     addRegexToken('SSS',  match1to3, match3);
-    addRegexToken('SSSS', matchUnsigned);
-    addParseToken(['S', 'SS', 'SSS', 'SSSS'], function (input, array) {
-        array[MILLISECOND] = toInt(('0.' + input) * 1000);
-    });
 
+    var token;
+    for (token = 'SSSS'; token.length <= 9; token += 'S') {
+        addRegexToken(token, matchUnsigned);
+    }
+
+    function parseMs(input, array) {
+        array[MILLISECOND] = toInt(('0.' + input) * 1000);
+    }
+
+    for (token = 'S'; token.length <= 9; token += 'S') {
+        addParseToken(token, parseMs);
+    }
     // MOMENTS
 
     var getSetMillisecond = makeGetSet('Milliseconds', false);
+
+    // FORMATTING
 
     addFormatToken('z',  0, 0, 'zoneAbbr');
     addFormatToken('zz', 0, 0, 'zoneName');
@@ -21879,39 +22264,43 @@ S2.define('jquery.select2',[
 
     var momentPrototype__proto = Moment.prototype;
 
-    momentPrototype__proto.add          = add_subtract__add;
-    momentPrototype__proto.calendar     = moment_calendar__calendar;
-    momentPrototype__proto.clone        = clone;
-    momentPrototype__proto.diff         = diff;
-    momentPrototype__proto.endOf        = endOf;
-    momentPrototype__proto.format       = format;
-    momentPrototype__proto.from         = from;
-    momentPrototype__proto.fromNow      = fromNow;
-    momentPrototype__proto.to           = to;
-    momentPrototype__proto.toNow        = toNow;
-    momentPrototype__proto.get          = getSet;
-    momentPrototype__proto.invalidAt    = invalidAt;
-    momentPrototype__proto.isAfter      = isAfter;
-    momentPrototype__proto.isBefore     = isBefore;
-    momentPrototype__proto.isBetween    = isBetween;
-    momentPrototype__proto.isSame       = isSame;
-    momentPrototype__proto.isValid      = moment_valid__isValid;
-    momentPrototype__proto.lang         = lang;
-    momentPrototype__proto.locale       = locale;
-    momentPrototype__proto.localeData   = localeData;
-    momentPrototype__proto.max          = prototypeMax;
-    momentPrototype__proto.min          = prototypeMin;
-    momentPrototype__proto.parsingFlags = parsingFlags;
-    momentPrototype__proto.set          = getSet;
-    momentPrototype__proto.startOf      = startOf;
-    momentPrototype__proto.subtract     = add_subtract__subtract;
-    momentPrototype__proto.toArray      = toArray;
-    momentPrototype__proto.toDate       = toDate;
-    momentPrototype__proto.toISOString  = moment_format__toISOString;
-    momentPrototype__proto.toJSON       = moment_format__toISOString;
-    momentPrototype__proto.toString     = toString;
-    momentPrototype__proto.unix         = unix;
-    momentPrototype__proto.valueOf      = to_type__valueOf;
+    momentPrototype__proto.add               = add_subtract__add;
+    momentPrototype__proto.calendar          = moment_calendar__calendar;
+    momentPrototype__proto.clone             = clone;
+    momentPrototype__proto.diff              = diff;
+    momentPrototype__proto.endOf             = endOf;
+    momentPrototype__proto.format            = format;
+    momentPrototype__proto.from              = from;
+    momentPrototype__proto.fromNow           = fromNow;
+    momentPrototype__proto.to                = to;
+    momentPrototype__proto.toNow             = toNow;
+    momentPrototype__proto.get               = getSet;
+    momentPrototype__proto.invalidAt         = invalidAt;
+    momentPrototype__proto.isAfter           = isAfter;
+    momentPrototype__proto.isBefore          = isBefore;
+    momentPrototype__proto.isBetween         = isBetween;
+    momentPrototype__proto.isSame            = isSame;
+    momentPrototype__proto.isSameOrAfter     = isSameOrAfter;
+    momentPrototype__proto.isSameOrBefore    = isSameOrBefore;
+    momentPrototype__proto.isValid           = moment_valid__isValid;
+    momentPrototype__proto.lang              = lang;
+    momentPrototype__proto.locale            = locale;
+    momentPrototype__proto.localeData        = localeData;
+    momentPrototype__proto.max               = prototypeMax;
+    momentPrototype__proto.min               = prototypeMin;
+    momentPrototype__proto.parsingFlags      = parsingFlags;
+    momentPrototype__proto.set               = getSet;
+    momentPrototype__proto.startOf           = startOf;
+    momentPrototype__proto.subtract          = add_subtract__subtract;
+    momentPrototype__proto.toArray           = toArray;
+    momentPrototype__proto.toObject          = toObject;
+    momentPrototype__proto.toDate            = toDate;
+    momentPrototype__proto.toISOString       = moment_format__toISOString;
+    momentPrototype__proto.toJSON            = toJSON;
+    momentPrototype__proto.toString          = toString;
+    momentPrototype__proto.unix              = unix;
+    momentPrototype__proto.valueOf           = to_type__valueOf;
+    momentPrototype__proto.creationData      = creationData;
 
     // Year
     momentPrototype__proto.year       = getSetYear;
@@ -21997,7 +22386,7 @@ S2.define('jquery.select2',[
 
     function locale_calendar__calendar (key, mom, now) {
         var output = this._calendar[key];
-        return typeof output === 'function' ? output.call(mom, now) : output;
+        return isFunction(output) ? output.call(mom, now) : output;
     }
 
     var defaultLongDateFormat = {
@@ -22005,19 +22394,23 @@ S2.define('jquery.select2',[
         LT   : 'h:mm A',
         L    : 'MM/DD/YYYY',
         LL   : 'MMMM D, YYYY',
-        LLL  : 'MMMM D, YYYY LT',
-        LLLL : 'dddd, MMMM D, YYYY LT'
+        LLL  : 'MMMM D, YYYY h:mm A',
+        LLLL : 'dddd, MMMM D, YYYY h:mm A'
     };
 
     function longDateFormat (key) {
-        var output = this._longDateFormat[key];
-        if (!output && this._longDateFormat[key.toUpperCase()]) {
-            output = this._longDateFormat[key.toUpperCase()].replace(/MMMM|MM|DD|dddd/g, function (val) {
-                return val.slice(1);
-            });
-            this._longDateFormat[key] = output;
+        var format = this._longDateFormat[key],
+            formatUpper = this._longDateFormat[key.toUpperCase()];
+
+        if (format || !formatUpper) {
+            return format;
         }
-        return output;
+
+        this._longDateFormat[key] = formatUpper.replace(/MMMM|MM|DD|dddd/g, function (val) {
+            return val.slice(1);
+        });
+
+        return this._longDateFormat[key];
     }
 
     var defaultInvalidDate = 'Invalid date';
@@ -22055,29 +22448,14 @@ S2.define('jquery.select2',[
 
     function relative__relativeTime (number, withoutSuffix, string, isFuture) {
         var output = this._relativeTime[string];
-        return (typeof output === 'function') ?
+        return (isFunction(output)) ?
             output(number, withoutSuffix, string, isFuture) :
             output.replace(/%d/i, number);
     }
 
     function pastFuture (diff, output) {
         var format = this._relativeTime[diff > 0 ? 'future' : 'past'];
-        return typeof format === 'function' ? format(output) : format.replace(/%s/i, output);
-    }
-
-    function locale_set__set (config) {
-        var prop, i;
-        for (i in config) {
-            prop = config[i];
-            if (typeof prop === 'function') {
-                this[i] = prop;
-            } else {
-                this['_' + i] = prop;
-            }
-        }
-        // Lenient ordinal parsing accepts just a number in addition to
-        // number + (possibly) stuff coming from _ordinalParseLenient.
-        this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + (/\d{1,2}/).source);
+        return isFunction(format) ? format(output) : format.replace(/%s/i, output);
     }
 
     var prototype__proto = Locale.prototype;
@@ -22099,11 +22477,15 @@ S2.define('jquery.select2',[
     prototype__proto.set             = locale_set__set;
 
     // Month
-    prototype__proto.months       =        localeMonths;
-    prototype__proto._months      = defaultLocaleMonths;
-    prototype__proto.monthsShort  =        localeMonthsShort;
-    prototype__proto._monthsShort = defaultLocaleMonthsShort;
-    prototype__proto.monthsParse  =        localeMonthsParse;
+    prototype__proto.months            =        localeMonths;
+    prototype__proto._months           = defaultLocaleMonths;
+    prototype__proto.monthsShort       =        localeMonthsShort;
+    prototype__proto._monthsShort      = defaultLocaleMonthsShort;
+    prototype__proto.monthsParse       =        localeMonthsParse;
+    prototype__proto._monthsRegex      = defaultMonthsRegex;
+    prototype__proto.monthsRegex       = monthsRegex;
+    prototype__proto._monthsShortRegex = defaultMonthsShortRegex;
+    prototype__proto.monthsShortRegex  = monthsShortRegex;
 
     // Week
     prototype__proto.week = localeWeek;
@@ -22120,6 +22502,13 @@ S2.define('jquery.select2',[
     prototype__proto._weekdaysShort = defaultLocaleWeekdaysShort;
     prototype__proto.weekdaysParse  =        localeWeekdaysParse;
 
+    prototype__proto._weekdaysRegex      = defaultWeekdaysRegex;
+    prototype__proto.weekdaysRegex       =        weekdaysRegex;
+    prototype__proto._weekdaysShortRegex = defaultWeekdaysShortRegex;
+    prototype__proto.weekdaysShortRegex  =        weekdaysShortRegex;
+    prototype__proto._weekdaysMinRegex   = defaultWeekdaysMinRegex;
+    prototype__proto.weekdaysMinRegex    =        weekdaysMinRegex;
+
     // Hours
     prototype__proto.isPM = localeIsPM;
     prototype__proto._meridiemParse = defaultLocaleMeridiemParse;
@@ -22131,7 +22520,7 @@ S2.define('jquery.select2',[
         return locale[field](utc, format);
     }
 
-    function list (format, index, field, count, setter) {
+    function listMonthsImpl (format, index, field) {
         if (typeof format === 'number') {
             index = format;
             format = undefined;
@@ -22140,35 +22529,79 @@ S2.define('jquery.select2',[
         format = format || '';
 
         if (index != null) {
-            return lists__get(format, index, field, setter);
+            return lists__get(format, index, field, 'month');
         }
 
         var i;
         var out = [];
-        for (i = 0; i < count; i++) {
-            out[i] = lists__get(format, i, field, setter);
+        for (i = 0; i < 12; i++) {
+            out[i] = lists__get(format, i, field, 'month');
+        }
+        return out;
+    }
+
+    // ()
+    // (5)
+    // (fmt, 5)
+    // (fmt)
+    // (true)
+    // (true, 5)
+    // (true, fmt, 5)
+    // (true, fmt)
+    function listWeekdaysImpl (localeSorted, format, index, field) {
+        if (typeof localeSorted === 'boolean') {
+            if (typeof format === 'number') {
+                index = format;
+                format = undefined;
+            }
+
+            format = format || '';
+        } else {
+            format = localeSorted;
+            index = format;
+            localeSorted = false;
+
+            if (typeof format === 'number') {
+                index = format;
+                format = undefined;
+            }
+
+            format = format || '';
+        }
+
+        var locale = locale_locales__getLocale(),
+            shift = localeSorted ? locale._week.dow : 0;
+
+        if (index != null) {
+            return lists__get(format, (index + shift) % 7, field, 'day');
+        }
+
+        var i;
+        var out = [];
+        for (i = 0; i < 7; i++) {
+            out[i] = lists__get(format, (i + shift) % 7, field, 'day');
         }
         return out;
     }
 
     function lists__listMonths (format, index) {
-        return list(format, index, 'months', 12, 'month');
+        return listMonthsImpl(format, index, 'months');
     }
 
     function lists__listMonthsShort (format, index) {
-        return list(format, index, 'monthsShort', 12, 'month');
+        return listMonthsImpl(format, index, 'monthsShort');
     }
 
-    function lists__listWeekdays (format, index) {
-        return list(format, index, 'weekdays', 7, 'day');
+    function lists__listWeekdays (localeSorted, format, index) {
+        return listWeekdaysImpl(localeSorted, format, index, 'weekdays');
     }
 
-    function lists__listWeekdaysShort (format, index) {
-        return list(format, index, 'weekdaysShort', 7, 'day');
+    function lists__listWeekdaysShort (localeSorted, format, index) {
+        return listWeekdaysImpl(localeSorted, format, index, 'weekdaysShort');
     }
 
-    function lists__listWeekdaysMin (format, index) {
-        return list(format, index, 'weekdaysMin', 7, 'day');
+    function lists__listWeekdaysMin (localeSorted, format, index) {
+        return listWeekdaysImpl(localeSorted, format, index, 'weekdaysMin');
     }
 
     locale_locales__getSetGlobalLocale('en', {
@@ -22226,12 +22659,29 @@ S2.define('jquery.select2',[
         return duration_add_subtract__addSubtract(this, input, value, -1);
     }
 
+    function absCeil (number) {
+        if (number < 0) {
+            return Math.floor(number);
+        } else {
+            return Math.ceil(number);
+        }
+    }
+
     function bubble () {
         var milliseconds = this._milliseconds;
         var days         = this._days;
         var months       = this._months;
         var data         = this._data;
-        var seconds, minutes, hours, years = 0;
+        var seconds, minutes, hours, years, monthsFromDays;
+
+        // if we have a mix of positive and negative values, bubble down first
+        // check: https://github.com/moment/moment/issues/2166
+        if (!((milliseconds >= 0 && days >= 0 && months >= 0) ||
+                (milliseconds <= 0 && days <= 0 && months <= 0))) {
+            milliseconds += absCeil(monthsToDays(months) + days) * 864e5;
+            days = 0;
+            months = 0;
+        }
 
         // The following code bubbles up values, see the tests for
         // examples of what that means.
@@ -22248,17 +22698,13 @@ S2.define('jquery.select2',[
 
         days += absFloor(hours / 24);
 
-        // Accurately convert days to years, assume start from year 0.
-        years = absFloor(daysToYears(days));
-        days -= absFloor(yearsToDays(years));
-
-        // 30 days to a month
-        // TODO (iskren): Use anchor date (like 1st Jan) to compute this.
-        months += absFloor(days / 30);
-        days   %= 30;
+        // convert days to months
+        monthsFromDays = absFloor(daysToMonths(days));
+        months += monthsFromDays;
+        days -= absCeil(monthsToDays(monthsFromDays));
 
         // 12 months -> 1 year
-        years  += absFloor(months / 12);
+        years = absFloor(months / 12);
         months %= 12;
 
         data.days   = days;
@@ -22268,15 +22714,15 @@ S2.define('jquery.select2',[
         return this;
     }
 
-    function daysToYears (days) {
+    function daysToMonths (days) {
         // 400 years have 146097 days (taking into account leap year rules)
-        return days * 400 / 146097;
+        // 400 years have 12 months === 4800
+        return days * 4800 / 146097;
     }
 
-    function yearsToDays (years) {
-        // years * 365 + absFloor(years / 4) -
-        //     absFloor(years / 100) + absFloor(years / 400);
-        return years * 146097 / 400;
+    function monthsToDays (months) {
+        // the reverse of daysToMonths
+        return months * 146097 / 4800;
     }
 
     function as (units) {
@@ -22288,11 +22734,11 @@ S2.define('jquery.select2',[
 
         if (units === 'month' || units === 'year') {
             days   = this._days   + milliseconds / 864e5;
-            months = this._months + daysToYears(days) * 12;
+            months = this._months + daysToMonths(days);
             return units === 'month' ? months : months / 12;
         } else {
             // handle milliseconds separately because of floating point math errors (issue #1867)
-            days = this._days + Math.round(yearsToDays(this._months / 12));
+            days = this._days + Math.round(monthsToDays(this._months));
             switch (units) {
                 case 'week'   : return days / 7     + milliseconds / 6048e5;
                 case 'day'    : return days         + milliseconds / 864e5;
@@ -22342,7 +22788,7 @@ S2.define('jquery.select2',[
         };
     }
 
-    var duration_get__milliseconds = makeGetter('milliseconds');
+    var milliseconds = makeGetter('milliseconds');
     var seconds      = makeGetter('seconds');
     var minutes      = makeGetter('minutes');
     var hours        = makeGetter('hours');
@@ -22378,15 +22824,15 @@ S2.define('jquery.select2',[
         var years    = round(duration.as('y'));
 
         var a = seconds < thresholds.s && ['s', seconds]  ||
-                minutes === 1          && ['m']           ||
+                minutes <= 1           && ['m']           ||
                 minutes < thresholds.m && ['mm', minutes] ||
-                hours   === 1          && ['h']           ||
+                hours   <= 1           && ['h']           ||
                 hours   < thresholds.h && ['hh', hours]   ||
-                days    === 1          && ['d']           ||
+                days    <= 1           && ['d']           ||
                 days    < thresholds.d && ['dd', days]    ||
-                months  === 1          && ['M']           ||
+                months  <= 1           && ['M']           ||
                 months  < thresholds.M && ['MM', months]  ||
-                years   === 1          && ['y']           || ['yy', years];
+                years   <= 1           && ['y']           || ['yy', years];
 
         a[2] = withoutSuffix;
         a[3] = +posNegDuration > 0;
@@ -22420,13 +22866,36 @@ S2.define('jquery.select2',[
     var iso_string__abs = Math.abs;
 
     function iso_string__toISOString() {
+        // for ISO strings we do not use the normal bubbling rules:
+        //  * milliseconds bubble up until they become hours
+        //  * days do not bubble at all
+        //  * months bubble up until they become years
+        // This is because there is no context-free conversion between hours and days
+        // (think of clock changes)
+        // and also not between days and months (28-31 days per month)
+        var seconds = iso_string__abs(this._milliseconds) / 1000;
+        var days         = iso_string__abs(this._days);
+        var months       = iso_string__abs(this._months);
+        var minutes, hours, years;
+
+        // 3600 seconds -> 60 minutes -> 1 hour
+        minutes           = absFloor(seconds / 60);
+        hours             = absFloor(minutes / 60);
+        seconds %= 60;
+        minutes %= 60;
+
+        // 12 months -> 1 year
+        years  = absFloor(months / 12);
+        months %= 12;
+
+
         // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
-        var Y = iso_string__abs(this.years());
-        var M = iso_string__abs(this.months());
-        var D = iso_string__abs(this.days());
-        var h = iso_string__abs(this.hours());
-        var m = iso_string__abs(this.minutes());
-        var s = iso_string__abs(this.seconds() + this.milliseconds() / 1000);
+        var Y = years;
+        var M = months;
+        var D = days;
+        var h = hours;
+        var m = minutes;
+        var s = seconds;
         var total = this.asSeconds();
 
         if (!total) {
@@ -22463,7 +22932,7 @@ S2.define('jquery.select2',[
     duration_prototype__proto.valueOf        = duration_as__valueOf;
     duration_prototype__proto._bubble        = bubble;
     duration_prototype__proto.get            = duration_get__get;
-    duration_prototype__proto.milliseconds   = duration_get__milliseconds;
+    duration_prototype__proto.milliseconds   = milliseconds;
     duration_prototype__proto.seconds        = seconds;
     duration_prototype__proto.minutes        = minutes;
     duration_prototype__proto.hours          = hours;
@@ -22484,6 +22953,8 @@ S2.define('jquery.select2',[
 
     // Side effect imports
 
+    // FORMATTING
+
     addFormatToken('X', 0, 0, 'unix');
     addFormatToken('x', 0, 0, 'valueOf');
 
@@ -22501,13 +22972,14 @@ S2.define('jquery.select2',[
     // Side effect imports
 
 
-    utils_hooks__hooks.version = '2.10.3';
+    utils_hooks__hooks.version = '2.13.0';
 
     setHookCallback(local__createLocal);
 
     utils_hooks__hooks.fn                    = momentPrototype;
     utils_hooks__hooks.min                   = min;
     utils_hooks__hooks.max                   = max;
+    utils_hooks__hooks.now                   = now;
     utils_hooks__hooks.utc                   = create_utc__createUTC;
     utils_hooks__hooks.unix                  = moment__createUnix;
     utils_hooks__hooks.months                = lists__listMonths;
@@ -22523,52 +22995,48 @@ S2.define('jquery.select2',[
     utils_hooks__hooks.monthsShort           = lists__listMonthsShort;
     utils_hooks__hooks.weekdaysMin           = lists__listWeekdaysMin;
     utils_hooks__hooks.defineLocale          = defineLocale;
+    utils_hooks__hooks.updateLocale          = updateLocale;
+    utils_hooks__hooks.locales               = locale_locales__listLocales;
     utils_hooks__hooks.weekdaysShort         = lists__listWeekdaysShort;
     utils_hooks__hooks.normalizeUnits        = normalizeUnits;
     utils_hooks__hooks.relativeTimeThreshold = duration_humanize__getSetRelativeTimeThreshold;
+    utils_hooks__hooks.prototype             = momentPrototype;
 
     var _moment = utils_hooks__hooks;
 
     return _moment;
 
 }));
-
 /**
-* @version: 2.1.19
+* @version: 2.1.30
 * @author: Dan Grossman http://www.dangrossman.info/
-* @copyright: Copyright (c) 2012-2015 Dan Grossman. All rights reserved.
+* @copyright: Copyright (c) 2012-2017 Dan Grossman. All rights reserved.
 * @license: Licensed under the MIT license. See http://www.opensource.org/licenses/mit-license.php
-* @website: https://www.improvely.com/
+* @website: http://www.daterangepicker.com/
 */
-
-(function(root, factory) {
-
-  if (typeof define === 'function' && define.amd) {
-    define(['moment', 'jquery', 'exports'], function(momentjs, $, exports) {
-      root.daterangepicker = factory(root, exports, momentjs, $);
-    });
-
-  } else if (typeof exports !== 'undefined') {
-      var momentjs = require('moment');
-      var jQuery = (typeof window != 'undefined') ? window.jQuery : undefined;  //isomorphic issue
-      if (!jQuery) {
-          try {
-              jQuery = require('jquery');
-              if (!jQuery.fn) jQuery.fn = {}; //isomorphic issue
-          } catch (err) {
-              if (!jQuery) throw new Error('jQuery dependency not found');
-          }
-      }
-
-    factory(root, exports, momentjs, jQuery);
-
-  // Finally, as a browser global.
-  } else {
-    root.daterangepicker = factory(root, {}, root.moment || moment, (root.jQuery || root.Zepto || root.ender || root.$));
-  }
-
-}(this || {}, function(root, daterangepicker, moment, $) { // 'this' doesn't exist on a server
-
+// Follow the UMD template https://github.com/umdjs/umd/blob/master/templates/returnExportsGlobal.js
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Make globaly available as well
+        define(['moment', 'jquery'], function (moment, jquery) {
+            if (!jquery.fn) jquery.fn = {}; // webpack server rendering
+            return factory(moment, jquery);
+        });
+    } else if (typeof module === 'object' && module.exports) {
+        // Node / Browserify
+        //isomorphic issue
+        var jQuery = (typeof window != 'undefined') ? window.jQuery : undefined;
+        if (!jQuery) {
+            jQuery = require('jquery');
+            if (!jQuery.fn) jQuery.fn = {};
+        }
+        var moment = (typeof window != 'undefined' && typeof window.moment != 'undefined') ? window.moment : require('moment');
+        module.exports = factory(moment, jQuery);
+    } else {
+        // Browser globals
+        root.daterangepicker = factory(root.moment, root.jQuery);
+    }
+}(this, function(moment, $) {
     var DateRangePicker = function(element, options, cb) {
 
         //default settings for options
@@ -22584,6 +23052,7 @@ S2.define('jquery.select2',[
         this.showDropdowns = false;
         this.showWeekNumbers = false;
         this.showISOWeekNumbers = false;
+        this.showCustomRangeLabel = true;
         this.timePicker = false;
         this.timePicker24Hour = false;
         this.timePickerIncrement = 1;
@@ -22606,7 +23075,8 @@ S2.define('jquery.select2',[
         this.cancelClass = 'btn-default';
 
         this.locale = {
-            format: 'MM/DD/YYYY',
+            direction: 'ltr',
+            format: moment.localeData().longDateFormat('L'),
             separator: ' - ',
             applyLabel: 'Apply',
             cancelLabel: 'Cancel',
@@ -22637,7 +23107,7 @@ S2.define('jquery.select2',[
             options.template = '<div class="daterangepicker dropdown-menu">' +
                 '<div class="calendar left">' +
                     '<div class="daterangepicker_input">' +
-                      '<input class="input-mini" type="text" name="daterangepicker_start" value="" />' +
+                      '<input class="input-mini form-control" type="text" name="daterangepicker_start" value="" />' +
                       '<i class="fa fa-calendar glyphicon glyphicon-calendar"></i>' +
                       '<div class="calendar-time">' +
                         '<div></div>' +
@@ -22648,7 +23118,7 @@ S2.define('jquery.select2',[
                 '</div>' +
                 '<div class="calendar right">' +
                     '<div class="daterangepicker_input">' +
-                      '<input class="input-mini" type="text" name="daterangepicker_end" value="" />' +
+                      '<input class="input-mini form-control" type="text" name="daterangepicker_end" value="" />' +
                       '<i class="fa fa-calendar glyphicon glyphicon-calendar"></i>' +
                       '<div class="calendar-time">' +
                         '<div></div>' +
@@ -22674,6 +23144,9 @@ S2.define('jquery.select2',[
 
         if (typeof options.locale === 'object') {
 
+            if (typeof options.locale.direction === 'string')
+                this.locale.direction = options.locale.direction;
+
             if (typeof options.locale.format === 'string')
                 this.locale.format = options.locale.format;
 
@@ -22698,10 +23171,15 @@ S2.define('jquery.select2',[
             if (typeof options.locale.weekLabel === 'string')
               this.locale.weekLabel = options.locale.weekLabel;
 
-            if (typeof options.locale.customRangeLabel === 'string')
-              this.locale.customRangeLabel = options.locale.customRangeLabel;
-
+            if (typeof options.locale.customRangeLabel === 'string'){
+                //Support unicode chars in the custom range name.
+                var elem = document.createElement('textarea');
+                elem.innerHTML = options.locale.customRangeLabel;
+                var rangeHtml = elem.value;
+                this.locale.customRangeLabel = rangeHtml;
+            }
         }
+        this.container.addClass(this.locale.direction);
 
         if (typeof options.startDate === 'string')
             this.startDate = moment(options.startDate, this.locale.format);
@@ -22765,6 +23243,9 @@ S2.define('jquery.select2',[
         if (typeof options.showDropdowns === 'boolean')
             this.showDropdowns = options.showDropdowns;
 
+        if (typeof options.showCustomRangeLabel === 'boolean')
+            this.showCustomRangeLabel = options.showCustomRangeLabel;
+
         if (typeof options.singleDatePicker === 'boolean') {
             this.singleDatePicker = options.singleDatePicker;
             if (this.singleDatePicker)
@@ -22794,6 +23275,9 @@ S2.define('jquery.select2',[
 
         if (typeof options.isInvalidDate === 'function')
             this.isInvalidDate = options.isInvalidDate;
+
+        if (typeof options.isCustomDate === 'function')
+            this.isCustomDate = options.isCustomDate;
 
         if (typeof options.alwaysShowCalendars === 'boolean')
             this.alwaysShowCalendars = options.alwaysShowCalendars;
@@ -22850,16 +23334,17 @@ S2.define('jquery.select2',[
                     start = this.minDate.clone();
 
                 var maxDate = this.maxDate;
-                if (this.dateLimit && start.clone().add(this.dateLimit).isAfter(maxDate))
+                if (this.dateLimit && maxDate && start.clone().add(this.dateLimit).isAfter(maxDate))
                     maxDate = start.clone().add(this.dateLimit);
                 if (maxDate && end.isAfter(maxDate))
                     end = maxDate.clone();
 
                 // If the end of the range is before the minimum or the start of the range is
                 // after the maximum, don't display this range option at all.
-                if ((this.minDate && end.isBefore(this.minDate)) || (maxDate && start.isAfter(maxDate)))
+                if ((this.minDate && end.isBefore(this.minDate, this.timepicker ? 'minute' : 'day')) 
+                  || (maxDate && start.isAfter(maxDate, this.timepicker ? 'minute' : 'day')))
                     continue;
-                
+
                 //Support unicode chars in the range names.
                 var elem = document.createElement('textarea');
                 elem.innerHTML = range;
@@ -22870,9 +23355,11 @@ S2.define('jquery.select2',[
 
             var list = '<ul>';
             for (range in this.ranges) {
-                list += '<li>' + range + '</li>';
+                list += '<li data-range-key="' + range + '">' + range + '</li>';
             }
-            list += '<li>' + this.locale.customRangeLabel + '</li>';
+            if (this.showCustomRangeLabel) {
+                list += '<li data-range-key="' + this.locale.customRangeLabel + '">' + this.locale.customRangeLabel + '</li>';
+            }
             list += '</ul>';
             this.container.find('.ranges').prepend(list);
         }
@@ -22902,8 +23389,10 @@ S2.define('jquery.select2',[
             this.container.find('.calendar.left').addClass('single');
             this.container.find('.calendar.left').show();
             this.container.find('.calendar.right').hide();
-            this.container.find('.daterangepicker_input input, .daterangepicker_input i').hide();
-            if (!this.timePicker) {
+            this.container.find('.daterangepicker_input input, .daterangepicker_input > i').hide();
+            if (this.timePicker) {
+                this.container.find('.ranges ul').hide();
+            } else {
                 this.container.find('.ranges').hide();
             }
         }
@@ -22916,10 +23405,7 @@ S2.define('jquery.select2',[
 
         //swap the position of the predefined ranges if opens right
         if (typeof options.ranges !== 'undefined' && this.opens == 'right') {
-            var ranges = this.container.find('.ranges');
-            var html = ranges.clone();
-            ranges.remove();
-            this.container.find('.calendar.left').parent().prepend(html);
+            this.container.find('.ranges').prependTo( this.container.find('.calendar.left').parent() );
         }
 
         //apply CSS classes and labels to buttons
@@ -22938,15 +23424,17 @@ S2.define('jquery.select2',[
         this.container.find('.calendar')
             .on('click.daterangepicker', '.prev', $.proxy(this.clickPrev, this))
             .on('click.daterangepicker', '.next', $.proxy(this.clickNext, this))
-            .on('click.daterangepicker', 'td.available', $.proxy(this.clickDate, this))
+            .on('mousedown.daterangepicker', 'td.available', $.proxy(this.clickDate, this))
             .on('mouseenter.daterangepicker', 'td.available', $.proxy(this.hoverDate, this))
             .on('mouseleave.daterangepicker', 'td.available', $.proxy(this.updateFormInputs, this))
             .on('change.daterangepicker', 'select.yearselect', $.proxy(this.monthOrYearChanged, this))
             .on('change.daterangepicker', 'select.monthselect', $.proxy(this.monthOrYearChanged, this))
             .on('change.daterangepicker', 'select.hourselect,select.minuteselect,select.secondselect,select.ampmselect', $.proxy(this.timeChanged, this))
             .on('click.daterangepicker', '.daterangepicker_input input', $.proxy(this.showCalendars, this))
-            //.on('keyup.daterangepicker', '.daterangepicker_input input', $.proxy(this.formInputsChanged, this))
-            .on('change.daterangepicker', '.daterangepicker_input input', $.proxy(this.formInputsChanged, this));
+            .on('focus.daterangepicker', '.daterangepicker_input input', $.proxy(this.formInputsFocused, this))
+            .on('blur.daterangepicker', '.daterangepicker_input input', $.proxy(this.formInputsBlurred, this))
+            .on('change.daterangepicker', '.daterangepicker_input input', $.proxy(this.formInputsChanged, this))
+            .on('keydown.daterangepicker', '.daterangepicker_input input', $.proxy(this.formInputsKeydown, this));
 
         this.container.find('.ranges')
             .on('click.daterangepicker', 'button.applyBtn', $.proxy(this.clickApply, this))
@@ -22955,15 +23443,16 @@ S2.define('jquery.select2',[
             .on('mouseenter.daterangepicker', 'li', $.proxy(this.hoverRange, this))
             .on('mouseleave.daterangepicker', 'li', $.proxy(this.updateFormInputs, this));
 
-        if (this.element.is('input')) {
+        if (this.element.is('input') || this.element.is('button')) {
             this.element.on({
                 'click.daterangepicker': $.proxy(this.show, this),
                 'focus.daterangepicker': $.proxy(this.show, this),
                 'keyup.daterangepicker': $.proxy(this.elementChanged, this),
-                'keydown.daterangepicker': $.proxy(this.keydown, this)
+                'keydown.daterangepicker': $.proxy(this.keydown, this) //IE 11 compatibility
             });
         } else {
             this.element.on('click.daterangepicker', $.proxy(this.toggle, this));
+            this.element.on('keydown.daterangepicker', $.proxy(this.toggle, this));
         }
 
         //
@@ -22997,11 +23486,17 @@ S2.define('jquery.select2',[
             if (this.timePicker && this.timePickerIncrement)
                 this.startDate.minute(Math.round(this.startDate.minute() / this.timePickerIncrement) * this.timePickerIncrement);
 
-            if (this.minDate && this.startDate.isBefore(this.minDate))
-                this.startDate = this.minDate;
+            if (this.minDate && this.startDate.isBefore(this.minDate)) {
+                this.startDate = this.minDate.clone();
+                if (this.timePicker && this.timePickerIncrement)
+                    this.startDate.minute(Math.round(this.startDate.minute() / this.timePickerIncrement) * this.timePickerIncrement);
+            }
 
-            if (this.maxDate && this.startDate.isAfter(this.maxDate))
-                this.startDate = this.maxDate;
+            if (this.maxDate && this.startDate.isAfter(this.maxDate)) {
+                this.startDate = this.maxDate.clone();
+                if (this.timePicker && this.timePickerIncrement)
+                    this.startDate.minute(Math.floor(this.startDate.minute() / this.timePickerIncrement) * this.timePickerIncrement);
+            }
 
             if (!this.isShowing)
                 this.updateElement();
@@ -23017,7 +23512,7 @@ S2.define('jquery.select2',[
                 this.endDate = moment(endDate);
 
             if (!this.timePicker)
-                this.endDate = this.endDate.endOf('day');
+                this.endDate = this.endDate.add(1,'d').startOf('day').subtract(1,'second');
 
             if (this.timePicker && this.timePickerIncrement)
                 this.endDate.minute(Math.round(this.endDate.minute() / this.timePickerIncrement) * this.timePickerIncrement);
@@ -23026,7 +23521,7 @@ S2.define('jquery.select2',[
                 this.endDate = this.startDate.clone();
 
             if (this.maxDate && this.endDate.isAfter(this.maxDate))
-                this.endDate = this.maxDate;
+                this.endDate = this.maxDate.clone();
 
             if (this.dateLimit && this.startDate.clone().add(this.dateLimit).isBefore(this.endDate))
                 this.endDate = this.startDate.clone().add(this.dateLimit);
@@ -23040,6 +23535,10 @@ S2.define('jquery.select2',[
         },
 
         isInvalidDate: function() {
+            return false;
+        },
+
+        isCustomDate: function() {
             return false;
         },
 
@@ -23083,12 +23582,16 @@ S2.define('jquery.select2',[
                 } else {
                     this.rightCalendar.month = this.startDate.clone().date(2).add(1, 'month');
                 }
-                
+
             } else {
                 if (this.leftCalendar.month.format('YYYY-MM') != this.startDate.format('YYYY-MM') && this.rightCalendar.month.format('YYYY-MM') != this.startDate.format('YYYY-MM')) {
                     this.leftCalendar.month = this.startDate.clone().date(2);
                     this.rightCalendar.month = this.startDate.clone().date(2).add(1, 'month');
                 }
+            }
+            if (this.maxDate && this.linkedCalendars && !this.singleDatePicker && this.rightCalendar.month > this.maxDate) {
+              this.rightCalendar.month = this.maxDate.clone().date(2);
+              this.leftCalendar.month = this.maxDate.clone().date(2).subtract(1, 'month');
             }
         },
 
@@ -23205,6 +23708,7 @@ S2.define('jquery.select2',[
             var minDate = side == 'left' ? this.minDate : this.startDate;
             var maxDate = this.maxDate;
             var selected = side == 'left' ? this.startDate : this.endDate;
+            var arrow = this.locale.direction == 'ltr' ? {left: 'chevron-left', right: 'chevron-right'} : {left: 'chevron-right', right: 'chevron-left'};
 
             var html = '<table class="table-condensed">';
             html += '<thead>';
@@ -23215,7 +23719,7 @@ S2.define('jquery.select2',[
                 html += '<th></th>';
 
             if ((!minDate || minDate.isBefore(calendar.firstDay)) && (!this.linkedCalendars || side == 'left')) {
-                html += '<th class="prev available"><i class="fa fa-chevron-left glyphicon glyphicon-chevron-left"></i></th>';
+                html += '<th class="prev available"><i class="fa fa-' + arrow.left + ' glyphicon glyphicon-' + arrow.left + '"></i></th>';
             } else {
                 html += '<th></th>';
             }
@@ -23257,7 +23761,7 @@ S2.define('jquery.select2',[
 
             html += '<th colspan="5" class="month">' + dateHtml + '</th>';
             if ((!maxDate || maxDate.isAfter(calendar.lastDay)) && (!this.linkedCalendars || side == 'right' || this.singleDatePicker)) {
-                html += '<th class="next available"><i class="fa fa-chevron-right glyphicon glyphicon-chevron-right"></i></th>';
+                html += '<th class="next available"><i class="fa fa-' + arrow.right + ' glyphicon glyphicon-' + arrow.right + '"></i></th>';
             } else {
                 html += '<th></th>';
             }
@@ -23335,6 +23839,15 @@ S2.define('jquery.select2',[
                     if (this.endDate != null && calendar[row][col] > this.startDate && calendar[row][col] < this.endDate)
                         classes.push('in-range');
 
+                    //apply custom classes for this date
+                    var isCustom = this.isCustomDate(calendar[row][col]);
+                    if (isCustom !== false) {
+                        if (typeof isCustom === 'string')
+                            classes.push(isCustom);
+                        else
+                            Array.prototype.push.apply(classes, isCustom);
+                    }
+
                     var cname = '', disabled = false;
                     for (var i = 0; i < classes.length; i++) {
                         cname += classes[i] + ' ';
@@ -23359,6 +23872,10 @@ S2.define('jquery.select2',[
 
         renderTimePicker: function(side) {
 
+            // Don't bother updating the time picker if it's currently disabled
+            // because an end date hasn't been clicked yet
+            if (side == 'right' && !this.endDate) return;
+
             var html, selected, minDate, maxDate = this.maxDate;
 
             if (this.dateLimit && (!this.maxDate || this.startDate.clone().add(this.dateLimit).isAfter(this.maxDate)))
@@ -23368,7 +23885,7 @@ S2.define('jquery.select2',[
                 selected = this.startDate.clone();
                 minDate = this.minDate;
             } else if (side == 'right') {
-                selected = this.endDate ? this.endDate.clone() : this.previousRightTime.clone();
+                selected = this.endDate.clone();
                 minDate = this.startDate;
 
                 //Preserve the time already selected
@@ -23387,13 +23904,14 @@ S2.define('jquery.select2',[
                             selected.hour(0);
                     }
 
-                    if (selected.isBefore(this.startDate))
-                        selected = this.startDate.clone();
-
-                    if (selected.isAfter(maxDate))
-                        selected = maxDate.clone();
-
                 }
+
+                if (selected.isBefore(this.startDate))
+                    selected = this.startDate.clone();
+
+                if (maxDate && selected.isAfter(maxDate))
+                    selected = maxDate.clone();
+
             }
 
             //
@@ -23662,6 +24180,7 @@ S2.define('jquery.select2',[
                 target.closest('.calendar-table').length
                 ) return;
             this.hide();
+            this.element.trigger('outsideClick.daterangepicker', this);
         },
 
         showCalendars: function() {
@@ -23681,7 +24200,8 @@ S2.define('jquery.select2',[
             if (this.container.find('input[name=daterangepicker_start]').is(":focus") || this.container.find('input[name=daterangepicker_end]').is(":focus"))
                 return;
 
-            var label = e.target.innerHTML;
+            var label = e.target.getAttribute('data-range-key');
+
             if (label == this.locale.customRangeLabel) {
                 this.updateView();
             } else {
@@ -23689,11 +24209,11 @@ S2.define('jquery.select2',[
                 this.container.find('input[name=daterangepicker_start]').val(dates[0].format(this.locale.format));
                 this.container.find('input[name=daterangepicker_end]').val(dates[1].format(this.locale.format));
             }
-            
+
         },
 
         clickRange: function(e) {
-            var label = e.target.innerHTML;
+            var label = e.target.getAttribute('data-range-key');
             this.chosenLabel = label;
             if (label == this.locale.customRangeLabel) {
                 this.showCalendars();
@@ -23740,8 +24260,8 @@ S2.define('jquery.select2',[
         hoverDate: function(e) {
 
             //ignore mouse movements while an above-calendar text input has focus
-            if (this.container.find('input[name=daterangepicker_start]').is(":focus") || this.container.find('input[name=daterangepicker_end]').is(":focus"))
-                return;
+            //if (this.container.find('input[name=daterangepicker_start]').is(":focus") || this.container.find('input[name=daterangepicker_end]').is(":focus"))
+            //    return;
 
             //ignore dates that can't be selected
             if (!$(e.target).hasClass('available')) return;
@@ -23753,9 +24273,9 @@ S2.define('jquery.select2',[
             var cal = $(e.target).parents('.calendar');
             var date = cal.hasClass('left') ? this.leftCalendar.calendar[row][col] : this.rightCalendar.calendar[row][col];
 
-            if (this.endDate) {
+            if (this.endDate && !this.container.find('input[name=daterangepicker_start]').is(":focus")) {
                 this.container.find('input[name=daterangepicker_start]').val(date.format(this.locale.format));
-            } else {
+            } else if (!this.endDate && !this.container.find('input[name=daterangepicker_end]').is(":focus")) {
                 this.container.find('input[name=daterangepicker_end]').val(date.format(this.locale.format));
             }
 
@@ -23764,7 +24284,7 @@ S2.define('jquery.select2',[
             var rightCalendar = this.rightCalendar;
             var startDate = this.startDate;
             if (!this.endDate) {
-                this.container.find('.calendar td').each(function(index, el) {
+                this.container.find('.calendar tbody td').each(function(index, el) {
 
                     //skip week numbers, only look at dates
                     if ($(el).hasClass('week')) return;
@@ -23775,7 +24295,7 @@ S2.define('jquery.select2',[
                     var cal = $(el).parents('.calendar');
                     var dt = cal.hasClass('left') ? leftCalendar.calendar[row][col] : rightCalendar.calendar[row][col];
 
-                    if (dt.isAfter(startDate) && dt.isBefore(date)) {
+                    if ((dt.isAfter(startDate) && dt.isBefore(date)) || dt.isSame(date, 'day')) {
                         $(el).addClass('in-range');
                     } else {
                         $(el).removeClass('in-range');
@@ -23802,9 +24322,10 @@ S2.define('jquery.select2',[
             // * if the time picker is enabled, apply the hour/minute/second from the select boxes to the clicked date
             // * if autoapply is enabled, and an end date was chosen, apply the selection
             // * if single date picker mode, and time picker isn't enabled, apply the selection immediately
+            // * if one of the inputs above the calendars was focused, cancel that manual input
             //
 
-            if (this.endDate || date.isBefore(this.startDate, 'day')) {
+            if (this.endDate || date.isBefore(this.startDate, 'day')) { //picking start
                 if (this.timePicker) {
                     var hour = parseInt(this.container.find('.left .hourselect').val(), 10);
                     if (!this.timePicker24Hour) {
@@ -23821,10 +24342,10 @@ S2.define('jquery.select2',[
                 this.endDate = null;
                 this.setStartDate(date.clone());
             } else if (!this.endDate && date.isBefore(this.startDate)) {
-                //special case: clicking the same date for start/end, 
+                //special case: clicking the same date for start/end,
                 //but the time of the end date is before the start date
                 this.setEndDate(this.startDate.clone());
-            } else {
+            } else { // picking end
                 if (this.timePicker) {
                     var hour = parseInt(this.container.find('.right .hourselect').val(), 10);
                     if (!this.timePicker24Hour) {
@@ -23853,32 +24374,41 @@ S2.define('jquery.select2',[
 
             this.updateView();
 
+            //This is to cancel the blur event handler if the mouse was in one of the inputs
+            e.stopPropagation();
+
         },
 
-        calculateChosenLabel: function() {
-          var customRange = true;
-          var i = 0;
-          for (var range in this.ranges) {
+        calculateChosenLabel: function () {
+            var customRange = true;
+            var i = 0;
+            for (var range in this.ranges) {
               if (this.timePicker) {
-                  if (this.startDate.isSame(this.ranges[range][0]) && this.endDate.isSame(this.ranges[range][1])) {
-                      customRange = false;
-                      this.chosenLabel = this.container.find('.ranges li:eq(' + i + ')').addClass('active').html();
-                      break;
-                  }
-              } else {
-                  //ignore times when comparing dates if time picker is not enabled
-                  if (this.startDate.format('YYYY-MM-DD') == this.ranges[range][0].format('YYYY-MM-DD') && this.endDate.format('YYYY-MM-DD') == this.ranges[range][1].format('YYYY-MM-DD')) {
-                      customRange = false;
-                      this.chosenLabel = this.container.find('.ranges li:eq(' + i + ')').addClass('active').html();
-                      break;
-                  }
-              }
-              i++;
-          }
-          if (customRange) {
-              this.chosenLabel = this.container.find('.ranges li:last').addClass('active').html();
-              this.showCalendars();
-          }
+                    var format = this.timePickerSeconds ? "YYYY-MM-DD hh:mm:ss" : "YYYY-MM-DD hh:mm";
+                    //ignore times when comparing dates if time picker seconds is not enabled
+                    if (this.startDate.format(format) == this.ranges[range][0].format(format) && this.endDate.format(format) == this.ranges[range][1].format(format)) {
+                        customRange = false;
+                        this.chosenLabel = this.container.find('.ranges li:eq(' + i + ')').addClass('active').html();
+                        break;
+                    }
+                } else {
+                    //ignore times when comparing dates if time picker is not enabled
+                    if (this.startDate.format('YYYY-MM-DD') == this.ranges[range][0].format('YYYY-MM-DD') && this.endDate.format('YYYY-MM-DD') == this.ranges[range][1].format('YYYY-MM-DD')) {
+                        customRange = false;
+                        this.chosenLabel = this.container.find('.ranges li:eq(' + i + ')').addClass('active').html();
+                        break;
+                    }
+                }
+                i++;
+            }
+            if (customRange) {
+                if (this.showCustomRangeLabel) {
+                    this.chosenLabel = this.container.find('.ranges li:last').addClass('active').html();
+                } else {
+                    this.chosenLabel = null;
+                }
+                this.showCalendars();
+            }
         },
 
         clickApply: function(e) {
@@ -24004,17 +24534,63 @@ S2.define('jquery.select2',[
 
             }
 
-            this.updateCalendars();
-            if (this.timePicker) {
-                this.renderTimePicker('left');
-                this.renderTimePicker('right');
+            this.updateView();
+        },
+
+        formInputsFocused: function(e) {
+
+            // Highlight the focused input
+            this.container.find('input[name="daterangepicker_start"], input[name="daterangepicker_end"]').removeClass('active');
+            $(e.target).addClass('active');
+
+            // Set the state such that if the user goes back to using a mouse, 
+            // the calendars are aware we're selecting the end of the range, not
+            // the start. This allows someone to edit the end of a date range without
+            // re-selecting the beginning, by clicking on the end date input then
+            // using the calendar.
+            var isRight = $(e.target).closest('.calendar').hasClass('right');
+            if (isRight) {
+                this.endDate = null;
+                this.setStartDate(this.startDate.clone());
+                this.updateView();
+            }
+
+        },
+
+        formInputsBlurred: function(e) {
+
+            // this function has one purpose right now: if you tab from the first
+            // text input to the second in the UI, the endDate is nulled so that
+            // you can click another, but if you tab out without clicking anything
+            // or changing the input value, the old endDate should be retained
+
+            if (!this.endDate) {
+                var val = this.container.find('input[name="daterangepicker_end"]').val();
+                var end = moment(val, this.locale.format);
+                if (end.isValid()) {
+                    this.setEndDate(end);
+                    this.updateView();
+                }
+            }
+
+        },
+
+        formInputsKeydown: function(e) {
+            // This function ensures that if the 'enter' key was pressed in the input, then the calendars
+            // are updated with the startDate and endDate.
+            // This behaviour is automatic in Chrome/Firefox/Edge but not in IE 11 hence why this exists.
+            // Other browsers and versions of IE are untested and the behaviour is unknown.
+            if (e.keyCode === 13) {
+                // Prevent the calendar from being updated twice on Chrome/Firefox/Edge
+                e.preventDefault(); 
+                this.formInputsChanged(e);
             }
         },
+
 
         elementChanged: function() {
             if (!this.element.is('input')) return;
             if (!this.element.val().length) return;
-            if (this.element.val().length < this.locale.format.length) return;
 
             var dateString = this.element.val().split(this.locale.separator),
                 start = null,
@@ -24042,6 +24618,14 @@ S2.define('jquery.select2',[
             if ((e.keyCode === 9) || (e.keyCode === 13)) {
                 this.hide();
             }
+
+            //hide on esc and prevent propagation
+            if (e.keyCode === 27) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                this.hide();
+            }
         },
 
         updateElement: function() {
@@ -24063,15 +24647,16 @@ S2.define('jquery.select2',[
     };
 
     $.fn.daterangepicker = function(options, callback) {
+        var implementOptions = $.extend(true, {}, $.fn.daterangepicker.defaultOptions, options);
         this.each(function() {
             var el = $(this);
             if (el.data('daterangepicker'))
                 el.data('daterangepicker').remove();
-            el.data('daterangepicker', new DateRangePicker(el, options, callback));
+            el.data('daterangepicker', new DateRangePicker(el, implementOptions, callback));
         });
         return this;
     };
-    
+
     return DateRangePicker;
 
 }));
@@ -26455,774 +27040,1129 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /*! AdminLTE app.js
- * ================
- * Main JS application file for AdminLTE v2. This file
- * should be included in all pages. It controls some layout
- * options and implements exclusive AdminLTE plugins.
- *
- * @Author  Almsaeed Studio
- * @Support <http://www.almsaeedstudio.com>
- * @Email   <abdullah@almsaeedstudio.com>
- * @version 2.3.8
- * @license MIT <http://opensource.org/licenses/MIT>
- */
+* ================
+* Main JS application file for AdminLTE v2. This file
+* should be included in all pages. It controls some layout
+* options and implements exclusive AdminLTE plugins.
+*
+* @Author  Almsaeed Studio
+* @Support <https://www.almsaeedstudio.com>
+* @Email   <abdullah@almsaeedstudio.com>
+* @version 2.4.0
+* @repository git://github.com/almasaeed2010/AdminLTE.git
+* @license MIT <http://opensource.org/licenses/MIT>
+*/
 
-//Make sure jQuery has been loaded before app.js
-if (typeof jQuery === "undefined") {
-  throw new Error("AdminLTE requires jQuery");
+// Make sure jQuery has been loaded
+if (typeof jQuery === 'undefined') {
+throw new Error('AdminLTE requires jQuery')
 }
 
-/* AdminLTE
+/* BoxRefresh()
+ * =========
+ * Adds AJAX content control to a box.
  *
- * @type Object
- * @description $.AdminLTE is the main object for the template's app.
- *              It's used for implementing functions and options related
- *              to the template. Keeping everything wrapped in an object
- *              prevents conflict with other plugins and is a better
- *              way to organize our code.
+ * @Usage: $('#my-box').boxRefresh(options)
+ *         or add [data-widget="box-refresh"] to the box element
+ *         Pass any option as data-option="value"
  */
-$.AdminLTE = {};
++function ($) {
+  'use strict'
 
-/* --------------------
- * - AdminLTE Options -
- * --------------------
- * Modify these options to suit your implementation
+  var DataKey = 'lte.boxrefresh'
+
+  var Default = {
+    source         : '',
+    params         : {},
+    trigger        : '.refresh-btn',
+    content        : '.box-body',
+    loadInContent  : true,
+    responseType   : '',
+    overlayTemplate: '<div class="overlay"><div class="fa fa-refresh fa-spin"></div></div>',
+    onLoadStart    : function () {
+    },
+    onLoadDone     : function (response) {
+      return response
+    }
+  }
+
+  var Selector = {
+    data: '[data-widget="box-refresh"]'
+  }
+
+  // BoxRefresh Class Definition
+  // =========================
+  var BoxRefresh = function (element, options) {
+    this.element  = element
+    this.options  = options
+    this.$overlay = $(options.overlay)
+
+    if (options.source === '') {
+      throw new Error('Source url was not defined. Please specify a url in your BoxRefresh source option.')
+    }
+
+    this._setUpListeners()
+    this.load()
+  }
+
+  BoxRefresh.prototype.load = function () {
+    this._addOverlay()
+    this.options.onLoadStart.call($(this))
+
+    $.get(this.options.source, this.options.params, function (response) {
+      if (this.options.loadInContent) {
+        $(this.options.content).html(response)
+      }
+      this.options.onLoadDone.call($(this), response)
+      this._removeOverlay()
+    }.bind(this), this.options.responseType !== '' && this.options.responseType)
+  }
+
+  // Private
+
+  BoxRefresh.prototype._setUpListeners = function () {
+    $(this.element).on('click', Selector.trigger, function (event) {
+      if (event) event.preventDefault()
+      this.load()
+    }.bind(this))
+  }
+
+  BoxRefresh.prototype._addOverlay = function () {
+    $(this.element).append(this.$overlay)
+  }
+
+  BoxRefresh.prototype._removeOverlay = function () {
+    $(this.element).remove(this.$overlay)
+  }
+
+  // Plugin Definition
+  // =================
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data(DataKey)
+
+      if (!data) {
+        var options = $.extend({}, Default, $this.data(), typeof option == 'object' && option)
+        $this.data(DataKey, (data = new BoxRefresh($this, options)))
+      }
+
+      if (typeof data == 'string') {
+        if (typeof data[option] == 'undefined') {
+          throw new Error('No method named ' + option)
+        }
+        data[option]()
+      }
+    })
+  }
+
+  var old = $.fn.boxRefresh
+
+  $.fn.boxRefresh             = Plugin
+  $.fn.boxRefresh.Constructor = BoxRefresh
+
+  // No Conflict Mode
+  // ================
+  $.fn.boxRefresh.noConflict = function () {
+    $.fn.boxRefresh = old
+    return this
+  }
+
+  // BoxRefresh Data API
+  // =================
+  $(window).on('load', function () {
+    $(Selector.data).each(function () {
+      Plugin.call($(this))
+    })
+  })
+
+}(jQuery)
+
+
+/* BoxWidget()
+ * ======
+ * Adds box widget functions to boxes.
+ *
+ * @Usage: $('.my-box').boxWidget(options)
+ *         This plugin auto activates on any element using the `.box` class
+ *         Pass any option as data-option="value"
  */
-$.AdminLTE.options = {
-  //Add slimscroll to navbar menus
-  //This requires you to load the slimscroll plugin
-  //in every page before app.js
-  navbarMenuSlimscroll: true,
-  navbarMenuSlimscrollWidth: "3px", //The width of the scroll bar
-  navbarMenuHeight: "200px", //The height of the inner menu
-  //General animation speed for JS animated elements such as box collapse/expand and
-  //sidebar treeview slide up/down. This options accepts an integer as milliseconds,
-  //'fast', 'normal', or 'slow'
-  animationSpeed: 500,
-  //Sidebar push menu toggle button selector
-  sidebarToggleSelector: "[data-toggle='offcanvas']",
-  //Activate sidebar push menu
-  sidebarPushMenu: true,
-  //Activate sidebar slimscroll if the fixed layout is set (requires SlimScroll Plugin)
-  sidebarSlimScroll: true,
-  //Enable sidebar expand on hover effect for sidebar mini
-  //This option is forced to true if both the fixed layout and sidebar mini
-  //are used together
-  sidebarExpandOnHover: false,
-  //BoxRefresh Plugin
-  enableBoxRefresh: true,
-  //Bootstrap.js tooltip
-  enableBSToppltip: true,
-  BSTooltipSelector: "[data-toggle='tooltip']",
-  //Enable Fast Click. Fastclick.js creates a more
-  //native touch experience with touch devices. If you
-  //choose to enable the plugin, make sure you load the script
-  //before AdminLTE's app.js
-  enableFastclick: false,
-  //Control Sidebar Tree views
-  enableControlTreeView: true,
-  //Control Sidebar Options
-  enableControlSidebar: true,
-  controlSidebarOptions: {
-    //Which button should trigger the open/close event
-    toggleBtnSelector: "[data-toggle='control-sidebar']",
-    //The sidebar selector
-    selector: ".control-sidebar",
-    //Enable slide over content
++function ($) {
+  'use strict'
+
+  var DataKey = 'lte.boxwidget'
+
+  var Default = {
+    animationSpeed : 500,
+    collapseTrigger: '[data-widget="collapse"]',
+    removeTrigger  : '[data-widget="remove"]',
+    collapseIcon   : 'fa-minus',
+    expandIcon     : 'fa-plus',
+    removeIcon     : 'fa-times'
+  }
+
+  var Selector = {
+    data     : '.box',
+    collapsed: '.collapsed-box',
+    body     : '.box-body',
+    footer   : '.box-footer',
+    tools    : '.box-tools'
+  }
+
+  var ClassName = {
+    collapsed: 'collapsed-box'
+  }
+
+  var Event = {
+    collapsed: 'collapsed.boxwidget',
+    expanded : 'expanded.boxwidget',
+    removed  : 'removed.boxwidget'
+  }
+
+  // BoxWidget Class Definition
+  // =====================
+  var BoxWidget = function (element, options) {
+    this.element = element
+    this.options = options
+
+    this._setUpListeners()
+  }
+
+  BoxWidget.prototype.toggle = function () {
+    var isOpen = !$(this.element).is(Selector.collapsed)
+
+    if (isOpen) {
+      this.collapse()
+    } else {
+      this.expand()
+    }
+  }
+
+  BoxWidget.prototype.expand = function () {
+    var expandedEvent = $.Event(Event.expanded)
+    var collapseIcon  = this.options.collapseIcon
+    var expandIcon    = this.options.expandIcon
+
+    $(this.element).removeClass(ClassName.collapsed)
+
+    $(this.element)
+      .find(Selector.tools)
+      .find('.' + expandIcon)
+      .removeClass(expandIcon)
+      .addClass(collapseIcon)
+
+    $(this.element).find(Selector.body + ', ' + Selector.footer)
+      .slideDown(this.options.animationSpeed, function () {
+        $(this.element).trigger(expandedEvent)
+      }.bind(this))
+  }
+
+  BoxWidget.prototype.collapse = function () {
+    var collapsedEvent = $.Event(Event.collapsed)
+    var collapseIcon   = this.options.collapseIcon
+    var expandIcon     = this.options.expandIcon
+
+    $(this.element)
+      .find(Selector.tools)
+      .find('.' + collapseIcon)
+      .removeClass(collapseIcon)
+      .addClass(expandIcon)
+
+    $(this.element).find(Selector.body + ', ' + Selector.footer)
+      .slideUp(this.options.animationSpeed, function () {
+        $(this.element).addClass(ClassName.collapsed)
+        $(this.element).trigger(collapsedEvent)
+      }.bind(this))
+  }
+
+  BoxWidget.prototype.remove = function () {
+    var removedEvent = $.Event(Event.removed)
+
+    $(this.element).slideUp(this.options.animationSpeed, function () {
+      $(this.element).trigger(removedEvent)
+      $(this.element).remove()
+    }.bind(this))
+  }
+
+  // Private
+
+  BoxWidget.prototype._setUpListeners = function () {
+    var that = this
+
+    $(this.element).on('click', this.options.collapseTrigger, function (event) {
+      if (event) event.preventDefault()
+      that.toggle()
+    })
+
+    $(this.element).on('click', this.options.removeTrigger, function (event) {
+      if (event) event.preventDefault()
+      that.remove()
+    })
+  }
+
+  // Plugin Definition
+  // =================
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data(DataKey)
+
+      if (!data) {
+        var options = $.extend({}, Default, $this.data(), typeof option == 'object' && option)
+        $this.data(DataKey, (data = new BoxWidget($this, options)))
+      }
+
+      if (typeof option == 'string') {
+        if (typeof data[option] == 'undefined') {
+          throw new Error('No method named ' + option)
+        }
+        data[option]()
+      }
+    })
+  }
+
+  var old = $.fn.boxWidget
+
+  $.fn.boxWidget             = Plugin
+  $.fn.boxWidget.Constructor = BoxWidget
+
+  // No Conflict Mode
+  // ================
+  $.fn.boxWidget.noConflict = function () {
+    $.fn.boxWidget = old
+    return this
+  }
+
+  // BoxWidget Data API
+  // ==================
+  $(window).on('load', function () {
+    $(Selector.data).each(function () {
+      Plugin.call($(this))
+    })
+  })
+
+}(jQuery)
+
+
+/* ControlSidebar()
+ * ===============
+ * Toggles the state of the control sidebar
+ *
+ * @Usage: $('#control-sidebar-trigger').controlSidebar(options)
+ *         or add [data-toggle="control-sidebar"] to the trigger
+ *         Pass any option as data-option="value"
+ */
++function ($) {
+  'use strict'
+
+  var DataKey = 'lte.controlsidebar'
+
+  var Default = {
     slide: true
-  },
-  //Box Widget Plugin. Enable this plugin
-  //to allow boxes to be collapsed and/or removed
-  enableBoxWidget: true,
-  //Box Widget plugin options
-  boxWidgetOptions: {
-    boxWidgetIcons: {
-      //Collapse icon
-      collapse: 'fa-minus',
-      //Open icon
-      open: 'fa-plus',
-      //Remove icon
-      remove: 'fa-times'
-    },
-    boxWidgetSelectors: {
-      //Remove button selector
-      remove: '[data-widget="remove"]',
-      //Collapse button selector
-      collapse: '[data-widget="collapse"]'
+  }
+
+  var Selector = {
+    sidebar: '.control-sidebar',
+    data   : '[data-toggle="control-sidebar"]',
+    open   : '.control-sidebar-open',
+    bg     : '.control-sidebar-bg',
+    wrapper: '.wrapper',
+    content: '.content-wrapper',
+    boxed  : '.layout-boxed'
+  }
+
+  var ClassName = {
+    open : 'control-sidebar-open',
+    fixed: 'fixed'
+  }
+
+  var Event = {
+    collapsed: 'collapsed.controlsidebar',
+    expanded : 'expanded.controlsidebar'
+  }
+
+  // ControlSidebar Class Definition
+  // ===============================
+  var ControlSidebar = function (element, options) {
+    this.element         = element
+    this.options         = options
+    this.hasBindedResize = false
+
+    this.init()
+  }
+
+  ControlSidebar.prototype.init = function () {
+    // Add click listener if the element hasn't been
+    // initialized using the data API
+    if (!$(this.element).is(Selector.data)) {
+      $(this).on('click', this.toggle)
     }
-  },
-  //Direct Chat plugin options
-  directChat: {
-    //Enable direct chat by default
-    enable: true,
-    //The button to open and close the chat contacts pane
-    contactToggleSelector: '[data-widget="chat-pane-toggle"]'
-  },
-  //Define the set of colors to use globally around the website
-  colors: {
-    lightBlue: "#3c8dbc",
-    red: "#f56954",
-    green: "#00a65a",
-    aqua: "#00c0ef",
-    yellow: "#f39c12",
-    blue: "#0073b7",
-    navy: "#001F3F",
-    teal: "#39CCCC",
-    olive: "#3D9970",
-    lime: "#01FF70",
-    orange: "#FF851B",
-    fuchsia: "#F012BE",
-    purple: "#8E24AA",
-    maroon: "#D81B60",
-    black: "#222222",
-    gray: "#d2d6de"
-  },
-  //The standard screen sizes that bootstrap uses.
-  //If you change these in the variables.less file, change
-  //them here too.
-  screenSizes: {
-    xs: 480,
-    sm: 768,
-    md: 992,
-    lg: 1200
-  }
-};
 
-/* ------------------
- * - Implementation -
- * ------------------
- * The next block of code implements AdminLTE's
- * functions and plugins as specified by the
- * options above.
- */
-$(function () {
-  "use strict";
-
-  //Fix for IE page transitions
-  $("body").removeClass("hold-transition");
-
-  //Extend options if external options exist
-  if (typeof AdminLTEOptions !== "undefined") {
-    $.extend(true,
-      $.AdminLTE.options,
-      AdminLTEOptions);
+    this.fix()
+    $(window).resize(function () {
+      this.fix()
+    }.bind(this))
   }
 
-  //Easy access to options
-  var o = $.AdminLTE.options;
+  ControlSidebar.prototype.toggle = function (event) {
+    if (event) event.preventDefault()
 
-  //Set up the object
-  _init();
+    this.fix()
 
-  //Activate the layout maker
-  $.AdminLTE.layout.activate();
-
-  //Enable sidebar tree view controls
-  if (o.enableControlTreeView) {
-    $.AdminLTE.tree('.sidebar');
-  }
-
-  //Enable control sidebar
-  if (o.enableControlSidebar) {
-    $.AdminLTE.controlSidebar.activate();
-  }
-
-  //Add slimscroll to navbar dropdown
-  if (o.navbarMenuSlimscroll && typeof $.fn.slimscroll != 'undefined') {
-    $(".navbar .menu").slimscroll({
-      height: o.navbarMenuHeight,
-      alwaysVisible: false,
-      size: o.navbarMenuSlimscrollWidth
-    }).css("width", "100%");
-  }
-
-  //Activate sidebar push menu
-  if (o.sidebarPushMenu) {
-    $.AdminLTE.pushMenu.activate(o.sidebarToggleSelector);
-  }
-
-  //Activate Bootstrap tooltip
-  if (o.enableBSToppltip) {
-    $('body').tooltip({
-      selector: o.BSTooltipSelector,
-      container: 'body'
-    });
-  }
-
-  //Activate box widget
-  if (o.enableBoxWidget) {
-    $.AdminLTE.boxWidget.activate();
-  }
-
-  //Activate fast click
-  if (o.enableFastclick && typeof FastClick != 'undefined') {
-    FastClick.attach(document.body);
-  }
-
-  //Activate direct chat widget
-  if (o.directChat.enable) {
-    $(document).on('click', o.directChat.contactToggleSelector, function () {
-      var box = $(this).parents('.direct-chat').first();
-      box.toggleClass('direct-chat-contacts-open');
-    });
-  }
-
-  /*
-   * INITIALIZE BUTTON TOGGLE
-   * ------------------------
-   */
-  $('.btn-group[data-toggle="btn-toggle"]').each(function () {
-    var group = $(this);
-    $(this).find(".btn").on('click', function (e) {
-      group.find(".btn.active").removeClass("active");
-      $(this).addClass("active");
-      e.preventDefault();
-    });
-
-  });
-});
-
-/* ----------------------------------
- * - Initialize the AdminLTE Object -
- * ----------------------------------
- * All AdminLTE functions are implemented below.
- */
-function _init() {
-  'use strict';
-  /* Layout
-   * ======
-   * Fixes the layout height in case min-height fails.
-   *
-   * @type Object
-   * @usage $.AdminLTE.layout.activate()
-   *        $.AdminLTE.layout.fix()
-   *        $.AdminLTE.layout.fixSidebar()
-   */
-  $.AdminLTE.layout = {
-    activate: function () {
-      var _this = this;
-      _this.fix();
-      _this.fixSidebar();
-      $('body, html, .wrapper').css('height', 'auto');
-      $(window, ".wrapper").resize(function () {
-        _this.fix();
-        _this.fixSidebar();
-      });
-    },
-    fix: function () {
-      // Remove overflow from .wrapper if layout-boxed exists
-      $(".layout-boxed > .wrapper").css('overflow', 'hidden');
-      //Get window height and the wrapper height
-      var footer_height = $('.main-footer').outerHeight() || 0;
-      var neg = $('.main-header').outerHeight() + footer_height;
-      var window_height = $(window).height();
-      var sidebar_height = $(".sidebar").height() || 0;
-      //Set the min-height of the content and sidebar based on the
-      //the height of the document.
-      if ($("body").hasClass("fixed")) {
-        $(".content-wrapper, .right-side").css('min-height', window_height - footer_height);
-      } else {
-        var postSetWidth;
-        if (window_height >= sidebar_height) {
-          $(".content-wrapper, .right-side").css('min-height', window_height - neg);
-          postSetWidth = window_height - neg;
-        } else {
-          $(".content-wrapper, .right-side").css('min-height', sidebar_height);
-          postSetWidth = sidebar_height;
-        }
-
-        //Fix for the control sidebar height
-        var controlSidebar = $($.AdminLTE.options.controlSidebarOptions.selector);
-        if (typeof controlSidebar !== "undefined") {
-          if (controlSidebar.height() > postSetWidth)
-            $(".content-wrapper, .right-side").css('min-height', controlSidebar.height());
-        }
-
-      }
-    },
-    fixSidebar: function () {
-      //Make sure the body tag has the .fixed class
-      if (!$("body").hasClass("fixed")) {
-        if (typeof $.fn.slimScroll != 'undefined') {
-          $(".sidebar").slimScroll({destroy: true}).height("auto");
-        }
-        return;
-      } else if (typeof $.fn.slimScroll == 'undefined' && window.console) {
-        window.console.error("Error: the fixed layout requires the slimscroll plugin!");
-      }
-      //Enable slimscroll for fixed layout
-      if ($.AdminLTE.options.sidebarSlimScroll) {
-        if (typeof $.fn.slimScroll != 'undefined') {
-          //Destroy if it exists
-          $(".sidebar").slimScroll({destroy: true}).height("auto");
-          //Add slimscroll
-          $(".sidebar").slimScroll({
-            height: ($(window).height() - $(".main-header").height()) + "px",
-            color: "rgba(0,0,0,0.2)",
-            size: "3px"
-          });
-        }
-      }
+    if (!$(Selector.sidebar).is(Selector.open) && !$('body').is(Selector.open)) {
+      this.expand()
+    } else {
+      this.collapse()
     }
-  };
+  }
 
-  /* PushMenu()
-   * ==========
-   * Adds the push menu functionality to the sidebar.
-   *
-   * @type Function
-   * @usage: $.AdminLTE.pushMenu("[data-toggle='offcanvas']")
-   */
-  $.AdminLTE.pushMenu = {
-    activate: function (toggleBtn) {
-      //Get the screen sizes
-      var screenSizes = $.AdminLTE.options.screenSizes;
-
-      //Enable sidebar toggle
-      $(document).on('click', toggleBtn, function (e) {
-        e.preventDefault();
-
-        //Enable sidebar push menu
-        if ($(window).width() > (screenSizes.sm - 1)) {
-          if ($("body").hasClass('sidebar-collapse')) {
-            $("body").removeClass('sidebar-collapse').trigger('expanded.pushMenu');
-          } else {
-            $("body").addClass('sidebar-collapse').trigger('collapsed.pushMenu');
-          }
-        }
-        //Handle sidebar push menu for small screens
-        else {
-          if ($("body").hasClass('sidebar-open')) {
-            $("body").removeClass('sidebar-open').removeClass('sidebar-collapse').trigger('collapsed.pushMenu');
-          } else {
-            $("body").addClass('sidebar-open').trigger('expanded.pushMenu');
-          }
-        }
-      });
-
-      $(".content-wrapper").click(function () {
-        //Enable hide menu when clicking on the content-wrapper on small screens
-        if ($(window).width() <= (screenSizes.sm - 1) && $("body").hasClass("sidebar-open")) {
-          $("body").removeClass('sidebar-open');
-        }
-      });
-
-      //Enable expand on hover for sidebar mini
-      if ($.AdminLTE.options.sidebarExpandOnHover
-        || ($('body').hasClass('fixed')
-        && $('body').hasClass('sidebar-mini'))) {
-        this.expandOnHover();
-      }
-    },
-    expandOnHover: function () {
-      var _this = this;
-      var screenWidth = $.AdminLTE.options.screenSizes.sm - 1;
-      //Expand sidebar on hover
-      $('.main-sidebar').hover(function () {
-        if ($('body').hasClass('sidebar-mini')
-          && $("body").hasClass('sidebar-collapse')
-          && $(window).width() > screenWidth) {
-          _this.expand();
-        }
-      }, function () {
-        if ($('body').hasClass('sidebar-mini')
-          && $('body').hasClass('sidebar-expanded-on-hover')
-          && $(window).width() > screenWidth) {
-          _this.collapse();
-        }
-      });
-    },
-    expand: function () {
-      $("body").removeClass('sidebar-collapse').addClass('sidebar-expanded-on-hover');
-    },
-    collapse: function () {
-      if ($('body').hasClass('sidebar-expanded-on-hover')) {
-        $('body').removeClass('sidebar-expanded-on-hover').addClass('sidebar-collapse');
-      }
+  ControlSidebar.prototype.expand = function () {
+    if (!this.options.slide) {
+      $('body').addClass(ClassName.open)
+    } else {
+      $(Selector.sidebar).addClass(ClassName.open)
     }
-  };
 
-  /* Tree()
-   * ======
-   * Converts the sidebar into a multilevel
-   * tree view menu.
-   *
-   * @type Function
-   * @Usage: $.AdminLTE.tree('.sidebar')
-   */
-  $.AdminLTE.tree = function (menu) {
-    var _this = this;
-    var animationSpeed = $.AdminLTE.options.animationSpeed;
-    $(document).off('click', menu + ' li a')
-      .on('click', menu + ' li a', function (e) {
-        //Get the clicked link and the next element
-        var $this = $(this);
-        var checkElement = $this.next();
+    $(this.element).trigger($.Event(Event.expanded))
+  }
 
-        //Check if the next element is a menu and is visible
-        if ((checkElement.is('.treeview-menu')) && (checkElement.is(':visible')) && (!$('body').hasClass('sidebar-collapse'))) {
-          //Close the menu
-          checkElement.slideUp(animationSpeed, function () {
-            checkElement.removeClass('menu-open');
-            //Fix the layout in case the sidebar stretches over the height of the window
-            //_this.layout.fix();
-          });
-          checkElement.parent("li").removeClass("active");
-        }
-        //If the menu is not visible
-        else if ((checkElement.is('.treeview-menu')) && (!checkElement.is(':visible'))) {
-          //Get the parent menu
-          var parent = $this.parents('ul').first();
-          //Close all open menus within the parent
-          var ul = parent.find('ul:visible').slideUp(animationSpeed);
-          //Remove the menu-open class from the parent
-          ul.removeClass('menu-open');
-          //Get the parent li
-          var parent_li = $this.parent("li");
+  ControlSidebar.prototype.collapse = function () {
+    $('body, ' + Selector.sidebar).removeClass(ClassName.open)
+    $(this.element).trigger($.Event(Event.collapsed))
+  }
 
-          //Open the target menu and add the menu-open class
-          checkElement.slideDown(animationSpeed, function () {
-            //Add the class active to the parent li
-            checkElement.addClass('menu-open');
-            parent.find('li.active').removeClass('active');
-            parent_li.addClass('active');
-            //Fix the layout in case the sidebar stretches over the height of the window
-            _this.layout.fix();
-          });
-        }
-        //if this isn't a link, prevent the page from being redirected
-        if (checkElement.is('.treeview-menu')) {
-          e.preventDefault();
-        }
-      });
-  };
-
-  /* ControlSidebar
-   * ==============
-   * Adds functionality to the right sidebar
-   *
-   * @type Object
-   * @usage $.AdminLTE.controlSidebar.activate(options)
-   */
-  $.AdminLTE.controlSidebar = {
-    //instantiate the object
-    activate: function () {
-      //Get the object
-      var _this = this;
-      //Update options
-      var o = $.AdminLTE.options.controlSidebarOptions;
-      //Get the sidebar
-      var sidebar = $(o.selector);
-      //The toggle button
-      var btn = $(o.toggleBtnSelector);
-
-      //Listen to the click event
-      btn.on('click', function (e) {
-        e.preventDefault();
-        //If the sidebar is not open
-        if (!sidebar.hasClass('control-sidebar-open')
-          && !$('body').hasClass('control-sidebar-open')) {
-          //Open the sidebar
-          _this.open(sidebar, o.slide);
-        } else {
-          _this.close(sidebar, o.slide);
-        }
-      });
-
-      //If the body has a boxed layout, fix the sidebar bg position
-      var bg = $(".control-sidebar-bg");
-      _this._fix(bg);
-
-      //If the body has a fixed layout, make the control sidebar fixed
-      if ($('body').hasClass('fixed')) {
-        _this._fixForFixed(sidebar);
-      } else {
-        //If the content height is less than the sidebar's height, force max height
-        if ($('.content-wrapper, .right-side').height() < sidebar.height()) {
-          _this._fixForContent(sidebar);
-        }
-      }
-    },
-    //Open the control sidebar
-    open: function (sidebar, slide) {
-      //Slide over content
-      if (slide) {
-        sidebar.addClass('control-sidebar-open');
-      } else {
-        //Push the content by adding the open class to the body instead
-        //of the sidebar itself
-        $('body').addClass('control-sidebar-open');
-      }
-    },
-    //Close the control sidebar
-    close: function (sidebar, slide) {
-      if (slide) {
-        sidebar.removeClass('control-sidebar-open');
-      } else {
-        $('body').removeClass('control-sidebar-open');
-      }
-    },
-    _fix: function (sidebar) {
-      var _this = this;
-      if ($("body").hasClass('layout-boxed')) {
-        sidebar.css('position', 'absolute');
-        sidebar.height($(".wrapper").height());
-        if (_this.hasBindedResize) {
-          return;
-        }
-        $(window).resize(function () {
-          _this._fix(sidebar);
-        });
-        _this.hasBindedResize = true;
-      } else {
-        sidebar.css({
-          'position': 'fixed',
-          'height': 'auto'
-        });
-      }
-    },
-    _fixForFixed: function (sidebar) {
-      sidebar.css({
-        'position': 'fixed',
-        'max-height': '100%',
-        'overflow': 'auto',
-        'padding-bottom': '50px'
-      });
-    },
-    _fixForContent: function (sidebar) {
-      $(".content-wrapper, .right-side").css('min-height', sidebar.height());
+  ControlSidebar.prototype.fix = function () {
+    if ($('body').is(Selector.boxed)) {
+      this._fixForBoxed($(Selector.bg))
     }
-  };
+  }
 
-  /* BoxWidget
-   * =========
-   * BoxWidget is a plugin to handle collapsing and
-   * removing boxes from the screen.
-   *
-   * @type Object
-   * @usage $.AdminLTE.boxWidget.activate()
-   *        Set all your options in the main $.AdminLTE.options object
-   */
-  $.AdminLTE.boxWidget = {
-    selectors: $.AdminLTE.options.boxWidgetOptions.boxWidgetSelectors,
-    icons: $.AdminLTE.options.boxWidgetOptions.boxWidgetIcons,
-    animationSpeed: $.AdminLTE.options.animationSpeed,
-    activate: function (_box) {
-      var _this = this;
-      if (!_box) {
-        _box = document; // activate all boxes per default
-      }
-      //Listen for collapse event triggers
-      $(_box).on('click', _this.selectors.collapse, function (e) {
-        e.preventDefault();
-        _this.collapse($(this));
-      });
+  // Private
 
-      //Listen for remove event triggers
-      $(_box).on('click', _this.selectors.remove, function (e) {
-        e.preventDefault();
-        _this.remove($(this));
-      });
-    },
-    collapse: function (element) {
-      var _this = this;
-      //Find the box parent
-      var box = element.parents(".box").first();
-      //Find the body and the footer
-      var box_content = box.find("> .box-body, > .box-footer, > form  >.box-body, > form > .box-footer");
-      if (!box.hasClass("collapsed-box")) {
-        //Convert minus into plus
-        element.children(":first")
-          .removeClass(_this.icons.collapse)
-          .addClass(_this.icons.open);
-        //Hide the content
-        box_content.slideUp(_this.animationSpeed, function () {
-          box.addClass("collapsed-box");
-        });
-      } else {
-        //Convert plus into minus
-        element.children(":first")
-          .removeClass(_this.icons.open)
-          .addClass(_this.icons.collapse);
-        //Show the content
-        box_content.slideDown(_this.animationSpeed, function () {
-          box.removeClass("collapsed-box");
-        });
-      }
-    },
-    remove: function (element) {
-      //Find the box parent
-      var box = element.parents(".box").first();
-      box.slideUp(this.animationSpeed);
-    }
-  };
-}
+  ControlSidebar.prototype._fixForBoxed = function (bg) {
+    bg.css({
+      position: 'absolute',
+      height  : $(Selector.wrapper).height()
+    })
+  }
 
-/* ------------------
- * - Custom Plugins -
- * ------------------
- * All custom plugins are defined below.
- */
-
-/*
- * BOX REFRESH BUTTON
- * ------------------
- * This is a custom plugin to use with the component BOX. It allows you to add
- * a refresh button to the box. It converts the box's state to a loading state.
- *
- * @type plugin
- * @usage $("#box-widget").boxRefresh( options );
- */
-(function ($) {
-
-  "use strict";
-
-  $.fn.boxRefresh = function (options) {
-
-    // Render options
-    var settings = $.extend({
-      //Refresh button selector
-      trigger: ".refresh-btn",
-      //File source to be loaded (e.g: ajax/src.php)
-      source: "",
-      //Callbacks
-      onLoadStart: function (box) {
-        return box;
-      }, //Right after the button has been clicked
-      onLoadDone: function (box) {
-        return box;
-      } //When the source has been loaded
-
-    }, options);
-
-    //The overlay
-    var overlay = $('<div class="overlay"><div class="fa fa-refresh fa-spin"></div></div>');
-
+  // Plugin Definition
+  // =================
+  function Plugin(option) {
     return this.each(function () {
-      //if a source is specified
-      if (settings.source === "") {
-        if (window.console) {
-          window.console.log("Please specify a source first - boxRefresh()");
-        }
-        return;
+      var $this = $(this)
+      var data  = $this.data(DataKey)
+
+      if (!data) {
+        var options = $.extend({}, Default, $this.data(), typeof option == 'object' && option)
+        $this.data(DataKey, (data = new ControlSidebar($this, options)))
       }
-      //the box
-      var box = $(this);
-      //the button
-      var rBtn = box.find(settings.trigger).first();
 
-      //On trigger click
-      rBtn.on('click', function (e) {
-        e.preventDefault();
-        //Add loading overlay
-        start(box);
+      if (typeof option == 'string') data.toggle()
+    })
+  }
 
-        //Perform ajax call
-        box.find(".box-body").load(settings.source, function () {
-          done(box);
-        });
-      });
-    });
+  var old = $.fn.controlSidebar
 
-    function start(box) {
-      //Add overlay and loading img
-      box.append(overlay);
+  $.fn.controlSidebar             = Plugin
+  $.fn.controlSidebar.Constructor = ControlSidebar
 
-      settings.onLoadStart.call(box);
-    }
+  // No Conflict Mode
+  // ================
+  $.fn.controlSidebar.noConflict = function () {
+    $.fn.controlSidebar = old
+    return this
+  }
 
-    function done(box) {
-      //Remove overlay and loading img
-      box.find(overlay).remove();
+  // ControlSidebar Data API
+  // =======================
+  $(document).on('click', Selector.data, function (event) {
+    if (event) event.preventDefault()
+    Plugin.call($(this), 'toggle')
+  })
 
-      settings.onLoadDone.call(box);
-    }
+}(jQuery)
 
-  };
 
-})(jQuery);
-
-/*
- * EXPLICIT BOX CONTROLS
- * -----------------------
- * This is a custom plugin to use with the component BOX. It allows you to activate
- * a box inserted in the DOM after the app.js was loaded, toggle and remove box.
+/* DirectChat()
+ * ===============
+ * Toggles the state of the control sidebar
  *
- * @type plugin
- * @usage $("#box-widget").activateBox();
- * @usage $("#box-widget").toggleBox();
- * @usage $("#box-widget").removeBox();
+ * @Usage: $('#my-chat-box').directChat()
+ *         or add [data-widget="direct-chat"] to the trigger
  */
-(function ($) {
++function ($) {
+  'use strict'
 
-  'use strict';
+  var DataKey = 'lte.directchat'
 
-  $.fn.activateBox = function () {
-    $.AdminLTE.boxWidget.activate(this);
-  };
+  var Selector = {
+    data: '[data-widget="chat-pane-toggle"]',
+    box : '.direct-chat'
+  }
 
-  $.fn.toggleBox = function () {
-    var button = $($.AdminLTE.boxWidget.selectors.collapse, this);
-    $.AdminLTE.boxWidget.collapse(button);
-  };
+  var ClassName = {
+    open: 'direct-chat-contacts-open'
+  }
 
-  $.fn.removeBox = function () {
-    var button = $($.AdminLTE.boxWidget.selectors.remove, this);
-    $.AdminLTE.boxWidget.remove(button);
-  };
+  // DirectChat Class Definition
+  // ===========================
+  var DirectChat = function (element) {
+    this.element = element
+  }
 
-})(jQuery);
+  DirectChat.prototype.toggle = function ($trigger) {
+    $trigger.parents(Selector.box).first().toggleClass(ClassName.open)
+  }
 
-/*
- * TODO LIST CUSTOM PLUGIN
- * -----------------------
- * This plugin depends on iCheck plugin for checkbox and radio inputs
- *
- * @type plugin
- * @usage $("#todo-widget").todolist( options );
- */
-(function ($) {
-
-  'use strict';
-
-  $.fn.todolist = function (options) {
-    // Render options
-    var settings = $.extend({
-      //When the user checks the input
-      onCheck: function (ele) {
-        return ele;
-      },
-      //When the user unchecks the input
-      onUncheck: function (ele) {
-        return ele;
-      }
-    }, options);
-
+  // Plugin Definition
+  // =================
+  function Plugin(option) {
     return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data(DataKey)
 
-      if (typeof $.fn.iCheck != 'undefined') {
-        $('input', this).on('ifChecked', function () {
-          var ele = $(this).parents("li").first();
-          ele.toggleClass("done");
-          settings.onCheck.call(ele);
-        });
-
-        $('input', this).on('ifUnchecked', function () {
-          var ele = $(this).parents("li").first();
-          ele.toggleClass("done");
-          settings.onUncheck.call(ele);
-        });
-      } else {
-        $('input', this).on('change', function () {
-          var ele = $(this).parents("li").first();
-          ele.toggleClass("done");
-          if ($('input', ele).is(":checked")) {
-            settings.onCheck.call(ele);
-          } else {
-            settings.onUncheck.call(ele);
-          }
-        });
+      if (!data) {
+        $this.data(DataKey, (data = new DirectChat($this)))
       }
-    });
-  };
-}(jQuery));
+
+      if (typeof option == 'string') data.toggle($this)
+    })
+  }
+
+  var old = $.fn.directChat
+
+  $.fn.directChat             = Plugin
+  $.fn.directChat.Constructor = DirectChat
+
+  // No Conflict Mode
+  // ================
+  $.fn.directChat.noConflict = function () {
+    $.fn.directChat = old
+    return this
+  }
+
+  // DirectChat Data API
+  // ===================
+  $(document).on('click', Selector.data, function (event) {
+    if (event) event.preventDefault()
+    Plugin.call($(this), 'toggle')
+  })
+
+}(jQuery)
+
+
+/* Layout()
+ * ========
+ * Implements AdminLTE layout.
+ * Fixes the layout height in case min-height fails.
+ *
+ * @usage activated automatically upon window load.
+ *        Configure any options by passing data-option="value"
+ *        to the body tag.
+ */
++function ($) {
+  'use strict'
+
+  var DataKey = 'lte.layout'
+
+  var Default = {
+    slimscroll : true,
+    resetHeight: true
+  }
+
+  var Selector = {
+    wrapper       : '.wrapper',
+    contentWrapper: '.content-wrapper',
+    layoutBoxed   : '.layout-boxed',
+    mainFooter    : '.main-footer',
+    mainHeader    : '.main-header',
+    sidebar       : '.sidebar',
+    controlSidebar: '.control-sidebar',
+    fixed         : '.fixed',
+    sidebarMenu   : '.sidebar-menu',
+    logo          : '.main-header .logo'
+  }
+
+  var ClassName = {
+    fixed         : 'fixed',
+    holdTransition: 'hold-transition'
+  }
+
+  var Layout = function (options) {
+    this.options      = options
+    this.bindedResize = false
+    this.activate()
+  }
+
+  Layout.prototype.activate = function () {
+    this.fix()
+    this.fixSidebar()
+
+    $('body').removeClass(ClassName.holdTransition)
+
+    if (this.options.resetHeight) {
+      $('body, html, ' + Selector.wrapper).css({
+        'height'    : 'auto',
+        'min-height': '100%'
+      })
+    }
+
+    if (!this.bindedResize) {
+      $(window).resize(function () {
+        this.fix()
+        this.fixSidebar()
+
+        $(Selector.logo + ', ' + Selector.sidebar).one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function () {
+          this.fix()
+          this.fixSidebar()
+        }.bind(this))
+      }.bind(this))
+
+      this.bindedResize = true
+    }
+
+    $(Selector.sidebarMenu).on('expanded.tree', function () {
+      this.fix()
+      this.fixSidebar()
+    }.bind(this))
+
+    $(Selector.sidebarMenu).on('collapsed.tree', function () {
+      this.fix()
+      this.fixSidebar()
+    }.bind(this))
+  }
+
+  Layout.prototype.fix = function () {
+    // Remove overflow from .wrapper if layout-boxed exists
+    $(Selector.layoutBoxed + ' > ' + Selector.wrapper).css('overflow', 'hidden')
+
+    // Get window height and the wrapper height
+    var footerHeight  = $(Selector.mainFooter).outerHeight() || 0
+    var neg           = $(Selector.mainHeader).outerHeight() + footerHeight
+    var windowHeight  = $(window).height()
+    var sidebarHeight = $(Selector.sidebar).height() || 0
+
+    // Set the min-height of the content and sidebar based on
+    // the height of the document.
+    if ($('body').hasClass(ClassName.fixed)) {
+      $(Selector.contentWrapper).css('min-height', windowHeight - footerHeight)
+    } else {
+      var postSetHeight
+
+      if (windowHeight >= sidebarHeight) {
+        $(Selector.contentWrapper).css('min-height', windowHeight - neg)
+        postSetHeight = windowHeight - neg
+      } else {
+        $(Selector.contentWrapper).css('min-height', sidebarHeight)
+        postSetHeight = sidebarHeight
+      }
+
+      // Fix for the control sidebar height
+      var $controlSidebar = $(Selector.controlSidebar)
+      if (typeof $controlSidebar !== 'undefined') {
+        if ($controlSidebar.height() > postSetHeight)
+          $(Selector.contentWrapper).css('min-height', $controlSidebar.height())
+      }
+    }
+  }
+
+  Layout.prototype.fixSidebar = function () {
+    // Make sure the body tag has the .fixed class
+    if (!$('body').hasClass(ClassName.fixed)) {
+      if (typeof $.fn.slimScroll !== 'undefined') {
+        $(Selector.sidebar).slimScroll({ destroy: true }).height('auto')
+      }
+      return
+    }
+
+    // Enable slimscroll for fixed layout
+    if (this.options.slimscroll) {
+      if (typeof $.fn.slimScroll !== 'undefined') {
+        // Destroy if it exists
+        // $(Selector.sidebar).slimScroll({ destroy: true }).height('auto')
+
+        // Add slimscroll
+        $(Selector.sidebar).slimScroll({
+          height: ($(window).height() - $(Selector.mainHeader).height()) + 'px',
+          color : 'rgba(0,0,0,0.2)',
+          size  : '3px'
+        })
+      }
+    }
+  }
+
+  // Plugin Definition
+  // =================
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data(DataKey)
+
+      if (!data) {
+        var options = $.extend({}, Default, $this.data(), typeof option === 'object' && option)
+        $this.data(DataKey, (data = new Layout(options)))
+      }
+
+      if (typeof option === 'string') {
+        if (typeof data[option] === 'undefined') {
+          throw new Error('No method named ' + option)
+        }
+        data[option]()
+      }
+    })
+  }
+
+  var old = $.fn.layout
+
+  $.fn.layout            = Plugin
+  $.fn.layout.Constuctor = Layout
+
+  // No conflict mode
+  // ================
+  $.fn.layout.noConflict = function () {
+    $.fn.layout = old
+    return this
+  }
+
+  // Layout DATA-API
+  // ===============
+  $(window).on('load', function () {
+    Plugin.call($('body'))
+  })
+}(jQuery)
+
+
+/* PushMenu()
+ * ==========
+ * Adds the push menu functionality to the sidebar.
+ *
+ * @usage: $('.btn').pushMenu(options)
+ *          or add [data-toggle="push-menu"] to any button
+ *          Pass any option as data-option="value"
+ */
++function ($) {
+  'use strict'
+
+  var DataKey = 'lte.pushmenu'
+
+  var Default = {
+    collapseScreenSize   : 767,
+    expandOnHover        : false,
+    expandTransitionDelay: 200
+  }
+
+  var Selector = {
+    collapsed     : '.sidebar-collapse',
+    open          : '.sidebar-open',
+    mainSidebar   : '.main-sidebar',
+    contentWrapper: '.content-wrapper',
+    searchInput   : '.sidebar-form .form-control',
+    button        : '[data-toggle="push-menu"]',
+    mini          : '.sidebar-mini',
+    expanded      : '.sidebar-expanded-on-hover',
+    layoutFixed   : '.fixed'
+  }
+
+  var ClassName = {
+    collapsed    : 'sidebar-collapse',
+    open         : 'sidebar-open',
+    mini         : 'sidebar-mini',
+    expanded     : 'sidebar-expanded-on-hover',
+    expandFeature: 'sidebar-mini-expand-feature',
+    layoutFixed  : 'fixed'
+  }
+
+  var Event = {
+    expanded : 'expanded.pushMenu',
+    collapsed: 'collapsed.pushMenu'
+  }
+
+  // PushMenu Class Definition
+  // =========================
+  var PushMenu = function (options) {
+    this.options = options
+    this.init()
+  }
+
+  PushMenu.prototype.init = function () {
+    if (this.options.expandOnHover
+      || ($('body').is(Selector.mini + Selector.layoutFixed))) {
+      this.expandOnHover()
+      $('body').addClass(ClassName.expandFeature)
+    }
+
+    $(Selector.contentWrapper).click(function () {
+      // Enable hide menu when clicking on the content-wrapper on small screens
+      if ($(window).width() <= this.options.collapseScreenSize && $('body').hasClass(ClassName.open)) {
+        this.close()
+      }
+    }.bind(this))
+
+    // __Fix for android devices
+    $(Selector.searchInput).click(function (e) {
+      e.stopPropagation()
+    })
+  }
+
+  PushMenu.prototype.toggle = function () {
+    var windowWidth = $(window).width()
+    var isOpen      = !$('body').hasClass(ClassName.collapsed)
+
+    if (windowWidth <= this.options.collapseScreenSize) {
+      isOpen = $('body').hasClass(ClassName.open)
+    }
+
+    if (!isOpen) {
+      this.open()
+    } else {
+      this.close()
+    }
+  }
+
+  PushMenu.prototype.open = function () {
+    var windowWidth = $(window).width()
+
+    if (windowWidth > this.options.collapseScreenSize) {
+      $('body').removeClass(ClassName.collapsed)
+        .trigger($.Event(Event.expanded))
+    }
+    else {
+      $('body').addClass(ClassName.open)
+        .trigger($.Event(Event.expanded))
+    }
+  }
+
+  PushMenu.prototype.close = function () {
+    var windowWidth = $(window).width()
+    if (windowWidth > this.options.collapseScreenSize) {
+      $('body').addClass(ClassName.collapsed)
+        .trigger($.Event(Event.collapsed))
+    } else {
+      $('body').removeClass(ClassName.open + ' ' + ClassName.collapsed)
+        .trigger($.Event(Event.collapsed))
+    }
+  }
+
+  PushMenu.prototype.expandOnHover = function () {
+    $(Selector.mainSidebar).hover(function () {
+      if ($('body').is(Selector.mini + Selector.collapsed)
+        && $(window).width() > this.options.collapseScreenSize) {
+        this.expand()
+      }
+    }.bind(this), function () {
+      if ($('body').is(Selector.expanded)) {
+        this.collapse()
+      }
+    }.bind(this))
+  }
+
+  PushMenu.prototype.expand = function () {
+    setTimeout(function () {
+      $('body').removeClass(ClassName.collapsed)
+        .addClass(ClassName.expanded)
+    }, this.options.expandTransitionDelay)
+  }
+
+  PushMenu.prototype.collapse = function () {
+    setTimeout(function () {
+      $('body').removeClass(ClassName.expanded)
+        .addClass(ClassName.collapsed)
+    }, this.options.expandTransitionDelay)
+  }
+
+  // PushMenu Plugin Definition
+  // ==========================
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data(DataKey)
+
+      if (!data) {
+        var options = $.extend({}, Default, $this.data(), typeof option == 'object' && option)
+        $this.data(DataKey, (data = new PushMenu(options)))
+      }
+
+      if (option === 'toggle') data.toggle()
+    })
+  }
+
+  var old = $.fn.pushMenu
+
+  $.fn.pushMenu             = Plugin
+  $.fn.pushMenu.Constructor = PushMenu
+
+  // No Conflict Mode
+  // ================
+  $.fn.pushMenu.noConflict = function () {
+    $.fn.pushMenu = old
+    return this
+  }
+
+  // Data API
+  // ========
+  $(document).on('click', Selector.button, function (e) {
+    e.preventDefault()
+    Plugin.call($(this), 'toggle')
+  })
+  $(window).on('load', function () {
+    Plugin.call($(Selector.button))
+  })
+}(jQuery)
+
+
+/* TodoList()
+ * =========
+ * Converts a list into a todoList.
+ *
+ * @Usage: $('.my-list').todoList(options)
+ *         or add [data-widget="todo-list"] to the ul element
+ *         Pass any option as data-option="value"
+ */
++function ($) {
+  'use strict'
+
+  var DataKey = 'lte.todolist'
+
+  var Default = {
+    onCheck  : function (item) {
+      return item
+    },
+    onUnCheck: function (item) {
+      return item
+    }
+  }
+
+  var Selector = {
+    data: '[data-widget="todo-list"]'
+  }
+
+  var ClassName = {
+    done: 'done'
+  }
+
+  // TodoList Class Definition
+  // =========================
+  var TodoList = function (element, options) {
+    this.element = element
+    this.options = options
+
+    this._setUpListeners()
+  }
+
+  TodoList.prototype.toggle = function (item) {
+    item.parents(Selector.li).first().toggleClass(ClassName.done)
+    if (!item.prop('checked')) {
+      this.unCheck(item)
+      return
+    }
+
+    this.check(item)
+  }
+
+  TodoList.prototype.check = function (item) {
+    this.options.onCheck.call(item)
+  }
+
+  TodoList.prototype.unCheck = function (item) {
+    this.options.onUnCheck.call(item)
+  }
+
+  // Private
+
+  TodoList.prototype._setUpListeners = function () {
+    var that = this
+    $(this.element).on('change ifChanged', 'input:checkbox', function () {
+      that.toggle($(this))
+    })
+  }
+
+  // Plugin Definition
+  // =================
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data(DataKey)
+
+      if (!data) {
+        var options = $.extend({}, Default, $this.data(), typeof option == 'object' && option)
+        $this.data(DataKey, (data = new TodoList($this, options)))
+      }
+
+      if (typeof data == 'string') {
+        if (typeof data[option] == 'undefined') {
+          throw new Error('No method named ' + option)
+        }
+        data[option]()
+      }
+    })
+  }
+
+  var old = $.fn.todoList
+
+  $.fn.todoList         = Plugin
+  $.fn.todoList.Constructor = TodoList
+
+  // No Conflict Mode
+  // ================
+  $.fn.todoList.noConflict = function () {
+    $.fn.todoList = old
+    return this
+  }
+
+  // TodoList Data API
+  // =================
+  $(window).on('load', function () {
+    $(Selector.data).each(function () {
+      Plugin.call($(this))
+    })
+  })
+
+}(jQuery)
+
+
+/* Tree()
+ * ======
+ * Converts a nested list into a multilevel
+ * tree view menu.
+ *
+ * @Usage: $('.my-menu').tree(options)
+ *         or add [data-widget="tree"] to the ul element
+ *         Pass any option as data-option="value"
+ */
++function ($) {
+  'use strict'
+
+  var DataKey = 'lte.tree'
+
+  var Default = {
+    animationSpeed: 500,
+    accordion     : true,
+    followLink    : false,
+    trigger       : '.treeview a'
+  }
+
+  var Selector = {
+    tree        : '.tree',
+    treeview    : '.treeview',
+    treeviewMenu: '.treeview-menu',
+    open        : '.menu-open, .active',
+    li          : 'li',
+    data        : '[data-widget="tree"]',
+    active      : '.active'
+  }
+
+  var ClassName = {
+    open: 'menu-open',
+    tree: 'tree'
+  }
+
+  var Event = {
+    collapsed: 'collapsed.tree',
+    expanded : 'expanded.tree'
+  }
+
+  // Tree Class Definition
+  // =====================
+  var Tree = function (element, options) {
+    this.element = element
+    this.options = options
+
+    $(this.element).addClass(ClassName.tree)
+
+    $(Selector.treeview + Selector.active, this.element).addClass(ClassName.open)
+
+    this._setUpListeners()
+  }
+
+  Tree.prototype.toggle = function (link, event) {
+    var treeviewMenu = link.next(Selector.treeviewMenu)
+    var parentLi     = link.parent()
+    var isOpen       = parentLi.hasClass(ClassName.open)
+
+    if (!parentLi.is(Selector.treeview)) {
+      return
+    }
+
+    if (!this.options.followLink || link.attr('href') === '#') {
+      event.preventDefault()
+    }
+
+    if (isOpen) {
+      this.collapse(treeviewMenu, parentLi)
+    } else {
+      this.expand(treeviewMenu, parentLi)
+    }
+  }
+
+  Tree.prototype.expand = function (tree, parent) {
+    var expandedEvent = $.Event(Event.expanded)
+
+    if (this.options.accordion) {
+      var openMenuLi = parent.siblings(Selector.open)
+      var openTree   = openMenuLi.children(Selector.treeviewMenu)
+      this.collapse(openTree, openMenuLi)
+    }
+
+    parent.addClass(ClassName.open)
+    tree.slideDown(this.options.animationSpeed, function () {
+      $(this.element).trigger(expandedEvent)
+    }.bind(this))
+  }
+
+  Tree.prototype.collapse = function (tree, parentLi) {
+    var collapsedEvent = $.Event(Event.collapsed)
+
+    tree.find(Selector.open).removeClass(ClassName.open)
+    parentLi.removeClass(ClassName.open)
+    tree.slideUp(this.options.animationSpeed, function () {
+      tree.find(Selector.open + ' > ' + Selector.treeview).slideUp()
+      $(this.element).trigger(collapsedEvent)
+    }.bind(this))
+  }
+
+  // Private
+
+  Tree.prototype._setUpListeners = function () {
+    var that = this
+
+    $(this.element).on('click', this.options.trigger, function (event) {
+      that.toggle($(this), event)
+    })
+  }
+
+  // Plugin Definition
+  // =================
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data(DataKey)
+
+      if (!data) {
+        var options = $.extend({}, Default, $this.data(), typeof option == 'object' && option)
+        $this.data(DataKey, new Tree($this, options))
+      }
+    })
+  }
+
+  var old = $.fn.tree
+
+  $.fn.tree             = Plugin
+  $.fn.tree.Constructor = Tree
+
+  // No Conflict Mode
+  // ================
+  $.fn.tree.noConflict = function () {
+    $.fn.tree = old
+    return this
+  }
+
+  // Tree Data API
+  // =============
+  $(window).on('load', function () {
+    $(Selector.data).each(function () {
+      Plugin.call($(this))
+    })
+  })
+
+}(jQuery)

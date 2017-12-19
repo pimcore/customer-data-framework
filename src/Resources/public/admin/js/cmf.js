@@ -1,8 +1,8 @@
 var _cfg = _config || {};
 
 var cls = {
-    log: function (_output) {
-        if (app.debug) {
+    log : function( _output ){
+        if( app.debug ){
             console.log(_output);
         }
     }
@@ -11,12 +11,12 @@ var cls = {
 var app = {
     debug: _cfg.debug || false,
     timeoutHandler: [],
-    DEVICE: ''
+    DEVICE : ''
 };
 
 window.app = app || {};
 
-app.Util = (function () {
+app.Util = (function() {
     'use strict';
 
     return {
@@ -64,7 +64,7 @@ app.Util = (function () {
     }
 }());
 
-app.Logger = (function () {
+app.Logger = (function() {
     var logger = {
         // log even if environemtn is not development
         forceLog: false
@@ -133,11 +133,10 @@ app.PimcoreLinks = (function () {
     };
 }());
 
-
-app.ToggleGroup = (function () {
+app.ToggleGroup = (function() {
     return {
         initialize: function ($scope) {
-            $scope.find('[data-toggle-group-trigger]').each(function () {
+            $scope.find('[data-toggle-group-trigger]').each(function() {
                 var $trigger = $(this);
                 var group = $trigger.data('toggle-group-trigger');
                 var $groups = $trigger.closest('.js-toggle-group-container').find('[data-toggle-group="' + group + '"]');
@@ -145,7 +144,7 @@ app.ToggleGroup = (function () {
                 $groups.hide().removeClass('hide');
                 $groups.first().show();
 
-                $trigger.on('click', function (e) {
+                $trigger.on('click', function(e) {
                     e.preventDefault();
                     $groups.toggle();
                 });
@@ -470,7 +469,7 @@ app.SearchFilter.DateRangePicker = (function () {
         // add ranges defined by data attribute
         var dataRanges = this.$input.data('date-ranges');
         if (dataRanges && 'object' === typeof dataRanges) {
-            $.each(dataRanges, function (label, range) {
+            $.each(dataRanges, function(label, range) {
                 ranges[label] = [
                     moment(range.startDate, 'DD.MM.YYYY'),
                     moment(range.endDate, 'DD.MM.YYYY')
@@ -718,16 +717,7 @@ app.SearchFilter.DateRangePicker = (function () {
                     }
                 });
             });
-        }
-    });
-})(jQuery);
-
-;(function ($) {
-    'use strict';
-
-    // cmf functions
-    // noinspection JSUnusedGlobalSymbols
-    $.extend(window.app, {
+        },
         registerSaveFilterDefinition: function () {
             $('#save-filter-definition').on('click', function (e) {
                 e.preventDefault();
@@ -820,37 +810,37 @@ app.SearchFilter.DateRangePicker = (function () {
     });
 })(jQuery);
 
-;(function ($) {
+;(function( $ ){
     "use strict";
 
     window.app.init = function ($scope) {
         /* -> _config._preload = Load this functions first */
         if (_cfg['_preload']) {
-            $.each(_cfg['_preload'], function (_key, _val) {
-                if (typeof _val == 'boolean' && typeof window.app[_key] == 'function') {
+            $.each( _cfg['_preload'], function( _key, _val ){
+                if( typeof _val == 'boolean' && typeof window.app[_key] == 'function' ){
                     window.app[_key]($scope);
                 }
             });
         }
 
         /* -> _config = Load all others (not _preload and _reload) */
-        $.each(_cfg, function (_key, _val) {
-            if (( typeof _val == 'boolean' && typeof window.app[_key] == 'function' && _key != '_reload' && _key != '_preload' )) {
+        $.each( _cfg, function( _key, _val ){
+            if( ( typeof _val == 'boolean' && typeof window.app[_key] == 'function' && _key != '_reload' && _key != '_preload' ) ){
                 window.app[_key]($scope);
             }
         });
 
         /* -> _config._reload = Load the ajaxInclued and others after the rest */
         if (_cfg['_reload']) {
-            $.each(_cfg['_reload'], function (_key, _val) {
-                if (( typeof _val == 'boolean' && typeof window.app[_key] == 'function' )) {
+            $.each( _cfg['_reload'], function( _key, _val ){
+                if( ( typeof _val == 'boolean' && typeof window.app[_key] == 'function' ) ){
                     window.app[_key]($scope);
                 }
             });
         }
     };
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         window.app.init($('body'));
     });
 })(jQuery);

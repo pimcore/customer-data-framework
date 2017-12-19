@@ -50,3 +50,10 @@
     border-bottom: 20px solid #ecf0f5;
     background-color: #fff;
 }
+
+.select2-selection__clear {
+    display: none;
+}
+.select2-selection__rendered {
+    text-align: left;
+}
