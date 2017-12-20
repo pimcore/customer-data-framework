@@ -30,6 +30,8 @@ class Maintenance
      */
     public function cleanUpTemporaryCustomers()
     {
+        AbstractObject::setHideUnpublished(false);
+
         $this->getLogger()->info('Start cleanup for temporary customer objects.');
         // counter for deleted customers
         $changedCounter = 0;
@@ -38,7 +40,7 @@ class Maintenance
         $folder = Service::createFolderByPath($tempCustomerPath);
         // fetch customers of folder
         /** @var Customer[] $tempCustomers */
-        $tempCustomers = $folder->getChildren([AbstractObject::OBJECT_TYPE_OBJECT], true);
+        $tempCustomers = $folder->getChildren();
 
         $this->getLogger()->info('Found temporary customer objects: ' . count($tempCustomers));
 
@@ -46,8 +48,8 @@ class Maintenance
         foreach($tempCustomers as $customer) {
             // fetch modification date
             $date = Carbon::createFromTimestamp($customer->getModificationDate());
-            // if contact is unpublished and last modification was more then 7 days ago
-            if(!$customer->isPublished() && $date->diffInDays(Carbon::now()) > 7) {
+            // if contact is unpublished and last modification was more then 1 day ago
+            if(!$customer->isPublished() && $date->diffInDays(Carbon::now()) > 1) {
                 // delete the customer
                 $customer->delete();
                 $changedCounter++;
