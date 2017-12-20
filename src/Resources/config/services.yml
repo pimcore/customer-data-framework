@@ -117,6 +117,7 @@ services:
                 'executeSegmentBuilderMaintenance': '@CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface'
                 'processQueue': '@CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\IndexerInterface'
                 'cleanUpFilterDefinitions': '@CustomerManagementFrameworkBundle\CustomerView\FilterDefinition\Maintenance'
+                'cleanUpTemporaryCustomers': '@CustomerManagementFrameworkBundle\CustomerView\Customer\Maintenance'
 
     cmf.logger:
         alias: monolog.logger.cmf
@@ -170,6 +171,8 @@ services:
         alias: 'CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface'
 
     CustomerManagementFrameworkBundle\CustomerView\FilterDefinition\Maintenance: ~
+
+    CustomerManagementFrameworkBundle\CustomerView\Customer\Maintenance: ~
 
     cmf.potential_duplicate_item:
         class: CustomerManagementFrameworkBundle\Model\CustomerDuplicates\PotentialDuplicateItem
@@ -235,7 +238,7 @@ services:
         arguments:
           - 'CustomerManagementFrameworkBundle\Adapter\TermSegmentBuilder'
 
-    CustomerManagementFrameworkBundle\GDPR\DataProvider\Customers:
-        public: false
-        arguments:
-            $config: '%pimcore.gdpr-data-extrator.customers%'
+    #CustomerManagementFrameworkBundle\GDPR\DataProvider\Customers:
+    #    public: false
+    #    arguments:
+    #        $config: '%pimcore.gdpr-data-extrator.customers%'
