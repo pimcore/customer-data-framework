@@ -44,6 +44,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $loader->load('services_controllers.yml');
         $loader->load('services_templating.yml');
         $loader->load('services_events.yml');
+        $loader->load('services_targeting.yml');
 
         $loader->load('services_security.yml');
 

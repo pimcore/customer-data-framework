@@ -11,21 +11,38 @@ Currently following implementations of triggers, conditions and actions are avai
 - New Customer Activity: A new customer activity is added for a customer.
 - Segment Building: The segment building process is running. 
 - Cron: Trigger fires based on the defined cron definition. See also [Cronjobs](./04_Cronjobs.md) for correct configuration. 
+- [Targeting] Segment Tracked: When a segment is tracked via Pimcore targeting. For more details see 
+  [Personalization](30_Personalization.md) chapter.
+- [Targeting] Assigned Target Group: When a target group is assigned via Pimcore targeting. 
+  For more details see [Personalization](30_Personalization.md) chapter.
 
 **Conditions**
 - Activities Count of Type X: Customer has a certain amount of activities of a certain type. 
 - Customer: Only apply rule for a specific customer.
 - Customer Segment: Only apply rule for customers with a specific segment assigned. 
+- [Targeting] Tracked Segments Count: Checks count of tracked segment that issued the trigger. For more details see 
+  [Personalization](30_Personalization.md) chapter.
+- [Targeting] Check Weight of Assigned Target Group: Checks weight of assigned target group that issued the trigger. 
+  For more details see [Personalization](30_Personalization.md) chapter. 
 
 The Conditions can be combined with AND, OR, AND NOT and brackets. 
 
 **Actions** 
-- Add Segment: Adds a segment to the customer. Optionally all other segments of the same group are removed and an action
-  delay can be defined (execute action a certain amount of time after the trigger & condition matched).
+- Add Segment: Adds a segment to the customer. Optionally all other segments of the same group are removed, the segment
+  application counter is increased and an action delay can be defined (execute action a certain 
+  amount of time after the trigger & condition matched).
 - Change Customer Field Value: Change the value of a certain field of the customer object. Optionally an action
   delay can be defined (execute action a certain amount of time after the trigger & condition matched).
+- [Targeting] Add tracked segment: Adds the tracked segment that issued the trigger to current customer. 
+  Optionally all other segments of the same group are removed, the segment application counter is 
+  increased and an action delay can be defined (execute action a certain amount of time after the trigger & condition matched).
+  For more details see [Personalization](30_Personalization.md) chapter.
+- [Targeting] Add Target Group Segment: Adds the to the target group linked segment that issued the trigger. 
+  Optionally all other segments of the same group are removed, the segment application counter is 
+  increased and an action delay can be defined (execute action a certain amount of time after the trigger & condition matched).
+  For more details see [Personalization](30_Personalization.md) chapter.
+	
   
-
 
 ## Implement Custom Elements of Rules
 Custom implementations for triggers, conditions and actions can be added by additional bundles. To do so, the server-side

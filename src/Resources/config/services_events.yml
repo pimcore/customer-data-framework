@@ -37,6 +37,9 @@ services:
             - { name: kernel.event_listener, event: plugin.cmf.new-activity, method: handleEvent }
             - { name: kernel.event_listener, event: plugin.cmf.execute-segment-builders, method: handleEvent }
             - { name: kernel.event_listener, event: plugin.cmf.after-track-activity, method: handleEvent }
+            - { name: kernel.event_listener, event: plugin.cmf.segment-tracked, method: handleEvent }
+            - { name: kernel.event_listener, event: plugin.cmf.target-group-assigned, method: handleEvent }
+
         calls:
             - [setLogger, ['@cmf.logger']]
 
@@ -46,3 +49,9 @@ services:
             - { name: kernel.event_listener, event: pimcore.document.postDelete, method: onPostDelete }
             - { name: kernel.event_listener, event: pimcore.asset.postDelete, method: onPostDelete }
             - { name: kernel.event_listener, event: pimcore.dataobject.postDelete, method: onPostDelete }
+
+
+    CustomerManagementFrameworkBundle\Event\TargetingEventListener:
+        tags:
+            - { name: kernel.event_listener, event: pimcore.targeting.assign_document_target_group, method: onAssignDocumentTargetGroup }
+            - { name: kernel.event_listener, event: pimcore.targeting.post_rule_actions, method: onPostRuleActions }

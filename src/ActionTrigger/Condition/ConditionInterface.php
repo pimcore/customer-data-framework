@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Condition;
 
+use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -30,10 +31,15 @@ interface ConditionInterface
     /**
      * @param ConditionDefinitionInterface $conditionDefinition
      * @param CustomerInterface $customer
+     * @param RuleEnvironmentInterface $environment
      *
      * @return bool
      */
-    public function check(ConditionDefinitionInterface $conditionDefinition, CustomerInterface $customer);
+    public function check(
+        ConditionDefinitionInterface $conditionDefinition,
+        CustomerInterface $customer,
+        RuleEnvironmentInterface $environment
+    );
 
     /**
      * @param ConditionDefinitionInterface $conditionDefinition

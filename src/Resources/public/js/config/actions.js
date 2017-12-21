@@ -57,6 +57,51 @@ pimcore.plugin.cmf.rule.actions.AbstractAction = Class.create({
     }
 });
 
+pimcore.registerNS("pimcore.plugin.cmf.rule.actions.ChangeFieldValue");
+pimcore.plugin.cmf.rule.actions.ChangeFieldValue = Class.create(pimcore.plugin.cmf.rule.actions.AbstractAction,{
+    name: 'ChangeFieldValue',
+    implementationClass: '\\CustomerManagementFrameworkBundle\\ActionTrigger\\Action\\ChangeFieldValue',
+    getFormItems: function() {
+
+        return [
+            {
+                xtype: "combo",
+                name: "field",
+                fieldLabel: t("plugin_cmf_actiontriggerrule_changefieldvalue_field"),
+                width: 450,
+                value: this.options.field,
+                triggerAction: "all",
+                mode: "local",
+                disableKeyFilter: true,
+                store: new Ext.data.JsonStore({
+                    proxy: {
+                        autoDestroy: true,
+                        type: 'ajax',
+                        url: '/admin/customermanagementframework/helper/customer-field-list'
+                    },
+                    fields: ['name','label']
+                }),
+                valueField: 'name',
+                displayField: 'label',
+                listeners: {
+                    afterrender: function (el) {
+                        el.getStore().load();
+                    }
+                }
+            },
+            {
+                xtype: "textfield",
+                name: "value",
+                fieldLabel: t("plugin_cmf_actiontriggerrule_changefieldvalue_value"),
+                width: 450,
+                value: this.options.value,
+                triggerAction: "all"
+            }
+        ];
+    }
+});
+
+
 pimcore.registerNS("pimcore.plugin.cmf.rule.actions.AddSegment");
 pimcore.plugin.cmf.rule.actions.AddSegment = Class.create(pimcore.plugin.cmf.rule.actions.AbstractAction,{
     name: 'AddSegment',
@@ -123,51 +168,68 @@ pimcore.plugin.cmf.rule.actions.AddSegment = Class.create(pimcore.plugin.cmf.rul
                 width: 500,
                 labelWidth: 350,
                 value: this.options.removeOtherSegmentsFromGroup
-            }
-        ];
-    }
-});
-
-pimcore.registerNS("pimcore.plugin.cmf.rule.actions.ChangeFieldValue");
-pimcore.plugin.cmf.rule.actions.ChangeFieldValue = Class.create(pimcore.plugin.cmf.rule.actions.AbstractAction,{
-    name: 'ChangeFieldValue',
-    implementationClass: '\\CustomerManagementFrameworkBundle\\ActionTrigger\\Action\\ChangeFieldValue',
-    getFormItems: function() {
-
-        return [
-            {
-                xtype: "combo",
-                name: "field",
-                fieldLabel: t("plugin_cmf_actiontriggerrule_changefieldvalue_field"),
-                width: 450,
-                value: this.options.field,
-                triggerAction: "all",
-                mode: "local",
-                disableKeyFilter: true,
-                store: new Ext.data.JsonStore({
-                    proxy: {
-                        autoDestroy: true,
-                        type: 'ajax',
-                        url: '/admin/customermanagementframework/helper/customer-field-list'
-                    },
-                    fields: ['name','label']
-                }),
-                valueField: 'name',
-                displayField: 'label',
-                listeners: {
-                    afterrender: function (el) {
-                        el.getStore().load();
-                    }
-                }
             },
             {
-                xtype: "textfield",
-                name: "value",
-                fieldLabel: t("plugin_cmf_actiontriggerrule_changefieldvalue_value"),
-                width: 450,
-                value: this.options.value,
-                triggerAction: "all"
+                name: "increaseSegmentApplicationCounter",
+                fieldLabel: t('plugin_cmf_actiontriggerrule_addsegment_increase-segment-application-counter'),
+                xtype: "checkbox",
+                width: 500,
+                labelWidth: 350,
+                value: this.options.increaseSegmentApplicationCounter
             }
         ];
     }
 });
+
+pimcore.registerNS("pimcore.plugin.cmf.rule.actions.AddTrackedSegment");
+pimcore.plugin.cmf.rule.actions.AddTrackedSegment = Class.create(pimcore.plugin.cmf.rule.actions.AbstractAction,{
+    name: 'AddTrackedSegment',
+    implementationClass: '\\CustomerManagementFrameworkBundle\\ActionTrigger\\Action\\AddTrackedSegment',
+    getFormItems: function() {
+        return [
+            {
+                name: "removeOtherSegmentsFromGroup",
+                fieldLabel: t('plugin_cmf_actiontriggerrule_addsegment_remove-other-segments-from-group'),
+                xtype: "checkbox",
+                width: 500,
+                labelWidth: 350,
+                value: this.options.removeOtherSegmentsFromGroup
+            },
+            {
+                name: "increaseSegmentApplicationCounter",
+                fieldLabel: t('plugin_cmf_actiontriggerrule_addsegment_increase-segment-application-counter'),
+                xtype: "checkbox",
+                width: 500,
+                labelWidth: 350,
+                value: this.options.increaseSegmentApplicationCounter
+            }
+        ];
+    }
+});
+
+pimcore.registerNS("pimcore.plugin.cmf.rule.actions.AddTargetGroupSegment");
+pimcore.plugin.cmf.rule.actions.AddTargetGroupSegment = Class.create(pimcore.plugin.cmf.rule.actions.AbstractAction,{
+    name: 'AddTargetGroupSegment',
+    implementationClass: '\\CustomerManagementFrameworkBundle\\ActionTrigger\\Action\\AddTargetGroupSegment',
+    getFormItems: function() {
+        return [
+            {
+                name: "removeOtherSegmentsFromGroup",
+                fieldLabel: t('plugin_cmf_actiontriggerrule_addsegment_remove-other-segments-from-group'),
+                xtype: "checkbox",
+                width: 500,
+                labelWidth: 350,
+                value: this.options.removeOtherSegmentsFromGroup
+            },
+            {
+                name: "increaseSegmentApplicationCounter",
+                fieldLabel: t('plugin_cmf_actiontriggerrule_addsegment_increase-segment-application-counter'),
+                xtype: "checkbox",
+                width: 500,
+                labelWidth: 350,
+                value: this.options.increaseSegmentApplicationCounter
+            }
+        ];
+    }
+});
+

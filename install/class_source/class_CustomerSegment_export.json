@@ -60,6 +60,7 @@
                                 "columnLength": 255,
                                 "phpdocType": "string",
                                 "regex": "",
+                                "unique": null,
                                 "name": "name",
                                 "title": "Segment name",
                                 "tooltip": "",
@@ -134,6 +135,7 @@
                                 "columnLength": 255,
                                 "phpdocType": "string",
                                 "regex": "",
+                                "unique": null,
                                 "name": "reference",
                                 "title": "Reference",
                                 "tooltip": "needs to be unique within the group",
@@ -169,6 +171,70 @@
                                 "invisible": false,
                                 "visibleGridView": false,
                                 "visibleSearch": false
+                            },
+                            {
+                                "fieldtype": "checkbox",
+                                "defaultValue": 0,
+                                "queryColumnType": "tinyint(1)",
+                                "columnType": "tinyint(1)",
+                                "phpdocType": "boolean",
+                                "name": "useAsTargetGroup",
+                                "title": "Use As Target Group",
+                                "tooltip": "",
+                                "mandatory": false,
+                                "noteditable": false,
+                                "index": false,
+                                "locked": false,
+                                "style": "",
+                                "permissions": null,
+                                "datatype": "data",
+                                "relationType": false,
+                                "invisible": false,
+                                "visibleGridView": false,
+                                "visibleSearch": false
+                            },
+                            {
+                                "fieldtype": "targetGroup",
+                                "options": [
+                                    {
+                                        "value": 5,
+                                        "key": "Outdoor"
+                                    },
+                                    {
+                                        "value": 20,
+                                        "key": "TechnicalGuy"
+                                    },
+                                    {
+                                        "value": 15,
+                                        "key": "Vouchers1"
+                                    },
+                                    {
+                                        "value": 8,
+                                        "key": "Wandern"
+                                    }
+                                ],
+                                "width": "",
+                                "defaultValue": null,
+                                "optionsProviderClass": null,
+                                "optionsProviderData": null,
+                                "queryColumnType": "varchar",
+                                "columnType": "varchar",
+                                "columnLength": 190,
+                                "phpdocType": "string",
+                                "name": "targetGroup",
+                                "title": "Linked TargetGroup",
+                                "tooltip": "",
+                                "mandatory": false,
+                                "noteditable": true,
+                                "index": false,
+                                "locked": false,
+                                "style": "",
+                                "permissions": null,
+                                "datatype": "data",
+                                "relationType": false,
+                                "invisible": false,
+                                "visibleGridView": false,
+                                "visibleSearch": false
                             }
                         ],
                         "locked": false
@@ -182,6 +248,7 @@
     "icon": "\/bundles\/pimcorecustomermanagementframework\/icons\/segment.svg",
     "previewUrl": null,
     "group": "CustomerManagement",
+    "linkGeneratorReference": null,
     "propertyVisibility": {
         "grid": {
             "id": true,

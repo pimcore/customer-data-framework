@@ -15,15 +15,20 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Condition;
 
+use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
-class CountActivities extends AbstractCondition
+class CountActivities extends AbstractMatchCondition
 {
     const OPTION_TYPE = 'type';
     const OPTION_COUNT = 'count';
     const OPTION_OPERATOR = 'operator';
 
-    public function check(ConditionDefinitionInterface $conditionDefinition, CustomerInterface $customer)
+    public function check(
+        ConditionDefinitionInterface $conditionDefinition,
+        CustomerInterface $customer,
+        RuleEnvironmentInterface $environment
+    )
     {
         $options = $conditionDefinition->getOptions();
 
@@ -42,24 +47,9 @@ class CountActivities extends AbstractCondition
         );
 
         $operator = $options[self::OPTION_OPERATOR];
+        $count = $options[self::OPTION_COUNT];
 
-        if ($count = $options[self::OPTION_COUNT]) {
-            if ($operator == '>' && ($countActivities > $count)) {
-                return true;
-            }
-
-            if ($operator == '<' && ($countActivities < $count)) {
-                return true;
-            }
-
-            if ($operator == '=' && ($countActivities == $count)) {
-                return true;
-            }
-
-            return false;
-        }
-
-        return true;
+        return $this->matchCondition($countActivities, $operator, $count);
     }
 
     public function getDbCondition(ConditionDefinitionInterface $conditionDefinition)

@@ -16,9 +16,14 @@
 namespace CustomerManagementFrameworkBundle\ActionTrigger\ActionManager;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\Action\ActionDefinitionInterface;
+use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
 interface ActionManagerInterface
 {
-    public function processAction(ActionDefinitionInterface $action, CustomerInterface $customer);
+    public function processAction(
+        ActionDefinitionInterface $action,
+        CustomerInterface $customer,
+        RuleEnvironmentInterface $environment
+    );
 }
