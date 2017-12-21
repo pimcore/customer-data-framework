@@ -169,7 +169,7 @@ class CustomersController extends Admin
         ]);
 
         /** @noinspection PhpRouteMissingInspection */
-        return $this->json([
+        return $this->adminJson([
             'url' => $this->generateUrl('customermanagementframework_admin_customers_exportstep', ['jobId' => $jobId]),
             'jobId' => $jobId,
             'exporter' => $request->get('exporter'),
@@ -189,7 +189,7 @@ class CustomersController extends Admin
         try {
             $data = \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->getExportTmpData($request);
         } catch(\Exception $e) {
-            return $this->json([
+            return $this->adminJson([
                 'error' => true,
                 'message' => $e->getMessage(),
             ]);
@@ -198,7 +198,7 @@ class CustomersController extends Admin
         //export finished
         if(!sizeof($data['processIds'])) {
             /** @noinspection PhpRouteMissingInspection */
-            return $this->json([
+            return $this->adminJson([
                 'finished' => true,
                 'url' => $this->generateUrl('customermanagementframework_admin_customers_downloadfinishedexport',
                     ['jobId' => $request->get('jobId')]),
@@ -229,7 +229,7 @@ class CustomersController extends Admin
 
         $percent = round(($totalRecordsCount - $notProcessedRecordsCount) * 100 / $totalRecordsCount, 0);
 
-        return $this->json([
+        return $this->adminJson([
             'finished' => false,
             'jobId' => $request->get('jobId'),
             'notProcessedRecordsCount' => $notProcessedRecordsCount,
@@ -251,14 +251,14 @@ class CustomersController extends Admin
         try {
             $data = \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->getExportTmpData($request);
         } catch(\Exception $e) {
-            return $this->json([
+            return $this->adminJson([
                 'error' => true,
                 'message' => $e->getMessage(),
             ]);
         }
 
         if(sizeof($data['processIds'])) {
-            return $this->json([
+            return $this->adminJson([
                 'error' => true,
                 'message' => 'export not finished yet',
             ]);
@@ -317,7 +317,7 @@ class CustomersController extends Admin
         $customer->save();
 
         // return id of new object
-        return $this->json([
+        return $this->adminJson([
             'success' => true,
             'id' => $customer->getId(),
         ]);
@@ -455,9 +455,9 @@ class CustomersController extends Admin
         }
 
         // add permission filter for non admin
-        if(!$this->getUser()->isAdmin()) {
+        if(!$this->getAdminUser()->isAdmin()) {
             // only show customers which the user can access
-            $handler->addFilter(new PermissionFilter($this->getUser()));
+            $handler->addFilter(new PermissionFilter($this->getAdminUser()));
         }
     }
 
@@ -590,7 +590,7 @@ class CustomersController extends Admin
             return $DefaultFilterDefinition;
         }
         // check if current user is allowed to use FilterDefinition
-        if(!$filterDefinition->isUserAllowed($this->getUser())) {
+        if(!$filterDefinition->isUserAllowed($this->getAdminUser())) {
             // user is not allowed to use FilterDefinition
             return $DefaultFilterDefinition;
         }
@@ -606,9 +606,9 @@ class CustomersController extends Admin
     protected function getUserIds()
     {
         // fetch roles of user
-        $userIds = $this->getUser()->getRoles();
+        $userIds = $this->getAdminUser()->getRoles();
         // fetch id of user
-        $userIds[] = $this->getUser()->getId();
+        $userIds[] = $this->getAdminUser()->getId();
 
         // return user ids
         return $userIds;

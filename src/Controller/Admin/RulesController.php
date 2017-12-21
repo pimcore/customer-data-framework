@@ -57,7 +57,7 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
             ];
         }
 
-        return $this->json($json);
+        return $this->adminJson($json);
     }
 
     /**
@@ -108,10 +108,10 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
                 $json['condition'][] = $conditionData;
             }
 
-            return $this->json($json);
+            return $this->adminJson($json);
         }
 
-        return $this->json(['error' => true, 'msg' => 'rule not found']);
+        return $this->adminJson(['error' => true, 'msg' => 'rule not found']);
     }
 
     /**
@@ -191,7 +191,7 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
         }
 
         // send response
-        return $this->json($return);
+        return $this->adminJson($return);
     }
 
     /**
@@ -222,7 +222,7 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
         }
 
         // send response
-        return $this->json($return);
+        return $this->adminJson($return);
     }
 
     /**
@@ -249,6 +249,6 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
         }
 
         // send response
-        return $this->json($return);
+        return $this->adminJson($return);
     }
 }
