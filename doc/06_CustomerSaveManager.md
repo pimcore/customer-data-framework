@@ -124,7 +124,7 @@ The CMF offers a special `SaveOptions` class to handle the enabled state of all 
     $customer->saveDirty();
 
     // Disable all hooks but enable Pimcore versioning.
-    $customer->saveDirty(true);
+    $customer->saveDirty(false);
 
     // Globally disable on save segment building and also the segment builder queue
     $customer->getSaveManager()->getSaveOptions()
