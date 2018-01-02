@@ -93,7 +93,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
             /**
              * @var Concrete $customer
              */
-            if($this->matchesPimcoreContext($request, PimcoreContextResolver::CONTEXT_ADMIN)) {
+            if($request && $this->matchesPimcoreContext($request, PimcoreContextResolver::CONTEXT_ADMIN)) {
                 if(!$customer->isAllowed('save') || ($customer->getPublished() && !$customer->isAllowed('publish'))) {
                     throw new ValidationException(sprintf('No permissions to save customer to folder "%s"', $customer->getParent()));
                 }
@@ -146,7 +146,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
         $this->setPimcoreContextResolver(\Pimcore::getContainer()->get('pimcore.service.request.pimcore_context_resolver'));
 
-        if(!$this->matchesPimcoreContext($request, PimcoreContextResolver::CONTEXT_ADMIN)) {
+        if(!$request || ($request && !$this->matchesPimcoreContext($request, PimcoreContextResolver::CONTEXT_ADMIN))) {
             $this->applyNamingScheme($customer);
         }
     }
