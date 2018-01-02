@@ -25,7 +25,7 @@ class Installer extends MigrationInstaller
 {
     public function getMigrationVersion(): string
     {
-        return '20171218194028';
+        return '20180102103153';
     }
 
     public function migrateInstall(Schema $schema, Version $version)
@@ -154,6 +154,7 @@ class Installer extends MigrationInstaller
               `actionId` int(11) unsigned DEFAULT NULL,
               `creationDate` bigint(20) unsigned DEFAULT NULL,
               `modificationDate` bigint(20) unsigned DEFAULT NULL,
+              `environment` TEXT NULL,
               PRIMARY KEY (`id`),
               KEY `customerId` (`customerId`),
               KEY `actionId` (`actionId`)
