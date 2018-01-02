@@ -20,6 +20,7 @@ use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 use DrewM\MailChimp\Webhook;
 use Monolog\Handler\StreamHandler;
 use Pimcore\Bundle\AdminBundle\Controller\Rest\AbstractRestController;
+use Pimcore\Db;
 use Pimcore\Log\ApplicationLogger;
 use Pimcore\Log\Handler\ApplicationLoggerDb;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -61,7 +62,7 @@ class WebhookController extends AbstractRestController
     {
         $logger = new ApplicationLogger();
         $logger->setComponent('Mailchimp');
-        $dbWriter = new ApplicationLoggerDb('notice');
+        $dbWriter = new ApplicationLoggerDb(Db::get(), 'notice');
         $logger->addWriter($dbWriter);
 
         $fileWriter = new StreamHandler(PIMCORE_LOG_DIRECTORY . '/cmf/mailchimp-webhook.log');
