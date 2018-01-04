@@ -136,4 +136,34 @@
             }
         })
     );
+
+
+    pimcore.settings.targeting.conditions.register(
+        'cmf_customer_is_loggedin',
+        Class.create(pimcore.settings.targeting.condition.abstract, {
+            getName: function () {
+                return t("plugin_cmf_targeting_condition_customer_is_loggedin");
+            },
+
+            getPanel: function (panel, data) {
+                var id = Ext.id();
+
+                return new Ext.form.FormPanel({
+                    id: id,
+                    forceLayout: true,
+                    height: 110,
+                    style: "margin: 10px 0 0 0",
+                    bodyStyle: "padding: 10px 30px 10px 30px; height:80px;",
+                    tbar: pimcore.settings.targeting.conditions.getTopBar(this, id, panel, data),
+                    items: [
+                        {
+                            xtype: "hidden",
+                            name: "type",
+                            value: "cmf_customer_is_loggedin"
+                        }
+                    ]
+                });
+            }
+        })
+    );
 }());
