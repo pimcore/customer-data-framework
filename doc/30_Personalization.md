@@ -77,6 +77,26 @@ be used later on, e.g. with the `Has Segment` condition.
 ![Track Segment](./img/track-segment.jpg)
 
 
+### Action `[CMF] Apply Target Groups from Assigned Customer Segments`
+The `Apply Target Groups from Assigned Customer Segments` action applies all customer segements from the currently 
+logged-in customer that are linked to a target group to the targeting engine. This might be necessary for keeping information
+stored in the customer object in sync with the targeting engine. Follwing options influence the behaviour: 
+
+- `For` filters for certain target groups that should be considered. Empty selection means that all target groups are 
+  considered.
+- `Do` sets three apply types:
+  - `Cleanup and Overwrite`: Cleans up all considered target groups from targeting storage and newly adds target groups 
+    from assigned customer segments including their application counter as assignment count in targeting storage.  
+  - `Cleanup and Merge`: Cleans up all considered target groups from targeting storage and newly adds target groups 
+    from assigned customer segments. But: the assignment count in targeting storage is only updated when application counter of
+    customer segment is higher.
+  - `Only Merge`: Only merges target groups from customer segments by updating assigment count in targeting storage if higher. 
+ 
+
+![Track Segment](./img/apply-target-groups-from-assigned-customer-segments.jpg)
+
+
+
 ## Special Triggers, Conditions and Actions in CMF Action Trigger Service
 In addition to the Pimcore Global Targeting Rules there are also additional triggers, conditions and actions for integration
 of Targeting with the CMF Action Trigger Service. 

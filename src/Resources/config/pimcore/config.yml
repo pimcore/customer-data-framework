@@ -12,6 +12,7 @@ pimcore:
             cmf_customer_is_loggedin: CustomerManagementFrameworkBundle\Targeting\Condition\CustomerIsLoggedIn
         action_handlers:
             cmf_track_segment: CustomerManagementFrameworkBundle\Targeting\ActionHandler\TrackSegment
+            cmf_apply_target_groups_from_segments: CustomerManagementFrameworkBundle\Targeting\ActionHandler\ApplyTargetGroupsFromSegments
             assign_target_group: CustomerManagementFrameworkBundle\Targeting\ActionHandler\AssignTargetGroupAndSegment
 
 monolog:

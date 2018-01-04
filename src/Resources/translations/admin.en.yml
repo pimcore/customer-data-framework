@@ -153,3 +153,10 @@ plugin_cmf_actiontriggerrule_number_condition_>=: "when count bigger or equal th
 plugin_cmf_actiontriggerrule_for_condition: "For"
 plugin_cmf_actiontriggerrule_for_condition_empty_all: "If selection empty, all apply."
 plugin_cmf_actiontriggerrule_for_condition_segments: "Segments"
+
+plugin_cmf_targeting_action_apply_target_groups_from_segments: "[CMF] Apply Target Groups from Assigned Customer Segments"
+plugin_cmf_targeting_action_apply_for: "For"
+plugin_cmf_targeting_action_apply_do: "Do"
+plugin_cmf_targeting_action_apply_target_groups_from_segments_cleanup_and_overwrite: "Cleanup and Overwrite"
+plugin_cmf_targeting_action_apply_target_groups_from_segments_cleanup_and_merge: "Cleanup and Merge"
+plugin_cmf_targeting_action_apply_target_groups_from_segments_only_merge: "Only Merge"

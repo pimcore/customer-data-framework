@@ -15,7 +15,9 @@ services:
 
     CustomerManagementFrameworkBundle\Targeting\SegmentTracker: ~
     CustomerManagementFrameworkBundle\Targeting\ActionHandler\TrackSegment: ~
-
+    CustomerManagementFrameworkBundle\Targeting\ActionHandler\ApplyTargetGroupsFromSegments: ~
 
     CustomerManagementFrameworkBundle\Targeting\ActionHandler\AssignTargetGroupAndSegment: ~
+
+
 

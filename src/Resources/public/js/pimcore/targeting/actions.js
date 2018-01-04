@@ -157,4 +157,81 @@
         })
     );
 
+
+    pimcore.settings.targeting.actions.register(
+        "cmf_apply_target_groups_from_segments",
+        Class.create(pimcore.settings.targeting.action.abstract, {
+            getName: function () {
+                return t('plugin_cmf_targeting_action_apply_target_groups_from_segments');
+            },
+
+            getPanel: function (panel, data) {
+                var id = Ext.id();
+
+                return new Ext.form.FormPanel({
+                    id: id,
+                    forceLayout: true,
+                    style: "margin: 10px 0 0 0",
+                    labelWidth: 50,
+                    bodyStyle: "padding: 10px 30px 10px 30px; min-height:40px;",
+                    tbar: pimcore.settings.targeting.actions.getTopBar(this, id, panel),
+                    items: [
+                        {
+                            xtype: "fieldcontainer",
+                            fieldLabel: t("plugin_cmf_targeting_action_apply_for"),
+                            labelWidth: 50,
+                            height: 210,
+                            layout: {
+                                type: 'vbox'
+                            },
+                            items: [
+                                {
+                                    xtype: "multiselect",
+                                    name: "targetGroup",
+                                    displayField: 'text',
+                                    valueField: "id",
+                                    store: pimcore.globalmanager.get("target_group_store"),
+                                    editable: false,
+                                    width: 365,
+                                    triggerAction: 'all',
+                                    height: 180,
+                                    mode: "local",
+                                    value: data.targetGroup,
+                                    emptyText: t("select_a_target_group")
+                                },
+                                {
+                                    xtype: 'panel',
+                                    html: t("plugin_cmf_actiontriggerrule_for_condition_empty_all")
+                                }
+                            ]
+                        },
+                        {
+                            fieldLabel: t("plugin_cmf_targeting_action_apply_do"),
+                            xtype: "combobox",
+                            labelWidth: 50,
+                            name: "applyType",
+                            width: 500,
+                            store: Ext.data.ArrayStore({
+                                fields: ['applyType', 'applyTypeTranslated'],
+                                data: [
+                                    ['cleanup_and_overwrite', t('plugin_cmf_targeting_action_apply_target_groups_from_segments_cleanup_and_overwrite')],
+                                    ['cleanup_and_merge', t('plugin_cmf_targeting_action_apply_target_groups_from_segments_cleanup_and_merge')],
+                                    ['only_merge', t('plugin_cmf_targeting_action_apply_target_groups_from_segments_only_merge')]
+                                ]
+                            }),
+                            value: data.applyType ? data.applyType : 'cleanup_and_overwrite',
+                            displayField: 'applyTypeTranslated',
+                            valueField: 'applyType'
+                        },
+                        {
+                            xtype: "hidden",
+                            name: "type",
+                            value: "cmf_apply_target_groups_from_segments"
+                        }
+                    ]
+                });
+            }
+        })
+    );
+
 }());
