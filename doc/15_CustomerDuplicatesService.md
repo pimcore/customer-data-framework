@@ -11,7 +11,7 @@ view for the user to see, validate, merge or decline potential customer duplicat
 
 
 ## Part 1 - Mechanisms for Searching Duplicates of a given Customer: 
-This is done directly via the database/customer object list. The duplicate service will find customers where the 
+This is done directly via the database/customer object list. The duplicate service will find **active** customers where the 
 configured fields are equal to the given customer. Simple strtolower/trim transformations are done so that the 
 comparisons are case insensitive.
 
