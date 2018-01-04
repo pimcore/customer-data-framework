@@ -52,6 +52,13 @@ The `Has Segment` condition also checks for a certain count of segment assignmen
 ![Has Segment](./img/has-segment.jpg)
 
 
+### Condition `[CMF] Customer Logged-In`
+This condition checks if currently a user is logged in. There are no further config options to this condition.
+
+![Customer Logged-In](./img/customer-is-loggedin.jpg)
+
+
+
 ### Action `Assign Target Group`
 The CMF extends the default `Assign Target Group` action with following options: 
 
