@@ -89,10 +89,9 @@ class AssignTargetGroupAndSegment extends AssignTargetGroup {
 
         if($action['trackActivity'] && $targetGroup) {
 
-            $assignedTargetGroup = $visitorInfo->getTargetGroupAssignment($targetGroup);
-
             $totalWeight = $action['weight'];
-            if($assignedTargetGroup) {
+            if($visitorInfo->hasTargetGroupAssignment($targetGroup)) {
+                $assignedTargetGroup = $visitorInfo->getTargetGroupAssignment($targetGroup);
                 $totalWeight = $assignedTargetGroup->getCount();
             }
 

@@ -102,12 +102,14 @@ class TargetGroupAssigned extends AbstractSingleCustomerEvent implements RuleEnv
 
     public function updateEnvironment(TriggerDefinitionInterface $trigger, RuleEnvironmentInterface $environment)
     {
-        $assignment = $this->visitorInfo->getTargetGroupAssignment($this->targetGroup);
+        if($this->visitorInfo->hasTargetGroupAssignment($this->targetGroup)) {
+            $assignment = $this->visitorInfo->getTargetGroupAssignment($this->targetGroup);
 
-        $environment->set(self::STORAGE_KEY, [
-            'targetGroupId' => $this->targetGroup->getId(),
-            'targetGroupWeight' => $assignment->getCount()
-        ]);
+            $environment->set(self::STORAGE_KEY, [
+                'targetGroupId' => $this->targetGroup->getId(),
+                'targetGroupWeight' => $assignment->getCount()
+            ]);
+        }
     }
 }
 
