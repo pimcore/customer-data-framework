@@ -58,7 +58,24 @@ Following options to prepare the customer class are available:
      `created_timestamp` and `application_counter` as numeric meta fields
   * `idEncoded`: input field
   
-  As starting point this [class definition](https://github.com/pimcore/customer-data-framework/blob/master/install/class_source/optional/class_Customer_export.json) can be used. 
+  As starting point this [class definition](https://github.com/pimcore/customer-data-framework/blob/master/install/class_source/optional/class_Customer_export.json) can be used.
+
+  Note that the class doesn't need to contain the attributes as field definitions. You can also just add the fields to your specific class implementation interface by adding getters.
+
+  Example
+  ```php
+  class AppBundleCustomer extends Pimcore\Model\DataObject\Customer  {
+
+      /** Implementation for firstname **/
+      public function getFirstname()
+      {
+            return $this-getCustomerAddress()->getFirstname() ;
+      }
+
+      ...
+
+  }
+  ```
  
  
 * When using customer objects as users for Symfony security: In this case the customer class needs to extend the 
