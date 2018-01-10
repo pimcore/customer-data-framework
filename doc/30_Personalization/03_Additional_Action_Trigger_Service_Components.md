@@ -4,7 +4,7 @@ of Targeting with the CMF Action Trigger Service.
 
 ## Trigger `[Targeting] Segment Tracked`
 This trigger fires every time a segment is tracked to the Targeting Store - for example by a Global Targeting Rule or 
-when a document with an [assigned segment](../12_SegmentAssignment.md) is opened by an user. There are not further configuration
+when a document with an [assigned segment](../12_SegmentAssignment.md) is opened by an user. There are no further configuration
 options, it only stores the segment for later use in conditions and actions.  
 
 ![Segment Tracked](../img/segment-tracked.jpg)

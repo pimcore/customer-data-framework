@@ -1,6 +1,6 @@
 # Example Usecases
 
-Following examples describe typical usage usecases for the Pimcore personalization engine in combination with the CMF. 
+Following examples describe typical usecases for the Pimcore personalization engine in combination with the CMF.
 
 
 ## Use Segments 1:1 as Target Groups
