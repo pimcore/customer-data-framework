@@ -19,18 +19,13 @@ use CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\CustomerList\Exporter\AbstractExporter;
 use CustomerManagementFrameworkBundle\CustomerList\Exporter\ExporterInterface;
 use CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface;
-use CustomerManagementFrameworkBundle\CustomerList\Filter\CustomerSegment as CustomerSegmentFilter;
-use CustomerManagementFrameworkBundle\Listing\Filter\Permission as PermissionFilter;
+use CustomerManagementFrameworkBundle\CustomerList\SearchHelper;
 use CustomerManagementFrameworkBundle\CustomerList\Filter\Exception\SearchQueryException;
-use CustomerManagementFrameworkBundle\CustomerList\Filter\SearchQuery;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Helper\Objects;
-use CustomerManagementFrameworkBundle\Listing\Filter;
-use CustomerManagementFrameworkBundle\Listing\FilterHandler;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
-use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Db;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\Model\DataObject\AbstractObject;
@@ -102,7 +97,7 @@ class CustomersController extends Admin
                 'errors' => $errors,
                 'paginator' => $paginator,
                 'customerView' => $customerView,
-                'searchBarFields' => $this->getConfiguredSearchBarFields(),
+                'searchBarFields' => $this->getSearchHelper()->getConfiguredSearchBarFields(),
                 'request' => $request,
                 'clearUrlParams' => $this->clearUrlParams,
                 'filterDefinitions' => $this->getFilterDefinitions(),
@@ -120,7 +115,7 @@ class CustomersController extends Admin
      */
     public function detailAction(Request $request)
     {
-        $customer = $this->getCustomerProvider()->getById((int)$request->get('id'));
+        $customer = $this->getSearchHelper()->getCustomerProvider()->getById((int)$request->get('id'));
         if($customer && $customer instanceof CustomerInterface) {
             $customerView = \Pimcore::getContainer()->get('cmf.customer_view');
             if(!$customerView->hasDetailView($customer)) {
@@ -378,7 +373,7 @@ class CustomersController extends Admin
     {
         if(is_null($this->segmentGroups)) {
             /** @var CustomerSegmentGroup\Listing $segmentGroups */
-            $segmentGroups = $this->getSegmentManager()->getSegmentGroups();
+            $segmentGroups = $this->getSearchHelper()->getSegmentManager()->getSegmentGroups();
             $segmentGroups->addConditionParam('showAsFilter = 1');
             // sort by filterSortOrder high to low
             $segmentGroups->setOrderKey('filterSortOrder IS NULL, filterSortOrder DESC', false);
@@ -395,72 +390,14 @@ class CustomersController extends Admin
     protected function buildListing(array $filters = [])
     {
         /** @var Listing|Listing\Concrete $listing */
-        $listing = $this->getCustomerProvider()->getList();
+        $listing = $this->getSearchHelper()->getCustomerProvider()->getList();
         $listing
             ->setOrderKey('o_id')
             ->setOrder('ASC');
-        $this->addListingFilters($listing, $filters);
+        $this->getSearchHelper()->addListingFilters($listing, $filters, $this->getAdminUser());
 
         return $listing;
     }
-
-    /**
-     * @param Listing\Concrete $listing
-     * @param array $filters
-     * @throws \Exception
-     */
-    protected function addListingFilters(Listing\Concrete $listing, array $filters = [])
-    {
-        $handler = new FilterHandler($listing);
-
-        $filterProperties = \Pimcore::getContainer()->getParameter('pimcore_customer_management_framework.customer_list.filter_properties');
-
-        $equalsProperties = isset($filterProperties['equals']) ? $filterProperties['equals'] : [];
-        $searchProperties = isset($filterProperties['search']) ? $filterProperties['search'] : [];
-
-        foreach($equalsProperties as $property => $databaseField) {
-            if(array_key_exists($property, $filters)) {
-                $handler->addFilter(new Filter\Equals($databaseField, $filters[$property]));
-            }
-        }
-
-        foreach($searchProperties as $property => $databaseFields) {
-            if(array_key_exists($property, $filters)
-                && !empty($filters[$property])
-                && is_string($filters[$property])) {
-                $handler->addFilter(new SearchQuery($databaseFields, $filters[$property]));
-            }
-        }
-
-        if(array_key_exists('segments', $filters)) {
-            foreach($filters['segments'] as $groupId => $segmentIds) {
-                $segmentGroup = null;
-                if($groupId !== 'default') {
-                    /** @var \Pimcore\Model\DataObject\CustomerSegmentGroup $segmentGroup */
-                    $segmentGroup = $this->getSegmentManager()->getSegmentGroupById($groupId);
-                    if(!$segmentGroup) {
-                        throw new \Exception(sprintf('Segment group %d was not found', $groupId));
-                    }
-                }
-                $segments = [];
-                foreach($segmentIds as $segmentId) {
-                    $segment = $this->getSegmentManager()->getSegmentById($segmentId);
-                    if(!$segment) {
-                        throw new \Exception(sprintf('Segment %d was not found', $segmentId));
-                    }
-                    $segments[] = $segment;
-                }
-                $handler->addFilter(new CustomerSegmentFilter($segments, $segmentGroup));
-            }
-        }
-
-        // add permission filter for non admin
-        if(!$this->getAdminUser()->isAdmin()) {
-            // only show customers which the user can access
-            $handler->addFilter(new PermissionFilter($this->getAdminUser()));
-        }
-    }
-
     /**
      * Fetch filters and set them on view
      *
@@ -528,26 +465,6 @@ class CustomersController extends Admin
         }
 
         return null;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getConfiguredSearchBarFields()
-    {
-        $filterProperties = \Pimcore::getContainer()->getParameter('pimcore_customer_management_framework.customer_list.filter_properties');
-        $searchProperties = $filterProperties['search'];
-
-        $searchBarFields = [];
-        if(isset($searchProperties['search'])) {
-            $searchProperties = $searchProperties['search'];
-
-            if(is_array($searchProperties) && count($searchProperties) > 0) {
-                $searchBarFields = array_values($searchProperties);
-            }
-        }
-
-        return $searchBarFields;
     }
 
     /**
@@ -688,22 +605,10 @@ class CustomersController extends Admin
     }
 
     /**
-     * @return SegmentManagerInterface
+     * @return SearchHelper
      */
-    protected function getSegmentManager()
+    protected function getSearchHelper()
     {
-        /** @noinspection MissingService */
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return \Pimcore::getContainer()->get('cmf.segment_manager');
-    }
-
-    /**
-     * @return CustomerProviderInterface
-     */
-    protected function getCustomerProvider()
-    {
-        /** @noinspection MissingService */
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return \Pimcore::getContainer()->get('cmf.customer_provider');
+        return \Pimcore::getContainer()->get(SearchHelper::class);
     }
 }

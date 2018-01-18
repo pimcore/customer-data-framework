@@ -23,6 +23,7 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db;
 use Pimcore\Logger;
+use Pimcore\Model\DataObject\Listing\Concrete;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 use Zend\Paginator\Paginator;
@@ -210,11 +211,12 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         );
     }
 
-    public function getPotentialDuplicates($page, $pageSize = 100, $declined = false)
+    public function getPotentialDuplicates($page, $pageSize = 100, $declined = false, Concrete $filterCustomerList = null)
     {
         $db = \Pimcore\Db::get();
 
         $select = $db->select();
+
         $select
             ->from(
                 self::POTENTIAL_DUPLICATES_TABLE,
@@ -228,6 +230,17 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
                 ]
             )
             ->order('id asc');
+
+        if(!is_null($filterCustomerList)) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            $query = $filterCustomerList->getQuery()
+                ->reset(Db\ZendCompatibility\QueryBuilder::COLUMNS)
+                ->columns(['o_id']);
+            $select
+                ->distinct()
+                ->joinInner('object_' . $filterCustomerList->getClassId(), 'FIND_IN_SET(o_id, duplicateCustomerIds)', [])
+                ->where('o_id in (' . $query . ')');
+        }
 
         if ($declined) {
             $select->where('(declined = 1)');

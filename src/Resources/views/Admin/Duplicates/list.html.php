@@ -20,7 +20,13 @@ $this->jsConfig()->add('declineDuplicates', true);
 ?>
 <div class="container">
 
-    <h2><?=$duplicatesView->getViewFormatter()->translate('cmf_duplicates_potential_duplicates')?></h2>
+    <h2><?= $duplicatesView->getViewFormatter()->translate('cmf_duplicates_potential_duplicates') ?></h2>
+
+    <div>
+
+        <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Duplicates/partials:list-filter.html.php') ?>
+
+    </div>
 
     <div>
 
@@ -37,6 +43,10 @@ $this->jsConfig()->add('declineDuplicates', true);
     </div>
 
     <table class="table">
+
+        <thead>
+            <th colspan="42"><h4><?= $duplicatesView->getViewFormatter()->translate('cmf_duplicates_number_total') ?>: <?= $paginator->getTotalItemCount() ?></h4></th>
+        </thead>
 
         <?php foreach ($duplicates as $duplicate) {
         $listData = $duplicatesView->getListData($duplicate->getDuplicateCustomers()[0]); ?>

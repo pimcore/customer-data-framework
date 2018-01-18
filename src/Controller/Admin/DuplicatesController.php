@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Pimcore
  *
@@ -16,7 +15,10 @@
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\Controller\Admin;
+use CustomerManagementFrameworkBundle\CustomerList\SearchHelper;
+use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
 use CustomerManagementFrameworkBundle\Factory;
+use Pimcore\Model\DataObject\Listing\Concrete;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,14 +35,35 @@ class DuplicatesController extends Admin
 
     /**
      * @param Request $request
+     * @param DuplicatesIndexInterface $duplicatesIndex
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
      * @Route("/list")
      */
-    public function listAction(Request $request)
+    public function listAction(Request $request, DuplicatesIndexInterface $duplicatesIndex)
     {
-        $paginator = \Pimcore::getContainer()->get('cmf.customer_duplicates_index')->getPotentialDuplicates(
+        // fetch all filters
+        $filters = $request->get('filter', []);
+        // check if filters exist
+        $customerList = null;
+        if(!empty($filters)) {
+            // build customer listing
+            /** @var Concrete $listing */
+            $customerList = $this->getSearchHelper()->getCustomerProvider()->getList();
+            $customerList
+                ->setOrderKey('o_id')
+                ->setOrder('ASC');
+
+            /** @noinspection PhpUnhandledExceptionInspection */
+            $this->getSearchHelper()->addListingFilters($customerList, $filters, $this->getAdminUser());
+        }
+
+
+        $paginator = $duplicatesIndex->getPotentialDuplicates(
             $request->get('page', 1),
             50,
-            $request->get('declined')
+            $request->get('declined'),
+            $customerList
         );
 
         return $this->render(
@@ -49,6 +72,8 @@ class DuplicatesController extends Admin
                 'paginator' => $paginator,
                 'duplicates' => $paginator->getCurrentItems(),
                 'duplicatesView' => \Pimcore::getContainer()->get('cmf.customer_duplicates_view'),
+                'searchBarFields' => $this->getSearchHelper()->getConfiguredSearchBarFields(),
+                'filters' => $filters,
             ]
         );
     }
@@ -65,10 +90,12 @@ class DuplicatesController extends Admin
     /**
      * @param Request $request
      * @Route("/decline/{id}")
+     * @return JsonResponse
      */
     public function declineAction(Request $request)
     {
         try {
+            /** @noinspection MissingService */
             \Pimcore::getContainer()->get('cmf.customer_duplicates_index')->declinePotentialDuplicate(
                 $request->get('id')
             );
@@ -77,5 +104,13 @@ class DuplicatesController extends Admin
         } catch (\Exception $e) {
             return new JsonResponse(['success' => false, 'msg' => $e->getMessage()]);
         }
+    }
+
+    /**
+     * @return SearchHelper
+     */
+    protected function getSearchHelper()
+    {
+        return \Pimcore::getContainer()->get(SearchHelper::class);
     }
 }

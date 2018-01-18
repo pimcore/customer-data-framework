@@ -120,6 +120,7 @@ cmf_duplicates_current: "Current"
 cmf_duplicates_declined: "Declined"
 cmf_duplicates_declined: "Merge"
 cmf_duplicates_decline_duplicate: "Decline duplicate"
+cmf_duplicates_number_total: "Count"
 
 cmf_gdpr_export_customers: "Customers"
 
