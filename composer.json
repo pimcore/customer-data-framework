@@ -1,6 +1,6 @@
 {
     "name": "pimcore/customer-management-framework-bundle",
-    "license": "GPL-3.0+",
+    "license": "GPL-3.0-or-later",
     "type": "pimcore-bundle",
     "config": {
         "sort-packages": true
