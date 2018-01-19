@@ -13,4 +13,6 @@
         </div>
     </div>
 
+    <input type="hidden" name="declined" value="<?=$this->getParam('declined')?>"/>
+
 </form>
