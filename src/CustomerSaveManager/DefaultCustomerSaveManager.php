@@ -133,7 +133,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     public function preAdd(CustomerInterface $customer)
     {
         if ($customer->getPublished()) {
-            $this->validateOnSave($customer, $customer->getActive());
+            $this->validateOnSave($customer);
         }
 
         $this->rememberOriginalCustomer($customer);
@@ -185,7 +185,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
             $this->applySaveHandlers($customer, 'preUpdate', true);
         }
-        $this->validateOnSave($customer, $customer->getActive());
+        $this->validateOnSave($customer, true);
         $this->applyNamingScheme($customer);
     }
 
