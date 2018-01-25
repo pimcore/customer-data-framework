@@ -15,6 +15,10 @@ process.
 
 ![manual vs calculated segments](./img/Segments.png)
 
+#### Optional: use path formatter for an alternative version of displaying the related events:
+![custom path formatter](./img/customer-segments-path-formatter.png)
+
+Just add `CustomerManagementFrameworkBundle\PathFormatter` as formatter class to customer segment relation fields in the Pimcore class editor if you prefer this segment relation presentation.
 
 ## SegmentManager
 
