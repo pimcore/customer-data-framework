@@ -99,7 +99,7 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
 
     protected function validateDuplicates(CustomerInterface $customer)
     {
-        if ($this->checkForDuplicates) {
+        if ($this->checkForDuplicates && $customer->getActive() && $customer->getPublished()) {
             $duplicates = \Pimcore::getContainer()->get('cmf.customer_duplicates_service')->getDuplicatesOfCustomer(
                 $customer
             );
