@@ -127,11 +127,20 @@ abstract class AbstractExporter implements ExporterInterface
 
         $rows = [];
         $allSegmentIds = [];
+        /**
+         * @var Concrete $customer
+         */
         foreach ($this->listing as $customer) {
+            $classDefinition = $customer->getClass();
             $row = [self::COLUMNS => [], self::SEGMENT_IDS => []];
             foreach ($this->properties as $property) {
                 $getter = 'get'.ucfirst($property);
-                $value = $customer->$getter();
+
+                if ($fd = $classDefinition->getFieldDefinition($property)) {
+                    $value = $fd->getForCsvExport($customer);
+                } else {
+                    $value = $customer->$getter();
+                }
 
                 $row[self::COLUMNS][] = (string) $value;
             }
