@@ -134,11 +134,11 @@ abstract class AbstractExporter implements ExporterInterface
             $classDefinition = $customer->getClass();
             $row = [self::COLUMNS => [], self::SEGMENT_IDS => []];
             foreach ($this->properties as $property) {
-                $getter = 'get'.ucfirst($property);
 
                 if ($fd = $classDefinition->getFieldDefinition($property)) {
                     $value = $fd->getForCsvExport($customer);
                 } else {
+                    $getter = 'get'.ucfirst($property);
                     $value = $customer->$getter();
                 }
 
