@@ -54,7 +54,7 @@ $this->jsConfig()->add('declineDuplicates', true);
                 <tr>
                     <td colspan="99">
 
-                        <a class="btn btn-primary btn-xs pull-right" onClick="new window.top.pimcore.plugin.objectmerger.panel(<?=$duplicate->getDuplicateCustomers()[0]->getId()?>, <?=$duplicate->getDuplicateCustomers()[1]->getId()?>); "><?=$duplicatesView->getViewFormatter()->translate('cmf_duplicates_declined')?></a>
+                        <a class="btn btn-primary btn-xs pull-right" onClick="new window.top.pimcore.plugin.objectmerger.panel(<?=$duplicate->getDuplicateCustomers()[0]->getId()?>, <?=$duplicate->getDuplicateCustomers()[1]->getId()?>); "><?=$duplicatesView->getViewFormatter()->translate('cmf_duplicates_merge')?></a>
                         <?php if (!$this->getParam('declined')) {
             ?>
                             <a class="btn btn-danger btn-xs pull-right js-decline-duplicate" data-id="<?=$duplicate->getId()?>" style="margin-right: 5px;"><?=$duplicatesView->getViewFormatter()->translate('cmf_duplicates_decline_duplicate')?></a>
