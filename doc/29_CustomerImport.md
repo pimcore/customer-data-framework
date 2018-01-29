@@ -17,13 +17,13 @@ When you are finished the configuration might look something like this:
 
 In the CMF config setup the following configuration options
 
-´´´yaml
+```yaml
 pimcore_customer_management_framework:
     # Configuration of CSV customer importer
     import:
         customerImportParentId: 1 # Default customer import folder. Only relevant when automatic naming scheme is disabled.
         customerImporterId: 1     # Importer config ID for CSV imports.
-´´´
+```
 
 ### Step 3:
 
@@ -34,8 +34,10 @@ Share the importer config with users who should get access to the CSV importer. 
 Try out the importer feature. When setup correctly the importer button should appear at two positions in the system:
 
 1. in the customer list view:
+
 ![CSV importer](./img/customer-csv-importer-listview.png)
 
 2. as importer for customer segments:
+
 ![CSV importer](./img/customer-csv-importer-segments.png)
 Via this button the customer CSV list will be imported and afterwards the given customer segment will be added to all customers in the list.
