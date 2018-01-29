@@ -40,4 +40,5 @@ Try out the importer feature. When setup correctly the importer button should ap
 2. as importer for customer segments:
 
 ![CSV importer](./img/customer-csv-importer-segments.png)
+
 Via this button the customer CSV list will be imported and afterwards the given customer segment will be added to all customers in the list.
