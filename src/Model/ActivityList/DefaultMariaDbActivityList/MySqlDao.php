@@ -46,7 +46,7 @@ class MySqlDao
                     'implementationClass',
                     'o_id',
                     'a_id',
-                    'attributes' => 'COLUMN_JSON(attributes)',
+                    'attributes',
                     'md5',
                     'creationDate',
                     'modificationDate',
