@@ -16,11 +16,11 @@
 namespace CustomerManagementFrameworkBundle\Model\ActivityList;
 
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
-use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList\Dao;
+use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList\MariaDbDao;
 use Pimcore\Model\Listing\AbstractListing;
 use Zend\Paginator\Adapter\AdapterInterface;
 
-class DefaultMariaDbActivityList extends AbstractListing implements ActivityListInterface
+class DefaultMariaDbActivityList implements ActivityListInterface
 {
     /**
      * @var int
@@ -43,13 +43,13 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     protected $activities = null;
 
     /**
-     * @var Dao;
+     * @var MariaDbDao;
      */
     protected $dao;
 
     public function __construct()
     {
-        $this->dao = new Dao($this);
+        $this->dao = new MariaDbDao($this);
     }
 
     public function getActivities()
