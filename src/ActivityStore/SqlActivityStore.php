@@ -5,7 +5,6 @@ namespace CustomerManagementFrameworkBundle\ActivityStore;
 use CustomerManagementFrameworkBundle\Filter\ExportActivitiesFilterParams;
 use CustomerManagementFrameworkBundle\Model\ActivityExternalIdInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
-use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Doctrine\DBAL\Connection;
@@ -158,14 +157,6 @@ abstract class SqlActivityStore implements ActivityStoreInterface
         }
 
         $this->saveActivityStoreEntry($entry);
-    }
-
-    /**
-     * @return DefaultMariaDbActivityList
-     */
-    public function getActivityList()
-    {
-        return new DefaultMariaDbActivityList();
     }
 
     /**

@@ -3,19 +3,19 @@
 namespace CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList;
 
 use CustomerManagementFrameworkBundle\ActivityStore\MariaDb;
-use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList;
+use CustomerManagementFrameworkBundle\Model\ActivityList\MySqlActivityList;
 use Pimcore\Db;
 
 class MySqlDao
 {
     /**
-     * @var DefaultMariaDbActivityList
+     * @var MySqlActivityList
      */
     private $model;
 
     private $query;
 
-    public function __construct(DefaultMariaDbActivityList $model)
+    public function __construct(MySqlActivityList $model)
     {
         $this->model = $model;
     }

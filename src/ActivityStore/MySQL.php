@@ -5,6 +5,7 @@ namespace CustomerManagementFrameworkBundle\ActivityStore;
 use CustomerManagementFrameworkBundle\Filter\ExportActivitiesFilterParams;
 use CustomerManagementFrameworkBundle\Model\ActivityExternalIdInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
+use CustomerManagementFrameworkBundle\Model\ActivityList\MySqlActivityList;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Db;
@@ -22,6 +23,14 @@ class MySQL extends SqlActivityStore
     protected function getActivityStoreConnection()
     {
         return Db::get();
+    }
+
+    /**
+     * @return MySqlActivityList
+     */
+    public function getActivityList()
+    {
+        return new MySqlActivityList();
     }
 
     /**

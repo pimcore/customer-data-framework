@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\ActivityStore;
 use CustomerManagementFrameworkBundle\Filter\ExportActivitiesFilterParams;
 use CustomerManagementFrameworkBundle\Model\ActivityExternalIdInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
+use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Db;
@@ -29,6 +30,14 @@ class MariaDb extends SqlActivityStore
     protected function getActivityStoreConnection()
     {
         return \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance();
+    }
+
+    /**
+     * @return DefaultMariaDbActivityList
+     */
+    public function getActivityList()
+    {
+        return new DefaultMariaDbActivityList();
     }
 
     /**

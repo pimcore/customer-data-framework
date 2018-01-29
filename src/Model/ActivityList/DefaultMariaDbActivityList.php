@@ -20,7 +20,7 @@ use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityL
 use Pimcore\Model\Listing\AbstractListing;
 use Zend\Paginator\Adapter\AdapterInterface;
 
-class DefaultMariaDbActivityList implements ActivityListInterface
+class DefaultMariaDbActivityList extends AbstractListing implements ActivityListInterface
 {
     /**
      * @var int
