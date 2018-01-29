@@ -12,7 +12,7 @@
         "hwi/oauth-bundle": "^0.5.3",
         "mtdowling/cron-expression": "^1.1.0",
         "pear/archive_tar": "^1.4.3",
-        "pimcore/core-version": "~5.1.0",
+        "pimcore/core-version": "~5.1.2",
         "pimcore/number-sequence-generator": "^1.0.1",
         "pimcore/object-merger": "~1.1",
         "pimcore/search-query-parser": "^1.2.4"
