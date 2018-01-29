@@ -64,6 +64,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $this->registerCustomerProviderConfiguration($container, $config['customer_provider']);
         $this->registerCustomerListConfiguration($container, $config['customer_list']);
         $this->registerCustomerDuplicatesServicesConfiguration($container, $config['customer_duplicates_services']);
+        $this->registerImportServicesConfiguration($container, $config['import']);
         $this->registerNewsletterConfiguration($container, $config['newsletter']);
         $this->registerActivityUrlTrackerConfiguration($container, $config['activity_url_tracker']);
         $this->registerSegmentAssignmentConfiguration($container, $config['segment_assignment_classes']);
@@ -149,6 +150,12 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
             $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.apiKey', $config['mailchimp']['apiKey']);
             $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.cliUpdatesPimcoreUserName', $config['mailchimp']['cliUpdatesPimcoreUserName']);
         }
+    }
+
+    private function registerImportServicesConfiguration(ContainerBuilder $container, array $config)
+    {
+        $container->setParameter('pimcore_customer_management_framework.import.customerImporterId', (int) $config['customerImporterId']);
+        $container->setParameter('pimcore_customer_management_framework.import.customerImportParentId', (int) $config['customerImportParentId']);
     }
 
     private function registerActivityUrlTrackerConfiguration(ContainerBuilder $container, array $config)

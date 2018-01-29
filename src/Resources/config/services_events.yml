@@ -19,6 +19,7 @@ services:
            - { name: kernel.event_listener, event: pimcore.dataobject.postAdd, method: onPostAdd }
            - { name: kernel.event_listener, event: pimcore.dataobject.preDelete, method: onPreDelete }
            - { name: kernel.event_listener, event: pimcore.dataobject.postDelete, method: onPostDelete }
+           - { name: kernel.event_listener, event: pimcore.dataobject.import.preSave, method: onPreSave }
 
     cmf.event_listener.object_merger:
            class: CustomerManagementFrameworkBundle\Event\CustomerMergerEventListener
