@@ -22,6 +22,12 @@ $(function() {
                     error: customerExporter.exportFailed
                 });
             });
+
+            $('.js-customer-import').on('click', function(e){
+                e.preventDefault();
+
+                window.parent.customermanagementframeworkPlugin.startCustomerImport();
+            });
         },
 
         processExportStep: function(url) {

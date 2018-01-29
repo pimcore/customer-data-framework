@@ -95,6 +95,9 @@ new customer will be created (and opened) inside the defined directory. When the
 
 ![New customer button](./img/new-customer-1.png)
 
+##### Customer CSV import
+[See here](./doc/29_CustomerImport.md)
+
 ## Activity View
 
 The activity view provides a overview of all activities of a certain customer and is shown as additional tab in the 

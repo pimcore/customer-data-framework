@@ -22,6 +22,7 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Event\Model\DataObjectEvent;
+use Pimcore\Event\Model\DataObjectImportEvent;
 use Pimcore\Event\Model\ElementEventInterface;
 use Pimcore\Model\DataObject\LinkActivityDefinition;
 
@@ -131,6 +132,37 @@ class PimcoreObjectEventListener
             \Pimcore::getContainer()->get('cmf.activity_manager')->deleteActivity($object);
         } elseif ($object instanceof CustomerSegmentInterface) {
             \Pimcore::getContainer()->get(SegmentManagerInterface::class)->postSegmentDelete($object);
+        }
+    }
+
+    public function onPreSave(DataObjectImportEvent $e)
+    {
+
+        $data = $e->getAdditionalData();
+
+        $customer = $e->getObject();
+
+        if(!$customer instanceof CustomerInterface) {
+            return;
+        }
+
+        if($data) {
+            /**
+             * @var SegmentManagerInterface $segmentManager
+             */
+            $segmentManager = \Pimcore::getContainer()->get(SegmentManagerInterface::class);
+
+            /**
+             * check to be compatible with different Pimcore versions
+             */
+
+            if(is_array($data)) {
+                $data = $data['customerSegmentId'];
+            }
+
+            if($segment = $segmentManager->getSegmentById($data)) {
+                $segmentManager->mergeSegments($customer, [$segment], [], 'Customer CSV importer');
+            }
         }
     }
 }

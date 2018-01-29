@@ -23,6 +23,7 @@ use CustomerManagementFrameworkBundle\CustomerList\SearchHelper;
 use CustomerManagementFrameworkBundle\CustomerList\Filter\Exception\SearchQueryException;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Helper\Objects;
+use CustomerManagementFrameworkBundle\Import\CustomerImportService;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
@@ -68,7 +69,7 @@ class CustomersController extends Admin
      * @Route("/list")
      * @return Response
      */
-    public function listAction(Request $request)
+    public function listAction(Request $request, CustomerImportService $customerImportService)
     {
         $filters = $this->fetchListFilters($request);
         $errors = $request->get('errors', []);
@@ -104,6 +105,7 @@ class CustomersController extends Admin
                 'filterDefinition' => $this->getFilterDefinition($request),
                 'accessToTempCustomerFolder' => boolval($this->hasUserAccessToTempCustomerFolder()),
                 'hideAdvancedFilterSettings' => boolval($request->get('segmentId')),
+                'customerImportService' => $customerImportService
             ]
         );
     }
