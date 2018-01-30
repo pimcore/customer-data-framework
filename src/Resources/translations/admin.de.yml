@@ -51,6 +51,8 @@ cmf_segmentAssignment_segment_assignment_error: "Segment Tagging Fehler"
 
 cmf_segmentAssignment_assignedSegments: "Zugewiesene Segmente"
 
+cmf_open: "öffnen"
+
 cmf_filters_no_results: "Keine Ergebnisse."
 cmf_filters_customers: "Kunden"
 cmf_filters_customer: "Kunde"
