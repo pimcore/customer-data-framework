@@ -123,7 +123,7 @@ public static function cmfGetDetailviewTemplate(ActivityStoreEntryInterface $ent
 
 #### Include links to Pimcore elements (e.g. objects) in activity view
 
-##### Example: show link to a data object in detail view
+##### Example: add link to a data object in detail view
 ```php
 <?php
 
@@ -139,7 +139,7 @@ public static function cmfGetDetailviewData(ActivityStoreEntryInterface $entry)
 }
 ```
 
-##### Example: show link to an asset in overview view with special css class and translation key
+##### Example: add link to an asset in overview view with special css class and translation key
 ```php
 <?php
 
