@@ -12,7 +12,7 @@ use Pimcore\Db;
 use Pimcore\Model\DataObject\Concrete;
 use Zend\Paginator\Paginator;
 
-class MySQL extends SqlActivityStore
+class MySQL extends SqlActivityStore implements ActivityStoreInterface
 {
     protected function getAttributeInsertData(ActivityInterface $activity)
     {

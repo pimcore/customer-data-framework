@@ -12,7 +12,7 @@ use Pimcore\Db;
 use Pimcore\Model\DataObject\Concrete;
 use Zend\Paginator\Paginator;
 
-abstract class SqlActivityStore implements ActivityStoreInterface
+abstract class SqlActivityStore
 {
     const ACTIVITIES_TABLE = 'plugin_cmf_activities';
     const DELETIONS_TABLE = 'plugin_cmf_deletions';

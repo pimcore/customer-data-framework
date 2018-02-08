@@ -25,7 +25,7 @@ use Pimcore\Db;
 use Pimcore\Model\DataObject\Concrete;
 use Zend\Paginator\Paginator;
 
-class MariaDb extends SqlActivityStore
+class MariaDb extends SqlActivityStore implements ActivityStoreInterface
 {
     protected function getActivityStoreConnection()
     {
