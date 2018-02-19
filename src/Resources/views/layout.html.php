@@ -29,7 +29,7 @@
     </div>
 </div>
 
-<?= $this->jsConfig() ?>
+<?= $this->jsConfigHelper() ?>
 
 <?php
 $this->headScript()->prependFile($this->minifiedAssetUrl()->minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/js/cmf.js'));

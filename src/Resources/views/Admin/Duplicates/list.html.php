@@ -16,7 +16,7 @@ $duplicatesView = $this->duplicatesView;
  */
 $duplicates = $this->paginator;
 
-$this->jsConfig()->add('declineDuplicates', true);
+$this->jsConfigHelper()->add('declineDuplicates', true);
 ?>
 <div class="container">
 
