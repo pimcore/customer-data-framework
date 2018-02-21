@@ -43,6 +43,9 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\DataObject\Concrete
         return $this->getClassName();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function cmfToArray()
     {
         $fieldDefintions = $this->getClass()->getFieldDefinitions();
