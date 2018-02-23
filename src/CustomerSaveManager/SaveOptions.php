@@ -324,5 +324,7 @@ class SaveOptions
             ->disableSaveHandlers()
             ->disableSegmentBuilderQueue()
             ->disableValidator();
+
+        return $this;
     }
 }
