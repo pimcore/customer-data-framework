@@ -107,9 +107,16 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
     {
         $db = Db::get();
 
-        $db->query('delete from ' . self::QUEUE_TABLE . ' where customerId = ? and email = ? and operation = ? and modificationDate = ?', [
-            $item->getCustomerId(), $item->getEmail(), $item->getOperation(), $item->getModificationDate()
-        ]);
+        if(!is_null($item->getEmail())) {
+            $db->query('delete from ' . self::QUEUE_TABLE . ' where customerId = ? and email = ? and operation = ? and modificationDate = ?', [
+                $item->getCustomerId(), $item->getEmail(), $item->getOperation(), $item->getModificationDate()
+            ]);
+        } else {
+            $db->query('delete from ' . self::QUEUE_TABLE . ' where customerId = ? and email is null and operation = ? and modificationDate = ?', [
+                $item->getCustomerId(), $item->getOperation(), $item->getModificationDate()
+            ]);
+        }
+
 
         $this->getLogger()->info(sprintf(
             'newsletter queue item removed [customerId: %s, email: %s, operation: %s, modificationDate: %s]',
