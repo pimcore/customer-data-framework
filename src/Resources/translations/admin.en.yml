@@ -50,6 +50,8 @@ cmf_segmentAssignment_breakInheritance: "Deactivate Inheritance"
 cmf_segmentAssignment_segment_assignment_error: "Segment Assignment Error"
 cmf_segmentAssignment_assignedSegments: "Assigned Segments"
 
+cmf_open: "open"
+
 cmf_filters_no_results: "No results."
 cmf_filters_customers: "Customers"
 cmf_filters_customer: "Customer"

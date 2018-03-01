@@ -47,7 +47,7 @@ interface ActivityInterface
     public function cmfGetActivityDate();
 
     /**
-     * Returns an array representation of this activity.
+     * Returns an array representation of this activity. The return value/attributes array will be stored in the activity store.
      *
      * @return array
      */

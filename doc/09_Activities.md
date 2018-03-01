@@ -120,3 +120,38 @@ public static function cmfGetDetailviewData(ActivityStoreEntryInterface $entry);
  */
 public static function cmfGetDetailviewTemplate(ActivityStoreEntryInterface $entry);
 ```
+
+#### Include links to Pimcore elements (e.g. objects) in activity view
+
+##### Example: add link to a data object in detail view
+```php
+<?php
+
+public static function cmfGetDetailviewData(ActivityStoreEntryInterface $entry)
+{
+
+    /**
+     * @var ActivityViewInterface $activityView
+     */
+    $activityView = \Pimcore::getContainer()->get('cmf.activity_view');
+
+    return ['data object'=>$activityView->createPimcoreElementLink(3, 'object')];
+}
+```
+
+##### Example: add link to an asset in overview view with special css class and translation key
+```php
+<?php
+
+public static function cmfGetDetailviewData(ActivityStoreEntryInterface $entry)
+{
+
+     /**
+     * @var ActivityViewInterface $activityView
+     */
+    $activityView = \Pimcore::getContainer()->get('cmf.activity_view');
+
+    return ['asset' => $activityView->createPimcoreElementLink(3, 'asset', 'btn btn-xs btn-success', 'open asset')];
+
+}
+```

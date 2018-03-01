@@ -15,7 +15,7 @@
  */
 if($accessToTempCustomerFolder) {
     /** @noinspection PhpUndefinedMethodInspection */
-    $this->jsConfig()->add('registerNewCustomerAction', true);
+    $this->jsConfigHelper()->add('registerNewCustomerAction', true);
 }
 ?>
 <!-- Filters -->

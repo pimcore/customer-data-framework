@@ -18,6 +18,9 @@ namespace CustomerManagementFrameworkBundle\ActivityView;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\View\Formatter\ViewFormatterInterface;
+use Pimcore\Model\Asset;
+use Pimcore\Model\Document;
+use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\ClassDefinition;
 
 class DefaultActivityView implements ActivityViewInterface
@@ -142,6 +145,39 @@ class DefaultActivityView implements ActivityViewInterface
         return $result;
     }
 
+    /**
+     * Creates a link/button to an object, asset or document.
+     *
+     * @param $id
+     * @param $elementType
+     * @param string $buttonCssClass
+     * @param string $buttonTranslationKey
+     * @return string
+     */
+    public function createPimcoreElementLink($id, $elementType, $buttonCssClass = 'btn btn-sm btn-default', $buttonTranslationKey = 'cmf_open')
+    {
+        $elementType = mb_strtolower($elementType);
+
+        if(!in_array($elementType, ['object', 'asset', 'document'])) {
+            throw new \RuntimeException(sprintf('"%s" is not valid element type (object, asset + document is allowed)', $elementType));
+        }
+
+        if($elementType == 'object' && ($object = AbstractObject::getById($id))) {
+            $link = sprintf("window.top.pimcore.helpers.openObject(%s, '%s')", $id, $object->getType());
+
+        } elseif($elementType == 'document' && ($document = Document::getById($id))) {
+            $link = sprintf("window.top.pimcore.helpers.openDocument(%s, '%s')", $id, $document->getType());
+        } elseif($elementType == 'asset' && ($asset = Asset::getById($id))) {
+            $link = sprintf("window.top.pimcore.helpers.openAsset(%s, '%s')", $id, $asset->getType());
+        }
+
+        if(!$link) {
+            return '';
+        }
+
+        return sprintf('<a href="javascript:%s" class="%s">%s</a>', $link, $buttonCssClass, $this->translate($buttonTranslationKey));
+    }
+    
     /**
      * @param array $attributes
      * @param array $visibleKeys

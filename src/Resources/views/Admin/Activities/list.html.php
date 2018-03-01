@@ -21,7 +21,7 @@ if(sizeof($paginator)) {
     $contentBoxClasses = ['no-padding', 'table-responsive'];
 }
 
-$this->jsConfig()->add('formAutoSubmit', true);
+$this->jsConfigHelper()->add('formAutoSubmit', true);
 ?>
 
 <section class="content">
