@@ -116,6 +116,8 @@ class AttributeLogic extends AbstractCustomerSaveHandler
             if($originalCustomer->$toGetter() != $customer->$toGetter()) {
                 return false;
             }
+        } elseif($customer->$toGetter()) {
+            return false;
         }
 
         return true;
