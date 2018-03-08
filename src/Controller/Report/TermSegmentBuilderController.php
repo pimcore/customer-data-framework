@@ -42,6 +42,6 @@ class TermSegmentBuilderController extends AdminController
             ];
         }
 
-        return $this->json($result);
+        return $this->adminJson($result);
     }
 }

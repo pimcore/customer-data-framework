@@ -49,4 +49,15 @@ interface ActivityViewInterface extends TranslatorInterface
      * @return array
      */
     public function formatAttributes($implementationClass, array $attributes, array $visibleKeys = []);
+
+    /**
+     * Creates a link/button to an object, asset or document.
+     *
+     * @param $id
+     * @param $elementType
+     * @param string $buttonCssClass
+     * @param string $buttonTranslationKey
+     * @return string
+     */
+    public function createPimcoreElementLink($id, $elementType, $buttonCssClass = 'btn btn-xs btn-default', $buttonTranslationKey = 'cmf_open');
 }

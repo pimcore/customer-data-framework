@@ -296,7 +296,6 @@ pimcore.plugin.cmf.config.rule = Class.create({
         if(typeof data == "undefined") {
             data = {};
         }
-console.log(event);
         var trigger = new pimcore.plugin.cmf.rule.triggers[event](data);
 
         var myId = Ext.id();
@@ -321,7 +320,6 @@ console.log(event);
      * @param data
      */
     addCondition: function (type, data) {
-console.log(type);
         // create condition
         var condition = new pimcore.plugin.cmf.rule.conditions[type](data);
 
@@ -344,6 +342,10 @@ console.log(type);
             tbar: condition.getTopBar(myId, this),
             items: condition.getFormItems()
         });
+        //add custom save handler for condition if available
+        if(condition.customSaveHandler !== undefined) {
+            item.customSaveHandler = condition.customSaveHandler.bind(condition);
+        }
 
 
         // add logic for brackets
@@ -381,7 +383,6 @@ console.log(type);
             // make ident
             tab.recalculateBracketIdent(tab.conditionsContainer.items);
         });
-console.log(item);
         this.conditionsContainer.add(item);
         item.updateLayout();
         this.conditionsContainer.updateLayout();
@@ -481,9 +482,13 @@ console.log(item);
         var conditionsData = [];
         for (var i=0; i<conditions.length; i++) {
             var options = conditions[i].getForm().getFieldValues();
+            if(conditions[i].customSaveHandler !== undefined) {
+                options = conditions[i].customSaveHandler();
+            }
 
             // get the operator (AND, OR, AND_NOT)
             var tb = conditions[i].getDockedItems()[0];
+            var operator = null;
             if (tb.getComponent("toggle_or").pressed) {
                 operator = "or";
             } else if (tb.getComponent("toggle_and_not").pressed) {

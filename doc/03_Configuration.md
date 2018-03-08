@@ -122,6 +122,9 @@ pimcore_customer_management_framework:
 
         # If a naming scheme is configured customer objects will be automatically renamend and moved to the configured folder structure as soon as the naming scheme gets applied.
         namingScheme:         '{countryCode}/{zip}/{firstname}-{lastname}' 
+        
+        # Parent folder for customers which are created via the "new customer" button in the customer list view
+        newCustomersTempDir:         /customers/_temp
 
     # Configuration of customer save manager
     customer_save_validator:
@@ -133,6 +136,11 @@ pimcore_customer_management_framework:
             # Provide valid field combinations. The customer object then is valid as soon as at least one of these field combinations is filled up.
             - [email]
             - [firstname, lastname]
+
+    # Configuration of CSV customer importer
+    import:
+        customerImportParentId: 1 # Default customer import folder. Only relevant when automatic naming scheme is disabled.
+        customerImporterId: 1     # Importer config ID for CSV imports.
 
     # Configuration of segment manager
     segment_manager:

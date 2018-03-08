@@ -17,6 +17,7 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger\ActionManager;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\Action\ActionDefinitionInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\Action\ActionInterface;
+use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
@@ -25,18 +26,23 @@ class DefaultActionManager implements ActionManagerInterface
 {
     use LoggerAware;
 
-    public function processAction(ActionDefinitionInterface $action, CustomerInterface $customer)
+    public function processAction(
+        ActionDefinitionInterface $action,
+        CustomerInterface $customer,
+        RuleEnvironmentInterface $environment
+    )
     {
         $this->getLogger()->info(sprintf('process action ID %s', $action->getId()));
 
         if (class_exists($action->getImplementationClass())) {
+            /** @var ActionInterface $actionImpl */
             $actionImpl = Factory::getInstance()->createObject(
                 $action->getImplementationClass(),
                 ActionInterface::class,
                 ['logger' => $this->getLogger()]
             );
 
-            $actionImpl->process($action, $customer);
+            $actionImpl->process($action, $customer, $environment);
         } else {
             $this->getLogger()->error(
                 sprintf('action implementation class %s not found', $action->getImplementationClass())

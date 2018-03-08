@@ -36,6 +36,9 @@ class TrackedUrlActivity extends AbstractActivity
         return $this->activityDefinition->getAttributeType();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function cmfToArray()
     {
         $attributes = [

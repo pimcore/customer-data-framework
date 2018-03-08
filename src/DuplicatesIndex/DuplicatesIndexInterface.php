@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\DuplicatesIndex;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use Pimcore\Model\DataObject\Listing\Concrete;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Zend\Paginator\Paginator;
@@ -73,10 +74,10 @@ interface DuplicatesIndexInterface
      * @param int $page
      * @param int $pageSize
      * @param bool $declined
-     *
+     * @param Concrete|null $filterCustomerList
      * @return Paginator
      */
-    public function getPotentialDuplicates($page, $pageSize = 100, $declined = false);
+    public function getPotentialDuplicates($page, $pageSize = 100, $declined = false, Concrete $filterCustomerList = null);
 
     /**
      * @param int $page

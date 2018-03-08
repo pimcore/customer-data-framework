@@ -50,14 +50,24 @@ app.Box.CollapseHandler = (function () {
             },
 
             collapse: function (state) {
-                var iconClass;
 
                 if (state) {
                     $box.addClass(collapseClass);
-                    iconClass = $.AdminLTE.options.boxWidgetOptions.boxWidgetIcons.open;
                 } else {
                     $box.removeClass(collapseClass);
-                    iconClass = $.AdminLTE.options.boxWidgetOptions.boxWidgetIcons.collapse;
+                }
+
+                Box.updateCollapseIcon(state);
+            },
+
+            updateCollapseIcon: function(state)
+            {
+                var iconClass;
+
+                if (state) {
+                    iconClass = 'fa-plus';
+                } else {
+                    iconClass = 'fa-minus';
                 }
 
                 $icon.attr('class', 'fa ' + iconClass);
@@ -108,6 +118,7 @@ app.Box.CollapseHandler = (function () {
             $collapseWidget.on('click', function (e) {
                 // negate state as it will be changed after this handler runs
                 Box.saveState(!Box.isCollapsed());
+                Box.updateCollapseIcon(!Box.isCollapsed());
             });
         }
 

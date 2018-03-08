@@ -19,6 +19,7 @@ use CustomerManagementFrameworkBundle\ActivityManager\ActivityManagerInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\DataTransformer\Cleanup\Email;
 use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
+use CustomerManagementFrameworkBundle\DataValidator\EmailValidator;
 use CustomerManagementFrameworkBundle\Model\Activity\MailchimpStatusChangeActivity;
 use CustomerManagementFrameworkBundle\Model\MailchimpAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Model\NewsletterAwareCustomerInterface;
@@ -234,10 +235,13 @@ class Mailchimp implements NewsletterProviderHandlerInterface
     {
         $updateNeededItems = [];
         foreach ($items as $item) {
-            if ($item->getCustomer() && !$item->getCustomer()->getEmail() && !$item->getEmail()) {
+
+            $emailValidator = new EmailValidator();
+
+            if ($item->getCustomer() && !$emailValidator->isValid($item->getCustomer()->getEmail()) && !$emailValidator->isValid(!$item->getEmail())) {
                 $this->getLogger()->info(
                     sprintf(
-                        '[MailChimp][CUSTOMER %s][%s] Export not needed as the customer has no email address.',
+                        '[MailChimp][CUSTOMER %s][%s] Export not needed as the customer has no valid email address.',
                         $item->getCustomer() ? $item->getCustomer()->getId() : '',
                         $this->getShortcut()
                     )

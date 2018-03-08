@@ -34,6 +34,21 @@ interface CustomerViewInterface extends TranslatorInterface
     public function getOverviewTemplate(CustomerInterface $customer);
 
     /**
+     * @return string
+     */
+    public function getFilterWrapperTemplate();
+
+    /**
+     * @return string
+     */
+    public function getFieldsFilterTemplate();
+
+    /**
+     * @return string
+     */
+    public function getSegmentsFilterTemplate();
+
+    /**
      * Determines if customer has a detail view or if pimcore object should be openend directly
      *
      * @param CustomerInterface $customer

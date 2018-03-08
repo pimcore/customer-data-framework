@@ -43,6 +43,7 @@ Following aspects are short cuts into the documentation for start working with t
 * [Built-In Marketing Automation Engine](./doc/22_ActionTrigger.md)
 * [Newsletter System Integration](./doc/24_NewsletterSync.md)
 * [Rest API Webservice](./doc/26_Webservice.md)
+* [Integration with Pimcore Targeting Engine](./doc/30_Personalization/README.md)
 
 
 ## Contributing and Development

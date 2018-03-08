@@ -112,3 +112,38 @@ pimcore.plugin.cmf.rule.triggers.ExecuteSegmentBuilders = Class.create(pimcore.p
     name: 'ExecuteSegmentBuilders',
     eventName: 'plugin.cmf.execute-segment-builders'
 });
+
+pimcore.registerNS("pimcore.plugin.cmf.rule.triggers.SegmentTracked");
+pimcore.plugin.cmf.rule.triggers.SegmentTracked = Class.create(pimcore.plugin.cmf.rule.triggers.AbstractTrigger, {
+    name: 'SegmentTracked',
+    eventName: 'plugin.cmf.segment-tracked'
+});
+
+pimcore.registerNS("pimcore.plugin.cmf.rule.triggers.TargetGroupAssigned");
+pimcore.plugin.cmf.rule.triggers.TargetGroupAssigned = Class.create(pimcore.plugin.cmf.rule.triggers.AbstractTrigger,{
+    name: 'TargetGroupAssigned',
+    eventName: 'plugin.cmf.target-group-assigned',
+    getFormItems: function() {
+
+        return [
+            {
+                fieldLabel: t("plugin_cmf_automationtrigger_assign_target_group_type"),
+                xtype: "combobox",
+                labelWidth: 200,
+                name: "assignmentType",
+                width: 500,
+                store: Ext.data.ArrayStore({
+                    fields: ['assignmentType', 'assignmentTypeTranslated'],
+                    data: [
+                        ['all', t('plugin_cmf_automationtrigger_assign_target_group_all')],
+                        ['documents', t('plugin_cmf_automationtrigger_assign_target_group_documents')],
+                        ['targetingRules', t('plugin_cmf_automationtrigger_assign_target_group_targetingRules')]
+                    ]
+                }),
+                value: this.options.assignmentType ? this.options.assignmentType : 'all',
+                displayField: 'assignmentTypeTranslated',
+                valueField: 'assignmentType'
+            }
+        ];
+    }
+});

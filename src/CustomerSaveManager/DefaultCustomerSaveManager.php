@@ -24,13 +24,19 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use Pimcore\Bundle\CoreBundle\EventListener\Traits\PimcoreContextAwareTrait;
 use Pimcore\Db;
+use Pimcore\Http\Request\Resolver\PimcoreContextResolver;
+use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\Element\ValidationException;
 use Pimcore\Model\Version;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 {
     use LoggerAware;
     use LegacyTrait;
+    use PimcoreContextAwareTrait;
 
     /**
      * @var SaveOptions
@@ -53,6 +59,11 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     private $customerProvider;
 
     /**
+     * @var RequestStack
+     */
+    private $requestStack;
+
+    /**
      * @var CustomerInterface|null
      */
     private $originalCustomer;
@@ -62,17 +73,31 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
      *
      * @param bool $enableAutomaticObjectNamingScheme
      */
-    public function __construct(SaveOptions $saveOptions, CustomerProviderInterface $customerProvider)
+    public function __construct(SaveOptions $saveOptions, CustomerProviderInterface $customerProvider, RequestStack $requestStack)
     {
         $this->saveOptions = $saveOptions;
         $this->defaultSaveOptions = clone $saveOptions;
         $this->customerProvider = $customerProvider;
+        $this->requestStack = $requestStack;
     }
 
     protected function applyNamingScheme(CustomerInterface $customer)
     {
         if ($this->saveOptions->isObjectNamingSchemeEnabled()) {
             $this->customerProvider->applyObjectNamingScheme($customer);
+
+            $request = $this->requestStack->getMasterRequest();
+
+            $this->setPimcoreContextResolver(\Pimcore::getContainer()->get('pimcore.service.request.pimcore_context_resolver'));
+
+            /**
+             * @var Concrete $customer
+             */
+            if($request && $this->matchesPimcoreContext($request, PimcoreContextResolver::CONTEXT_ADMIN)) {
+                if(!$customer->isAllowed('save') || ($customer->getPublished() && !$customer->isAllowed('publish'))) {
+                    throw new ValidationException(sprintf('No permissions to save customer to folder "%s"', $customer->getParent()));
+                }
+            }
         }
     }
 
@@ -110,14 +135,20 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         if ($customer->getPublished()) {
             $this->validateOnSave($customer);
         }
-
+        
         $this->rememberOriginalCustomer($customer);
 
         if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
             $this->applySaveHandlers($customer, 'preAdd', true);
         }
 
-        $this->applyNamingScheme($customer);
+        $request = $this->requestStack->getMasterRequest();
+
+        $this->setPimcoreContextResolver(\Pimcore::getContainer()->get('pimcore.service.request.pimcore_context_resolver'));
+
+        if(!$request || ($request && !$this->matchesPimcoreContext($request, PimcoreContextResolver::CONTEXT_ADMIN))) {
+            $this->applyNamingScheme($customer);
+        }
     }
 
     public function postAdd(CustomerInterface $customer)

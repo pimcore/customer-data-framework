@@ -53,7 +53,7 @@ class SegmentAssignmentController extends AdminController
         $segments = $this->get(SegmentManagerInterface::class)->getSegmentsForElementId($parentId, $type);
         $data = array_map([$this, 'dehydrateSegment'], array_filter($segments));
 
-        return $this->json(['data' => array_values($data)]);
+        return $this->adminJson(['data' => array_values($data)]);
     }
 
     /**
@@ -78,7 +78,7 @@ class SegmentAssignmentController extends AdminController
             return $this->dehydrateSegment($segment);
         }, array_filter(explode(',', $segmentIds)));
 
-        return $this->json(['data' => array_values($data)]);
+        return $this->adminJson(['data' => array_values($data)]);
     }
 
     /**
@@ -100,7 +100,7 @@ class SegmentAssignmentController extends AdminController
         $assigner = $this->get(SegmentAssignerInterface::class);
         $success = $assigner->assignById($id, $type, $breaksInheritance, $segmentIds);
 
-        return $this->json($success);
+        return $this->adminJson($success);
     }
 
     /**
@@ -118,7 +118,7 @@ class SegmentAssignmentController extends AdminController
 
         $breaksInheritance = $this->get(Connection::class)->fetchOne("SELECT `breaksInheritance` FROM $assignmentTable WHERE `elementId` = ? AND `elementType` = ?", [$id, $type]);
 
-        return $this->json(['breaksInheritance' => $breaksInheritance]);
+        return $this->adminJson(['breaksInheritance' => $breaksInheritance]);
     }
 
     /**

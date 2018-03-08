@@ -15,6 +15,12 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
+use CustomerManagementFrameworkBundle\Import\CustomerImportService;
+use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
+use Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse;
+use Pimcore\Model\DataObject\ClassDefinition;
+use Pimcore\Model\ImportConfig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -61,7 +67,7 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
             }
         );
 
-        return $this->json($result);
+        return $this->adminJson($result);
     }
 
     /**
@@ -79,22 +85,64 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
             $result[] = [$type];
         }
 
-        return $this->json($result);
+        return $this->adminJson($result);
+    }
+
+    /**
+     * @Route("/grouped-segments")
+     *
+     * @param SegmentManagerInterface $segmentManager
+     *
+     * @return JsonResponse
+     */
+    public function groupedSegmentsAction(SegmentManagerInterface $segmentManager)
+    {
+        $segments = [];
+
+        foreach ($segmentManager->getSegmentGroups() as $group) {
+            $groupSegments = $segmentManager->getSegmentsFromSegmentGroup($group);
+
+            foreach ($groupSegments as $groupSegment) {
+                $segments[] = [
+                    'id'        => $groupSegment->getId(),
+                    'name'      => $groupSegment->getName(),
+                    'groupId'   => $group->getId(),
+                    'groupName' => $group->getName()
+                ];
+            }
+        }
+
+        return $this->adminJson($segments);
     }
 
     /**
      * @return Response
      * @Route("/settings-json")
      */
-    public function settingJsonAction()
+    public function settingJsonAction(CustomerImportService $importService)
     {
-        $customerClassName = explode('\\', \Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassName());
+
+
+        $customerClassId = null;
+        if($class = ClassDefinition::getByName($this->getParameter('pimcore_customer_management_framework.general.customerPimcoreClass'))) {
+            $customerClassId = $class->getId();
+        }
+
+        $customerImporterId = $this->getParameter('pimcore_customer_management_framework.import.customerImporterId');
+
+        if(!$importService->isImporterIdAllowed($customerImporterId, $customerClassId)) {
+            $customerImporterId = 0;
+        }
 
         $settings = [
             'newsletterSyncEnabled' => $this->container->getParameter('pimcore_customer_management_framework.newsletter.newsletterSyncEnabled'),
             'duplicatesViewEnabled' => $this->container->getParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.enabled'),
             'segmentAssignment' => $this->getParameter('pimcore_customer_management_framework.segment_assignment_classes.types'),
-            'customerClassName' => $customerClassName[sizeof($customerClassName) - 1]
+            'customerClassName' => $this->getParameter('pimcore_customer_management_framework.general.customerPimcoreClass'),
+            'customerClassId' => $customerClassId,
+            'customerImporterId' => $customerImporterId,
+            'customerImportParentId' => $this->getParameter('pimcore_customer_management_framework.import.customerImportParentId'),
+            'shortcutFilterDefinitions' => FilterDefinition::prepareDataForMenu(FilterDefinition::getAllShortcutAvailableForUser($this->getAdminUser()))
         ];
 
         $content = '

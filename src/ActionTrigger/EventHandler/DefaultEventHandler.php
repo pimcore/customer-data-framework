@@ -18,7 +18,10 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger\EventHandler;
 use CustomerManagementFrameworkBundle\ActionTrigger\Condition\Checker;
 use CustomerManagementFrameworkBundle\ActionTrigger\Event\CustomerListEventInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\Event\EventInterface;
+use CustomerManagementFrameworkBundle\ActionTrigger\Event\RuleEnvironmentAwareEventInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\Event\SingleCustomerEventInterface;
+use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironment;
+use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
@@ -51,27 +54,29 @@ class DefaultEventHandler implements EventHandlerInterface
 
     public function handleEvent($event)
     {
+        $environment = new RuleEnvironment();
+
         if ($event instanceof SingleCustomerEventInterface) {
-            $this->handleSingleCustomerEvent($event);
+            $this->handleSingleCustomerEvent($event, $environment);
         } elseif ($event instanceof CustomerListEventInterface) {
-            $this->handleCustomerListEvent($event);
+            $this->handleCustomerListEvent($event, $environment);
         }
     }
 
-    public function handleSingleCustomerEvent(SingleCustomerEventInterface $event)
+    public function handleSingleCustomerEvent(SingleCustomerEventInterface $event, RuleEnvironmentInterface $environment)
     {
         $this->getLogger()->debug(sprintf('handle single customer event: %s', $event->getName()));
 
-        $appliedRules = $this->getAppliedRules($event);
+        $appliedRules = $this->getAppliedRules($event, $environment, true);
         foreach ($appliedRules as $rule) {
-            $this->handleActionsForCustomer($rule, $event->getCustomer());
+            $this->handleActionsForCustomer($rule, $event->getCustomer(), $environment);
         }
     }
 
-    public function handleCustomerListEvent(CustomerListEventInterface $event)
+    public function handleCustomerListEvent(CustomerListEventInterface $event, RuleEnvironmentInterface $environment)
     {
         // var_dump($this->getAppliedRules($event, false) );
-        foreach ($this->getAppliedRules($event, false) as $rule) {
+        foreach ($this->getAppliedRules($event, $environment, false) as $rule) {
             if ($conditions = $rule->getCondition()) {
                 $where = Checker::getDbConditionForRule($rule);
 
@@ -92,7 +97,7 @@ class DefaultEventHandler implements EventHandlerInterface
                     $paginator->setCurrentPageNumber($i);
 
                     foreach ($paginator as $customer) {
-                        $this->handleActionsForCustomer($rule, $customer);
+                        $this->handleActionsForCustomer($rule, $customer, $environment);
                     }
 
                     \Pimcore::collectGarbage();
@@ -101,16 +106,21 @@ class DefaultEventHandler implements EventHandlerInterface
         }
     }
 
-    private function handleActionsForCustomer(Rule $rule, CustomerInterface $customer)
+    private function handleActionsForCustomer(Rule $rule, CustomerInterface $customer, RuleEnvironmentInterface $environment)
     {
         if ($actions = $rule->getAction()) {
             foreach ($actions as $action) {
                 if ($action->getActionDelay()) {
-                    \Pimcore::getContainer()->get('cmf.action_trigger.queue')->addToQueue($action, $customer);
+                    \Pimcore::getContainer()->get('cmf.action_trigger.queue')->addToQueue(
+                        $action,
+                        $customer,
+                        $environment
+                    );
                 } else {
                     \Pimcore::getContainer()->get('cmf.action_trigger.action_manager')->processAction(
                         $action,
-                        $customer
+                        $customer,
+                        $environment
                     );
                 }
             }
@@ -123,7 +133,7 @@ class DefaultEventHandler implements EventHandlerInterface
      *
      * @return Rule[]
      */
-    private function getAppliedRules(EventInterface $event, $checkConditions = true)
+    private function getAppliedRules(EventInterface $event, RuleEnvironmentInterface $environment, $checkConditions = true)
     {
         $appliedRules = [];
 
@@ -139,8 +149,12 @@ class DefaultEventHandler implements EventHandlerInterface
                  */
                 foreach ($rule->getTrigger() as $trigger) {
                     if ($event->appliesToTrigger($trigger)) {
+                        if ($event instanceof RuleEnvironmentAwareEventInterface) {
+                            $event->updateEnvironment($trigger, $environment);
+                        }
+
                         if ($checkConditions) {
-                            if ($this->checkConditions($rule, $event)) {
+                            if ($this->checkConditions($rule, $event, $environment)) {
                                 $appliedRules[] = $rule;
                             }
                         } else {
@@ -156,8 +170,8 @@ class DefaultEventHandler implements EventHandlerInterface
         return $appliedRules;
     }
 
-    protected function checkConditions(Rule $rule, SingleCustomerEventInterface $event)
+    protected function checkConditions(Rule $rule, SingleCustomerEventInterface $event, RuleEnvironmentInterface $environment)
     {
-        return Checker::checkConditionsForRuleAndEvent($rule, $event);
+        return Checker::checkConditionsForRuleAndEvent($rule, $event, $environment);
     }
 }

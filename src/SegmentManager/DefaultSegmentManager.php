@@ -24,13 +24,13 @@ use CustomerManagementFrameworkBundle\SegmentAssignment\StoredFunctions\StoredFu
 use CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapperInterface;
 use CustomerManagementFrameworkBundle\SegmentBuilder\SegmentBuilderInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Pimcore\Db;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
 use Pimcore\Model\DataObject\Service;
 use Pimcore\Model\Element\ElementInterface;
+use Pimcore\Model\Tool\Targeting\TargetGroup;
 
 class DefaultSegmentManager implements SegmentManagerInterface
 {
@@ -472,7 +472,41 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     public function preSegmentUpdate(CustomerSegmentInterface $segment)
     {
+        $this->checkAndUpdateTargetGroupConnection($segment);
+        $this->updateGroupRelation($segment);
+    }
+
+    /**
+     * @param CustomerSegmentInterface $segment
+     */
+    protected function checkAndUpdateTargetGroupConnection(CustomerSegmentInterface $segment) {
+        //check connection to target groups
+        if($segment->getUseAsTargetGroup() && (empty($segment->getTargetGroup()) || empty(TargetGroup::getById($segment->getTargetGroup())))) {
+            $targetGroup = new TargetGroup();
+            $targetGroup->setName($segment->getName());
+            $targetGroup->setActive(true);
+            $targetGroup->save();
+
+            $segment->setTargetGroup($targetGroup->getId());
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function postSegmentDelete(CustomerSegmentInterface $segment) {
+        if($segment->getUseAsTargetGroup() && !empty($segment->getTargetGroup()) && !empty(TargetGroup::getById($segment->getTargetGroup()))) {
+            $targetGroup = TargetGroup::getById($segment->getTargetGroup());
+            $targetGroup->delete();
+        }
+    }
+
+    /**
+     * @param CustomerSegmentInterface $segment
+     */
+    protected function updateGroupRelation(CustomerSegmentInterface $segment) {
         if ($segment instanceof Concrete) {
+
             $parent = $segment;
 
             $segment->setGroup(null);

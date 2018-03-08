@@ -7,7 +7,7 @@ services:
     pimcore.templating.view_helper.jsConfig:
         class: CustomerManagementFrameworkBundle\Templating\Helper\JsConfig
         tags:
-            - { name: templating.helper, alias: jsConfig }
+            - { name: templating.helper, alias: jsConfigHelper }
 
     pimcore.templating.view_helper.filterFormAction:
         class: CustomerManagementFrameworkBundle\Templating\Helper\FilterFormAction

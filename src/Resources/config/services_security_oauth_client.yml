@@ -3,10 +3,14 @@ services:
         autowire: true
         autoconfigure: true
 
+    CustomerManagementFrameworkBundle\Security\OAuth\AccountConnectorInterface: '@CustomerManagementFrameworkBundle\Security\OAuth\AccountConnector'
     CustomerManagementFrameworkBundle\Security\OAuth\AccountConnector: ~
 
-    CustomerManagementFrameworkBundle\Security\OAuth\OAuthRegistrationHandler: ~
+    CustomerManagementFrameworkBundle\Security\OAuth\OAuthRegistrationHandler:
+        arguments:
+            $oAuthUtils: '@hwi_oauth.security.oauth_utils'
 
+    CustomerManagementFrameworkBundle\Security\OAuth\TokenStorageInterface: '@CustomerManagementFrameworkBundle\Security\OAuth\SessionTokenStorage'
     CustomerManagementFrameworkBundle\Security\OAuth\SessionTokenStorage: ~
 
     # OAuth user provider

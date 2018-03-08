@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Action;
 
+use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
 class ChangeFieldValue extends AbstractAction
@@ -22,7 +23,11 @@ class ChangeFieldValue extends AbstractAction
     const OPTION_FIELD = 'field';
     const OPTION_VALUE = 'value';
 
-    public function process(ActionDefinitionInterface $actionDefinition, CustomerInterface $customer)
+    public function process(
+        ActionDefinitionInterface $actionDefinition,
+        CustomerInterface $customer,
+        RuleEnvironmentInterface $environment
+    )
     {
         $options = $actionDefinition->getOptions();
 

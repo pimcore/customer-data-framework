@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Condition;
 
+use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\DataObject\AbstractObject;
 
@@ -24,7 +25,11 @@ class Customer extends AbstractCondition
     const OPTION_CUSTOMER = 'customer';
     const OPTION_NOT = 'not';
 
-    public function check(ConditionDefinitionInterface $conditionDefinition, CustomerInterface $customer)
+    public function check(
+        ConditionDefinitionInterface $conditionDefinition,
+        CustomerInterface $customer,
+        RuleEnvironmentInterface $environment
+    )
     {
         $options = $conditionDefinition->getOptions();
 

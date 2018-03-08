@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Queue;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\Action\ActionDefinitionInterface;
+use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\ActionDefinition;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
@@ -28,7 +29,11 @@ class DefaultQueue implements QueueInterface
 
     const QUEUE_TABLE = 'plugin_cmf_actiontrigger_queue';
 
-    public function addToQueue(ActionDefinitionInterface $action, CustomerInterface $customer)
+    public function addToQueue(
+        ActionDefinitionInterface $action,
+        CustomerInterface $customer,
+        RuleEnvironmentInterface $environment
+    )
     {
         $db = Db::get();
 
@@ -48,6 +53,7 @@ class DefaultQueue implements QueueInterface
                 'actionId' => $action->getId(),
                 'creationDate' => $time,
                 'modificationDate' => $time,
+                'environment' => serialize($environment)
             ]
         );
     }
@@ -79,8 +85,15 @@ class DefaultQueue implements QueueInterface
         $action = ActionDefinition::getById($item['actionId']);
         $customer = AbstractObject::getById($item['customerId']);
 
+        /** @var RuleEnvironmentInterface $environment */
+        $environment = unserialize($item['environment']);
+
         if ($action && $customer instanceof CustomerInterface) {
-            \Pimcore::getContainer()->get('cmf.action_trigger.action_manager')->processAction($action, $customer);
+            \Pimcore::getContainer()->get('cmf.action_trigger.action_manager')->processAction(
+                $action,
+                $customer,
+                $environment
+            );
         }
 
         $db = Db::get();

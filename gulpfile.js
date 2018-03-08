@@ -11,15 +11,15 @@ gulpTasks(gulp, require('gulp-load-plugins')(), {
             scripts: {
                 'lib.js': [
                     'node_modules/jquery/dist/jquery.js',
-                    'node_modules/admin-lte/plugins/fastclick/fastclick.js',
-                    'node_modules/admin-lte/plugins/slimScroll/jquery.slimscroll.js',
+                    'node_modules/admin-lte/node_modules/fastclick/lib/fastclick.js',
+                    'node_modules/admin-lte/node_modules/slimScroll/slimscroll.js',
                     'node_modules/admin-lte/plugins/pace/pace.js',
-                    'node_modules/admin-lte/plugins/select2/select2.full.js',
+                    'node_modules/admin-lte/node_modules/select2/dist/js/select2.full.js',
                     'node_modules/admin-lte/plugins/iCheck/icheck.js',
-                    'node_modules/admin-lte/plugins/daterangepicker/moment.js',
-                    'node_modules/admin-lte/plugins/daterangepicker/daterangepicker.js',
-                    'node_modules/admin-lte/bootstrap/js/bootstrap.js',
-                    'node_modules/admin-lte/dist/js/app.js'
+                    'node_modules/admin-lte/node_modules/bootstrap-daterangepicker/moment.js',
+                    'node_modules/admin-lte/node_modules/bootstrap-daterangepicker/daterangepicker.js',
+                    'node_modules/admin-lte/node_modules/bootstrap/dist/js/bootstrap.js',
+                    'node_modules/admin-lte/dist/js/adminlte.js'
                 ],
                 'cmf.js': [
                     'frontend/js/init.js',
@@ -33,13 +33,13 @@ gulpTasks(gulp, require('gulp-load-plugins')(), {
 
             styles: {
                 'lib.css': [
-                    'node_modules/admin-lte/bootstrap/css/bootstrap.css',
+                    'node_modules/admin-lte/node_modules/bootstrap/dist/css/bootstrap.css',
                     'node_modules/font-awesome/css/font-awesome.css',
                     'node_modules/ionicons/css/ionicons.css',
                     'node_modules/admin-lte/plugins/pace/pace.css',
-                    'node_modules/admin-lte/plugins/select2/select2.css',
+                    'node_modules/admin-lte/node_modules/select2/dist/css/select2.css',
                     'node_modules/admin-lte/plugins/iCheck/all.css',
-                    'node_modules/admin-lte/plugins/daterangepicker/daterangepicker.css',
+                    'node_modules/admin-lte/node_modules/bootstrap-daterangepicker/daterangepicker.css',
                     'node_modules/admin-lte/dist/css/AdminLTE.css',
                     'node_modules/admin-lte/dist/css/skins/skin-blue.css'
                 ],
@@ -63,7 +63,7 @@ gulpTasks(gulp, require('gulp-load-plugins')(), {
                     'files': [
                         'node_modules/font-awesome/fonts/*',
                         'node_modules/ionicons/fonts/*',
-                        'node_modules/admin-lte/bootstrap/fonts/*'
+                        'node_modules/admin-lte/node_modules/bootstrap/fonts/*'
                     ]
                 },
                 'iCheck': {

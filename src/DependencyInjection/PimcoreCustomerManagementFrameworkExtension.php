@@ -44,6 +44,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $loader->load('services_controllers.yml');
         $loader->load('services_templating.yml');
         $loader->load('services_events.yml');
+        $loader->load('services_targeting.yml');
 
         $loader->load('services_security.yml');
 
@@ -63,9 +64,12 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $this->registerCustomerProviderConfiguration($container, $config['customer_provider']);
         $this->registerCustomerListConfiguration($container, $config['customer_list']);
         $this->registerCustomerDuplicatesServicesConfiguration($container, $config['customer_duplicates_services']);
+        $this->registerImportServicesConfiguration($container, $config['import']);
         $this->registerNewsletterConfiguration($container, $config['newsletter']);
         $this->registerActivityUrlTrackerConfiguration($container, $config['activity_url_tracker']);
         $this->registerSegmentAssignmentConfiguration($container, $config['segment_assignment_classes']);
+
+        $this->configureGDPRDataProvider($container, $config['gdprDataProvider']);
     }
 
     private function registerGeneralConfiguration(ContainerBuilder $container, array $config)
@@ -81,14 +85,14 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
 
     private function registerCustomerSaveManagerConfiguration(ContainerBuilder $container, array $config)
     {
-        $container->setAlias('cmf.customer_save_manager', CustomerSaveManagerInterface::class);
+        $container->setAlias('cmf.customer_save_manager', CustomerSaveManagerInterface::class)->setPublic(true);
 
         $container->setParameter('pimcore_customer_management_framework.customer_save_manager.enableAutomaticObjectNamingScheme', $config['enableAutomaticObjectNamingScheme']);
     }
 
     private function registerCustomerSaveValidatorConfiguration(ContainerBuilder $container, array $config)
     {
-        $container->setAlias('cmf.customer_save_validator', CustomerSaveValidatorInterface::class);
+        $container->setAlias('cmf.customer_save_validator', CustomerSaveValidatorInterface::class)->setPublic(true);
 
         $container->setParameter('pimcore_customer_management_framework.customer_save_validator.requiredFields', is_array($config['requiredFields']) ? $config['requiredFields'] : []);
         $container->setParameter('pimcore_customer_management_framework.customer_save_validator.checkForDuplicates', $config['checkForDuplicates']);
@@ -96,7 +100,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
 
     private function registerSegmentManagerConfiguration(ContainerBuilder $container, array $config)
     {
-        $container->setAlias('cmf.segment_manager', SegmentManagerInterface::class);
+        $container->setAlias('cmf.segment_manager', SegmentManagerInterface::class)->setPublic(true);
 
         $container->setParameter('pimcore_customer_management_framework.segment_manager.segmentFolder.calculated', $config['segmentFolder']['calculated']);
         $container->setParameter('pimcore_customer_management_framework.segment_manager.segmentFolder.manual', $config['segmentFolder']['manual']);
@@ -104,13 +108,14 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
 
     private function registerCustomerProviderConfiguration(ContainerBuilder $container, array $config)
     {
-        $container->setAlias('cmf.customer_provider', CustomerProviderInterface::class);
-        $container->setAlias('cmf.customer_provider.object_naming_scheme', ObjectNamingSchemeInterface::class);
-        $container->setAlias('cmf.customer_merger', CustomerMergerInterface::class);
+        $container->setAlias('cmf.customer_provider', CustomerProviderInterface::class)->setPublic(true);
+        $container->setAlias('cmf.customer_provider.object_naming_scheme', ObjectNamingSchemeInterface::class)->setPublic(true);
+        $container->setAlias('cmf.customer_merger', CustomerMergerInterface::class)->setPublic(true);
 
         $container->setParameter('pimcore_customer_management_framework.customer_provider.namingScheme', $config['namingScheme']);
         $container->setParameter('pimcore_customer_management_framework.customer_provider.parentPath', $config['parentPath']);
         $container->setParameter('pimcore_customer_management_framework.customer_provider.archiveDir', $config['archiveDir']);
+        $container->setParameter('pimcore_customer_management_framework.customer_provider.newCustomersTempDir', $config['newCustomersTempDir']);
     }
 
     private function registerCustomerListConfiguration(ContainerBuilder $container, array $config)
@@ -121,8 +126,8 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
 
     private function registerCustomerDuplicatesServicesConfiguration(ContainerBuilder $container, array $config)
     {
-        $container->setAlias('cmf.customer_duplicates_service', CustomerDuplicatesServiceInterface::class);
-        $container->setAlias('cmf.customer_duplicates_index', DuplicatesIndexInterface::class);
+        $container->setAlias('cmf.customer_duplicates_service', CustomerDuplicatesServiceInterface::class)->setPublic(true);
+        $container->setAlias('cmf.customer_duplicates_index', DuplicatesIndexInterface::class)->setPublic(true);
 
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicateCheckFields', $config['duplicateCheckFields']);
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicateCheckTrimmedFields', (array) $config['duplicateCheckTrimmedFields']);
@@ -140,11 +145,17 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $container->setParameter('pimcore_customer_management_framework.newsletter.newsletterQueueImmediateAsyncExecutionEnabled', (bool) $config['newsletterQueueImmediateAsyncExecutionEnabled']);
 
         if ($config['newsletterSyncEnabled']) {
-            $container->setAlias('cmf.newsletter.queue', NewsletterQueueInterface::class);
+            $container->setAlias('cmf.newsletter.queue', NewsletterQueueInterface::class)->setPublic(true);
 
             $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.apiKey', $config['mailchimp']['apiKey']);
             $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.cliUpdatesPimcoreUserName', $config['mailchimp']['cliUpdatesPimcoreUserName']);
         }
+    }
+
+    private function registerImportServicesConfiguration(ContainerBuilder $container, array $config)
+    {
+        $container->setParameter('pimcore_customer_management_framework.import.customerImporterId', (int) $config['customerImporterId']);
+        $container->setParameter('pimcore_customer_management_framework.import.customerImportParentId', (int) $config['customerImportParentId']);
     }
 
     private function registerActivityUrlTrackerConfiguration(ContainerBuilder $container, array $config)
@@ -156,5 +167,12 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
     private function registerSegmentAssignmentConfiguration(ContainerBuilder $container, array $config)
     {
         $container->setParameter('pimcore_customer_management_framework.segment_assignment_classes.types', $config['types']);
+    }
+
+
+    private function configureGDPRDataProvider(ContainerBuilder $container, array $config) {
+        //Set configs
+        $container->setParameter('pimcore.gdpr-data-extrator.customers', $config['customer']);
+
     }
 }

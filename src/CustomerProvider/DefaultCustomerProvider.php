@@ -57,6 +57,10 @@ class DefaultCustomerProvider implements CustomerProviderInterface
             throw new \RuntimeException('Customer class is not defined');
         }
 
+        if(!class_exists('Pimcore\\Model\\DataObject\\' . $pimcoreClass)) {
+            throw new \RuntimeException(sprintf('Configured CMF customer data object class "%s" does not exist.', $pimcoreClass));
+        }
+
         $this->parentPath = $parentPath;
 
         if (empty($this->parentPath)) {
@@ -124,14 +128,26 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     public function create(array $data = [])
     {
+        /** @var CustomerInterface|ElementInterface|Concrete $customer */
+        $customer = $this->createCustomerInstance();
+        $customer->setValues($data);
+        $customer->setPublished(true);
+        $this->applyObjectNamingScheme($customer);
+
+        return $customer;
+    }
+
+    /**
+     * Create a customer instance
+     *
+     * @return CustomerInterface
+     */
+    public function createCustomerInstance()
+    {
         $className = $this->getDiClassName();
 
         /** @var CustomerInterface|ElementInterface|Concrete $customer */
         $customer = $this->modelFactory->build($className);
-        $customer->setPublished(true);
-        $customer->setValues($data);
-        $this->applyObjectNamingScheme($customer);
-
         return $customer;
     }
 
@@ -188,7 +204,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     {
         $list = $this->getList();
         $list->setUnpublished(false);
-        $list->addConditionParam('active = 1 and trim(lower(email)) = ?', [$email]);
+        $list->addConditionParam('active = 1 and trim(email) like ?', [trim($email)]);
 
         if ($list->count() > 1) {
             throw new \Exception(sprintf('multiple active and published customers with email %s found', $email));

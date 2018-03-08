@@ -7,7 +7,7 @@ $customer = $this->customer;
 ?>
 
 <?php if ($customer->getActive()): ?>
-    <span class="fa fa-check-circle text-success tooltip-trigger" title="<?= $cv->translate('active') ?>"></span>
+    <span class="fa fa-check-circle text-success tooltip-trigger" title="<?= $cv->translate('cmf_filters_customer_active') ?>"></span>
 <?php else: ?>
-    <span class="fa fa-times-circle text-danger tooltip-trigger" title="<?= $cv->translate('inactive') ?>"></span>
+    <span class="fa fa-times-circle text-danger tooltip-trigger" title="<?= $cv->translate('cmf_filters_customer_inactive') ?>"></span>
 <?php endif; ?>

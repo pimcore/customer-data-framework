@@ -17,12 +17,13 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger\EventHandler;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\Event\CustomerListEventInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\Event\SingleCustomerEventInterface;
+use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 
 interface EventHandlerInterface
 {
     public function handleEvent($event);
 
-    public function handleSingleCustomerEvent(SingleCustomerEventInterface $event);
+    public function handleSingleCustomerEvent(SingleCustomerEventInterface $event, RuleEnvironmentInterface $environment);
 
-    public function handleCustomerListEvent(CustomerListEventInterface $event);
+    public function handleCustomerListEvent(CustomerListEventInterface $event, RuleEnvironmentInterface $environment);
 }

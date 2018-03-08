@@ -1,0 +1,23 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    CustomerManagementFrameworkBundle\Targeting\EventListener\ElementSegmentsListener:
+        arguments:
+            $segmentAssignmentTypes: '%pimcore_customer_management_framework.segment_assignment_classes.types%'
+
+    CustomerManagementFrameworkBundle\Targeting\EventListener\SegmentTrackedListener: ~
+
+    CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer: ~
+    CustomerManagementFrameworkBundle\Targeting\DataProvider\CustomerSegments: ~
+
+    CustomerManagementFrameworkBundle\Targeting\SegmentTracker: ~
+    CustomerManagementFrameworkBundle\Targeting\ActionHandler\TrackSegment: ~
+    CustomerManagementFrameworkBundle\Targeting\ActionHandler\ApplyTargetGroupsFromSegments: ~
+
+    CustomerManagementFrameworkBundle\Targeting\ActionHandler\AssignTargetGroupAndSegment: ~
+
+
+

@@ -72,6 +72,11 @@ class UpdateFromMailchimpProcessor
     {
         $changed = false;
         foreach ($mergeFieldData as $key => $value) {
+
+            if(empty($value)) {
+                continue;
+            }
+
             if ($reverseMapped = $mailchimpHandler->reverseMapMergeField($key, $value)) {
                 $setter = 'set' . ucfirst($reverseMapped['field']);
                 $getter = 'get' . ucfirst($reverseMapped['field']);

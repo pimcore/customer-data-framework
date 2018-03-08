@@ -45,5 +45,7 @@ security:
                 path: app_auth_logout
                 target: app_auth_login
 
+            logout_on_user_change: true
+
     # Depending on your use case, you probably want to specify global authorization rules via URL patterns
     # by using the access_control configuration. Please see the Symfony's security documentation for details.
