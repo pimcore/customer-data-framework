@@ -30,7 +30,7 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
             title: t('segmentAssignment'),
             border: false,
             iconCls: "plugin_cmf_icon_actiontriggerrule_ExecuteSegmentBuilders",
-            bodyStyle:'padding:0 10px 0 10px;',
+            bodyStyle:'padding: 0 10px;',
             cls: "pimcore_object_panel_edit",
             tbar: [],
             items: [inheritancePanel, assignmentPanel]

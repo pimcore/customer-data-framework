@@ -131,3 +131,19 @@ The CMF logs MailChimp sync related changes on three different levels:
 - Customer activities are tracked on each MailChimp status change
 - In the notes and events tab of the customer a list of successful exports will be shown.
 - Errors are logged into the application logger.  
+
+# Addressing a customer segment with Pimcore's own newsletter functionality
+
+The CMF comes equipped with its own address source adapter, selectable from the Newsletter Sending Panel in newsletter documents.
+
+![Webhook options](./img/SegmentAddressSource.png)
+
+Here multiple customer segments can be selected to send a newsletter to all customers related to any of them.
+For this adapter to become available it must be configured as shown in the example below:
+
+```yml
+pimcore:
+    newsletter:
+        source_adapters:
+            SegmentAddressSource: cmf.document.newsletter.factory.segmentAddressSource
+```

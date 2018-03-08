@@ -33,3 +33,8 @@ services:
     DrewM\MailChimp\MailChimp:
         arguments:
             - '%pimcore_customer_management_framework.newsletter.mailchimp.apiKey%'
+
+    cmf.document.newsletter.factory.segmentAddressSource:
+        class: Pimcore\Document\Newsletter\DefaultAddressSourceAdapterFactory
+        arguments:
+            - 'CustomerManagementFrameworkBundle\Newsletter\AddressSource\SegmentAddressSource'
