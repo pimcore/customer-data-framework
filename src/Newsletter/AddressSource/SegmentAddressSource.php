@@ -43,7 +43,7 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
      */
     public function getParamsForTestSending($emailAddress)
     {
-        return reset($this->getParamsForSingleSending(1, 0));
+        return new SendingParamContainer($emailAddress, ['emailAddress' => $emailAddress]);
     }
 
     /**
@@ -75,8 +75,13 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
         return
             array_filter(
                 array_map(
-                    function (Customer $customer) {
-                        return $customer->getEmailOk() ? new SendingParamContainer($customer->getEmail(), ['emailAddress' => $customer->getEmail()]) : null;
+                    function ($customer) {
+                        /* @var $customer Customer */
+                        if(! $customer instanceof Customer || ! $customer->getEmailOk()) {
+                            return null;
+                        }
+
+                        return new SendingParamContainer($customer->getEmail(), ['emailAddress' => $customer->getEmail()]);
                     },
                     $this->segmentManager->getCustomersBySegmentIds($segmentIds)->getObjects()
                 )
