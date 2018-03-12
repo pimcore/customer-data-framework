@@ -72,6 +72,10 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
      */
     private function setUpSendingParamContainers(array $segmentIds): array
     {
+        if(empty($segmentIds)) {
+            return [];
+        }
+
         return
             array_filter(
                 array_map(
@@ -83,7 +87,7 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
 
                         return new SendingParamContainer($customer->getEmail(), ['emailAddress' => $customer->getEmail()]);
                     },
-                    $this->segmentManager->getCustomersBySegmentIds($segmentIds)->getObjects()
+                    $this->segmentManager->getCustomersBySegmentIds($segmentIds)->getObjects() ?? []
                 )
             );
     }
