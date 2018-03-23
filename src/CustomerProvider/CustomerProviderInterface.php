@@ -118,5 +118,5 @@ interface CustomerProviderInterface
      * @param \Pimcore\Model\DataObject\Listing\Concrete $list
      * @return void
      */
-    public function setActiveCondition($list);
+    public function addActiveCondition($list);
 }

@@ -84,7 +84,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         $customerProvider = \Pimcore::getContainer()->get('cmf.customer_provider');
         $customerList = $customerProvider->getList();
 
-        $customerProvider->setActiveCondition($customerList);
+        $customerProvider->addActiveCondition($customerList);
         $customerList->setOrderKey('o_id');
 
         $paginator = new Paginator($customerList);

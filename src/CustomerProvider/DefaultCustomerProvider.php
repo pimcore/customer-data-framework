@@ -204,7 +204,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     {
         $list = $this->getList();
         $list->setUnpublished(false);
-        $this->setActiveCondition($list);
+        $this->addActiveCondition($list);
         $list->addConditionParam('trim(email) like ?', [trim($email)]);
 
         if ($list->count() > 1) {
@@ -252,7 +252,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     /**
      * @param \Pimcore\Model\DataObject\Listing\Concrete $list
      */
-    public function setActiveCondition($list) {
-        $list->setCondition('active = 1');
+    public function addActiveCondition($list) {
+        $list->addConditionParam('active = 1');
     }
 }
