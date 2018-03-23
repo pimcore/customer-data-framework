@@ -48,7 +48,8 @@ class CustomerObjectUserProvider implements UserProviderInterface
     public function loadUserByUsername($username)
     {
         $list = $this->customerProvider->getList();
-        $list->setCondition(sprintf('active = 1 and %s = ?', $this->usernameField), $username);
+        $this->customerProvider->setActiveCondition($list);
+        $list->setCondition(sprintf('%s = ?', $this->usernameField), $username);
 
         if (!$customer = $list->current()) {
             throw new UsernameNotFoundException(sprintf('Customer "%s" was not found', $username));

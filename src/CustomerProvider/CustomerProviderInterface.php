@@ -113,4 +113,10 @@ interface CustomerProviderInterface
      * @return void
      */
     public function setParentPath($parentPath);
+
+    /**
+     * @param \Pimcore\Model\DataObject\Listing\Concrete $list
+     * @return void
+     */
+    public function setActiveCondition($list);
 }
