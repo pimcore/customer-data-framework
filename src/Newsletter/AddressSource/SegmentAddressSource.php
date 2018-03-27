@@ -8,11 +8,11 @@
 
 namespace CustomerManagementFrameworkBundle\Newsletter\AddressSource;
 
+use CustomerManagementFrameworkBundle\DataValidator\EmailValidator;
+use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Document\Newsletter\AddressSourceAdapterInterface;
 use Pimcore\Document\Newsletter\SendingParamContainer;
-use Pimcore\Model\DataObject\Customer;
-
 class SegmentAddressSource implements AddressSourceAdapterInterface
 {
     /* @var SegmentManagerInterface */
@@ -80,8 +80,13 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
             array_filter(
                 array_map(
                     function ($customer) {
-                        /* @var $customer Customer */
-                        if(! $customer instanceof Customer || ! $customer->getEmailOk()) {
+                        /* @var $customer CustomerInterface */
+                        if(! $customer instanceof CustomerInterface) {
+                            return null;
+                        }
+
+                        $validator = new EmailValidator();
+                        if(!$validator->isValid($customer->getEmail())) {
                             return null;
                         }
 
