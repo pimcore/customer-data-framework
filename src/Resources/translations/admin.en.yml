@@ -167,3 +167,5 @@ plugin_cmf_targeting_action_apply_target_groups_from_segments_only_merge: "Only 
 cmf_segment_import_customers: "Import customer CSV list"
 cmf_replace_segments: "replace segments"
 cmf_operator_customer_segments: "Operator Customer Segments"
+newsletter_SegmentAddressSource: "CMF: Customer Segments"
+cmf_newsletter_selectedSegments: "Selected Segments"
