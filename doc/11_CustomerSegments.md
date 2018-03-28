@@ -127,6 +127,24 @@ $segmentManager->saveMergedSegments($customer);
 
 ```
 
+###### Extract segment application counter of customers
+```php
+<?php
+// get all segment application counters of a customer
+$all = $segmentManager->getSegmentExtractor()->getAllSegmentApplicationCounters($customer);
+/*
+example result (segmentId => application counter)
+[
+    6692709 => 1,
+    6694297 => 1,
+    6697153=>  2
+]
+*/
+
+// get segment application counters of a given segment
+$count = $segmentManager->getSegmentExtractor()->getSegmentApplicationCounter($customer, $segment);
+```
+
 #### Registration of Segment Builders
 
 Segment builders need to be configured as services in the symfony service container. All segment builders which are 

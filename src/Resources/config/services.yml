@@ -64,6 +64,9 @@ services:
     CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface:
         class: CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\DefaultSegmentBuilderExecutor
 
+    CustomerManagementFrameworkBundle\SegmentManager\SegmentExtractor\SegmentExtractorInterface:
+        class: CustomerManagementFrameworkBundle\SegmentManager\SegmentExtractor\DefaultSegmentExtractor
+
     CustomerManagementFrameworkBundle\CustomerMerger\CustomerMergerInterface:
         class: CustomerManagementFrameworkBundle\CustomerMerger\DefaultCustomerMerger
 
