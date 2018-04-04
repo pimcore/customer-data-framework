@@ -325,8 +325,8 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
 
     protected function getIntOption(array $options, $option)
     {
-        return isset($options['pageSize']) && (is_int($options['pageSize']) || ctype_digit($options['pageSize']))
-            ? (int)$options['pageSize'] : null;
+        return isset($options[$option]) && (is_int($options[$option]) || ctype_digit($options[$option]))
+            ? (int)$options[$option] : null;
     }
 
     /**
