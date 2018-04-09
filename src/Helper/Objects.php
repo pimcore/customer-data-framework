@@ -44,8 +44,9 @@ class Objects
         $list = new \Pimcore\Model\DataObject\Listing;
         $list->setUnpublished(true);
         $list->setCondition(
-            "o_path = '".(string)$object->getParent()."/' and o_key = '".$object->getKey(
-            )."' and o_id != ".$object->getId()
+            'o_path = ? and o_key = ?',
+            [(string)$object->getParent() . '/', $object->getKey()]
+
         );
         $list->setLimit(1);
         $list = $list->load();
