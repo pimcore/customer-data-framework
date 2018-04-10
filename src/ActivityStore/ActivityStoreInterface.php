@@ -147,4 +147,12 @@ interface ActivityStoreInterface
      * @return ActivityStoreEntryInterface
      */
     public function createEntryInstance(array $data);
+
+    /**
+     * Metadata items of entries are lazy loaded. This method loads the metadata items from the store.
+     *
+     * @param ActivityStoreEntryInterface $entry
+     * @return void
+     */
+    public function lazyLoadMetadataOfEntry(ActivityStoreEntryInterface $entry);
 }

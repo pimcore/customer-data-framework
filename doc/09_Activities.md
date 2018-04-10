@@ -155,3 +155,31 @@ public static function cmfGetDetailviewData(ActivityStoreEntryInterface $entry)
 
 }
 ```
+
+
+## ActivityStore entry metadata
+
+It's possible to store metadata items for activity store entries. This could be useful for example for segment builders to store if an activity was already processed.
+
+##### Examples
+```php
+<?php
+
+$entry = $activityStore->getEntryById(465374);
+
+//get all metadata items
+$data = $entry->getMetadata();
+
+//get single metadata item data
+$data = $entry->getMetadataItem('BookingSegmentBuilder state');
+
+//overwrite single metadata item
+$entry->setMetadataItem('BookingSegmentBuilder state', 'processed');
+$entry->save();
+
+//overwrite all metadata items (drops all other defined metadata keys)
+$entry->setMetadata([
+    'BookingSegmentBuilder state'=>'processed'
+]);
+$entry->save();
+```
