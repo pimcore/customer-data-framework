@@ -141,7 +141,7 @@ example result (segmentId => application counter)
 ]
 */
 
-// get segment application counters of a given segment
+// get segment application counter of a given segment
 $count = $segmentManager->getSegmentExtractor()->getSegmentApplicationCounter($customer, $segment);
 ```
 
