@@ -202,6 +202,10 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     public function getActiveCustomerByEmail($email)
     {
+        if(!trim($email)) {
+            return null;
+        }
+
         $list = $this->getList();
         $list->setUnpublished(false);
         $list->addConditionParam('active = 1 and trim(email) like ?', [trim($email)]);
