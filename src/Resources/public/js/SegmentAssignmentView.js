@@ -100,7 +100,6 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
                     handler: function (target, checkedState) {
                         inheritableGrid.setDisabled(checkedState);
                         inheritableGrid.updateLayout();
-                        this.saveSegmentAssignments().bind(this);
                     }.bind(this)
                 }
             ]
@@ -136,9 +135,9 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
                 }
             },
             listeners: {
-                add: this.saveSegmentAssignments.bind(this),
-                remove: this.saveSegmentAssignments.bind(this),
-                clear: this.saveSegmentAssignments.bind(this)
+                add: this.saveSegmentAssignments.bind(this, 'add'),
+                remove: this.saveSegmentAssignments.bind(this, 'remove'),
+                clear: this.saveSegmentAssignments.bind(this, 'clear')
             },
             fields: ['id', 'name', 'type']
         });
@@ -271,7 +270,10 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
 
     },
 
-    saveSegmentAssignments: function () {
+    saveSegmentAssignments: function (type) {
+
+        console.log ('save: ' + type);
+
         var breaksInheritance = this.breaksInheritance.items.items[0].checked;
         var segmentIds = [];
 
