@@ -89,6 +89,8 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
     getCheckBox: function () {
         var inheritableGrid = this.inheritableGrid;
 
+        var updateBreaksInheritance = true;
+
         this.breaksInheritance = Ext.create('Ext.form.FormPanel', {
             items: [
                 {
@@ -100,6 +102,9 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
                     handler: function (target, checkedState) {
                         inheritableGrid.setDisabled(checkedState);
                         inheritableGrid.updateLayout();
+                        if(updateBreaksInheritance) {
+                            this.saveSegmentAssignments().bind(this);
+                        }
                     }.bind(this)
                 }
             ]
@@ -113,7 +118,9 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
             params: {id: this.object.id, type: this.type},
             success: function (response) {
                 var data = JSON.parse(response.responseText);
+                updateBreaksInheritance = false;
                 checkBox.setValue(data.breaksInheritance === '1');
+                updateBreaksInheritance = true;
             },
             failure: function (response) {
                 pimcore.helpers.showNotification(t("error"), t("cmf_segmentAssignment_segment_assignment_error"), "error", response.responseText);
