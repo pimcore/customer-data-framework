@@ -9,7 +9,7 @@
         "box/spout": "^2.7",
         "drewm/mailchimp-api": "*",
         "guzzlehttp/guzzle": ">=4.1.4 <7.0",
-        "hwi/oauth-bundle": "^0.5.3",
+        "hwi/oauth-bundle": "^0.6.1",
         "mtdowling/cron-expression": "^1.1.0",
         "pear/archive_tar": "^1.4.3",
         "pimcore/core-version": "~5.2.0",
