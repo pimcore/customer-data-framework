@@ -244,6 +244,14 @@ pimcore.plugin.cmf.rule.actions.AddTargetGroupSegment = Class.create(pimcore.plu
                 width: 500,
                 labelWidth: 350,
                 value: this.options.increaseSegmentApplicationCounter
+            },
+            {
+                xtype: "checkbox",
+                labelWidth: 350,
+                width: 500,
+                name: "considerProfilingConsent",
+                fieldLabel: t("plugin_cmf_actiontriggerrule_consider_profiling_consent"),
+                checked: typeof this.options.considerProfilingConsent == 'undefined' ? true : this.options.considerProfilingConsent
             }
         ];
     }

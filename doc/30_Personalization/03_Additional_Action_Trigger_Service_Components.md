@@ -47,5 +47,6 @@ Additionally it's possible to configure, if the `profilingConsent` attribute of 
 If there is a segment assigned to the current target group (stored by the `Assigned Target Group` trigger), this action adds  
 it to the customer object. It can be configured if other segments from the same group should be removed and if the 
 segment application counter should be increased. 
+Additionally it's possible to configure, if the `profilingConsent` attribute of the customer object should be considered. 
 
 ![Add Target Group Segment](../img/add-target-group-segment.jpg)
