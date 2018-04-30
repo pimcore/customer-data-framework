@@ -115,6 +115,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     public function getList()
     {
         $listClass = $this->getDiListingClassName();
+        $listClass = $this->modelFactory->build($listClass);
 
         return new $listClass();
     }
