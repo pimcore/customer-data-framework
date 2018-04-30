@@ -259,4 +259,11 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     public function addActiveCondition($list) {
         $list->addConditionParam('active = 1');
     }
+
+    /**
+     * @param \Pimcore\Model\DataObject\Listing\Concrete $list
+     */
+    public function addInActiveCondition($list) {
+        $list->addConditionParam('(active IS NULL OR active != 1)');
+    }
 }
