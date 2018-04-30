@@ -39,6 +39,7 @@ Optionally the condition can be restricted to certain target groups by selecting
 ## Action `[Targeting] Add tracked segment`
 This action adds the tracked segment (stored by the `Segment Tracked` trigger) to the customer object. It can be configured
 if other segments from the same group should be removed and if the segment application counter should be increased. 
+Additionally it's possible to configure, if the `profilingConsent` attribute of the customer object should be considered. 
 
 ![Add Tracked Segment](../img/add-tracked-segment.jpg)
 

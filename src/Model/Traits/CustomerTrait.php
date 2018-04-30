@@ -60,6 +60,11 @@ trait CustomerTrait
         return [];
     }
 
+    public function getProfilingConsent()
+    {
+        return true;
+    }
+
     /**
      * @param bool $disableVersions
      *

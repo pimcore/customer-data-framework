@@ -139,6 +139,8 @@ plugin_cmf_targetingaction_assign_segments_no: "No"
 plugin_cmf_targetingaction_assign_segments_assign_only: "Only assign"
 plugin_cmf_targetingaction_assign_segments_assign_consider_weight: "Assign and consider weight"
 plugin_cmf_targetingaction_track_activity: "Track Customer Activity to logged-in Customer"
+plugin_cmf_targetingaction_consider_profiling_consent: "Consider profiling consent"
+
 plugin_cmf_actiontriggerrule_triggerTargetGroupAssigned: "[Targeting] Assigned Target Group"
 plugin_cmf_automationtrigger_assign_target_group_type: "Assignment Type"
 plugin_cmf_automationtrigger_assign_target_group_all: "All"
@@ -156,6 +158,7 @@ plugin_cmf_actiontriggerrule_number_condition_>=: "when count bigger or equal th
 plugin_cmf_actiontriggerrule_for_condition: "For"
 plugin_cmf_actiontriggerrule_for_condition_empty_all: "If selection empty, all apply."
 plugin_cmf_actiontriggerrule_for_condition_segments: "Segments"
+plugin_cmf_actiontriggerrule_consider_profiling_consent: "consider profiling consent"
 
 plugin_cmf_targeting_action_apply_target_groups_from_segments: "[CMF] Apply Target Groups from Assigned Customer Segments"
 plugin_cmf_targeting_action_apply_for: "For"

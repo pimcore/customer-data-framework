@@ -249,6 +249,10 @@ services:
             $config: '%pimcore.gdpr-data-extrator.customers%'
 
 
+    CustomerManagementFrameworkBundle\GDPR\Consent\ConsentCheckerInterface:
+        class: CustomerManagementFrameworkBundle\GDPR\Consent\ConsentChecker
+        public: false
+
     cmf.pimcore.data_object.import.operator.factory.customer_segments:
         class: Pimcore\DataObject\Import\ColumnConfig\Operator\Factory\DefaultOperatorFactory
         arguments:

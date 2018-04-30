@@ -176,6 +176,14 @@ pimcore.plugin.cmf.rule.actions.AddSegment = Class.create(pimcore.plugin.cmf.rul
                 width: 500,
                 labelWidth: 350,
                 value: this.options.increaseSegmentApplicationCounter
+            },
+            {
+                xtype: "checkbox",
+                labelWidth: 350,
+                width: 500,
+                name: "considerProfilingConsent",
+                fieldLabel: t("plugin_cmf_actiontriggerrule_consider_profiling_consent"),
+                checked: typeof this.options.considerProfilingConsent == 'undefined' ? true : this.options.considerProfilingConsent
             }
         ];
     }
@@ -202,6 +210,14 @@ pimcore.plugin.cmf.rule.actions.AddTrackedSegment = Class.create(pimcore.plugin.
                 width: 500,
                 labelWidth: 350,
                 value: this.options.increaseSegmentApplicationCounter
+            },
+            {
+                xtype: "checkbox",
+                labelWidth: 350,
+                width: 500,
+                name: "considerProfilingConsent",
+                fieldLabel: t("plugin_cmf_actiontriggerrule_consider_profiling_consent"),
+                checked: typeof this.options.considerProfilingConsent == 'undefined' ? true : this.options.considerProfilingConsent
             }
         ];
     }
