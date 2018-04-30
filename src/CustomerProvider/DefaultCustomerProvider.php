@@ -208,7 +208,8 @@ class DefaultCustomerProvider implements CustomerProviderInterface
 
         $list = $this->getList();
         $list->setUnpublished(false);
-        $list->addConditionParam('active = 1 and trim(email) like ?', [trim($email)]);
+        $this->addActiveCondition($list);
+        $list->addConditionParam('trim(email) like ?', [trim($email)]);
 
         if ($list->count() > 1) {
             throw new \Exception(sprintf('multiple active and published customers with email %s found', $email));
@@ -250,5 +251,12 @@ class DefaultCustomerProvider implements CustomerProviderInterface
         $className = $this->getDiClassName();
 
         return call_user_func_array([$className, $method], $arguments);
+    }
+
+    /**
+     * @param \Pimcore\Model\DataObject\Listing\Concrete $list
+     */
+    public function addActiveCondition($list) {
+        $list->addConditionParam('active = 1');
     }
 }
