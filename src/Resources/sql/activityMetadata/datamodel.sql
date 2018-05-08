@@ -3,5 +3,5 @@ CREATE TABLE IF NOT EXISTS `plugin_cmf_activities_metadata` (
   `key` varchar(150) COLLATE utf8_bin NOT NULL,
   `data` longtext COLLATE utf8_bin,
   PRIMARY KEY (`activityId`,`key`),
-  KEY `cartid` (`activityId`)
+  KEY `activityId` (`activityId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
