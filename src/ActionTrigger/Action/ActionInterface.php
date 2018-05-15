@@ -16,12 +16,13 @@
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Action;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
+use CustomerManagementFrameworkBundle\GDPR\Consent\ConsentCheckerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Psr\Log\LoggerInterface;
 
 interface ActionInterface
 {
-    public function __construct(LoggerInterface $logger);
+    public function __construct(LoggerInterface $logger, ConsentCheckerInterface $consentChecker);
 
     public function process(
         ActionDefinitionInterface $actionDefinition,

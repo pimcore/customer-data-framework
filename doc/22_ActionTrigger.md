@@ -30,12 +30,14 @@ The Conditions can be combined with AND, OR, AND NOT and brackets.
 **Actions** 
 - Add Segment: Adds a segment to the customer. Optionally all other segments of the same group are removed, the segment
   application counter is increased and an action delay can be defined (execute action a certain 
-  amount of time after the trigger & condition matched).
+  amount of time after the trigger & condition matched). 
+  Additionally it's possible to configure, if the `profilingConsent` attribute of the customer object should be considered.
 - Change Customer Field Value: Change the value of a certain field of the customer object. Optionally an action
   delay can be defined (execute action a certain amount of time after the trigger & condition matched).
 - [Targeting] Add tracked segment: Adds the tracked segment that issued the trigger to current customer. 
   Optionally all other segments of the same group are removed, the segment application counter is 
   increased and an action delay can be defined (execute action a certain amount of time after the trigger & condition matched).
+  Additionally it's possible to configure, if the `profilingConsent` attribute of the customer object should be considered.
   For more details see [Personalization](30_Personalization.md) chapter.
 - [Targeting] Add Target Group Segment: Adds the to the target group linked segment that issued the trigger. 
   Optionally all other segments of the same group are removed, the segment application counter is 

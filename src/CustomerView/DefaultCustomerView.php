@@ -54,6 +54,15 @@ class DefaultCustomerView implements CustomerViewInterface
         return 'PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials:list-row.html.php';
     }
 
+
+    /**
+     * @return string
+     */
+    public function getOverviewWrapperTemplate()
+    {
+        return 'PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials:list-table.html.php';
+    }
+
     public function getFilterWrapperTemplate()
     {
         return 'PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter:filter-wrapper.html.php';

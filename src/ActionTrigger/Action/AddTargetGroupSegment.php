@@ -29,6 +29,13 @@ class AddTargetGroupSegment extends AddTrackedSegment
         RuleEnvironmentInterface $environment
     )
     {
+
+        $options = $actionDefinition->getOptions();
+
+        if(isset($options[self::OPTION_CONSIDER_PROFILING_CONSENT]) && $options[self::OPTION_CONSIDER_PROFILING_CONSENT] !== false && !$this->consentChecker->hasProfilingConsent($customer)) {
+            return;
+        }
+
         $segmentManager = \Pimcore::getContainer()->get('cmf.segment_manager');
 
         $targetGroupAssigned = $environment->get(TargetGroupAssigned::STORAGE_KEY);

@@ -33,6 +33,12 @@ interface CustomerViewInterface extends TranslatorInterface
      */
     public function getOverviewTemplate(CustomerInterface $customer);
 
+
+    /**
+     * @return string
+     */
+    public function getOverviewWrapperTemplate();
+
     /**
      * @return string
      */

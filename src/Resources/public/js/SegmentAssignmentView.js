@@ -30,7 +30,7 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
             title: t('segmentAssignment'),
             border: false,
             iconCls: "plugin_cmf_icon_actiontriggerrule_ExecuteSegmentBuilders",
-            bodyStyle:'padding:0 10px 0 10px;',
+            bodyStyle:'padding: 0 10px;',
             cls: "pimcore_object_panel_edit",
             tbar: [],
             items: [inheritancePanel, assignmentPanel]
@@ -89,6 +89,8 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
     getCheckBox: function () {
         var inheritableGrid = this.inheritableGrid;
 
+        var updateBreaksInheritance = true;
+
         this.breaksInheritance = Ext.create('Ext.form.FormPanel', {
             items: [
                 {
@@ -100,7 +102,9 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
                     handler: function (target, checkedState) {
                         inheritableGrid.setDisabled(checkedState);
                         inheritableGrid.updateLayout();
-                        this.saveSegmentAssignments().bind(this);
+                        if(updateBreaksInheritance) {
+                            this.saveSegmentAssignments().bind(this);
+                        }
                     }.bind(this)
                 }
             ]
@@ -114,7 +118,9 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
             params: {id: this.object.id, type: this.type},
             success: function (response) {
                 var data = JSON.parse(response.responseText);
+                updateBreaksInheritance = false;
                 checkBox.setValue(data.breaksInheritance === '1');
+                updateBreaksInheritance = true;
             },
             failure: function (response) {
                 pimcore.helpers.showNotification(t("error"), t("cmf_segmentAssignment_segment_assignment_error"), "error", response.responseText);
@@ -271,7 +277,8 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
 
     },
 
-    saveSegmentAssignments: function () {
+    saveSegmentAssignments: function (type) {
+
         var breaksInheritance = this.breaksInheritance.items.items[0].checked;
         var segmentIds = [];
 

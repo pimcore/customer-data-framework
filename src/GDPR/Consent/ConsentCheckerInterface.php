@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Pimcore
  *
@@ -15,10 +13,11 @@ declare(strict_types=1);
  *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
-namespace CustomerManagementFrameworkBundle\Security\OAuth\Exception;
+namespace CustomerManagementFrameworkBundle\GDPR\Consent;
 
-use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
+use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
-class AccountNotLinkedException extends \HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException
-{
+interface ConsentCheckerInterface {
+
+    public function hasProfilingConsent(CustomerInterface $customer): bool;
 }

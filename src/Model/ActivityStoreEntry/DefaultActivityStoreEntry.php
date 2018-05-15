@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\Model\ActivityStoreEntry;
 
 use Carbon\Carbon;
+use CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface;
 use CustomerManagementFrameworkBundle\Helper\Json;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
@@ -91,6 +92,11 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
      * @var $attributes
      */
     private $attributes;
+
+    /**
+     * @var array|null $metadata
+     */
+    private $metadata = null;
 
     public function setData($data)
     {
@@ -320,6 +326,8 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
         return $data;
     }
 
+
+
     public function save($updateAttributes = false)
     {
         $relatedItem = $this->getRelatedItem();
@@ -327,6 +335,42 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
             $relatedItem->setCustomer($this->getCustomer());
         }
 
-        \Pimcore::getContainer()->get('cmf.activity_store')->updateActivityStoreEntry($this, $relatedItem ? $updateAttributes : false);
+        $this->getActivityStore()->updateActivityStoreEntry($this, $relatedItem ? $updateAttributes : false);
+    }
+
+    public function getMetadata(): array
+    {
+        $this->loadMetadata();
+        return (array) $this->metadata;
+    }
+
+    public function setMetadata(array $metadata)
+    {
+        $this->metadata = $metadata;
+    }
+
+    public function getMetadataItem($key)
+    {
+        $this->loadMetadata();
+        return $this->metadata[$key] ?? null;
+    }
+
+    public function setMetadataItem($key, $data)
+    {
+        $this->loadMetadata();
+        $this->metadata[$key] = $data;
+    }
+
+    /**
+     * metadata is lazy loaded
+     */
+    private function loadMetadata() {
+        if(is_null($this->metadata)) {
+            $this->getActivityStore()->lazyLoadMetadataOfEntry($this);
+        }
+    }
+
+    private function getActivityStore(): ActivityStoreInterface {
+        return \Pimcore::getContainer()->get('cmf.activity_store');
     }
 }
