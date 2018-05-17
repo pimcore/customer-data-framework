@@ -26,7 +26,7 @@ use Pimcore\Targeting\DataLoaderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class TerminateListener
+class NewsletterTerminateListener
 {
     /**
      * @var NewsletterQueueInterface
