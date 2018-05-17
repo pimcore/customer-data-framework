@@ -35,6 +35,11 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
     protected $maxItemsPerRound;
 
+    /**
+     * @var NewsletterQueueItemInterface[]
+     */
+    private $immidateAsyncQueueItems = [];
+
     public function __construct($maxItemsPerRound = 500)
     {
         $this->maxItemsPerRound = $maxItemsPerRound;
@@ -64,7 +69,31 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
         );
 
         if ($immediateAsyncProcessQueueItem) {
-            $item = new DefaultNewsletterQueueItem($customer->getId(), null, $email, $operation, $modificationDate);
+            $this->addImmidiateAsyncQueueItem($customer, $email, $operation, $modificationDate);
+        }
+    }
+
+
+    private function addImmidiateAsyncQueueItem(NewsletterAwareCustomerInterface $customer, $email, $operation, $modificationDate)
+    {
+        $item = new DefaultNewsletterQueueItem($customer->getId(), null, $email, $operation, $modificationDate);
+
+        $this->immidateAsyncQueueItems[$customer->getId() . '_' . $operation] = $item;
+
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function executeImmidiateAsyncQueueItems()
+    {
+        if(!sizeof($this->immidateAsyncQueueItems)) {
+            return;
+        }
+
+        $this->getLogger()->info('execute immidiate async queue items');
+
+        foreach($this->immidateAsyncQueueItems as $item) {
             $php = Console::getExecutable('php');
             $cmd = sprintf($php . ' ' . PIMCORE_PROJECT_ROOT . "/bin/console cmf:newsletter-sync --process-queue-item='%s'", $item->toJson());
             $this->getLogger()->info('execute async process queue item cmd: ' . $cmd);

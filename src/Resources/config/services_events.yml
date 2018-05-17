@@ -56,3 +56,8 @@ services:
         tags:
             - { name: kernel.event_listener, event: pimcore.targeting.assign_document_target_group, method: onAssignDocumentTargetGroup }
             - { name: kernel.event_listener, event: pimcore.targeting.post_rule_actions, method: onPostRuleActions }
+
+    CustomerManagementFrameworkBundle\Event\TerminateListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.terminate, method: onTerminate }
+            - { name: kernel.event_listener, event: console.terminate, method: onTerminate }
