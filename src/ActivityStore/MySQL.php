@@ -145,4 +145,33 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
 
         return $paginator;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function lazyLoadMetadataOfEntry(ActivityStoreEntryInterface $entry)
+    {
+        if(!$entry->getId()) {
+            return;
+        }
+
+        try {
+            $rows = Db::get()->fetchAll(sprintf('select * from %s where activityId = %s',
+                self::ACTIVITIES_METADATA_TABLE,
+                $entry->getId()
+            ));
+        } catch(\Exception $e) {
+            $this->getLogger()->error('fetching of activity store metadata failed: ' . $e->getMessage());
+            $rows = [];
+        }
+
+
+        $metadata = [];
+
+        foreach($rows as $row) {
+            $metadata[$row['key']] = $row['data'];
+        }
+
+        $entry->setMetadata($metadata);
+    }
 }
