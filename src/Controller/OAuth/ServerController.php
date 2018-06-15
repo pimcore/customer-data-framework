@@ -83,7 +83,7 @@ class ServerController extends FrontendController
         },'');
 
         $this->view->form = $form->createView();
-        $this->view->queryUrlString = $queryUrlString;
+        $this->view->queryUrlString = substr($queryUrlString,0, strlen($queryUrlString)-1);
 
     }
 
