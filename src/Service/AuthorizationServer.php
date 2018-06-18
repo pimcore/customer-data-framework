@@ -8,13 +8,14 @@
 
 namespace CustomerManagementFrameworkBundle\Service;
 
+use CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository\AccessTokenRepository;
 use CustomerManagementFrameworkBundle\Service\Auth\Entities\ServerRequest;
 use CustomerManagementFrameworkBundle\Service\Auth\Entities\UserEntity;
-use CustomerManagementFrameworkBundle\Service\Auth\Repositories\AccessTokenRepository;
 use CustomerManagementFrameworkBundle\Service\Auth\Repositories\AuthCodeRepository;
 use CustomerManagementFrameworkBundle\Service\Auth\Repositories\ClientRepository;
 use CustomerManagementFrameworkBundle\Service\Auth\Repositories\RefreshTokenRepository;
 use CustomerManagementFrameworkBundle\Service\Auth\Repositories\ScopeRepository;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
@@ -76,21 +77,14 @@ class AuthorizationServer{
             return $symfonyResponse;
 
         } catch (\Exception $exception) {
-
-            $symfonyResponse = new Response();
-
-            // Unknown exception
-            $body = new Stream(fopen('php://temp', 'r+'));
-            $body->write($exception->getMessage());
-            $symfonyResponse->setStatusCode(500)->setContent($body);
-
-            return $symfonyResponse;
+            $this->handleErrorException($exception);
         }
 
 
     }
 
     private function initServer(){
+
         $clientRepository = new ClientRepository(); // instance of ClientRepositoryInterface
         $scopeRepository = new ScopeRepository(); // instance of ScopeRepositoryInterface
         $accessTokenRepository = new AccessTokenRepository(); // instance of AccessTokenRepositoryInterface
@@ -168,14 +162,20 @@ class AuthorizationServer{
             return $exception->generateHttpResponse($psrResponse);
 
         } catch (\Exception $exception) {
-
-            $body = new Stream(fopen('php://temp', 'r+'));
-            $body->write($exception->getMessage());
-            $response = new Response();
-            return $response->withStatus(500)->withBody($body);
-
+            $this->handleErrorException($exception);
         }
 
+    }
+
+    private function handleErrorException(\Exception $exception){
+        if(\Pimcore::inDebugMode()) {
+            throw $exception;
+        }
+
+        $symfonyResponse = new Response();
+        $symfonyResponse->setStatusCode(500)->setContent("error happened");
+
+        return $symfonyResponse;
     }
 
 }

@@ -66,4 +66,6 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
     {
         return $this->container->get(Installer::class);
     }
+
+
 }

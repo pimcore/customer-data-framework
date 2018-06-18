@@ -38,7 +38,7 @@ class Configuration implements ConfigurationInterface
             ->end();
 
         $rootNode->append($this->buildGeneralNode());
-        $rootNode->append($this->buildDoctrineNode());
+        $rootNode->append($this->buildAuthServerNode());
         $rootNode->append($this->buildEncryptionNode());
         $rootNode->append($this->buildCustomerSaveManagerNode());
         $rootNode->append($this->buildCustomerProviderNode());
@@ -89,11 +89,11 @@ class Configuration implements ConfigurationInterface
         return $general;
     }
 
-    private function buildDoctrineNode()
+    private function buildAuthServerNode()
     {
         $treeBuilder = new TreeBuilder();
 
-        $general = $treeBuilder->root('doctrine');
+        $general = $treeBuilder->root('oauth_server');
 
         $general
             ->addDefaultsIfNotSet()
@@ -101,12 +101,16 @@ class Configuration implements ConfigurationInterface
 
         $general
             ->children()
-            ->scalarNode('default_entity_manager')
-            ->defaultValue('default')
+
+            ->arrayNode('clients')
+            ->prototype('array')
+            ->prototype('scalar')->end()
+            ->info('Auth Server Required Fields')
+            ->example([
+                ['client_id', 'name', 'secret', 'redirect_uri', 'is_confidential']
+            ])
             ->end()
-            ->booleanNode('auto_mapping')
-            ->defaultValue(true)
-            ->end()
+
             ->end()
         ;
 

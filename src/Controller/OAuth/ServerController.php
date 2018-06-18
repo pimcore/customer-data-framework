@@ -26,24 +26,6 @@ class ServerController extends FrontendController
 
     /**
      * @param Request $request
-     * @Route("/doctrine")
-     * @return RedirectResponse
-     */
-    public function testDoctrine(Request $request)
-    {
-
-        $sql = 'select * from object_1 limit 3';
-        $result = $this->getDoctrine()->getConnection()->prepare($sql);
-        $result->execute();
-
-        var_dump($result->fetchAll());die;
-
-        return $this->sendResponse(new Response());
-
-    }
-
-    /**
-     * @param Request $request
      * @Route("/form_auth_code", name="form_auth_code_path")
      * @return RedirectResponse
      */

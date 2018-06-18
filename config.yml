@@ -1,0 +1,4 @@
+pimcore_customer_management_framework:
+    oauth_server:
+        clients:
+            - { client_id: 'myawesomeapp', name: 'My Awesome App', secret: 'abc123', redirect_uri: 'https://www.orf.at', is_confidential: true }
