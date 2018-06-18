@@ -22,7 +22,16 @@
         "zendframework/zend-code": "~3.1.0",
         "zendframework/zend-diactoros": "^1.7",
         "zendframework/zend-paginator": "^2.7",
-        "zendframework/zend-servicemanager": "^3.2"
+        "zendframework/zend-servicemanager": "^3.2",
+        "doctrine/annotations": "~1.4.0",
+        "doctrine/cache": "~1.6.2",
+        "doctrine/collections": "~1.4.0",
+        "doctrine/common": "~2.7.3",
+        "doctrine/dbal": "~2.5.13",
+        "doctrine/doctrine-bundle": "~1.6.8",
+        "doctrine/doctrine-migrations-bundle": "~1.2.1",
+        "doctrine/instantiator": "~1.0.5",
+        "doctrine/migrations": "^1.5"
 
     },
     "require-dev": {
