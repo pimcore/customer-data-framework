@@ -16,11 +16,31 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class ServerController extends FrontendController
 {
+
+    /**
+     * @param Request $request
+     * @Route("/doctrine")
+     * @return RedirectResponse
+     */
+    public function testDoctrine(Request $request)
+    {
+
+        $sql = 'select * from object_1 limit 3';
+        $result = $this->getDoctrine()->getConnection()->prepare($sql);
+        $result->execute();
+
+        var_dump($result->fetchAll());die;
+
+        return $this->sendResponse(new Response());
+
+    }
 
     /**
      * @param Request $request
@@ -34,8 +54,17 @@ class ServerController extends FrontendController
 
         $redirectUrl = $request->query->get("redirect_url");
         $responseType = $request->query->get("response_type");
+
         $state = $request->query->get("state");
         $scope = $request->query->get("scope");
+
+        if(!$redirectUrl){
+            throw new HttpException(400, "GET-PARAM: redirect_url is missing");
+        }
+
+        if(!$responseType){
+            throw new HttpException(400, "GET-PARAM: response_type is missing");
+        }
 
         if($form->isSubmitted() && $form->isValid()){
             $authServerService = new AuthorizationServer();
@@ -68,9 +97,14 @@ class ServerController extends FrontendController
 
             $response = $authServerService->getAccessTokenForClient($request);
 
+            if($response->getStatusCode() == Response::HTTP_UNAUTHORIZED){
+                throw new HttpException(401, "AUTHORIZATION FAILED");
+            }
+
             $json = json_decode($response->getContent());
             $json->redirect_url = $redirectUrl;
 
+            $response->headers->set('Content-Type', 'application/json');
             $response->setContent(json_encode($json));
 
             return $this->sendResponse($response);

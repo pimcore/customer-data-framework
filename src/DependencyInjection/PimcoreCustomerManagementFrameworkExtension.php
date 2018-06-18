@@ -57,6 +57,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         }
 
         $this->registerGeneralConfiguration($container, $config['general']);
+        $this->registerDoctrineConfiguration($container, $config['doctrine']);
         $this->registerEncryptionConfiguration($container, $config['encryption']);
         $this->registerCustomerSaveManagerConfiguration($container, $config['customer_save_manager']);
         $this->registerCustomerSaveValidatorConfiguration($container, $config['customer_save_validator']);
@@ -76,6 +77,11 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
     {
         $container->setParameter('pimcore_customer_management_framework.general.customerPimcoreClass', $config['customerPimcoreClass']);
         $container->setParameter('pimcore_customer_management_framework.general.mailBlackListFile', $config['mailBlackListFile']);
+    }
+
+    private function registerDoctrineConfiguration(ContainerBuilder $container, array $config)
+    {
+        $container->setParameter('doctrine.orm', $config);
     }
 
     private function registerEncryptionConfiguration(ContainerBuilder $container, array $config)

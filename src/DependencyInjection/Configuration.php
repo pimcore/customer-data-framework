@@ -38,6 +38,7 @@ class Configuration implements ConfigurationInterface
             ->end();
 
         $rootNode->append($this->buildGeneralNode());
+        $rootNode->append($this->buildDoctrineNode());
         $rootNode->append($this->buildEncryptionNode());
         $rootNode->append($this->buildCustomerSaveManagerNode());
         $rootNode->append($this->buildCustomerProviderNode());
@@ -84,6 +85,30 @@ class Configuration implements ConfigurationInterface
             ->defaultValue(PIMCORE_CONFIGURATION_DIRECTORY . '/cmf/mail-blacklist.txt')
             ->end()
             ->end();
+
+        return $general;
+    }
+
+    private function buildDoctrineNode()
+    {
+        $treeBuilder = new TreeBuilder();
+
+        $general = $treeBuilder->root('doctrine');
+
+        $general
+            ->addDefaultsIfNotSet()
+            ->info('Configuration of general doctrine settings');
+
+        $general
+            ->children()
+            ->scalarNode('default_entity_manager')
+            ->defaultValue('default')
+            ->end()
+            ->booleanNode('auto_mapping')
+            ->defaultValue(true)
+            ->end()
+            ->end()
+        ;
 
         return $general;
     }
