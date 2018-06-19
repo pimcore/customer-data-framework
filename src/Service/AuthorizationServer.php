@@ -157,10 +157,10 @@ class AuthorizationServer{
                 throw new Exception("AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.user_class_model NOT DEFINED IN config.xml");
             }
             $userClassModel = $userClassModel["user_class_model"];
-            $userModel = null;
-            eval('$userModel=' . $userClassModel.'::getByEmail("'.$request->request->get("client_email").'")->current();');
 
-            if(!$userModel){
+            $userModel = call_user_func(array($userClassModel, 'getByEmail'), $request->request->get("client_email"));
+
+            if(!$userModel || !($userModel && $userModel = $userModel->current())){
                 throw new HttpException(401, "AUTHORIZATION FAILED");
             }
 
