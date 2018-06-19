@@ -9,14 +9,15 @@
 namespace CustomerManagementFrameworkBundle\Service;
 
 use CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository\AccessTokenRepository;
+use CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository\AuthCodeRepository;
+use CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository\ClientRepository;
+use CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository\RefreshTokenRepository;
+use CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository\ScopeRepository;
 use CustomerManagementFrameworkBundle\Service\Auth\Entities\ServerRequest;
 use CustomerManagementFrameworkBundle\Service\Auth\Entities\UserEntity;
-use CustomerManagementFrameworkBundle\Service\Auth\Repositories\AuthCodeRepository;
-use CustomerManagementFrameworkBundle\Service\Auth\Repositories\ClientRepository;
-use CustomerManagementFrameworkBundle\Service\Auth\Repositories\RefreshTokenRepository;
-use CustomerManagementFrameworkBundle\Service\Auth\Repositories\ScopeRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use Pimcore\Tool\RestClient\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
@@ -91,7 +92,13 @@ class AuthorizationServer{
         $authCodeRepository = new AuthCodeRepository(); // instance of AuthCodeRepositoryInterface
         $refreshTokenRepository = new RefreshTokenRepository(); // instance of RefreshTokenRepositoryInterface
 
-        $privateKey = '/home/customerdataframework/www/auth_keys/private.key';
+        $privateKey = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
+
+        if(!key_exists("private_key_dir", $privateKey)){
+            throw new Exception("AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.private_key_dir NOT DEFINED IN config.xml");
+        }
+        $privateKey = $privateKey["private_key_dir"];
+
         $encryptionKey = base64_encode(random_bytes(32));//"djaisdj233ikodkaspo3434hgfgdfgf568kfsd34dfsdskdpo";
 
         /*
@@ -137,7 +144,7 @@ class AuthorizationServer{
             // You will probably want to redirect the user at this point to a login endpoint.
 
             // Once the user has logged in set the user on the AuthorizationRequest
-            $authRequest->setUser(new UserEntity()); // an instance of UserEntityInterface
+            $authRequest->setUser(new \CustomerManagementFrameworkBundle\Entity\Service\Auth\Entity\UserEntity()); // an instance of UserEntityInterface
 
             // At this point you should redirect the user to an authorization page.
             // This form will ask the user to approve the client and the scopes requested.

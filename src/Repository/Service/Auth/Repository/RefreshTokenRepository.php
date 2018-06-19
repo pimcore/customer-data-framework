@@ -7,11 +7,11 @@
  * @link        https://github.com/thephpleague/oauth2-server
  */
 
-namespace CustomerManagementFrameworkBundle\Service\Auth\Repositories;
+namespace CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository;
 
+use CustomerManagementFrameworkBundle\Entity\Service\Auth\Entity\RefreshTokenEntity;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
-use CustomerManagementFrameworkBundle\Service\Auth\Entities\RefreshTokenEntity;
 
 class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {

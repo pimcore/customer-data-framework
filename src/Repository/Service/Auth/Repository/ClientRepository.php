@@ -7,10 +7,10 @@
  * @link        https://github.com/thephpleague/oauth2-server
  */
 
-namespace CustomerManagementFrameworkBundle\Service\Auth\Repositories;
+namespace CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository;
 
+use CustomerManagementFrameworkBundle\Entity\Service\Auth\Entity\ClientEntity;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
-use CustomerManagementFrameworkBundle\Service\Auth\Entities\ClientEntity;
 
 class ClientRepository implements ClientRepositoryInterface
 {
@@ -20,6 +20,12 @@ class ClientRepository implements ClientRepositoryInterface
     public function getClientEntity($clientIdentifier, $grantType = null, $clientSecret = null, $mustValidateSecret = true)
     {
         $clients = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
+
+        if(!key_exists("clients", $clients)){
+            throw new Exception("AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.clients NOT DEFINED IN config.xml");
+        }
+
+        $clients = $clients["clients"];
 
         $clients = array_map(function($client){
             $transformedClient = [
@@ -35,6 +41,7 @@ class ClientRepository implements ClientRepositoryInterface
         $currentClient = array_filter($clients, function($client) use ($clientIdentifier) {
             return $client['client_id'] == $clientIdentifier;
         });
+
 
         // Check if client is registered
         if(!count($currentClient))return;

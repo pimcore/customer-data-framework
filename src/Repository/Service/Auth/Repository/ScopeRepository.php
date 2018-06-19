@@ -7,11 +7,11 @@
  * @link        https://github.com/thephpleague/oauth2-server
  */
 
-namespace CustomerManagementFrameworkBundle\Service\Auth\Repositories;
+namespace CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository;
 
+use CustomerManagementFrameworkBundle\Entity\Service\Auth\Entity\ScopeEntity;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
-use CustomerManagementFrameworkBundle\Service\Auth\Entities\ScopeEntity;
 
 class ScopeRepository implements ScopeRepositoryInterface
 {

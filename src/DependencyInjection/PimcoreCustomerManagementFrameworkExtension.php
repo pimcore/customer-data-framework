@@ -81,7 +81,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
 
     private function registerAuthServerConfiguration(ContainerBuilder $container, array $config)
     {
-        $container->setParameter('pimcore_customer_management_framework.oauth_server', $config['clients']);
+        $container->setParameter('pimcore_customer_management_framework.oauth_server', $config);
     }
 
     private function registerEncryptionConfiguration(ContainerBuilder $container, array $config)

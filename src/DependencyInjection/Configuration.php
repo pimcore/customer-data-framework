@@ -102,6 +102,13 @@ class Configuration implements ConfigurationInterface
         $general
             ->children()
 
+            ->scalarNode('private_key_dir')
+            ->info(
+                'create it by using this command: openssl genrsa -out private.key 2048'
+            )
+            ->defaultValue('')
+            ->end()
+
             ->arrayNode('clients')
             ->prototype('array')
             ->prototype('scalar')->end()
