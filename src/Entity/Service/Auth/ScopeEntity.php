@@ -7,7 +7,7 @@
  * @link        https://github.com/thephpleague/oauth2-server
  */
 
-namespace CustomerManagementFrameworkBundle\Entity\Service\Auth\Entity;
+namespace CustomerManagementFrameworkBundle\Entity\Service\Auth;
 
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Entities\Traits\EntityTrait;

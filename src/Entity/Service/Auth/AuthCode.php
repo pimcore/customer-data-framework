@@ -7,7 +7,7 @@
  * @link        https://github.com/thephpleague/oauth2-server
  */
 
-namespace CustomerManagementFrameworkBundle\Entity\Service\Auth\Entity;
+namespace CustomerManagementFrameworkBundle\Entity\Service\Auth;
 
 use Doctrine\ORM\Mapping as ORM;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
@@ -21,7 +21,7 @@ use League\OAuth2\Server\Entities\ClientEntityInterface;
  * AuthCode
  *
  * @ORM\Table(name="plugin_cmf_auth_entity_auth_code")
- * @ORM\Entity(repositoryClass="CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository\AuthCodeRepository")
+ * @ORM\Entity(repositoryClass="CustomerManagementFrameworkBundle\Repository\Service\Auth\AuthCodeRepository")
  */
 class AuthCode implements AuthCodeEntityInterface
 {

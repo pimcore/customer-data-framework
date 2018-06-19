@@ -1,6 +1,6 @@
 <?php
 
-namespace CustomerManagementFrameworkBundle\Entity\Service\Auth\Entity;
+namespace CustomerManagementFrameworkBundle\Entity\Service\Auth;
 
 use Doctrine\ORM\Mapping as ORM;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
@@ -13,7 +13,7 @@ use League\OAuth2\Server\Entities\Traits\EntityTrait;
  * AccessToken
  *
  * @ORM\Table(name="plugin_cmf_auth_entity_access_token")
- * @ORM\Entity(repositoryClass="CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository\AccessTokenRepository")
+ * @ORM\Entity(repositoryClass="CustomerManagementFrameworkBundle\Repository\Service\Auth\AccessTokenRepository")
  */
 class AccessToken implements \League\OAuth2\Server\Entities\AccessTokenEntityInterface
 {

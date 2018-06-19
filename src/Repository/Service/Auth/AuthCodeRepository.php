@@ -7,9 +7,9 @@
  * @link        https://github.com/thephpleague/oauth2-server
  */
 
-namespace CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository;
+namespace CustomerManagementFrameworkBundle\Repository\Service\Auth;
 
-use CustomerManagementFrameworkBundle\Entity\Service\Auth\Entity\AuthCode;
+use CustomerManagementFrameworkBundle\Entity\Service\Auth\AuthCode;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 
@@ -30,7 +30,7 @@ class AuthCodeRepository extends \Doctrine\ORM\EntityRepository implements AuthC
     public function __construct()
     {
         $this->entity_manager = \Pimcore::getContainer()->get("doctrine.orm.entity_manager");
-        parent::__construct($this->entity_manager, $this->entity_manager->getClassMetadata("CustomerManagementFrameworkBundle\Entity\Service\Auth\Entity\AuthCode"));
+        parent::__construct($this->entity_manager, $this->entity_manager->getClassMetadata("CustomerManagementFrameworkBundle\Entity\Service\Auth\AuthCode"));
     }
 
     /**
