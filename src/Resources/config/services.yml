@@ -266,3 +266,23 @@ services:
         class: Pimcore\Document\Newsletter\DefaultAddressSourceAdapterFactory
         arguments:
             - 'CustomerManagementFrameworkBundle\Newsletter\AddressSource\SegmentAddressSource'
+
+    CustomerManagementFrameworkBundle\Repository\Service\Auth\ClientRepository:
+        public: true
+        autowire: true
+
+    CustomerManagementFrameworkBundle\Repository\Service\Auth\ScopeRepository:
+        public: true
+        autowire: true
+
+    CustomerManagementFrameworkBundle\Repository\Service\Auth\AccessTokenRepository:
+        public: true
+        autowire: true
+
+    CustomerManagementFrameworkBundle\Repository\Service\Auth\AuthCodeRepository:
+        public: true
+        autowire: true
+
+    CustomerManagementFrameworkBundle\Repository\Service\Auth\RefreshTokenRepository:
+        public: true
+        autowire: true

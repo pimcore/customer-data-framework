@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
+use Pimcore\Tool\RestClient\Exception;
 
 /**
  * AccessTokenRepository
@@ -22,10 +23,10 @@ class AccessTokenRepository extends \Doctrine\ORM\EntityRepository implements Ac
      */
     private $entity_manager = null;
 
-    public function __construct()
+    public function __construct(\Doctrine\ORM\EntityManager $entity_manager)
     {
-        $this->entity_manager = \Pimcore::getContainer()->get("doctrine.orm.entity_manager");
-        parent::__construct($this->entity_manager, $this->entity_manager->getClassMetadata("CustomerManagementFrameworkBundle\Entity\Service\Auth\AccessToken"));
+        $this->entity_manager = $entity_manager;
+        parent::__construct($entity_manager, $entity_manager->getClassMetadata("CustomerManagementFrameworkBundle\Entity\Service\Auth\AccessToken"));
     }
 
     /**
