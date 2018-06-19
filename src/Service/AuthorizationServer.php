@@ -8,6 +8,7 @@
 
 namespace CustomerManagementFrameworkBundle\Service;
 
+use AppBundle\Model\Customer;
 use CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository\AccessTokenRepository;
 use CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository\AuthCodeRepository;
 use CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository\ClientRepository;
@@ -17,6 +18,8 @@ use CustomerManagementFrameworkBundle\Service\Auth\Entities\ServerRequest;
 use CustomerManagementFrameworkBundle\Service\Auth\Entities\UserEntity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use Pimcore\Model\DataObject;
+use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Tool\RestClient\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
@@ -143,8 +146,21 @@ class AuthorizationServer{
             // The auth request object can be serialized and saved into a user's session.
             // You will probably want to redirect the user at this point to a login endpoint.
 
+            $userClassModel = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
+
+            if(!key_exists("user_class_model", $userClassModel)){
+                throw new Exception("AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.user_class_model NOT DEFINED IN config.xml");
+            }
+            $userClassModel = $userClassModel["user_class_model"];
+            $userModel = null;
+            eval('$userModel=' . $userClassModel.'::getByEmail("'.$request->request->get("client_email").'")->current();');
+
+            //$userModel = Customer::getByEmail($request->request->get("client_email"))->current();
+
             // Once the user has logged in set the user on the AuthorizationRequest
-            $authRequest->setUser(new \CustomerManagementFrameworkBundle\Entity\Service\Auth\Entity\UserEntity()); // an instance of UserEntityInterface
+            $authRequest->setUser($userModel); // an instance of UserEntityInterface
+
+            //$request->request->set("client_secret", $userModel->getPassword());
 
             // At this point you should redirect the user to an authorization page.
             // This form will ask the user to approve the client and the scopes requested.

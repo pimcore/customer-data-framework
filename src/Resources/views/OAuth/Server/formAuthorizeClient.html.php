@@ -24,10 +24,10 @@
     ]); ?>
 
     <div class="form-group">
-        <label class="col-sm-3 control-label" for="zip"><?= $this->translate("auth.client_id") ?> *</label>
+        <label class="col-sm-3 control-label" for="zip"><?= $this->translate("auth.client_id") ?>:</label>
         <div class="col-sm-6">
 
-            <?= $this->form()->widget($form['client_id'], [
+            <?= $this->form()->widget($form['client_email'], [
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => "email"
@@ -39,7 +39,7 @@
     </div>
 
     <div class="form-group">
-        <label class="col-sm-3 control-label" for="client_secret"><?= $this->translate("auth.client_secret") ?> *</label>
+        <label class="col-sm-3 control-label" for="client_secret"><?= $this->translate("auth.client_secret") ?>:</label>
         <div class="col-sm-6">
             <?= $this->form()->widget($form['client_secret'], [
                 'attr' => [
@@ -53,7 +53,7 @@
     </div>
 
     <div class="form-group">
-        <?= $this->form()->row($form['_submit'], ['attr' => ['class' => 'btn btn-primary', 'style' => 'margin-left:150px']]) ?>
+        <?= $this->form()->row($form['_submit'], ['attr' => ['class' => 'btn btn-primary', 'style' => 'margin-left:160px']]) ?>
     </div>
 
     <?= $this->form()->end($form); ?>

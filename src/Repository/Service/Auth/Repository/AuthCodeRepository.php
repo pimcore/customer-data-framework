@@ -9,18 +9,32 @@
 
 namespace CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository;
 
-use CustomerManagementFrameworkBundle\Entity\Service\Auth\Entity\AuthCodeEntity;
+use CustomerManagementFrameworkBundle\Entity\Service\Auth\Entity\AuthCode;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 
-class AuthCodeRepository implements AuthCodeRepositoryInterface
+class AuthCodeRepository extends \Doctrine\ORM\EntityRepository implements AuthCodeRepositoryInterface
 {
+
+    /*
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $entity_manager = null;
+
+    public function __construct()
+    {
+        $this->entity_manager = \Pimcore::getContainer()->get("doctrine.orm.entity_manager");
+        parent::__construct($this->entity_manager, $this->entity_manager->getClassMetadata("CustomerManagementFrameworkBundle\Entity\Service\Auth\Entity\AccessToken"));
+    }
+
     /**
      * {@inheritdoc}
      */
-    public function persistNewAuthCode(AuthCodeEntityInterface $authCodeEntity)
+    public function persistNewAuthCode(AuthCodeEntityInterface $accessTokenEntity)
     {
-        // Some logic to persist the auth code to a database
+        // Some logic here to save the access token to a database
+        $this->entity_manager->persist($accessTokenEntity);
+        $this->entity_manager->flush();
     }
 
     /**
@@ -44,6 +58,6 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
      */
     public function getNewAuthCode()
     {
-        return new AuthCodeEntity();
+        return new AuthCode();
     }
 }
