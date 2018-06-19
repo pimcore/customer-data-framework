@@ -7,7 +7,7 @@
  * @link        https://github.com/thephpleague/oauth2-server
  */
 
-namespace CustomerManagementFrameworkBundle\Service\Auth\Repositories;
+namespace CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository;
 
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
