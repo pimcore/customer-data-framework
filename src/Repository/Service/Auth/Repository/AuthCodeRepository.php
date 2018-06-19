@@ -21,19 +21,25 @@ class AuthCodeRepository extends \Doctrine\ORM\EntityRepository implements AuthC
      */
     private $entity_manager = null;
 
+    /*
+     * @var string
+     */
+    private $user_identifier = null;
+
+
     public function __construct()
     {
         $this->entity_manager = \Pimcore::getContainer()->get("doctrine.orm.entity_manager");
-        parent::__construct($this->entity_manager, $this->entity_manager->getClassMetadata("CustomerManagementFrameworkBundle\Entity\Service\Auth\Entity\AccessToken"));
+        parent::__construct($this->entity_manager, $this->entity_manager->getClassMetadata("CustomerManagementFrameworkBundle\Entity\Service\Auth\Entity\AuthCode"));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function persistNewAuthCode(AuthCodeEntityInterface $accessTokenEntity)
+    public function persistNewAuthCode(AuthCodeEntityInterface $authCodeEntity)
     {
-        // Some logic here to save the access token to a database
-        $this->entity_manager->persist($accessTokenEntity);
+        // Some logic here to save the auth code to a database
+        $this->entity_manager->persist($authCodeEntity);
         $this->entity_manager->flush();
     }
 
@@ -58,6 +64,13 @@ class AuthCodeRepository extends \Doctrine\ORM\EntityRepository implements AuthC
      */
     public function getNewAuthCode()
     {
+        $entryFound = $this->entity_manager->getRepository(AuthCode::class)->findOneByUserIdentifier($this->user_identifier);
+        if($entryFound)return $entryFound;
+
         return new AuthCode();
+    }
+
+    public function setUserIdenifier(string $userIdentifier){
+        $this->user_identifier = $userIdentifier;
     }
 }

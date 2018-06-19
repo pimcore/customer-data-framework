@@ -39,6 +39,11 @@ class AuthorizationServer{
     private $currentGrantType = null;
 
     /*
+     * @var AuthCodeRepository
+     */
+    private $authCodeRepository = null;
+
+    /*
      * @var \League\OAuth2\Server\AuthorizationServer
      */
     private $server = null;
@@ -92,7 +97,7 @@ class AuthorizationServer{
         $clientRepository = new ClientRepository(); // instance of ClientRepositoryInterface
         $scopeRepository = new ScopeRepository(); // instance of ScopeRepositoryInterface
         $accessTokenRepository = new AccessTokenRepository(); // instance of AccessTokenRepositoryInterface
-        $authCodeRepository = new AuthCodeRepository(); // instance of AuthCodeRepositoryInterface
+        $this->authCodeRepository = new AuthCodeRepository(); // instance of AuthCodeRepositoryInterface
         $refreshTokenRepository = new RefreshTokenRepository(); // instance of RefreshTokenRepositoryInterface
 
         $privateKey = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
@@ -116,7 +121,7 @@ class AuthorizationServer{
         );
 
         $grant = new \League\OAuth2\Server\Grant\AuthCodeGrant(
-            $authCodeRepository,
+            $this->authCodeRepository,
             $refreshTokenRepository,
             new \DateInterval('PT1M') // authorization codes will expire after 1 minutes
         );
@@ -159,6 +164,8 @@ class AuthorizationServer{
 
             // Once the user has logged in set the user on the AuthorizationRequest
             $authRequest->setUser($userModel); // an instance of UserEntityInterface
+
+            $this->authCodeRepository->setUserIdenifier($userModel->getIdentifier());
 
             //$request->request->set("client_secret", $userModel->getPassword());
 
