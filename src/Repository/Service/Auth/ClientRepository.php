@@ -46,7 +46,7 @@ class ClientRepository implements ClientRepositoryInterface
         // Check if client is registered
         if(!count($currentClient))return;
 
-        $currentClient = $currentClient[0];
+        $currentClient = array_shift($currentClient);
 
         if (
             $mustValidateSecret === true
