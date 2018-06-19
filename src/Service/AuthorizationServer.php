@@ -9,13 +9,11 @@
 namespace CustomerManagementFrameworkBundle\Service;
 
 use AppBundle\Model\Customer;
-use CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository\AccessTokenRepository;
-use CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository\AuthCodeRepository;
-use CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository\ClientRepository;
-use CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository\RefreshTokenRepository;
-use CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository\ScopeRepository;
-use CustomerManagementFrameworkBundle\Service\Auth\Entities\ServerRequest;
-use CustomerManagementFrameworkBundle\Service\Auth\Entities\UserEntity;
+use CustomerManagementFrameworkBundle\Repository\Service\Auth\AccessTokenRepository;
+use CustomerManagementFrameworkBundle\Repository\Service\Auth\AuthCodeRepository;
+use CustomerManagementFrameworkBundle\Repository\Service\Auth\ClientRepository;
+use CustomerManagementFrameworkBundle\Repository\Service\Auth\RefreshTokenRepository;
+use CustomerManagementFrameworkBundle\Repository\Service\Auth\ScopeRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Pimcore\Model\DataObject;
@@ -160,7 +158,9 @@ class AuthorizationServer{
             $userModel = null;
             eval('$userModel=' . $userClassModel.'::getByEmail("'.$request->request->get("client_email").'")->current();');
 
-            //$userModel = Customer::getByEmail($request->request->get("client_email"))->current();
+            if(!$userModel){
+                throw new HttpException(401, "AUTHORIZATION FAILED");
+            }
 
             // Once the user has logged in set the user on the AuthorizationRequest
             $authRequest->setUser($userModel); // an instance of UserEntityInterface

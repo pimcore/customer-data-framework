@@ -1,7 +1,8 @@
 <?php
 
-namespace CustomerManagementFrameworkBundle\Repository\Service\Auth\Repository;
-use CustomerManagementFrameworkBundle\Entity\Service\Auth\Entity\AccessToken;
+namespace CustomerManagementFrameworkBundle\Repository\Service\Auth;
+
+use CustomerManagementFrameworkBundle\Entity\Service\Auth\AccessToken;
 use Doctrine\ORM\Mapping;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
@@ -24,7 +25,7 @@ class AccessTokenRepository extends \Doctrine\ORM\EntityRepository implements Ac
     public function __construct()
     {
         $this->entity_manager = \Pimcore::getContainer()->get("doctrine.orm.entity_manager");
-        parent::__construct($this->entity_manager, $this->entity_manager->getClassMetadata("CustomerManagementFrameworkBundle\Entity\Service\Auth\Entity\AccessToken"));
+        parent::__construct($this->entity_manager, $this->entity_manager->getClassMetadata("CustomerManagementFrameworkBundle\Entity\Service\Auth\AccessToken"));
     }
 
     /**
