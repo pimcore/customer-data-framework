@@ -27,9 +27,9 @@ class AuthCodeRepository extends \Doctrine\ORM\EntityRepository implements AuthC
     private $user_identifier = null;
 
 
-    public function __construct()
+    public function __construct(\Doctrine\ORM\EntityManager $entity_manager)
     {
-        $this->entity_manager = \Pimcore::getContainer()->get("doctrine.orm.entity_manager");
+        $this->entity_manager = $entity_manager;
         parent::__construct($this->entity_manager, $this->entity_manager->getClassMetadata("CustomerManagementFrameworkBundle\Entity\Service\Auth\AuthCode"));
     }
 

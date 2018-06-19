@@ -25,7 +25,9 @@ use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Psr\Http\Message\ServerRequestInterface;
+
 
 class AuthorizationServer{
 
@@ -92,11 +94,11 @@ class AuthorizationServer{
 
     private function initServer(){
 
-        $clientRepository = new ClientRepository(); // instance of ClientRepositoryInterface
-        $scopeRepository = new ScopeRepository(); // instance of ScopeRepositoryInterface
-        $accessTokenRepository = new AccessTokenRepository(); // instance of AccessTokenRepositoryInterface
-        $this->authCodeRepository = new AuthCodeRepository(); // instance of AuthCodeRepositoryInterface
-        $refreshTokenRepository = new RefreshTokenRepository(); // instance of RefreshTokenRepositoryInterface
+        $clientRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\ClientRepository");
+        $scopeRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\ScopeRepository");
+        $accessTokenRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\AccessTokenRepository");
+        $this->authCodeRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\AuthCodeRepository");
+        $refreshTokenRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\RefreshTokenRepository");
 
         $privateKey = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
 
