@@ -8,6 +8,7 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\OAuth;
 
+use AppBundle\Model\Customer;
 use CustomerManagementFrameworkBundle\Form\AuthType;
 use CustomerManagementFrameworkBundle\Service\AuthorizationServer;
 use Pimcore\Controller\FrontendController;
@@ -51,6 +52,7 @@ class ServerController extends FrontendController
         if($form->isSubmitted() && $form->isValid()){
             $authServerService = new AuthorizationServer();
 
+            $request->request->set("client_id", $request->query->get("client_id"));
             $request->request->set("response_type", $responseType);
             $request->request->set("scope", "basic");
             $request->request->set("redirect_uri", $redirectUrl);

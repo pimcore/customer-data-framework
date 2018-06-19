@@ -109,6 +109,15 @@ class Configuration implements ConfigurationInterface
             ->defaultValue('')
             ->end()
 
+
+            ->scalarNode('user_class_model')
+            ->info(
+                'define a model where the auth-code is based on'
+            )
+            ->defaultValue('')
+            ->end()
+
+
             ->arrayNode('clients')
             ->prototype('array')
             ->prototype('scalar')->end()
@@ -117,6 +126,7 @@ class Configuration implements ConfigurationInterface
                 ['client_id', 'name', 'secret', 'redirect_uri', 'is_confidential']
             ])
             ->end()
+
 
             ->end()
         ;

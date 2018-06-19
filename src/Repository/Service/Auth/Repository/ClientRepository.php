@@ -27,7 +27,7 @@ class ClientRepository implements ClientRepositoryInterface
 
         $clients = $clients["clients"];
 
-        $clients = array_map(function($client){
+        $clients = array_map(function($client) use($clientSecret){
             $transformedClient = [
                 'client_id' =>       $client['client_id'],
                 'secret'          => password_hash($client['secret'], PASSWORD_BCRYPT),

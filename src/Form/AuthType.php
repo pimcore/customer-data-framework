@@ -19,7 +19,7 @@ class AuthType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('client_id',TextType::class)
+            ->add('client_email',TextType::class)
             ->add('client_secret', TextType::class)
             ->add('_submit', SubmitType::class, [
                 'label' => 'Login'
