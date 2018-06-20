@@ -119,22 +119,28 @@ class Configuration implements ConfigurationInterface
 
 
             ->arrayNode('user_exporter')
-            ->example([
-                ['firstname', 'lastname']
-            ])
-            ->prototype('scalar')
+                ->prototype('scalar')->end()
+                ->example([
+                    ['firstname', 'lastname']
+                ])
             ->end()
+
+            ->arrayNode('blablub')
+                ->prototype('scalar')->end()
+                ->example([
+                    ['client_id', 'name', 'secret', 'redirect_uri', 'is_confidential']
+                ])
+                ->info('Auth Server Required Fields')
             ->end()
 
 
             ->arrayNode('clients')
-            ->prototype('array')
-            ->example([
-                ['client_id', 'name', 'secret', 'redirect_uri', 'is_confidential']
-            ])
-            ->info('Auth Server Required Fields')
-            ->prototype('scalar')
-            ->end()
+                ->prototype('array')
+                    ->prototype('scalar')->end()->end()
+                ->example([
+                    ['client_id', 'name', 'secret', 'redirect_uri', 'is_confidential']
+                ])
+                ->info('Auth Server Required Fields')
             ->end()
 
             ->end()
