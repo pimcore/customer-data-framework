@@ -17,6 +17,7 @@ use CustomerManagementFrameworkBundle\Repository\Service\Auth\RefreshTokenReposi
 use CustomerManagementFrameworkBundle\Repository\Service\Auth\ScopeRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\User;
@@ -68,13 +69,13 @@ class AuthorizationServer{
     /**
      * @param string $grantType
      * @param Request $request
-     * @return RedirectResponse
-     * @throws Exception
+     * @return RedirectResponse|JsonResponse
+     * @throws \Exception
      */
     public function validateClient(string $grantType, Request $request){
 
         if($grantType !== self::$GRANT_TYPE_AUTH_CODE){
-            throw new Exception("AuthorizationServer ERROR: GRANT TYPE: ".$grantType." NOT SUPPORTED");
+            throw new HttpException("AuthorizationServer ERROR: GRANT TYPE: ".$grantType." NOT SUPPORTED", 400);
         }
 
         $this->currentGrantType = $grantType;
@@ -86,6 +87,11 @@ class AuthorizationServer{
 
     }
 
+    /**
+     * @param Request $request
+     * @return RedirectResponse|JsonResponse
+     * @throws \Exception
+     */
     public function getAccessTokenForAuthGrantClient(Request $request){
 
         try {
@@ -105,19 +111,21 @@ class AuthorizationServer{
 
         } catch (\League\OAuth2\Server\Exception\OAuthServerException $exception) {
 
-            if($exception->getHttpStatusCode()==Response::HTTP_UNAUTHORIZED){
-                throw new HttpException(401, "AUTHORIZATION FAILED");
-            }
-            else throw new $exception;
-
+            return $this->handleErrorException($exception, $exception->getMessage(), $exception->getHttpStatusCode());
 
         } catch (\Exception $exception) {
-            $this->handleErrorException($exception);
+            return $this->handleErrorException($exception, $exception->getMessage(), $exception->getHttpStatusCode());
         }
 
 
     }
 
+    /**
+     * @param string $username
+     * @param string $password
+     * @return mixed
+     * @throws \Exception
+     */
     public function authUser(string $username, string $password)
     {
         $customerProvider = \Pimcore::getContainer()->get(CustomerProviderInterface::class);
@@ -133,10 +141,13 @@ class AuthorizationServer{
         $passwordField = $this->currentUser->getClass()->getFieldDefinition('password');
 
         if(!$passwordField->verifyPassword($password, $this->currentUser)){
-            throw new HttpException(403, "AUTH FAILED");
+            throw new HttpException(401, "AUTHORIZATION FAILED");
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     private function initAuthGrantServer(){
 
         $this->clientRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\ClientRepository");
@@ -148,12 +159,12 @@ class AuthorizationServer{
         $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
 
         if(!key_exists("private_key_dir", $oauthServerConfig)){
-            throw new Exception("AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.private_key_dir NOT DEFINED IN config.xml");
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.private_key_dir NOT DEFINED IN config.xml");
         }
         $privateKey = $oauthServerConfig["private_key_dir"];
 
         if(!key_exists("encryption_key", $oauthServerConfig)){
-            throw new Exception("AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.encryption_key NOT DEFINED IN config.xml");
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.encryption_key NOT DEFINED IN config.xml");
         }
         $encryptionKey = $oauthServerConfig["encryption_key"];
 
@@ -184,6 +195,11 @@ class AuthorizationServer{
         $this->server = $server;
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse|RedirectResponse
+     * @throws \Exception
+     */
     private function getAuthToken(Request $request){
 
         $this->initAuthGrantServer();
@@ -222,30 +238,28 @@ class AuthorizationServer{
 
         } catch (OAuthServerException $exception) {
 
-            $symfonyResponse = new Response();
-            $psrResponse = $psr7Factory->createResponse($symfonyResponse);
-
-            // All instances of OAuthServerException can be formatted into a HTTP response
-            return $exception->generateHttpResponse($psrResponse);
+            return $this->sendJSONResponse($exception,$exception->getMessage(), $exception->getHttpStatusCode());
 
         } catch (\Exception $exception) {
-            $this->handleErrorException($exception);
+            return $this->sendJSONResponse($exception,$exception->getMessage());
         }
 
     }
 
     /**
-     * @param \Exception $exception
-     * @return Response
+     * @param \Exception|null $exception
+     * @param string $content
+     * @param int $status
+     * @return JSONResponse
      * @throws \Exception
      */
-    private function handleErrorException(\Exception $exception){
-        if(\Pimcore::inDebugMode()) {
+    private function sendJSONResponse($exception, string $message, int $status){
+        if(\Pimcore::inDebugMode() && $exception) {
             throw $exception;
         }
 
-        $symfonyResponse = new Response();
-        $symfonyResponse->setStatusCode(500)->setContent("error happened");
+        $symfonyResponse = new JSONResponse();
+        $symfonyResponse->setStatusCode($status)->setContent($message);
 
         return $symfonyResponse;
     }
