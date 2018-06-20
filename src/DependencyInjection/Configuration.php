@@ -110,14 +110,6 @@ class Configuration implements ConfigurationInterface
             ->end()
 
 
-            ->scalarNode('user_class_model')
-            ->info(
-                'define a model where the auth-code is based on'
-            )
-            ->defaultValue('')
-            ->end()
-
-
             ->arrayNode('clients')
             ->prototype('array')
             ->prototype('scalar')->end()

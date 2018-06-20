@@ -14,6 +14,7 @@ use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 
 class ClientRepository implements ClientRepositoryInterface
 {
+
     /**
      * {@inheritdoc}
      */
@@ -27,7 +28,7 @@ class ClientRepository implements ClientRepositoryInterface
 
         $clients = $clients["clients"];
 
-        $clients = array_map(function($client) use($clientSecret){
+        $clients = array_map(function($client){
             $transformedClient = [
                 'client_id' =>       $client['client_id'],
                 'secret'          => password_hash($client['secret'], PASSWORD_BCRYPT),
