@@ -73,15 +73,10 @@ class AuthCodeRepository extends \Doctrine\ORM\EntityRepository implements AuthC
         if($entryFound)return $entryFound;
 
         $newAuthCode = new AuthCode();
-        $newAuthCode->setEncryptionKey($this->encryption_key);
         return $newAuthCode;
     }
 
     public function setUserIdenifier(string $userIdentifier){
         $this->user_identifier = $userIdentifier;
-    }
-
-    public function setEncryptionKey(string $encryptionKey){
-        $this->encryption_key = $encryptionKey;
     }
 }

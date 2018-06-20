@@ -104,18 +104,10 @@ class ServerController extends FrontendController
     /**
      * @param Request $request
      * @Route("/access_token", name="access_token_path")
-     * @return Response
+     * @return JSONResponse
      */
     public function accessToken(Request $request)
     {
-
-        //var_dump(urldecode($request->request->get("code")));
-        /**
-         * @var AuthCode $authCode
-         */
-        /*$authCode = $this->getDoctrine()->getRepository(AuthCode::class)->findOneByIdentifier($request->request->get("code"));
-        $encryptionKey = $authCode->getEncryptionKey();*/
-
         /**
          * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
          */
@@ -128,15 +120,13 @@ class ServerController extends FrontendController
         if(!$request->request->get("grant_type"))$request->request->set("grant_type", "authorization_code");
         if(!$request->request->get("redirect_uri"))$request->request->set("redirect_uri", $request->query->get("redirect_uri"));*/
 
-        $encryptionKey = "djaisdj233ikodkaspo3434hgfgdfgf568kfsd34dfsdskdpo";
-        $response = $authServerService->getAccessTokenForAuthGrantClient($request, $encryptionKey);
+        $response = $authServerService->getAccessTokenForAuthGrantClient($request);
 
         if($response->getStatusCode() == Response::HTTP_UNAUTHORIZED){
             throw new HttpException(401, "AUTHORIZATION FAILED");
         }
 
-        var_dump($response);die;
-        return $response;
+        return $this->sendResponse($response);
 
     }
 
