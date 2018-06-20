@@ -26,11 +26,6 @@ class AuthCodeRepository extends \Doctrine\ORM\EntityRepository implements AuthC
      */
     private $user_identifier = null;
 
-    /**
-     * @var string $encryptionKey
-     */
-    private $encryption_key = null;
-
 
     public function __construct(\Doctrine\ORM\EntityManager $entity_manager)
     {

@@ -109,6 +109,7 @@ class Configuration implements ConfigurationInterface
             ->defaultValue('')
             ->end()
 
+
             ->scalarNode('private_key_dir')
             ->info(
                 'create it by using this command: openssl genrsa -out private.key 2048'
@@ -116,15 +117,27 @@ class Configuration implements ConfigurationInterface
             ->defaultValue('')
             ->end()
 
+
+            ->arrayNode('user_exporter')
+            ->example([
+                ['firstname', 'lastname']
+            ])
+            ->children()
+            ->scalarNode('firstname')->end()
+            ->scalarNode('lastname')->end()
+            ->end()
+            ->prototype('scalar')->end()
+            ->end()
+
+
             ->arrayNode('clients')
             ->prototype('array')
-            ->prototype('scalar')->end()
-            ->info('Auth Server Required Fields')
             ->example([
                 ['client_id', 'name', 'secret', 'redirect_uri', 'is_confidential']
             ])
+            ->info('Auth Server Required Fields')
+            ->prototype('scalar')->end()
             ->end()
-
 
             ->end()
         ;
