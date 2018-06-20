@@ -27,6 +27,7 @@ use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\File\Stream;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -67,10 +68,10 @@ class AuthorizationServer{
     /**
      * @param string $grantType
      * @param Request $request
-     * @return ResponseInterface
+     * @return RedirectResponse
      * @throws Exception
      */
-    public function validateClient(string $grantType, Request $request){
+    public function validateClient(string $grantType, Request $request, $encryptionKey){
 
         if($grantType !== self::$GRANT_TYPE_AUTH_CODE){
             throw new Exception("AuthorizationServer ERROR: GRANT TYPE: ".$grantType." NOT SUPPORTED");
@@ -80,16 +81,16 @@ class AuthorizationServer{
 
         switch ($this->currentGrantType){
             case self::$GRANT_TYPE_AUTH_CODE:
-                return $this->getAuthToken($request);
+                return $this->getAuthToken($request, $encryptionKey);
         }
 
     }
 
-    public function getAccessTokenForAuthGrantClient(Request $request){
+    public function getAccessTokenForAuthGrantClient(Request $request, string $encryptionKey){
 
         try {
 
-            $this->initAuthGrantServer();
+            $this->initAuthGrantServer($encryptionKey);
 
             $psr7Factory = new DiactorosFactory();
             $psrRequest = $psr7Factory->createRequest($request);
@@ -104,7 +105,10 @@ class AuthorizationServer{
 
         } catch (\League\OAuth2\Server\Exception\OAuthServerException $exception) {
 
-            throw new $exception;
+            if($exception->getHttpStatusCode()==Response::HTTP_UNAUTHORIZED){
+                throw new HttpException(401, "AUTHORIZATION FAILED");
+            }
+            else throw new $exception;
 
 
         } catch (\Exception $exception) {
@@ -133,7 +137,7 @@ class AuthorizationServer{
         }
     }
 
-    private function initAuthGrantServer(){
+    private function initAuthGrantServer($encryptionKey){
 
         $this->clientRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\ClientRepository");
         $scopeRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\ScopeRepository");
@@ -164,7 +168,7 @@ class AuthorizationServer{
         $grant = new \League\OAuth2\Server\Grant\AuthCodeGrant(
             $this->authCodeRepository,
             $refreshTokenRepository,
-            new \DateInterval('PT1M') // authorization codes will expire after 1 minutes
+            new \DateInterval('PT10M') // authorization codes will expire after 10 minutes
         );
 
         $grant->setRefreshTokenTTL(new \DateInterval('P1M')); // refresh tokens will expire after 1 month
@@ -177,9 +181,9 @@ class AuthorizationServer{
         $this->server = $server;
     }
 
-    private function getAuthToken(Request $request){
+    private function getAuthToken(Request $request, string $encryptionKey){
 
-        $this->initAuthGrantServer();
+        $this->initAuthGrantServer($encryptionKey);
 
         $psr7Factory = new DiactorosFactory();
         $psrRequest = $psr7Factory->createRequest($request);
@@ -193,6 +197,7 @@ class AuthorizationServer{
             $authRequest->setUser($this->currentUser); // an instance of UserEntityInterface
 
             $this->authCodeRepository->setUserIdenifier($this->currentUser->getIdentifier());
+            $this->authCodeRepository->setEncryptionKey($encryptionKey);
 
             //$request->request->set("client_secret", $encoder->encodePassword($plainPassword,$userModel->getSalt()));
 
@@ -208,30 +213,12 @@ class AuthorizationServer{
             $symfonyResponse = new Response();
             $psrResponse = $psr7Factory->createResponse($symfonyResponse);
 
-
             $response = $this->server->completeAuthorizationRequest($authRequest, $psrResponse);
 
-            $urlComps = parse_url($response->getHeaders()["Location"][0]);
+            $redirectResponse = new RedirectResponse($request->query->get("redirect_url"));
+            $redirectResponse->headers->add($response->getHeaders());
 
-            $query = $urlComps["query"];
-
-            $state = null;
-            preg_match('/state=([a-zA-Z0-9]+)/', $query, $matches);
-            if(count($matches)>1){
-                $state = $matches[1];
-            }
-
-            $authCode = null;
-            preg_match('/code=([a-zA-Z0-9]+)/', $query, $matches);
-            if(count($matches)>1){
-                $authCode = $matches[1];
-            }
-
-            return [
-                "code" => $authCode,
-                "state" => $state,
-                "user_id_encoded" => $this->currentUser->getIdEncoded()
-            ];
+            return $redirectResponse;
 
         } catch (OAuthServerException $exception) {
 
@@ -247,6 +234,11 @@ class AuthorizationServer{
 
     }
 
+    /**
+     * @param \Exception $exception
+     * @return Response
+     * @throws \Exception
+     */
     private function handleErrorException(\Exception $exception){
         if(\Pimcore::inDebugMode()) {
             throw $exception;
