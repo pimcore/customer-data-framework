@@ -19,7 +19,7 @@ use Pimcore\Tool\RestClient\Exception;
 class AccessTokenRepository extends \Doctrine\ORM\EntityRepository implements AccessTokenRepositoryInterface
 {
 
-    /*
+    /**
      * @var \Doctrine\ORM\EntityManager
      */
     private $entity_manager = null;
@@ -67,8 +67,10 @@ class AccessTokenRepository extends \Doctrine\ORM\EntityRepository implements Ac
             $this->entity_manager->flush();
         }
 
+        /* deactivated: do not edit own access-token but create a new one
         $entryFound = $this->entity_manager->getRepository(AccessToken::class)->findOneByUserIdentifier($userIdentifier);
         if($entryFound)return $entryFound;
+        */
 
         $accessToken = new AccessToken();
         $accessToken->setClient($clientEntity);
