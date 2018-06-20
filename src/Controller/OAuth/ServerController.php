@@ -30,7 +30,7 @@ class ServerController extends FrontendController
      * @param Request $request
      * @Route("/form_auth_code", name="form_auth_code_path")
      * @return RedirectResponse
-     * @throws \Pimcore\Tool\RestClient\Exception
+     * @throws \Exception
      */
     public function formAuthorizeClient(Request $request)
     {
@@ -105,6 +105,7 @@ class ServerController extends FrontendController
      * @param Request $request
      * @Route("/access_token", name="access_token_path")
      * @return JSONResponse
+     * @throws \Exception
      */
     public function accessToken(Request $request)
     {
@@ -113,18 +114,13 @@ class ServerController extends FrontendController
          */
         $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
 
-        /* hack set post-params via get-params
-        if(!$request->request->get("client_id"))$request->request->set("client_id", $request->query->get("client_id"));
-        if(!$request->request->get("client_secret"))$request->request->set("client_secret", $request->query->get("client_secret"));
-        if(!$request->request->get("code"))$request->request->set("code", $request->query->get("code"));
-        if(!$request->request->get("grant_type"))$request->request->set("grant_type", "authorization_code");
-        if(!$request->request->get("redirect_uri"))$request->request->set("redirect_uri", $request->query->get("redirect_uri"));*/
+        if(!$request->request->get("client_id"))throw new HttpException(400, "POST-PARAM: client_id is missing");
+        if(!$request->request->get("client_secret"))return HttpException(400, "POST-PARAM: client_secret is missing");
+        if(!$request->request->get("code"))throw new HttpException(400, "POST-PARAM: code is missing");
+        if(!$request->request->get("grant_type"))throw new HttpException(400, "POST-PARAM: grant_type is missing");
+        if(!$request->request->get("redirect_uri"))throw new HttpException(400, "POST-PARAM: redirect_uri is missing");
 
         $response = $authServerService->getAccessTokenForAuthGrantClient($request);
-
-        if($response->getStatusCode() == Response::HTTP_UNAUTHORIZED){
-            throw new HttpException(401, "AUTHORIZATION FAILED");
-        }
 
         return $this->sendResponse($response);
 
