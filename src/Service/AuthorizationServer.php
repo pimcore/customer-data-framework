@@ -71,7 +71,7 @@ class AuthorizationServer{
      * @return RedirectResponse
      * @throws Exception
      */
-    public function validateClient(string $grantType, Request $request, $encryptionKey){
+    public function validateClient(string $grantType, Request $request){
 
         if($grantType !== self::$GRANT_TYPE_AUTH_CODE){
             throw new Exception("AuthorizationServer ERROR: GRANT TYPE: ".$grantType." NOT SUPPORTED");
@@ -81,16 +81,16 @@ class AuthorizationServer{
 
         switch ($this->currentGrantType){
             case self::$GRANT_TYPE_AUTH_CODE:
-                return $this->getAuthToken($request, $encryptionKey);
+                return $this->getAuthToken($request);
         }
 
     }
 
-    public function getAccessTokenForAuthGrantClient(Request $request, string $encryptionKey){
+    public function getAccessTokenForAuthGrantClient(Request $request){
 
         try {
 
-            $this->initAuthGrantServer($encryptionKey);
+            $this->initAuthGrantServer();
 
             $psr7Factory = new DiactorosFactory();
             $psrRequest = $psr7Factory->createRequest($request);
@@ -137,7 +137,7 @@ class AuthorizationServer{
         }
     }
 
-    private function initAuthGrantServer($encryptionKey){
+    private function initAuthGrantServer(){
 
         $this->clientRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\ClientRepository");
         $scopeRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\ScopeRepository");
@@ -145,14 +145,17 @@ class AuthorizationServer{
         $this->authCodeRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\AuthCodeRepository");
         $refreshTokenRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\RefreshTokenRepository");
 
-        $privateKey = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
+        $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
 
-        if(!key_exists("private_key_dir", $privateKey)){
+        if(!key_exists("private_key_dir", $oauthServerConfig)){
             throw new Exception("AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.private_key_dir NOT DEFINED IN config.xml");
         }
-        $privateKey = $privateKey["private_key_dir"];
+        $privateKey = $oauthServerConfig["private_key_dir"];
 
-        $encryptionKey = "djaisdj233ikodkaspo3434hgfgdfgf568kfsd34dfsdskdpo";//base64_encode(random_bytes(32));
+        if(!key_exists("encryption_key", $oauthServerConfig)){
+            throw new Exception("AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.encryption_key NOT DEFINED IN config.xml");
+        }
+        $encryptionKey = $oauthServerConfig["encryption_key"];
 
         /**
          * @var \League\OAuth2\Server\AuthorizationServer $server
@@ -181,9 +184,9 @@ class AuthorizationServer{
         $this->server = $server;
     }
 
-    private function getAuthToken(Request $request, string $encryptionKey){
+    private function getAuthToken(Request $request){
 
-        $this->initAuthGrantServer($encryptionKey);
+        $this->initAuthGrantServer();
 
         $psr7Factory = new DiactorosFactory();
         $psrRequest = $psr7Factory->createRequest($request);
@@ -197,9 +200,6 @@ class AuthorizationServer{
             $authRequest->setUser($this->currentUser); // an instance of UserEntityInterface
 
             $this->authCodeRepository->setUserIdenifier($this->currentUser->getIdentifier());
-            $this->authCodeRepository->setEncryptionKey($encryptionKey);
-
-            //$request->request->set("client_secret", $encoder->encodePassword($plainPassword,$userModel->getSalt()));
 
             // At this point you should redirect the user to an authorization page.
             // This form will ask the user to approve the client and the scopes requested.

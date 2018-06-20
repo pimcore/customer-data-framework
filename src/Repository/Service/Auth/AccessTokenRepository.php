@@ -3,6 +3,7 @@
 namespace CustomerManagementFrameworkBundle\Repository\Service\Auth;
 
 use CustomerManagementFrameworkBundle\Entity\Service\Auth\AccessToken;
+use CustomerManagementFrameworkBundle\Entity\Service\Auth\AuthCode;
 use Doctrine\ORM\Mapping;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
@@ -60,6 +61,12 @@ class AccessTokenRepository extends \Doctrine\ORM\EntityRepository implements Ac
      */
     public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null)
     {
+        $authCode = $this->entity_manager->getRepository(AuthCode::class)->findOneByUserIdentifier($userIdentifier);
+        if($authCode) {
+            $this->entity_manager->remove($authCode);
+            $this->entity_manager->flush();
+        }
+
         $entryFound = $this->entity_manager->getRepository(AccessToken::class)->findOneByUserIdentifier($userIdentifier);
         if($entryFound)return $entryFound;
 
