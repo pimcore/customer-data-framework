@@ -83,19 +83,10 @@ class ServerController extends FrontendController
                 $request->request->set("scope", $scope);
             }
 
-            $authInfo = $authServerService->validateClient(AuthorizationServer::$GRANT_TYPE_AUTH_CODE, $request);
+            $encypKey = base64_encode(random_bytes(32));
+            $redirectResponse = $authServerService->validateClient(AuthorizationServer::$GRANT_TYPE_AUTH_CODE, $request, $encypKey);
 
-            return $this->redirect(
-                $this->generateUrl("access_token_path") .
-                "?code=" . $authInfo["code"] .
-                "&state=" . $authInfo["state"] .
-                "&grant_type=authorization_code" .
-                "&client_id=".$request->query->get("client_id") .
-                "&client_secret=".$clientSecret .
-                "&redirect_uri=".$redirectUrl .
-                "&userIdEncoded=".$authInfo["user_id_encoded"]
-            );
-
+            return $redirectResponse;
         }
 
         $allQueryArray = $request->query->all();
@@ -118,24 +109,33 @@ class ServerController extends FrontendController
     public function accessToken(Request $request)
     {
 
+        //var_dump(urldecode($request->request->get("code")));
+        /**
+         * @var AuthCode $authCode
+         */
+        /*$authCode = $this->getDoctrine()->getRepository(AuthCode::class)->findOneByIdentifier($request->request->get("code"));
+        $encryptionKey = $authCode->getEncryptionKey();*/
+
         /**
          * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
          */
         $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
 
-        // set necessary post-params via get-params coming directly from form_auth_code_path
+        /* hack set post-params via get-params
         if(!$request->request->get("client_id"))$request->request->set("client_id", $request->query->get("client_id"));
         if(!$request->request->get("client_secret"))$request->request->set("client_secret", $request->query->get("client_secret"));
         if(!$request->request->get("code"))$request->request->set("code", $request->query->get("code"));
         if(!$request->request->get("grant_type"))$request->request->set("grant_type", "authorization_code");
-        if(!$request->request->get("redirect_uri"))$request->request->set("redirect_uri", $request->query->get("redirect_uri"));
+        if(!$request->request->get("redirect_uri"))$request->request->set("redirect_uri", $request->query->get("redirect_uri"));*/
 
-        $response = $authServerService->getAccessTokenForAuthGrantClient($request);
+        $encryptionKey = "djaisdj233ikodkaspo3434hgfgdfgf568kfsd34dfsdskdpo";
+        $response = $authServerService->getAccessTokenForAuthGrantClient($request, $encryptionKey);
 
         if($response->getStatusCode() == Response::HTTP_UNAUTHORIZED){
             throw new HttpException(401, "AUTHORIZATION FAILED");
         }
 
+        var_dump($response);die;
         return $response;
 
     }

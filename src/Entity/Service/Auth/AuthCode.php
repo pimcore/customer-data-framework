@@ -39,7 +39,7 @@ class AuthCode implements AuthCodeEntityInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="identifier", type="string", length=255)
+     * @ORM\Column(name="identifier", type="text")
      */
     protected $identifier;
 
@@ -63,6 +63,13 @@ class AuthCode implements AuthCodeEntityInterface
      * @ORM\Column(name="redirectUri", type="string", length=255)
      */
     protected $redirectUri;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="encryptionKey", type="string", length=255)
+     */
+    protected $encryptionKey;
 
 
     /**
@@ -167,6 +174,30 @@ class AuthCode implements AuthCodeEntityInterface
      * @return string
      */
     public function getRedirectUri()
+    {
+        return $this->redirectUri;
+    }
+
+    /**
+     * Set redirectUri
+     *
+     * @param string $encryptionKey
+     *
+     * @return AuthCode
+     */
+    public function setEncryptionKey($encryptionKey)
+    {
+        $this->encryptionKey = $encryptionKey;
+
+        return $this;
+    }
+
+    /**
+     * Get encryptionKey
+     *
+     * @return string
+     */
+    public function getEncryptionKey()
     {
         return $this->redirectUri;
     }
