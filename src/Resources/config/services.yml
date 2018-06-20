@@ -260,6 +260,10 @@ services:
         tags:
             - { name: pimcore.data_object.import.operator_factory, id: CustomerSegments }
 
+    CustomerManagementFrameworkBundle\Service\AuthorizationServer:
+        public: true
+        autowire: true
+
     CustomerManagementFrameworkBundle\Repository\Service\Auth\ClientRepository:
         public: true
         autowire: true
@@ -279,3 +283,9 @@ services:
     CustomerManagementFrameworkBundle\Repository\Service\Auth\RefreshTokenRepository:
         public: true
         autowire: true
+
+    app_security_password_encoder_factory:
+        class: Pimcore\Security\Encoder\Factory\UserAwareEncoderFactory
+        arguments:
+            - Pimcore\Security\Encoder\PasswordFieldEncoder
+            - ['password']

@@ -9,6 +9,7 @@
 namespace CustomerManagementFrameworkBundle\Service;
 
 use AppBundle\Model\Customer;
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Repository\Service\Auth\AccessTokenRepository;
 use CustomerManagementFrameworkBundle\Repository\Service\Auth\AuthCodeRepository;
 use CustomerManagementFrameworkBundle\Repository\Service\Auth\ClientRepository;
@@ -18,6 +19,9 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AbstractObject;
+use Pimcore\Model\User;
+use Pimcore\Security\Encoder\Factory\UserAwareEncoderFactory;
+use Pimcore\Security\Encoder\PasswordFieldEncoder;
 use Pimcore\Tool\RestClient\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
@@ -27,6 +31,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 
 
 class AuthorizationServer{
@@ -43,11 +48,28 @@ class AuthorizationServer{
      */
     private $authCodeRepository = null;
 
-    /*
+    /**
+     * @var clientRepository
+     */
+    private $clientRepository = null;
+
+    /**
      * @var \League\OAuth2\Server\AuthorizationServer
      */
     private $server = null;
 
+    /**
+     * @var CustomerProviderInterface $customerProvider
+     */
+    private $currentUser = null;
+
+
+    /**
+     * @param string $grantType
+     * @param Request $request
+     * @return ResponseInterface
+     * @throws Exception
+     */
     public function validateClient(string $grantType, Request $request){
 
         if($grantType !== self::$GRANT_TYPE_AUTH_CODE){
@@ -58,14 +80,16 @@ class AuthorizationServer{
 
         switch ($this->currentGrantType){
             case self::$GRANT_TYPE_AUTH_CODE:
-                return $this->startAuthGrant($request);
+                return $this->getAuthToken($request);
         }
 
     }
 
-    public function getAccessTokenForClient(Request $request){
+    public function getAccessTokenForAuthGrantClient(Request $request){
 
         try {
+
+            $this->initAuthGrantServer();
 
             $psr7Factory = new DiactorosFactory();
             $psrRequest = $psr7Factory->createRequest($request);
@@ -80,10 +104,8 @@ class AuthorizationServer{
 
         } catch (\League\OAuth2\Server\Exception\OAuthServerException $exception) {
 
-            $httpFoundationFactory = new HttpFoundationFactory();
-            $symfonyResponse = $httpFoundationFactory->createResponse($exception->generateHttpResponse($psrResponse));
+            throw new $exception;
 
-            return $symfonyResponse;
 
         } catch (\Exception $exception) {
             $this->handleErrorException($exception);
@@ -92,9 +114,28 @@ class AuthorizationServer{
 
     }
 
-    private function initServer(){
+    public function authUser(string $username, string $password)
+    {
+        $customerProvider = \Pimcore::getContainer()->get(CustomerProviderInterface::class);
+        $this->currentUser = $customerProvider->getActiveCustomerByEmail($username);
 
-        $clientRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\ClientRepository");
+        if(!$this->currentUser){
+            throw new HttpException(401, "AUTHORIZATION FAILED");
+        }
+
+        /**
+         * @var DataObject\ClassDefinition\Data\Password $field
+         */
+        $passwordField = $this->currentUser->getClass()->getFieldDefinition('password');
+
+        if(!$passwordField->verifyPassword($password, $this->currentUser)){
+            throw new HttpException(403, "AUTH FAILED");
+        }
+    }
+
+    private function initAuthGrantServer(){
+
+        $this->clientRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\ClientRepository");
         $scopeRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\ScopeRepository");
         $accessTokenRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\AccessTokenRepository");
         $this->authCodeRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\AuthCodeRepository");
@@ -107,13 +148,13 @@ class AuthorizationServer{
         }
         $privateKey = $privateKey["private_key_dir"];
 
-        $encryptionKey = base64_encode(random_bytes(32));//"djaisdj233ikodkaspo3434hgfgdfgf568kfsd34dfsdskdpo";
+        $encryptionKey = "djaisdj233ikodkaspo3434hgfgdfgf568kfsd34dfsdskdpo";//base64_encode(random_bytes(32));
 
-        /*
+        /**
          * @var \League\OAuth2\Server\AuthorizationServer $server
          */
         $server = new \League\OAuth2\Server\AuthorizationServer(
-            $clientRepository,
+            $this->clientRepository,
             $accessTokenRepository,
             $scopeRepository,
             $privateKey,
@@ -136,9 +177,9 @@ class AuthorizationServer{
         $this->server = $server;
     }
 
-    private function startAuthGrant(Request $request){
+    private function getAuthToken(Request $request){
 
-        $this->initServer();
+        $this->initAuthGrantServer();
 
         $psr7Factory = new DiactorosFactory();
         $psrRequest = $psr7Factory->createRequest($request);
@@ -148,28 +189,12 @@ class AuthorizationServer{
             // Validate the HTTP request and return an AuthorizationRequest object.
             $authRequest = $this->server->validateAuthorizationRequest($psrRequest);
 
-            // The auth request object can be serialized and saved into a user's session.
-            // You will probably want to redirect the user at this point to a login endpoint.
-
-            $userClassModel = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
-
-            if(!key_exists("user_class_model", $userClassModel)){
-                throw new Exception("AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.user_class_model NOT DEFINED IN config.xml");
-            }
-            $userClassModel = $userClassModel["user_class_model"];
-
-            $userModel = call_user_func(array($userClassModel, 'getByEmail'), $request->request->get("client_email"));
-
-            if(!$userModel || !($userModel && $userModel = $userModel->current())){
-                throw new HttpException(401, "AUTHORIZATION FAILED");
-            }
-
             // Once the user has logged in set the user on the AuthorizationRequest
-            $authRequest->setUser($userModel); // an instance of UserEntityInterface
+            $authRequest->setUser($this->currentUser); // an instance of UserEntityInterface
 
-            $this->authCodeRepository->setUserIdenifier($userModel->getIdentifier());
+            $this->authCodeRepository->setUserIdenifier($this->currentUser->getIdentifier());
 
-            //$request->request->set("client_secret", $userModel->getPassword());
+            //$request->request->set("client_secret", $encoder->encodePassword($plainPassword,$userModel->getSalt()));
 
             // At this point you should redirect the user to an authorization page.
             // This form will ask the user to approve the client and the scopes requested.
@@ -183,7 +208,30 @@ class AuthorizationServer{
             $symfonyResponse = new Response();
             $psrResponse = $psr7Factory->createResponse($symfonyResponse);
 
-            return $this->server->completeAuthorizationRequest($authRequest, $psrResponse);
+
+            $response = $this->server->completeAuthorizationRequest($authRequest, $psrResponse);
+
+            $urlComps = parse_url($response->getHeaders()["Location"][0]);
+
+            $query = $urlComps["query"];
+
+            $state = null;
+            preg_match('/state=([a-zA-Z0-9]+)/', $query, $matches);
+            if(count($matches)>1){
+                $state = $matches[1];
+            }
+
+            $authCode = null;
+            preg_match('/code=([a-zA-Z0-9]+)/', $query, $matches);
+            if(count($matches)>1){
+                $authCode = $matches[1];
+            }
+
+            return [
+                "code" => $authCode,
+                "state" => $state,
+                "user_id_encoded" => $this->currentUser->getIdEncoded()
+            ];
 
         } catch (OAuthServerException $exception) {
 
@@ -209,5 +257,4 @@ class AuthorizationServer{
 
         return $symfonyResponse;
     }
-
 }

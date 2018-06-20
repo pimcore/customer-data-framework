@@ -9,6 +9,7 @@
 namespace CustomerManagementFrameworkBundle\Controller\OAuth;
 
 use AppBundle\Model\Customer;
+use CustomerManagementFrameworkBundle\Entity\Service\Auth\AuthCode;
 use CustomerManagementFrameworkBundle\Form\AuthType;
 use CustomerManagementFrameworkBundle\Service\AuthorizationServer;
 use Pimcore\Controller\FrontendController;
@@ -29,17 +30,29 @@ class ServerController extends FrontendController
      * @param Request $request
      * @Route("/form_auth_code", name="form_auth_code_path")
      * @return RedirectResponse
+     * @throws \Pimcore\Tool\RestClient\Exception
      */
     public function formAuthorizeClient(Request $request)
     {
+
         $form = $this->createForm(AuthType::class);
         $form->handleRequest($request);
 
+        $clientId = $request->query->get("client_id");
+        $clientSecret = $request->query->get("client_secret");
         $redirectUrl = $request->query->get("redirect_url");
         $responseType = $request->query->get("response_type");
 
         $state = $request->query->get("state");
         $scope = $request->query->get("scope");
+
+        if(!$clientId){
+            throw new HttpException(400, "GET-PARAM: client_id is missing");
+        }
+
+        if(!$clientSecret){
+            throw new HttpException(400, "GET-PARAM: client_secret is missing");
+        }
 
         if(!$redirectUrl){
             throw new HttpException(400, "GET-PARAM: redirect_url is missing");
@@ -50,7 +63,13 @@ class ServerController extends FrontendController
         }
 
         if($form->isSubmitted() && $form->isValid()){
-            $authServerService = new AuthorizationServer();
+
+            /**
+             * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
+             */
+            $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
+
+            $authServerService->authUser($request->request->get("username"), $request->request->get("password"));
 
             $request->request->set("client_id", $request->query->get("client_id"));
             $request->request->set("response_type", $responseType);
@@ -64,34 +83,19 @@ class ServerController extends FrontendController
                 $request->request->set("scope", $scope);
             }
 
-            $response = $authServerService->validateClient(AuthorizationServer::$GRANT_TYPE_AUTH_CODE, $request);
+            $authInfo = $authServerService->validateClient(AuthorizationServer::$GRANT_TYPE_AUTH_CODE, $request);
 
-            $urlComps = parse_url($response->getHeaders()["Location"][0]);
+            return $this->redirect(
+                $this->generateUrl("access_token_path") .
+                "?code=" . $authInfo["code"] .
+                "&state=" . $authInfo["state"] .
+                "&grant_type=authorization_code" .
+                "&client_id=".$request->query->get("client_id") .
+                "&client_secret=".$clientSecret .
+                "&redirect_uri=".$redirectUrl .
+                "&userIdEncoded=".$authInfo["user_id_encoded"]
+            );
 
-            $query = $urlComps["query"];
-            $authCode = null;
-
-            preg_match('/code=([a-zA-Z0-9]+)/', $query, $matches);
-
-            $request->request->set("grant_type", "authorization_code");
-
-            if(count($matches)>1){
-                $request->request->set("code", $matches[1]);
-            }
-
-            $response = $authServerService->getAccessTokenForClient($request);
-
-            if($response->getStatusCode() == Response::HTTP_UNAUTHORIZED){
-                throw new HttpException(401, "AUTHORIZATION FAILED");
-            }
-
-            $json = json_decode($response->getContent());
-            $json->redirect_url = $redirectUrl;
-
-            $response->headers->set('Content-Type', 'application/json');
-            $response->setContent(json_encode($json));
-
-            return $this->sendResponse($response);
         }
 
         $allQueryArray = $request->query->all();
@@ -102,6 +106,37 @@ class ServerController extends FrontendController
 
         $this->view->form = $form->createView();
         $this->view->queryUrlString = substr($queryUrlString,0, strlen($queryUrlString)-1);
+
+
+    }
+
+    /**
+     * @param Request $request
+     * @Route("/access_token", name="access_token_path")
+     * @return Response
+     */
+    public function accessToken(Request $request)
+    {
+
+        /**
+         * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
+         */
+        $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
+
+        // set necessary post-params via get-params coming directly from form_auth_code_path
+        if(!$request->request->get("client_id"))$request->request->set("client_id", $request->query->get("client_id"));
+        if(!$request->request->get("client_secret"))$request->request->set("client_secret", $request->query->get("client_secret"));
+        if(!$request->request->get("code"))$request->request->set("code", $request->query->get("code"));
+        if(!$request->request->get("grant_type"))$request->request->set("grant_type", "authorization_code");
+        if(!$request->request->get("redirect_uri"))$request->request->set("redirect_uri", $request->query->get("redirect_uri"));
+
+        $response = $authServerService->getAccessTokenForAuthGrantClient($request);
+
+        if($response->getStatusCode() == Response::HTTP_UNAUTHORIZED){
+            throw new HttpException(401, "AUTHORIZATION FAILED");
+        }
+
+        return $response;
 
     }
 
