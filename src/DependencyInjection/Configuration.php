@@ -103,18 +103,18 @@ class Configuration implements ConfigurationInterface
             ->children()
 
             ->scalarNode('encryption_key')
-            ->info(
-                'create it randomly, should look like so: lxZFUEsBCJ2Yb14IF2ygAHI5N4+ZAUXXaSeeJm6+twsUmIen'
-            )
-            ->defaultValue('')
+                ->info(
+                    'create it randomly, should look like so: lxZFUEsBCJ2Yb14IF2ygAHI5N4+ZAUXXaSeeJm6+twsUmIen'
+                )
+                ->defaultValue('')
             ->end()
 
 
             ->scalarNode('private_key_dir')
-            ->info(
-                'create it by using this command: openssl genrsa -out private.key 2048'
-            )
-            ->defaultValue('')
+                ->info(
+                    'create it by using this command: openssl genrsa -out private.key 2048'
+                )
+                ->defaultValue('')
             ->end()
 
 
@@ -122,11 +122,8 @@ class Configuration implements ConfigurationInterface
             ->example([
                 ['firstname', 'lastname']
             ])
-            ->children()
-            ->scalarNode('firstname')->end()
-            ->scalarNode('lastname')->end()
+            ->prototype('scalar')
             ->end()
-            ->prototype('scalar')->end()
             ->end()
 
 
@@ -136,7 +133,8 @@ class Configuration implements ConfigurationInterface
                 ['client_id', 'name', 'secret', 'redirect_uri', 'is_confidential']
             ])
             ->info('Auth Server Required Fields')
-            ->prototype('scalar')->end()
+            ->prototype('scalar')
+            ->end()
             ->end()
 
             ->end()
