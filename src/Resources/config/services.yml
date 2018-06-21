@@ -121,6 +121,7 @@ services:
                 'processQueue': '@CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\IndexerInterface'
                 'cleanUpFilterDefinitions': '@CustomerManagementFrameworkBundle\CustomerView\FilterDefinition\Maintenance'
                 'cleanUpTemporaryCustomers': '@CustomerManagementFrameworkBundle\CustomerView\Customer\Maintenance'
+                'cleanUpOldAccessTokens': '@CustomerManagementFrameworkBundle\OAuth\Maintenance'
 
     cmf.logger:
         alias: monolog.logger.cmf
@@ -178,6 +179,8 @@ services:
     CustomerManagementFrameworkBundle\CustomerView\Customer\Maintenance: ~
 
     CustomerManagementFrameworkBundle\CustomerList\SearchHelper: ~
+
+    CustomerManagementFrameworkBundle\OAuth\Maintenance: ~
 
     cmf.potential_duplicate_item:
         class: CustomerManagementFrameworkBundle\Model\CustomerDuplicates\PotentialDuplicateItem
