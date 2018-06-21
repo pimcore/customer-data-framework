@@ -115,12 +115,36 @@ class ServerController extends FrontendController
         $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
 
         if(!$request->request->get("client_id"))throw new HttpException(400, "POST-PARAM: client_id is missing");
-        if(!$request->request->get("client_secret"))return HttpException(400, "POST-PARAM: client_secret is missing");
+        if(!$request->request->get("client_secret"))throw new HttpException(400, "POST-PARAM: client_secret is missing");
         if(!$request->request->get("code"))throw new HttpException(400, "POST-PARAM: code is missing");
         if(!$request->request->get("grant_type"))throw new HttpException(400, "POST-PARAM: grant_type is missing");
         if(!$request->request->get("redirect_uri"))throw new HttpException(400, "POST-PARAM: redirect_uri is missing");
 
         $response = $authServerService->getAccessTokenForAuthGrantClient($request);
+
+        return $this->sendResponse($response);
+
+    }
+
+    /**
+     * @param Request $request
+     * @Route("/refresh_token", name="refresh_token_path")
+     * @return JSONResponse
+     * @throws \Exception
+     */
+    public function refreshToken(Request $request)
+    {
+        /**
+         * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
+         */
+        $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
+
+        if(!$request->request->get("client_id"))throw new HttpException(400, "POST-PARAM: client_id is missing");
+        if(!$request->request->get("client_secret"))throw new HttpException(400, "POST-PARAM: client_secret is missing");
+        if(!$request->request->get("refresh_token"))throw new HttpException(400, "POST-PARAM: refresh_token is missing");
+        if(!$request->request->get("grant_type"))throw new HttpException(400, "POST-PARAM: grant_type is missing");
+
+        $response = $authServerService->getRefreshTokenForAuthGrantClient($request);
 
         return $this->sendResponse($response);
 

@@ -123,14 +123,7 @@ class Configuration implements ConfigurationInterface
                 ->example([
                     ['firstname', 'lastname']
                 ])
-            ->end()
-
-            ->arrayNode('blablub')
-                ->prototype('scalar')->end()
-                ->example([
-                    ['client_id', 'name', 'secret', 'redirect_uri', 'is_confidential']
-                ])
-                ->info('Auth Server Required Fields')
+                ->defaultValue(['firstname', 'lastname', 'email'])
             ->end()
 
 
