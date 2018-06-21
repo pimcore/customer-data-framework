@@ -121,6 +121,37 @@ class AuthorizationServer{
     }
 
     /**
+     * @param Request $request
+     * @return Response
+     */
+    public function getRefreshTokenForAuthGrantClient(Request $request){
+
+        try {
+
+            $this->initRefreshGrantServer();
+
+            $psr7Factory = new DiactorosFactory();
+            $psrRequest = $psr7Factory->createRequest($request);
+
+            $symfonyResponse = new Response();
+            $psrResponse = $psr7Factory->createResponse($symfonyResponse);
+
+            $httpFoundationFactory = new HttpFoundationFactory();
+            $symfonyResponse = $httpFoundationFactory->createResponse($this->server->respondToAccessTokenRequest($psrRequest,$psrResponse));
+
+            return $symfonyResponse;
+
+        } catch (\League\OAuth2\Server\Exception\OAuthServerException $exception) {
+
+            return $this->handleErrorException($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+
+        } catch (\Exception $exception) {
+            return $this->handleErrorException($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+        }
+
+    }
+
+    /**
      * @param string $username
      * @param string $password
      * @return mixed
@@ -186,6 +217,50 @@ class AuthorizationServer{
         );
 
         $grant->setRefreshTokenTTL(new \DateInterval('P1M')); // refresh tokens will expire after 1 month
+
+        $server->enableGrantType(
+            $grant,
+            new \DateInterval('PT1H') // access tokens will expire after 1 hour
+        );
+
+        $this->server = $server;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function initRefreshGrantServer(){
+
+        $this->clientRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\ClientRepository");
+        $scopeRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\ScopeRepository");
+        $accessTokenRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\AccessTokenRepository");
+        $refreshTokenRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\RefreshTokenRepository");
+
+        $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
+
+        if(!key_exists("private_key_dir", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.private_key_dir NOT DEFINED IN config.xml");
+        }
+        $privateKey = $oauthServerConfig["private_key_dir"];
+
+        if(!key_exists("encryption_key", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.encryption_key NOT DEFINED IN config.xml");
+        }
+        $encryptionKey = $oauthServerConfig["encryption_key"];
+
+        /**
+         * @var \League\OAuth2\Server\AuthorizationServer $server
+         */
+        $server = new \League\OAuth2\Server\AuthorizationServer(
+            $this->clientRepository,
+            $accessTokenRepository,
+            $scopeRepository,
+            $privateKey,
+            $encryptionKey
+        );
+
+        $grant = new \League\OAuth2\Server\Grant\RefreshTokenGrant($refreshTokenRepository);
+        $grant->setRefreshTokenTTL(new \DateInterval('P1M'));
 
         $server->enableGrantType(
             $grant,
