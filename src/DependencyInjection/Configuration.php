@@ -118,6 +118,38 @@ class Configuration implements ConfigurationInterface
             ->end()
 
 
+            ->scalarNode('expire_authorization_code')
+            ->info(
+                'datetime when authorization code expires'
+            )
+            ->defaultValue('')
+            ->end()
+
+
+            ->scalarNode('expire_access_token_code')
+            ->info(
+                'datetime when access token expires'
+            )
+            ->defaultValue('')
+            ->end()
+
+
+            ->scalarNode('expire_refresh_token_code')
+            ->info(
+                'datetime when refresh token expires'
+            )
+            ->defaultValue('')
+            ->end()
+
+
+            ->scalarNode('private_key_dir')
+            ->info(
+                'create it by using this command: openssl genrsa -out private.key 2048'
+            )
+            ->defaultValue('')
+            ->end()
+
+
             ->arrayNode('user_exporter')
                 ->prototype('scalar')->end()
                 ->example([

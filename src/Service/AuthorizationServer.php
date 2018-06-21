@@ -199,6 +199,21 @@ class AuthorizationServer{
         }
         $encryptionKey = $oauthServerConfig["encryption_key"];
 
+        if(!key_exists("expire_authorization_code", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expire_authorization_code NOT DEFINED IN config.xml");
+        }
+        $expireAuthorizationCode = $oauthServerConfig["expire_authorization_code"];
+
+        if(!key_exists("expire_access_token_code", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expire_access_token_code NOT DEFINED IN config.xml");
+        }
+        $expireAccessTokenCode = $oauthServerConfig["expire_access_token_code"];
+
+        if(!key_exists("expire_refresh_token_code", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expire_authorization_code NOT DEFINED IN config.xml");
+        }
+        $expireRefreshTokenCode = $oauthServerConfig["expire_refresh_token_code"];
+
         /**
          * @var \League\OAuth2\Server\AuthorizationServer $server
          */
@@ -213,14 +228,14 @@ class AuthorizationServer{
         $grant = new \League\OAuth2\Server\Grant\AuthCodeGrant(
             $this->authCodeRepository,
             $refreshTokenRepository,
-            new \DateInterval('PT10M') // authorization codes will expire after 10 minutes
+            new \DateInterval($expireAuthorizationCode)
         );
 
-        $grant->setRefreshTokenTTL(new \DateInterval('P1M')); // refresh tokens will expire after 1 month
+        $grant->setRefreshTokenTTL(new \DateInterval($expireRefreshTokenCode)); // refresh tokens will expire after 1 month
 
         $server->enableGrantType(
             $grant,
-            new \DateInterval('PT1H') // access tokens will expire after 1 hour
+            new \DateInterval($expireAccessTokenCode) // access tokens will expire after 1 hour
         );
 
         $this->server = $server;
@@ -248,6 +263,16 @@ class AuthorizationServer{
         }
         $encryptionKey = $oauthServerConfig["encryption_key"];
 
+        if(!key_exists("expire_access_token_code", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expire_access_token_code NOT DEFINED IN config.xml");
+        }
+        $expireAccessTokenCode = $oauthServerConfig["expire_access_token_code"];
+
+        if(!key_exists("expire_refresh_token_code", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expire_authorization_code NOT DEFINED IN config.xml");
+        }
+        $expireRefreshTokenCode = $oauthServerConfig["expire_refresh_token_code"];
+
         /**
          * @var \League\OAuth2\Server\AuthorizationServer $server
          */
@@ -260,11 +285,11 @@ class AuthorizationServer{
         );
 
         $grant = new \League\OAuth2\Server\Grant\RefreshTokenGrant($refreshTokenRepository);
-        $grant->setRefreshTokenTTL(new \DateInterval('P1M'));
+        $grant->setRefreshTokenTTL(new \DateInterval($expireRefreshTokenCode));
 
         $server->enableGrantType(
             $grant,
-            new \DateInterval('PT1H') // access tokens will expire after 1 hour
+            new \DateInterval($expireAccessTokenCode)
         );
 
         $this->server = $server;
