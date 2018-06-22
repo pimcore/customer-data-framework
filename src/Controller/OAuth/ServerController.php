@@ -27,6 +27,7 @@ class ServerController extends FrontendController
 {
 
     /**
+     * REQUEST A NEW AUTH-CODE BY LOGGING IN
      * @param Request $request
      * @Route("/form_auth_code", name="form_auth_code_path")
      * @return RedirectResponse
@@ -102,6 +103,7 @@ class ServerController extends FrontendController
     }
 
     /**
+     * REQUEST AN ACCESS-TOKEN BY USING AN AUTH-CODE
      * @param Request $request
      * @Route("/access_token", name="access_token_path")
      * @return JsonResponse
@@ -127,6 +129,7 @@ class ServerController extends FrontendController
     }
 
     /**
+     * REQUEST AN SPECIFIC USER-INFO BY USING AN ACCESS-TOKEN, THE USER-INFO CAN BE CONFIGURED IN THE CONFIG.yml (pimcore_customer_management_framework.oauth_server.user_exporter) FILE
      * @param Request $request
      * @Route("/userinfo", name="userinfo_path")
      * @return JSONResponse
@@ -144,6 +147,7 @@ class ServerController extends FrontendController
     }
 
     /**
+     * REQUEST A NEW ACCESS-TOKEN BY USING A REFRESH-TOKEN
      * @param Request $request
      * @Route("/refresh_token", name="refresh_token_path")
      * @return JSONResponse
