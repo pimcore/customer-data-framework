@@ -111,10 +111,10 @@ class AuthorizationServer{
 
         } catch (\League\OAuth2\Server\Exception\OAuthServerException $exception) {
 
-            return $this->handleErrorException($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+            return $this->sendJSONResponse($exception, $exception->getMessage(), $exception->getHttpStatusCode());
 
         } catch (\Exception $exception) {
-            return $this->handleErrorException($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+            return $this->sendJSONResponse($exception, $exception->getMessage(), $exception->getHttpStatusCode());
         }
 
 
@@ -143,10 +143,47 @@ class AuthorizationServer{
 
         } catch (\League\OAuth2\Server\Exception\OAuthServerException $exception) {
 
-            return $this->handleErrorException($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+            return $this->sendJSONResponse($exception, $exception->getMessage(), $exception->getHttpStatusCode());
 
         } catch (\Exception $exception) {
-            return $this->handleErrorException($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+            return $this->sendJSONResponse($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+        }
+
+    }
+
+    /**
+     * @param Request $request
+     * @throws OAuthServerException
+     */
+    public function validateAuthenticatedRequest(Request $request){
+
+        /**
+         * @var \CustomerManagementFrameworkBundle\Repository\Service\Auth\AccessTokenRepository $accessTokenRepository
+         */
+        $accessTokenRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\AccessTokenRepository");
+
+        $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
+
+        if(!key_exists("public_key_dir", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.public_key_dir NOT DEFINED IN config.xml");
+        }
+        $publicKeyPath = $oauthServerConfig["public_key_dir"];
+
+        $server = new \League\OAuth2\Server\ResourceServer(
+            $accessTokenRepository,
+            $publicKeyPath
+        );
+
+        new \League\OAuth2\Server\Middleware\ResourceServerMiddleware($server);
+
+        try{
+            $psr7Factory = new DiactorosFactory();
+            $psrRequest = $psr7Factory->createRequest($request);
+
+            return $server->validateAuthenticatedRequest($psrRequest);
+        }
+        catch (OAuthServerException $exception){
+            return $this->sendJSONResponse($exception, $exception->getMessage(), $exception->getHttpStatusCode());
         }
 
     }

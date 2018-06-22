@@ -9,6 +9,7 @@
 namespace CustomerManagementFrameworkBundle\Service;
 
 use Pimcore\Tool\RestClient\Exception;
+use Symfony\Component\HttpFoundation\Request;
 
 class UserInfo{
 
@@ -23,18 +24,32 @@ class UserInfo{
     }
 
     /**
-     * @param string $accessToken
+     * @param Request $request
      * @return array
      * @throws Exception
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \League\OAuth2\Server\Exception\OAuthServerException
      */
-    public function getByAccessToken(string $accessToken){
+    public function getByAccessTokenRequest(Request $request){
+
+        /**
+         * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
+         */
+        $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
+
+        $accessTokenInfo = $authServerService->validateAuthenticatedRequest($request);
+
+        if(!key_exists("oauth_access_token_id", $accessTokenInfo->getAttributes())){
+            throw new Exception("AUTHENTICATION FAILED: REQUEST FAILED");
+        }
+
+        $accessTokenId = $accessTokenInfo->getAttributes()["oauth_access_token_id"];
 
         /**
          * @var \CustomerManagementFrameworkBundle\Entity\Service\Auth\AccessToken $accessToken
          */
-        $accessToken = $this->entity_manager->getRepository(\CustomerManagementFrameworkBundle\Entity\Service\Auth\AccessToken::class)->findOneByIdentifier($accessToken);
+        $accessToken = $this->entity_manager->getRepository(\CustomerManagementFrameworkBundle\Entity\Service\Auth\AccessToken::class)->findOneByIdentifier($accessTokenId);
 
         if(!$accessToken){
             throw new Exception("AUTHENTICATION FAILED");
@@ -44,12 +59,12 @@ class UserInfo{
             $this->entity_manager->flush();
             throw new Exception("AUTHENTICATION FAILED: ACCESS-TOKEN HAS EXPIRED");
         }
+
         $customerProvider = \Pimcore::getContainer()->get(\CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface::class);
         $customer = $customerProvider->getById($accessToken->getUserIdentifier());
 
         $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
         if(key_exists("user_exporter", $oauthServerConfig)){
-
             $userExporter = $oauthServerConfig["user_exporter"];
             $fieldDefintions = $customer->getClass()->getFieldDefinitions();
             $result = [];
