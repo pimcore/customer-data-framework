@@ -163,7 +163,7 @@ class Configuration implements ConfigurationInterface
                 ->example([
                     ['firstname', 'lastname']
                 ])
-                ->defaultValue(['firstname', 'lastname', 'email'])
+                ->defaultValue(['firstname', 'lastname', 'email', 'gender', 'street', 'zip', 'city', 'countryCode', 'email', 'phone'])
             ->end()
 
 
