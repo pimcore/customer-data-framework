@@ -548,6 +548,10 @@ class Mailchimp implements NewsletterProviderHandlerInterface
         foreach ($this->getAllExportableSegments() as $segment) {
             $remoteSegmentId = $this->exportService->getRemoteId($segment, $this->listId);
 
+            if(!$remoteSegmentId) {
+                continue;
+            }
+            
             if (isset($customerSegments[$segment->getId()])) {
                 $data[$remoteSegmentId] = true;
             } else {
