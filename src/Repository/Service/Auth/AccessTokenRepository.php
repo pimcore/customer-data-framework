@@ -32,6 +32,8 @@ class AccessTokenRepository extends \Doctrine\ORM\EntityRepository implements Ac
 
     /**
      * {@inheritdoc}
+     * @param AccessTokenEntityInterface $accessTokenEntity
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity)
     {

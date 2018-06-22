@@ -118,6 +118,14 @@ class Configuration implements ConfigurationInterface
             ->end()
 
 
+            ->scalarNode('public_key_dir')
+            ->info(
+                'create it by using this command: openssl rsa -in private.key -pubout -out public.key'
+            )
+            ->defaultValue('')
+            ->end()
+
+
             ->scalarNode('expire_authorization_code')
             ->info(
                 'datetime when authorization code expires'

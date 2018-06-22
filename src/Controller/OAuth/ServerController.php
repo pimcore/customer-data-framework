@@ -104,7 +104,7 @@ class ServerController extends FrontendController
     /**
      * @param Request $request
      * @Route("/access_token", name="access_token_path")
-     * @return JSONResponse
+     * @return JsonResponse
      * @throws \Exception
      */
     public function accessToken(Request $request)
@@ -124,6 +124,23 @@ class ServerController extends FrontendController
 
         return $this->sendResponse($response);
 
+    }
+
+    /**
+     * @param Request $request
+     * @Route("/userinfo", name="userinfo_path")
+     * @return JSONResponse
+     * @throws \Exception
+     */
+    public function getUserInfo(Request $request){
+
+        /**
+         * @var \CustomerManagementFrameworkBundle\Service\UserInfo $userInfoService
+         */
+        $userInfoService = \Pimcore::getContainer()->get('CustomerManagementFrameworkBundle\Service\UserInfo');
+        $userInfoResponse = $userInfoService->getByAccessTokenRequest($request);
+
+        return new JsonResponse($userInfoResponse);
     }
 
     /**
@@ -160,7 +177,9 @@ class ServerController extends FrontendController
             $httpResponse->headers->set($key, $value, true);
         }
 
-        $httpResponse->setData($response->getContent());
+        $httpResponse->setData(json_decode($response->getContent()));
+
+
         return $httpResponse;
     }
 
