@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        h2{
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 
@@ -14,6 +19,9 @@
     $form = $this->form;
 ?>
 
+<h2>
+    <?= $this->pageTitle; ?>
+</h2>
 <div class="container" style="margin-top: 20px">
 
     <?= $this->form()->start($form, [

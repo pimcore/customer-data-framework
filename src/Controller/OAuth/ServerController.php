@@ -83,6 +83,7 @@ class ServerController extends FrontendController
         $this->view->form = $form->createView();
         $this->view->queryUrlString = substr($queryUrlString,0, strlen($queryUrlString)-1);
         $this->view->formAction = $this->generateUrl("form_auth_code_path");
+        $this->view->pageTitle = "Auth Grant Client";
 
     }
 
@@ -158,9 +159,11 @@ class ServerController extends FrontendController
 
         $this->view->form = $form->createView();
         $this->view->queryUrlString = substr($queryUrlString,0, strlen($queryUrlString)-1);
+        $this->view->pageTitle = "Implicit Grant Client";
         $this->view->formAction = $this->generateUrl("form_auth_implicit_path");
 
-        //return $this->render(":CustomerManagementFrameworkBundle/OAuth/Server:formAuthorizeAuthGrantClient.html.php", $this->view->getAllParameters());
+        $templateAbsolutePath = str_replace("Controller/OAuth", "Resources/views/OAuth/Server/", __DIR__);
+        return $this->render($templateAbsolutePath."formAuthorizeAuthGrantClient.html.php", $this->view->getAllParameters());
 
     }
 
