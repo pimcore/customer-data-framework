@@ -108,7 +108,6 @@ class AuthorizationServer{
             return $symfonyResponse;
 
         } catch (\League\OAuth2\Server\Exception\OAuthServerException $exception) {
-
             return $this->sendJSONResponse($exception, $exception->getMessage(), $exception->getHttpStatusCode());
 
         } catch (\Exception $exception) {
@@ -507,7 +506,8 @@ class AuthorizationServer{
      * @throws \Exception
      */
     private function sendJSONResponse($exception, string $message, int $status){
-        if(\Pimcore::inDebugMode() && $exception) {
+        // use it when debugging directly with server-controller actions
+        if(false && \Pimcore::inDebugMode() && $exception) {
             throw $exception;
         }
 

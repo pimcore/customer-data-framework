@@ -113,7 +113,7 @@ class ServerController extends FrontendController
     }
 
     /**
-     * REQUEST A NEW AUTH-CODE BY LOGGING IN
+     * REQUEST A NEW ACCESS-TOKEN BY USING AN IMPLICIT GRANT
      * @param Request $request
      * @Route("/form_auth_implicit", name="form_auth_implicit_path")
      * @return RedirectResponse|Response
