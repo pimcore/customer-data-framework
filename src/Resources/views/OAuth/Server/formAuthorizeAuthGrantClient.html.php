@@ -18,7 +18,7 @@
 
     <?= $this->form()->start($form, [
         'attr' => [
-            'action' => $this->path("form_auth_code_path")."?".$this->queryUrlString,
+            'action' => $this->formAction."?".$this->queryUrlString,
             'class' => 'form-horizontal'
         ]
     ]); ?>
