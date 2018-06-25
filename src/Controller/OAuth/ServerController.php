@@ -33,7 +33,7 @@ class ServerController extends FrontendController
      * @return RedirectResponse
      * @throws \Exception
      */
-    public function formAuthorizeClient(Request $request)
+    public function formAuthorizeAuthGrantClient(Request $request)
     {
 
         $form = $this->createForm(AuthType::class);
@@ -41,11 +41,8 @@ class ServerController extends FrontendController
 
         $clientId = $request->query->get("client_id");
         $clientSecret = $request->query->get("client_secret");
-        $redirectUrl = $request->query->get("redirect_url");
+        $redirectUrl = $request->query->get("redirect_uri");
         $responseType = $request->query->get("response_type");
-
-        $state = $request->query->get("state");
-        $scope = $request->query->get("scope");
 
         if(!$clientId){
             throw new HttpException(400, "GET-PARAM: client_id is missing");
@@ -56,7 +53,7 @@ class ServerController extends FrontendController
         }
 
         if(!$redirectUrl){
-            throw new HttpException(400, "GET-PARAM: redirect_url is missing");
+            throw new HttpException(400, "GET-PARAM: redirect_uri is missing");
         }
 
         if(!$responseType){
@@ -72,20 +69,7 @@ class ServerController extends FrontendController
 
             $authServerService->authUser($request->request->get("username"), $request->request->get("password"));
 
-            $request->request->set("client_id", $request->query->get("client_id"));
-            $request->request->set("response_type", $responseType);
-            $request->request->set("scope", "basic");
-            $request->request->set("redirect_uri", $redirectUrl);
-
-            if($state){
-                $request->request->set("state", $state);
-            }
-            if($scope){
-                $request->request->set("scope", $scope);
-            }
-
-            $encypKey = base64_encode(random_bytes(32));
-            $redirectResponse = $authServerService->validateClient(AuthorizationServer::$GRANT_TYPE_AUTH_CODE, $request, $encypKey);
+            $redirectResponse = $authServerService->validateClient(AuthorizationServer::$GRANT_TYPE_AUTH_GRANT, $request);
 
             return $redirectResponse;
         }
@@ -98,7 +82,7 @@ class ServerController extends FrontendController
 
         $this->view->form = $form->createView();
         $this->view->queryUrlString = substr($queryUrlString,0, strlen($queryUrlString)-1);
-
+        $this->view->formAction = $this->generateUrl("form_auth_code_path");
 
     }
 
@@ -125,6 +109,58 @@ class ServerController extends FrontendController
         $response = $authServerService->getAccessTokenForAuthGrantClient($request);
 
         return $this->sendResponse($response);
+
+    }
+
+    /**
+     * REQUEST A NEW AUTH-CODE BY LOGGING IN
+     * @param Request $request
+     * @Route("/form_auth_implicit", name="form_auth_implicit_path")
+     * @return RedirectResponse|Response
+     * @throws \Exception
+     */
+    public function formAuthorizeImplicitGrantClient(Request $request)
+    {
+
+        $form = $this->createForm(AuthType::class);
+        $form->handleRequest($request);
+
+        $clientId = $request->query->get("client_id");
+        $responseType = $request->query->get("response_type");
+
+        if(!$clientId){
+            throw new HttpException(400, "GET-PARAM: client_id is missing");
+        }
+
+        if(!$responseType){
+            throw new HttpException(400, "GET-PARAM: response_type is missing");
+        }
+
+        if($form->isSubmitted() && $form->isValid()){
+
+            /**
+             * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
+             */
+            $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
+
+            $authServerService->authUser($request->request->get("username"), $request->request->get("password"));
+
+            $redirectResponse = $authServerService->validateClient(AuthorizationServer::$GRANT_TYPE_IMPLICIT_GRANT, $request);
+
+            return $redirectResponse;
+        }
+
+        $allQueryArray = $request->query->all();
+        $allQueryParamNames = array_keys($allQueryArray);
+        $queryUrlString = array_reduce($allQueryParamNames, function($prevQuery, $currQueryName) use($allQueryArray){
+            return $prevQuery.$currQueryName."=".$allQueryArray[$currQueryName]."&";
+        },'');
+
+        $this->view->form = $form->createView();
+        $this->view->queryUrlString = substr($queryUrlString,0, strlen($queryUrlString)-1);
+        $this->view->formAction = $this->generateUrl("form_auth_implicit_path");
+
+        //return $this->render(":CustomerManagementFrameworkBundle/OAuth/Server:formAuthorizeAuthGrantClient.html.php", $this->view->getAllParameters());
 
     }
 

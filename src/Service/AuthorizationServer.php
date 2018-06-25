@@ -17,6 +17,7 @@ use CustomerManagementFrameworkBundle\Repository\Service\Auth\RefreshTokenReposi
 use CustomerManagementFrameworkBundle\Repository\Service\Auth\ScopeRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use League\OAuth2\Server\Grant\ImplicitGrant;
 use Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AbstractObject;
@@ -38,14 +39,11 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 
 class AuthorizationServer{
 
-    static public $GRANT_TYPE_AUTH_CODE = "authorization_code";
+    static public $GRANT_TYPE_AUTH_GRANT = "auth_grant";
 
-    /*
-     * @var string
-     */
-    private $currentGrantType = null;
+    static public $GRANT_TYPE_IMPLICIT_GRANT = "implicit_grant";
 
-    /*
+    /**
      * @var AuthCodeRepository
      */
     private $authCodeRepository = null;
@@ -74,15 +72,15 @@ class AuthorizationServer{
      */
     public function validateClient(string $grantType, Request $request){
 
-        if($grantType !== self::$GRANT_TYPE_AUTH_CODE){
+        if($grantType !== self::$GRANT_TYPE_AUTH_GRANT &&$grantType !== self::$GRANT_TYPE_IMPLICIT_GRANT){
             throw new HttpException("AuthorizationServer ERROR: GRANT TYPE: ".$grantType." NOT SUPPORTED", 400);
         }
 
-        $this->currentGrantType = $grantType;
-
-        switch ($this->currentGrantType){
-            case self::$GRANT_TYPE_AUTH_CODE:
-                return $this->getAuthToken($request);
+        switch ($grantType){
+            case self::$GRANT_TYPE_AUTH_GRANT:
+                return $this->getAuthTokenForAuthGrantClient($request);
+            case self::$GRANT_TYPE_IMPLICIT_GRANT:
+                return $this->getAccessTokenForImplicitGrantClient($request);
         }
 
     }
@@ -122,7 +120,8 @@ class AuthorizationServer{
 
     /**
      * @param Request $request
-     * @return Response
+     * @return JsonResponse|Response
+     * @throws \Exception
      */
     public function getRefreshTokenForAuthGrantClient(Request $request){
 
@@ -153,7 +152,30 @@ class AuthorizationServer{
 
     /**
      * @param Request $request
-     * @throws OAuthServerException
+     * @return RedirectResponse|JsonResponse
+     * @throws \Exception
+     */
+    public function getAccessTokenForImplicitGrantClient(Request $request){
+
+        try {
+
+            return $this->getAuthTokenForImplicitGrantClient($request);
+
+        } catch (\League\OAuth2\Server\Exception\OAuthServerException $exception) {
+
+            return $this->sendJSONResponse($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+
+        } catch (\Exception $exception) {
+            return $this->sendJSONResponse($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+        }
+
+
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse|ServerRequestInterface
+     * @throws \Exception
      */
     public function validateAuthenticatedRequest(Request $request){
 
@@ -333,11 +355,56 @@ class AuthorizationServer{
     }
 
     /**
+     * @throws \Exception
+     */
+    private function initImplicitGrantServer(){
+
+        $this->clientRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\ClientRepository");
+        $scopeRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\ScopeRepository");
+        $accessTokenRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\AccessTokenRepository");
+
+        $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
+
+        if(!key_exists("private_key_dir", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.private_key_dir NOT DEFINED IN config.xml");
+        }
+        $privateKey = $oauthServerConfig["private_key_dir"];
+
+        if(!key_exists("encryption_key", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.encryption_key NOT DEFINED IN config.xml");
+        }
+        $encryptionKey = $oauthServerConfig["encryption_key"];
+
+        if(!key_exists("expire_access_token_code", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expire_access_token_code NOT DEFINED IN config.xml");
+        }
+        $expireAccessTokenCode = $oauthServerConfig["expire_access_token_code"];
+
+        /**
+         * @var \League\OAuth2\Server\AuthorizationServer $server
+         */
+        $server = new \League\OAuth2\Server\AuthorizationServer(
+            $this->clientRepository,
+            $accessTokenRepository,
+            $scopeRepository,
+            $privateKey,
+            $encryptionKey
+        );
+
+        $server->enableGrantType(
+            new ImplicitGrant(new \DateInterval($expireAccessTokenCode), "?"),
+            new \DateInterval($expireAccessTokenCode)
+        );
+
+        $this->server = $server;
+    }
+
+    /**
      * @param Request $request
      * @return JsonResponse|RedirectResponse
      * @throws \Exception
      */
-    private function getAuthToken(Request $request){
+    private function getAuthTokenForAuthGrantClient(Request $request){
 
         $this->initAuthGrantServer();
 
@@ -368,7 +435,7 @@ class AuthorizationServer{
 
             $response = $this->server->completeAuthorizationRequest($authRequest, $psrResponse);
 
-            $redirectResponse = new RedirectResponse($request->query->get("redirect_url"));
+            $redirectResponse = new RedirectResponse($request->query->get("redirect_uri"));
             $redirectResponse->headers->add($response->getHeaders());
 
             return $redirectResponse;
@@ -379,6 +446,55 @@ class AuthorizationServer{
 
         } catch (\Exception $exception) {
             return $this->sendJSONResponse($exception,$exception->getMessage());
+        }
+
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse|RedirectResponse
+     * @throws \Exception
+     */
+    private function getAuthTokenForImplicitGrantClient(Request $request){
+
+        $this->initImplicitGrantServer();
+
+        $psr7Factory = new DiactorosFactory();
+        $psrRequest = $psr7Factory->createRequest($request);
+
+        try {
+
+            // Validate the HTTP request and return an AuthorizationRequest object.
+            $authRequest = $this->server->validateAuthorizationRequest($psrRequest);
+
+            // Once the user has logged in set the user on the AuthorizationRequest
+            $authRequest->setUser($this->currentUser); // an instance of UserEntityInterface
+
+            // At this point you should redirect the user to an authorization page.
+            // This form will ask the user to approve the client and the scopes requested.
+
+            // Once the user has approved or denied the client update the status
+            // (true = approved, false = denied)
+            $authRequest->setAuthorizationApproved(true);
+
+            // Return the HTTP redirect response
+
+            $symfonyResponse = new Response();
+            $psrResponse = $psr7Factory->createResponse($symfonyResponse);
+
+            $response = $this->server->completeAuthorizationRequest($authRequest, $psrResponse);
+
+            $redirectResponse = new RedirectResponse($request->query->get("redirect_uri"));
+            $redirectResponse->headers->add($response->getHeaders());
+
+            return $redirectResponse;
+
+        } catch (OAuthServerException $exception) {
+
+            return $this->sendJSONResponse($exception,$exception->getMessage(), $exception->getHttpStatusCode());
+
+        } catch (\Exception $exception) {
+            return $this->sendJSONResponse($exception,$exception->getMessage(), $exception->getHttpStatusCode());
         }
 
     }
