@@ -40,16 +40,11 @@ class ServerController extends FrontendController
         $form->handleRequest($request);
 
         $clientId = $request->query->get("client_id");
-        $clientSecret = $request->query->get("client_secret");
         $redirectUrl = $request->query->get("redirect_uri");
         $responseType = $request->query->get("response_type");
 
         if(!$clientId){
             throw new HttpException(400, "GET-PARAM: client_id is missing");
-        }
-
-        if(!$clientSecret){
-            throw new HttpException(400, "GET-PARAM: client_secret is missing");
         }
 
         if(!$redirectUrl){
