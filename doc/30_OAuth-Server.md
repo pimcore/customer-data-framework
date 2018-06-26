@@ -1,9 +1,9 @@
 # Working with OAuth
 
-This chapter describes of how to use the OAuth - Server. To help you build login or authorization-systems 
-as quickly as possible to handle a client coming from different types of devices and platforms (Web-App, mobile App).
+This chapter describes of how to use the OAuth - Server. To help you build a login or authorization-system 
+as quickly as possible to handle a client coming from different types of devices or platforms (Web-App, mobile App).
 
-There are several ways to authenticate and after authenticated successfully to authorize an user. 
+There are several ways to authenticate and authorize an user. 
 For authentication/authorization-issues you can use grants to identify a certain user. 
 Before those grants are described in detail, 
 there are some technical terms that need to be described first:
@@ -13,41 +13,41 @@ there are some technical terms that need to be described first:
   In this documentation a Client is a application on different devices like a Web-App on a PC or a mobile App on a Smartphone.
   Therefore a Client represents only the mean of how an User can be authenticated with, not an User itself.
   
+  The service `CustomerProviderInterface` is used to get user-instances that you want to authenticate by using the OAuth - Server. 
+  For Details see [Working with Customers](./05_Working-with-Customers.md) 
+  
 - User 
 
-  In this documentation an User is a registered Person a your platform that you want to establish a login-system for.  
-
-- CustomerProviderInterface
-
-  This service is used to get user-instances that you want to authenticate by using the OAuth - Server. 
-  For Details see [Working with Customers](./05_Working-with-Customers.md)
+  In this documentation an User is a registered instance (mostly of a real Person) on your platform that you want to establish a login-system for.  
 
 - Access - Token
 
-  After an User has been authenticated successfully, they receive an Access-Token from the OAuth-Server so that they are allowed to access certain API's, services or other resources.
+  After an User has been authenticated successfully, they receive an Access-Token from the OAuth-Server so that they are allowed to access certain API's, services or other resources of your platform.
   An Access-Token is a JWT value that contains some auth-information like `expires_in`, `access_token` and `refresh_token`. 
   This information is encrypted and is decrypted with the OAuth-Server. With help of a valid `access_token` an User is found.
+  
   What you want to do with a found User or what resources you want to protected by Access-Tokens, it's up to you. You can use your own logic here. 
   
   There is a Starter-Service called `UserInfo` though, when you want to request information about an User like 
   Forename, Surname or Email-Address. 
-  This service can be configured with `pimcore_customer_management_framework.oauth_server.userExporter`.
+  This service can be configured with `pimcore_customer_management_framework.oauth_server.userExporter` to define what attributes should be read out of an User.
 
-  For this service a action is made as well to make a request to. To get concrete information about an user, 
-  you have to make a request to `getUserInfo` that contains the Access-Token in the Authorization Header.
-  
+  You can use this service by calling `/cmf_oauth/userinfo` to get concrete information about an user. 
+  Such a request could be done with `\GuzzleHttp\Client` for instance:
+    
   ```php
-  /**
-   * REQUEST AN SPECIFIC USER-INFO BY USING AN ACCESS-TOKEN, THE USER-INFO CAN BE CONFIGURED IN THE CONFIG.yml (pimcore_customer_management_framework.oauth_server.userExporter) FILE
-   * @param Request $request
-   * @Route("/userinfo", name="userinfo_path")
-   * @return JSONResponse
-   * @throws \Exception
-   */
-  public function getUserInfo(Request $request){
-     ....
-  }
-  ```  
+  $httpClient = new \GuzzleHttp\Client();
+    $accessTokenJwt = "a_former_access_token_jwt";
+    $res = $httpClient->request(
+        'GET',
+        'https://mywebsite/cmf_oauth/userinfo',
+        [
+            'headers' => [
+                'Authorization' => $accessTokenJwt
+            ]
+        ]
+  );
+  ```
 
 - Auth - Code
  
@@ -170,22 +170,6 @@ you can either use an Auth-, an Implicit or a Password-Grant.
   An application can store this JSON to use it afterwards when requesting a protected resources. 
   At this point an application is ready to request sensitive information stored on your platform. 
     
-  Such a request can be done with `\GuzzleHttp\Client` for instance:
-  
-  ```php
-  $httpClient = new \GuzzleHttp\Client();
-  $accessTokenJwt = "a_former_access_token_jwt";
-  $res = $httpClient->request(
-      'GET',
-      'https://mywebsite/cmf_oauth/userinfo',
-      [
-          'headers' => [
-              'Authorization' => $accessTokenJwt
-          ]
-      ]
-  );
-  ```
-  
   When an Access-Token has expired an application can get an new one by making a request onto:
   
   ```php
