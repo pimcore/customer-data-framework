@@ -9,6 +9,7 @@
 
 namespace CustomerManagementFrameworkBundle\Repository\Service\Auth;
 
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 use OAuth2ServerExamples\Entities\UserEntity;
@@ -24,10 +25,20 @@ class UserRepository implements UserRepositoryInterface
         $grantType,
         ClientEntityInterface $clientEntity
     ) {
-        if ($username === 'alex' && $password === 'whisky') {
-            return new \CustomerManagementFrameworkBundle\Service\Auth\Entities\UserEntity();
+
+        $customerProvider = \Pimcore::getContainer()->get(CustomerProviderInterface::class);
+        $currentUser = $customerProvider->getActiveCustomerByEmail($username);
+
+        /**
+         * @var DataObject\ClassDefinition\Data\Password $field
+         */
+        $passwordField = $currentUser->getClass()->getFieldDefinition('password');
+
+        if(!$passwordField->verifyPassword($password, $currentUser)){
+            return;
+            //throw new HttpException(401, "AUTHORIZATION FAILED");
         }
 
-        return;
+        return $currentUser;
     }
 }

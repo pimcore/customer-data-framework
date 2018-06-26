@@ -24,6 +24,12 @@ class AccessTokenRepository extends \Doctrine\ORM\EntityRepository implements Ac
      */
     private $entity_manager = null;
 
+    /**
+     * @var string $user_identifier
+     */
+    private $user_identifier = null;
+
+
     public function __construct(\Doctrine\ORM\EntityManager $entity_manager)
     {
         $this->entity_manager = $entity_manager;
@@ -60,9 +66,15 @@ class AccessTokenRepository extends \Doctrine\ORM\EntityRepository implements Ac
 
     /**
      * {@inheritdoc}
+     * @param ClientEntityInterface $clientEntity
+     * @param array $scopes
+     * @param null $userIdentifier
+     * @return AccessToken|AccessTokenEntityInterface
+     * @throws Exception
      */
     public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null)
     {
+        /* deactivated: do not remove last access-token
         $authCode = $this->entity_manager->getRepository(AuthCode::class)->findOneByUserIdentifier($userIdentifier);
         if($authCode) {
             $this->entity_manager->remove($authCode);
@@ -79,8 +91,26 @@ class AccessTokenRepository extends \Doctrine\ORM\EntityRepository implements Ac
         foreach ($scopes as $scope) {
             $accessToken->addScope($scope);
         }
-        $accessToken->setUserIdentifier($userIdentifier);
+
+        if($userIdentifier){
+            $accessToken->setUserIdentifier($userIdentifier);
+        }
+        else{
+            $accessToken->setUserIdentifier((int)$this->user_identifier);
+        }
+
+        if(!$accessToken->getUserIdentifier()){
+            throw new Exception("AccessTokenRepository ERROR: user-idenfifier not set");
+        }
 
         return $accessToken;
     }
+
+    /**
+     * @param string $userIdentifier
+     */
+    public function setUserIdenifier(string $userIdentifier){
+        $this->user_identifier = $userIdentifier;
+    }
+
 }

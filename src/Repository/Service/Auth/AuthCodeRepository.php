@@ -71,6 +71,9 @@ class AuthCodeRepository extends \Doctrine\ORM\EntityRepository implements AuthC
         return $newAuthCode;
     }
 
+    /**
+     * @param string $userIdentifier
+     */
     public function setUserIdenifier(string $userIdentifier){
         $this->user_identifier = $userIdentifier;
     }

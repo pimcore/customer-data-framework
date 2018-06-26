@@ -163,6 +163,49 @@ class ServerController extends FrontendController
     }
 
     /**
+     * REQUEST A NEW ACCESS-TOKEN BY USING AN IMPLICIT GRANT
+     * @param Request $request
+     * @Route("/form_auth_password", name="form_auth_password_path")
+     * @return RedirectResponse|Response|JSONResponse
+     * @throws \Exception
+     */
+    public function authorizePasswordGrantClient(Request $request)
+    {
+
+        $clientId = $request->request->get("client_id");
+        $responseType = $request->request->get("grant_type");
+        $username = $request->request->get("username");
+        $password = $request->request->get("password");
+
+        if(!$clientId){
+            throw new HttpException(400, "POST-PARAM: client_id is missing");
+        }
+
+        if(!$responseType){
+            throw new HttpException(400, "POST-PARAM: grant_type is missing");
+        }
+
+        if(!$username){
+            throw new HttpException(400, "POST-PARAM: username is missing");
+        }
+
+        if(!$password){
+            throw new HttpException(400, "POST-PARAM: password is missing");
+        }
+
+        /**
+         * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
+         */
+        $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
+
+        $authServerService->authUser($request->request->get("username"), $request->request->get("password"));
+
+        $redirectResponse = $authServerService->validateClient(AuthorizationServer::$GRANT_TYPE_PASSWORD_GRANT, $request);
+
+        return $redirectResponse;
+    }
+
+    /**
      * REQUEST AN SPECIFIC USER-INFO BY USING AN ACCESS-TOKEN, THE USER-INFO CAN BE CONFIGURED IN THE CONFIG.yml (pimcore_customer_management_framework.oauth_server.user_exporter) FILE
      * @param Request $request
      * @Route("/userinfo", name="userinfo_path")
