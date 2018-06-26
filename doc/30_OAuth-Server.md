@@ -59,13 +59,14 @@ there are some technical terms that need to be described first:
   has to sent it to the OAuth-Server in exchange for an Access-Token.
 
 
-Grants:
+# Grants:
 
-Depending what type of application respectively Client you want to support, you can use an Auth-, an Implicit or a Password-Grant.
+Depending what type of application respectively Client you want to establish a authentication/authorization-system for, 
+you can either use an Auth-, an Implicit or a Password-Grant.
 
-- Auth - Code Grant 
+# Auth - Code Grant 
 
-  When you want to establish a authentication/authorization - system for a third party (not trusted) Web-App or mobile App then you could use an Auth-Code-Grant.
+  When you want to establish a auth-system third party (not trusted) Web-App or mobile App then you could use an Auth-Code-Grant.
   As first step you need to make a request to the controller action `formAuthorizeAuthGrantClient`:
   
   ```php
@@ -101,8 +102,11 @@ Depending what type of application respectively Client you want to support, you 
      Can be any value and stored in a user's session. 
      
   
-  This action then renders a symfony-form that an User can be authenticated by. After an User authenticated successfully, they are 
-  redirected to the former defined redirect_uri parameter. The redirected uri contains a Auth-Code (`code`) parameter and my be a `state` parameter:
+  This action then renders a symfony-form that an User can be authenticated by. After an User is authenticated successfully, they are 
+  redirected to where the former defined `redirect_uri` parameter points to. 
+  
+  In order to exchange an Access-Token for an Auth-Code, 
+  an Auth-Code (`code`) and (if former passed) `state` parameter is appended in the redirected uri as well:
   
   http://www.google.com?code=access_code_jwt&state=some_state_value
   
@@ -144,7 +148,7 @@ Depending what type of application respectively Client you want to support, you 
           
       This must have got the value of "authorization_code" 
     
-  If the got Auth-Code (`code`) is valid, then a JSON is returned. This JSON contains:
+  If the passed Auth-Code (`code`) is valid, then a JSON is returned. This JSON contains:
     
   - token_type
     
@@ -166,6 +170,22 @@ Depending what type of application respectively Client you want to support, you 
   An application can store this JSON to use it afterwards when requesting a protected resources. 
   At this point an application is ready to request sensitive information stored on your platform. 
     
+  Such a request can be done with `\GuzzleHttp\Client` for instance:
+  
+  ```php
+  $httpClient = new \GuzzleHttp\Client();
+  $accessTokenJwt = "a_former_access_token_jwt";
+  $res = $httpClient->request(
+      'GET',
+      'https://mywebsite/cmf_oauth/userinfo',
+      [
+          'headers' => [
+              'Authorization' => $accessTokenJwt
+          ]
+      ]
+  );
+  ```
+  
   When an Access-Token has expired an application can get an new one by making a request onto:
   
   ```php
@@ -186,7 +206,7 @@ Depending what type of application respectively Client you want to support, you 
         
   - refresh_token (must)
                
-      A former got Refresh-Token as JWT with `accessToken`
+      A former got Refresh-Token as JWT from the action `accessToken`
            
   - client_id (must)
            
@@ -203,7 +223,7 @@ Depending what type of application respectively Client you want to support, you 
   If the got Refresh-Token (`refresh_token`) is valid, then a similar structured JSON is returned as with `accessToken`.
 
 
-- Implicit Grant
+# Implicit Grant
 
 
   When you want to establish a authentication/authorization - system for a third party (not trusted) Web-App or mobile App then you could use an Implicit-Grant.
@@ -259,7 +279,7 @@ Depending what type of application respectively Client you want to support, you 
        It's the same value that sent in the original request. You should compare this value with the value stored in the user’s session to ensure the authorization code obtained is in response to requests made by this client rather than another client application.  
 
 
-- Password Grant
+# Password Grant
 
   When you want to establish a authentication/authorization - system for a first party (trusted like your own) Web-App or mobile App then you could use an Implicit-Grant.
   As first step you need to make a request to the controller action `authorizePasswordGrantClient`:
@@ -304,18 +324,25 @@ Depending what type of application respectively Client you want to support, you 
       
   - token_type
       
-        A static value "Bearer"
+       A static value "Bearer"
       
   - expires_in
       
-        A timestamp in seconds when this Access-Token expired by
+       A timestamp in seconds when this Access-Token expired by
            
   - access_token
       
-        A JWT value that an application can use to request protected resources.
+       A JWT value that an application can use to request protected resources.
            
   - refresh_token
           
-        A JWT value that an application can use to refresh an expired Access-Token.
+       A JWT value that an application can use to refresh an expired Access-Token.
+
+
+# Configuration
+
+The OAuth-Server can be configured with different options. For Details see [Configuration of pimcore_customer_management_framework.oauth_server](./03_Configuration.md)
+
+# Other sources
 
 All information described above can be found on [oauth2.thephpleague.com](https://oauth2.thephpleague.com/) as well.
