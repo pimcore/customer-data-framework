@@ -102,7 +102,7 @@ class Configuration implements ConfigurationInterface
         $general
             ->children()
 
-            ->scalarNode('encryption_key')
+            ->scalarNode('encryptionKey')
                 ->info(
                     'create it randomly, should look like so: lxZFUEsBCJ2Yb14IF2ygAHI5N4+ZAUXXaSeeJm6+twsUmIen'
                 )
@@ -110,7 +110,7 @@ class Configuration implements ConfigurationInterface
             ->end()
 
 
-            ->scalarNode('private_key_dir')
+            ->scalarNode('privateKeyDir')
                 ->info(
                     'create it by using this command: openssl genrsa -out private.key 2048'
                 )
@@ -118,7 +118,7 @@ class Configuration implements ConfigurationInterface
             ->end()
 
 
-            ->scalarNode('public_key_dir')
+            ->scalarNode('publicKeyDir')
             ->info(
                 'create it by using this command: openssl rsa -in private.key -pubout -out public.key'
             )
@@ -126,7 +126,7 @@ class Configuration implements ConfigurationInterface
             ->end()
 
 
-            ->scalarNode('expire_authorization_code')
+            ->scalarNode('expireAuthorizationCode')
             ->info(
                 'datetime when authorization code expires'
             )
@@ -134,7 +134,7 @@ class Configuration implements ConfigurationInterface
             ->end()
 
 
-            ->scalarNode('expire_access_token_code')
+            ->scalarNode('expireAccessTokenCode')
             ->info(
                 'datetime when access token expires'
             )
@@ -142,7 +142,7 @@ class Configuration implements ConfigurationInterface
             ->end()
 
 
-            ->scalarNode('expire_refresh_token_code')
+            ->scalarNode('expireRefreshTokenCode')
             ->info(
                 'datetime when refresh token expires'
             )
@@ -150,7 +150,7 @@ class Configuration implements ConfigurationInterface
             ->end()
 
 
-            ->scalarNode('private_key_dir')
+            ->scalarNode('privateKeyDir')
             ->info(
                 'create it by using this command: openssl genrsa -out private.key 2048'
             )
@@ -158,7 +158,7 @@ class Configuration implements ConfigurationInterface
             ->end()
 
 
-            ->arrayNode('user_exporter')
+            ->arrayNode('userExporter')
                 ->prototype('scalar')->end()
                 ->example([
                     ['firstname', 'lastname']

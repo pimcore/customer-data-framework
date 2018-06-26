@@ -217,10 +217,10 @@ class AuthorizationServer{
 
         $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
 
-        if(!key_exists("public_key_dir", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.public_key_dir NOT DEFINED IN config.xml");
+        if(!key_exists("publicKeyDir", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.publicKeyDir NOT DEFINED IN config.xml");
         }
-        $publicKeyPath = $oauthServerConfig["public_key_dir"];
+        $publicKeyPath = $oauthServerConfig["publicKeyDir"];
 
         $server = new \League\OAuth2\Server\ResourceServer(
             $accessTokenRepository,
@@ -279,30 +279,30 @@ class AuthorizationServer{
 
         $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
 
-        if(!key_exists("private_key_dir", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.private_key_dir NOT DEFINED IN config.xml");
+        if(!key_exists("privateKeyDir", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.privateKeyDir NOT DEFINED IN config.xml");
         }
-        $privateKey = $oauthServerConfig["private_key_dir"];
+        $privateKey = $oauthServerConfig["privateKeyDir"];
 
-        if(!key_exists("encryption_key", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.encryption_key NOT DEFINED IN config.xml");
+        if(!key_exists("encryptionKey", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.encryptionKey NOT DEFINED IN config.xml");
         }
-        $encryptionKey = $oauthServerConfig["encryption_key"];
+        $encryptionKey = $oauthServerConfig["encryptionKey"];
 
-        if(!key_exists("expire_authorization_code", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expire_authorization_code NOT DEFINED IN config.xml");
+        if(!key_exists("expireAuthorizationCode", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expireAuthorizationCode NOT DEFINED IN config.xml");
         }
-        $expireAuthorizationCode = $oauthServerConfig["expire_authorization_code"];
+        $expireAuthorizationCode = $oauthServerConfig["expireAuthorizationCode"];
 
-        if(!key_exists("expire_access_token_code", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expire_access_token_code NOT DEFINED IN config.xml");
+        if(!key_exists("expireAccessTokenCode", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expireAccessTokenCode NOT DEFINED IN config.xml");
         }
-        $expireAccessTokenCode = $oauthServerConfig["expire_access_token_code"];
+        $expireAccessTokenCode = $oauthServerConfig["expireAccessTokenCode"];
 
-        if(!key_exists("expire_refresh_token_code", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expire_authorization_code NOT DEFINED IN config.xml");
+        if(!key_exists("expireRefreshTokenCode", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expireRefreshTokenCode NOT DEFINED IN config.xml");
         }
-        $expireRefreshTokenCode = $oauthServerConfig["expire_refresh_token_code"];
+        $expireRefreshTokenCode = $oauthServerConfig["expireRefreshTokenCode"];
 
         /**
          * @var \League\OAuth2\Server\AuthorizationServer $server
@@ -343,25 +343,25 @@ class AuthorizationServer{
 
         $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
 
-        if(!key_exists("private_key_dir", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.private_key_dir NOT DEFINED IN config.xml");
+        if(!key_exists("privateKeyDir", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.privateKeyDir NOT DEFINED IN config.xml");
         }
-        $privateKey = $oauthServerConfig["private_key_dir"];
+        $privateKey = $oauthServerConfig["privateKeyDir"];
 
-        if(!key_exists("encryption_key", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.encryption_key NOT DEFINED IN config.xml");
+        if(!key_exists("encryptionKey", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.encryptionKey NOT DEFINED IN config.xml");
         }
-        $encryptionKey = $oauthServerConfig["encryption_key"];
+        $encryptionKey = $oauthServerConfig["encryptionKey"];
 
-        if(!key_exists("expire_access_token_code", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expire_access_token_code NOT DEFINED IN config.xml");
+        if(!key_exists("expireAccessTokenCode", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expireAccessTokenCode NOT DEFINED IN config.xml");
         }
-        $expireAccessTokenCode = $oauthServerConfig["expire_access_token_code"];
+        $expireAccessTokenCode = $oauthServerConfig["expireAccessTokenCode"];
 
-        if(!key_exists("expire_refresh_token_code", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expire_authorization_code NOT DEFINED IN config.xml");
+        if(!key_exists("expireRefreshTokenCode", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expireRefreshTokenCode NOT DEFINED IN config.xml");
         }
-        $expireRefreshTokenCode = $oauthServerConfig["expire_refresh_token_code"];
+        $expireRefreshTokenCode = $oauthServerConfig["expireRefreshTokenCode"];
 
         /**
          * @var \League\OAuth2\Server\AuthorizationServer $server
@@ -396,20 +396,20 @@ class AuthorizationServer{
 
         $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
 
-        if(!key_exists("private_key_dir", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.private_key_dir NOT DEFINED IN config.xml");
+        if(!key_exists("privateKeyDir", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.privateKeyDir NOT DEFINED IN config.xml");
         }
-        $privateKey = $oauthServerConfig["private_key_dir"];
+        $privateKey = $oauthServerConfig["privateKeyDir"];
 
-        if(!key_exists("encryption_key", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.encryption_key NOT DEFINED IN config.xml");
+        if(!key_exists("encryptionKey", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.encryptionKey NOT DEFINED IN config.xml");
         }
-        $encryptionKey = $oauthServerConfig["encryption_key"];
+        $encryptionKey = $oauthServerConfig["encryptionKey"];
 
-        if(!key_exists("expire_access_token_code", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expire_access_token_code NOT DEFINED IN config.xml");
+        if(!key_exists("expireAccessTokenCode", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expireAccessTokenCode NOT DEFINED IN config.xml");
         }
-        $expireAccessTokenCode = $oauthServerConfig["expire_access_token_code"];
+        $expireAccessTokenCode = $oauthServerConfig["expireAccessTokenCode"];
 
         /**
          * @var \League\OAuth2\Server\AuthorizationServer $server
@@ -443,25 +443,25 @@ class AuthorizationServer{
 
         $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
 
-        if(!key_exists("private_key_dir", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.private_key_dir NOT DEFINED IN config.xml");
+        if(!key_exists("privateKeyDir", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.privateKeyDir NOT DEFINED IN config.xml");
         }
-        $privateKey = $oauthServerConfig["private_key_dir"];
+        $privateKey = $oauthServerConfig["privateKeyDir"];
 
-        if(!key_exists("encryption_key", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.encryption_key NOT DEFINED IN config.xml");
+        if(!key_exists("encryptionKey", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.encryptionKey NOT DEFINED IN config.xml");
         }
-        $encryptionKey = $oauthServerConfig["encryption_key"];
+        $encryptionKey = $oauthServerConfig["encryptionKey"];
 
-        if(!key_exists("expire_access_token_code", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expire_access_token_code NOT DEFINED IN config.xml");
+        if(!key_exists("expireAccessTokenCode", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expireAccessTokenCode NOT DEFINED IN config.xml");
         }
-        $expireAccessTokenCode = $oauthServerConfig["expire_access_token_code"];
+        $expireAccessTokenCode = $oauthServerConfig["expireAccessTokenCode"];
 
-        if(!key_exists("expire_refresh_token_code", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expire_authorization_code NOT DEFINED IN config.xml");
+        if(!key_exists("expireRefreshTokenCode", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expireRefreshTokenCode NOT DEFINED IN config.xml");
         }
-        $expireRefreshTokenCode = $oauthServerConfig["expire_refresh_token_code"];
+        $expireRefreshTokenCode = $oauthServerConfig["expireRefreshTokenCode"];
 
         /**
          * @var \League\OAuth2\Server\AuthorizationServer $server

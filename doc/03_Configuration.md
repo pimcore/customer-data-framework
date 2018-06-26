@@ -81,6 +81,30 @@ pimcore_customer_management_framework:
     oauth_client:
         enabled:              false
 
+    # Configuration of OAuth Server
+    oauth_server:
+        # define your clients here
+        clients:
+            - { name: 'Auth-Grant-Client', client_id: 'myawesomeauthgrant', secret: 'my_secret_password', redirect_uri: 'https://my_website.com', is_confidential: true }
+            - { name: 'Implicit-Grant-Client', client_id: 'myawesomeimplicitgrant', secret: 'my_secret_password', redirect_uri: 'https://my_website2.com', is_confidential: false }
+            - { name: 'Implicit-Password-Client', client_id: 'myawesomepasswordgrant', secret: 'my_secret_password', redirect_uri: 'https://my_website3.com', is_confidential: false }
+        # path to private key, you can create it by using this command: openssl genrsa -out private.key 2048
+        private_key_dir: '/home/customerdataframework/www/auth_keys/private.key'
+        # path to public key, you create it by using this command: openssl rsa -in private.key -pubout -out public.key
+        public_key_dir: '/home/customerdataframework/www/auth_keys/public.key' 
+        # path to a encryption-key 
+        # keep it secret
+        encryption_key: 'djaisdj233ikodkaspo3434hgfgdfgf568kfsd34dfsdskdpo'
+        # lifespan of a Auth-Code
+        # authorization codes will expire after 10 minutes
+        expire_authorization_code: 'PT10M' 
+        # lifespan of a Access-Token
+        # access tokens will expire after 1 hou
+        expire_access_token_code: 'PT1H' r
+        # lifespan of a Refresh-Token
+        # refresh tokens will expire after 1 month
+        expire_refresh_token_code: 'P1M' 
+    
     # Configuration of general settings
     general:
         customerPimcoreClass: Customer

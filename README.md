@@ -44,6 +44,7 @@ Following aspects are short cuts into the documentation for start working with t
 * [Newsletter System Integration](./doc/24_NewsletterSync.md)
 * [Rest API Webservice](./doc/26_Webservice.md)
 * [Integration with Pimcore Targeting Engine](./doc/30_Personalization/README.md)
+* [Working with OAuth - Server](doc/30_OAuth-Server.md)
 
 
 ## Contributing and Development

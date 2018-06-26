@@ -64,8 +64,8 @@ class UserInfo{
         $customer = $customerProvider->getById($accessToken->getUserIdentifier());
 
         $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
-        if(key_exists("user_exporter", $oauthServerConfig)){
-            $userExporter = $oauthServerConfig["user_exporter"];
+        if(key_exists("userExporter", $oauthServerConfig)){
+            $userExporter = $oauthServerConfig["userExporter"];
             $fieldDefintions = $customer->getClass()->getFieldDefinitions();
             $result = [];
             foreach ($fieldDefintions as $fd) {
