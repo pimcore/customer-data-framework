@@ -18,5 +18,9 @@ _pimcore_customermanagementframework_preview:
     type:     annotation
     prefix:   /__customermanagementframework
 
+_pimcore_customermanagementframework_oauth:
+    resource: "@PimcoreCustomerManagementFrameworkBundle/Controller/OAuth"
+    type:     annotation
+    prefix:   /cmf_oauth
 
 
