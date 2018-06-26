@@ -43,10 +43,17 @@ class AuthorizationServer{
 
     static public $GRANT_TYPE_IMPLICIT_GRANT = "implicit_grant";
 
+    static public $GRANT_TYPE_PASSWORD_GRANT = "password";
+
     /**
      * @var AuthCodeRepository
      */
     private $authCodeRepository = null;
+
+    /**
+     * @var AuthCodeRepository
+     */
+    private $accessTokenRepository = null;
 
     /**
      * @var clientRepository
@@ -72,7 +79,7 @@ class AuthorizationServer{
      */
     public function validateClient(string $grantType, Request $request){
 
-        if($grantType !== self::$GRANT_TYPE_AUTH_GRANT &&$grantType !== self::$GRANT_TYPE_IMPLICIT_GRANT){
+        if($grantType !== self::$GRANT_TYPE_AUTH_GRANT && $grantType !== self::$GRANT_TYPE_IMPLICIT_GRANT && $grantType !== self::$GRANT_TYPE_PASSWORD_GRANT){
             throw new HttpException("AuthorizationServer ERROR: GRANT TYPE: ".$grantType." NOT SUPPORTED", 400);
         }
 
@@ -81,6 +88,8 @@ class AuthorizationServer{
                 return $this->getAuthTokenForAuthGrantClient($request);
             case self::$GRANT_TYPE_IMPLICIT_GRANT:
                 return $this->getAccessTokenForImplicitGrantClient($request);
+            case self::$GRANT_TYPE_PASSWORD_GRANT:
+                return $this->getAccessTokenForPasswordGrantClient($request);
         }
 
     }
@@ -166,6 +175,29 @@ class AuthorizationServer{
 
         } catch (\Exception $exception) {
             return $this->sendJSONResponse($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+        }
+
+
+    }
+
+    /**
+     * @param Request $request
+     * @return RedirectResponse|JsonResponse
+     * @throws \Exception
+     */
+    public function getAccessTokenForPasswordGrantClient(Request $request){
+
+        try {
+
+            return $this->getAuthTokenForPasswordGrantClient($request);
+
+        } catch (\League\OAuth2\Server\Exception\OAuthServerException $exception) {
+
+            return $this->sendJSONResponse($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+
+        } catch (\Exception $exception) {
+
+            return $this->sendJSONResponse($exception, $exception->getMessage(), "500");
         }
 
 
@@ -399,6 +431,65 @@ class AuthorizationServer{
     }
 
     /**
+     * @throws \Exception
+     */
+    private function initPasswordGrantServer(){
+
+        $this->clientRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\ClientRepository");
+        $scopeRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\ScopeRepository");
+        $this->accessTokenRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\AccessTokenRepository");
+        $userRepository  = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\UserRepository");
+        $refreshTokenRepository = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Repository\Service\Auth\RefreshTokenRepository");
+
+        $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
+
+        if(!key_exists("private_key_dir", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.private_key_dir NOT DEFINED IN config.xml");
+        }
+        $privateKey = $oauthServerConfig["private_key_dir"];
+
+        if(!key_exists("encryption_key", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.encryption_key NOT DEFINED IN config.xml");
+        }
+        $encryptionKey = $oauthServerConfig["encryption_key"];
+
+        if(!key_exists("expire_access_token_code", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expire_access_token_code NOT DEFINED IN config.xml");
+        }
+        $expireAccessTokenCode = $oauthServerConfig["expire_access_token_code"];
+
+        if(!key_exists("expire_refresh_token_code", $oauthServerConfig)){
+            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expire_authorization_code NOT DEFINED IN config.xml");
+        }
+        $expireRefreshTokenCode = $oauthServerConfig["expire_refresh_token_code"];
+
+        /**
+         * @var \League\OAuth2\Server\AuthorizationServer $server
+         */
+        $server = new \League\OAuth2\Server\AuthorizationServer(
+            $this->clientRepository,
+            $this->accessTokenRepository,
+            $scopeRepository,
+            $privateKey,
+            $encryptionKey
+        );
+
+        $grant = new \League\OAuth2\Server\Grant\PasswordGrant(
+            $userRepository,
+            $refreshTokenRepository
+        );
+
+        $grant->setRefreshTokenTTL(new \DateInterval($expireRefreshTokenCode)); // refresh tokens will expire after 1 month
+
+        $server->enableGrantType(
+            $grant,
+            new \DateInterval($expireAccessTokenCode)
+        );
+
+        $this->server = $server;
+    }
+
+    /**
      * @param Request $request
      * @return JsonResponse|RedirectResponse
      * @throws \Exception
@@ -493,6 +584,44 @@ class AuthorizationServer{
             return $this->sendJSONResponse($exception,$exception->getMessage(), $exception->getHttpStatusCode());
 
         } catch (\Exception $exception) {
+            return $this->sendJSONResponse($exception,$exception->getMessage(), $exception->getHttpStatusCode());
+        }
+
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse|Response
+     * @throws \Exception
+     */
+    private function getAuthTokenForPasswordGrantClient(Request $request){
+
+        try {
+
+            $this->initPasswordGrantServer();
+
+            /**
+             * @var \CustomerManagementFrameworkBundle\Repository\Service\Auth\AccessTokenRepository $accessTokenRepository
+             */
+            $this->accessTokenRepository->setUserIdenifier($this->currentUser->getId()); // an instance of UserEntityInterface
+
+            $psr7Factory = new DiactorosFactory();
+            $psrRequest = $psr7Factory->createRequest($request);
+
+            $symfonyResponse = new Response();
+            $psrResponse = $psr7Factory->createResponse($symfonyResponse);
+
+            $httpFoundationFactory = new HttpFoundationFactory();
+            $symfonyResponse = $httpFoundationFactory->createResponse($this->server->respondToAccessTokenRequest($psrRequest,$psrResponse));
+
+            return $symfonyResponse;
+
+        } catch (OAuthServerException $exception) {
+
+            return $this->sendJSONResponse($exception,$exception->getMessage(), $exception->getHttpStatusCode());
+
+        } catch (\Exception $exception) {
+            var_dump($exception->getMessage());die;
             return $this->sendJSONResponse($exception,$exception->getMessage(), $exception->getHttpStatusCode());
         }
 

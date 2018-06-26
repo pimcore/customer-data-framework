@@ -294,6 +294,10 @@ services:
         public: true
         autowire: true
 
+    CustomerManagementFrameworkBundle\Repository\Service\Auth\UserRepository:
+        public: true
+        autowire: true
+
     CustomerManagementFrameworkBundle\Service\UserInfo:
             public: true
             autowire: true
