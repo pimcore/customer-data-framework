@@ -52,7 +52,8 @@ class ClientRepository implements ClientRepositoryInterface
         if (
             $mustValidateSecret === true
             && $currentClient['is_confidential'] === true
-            && password_verify($clientSecret, $currentClient['secret']) === false
+            && (empty($clientSecret) || password_verify($clientSecret, $currentClient['secret']) === false)
+
         ) {
             return;
         }

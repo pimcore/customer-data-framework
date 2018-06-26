@@ -170,38 +170,46 @@ class ServerController extends FrontendController
      */
     public function authorizePasswordGrantClient(Request $request)
     {
+        try {
+            $clientId = $request->request->get("client_id");
+            $responseType = $request->request->get("grant_type");
+            $username = $request->request->get("username");
+            $password = $request->request->get("password");
 
-        $clientId = $request->request->get("client_id");
-        $responseType = $request->request->get("grant_type");
-        $username = $request->request->get("username");
-        $password = $request->request->get("password");
+            if(!$clientId){
+                throw new HttpException(400, "POST-PARAM: client_id is missing");
+            }
 
-        if(!$clientId){
-            throw new HttpException(400, "POST-PARAM: client_id is missing");
+            if(!$responseType){
+                throw new HttpException(400, "POST-PARAM: grant_type is missing");
+            }
+
+            if(!$username){
+                throw new HttpException(400, "POST-PARAM: username is missing");
+            }
+
+            if(!$password){
+                throw new HttpException(400, "POST-PARAM: password is missing");
+            }
+
+            /**
+             * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
+             */
+            $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
+
+            $authServerService->authUser($request->request->get("username"), $request->request->get("password"));
+
+            $redirectResponse = $authServerService->validateClient(AuthorizationServer::$GRANT_TYPE_PASSWORD_GRANT, $request);
+
+            return $redirectResponse;
+        } catch(\Exception $e) {
+            $errorEcode = 500;
+            if($e instanceof HttpException) {
+                $errorEcode = $e->getStatusCode();
+            }
+            return new JsonResponse(['success'=>false,'error'=>$e->getMessage()],$errorEcode);
         }
 
-        if(!$responseType){
-            throw new HttpException(400, "POST-PARAM: grant_type is missing");
-        }
-
-        if(!$username){
-            throw new HttpException(400, "POST-PARAM: username is missing");
-        }
-
-        if(!$password){
-            throw new HttpException(400, "POST-PARAM: password is missing");
-        }
-
-        /**
-         * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
-         */
-        $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
-
-        $authServerService->authUser($request->request->get("username"), $request->request->get("password"));
-
-        $redirectResponse = $authServerService->validateClient(AuthorizationServer::$GRANT_TYPE_PASSWORD_GRANT, $request);
-
-        return $redirectResponse;
     }
 
     /**

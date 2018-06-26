@@ -621,7 +621,6 @@ class AuthorizationServer{
             return $this->sendJSONResponse($exception,$exception->getMessage(), $exception->getHttpStatusCode());
 
         } catch (\Exception $exception) {
-            var_dump($exception->getMessage());die;
             return $this->sendJSONResponse($exception,$exception->getMessage(), $exception->getHttpStatusCode());
         }
 

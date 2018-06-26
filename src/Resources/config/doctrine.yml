@@ -1,0 +1,7 @@
+doctrine:
+    orm:
+        default_entity_manager: default
+        auto_mapping: true
+    dbal:
+      mapping_types:
+        bit: boolean

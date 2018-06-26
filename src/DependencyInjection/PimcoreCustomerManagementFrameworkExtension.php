@@ -26,12 +26,16 @@ use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidato
 use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
+use Pimcore\Cache\Core\Exception\InvalidArgumentException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
+use Symfony\Component\Yaml\Exception\ParseException;
+use Symfony\Component\Yaml\Yaml;
 
-class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
+class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension implements PrependExtensionInterface
 {
     protected function loadInternal(array $config, ContainerBuilder $container)
     {
@@ -181,4 +185,22 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $container->setParameter('pimcore.gdpr-data-extrator.customers', $config['customer']);
 
     }
+
+
+    public function prepend(ContainerBuilder $container)
+    {
+        $yamlParser = new Yaml();
+        $filename = __DIR__.'/../Resources/config/doctrine.yml';
+
+        try {
+            $doctrineConfig = $yamlParser->parse(
+                file_get_contents($filename)
+            );
+        } catch (ParseException $e) {
+            throw new InvalidArgumentException(sprintf('The file "%s" does not contain valid YAML.', $filename), 0, $e);
+        }
+
+        $container->prependExtensionConfig('doctrine', $doctrineConfig['doctrine']);
+    }
+
 }
