@@ -10,6 +10,7 @@ namespace CustomerManagementFrameworkBundle\Service;
 
 use Pimcore\Tool\RestClient\Exception;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class UserInfo{
 
@@ -52,12 +53,12 @@ class UserInfo{
         $accessToken = $this->entity_manager->getRepository(\CustomerManagementFrameworkBundle\Entity\Service\Auth\AccessToken::class)->findOneByIdentifier($accessTokenId);
 
         if(!$accessToken){
-            throw new Exception("AUTHENTICATION FAILED");
+            throw new HttpException(403, "AUTHENTICATION FAILED: ACCESS-TOKEN DOES NOT EXIST");
         }
         else if((new \DateTime()) > $accessToken->getExpiryDateTime()){
             $this->entity_manager->remove($accessToken);
             $this->entity_manager->flush();
-            throw new Exception("AUTHENTICATION FAILED: ACCESS-TOKEN HAS EXPIRED");
+            throw new HttpException(401, "AUTHENTICATION FAILED: ACCESS-TOKEN HAS EXPIRED");
         }
 
         $customerProvider = \Pimcore::getContainer()->get(\CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface::class);
