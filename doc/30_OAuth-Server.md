@@ -3,30 +3,29 @@
 Steps to install bundle via command.....
 
 Before you can use the OAuth-Server you have to define some options in the [Configuration Tree](./03_Configuration.md). 
-ALl options have to be set correctly and you need at least to define one client.
 
 # Working with OAuth
 
-This chapter describes of how to use the OAuth - Server. To help you build a login or authorization-system 
-as quickly as possible to handle a client coming from different types of devices or platforms (Web-App, mobile App).
+This chapter describes of how to use the OAuth - Server. To help you build a authentication/authorization-system 
+as quickly as possible to handle a client coming from different types of devices or platforms (Web- or mobile App).
 
 There are several ways to authenticate and authorize an user. 
 For authentication/authorization-issues you can use grants to identify a certain user. 
 Before those grants are described in detail, 
-there are some technical terms that need to be described first:
+there are some terms that need to be described first:
+
+- User 
+
+  In this documentation an User is considered as registered Person on your platform that you want to establish a authentication/authorization-system for.  
 
 - Client
 
-  In this documentation a Client is a application on different devices like a Web-App on a PC or a mobile App on a Smartphone.
+  In this documentation a Client is considered to be an application that can be executed on different devices like a application on a PC or on a Smartphone.
   Therefore a Client represents only the mean of how an User can be authenticated with, not an User itself.
   
-  The service `CustomerProviderInterface` is used to get user-instances that you want to authenticate by using the OAuth - Server. 
+  The service `CustomerProviderInterface` is used to get an instance of an User that you want to authenticate by using the OAuth - Server. 
   For Details see [Working with Customers](./05_Working-with-Customers.md) 
   
-- User 
-
-  In this documentation an User is a registered instance (mostly of a real Person) on your platform that you want to establish a login-system for.  
-
 - Access - Token
 
   After an User has been authenticated successfully, they receive an Access-Token from the OAuth-Server so that they are allowed to access certain API's, services or other resources of your platform.
@@ -38,9 +37,9 @@ there are some technical terms that need to be described first:
   There is a Starter-Service called `UserInfo` though, when you want to request information about an User like 
   Forename, Surname or Email-Address. 
   This service can be configured with `pimcore_customer_management_framework.oauth_server.userExporter` to define what attributes should be read out of an User.
-
+  
   You can use this service by calling `/cmf_oauth/userinfo` to get concrete information about an user. 
-  Such a request could be done with `\GuzzleHttp\Client` for instance:
+  As an example, such a request could be done with a `\GuzzleHttp\Client`:
     
   ```php
   $httpClient = new \GuzzleHttp\Client();
@@ -73,7 +72,7 @@ you can either use an Auth-, an Implicit or a Password-Grant.
 
 # Auth - Code Grant 
 
-  When you want to establish a auth-system third party (not trusted) Web-App or mobile App then you could use an Auth-Code-Grant.
+  When you want to establish a authentication/authorization-system for a third party (not trusted) application then you should use an Auth-Code-Grant.
   As first step you need to make a request to the controller action `formAuthorizeAuthGrantClient`:
   
   ```php
@@ -94,30 +93,28 @@ you can either use an Auth-, an Implicit or a Password-Grant.
   
   -  client_id (must)
      
-     It's a name like "myawesomeauthgrant"
+     It's a name like `"myawesomeauthgrant"`
      
   -  redirect_uri (must)
   
-     A URI that you want a client to be redirected, like http://www.google.com
+     A URI that you want a client to be redirected, like `http://www.google.com`
      
   -  response_type (must)
   
-     This must have got the value of "code" 
+     This must have got the value of `"code"`
   
   -  state (optional)
   
      Can be any value and stored in a user's session. 
      
-  
-  This action then renders a symfony-form that an User can be authenticated by. After an User is authenticated successfully, they are 
+  This action renders a symfony-form that an User can be authenticated by. After done successfully, they are 
   redirected to where the former defined `redirect_uri` parameter points to. 
   
-  In order to exchange an Access-Token for an Auth-Code, 
-  an Auth-Code (`code`) and (if former passed) `state` parameter is appended in the redirected uri as well:
+  An Auth-Code (`code`) and (if passed) `state` parameter is appended to the redirected uri as well:
   
-  http://www.google.com?code=access_code_jwt&state=some_state_value
+  `http://www.google.com?code=access_code_jwt&state=some_state_value`
   
-  The code parameter can then be used to request an Access-Token. For this to work, a request must be made onto `accessToken`:
+  The `code` parameter can then be used to request an Access-Token. For this to work, a request must be made to `accessToken`:
   
   ```php
   /**
@@ -141,7 +138,7 @@ you can either use an Auth-, an Implicit or a Password-Grant.
          
   - client_id (must)
          
-      It's a name like "myawesomeauthgrant"
+      It's a name like `"myawesomeauthgrant"`
          
   - client_secret (must)
           
@@ -153,17 +150,17 @@ you can either use an Auth-, an Implicit or a Password-Grant.
          
   - grant_type (must)
           
-      This must have got the value of "authorization_code" 
+      This must have got the value of `"authorization_code"` 
     
   If the passed Auth-Code (`code`) is valid, then a JSON is returned. This JSON contains:
     
   - token_type
     
-       A static value "Bearer"
+       A static value `"Bearer"`
     
   - expires_in
     
-       A timestamp in seconds when this Access-Token expired by
+       A timestamp in seconds states when this Access-Token expired by
          
   - access_token
     
@@ -174,10 +171,10 @@ you can either use an Auth-, an Implicit or a Password-Grant.
        A JWT value that an application can use to refresh an expired Access-Token.
      
     
-  An application can store this JSON to use it afterwards when requesting a protected resources. 
-  At this point an application is ready to request sensitive information stored on your platform. 
+  At this point an application is authorized to request sensitive information or protected resources stored on your platform. 
     
-  When an Access-Token has expired an application can get an new one by making a request onto:
+  An Access-Token can expire though, so that an application needs to get a new one to access protected resources. 
+  There is the action called `refreshToken` to exchange a Refresh-Token for an new Access-Token:
   
   ```php
   /**
@@ -201,7 +198,7 @@ you can either use an Auth-, an Implicit or a Password-Grant.
            
   - client_id (must)
            
-      It's a name like "myawesomeauthgrant"
+      It's a name like `"myawesomeauthgrant"`
            
   - client_secret (must)
             
@@ -209,7 +206,7 @@ you can either use an Auth-, an Implicit or a Password-Grant.
           
   - grant_type (must)
             
-      This must have got the value of "refresh_token" 
+      This must have got the value of `"refresh_token"` 
   
   If the got Refresh-Token (`refresh_token`) is valid, then a similar structured JSON is returned as with `accessToken`.
 
@@ -217,7 +214,7 @@ you can either use an Auth-, an Implicit or a Password-Grant.
 # Implicit Grant
 
 
-  When you want to establish a authentication/authorization - system for a third party (not trusted) Web-App or mobile App then you could use an Implicit-Grant.
+  When you want to establish a authentication/authorization-system for a third party (not trusted) application then you could use an Implicit-Grant.
   As first step you need to make a request to the controller action `formAuthorizeImplicitGrantClient`:
   
   ```php
@@ -237,15 +234,15 @@ you can either use an Auth-, an Implicit or a Password-Grant.
     
   - client_id (must)
        
-       It's a name like "myawesomeimplicitgrant"
+       It's a name like `"myawesomeimplicitgrant"`
        
   - redirect_uri (must)
     
-       A URI that you want a client to be redirected, like http://www.google.com
+       A URI that you want a client to be redirected, like `http://www.google.com`
        
   - response_type (must)
     
-       This must have got the value of "token" 
+       This must have got the value of `"token"` 
     
   - state (optional)
     
@@ -255,11 +252,11 @@ you can either use an Auth-, an Implicit or a Password-Grant.
       
   - token_type
       
-       A static value "Bearer"
+       A static value `"Bearer"`
       
   - expires_in
       
-       A timestamp in seconds when this Access-Token expired by
+       A timestamp in seconds states when this Access-Token expired by
            
   - access_token
       
@@ -272,7 +269,7 @@ you can either use an Auth-, an Implicit or a Password-Grant.
 
 # Password Grant
 
-  When you want to establish a authentication/authorization - system for a first party (trusted like your own) Web-App or mobile App then you could use an Implicit-Grant.
+  When you want to establish a authentication/authorization-system for a first party (trusted or your own) application then you could use an Password-Grant.
   As first step you need to make a request to the controller action `authorizePasswordGrantClient`:
   
   ```php
@@ -292,7 +289,7 @@ you can either use an Auth-, an Implicit or a Password-Grant.
     
   - client_id (must)
        
-       It's a name like "myawesomepasswordgrant"
+       It's a name like `"myawesomepasswordgrant"`
        
   - client_secret (must)
               
@@ -300,7 +297,7 @@ you can either use an Auth-, an Implicit or a Password-Grant.
         
   - grant_type (must)
     
-       This must have got the value of "password" 
+       This must have got the value of `"password"` 
     
   - username (must)
     
@@ -315,11 +312,11 @@ you can either use an Auth-, an Implicit or a Password-Grant.
       
   - token_type
       
-       A static value "Bearer"
+       A static value `"Bearer"`
       
   - expires_in
       
-       A timestamp in seconds when this Access-Token expired by
+       A timestamp in seconds states when this Access-Token expired by
            
   - access_token
       

@@ -104,7 +104,20 @@ pimcore_customer_management_framework:
         # lifespan of a Refresh-Token
         # refresh tokens will expire after 1 month
         expireRefreshTokenCode: 'P1M' 
-        # possible definitions can be found here: http://php.net/manual/en/dateinterval.createfromdatestring.php
+        # possible definitions for lifespans can be found here: http://php.net/manual/en/dateinterval.createfromdatestring.php
+        
+        # optional option, if not defined following attributes are set per default
+        userExporter:
+          - firstname
+          - lastname
+          - email
+          - gender
+          - street
+          - zip
+          - city
+          - countryCode
+          - email
+          - phone
     
     # Configuration of general settings
     general:
