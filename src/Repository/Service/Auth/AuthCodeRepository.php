@@ -35,6 +35,8 @@ class AuthCodeRepository extends \Doctrine\ORM\EntityRepository implements AuthC
 
     /**
      * {@inheritdoc}
+     * @param AuthCodeEntityInterface $authCodeEntity
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function persistNewAuthCode(AuthCodeEntityInterface $authCodeEntity)
     {
@@ -45,10 +47,17 @@ class AuthCodeRepository extends \Doctrine\ORM\EntityRepository implements AuthC
 
     /**
      * {@inheritdoc}
+     * @param string $codeId
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function revokeAuthCode($codeId)
     {
-        // Some logic to revoke the auth code in a database
+        $authCode = $this->entity_manager->getRepository(AuthCode::class)->findOneByIdentifier($codeId);
+        if($authCode) {
+            $this->entity_manager->remove($authCode);
+            $this->entity_manager->flush();
+        }
     }
 
     /**
@@ -56,7 +65,11 @@ class AuthCodeRepository extends \Doctrine\ORM\EntityRepository implements AuthC
      */
     public function isAuthCodeRevoked($codeId)
     {
-        return false; // The auth code has not been revoked
+        /**
+         * @var AuthCode $authCode
+         */
+        $authCode = $this->entity_manager->getRepository(AuthCode::class)->findOneByIdentifier($codeId);
+        return !$authCode || ($authCode && (new \DateTime() > $authCode->getExpiryDateTime()));
     }
 
     /**
@@ -64,8 +77,8 @@ class AuthCodeRepository extends \Doctrine\ORM\EntityRepository implements AuthC
      */
     public function getNewAuthCode()
     {
-        $entryFound = $this->entity_manager->getRepository(AuthCode::class)->findOneByUserIdentifier($this->user_identifier);
-        if($entryFound)return $entryFound;
+        /*$entryFound = $this->entity_manager->getRepository(AuthCode::class)->findOneByUserIdentifier($this->user_identifier);
+        if($entryFound)return $entryFound;*/
 
         $newAuthCode = new AuthCode();
         return $newAuthCode;

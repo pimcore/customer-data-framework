@@ -8,6 +8,9 @@
 
 namespace CustomerManagementFrameworkBundle\Service;
 
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
+use CustomerManagementFrameworkBundle\Entity\Service\Auth\AccessToken;
+use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Tool\RestClient\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -19,9 +22,18 @@ class UserInfo{
      */
     private $entity_manager = null;
 
-    public function __construct(\Doctrine\ORM\EntityManager $entity_manager)
+    /**
+     * @var AuthorizationServer
+     */
+    private $authorizationServer;
+
+    private $customerProvider;
+
+    public function __construct(\Doctrine\ORM\EntityManager $entity_manager, AuthorizationServer $authorizationServer, CustomerProviderInterface $customerProvider)
     {
         $this->entity_manager = $entity_manager;
+        $this->authorizationServer = $authorizationServer;
+        $this->customerProvider = $customerProvider;
     }
 
     /**
@@ -31,40 +43,47 @@ class UserInfo{
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \League\OAuth2\Server\Exception\OAuthServerException
+     * @throws \Exception
      */
     public function getByAccessTokenRequest(Request $request){
 
-        /**
-         * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
-         */
-        $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
 
-        $accessTokenInfo = $authServerService->validateAuthenticatedRequest($request);
+        $accessTokenInfo =  $this->authorizationServer->validateAuthenticatedRequest($request);
 
         if(!key_exists("oauth_access_token_id", $accessTokenInfo->getAttributes())){
             throw new HttpException(401, "AUTHENTICATION FAILED: REQUEST FAILED");
         }
 
-        $accessTokenId = $accessTokenInfo->getAttributes()["oauth_access_token_id"];
+        $accessTokenId = $accessTokenInfo->getAttribute("oauth_access_token_id");
 
         /**
-         * @var \CustomerManagementFrameworkBundle\Entity\Service\Auth\AccessToken $accessToken
+         * @var AccessToken $accessToken
          */
-        $accessToken = $this->entity_manager->getRepository(\CustomerManagementFrameworkBundle\Entity\Service\Auth\AccessToken::class)->findOneByIdentifier($accessTokenId);
+        $accessToken = $this->entity_manager->getRepository(AccessToken::class)->findOneByIdentifier($accessTokenId);
 
         if(!$accessToken){
-            throw new HttpException(403, "AUTHENTICATION FAILED: ACCESS-TOKEN DOES NOT EXIST");
+            throw new \Exception("AUTHENTICATION FAILED: ACCESS-TOKEN DOES NOT EXIST", 403);
         }
         else if((new \DateTime()) > $accessToken->getExpiryDateTime()){
             $this->entity_manager->remove($accessToken);
             $this->entity_manager->flush();
-            throw new HttpException(401, "AUTHENTICATION FAILED: ACCESS-TOKEN HAS EXPIRED");
+            throw new \Exception("AUTHENTICATION FAILED: ACCESS-TOKEN HAS EXPIRED", 401);
         }
 
-        $customerProvider = \Pimcore::getContainer()->get(\CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface::class);
-        $customer = $customerProvider->getById($accessToken->getUserIdentifier());
+        $customer = $this->customerProvider->getById($accessToken->getUserIdentifier());
 
+        return $this->getByCustomer($customer);
+
+    }
+
+    /**
+     * @param CustomerInterface $customer
+     * @return array
+     */
+    public function getByCustomer(CustomerInterface $customer): array
+    {
         $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
+
         if(key_exists("userExporter", $oauthServerConfig)){
             $userExporter = $oauthServerConfig["userExporter"];
             $fieldDefintions = $customer->getClass()->getFieldDefinitions();
@@ -76,11 +95,9 @@ class UserInfo{
                 }
             }
             return $result;
-
         }
 
         return [];
-
     }
 
 }

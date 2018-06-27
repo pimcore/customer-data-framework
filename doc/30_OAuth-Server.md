@@ -58,12 +58,12 @@ there are some terms that need to be described first:
   has to sent it to the OAuth-Server in exchange for an Access-Token.
 
 
-# Grants:
+## Grants:
 
 Depending what type of application respectively Client you want to establish a authentication/authorization-system for, 
 you can either use an Auth-, an Implicit or a Password-Grant.
 
-# Auth - Code Grant 
+### Auth - Code Grant 
 
   When you want to establish a authentication/authorization-system for a third party (not trusted) application then you should use an Auth-Code-Grant.
   As first step you need to make a request to the controller action `formAuthorizeAuthGrantClient`:
@@ -147,6 +147,10 @@ you can either use an Auth-, an Implicit or a Password-Grant.
     
   If the passed Auth-Code (`code`) is valid, then a JSON is returned. This JSON contains:
     
+  - success
+    
+       A boolean value true
+         
   - token_type
     
        A static value `"Bearer"`
@@ -204,7 +208,7 @@ you can either use an Auth-, an Implicit or a Password-Grant.
   If the got Refresh-Token (`refresh_token`) is valid, then a similar structured JSON is returned as with `accessToken`.
 
 
-# Implicit Grant
+### Implicit Grant
 
 
   When you want to establish a authentication/authorization-system for a third party (not trusted) application then you could use an Implicit-Grant.
@@ -242,7 +246,11 @@ you can either use an Auth-, an Implicit or a Password-Grant.
        Can be any value and stored in a user's session. 
   
   If the got Auth-Code (`code`) is valid, then a JSON is returned. This JSON contains:
-      
+  
+  - success
+  
+       A boolean value true
+     
   - token_type
       
        A static value `"Bearer"`
@@ -260,7 +268,7 @@ you can either use an Auth-, an Implicit or a Password-Grant.
        It's the same value that sent in the original request. You should compare this value with the value stored in the user’s session to ensure the authorization code obtained is in response to requests made by this client rather than another client application.  
 
 
-# Password Grant
+### Password Grant
 
   When you want to establish a authentication/authorization-system for a first party (trusted or your own) application then you could use an Password-Grant.
   As first step you need to make a request to the controller action `authorizePasswordGrantClient`:
@@ -303,6 +311,10 @@ you can either use an Auth-, an Implicit or a Password-Grant.
       
   If the got Authentication succeeded, then a JSON is returned. This JSON contains:
       
+  - success
+    
+       A boolean value true
+         
   - token_type
       
        A static value `"Bearer"`
@@ -320,10 +332,10 @@ you can either use an Auth-, an Implicit or a Password-Grant.
        A JWT value that an application can use to refresh an expired Access-Token.
 
 
-# Configuration
+## Configuration
 
 The OAuth-Server can be configured with different options. For Details see [Configuration of pimcore_customer_management_framework.oauth_server](./03_Configuration.md)
 
-# Other sources
+## Other sources
 
 All information described above can be found on [oauth2.thephpleague.com](https://oauth2.thephpleague.com/) as well.
