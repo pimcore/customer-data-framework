@@ -6,7 +6,7 @@
  * Time: 11:29
  */
 
-namespace CustomerManagementFrameworkBundle\Service;
+namespace CustomerManagementFrameworkBundle\OAuth\Service;
 
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Repository\Service\Auth\AccessTokenRepository;
@@ -416,8 +416,6 @@ class AuthorizationServer{
             // Once the user has logged in set the user on the AuthorizationRequest
             $authRequest->setUser($this->currentUser); // an instance of UserEntityInterface
 
-            $this->authCodeRepository->setUserIdenifier($this->currentUser->getIdentifier());
-
             // At this point you should redirect the user to an authorization page.
             // This form will ask the user to approve the client and the scopes requested.
 
@@ -502,11 +500,6 @@ class AuthorizationServer{
         try {
 
             $this->initPasswordGrantServer();
-
-            /**
-             * @var \CustomerManagementFrameworkBundle\Repository\Service\Auth\AccessTokenRepository $accessTokenRepository
-             */
-            $this->accessTokenRepository->setUserIdenifier($this->currentUser->getId()); // an instance of UserEntityInterface
 
             $psr7Info = $this->getPsr7RequestAndResponse($request);
 

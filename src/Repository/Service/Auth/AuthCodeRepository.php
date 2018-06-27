@@ -21,11 +21,6 @@ class AuthCodeRepository extends \Doctrine\ORM\EntityRepository implements AuthC
      */
     private $entity_manager = null;
 
-    /**
-     * @var string $user_identifier
-     */
-    private $user_identifier = null;
-
 
     public function __construct(\Doctrine\ORM\EntityManager $entity_manager)
     {
@@ -62,6 +57,9 @@ class AuthCodeRepository extends \Doctrine\ORM\EntityRepository implements AuthC
 
     /**
      * {@inheritdoc}
+     * @param string $codeId
+     * @return bool
+     * @throws \Doctrine\ORM\ORMException
      */
     public function isAuthCodeRevoked($codeId)
     {
@@ -77,17 +75,8 @@ class AuthCodeRepository extends \Doctrine\ORM\EntityRepository implements AuthC
      */
     public function getNewAuthCode()
     {
-        /*$entryFound = $this->entity_manager->getRepository(AuthCode::class)->findOneByUserIdentifier($this->user_identifier);
-        if($entryFound)return $entryFound;*/
-
         $newAuthCode = new AuthCode();
         return $newAuthCode;
     }
 
-    /**
-     * @param string $userIdentifier
-     */
-    public function setUserIdenifier(string $userIdentifier){
-        $this->user_identifier = $userIdentifier;
-    }
 }

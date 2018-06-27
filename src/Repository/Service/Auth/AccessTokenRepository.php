@@ -24,11 +24,6 @@ class AccessTokenRepository extends \Doctrine\ORM\EntityRepository implements Ac
      */
     private $entity_manager = null;
 
-    /**
-     * @var string $user_identifier
-     */
-    private $user_identifier = null;
-
 
     public function __construct(\Doctrine\ORM\EntityManager $entity_manager)
     {
@@ -76,11 +71,6 @@ class AccessTokenRepository extends \Doctrine\ORM\EntityRepository implements Ac
     public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null)
     {
 
-        /* deactivated: do not edit own access-token but create a new one
-        $entryFound = $this->entity_manager->getRepository(AccessToken::class)->findOneByUserIdentifier($userIdentifier);
-        if($entryFound)return $entryFound;
-        */
-
         $accessToken = new AccessToken();
         $accessToken->setClient($clientEntity);
         foreach ($scopes as $scope) {
@@ -99,13 +89,6 @@ class AccessTokenRepository extends \Doctrine\ORM\EntityRepository implements Ac
         }
 
         return $accessToken;
-    }
-
-    /**
-     * @param string $userIdentifier
-     */
-    public function setUserIdenifier(string $userIdentifier){
-        $this->user_identifier = $userIdentifier;
     }
 
 }
