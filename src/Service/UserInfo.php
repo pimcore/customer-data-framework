@@ -42,7 +42,7 @@ class UserInfo{
         $accessTokenInfo = $authServerService->validateAuthenticatedRequest($request);
 
         if(!key_exists("oauth_access_token_id", $accessTokenInfo->getAttributes())){
-            throw new Exception("AUTHENTICATION FAILED: REQUEST FAILED");
+            throw new HttpException(401, "AUTHENTICATION FAILED: REQUEST FAILED");
         }
 
         $accessTokenId = $accessTokenInfo->getAttributes()["oauth_access_token_id"];

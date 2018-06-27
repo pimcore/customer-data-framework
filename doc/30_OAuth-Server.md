@@ -1,3 +1,10 @@
+# Installation
+
+Steps to install bundle via command.....
+
+Before you can use the OAuth-Server you have to define some options in the [Configuration Tree](./03_Configuration.md). 
+ALl options have to be set correctly and you need at least to define one client.
+
 # Working with OAuth
 
 This chapter describes of how to use the OAuth - Server. To help you build a login or authorization-system 

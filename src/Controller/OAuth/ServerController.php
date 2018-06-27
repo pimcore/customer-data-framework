@@ -8,13 +8,9 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\OAuth;
 
-use AppBundle\Model\Customer;
-use CustomerManagementFrameworkBundle\Entity\Service\Auth\AuthCode;
 use CustomerManagementFrameworkBundle\Form\AuthType;
 use CustomerManagementFrameworkBundle\Service\AuthorizationServer;
 use Pimcore\Controller\FrontendController;
-use Pimcore\Tool\Console;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,49 +31,54 @@ class ServerController extends FrontendController
     public function formAuthorizeAuthGrantClient(Request $request)
     {
 
-        $form = $this->createForm(AuthType::class);
-        $form->handleRequest($request);
+        try {
+            $form = $this->createForm(AuthType::class);
+            $form->handleRequest($request);
 
-        $clientId = $request->query->get("client_id");
-        $redirectUrl = $request->query->get("redirect_uri");
-        $responseType = $request->query->get("response_type");
+            $clientId = $request->query->get("client_id");
+            $redirectUrl = $request->query->get("redirect_uri");
+            $responseType = $request->query->get("response_type");
 
-        if(!$clientId){
-            throw new HttpException(400, "GET-PARAM: client_id is missing");
+            if (!$clientId) {
+                throw new \Exception("GET-PARAM: client_id is missing",400);
+            }
+
+            if (!$redirectUrl) {
+                throw new \Exception("GET-PARAM: redirect_uri is missing",400);
+            }
+
+            if (!$responseType) {
+                throw new \Exception("GET-PARAM: response_type is missing",400);
+            }
+
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                /**
+                 * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
+                 */
+                $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
+
+                $authServerService->authUser($request->request->get("username"), $request->request->get("password"));
+
+                $redirectResponse = $authServerService->validateClient(AuthorizationServer::$GRANT_TYPE_AUTH_GRANT, $request);
+
+                return $redirectResponse;
+            }
+
+            $allQueryArray = $request->query->all();
+            $allQueryParamNames = array_keys($allQueryArray);
+            $queryUrlString = array_reduce($allQueryParamNames, function ($prevQuery, $currQueryName) use ($allQueryArray) {
+                return $prevQuery . $currQueryName . "=" . $allQueryArray[$currQueryName] . "&";
+            }, '');
+
+            $this->view->form = $form->createView();
+            $this->view->queryUrlString = substr($queryUrlString, 0, strlen($queryUrlString) - 1);
+            $this->view->formAction = $this->generateUrl("form_auth_code_path");
+            $this->view->pageTitle = "Auth Grant Client";
         }
-
-        if(!$redirectUrl){
-            throw new HttpException(400, "GET-PARAM: redirect_uri is missing");
+        catch(\Exception $error){
+            return $this->sendJSONError($error);
         }
-
-        if(!$responseType){
-            throw new HttpException(400, "GET-PARAM: response_type is missing");
-        }
-
-        if($form->isSubmitted() && $form->isValid()){
-
-            /**
-             * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
-             */
-            $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
-
-            $authServerService->authUser($request->request->get("username"), $request->request->get("password"));
-
-            $redirectResponse = $authServerService->validateClient(AuthorizationServer::$GRANT_TYPE_AUTH_GRANT, $request);
-
-            return $redirectResponse;
-        }
-
-        $allQueryArray = $request->query->all();
-        $allQueryParamNames = array_keys($allQueryArray);
-        $queryUrlString = array_reduce($allQueryParamNames, function($prevQuery, $currQueryName) use($allQueryArray){
-            return $prevQuery.$currQueryName."=".$allQueryArray[$currQueryName]."&";
-        },'');
-
-        $this->view->form = $form->createView();
-        $this->view->queryUrlString = substr($queryUrlString,0, strlen($queryUrlString)-1);
-        $this->view->formAction = $this->generateUrl("form_auth_code_path");
-        $this->view->pageTitle = "Auth Grant Client";
 
     }
 
@@ -90,21 +91,25 @@ class ServerController extends FrontendController
      */
     public function accessToken(Request $request)
     {
-        /**
-         * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
-         */
-        $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
+        try {
+            /**
+             * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
+             */
+            $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
 
-        if(!$request->request->get("client_id"))throw new HttpException(400, "POST-PARAM: client_id is missing");
-        if(!$request->request->get("client_secret"))throw new HttpException(400, "POST-PARAM: client_secret is missing");
-        if(!$request->request->get("code"))throw new HttpException(400, "POST-PARAM: code is missing");
-        if(!$request->request->get("grant_type"))throw new HttpException(400, "POST-PARAM: grant_type is missing");
-        if(!$request->request->get("redirect_uri"))throw new HttpException(400, "POST-PARAM: redirect_uri is missing");
+            if (!$request->request->get("client_id")) throw new \Exception("POST-PARAM: client_id is missing",400);
+            if (!$request->request->get("client_secret")) throw new \Exception("POST-PARAM: client_secret is missing",400);
+            if (!$request->request->get("code")) throw new \Exception("POST-PARAM: code is missing",400);
+            if (!$request->request->get("grant_type")) throw new \Exception("POST-PARAM: grant_type is missing",400);
+            if (!$request->request->get("redirect_uri")) throw new \Exception("POST-PARAM: redirect_uri is missing",400);
 
-        $response = $authServerService->getAccessTokenForAuthGrantClient($request);
+            $response = $authServerService->getAccessTokenForAuthGrantClient($request);
 
-        return $this->sendResponse($response);
-
+            return $this->sendResponse($response);
+        }
+        catch (\Exception $error){
+            return $this->sendJSONError($error);
+        }
     }
 
     /**
@@ -117,48 +122,52 @@ class ServerController extends FrontendController
     public function formAuthorizeImplicitGrantClient(Request $request)
     {
 
-        $form = $this->createForm(AuthType::class);
-        $form->handleRequest($request);
+        try {
+            $form = $this->createForm(AuthType::class);
+            $form->handleRequest($request);
 
-        $clientId = $request->query->get("client_id");
-        $responseType = $request->query->get("response_type");
+            $clientId = $request->query->get("client_id");
+            $responseType = $request->query->get("response_type");
 
-        if(!$clientId){
-            throw new HttpException(400, "GET-PARAM: client_id is missing");
+            if (!$clientId) {
+                throw new \Exception("GET-PARAM: client_id is missing",400);
+            }
+
+            if (!$responseType) {
+                throw new \Exception("GET-PARAM: response_type is missing",400);
+            }
+
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                /**
+                 * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
+                 */
+                $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
+
+                $authServerService->authUser($request->request->get("username"), $request->request->get("password"));
+
+                $redirectResponse = $authServerService->validateClient(AuthorizationServer::$GRANT_TYPE_IMPLICIT_GRANT, $request);
+
+                return $redirectResponse;
+            }
+
+            $allQueryArray = $request->query->all();
+            $allQueryParamNames = array_keys($allQueryArray);
+            $queryUrlString = array_reduce($allQueryParamNames, function ($prevQuery, $currQueryName) use ($allQueryArray) {
+                return $prevQuery . $currQueryName . "=" . $allQueryArray[$currQueryName] . "&";
+            }, '');
+
+            $this->view->form = $form->createView();
+            $this->view->queryUrlString = substr($queryUrlString, 0, strlen($queryUrlString) - 1);
+            $this->view->pageTitle = "Implicit Grant Client";
+            $this->view->formAction = $this->generateUrl("form_auth_implicit_path");
+
+            $templateAbsolutePath = str_replace("Controller/OAuth", "Resources/views/OAuth/Server/", __DIR__);
+            return $this->render($templateAbsolutePath . "formAuthorizeAuthGrantClient.html.php", $this->view->getAllParameters());
         }
-
-        if(!$responseType){
-            throw new HttpException(400, "GET-PARAM: response_type is missing");
+        catch(\Exception $error){
+            return $this->sendJSONError($error);
         }
-
-        if($form->isSubmitted() && $form->isValid()){
-
-            /**
-             * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
-             */
-            $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
-
-            $authServerService->authUser($request->request->get("username"), $request->request->get("password"));
-
-            $redirectResponse = $authServerService->validateClient(AuthorizationServer::$GRANT_TYPE_IMPLICIT_GRANT, $request);
-
-            return $redirectResponse;
-        }
-
-        $allQueryArray = $request->query->all();
-        $allQueryParamNames = array_keys($allQueryArray);
-        $queryUrlString = array_reduce($allQueryParamNames, function($prevQuery, $currQueryName) use($allQueryArray){
-            return $prevQuery.$currQueryName."=".$allQueryArray[$currQueryName]."&";
-        },'');
-
-        $this->view->form = $form->createView();
-        $this->view->queryUrlString = substr($queryUrlString,0, strlen($queryUrlString)-1);
-        $this->view->pageTitle = "Implicit Grant Client";
-        $this->view->formAction = $this->generateUrl("form_auth_implicit_path");
-
-        $templateAbsolutePath = str_replace("Controller/OAuth", "Resources/views/OAuth/Server/", __DIR__);
-        return $this->render($templateAbsolutePath."formAuthorizeAuthGrantClient.html.php", $this->view->getAllParameters());
-
     }
 
     /**
@@ -177,20 +186,21 @@ class ServerController extends FrontendController
             $password = $request->request->get("password");
 
             if(!$clientId){
-                throw new HttpException(400, "POST-PARAM: client_id is missing");
+                throw new \Exception("POST-PARAM: client_id is missing",400);
             }
 
             if(!$responseType){
-                throw new HttpException(400, "POST-PARAM: grant_type is missing");
+                throw new \Exception("POST-PARAM: grant_type is missing",400);
             }
 
             if(!$username){
-                throw new HttpException(400, "POST-PARAM: username is missing");
+                throw new \Exception("POST-PARAM: username is missing",400);
             }
 
             if(!$password){
-                throw new HttpException(400, "POST-PARAM: password is missing");
+                throw new \Exception("POST-PARAM: password is missing",400);
             }
+
 
             /**
              * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
@@ -202,12 +212,9 @@ class ServerController extends FrontendController
             $redirectResponse = $authServerService->validateClient(AuthorizationServer::$GRANT_TYPE_PASSWORD_GRANT, $request);
 
             return $redirectResponse;
-        } catch(\Exception $e) {
-            $errorEcode = 500;
-            if($e instanceof HttpException) {
-                $errorEcode = $e->getStatusCode();
-            }
-            return new JsonResponse(['success'=>false,'error'=>$e->getMessage()],$errorEcode);
+
+        } catch(\Exception $error) {
+            return $this->sendJSONError($error);
         }
 
     }
@@ -220,14 +227,18 @@ class ServerController extends FrontendController
      * @throws \Exception
      */
     public function getUserInfo(Request $request){
+        try{
+            /**
+             * @var \CustomerManagementFrameworkBundle\Service\UserInfo $userInfoService
+             */
+            $userInfoService = \Pimcore::getContainer()->get('CustomerManagementFrameworkBundle\Service\UserInfo');
+            $userInfoResponse = $userInfoService->getByAccessTokenRequest($request);
 
-        /**
-         * @var \CustomerManagementFrameworkBundle\Service\UserInfo $userInfoService
-         */
-        $userInfoService = \Pimcore::getContainer()->get('CustomerManagementFrameworkBundle\Service\UserInfo');
-        $userInfoResponse = $userInfoService->getByAccessTokenRequest($request);
+            return new JsonResponse($userInfoResponse);
 
-        return new JsonResponse($userInfoResponse);
+        } catch(\Exception $error) {
+            return $this->sendJSONError($error);
+        }
     }
 
     /**
@@ -239,20 +250,24 @@ class ServerController extends FrontendController
      */
     public function refreshToken(Request $request)
     {
-        /**
-         * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
-         */
-        $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
+        try{
+            /**
+             * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
+             */
+            $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
 
-        if(!$request->request->get("client_id"))throw new HttpException(400, "POST-PARAM: client_id is missing");
-        if(!$request->request->get("client_secret"))throw new HttpException(400, "POST-PARAM: client_secret is missing");
-        if(!$request->request->get("refresh_token"))throw new HttpException(400, "POST-PARAM: refresh_token is missing");
-        if(!$request->request->get("grant_type"))throw new HttpException(400, "POST-PARAM: grant_type is missing");
+            if(!$request->request->get("client_id"))throw new \Exception("POST-PARAM: client_id is missing",400);
+            if(!$request->request->get("client_secret"))throw new \Exception("POST-PARAM: client_secret is missing",400);
+            if(!$request->request->get("refresh_token"))throw new \Exception("POST-PARAM: refresh_token is missing",400);
+            if(!$request->request->get("grant_type"))throw new \Exception("POST-PARAM: grant_type is missing",400);
 
-        $response = $authServerService->getRefreshTokenForAuthGrantClient($request);
+            $response = $authServerService->getRefreshTokenForAuthGrantClient($request);
 
-        return $this->sendResponse($response);
+            return $this->sendResponse($response);
 
+        } catch(\Exception $error) {
+            return $this->sendJSONError($error);
+        }
     }
 
     protected function sendResponse(Response $response)
@@ -271,4 +286,11 @@ class ServerController extends FrontendController
         return $httpResponse;
     }
 
+    protected function sendJSONError($error){
+        $errorEcode = 500;
+        if($error instanceof HttpException) {
+            $errorEcode = $error->getStatusCode();
+        }
+        return new JsonResponse(['success'=>false,'error'=>$error->getMessage()],$errorEcode);
+    }
 }

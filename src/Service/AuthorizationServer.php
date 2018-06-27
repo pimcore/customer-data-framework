@@ -8,33 +8,19 @@
 
 namespace CustomerManagementFrameworkBundle\Service;
 
-use AppBundle\Model\Customer;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
-use CustomerManagementFrameworkBundle\Repository\Service\Auth\AccessTokenRepository;
 use CustomerManagementFrameworkBundle\Repository\Service\Auth\AuthCodeRepository;
 use CustomerManagementFrameworkBundle\Repository\Service\Auth\ClientRepository;
-use CustomerManagementFrameworkBundle\Repository\Service\Auth\RefreshTokenRepository;
-use CustomerManagementFrameworkBundle\Repository\Service\Auth\ScopeRepository;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Grant\ImplicitGrant;
 use Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse;
 use Pimcore\Model\DataObject;
-use Pimcore\Model\DataObject\AbstractObject;
-use Pimcore\Model\User;
-use Pimcore\Security\Encoder\Factory\UserAwareEncoderFactory;
-use Pimcore\Security\Encoder\PasswordFieldEncoder;
-use Pimcore\Tool\RestClient\Exception;
-use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
-use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 
 
 class AuthorizationServer{
@@ -80,16 +66,21 @@ class AuthorizationServer{
     public function validateClient(string $grantType, Request $request){
 
         if($grantType !== self::$GRANT_TYPE_AUTH_GRANT && $grantType !== self::$GRANT_TYPE_IMPLICIT_GRANT && $grantType !== self::$GRANT_TYPE_PASSWORD_GRANT){
-            throw new HttpException("AuthorizationServer ERROR: GRANT TYPE: ".$grantType." NOT SUPPORTED", 400);
+            throw new \Exception("GRANT TYPE: ".$grantType." NOT SUPPORTED", 400);
         }
 
-        switch ($grantType){
-            case self::$GRANT_TYPE_AUTH_GRANT:
-                return $this->getAuthTokenForAuthGrantClient($request);
-            case self::$GRANT_TYPE_IMPLICIT_GRANT:
-                return $this->getAccessTokenForImplicitGrantClient($request);
-            case self::$GRANT_TYPE_PASSWORD_GRANT:
-                return $this->getAccessTokenForPasswordGrantClient($request);
+        try {
+            switch ($grantType) {
+                case self::$GRANT_TYPE_AUTH_GRANT:
+                    return $this->getAuthTokenForAuthGrantClient($request);
+                case self::$GRANT_TYPE_IMPLICIT_GRANT:
+                    return $this->getAccessTokenForImplicitGrantClient($request);
+                case self::$GRANT_TYPE_PASSWORD_GRANT:
+                    return $this->getAccessTokenForPasswordGrantClient($request);
+            }
+        }
+        catch (\Exception $error){
+            throw new \Exception("AuthorizationServer ERROR: ".$error->getMessage(), $error->getCode());
         }
 
     }
@@ -117,10 +108,10 @@ class AuthorizationServer{
             return $symfonyResponse;
 
         } catch (\League\OAuth2\Server\Exception\OAuthServerException $exception) {
-            return $this->sendJSONResponse($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+            throw new \Exception($exception->getMessage(),500);
 
         } catch (\Exception $exception) {
-            return $this->sendJSONResponse($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+            throw new \Exception($exception->getMessage(),$exception->getCode());
         }
 
 
@@ -150,10 +141,10 @@ class AuthorizationServer{
 
         } catch (\League\OAuth2\Server\Exception\OAuthServerException $exception) {
 
-            return $this->sendJSONResponse($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+            throw new \Exception($exception->getMessage(),500);
 
         } catch (\Exception $exception) {
-            return $this->sendJSONResponse($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+            throw new \Exception($exception->getMessage(),$exception->getCode());
         }
 
     }
@@ -171,10 +162,10 @@ class AuthorizationServer{
 
         } catch (\League\OAuth2\Server\Exception\OAuthServerException $exception) {
 
-            return $this->sendJSONResponse($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+            throw new \Exception($exception->getMessage(),500);
 
         } catch (\Exception $exception) {
-            return $this->sendJSONResponse($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+            throw new \Exception($exception->getMessage(),$exception->getCode());
         }
 
 
@@ -193,11 +184,11 @@ class AuthorizationServer{
 
         } catch (\League\OAuth2\Server\Exception\OAuthServerException $exception) {
 
-            return $this->sendJSONResponse($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+            throw new \Exception($exception->getMessage(),500);
 
         } catch (\Exception $exception) {
 
-            return $this->sendJSONResponse($exception, $exception->getMessage(), "500");
+            throw new \Exception($exception->getMessage(), $exception->getCode());
         }
 
 
@@ -218,7 +209,7 @@ class AuthorizationServer{
         $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
 
         if(!key_exists("publicKeyDir", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.publicKeyDir NOT DEFINED IN config.xml");
+            throw new \Exception("pimcore_customer_management_framework.oauth_server.publicKeyDir NOT DEFINED IN config.xml", 400);
         }
         $publicKeyPath = $oauthServerConfig["publicKeyDir"];
 
@@ -236,7 +227,7 @@ class AuthorizationServer{
             return $server->validateAuthenticatedRequest($psrRequest);
         }
         catch (OAuthServerException $exception){
-            return $this->sendJSONResponse($exception, $exception->getMessage(), $exception->getHttpStatusCode());
+            throw new \Exception($exception->getMessage(), 400);
         }
 
     }
@@ -253,7 +244,7 @@ class AuthorizationServer{
         $this->currentUser = $customerProvider->getActiveCustomerByEmail($username);
 
         if(!$this->currentUser){
-            throw new HttpException(401, "AUTHORIZATION FAILED");
+            throw new \Exception("User authentication failed", 401);
         }
 
         /**
@@ -262,7 +253,7 @@ class AuthorizationServer{
         $passwordField = $this->currentUser->getClass()->getFieldDefinition('password');
 
         if(!$passwordField->verifyPassword($password, $this->currentUser)){
-            throw new HttpException(401, "AUTHORIZATION FAILED");
+            throw new \Exception("User authentication failed", 401);
         }
     }
 
@@ -280,27 +271,27 @@ class AuthorizationServer{
         $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
 
         if(!key_exists("privateKeyDir", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.privateKeyDir NOT DEFINED IN config.xml");
+            throw new \Exception("pimcore_customer_management_framework.oauth_server.privateKeyDir NOT DEFINED IN config.xml", 400);
         }
         $privateKey = $oauthServerConfig["privateKeyDir"];
 
         if(!key_exists("encryptionKey", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.encryptionKey NOT DEFINED IN config.xml");
+            throw new \Exception("pimcore_customer_management_framework.oauth_server.encryptionKey NOT DEFINED IN config.xml", 400);
         }
         $encryptionKey = $oauthServerConfig["encryptionKey"];
 
         if(!key_exists("expireAuthorizationCode", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expireAuthorizationCode NOT DEFINED IN config.xml");
+            throw new \Exception("pimcore_customer_management_framework.oauth_server.expireAuthorizationCode NOT DEFINED IN config.xml", 400);
         }
         $expireAuthorizationCode = $oauthServerConfig["expireAuthorizationCode"];
 
         if(!key_exists("expireAccessTokenCode", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expireAccessTokenCode NOT DEFINED IN config.xml");
+            throw new \Exception("pimcore_customer_management_framework.oauth_server.expireAccessTokenCode NOT DEFINED IN config.xml", 400);
         }
         $expireAccessTokenCode = $oauthServerConfig["expireAccessTokenCode"];
 
         if(!key_exists("expireRefreshTokenCode", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expireRefreshTokenCode NOT DEFINED IN config.xml");
+            throw new \Exception("pimcore_customer_management_framework.oauth_server.expireRefreshTokenCode NOT DEFINED IN config.xml", 400);
         }
         $expireRefreshTokenCode = $oauthServerConfig["expireRefreshTokenCode"];
 
@@ -344,22 +335,22 @@ class AuthorizationServer{
         $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
 
         if(!key_exists("privateKeyDir", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.privateKeyDir NOT DEFINED IN config.xml");
+            throw new \Exception("pimcore_customer_management_framework.oauth_server.privateKeyDir NOT DEFINED IN config.xml", 400);
         }
         $privateKey = $oauthServerConfig["privateKeyDir"];
 
         if(!key_exists("encryptionKey", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.encryptionKey NOT DEFINED IN config.xml");
+            throw new \Exception("pimcore_customer_management_framework.oauth_server.encryptionKey NOT DEFINED IN config.xml", 400);
         }
         $encryptionKey = $oauthServerConfig["encryptionKey"];
 
         if(!key_exists("expireAccessTokenCode", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expireAccessTokenCode NOT DEFINED IN config.xml");
+            throw new \Exception("pimcore_customer_management_framework.oauth_server.expireAccessTokenCode NOT DEFINED IN config.xml", 400);
         }
         $expireAccessTokenCode = $oauthServerConfig["expireAccessTokenCode"];
 
         if(!key_exists("expireRefreshTokenCode", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expireRefreshTokenCode NOT DEFINED IN config.xml");
+            throw new \Exception("pimcore_customer_management_framework.oauth_server.expireRefreshTokenCode NOT DEFINED IN config.xml", 400);
         }
         $expireRefreshTokenCode = $oauthServerConfig["expireRefreshTokenCode"];
 
@@ -397,17 +388,17 @@ class AuthorizationServer{
         $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
 
         if(!key_exists("privateKeyDir", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.privateKeyDir NOT DEFINED IN config.xml");
+            throw new \Exception("pimcore_customer_management_framework.oauth_server.privateKeyDir NOT DEFINED IN config.xml", 400);
         }
         $privateKey = $oauthServerConfig["privateKeyDir"];
 
         if(!key_exists("encryptionKey", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.encryptionKey NOT DEFINED IN config.xml");
+            throw new \Exception("pimcore_customer_management_framework.oauth_server.encryptionKey NOT DEFINED IN config.xml", 400);
         }
         $encryptionKey = $oauthServerConfig["encryptionKey"];
 
         if(!key_exists("expireAccessTokenCode", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expireAccessTokenCode NOT DEFINED IN config.xml");
+            throw new \Exception("pimcore_customer_management_framework.oauth_server.expireAccessTokenCode NOT DEFINED IN config.xml", 400);
         }
         $expireAccessTokenCode = $oauthServerConfig["expireAccessTokenCode"];
 
@@ -444,22 +435,22 @@ class AuthorizationServer{
         $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
 
         if(!key_exists("privateKeyDir", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.privateKeyDir NOT DEFINED IN config.xml");
+            throw new \Exception("pimcore_customer_management_framework.oauth_server.privateKeyDir NOT DEFINED IN config.xml", 400);
         }
         $privateKey = $oauthServerConfig["privateKeyDir"];
 
         if(!key_exists("encryptionKey", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.encryptionKey NOT DEFINED IN config.xml");
+            throw new \Exception("pimcore_customer_management_framework.oauth_server.encryptionKey NOT DEFINED IN config.xml", 400);
         }
         $encryptionKey = $oauthServerConfig["encryptionKey"];
 
         if(!key_exists("expireAccessTokenCode", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expireAccessTokenCode NOT DEFINED IN config.xml");
+            throw new \Exception("pimcore_customer_management_framework.oauth_server.expireAccessTokenCode NOT DEFINED IN config.xml", 400);
         }
         $expireAccessTokenCode = $oauthServerConfig["expireAccessTokenCode"];
 
         if(!key_exists("expireRefreshTokenCode", $oauthServerConfig)){
-            throw new HttpException(400, "AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.expireRefreshTokenCode NOT DEFINED IN config.xml");
+            throw new \Exception("pimcore_customer_management_framework.oauth_server.expireRefreshTokenCode NOT DEFINED IN config.xml", 400);
         }
         $expireRefreshTokenCode = $oauthServerConfig["expireRefreshTokenCode"];
 
@@ -531,11 +522,9 @@ class AuthorizationServer{
             return $redirectResponse;
 
         } catch (OAuthServerException $exception) {
-
-            return $this->sendJSONResponse($exception,$exception->getMessage(), $exception->getHttpStatusCode());
-
+            throw new \Exception($exception->getMessage(), 400);
         } catch (\Exception $exception) {
-            return $this->sendJSONResponse($exception,$exception->getMessage());
+            throw new \Exception("getAuthTokenForAuthGrantClient: ".$exception->getMessage(), 500);
         }
 
     }
@@ -580,11 +569,9 @@ class AuthorizationServer{
             return $redirectResponse;
 
         } catch (OAuthServerException $exception) {
-
-            return $this->sendJSONResponse($exception,$exception->getMessage(), $exception->getHttpStatusCode());
-
+            throw new \Exception($exception->getMessage(), 400);
         } catch (\Exception $exception) {
-            return $this->sendJSONResponse($exception,$exception->getMessage(), $exception->getHttpStatusCode());
+            throw new \Exception("getAuthTokenForImplicitGrantClient: ".$exception->getMessage(), 500);
         }
 
     }
@@ -617,31 +604,11 @@ class AuthorizationServer{
             return $symfonyResponse;
 
         } catch (OAuthServerException $exception) {
-
-            return $this->sendJSONResponse($exception,$exception->getMessage(), $exception->getHttpStatusCode());
-
+            throw new \Exception($exception->getMessage(), 400);
         } catch (\Exception $exception) {
-            return $this->sendJSONResponse($exception,$exception->getMessage(), $exception->getHttpStatusCode());
+            throw new \Exception("getAuthTokenForPasswordGrantClient: ".$exception->getMessage(), 500);
         }
 
     }
 
-    /**
-     * @param \Exception|null $exception
-     * @param string $content
-     * @param int $status
-     * @return JSONResponse
-     * @throws \Exception
-     */
-    private function sendJSONResponse($exception, string $message, int $status){
-        // use it when debugging directly with server-controller actions
-        if(false && \Pimcore::inDebugMode() && $exception) {
-            throw $exception;
-        }
-
-        $symfonyResponse = new JSONResponse();
-        $symfonyResponse->setStatusCode($status)->setContent($message);
-
-        return $symfonyResponse;
-    }
 }
