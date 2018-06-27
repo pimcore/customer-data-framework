@@ -84,20 +84,19 @@ pimcore_customer_management_framework:
     # Configuration of OAuth Server
     oauth_server:
         # define your clients here
+        # keep the secret's secure
         clients:
             - { name: 'Auth-Grant-Client', client_id: 'myawesomeauthgrant', secret: 'my_secret_password', redirect_uri: 'https://my_website.com', is_confidential: true }
             - { name: 'Implicit-Grant-Client', client_id: 'myawesomeimplicitgrant', secret: 'my_secret_password', redirect_uri: 'https://my_website2.com', is_confidential: false }
             - { name: 'Implicit-Password-Client', client_id: 'myawesomepasswordgrant', secret: 'my_secret_password', redirect_uri: 'https://my_website3.com', is_confidential: false }
         # path to private key, you can create it by using this command: openssl genrsa -out private.key 2048
-        privateKeyDir: '/home/customerdataframework/www/auth_keys/private.key'
+        privateKeyDir: 'path_to_private.key'
         # path to public key, you create it by using this command: openssl rsa -in private.key -pubout -out public.key
-        publicKeyDir: '/home/customerdataframework/www/auth_keys/public.key' 
-        # path to a encryption-key 
-        # keep it secret
+        publicKeyDir: 'path_to_public.key' 
+        # path to a encryption-key, keep it secret
         encryptionKey: 'djaisdj233ikodkaspo3434hgfgdfgf568kfsd34dfsdskdpo'
         # lifespan of a Auth-Code
         # authorization codes will expire after 10 minutes
-        # source: http://php.net/manual/en/dateinterval.createfromdatestring.php
         expireAuthorizationCode: 'PT10M' 
         # lifespan of a Access-Token
         # access tokens will expire after 1 hour
@@ -105,6 +104,7 @@ pimcore_customer_management_framework:
         # lifespan of a Refresh-Token
         # refresh tokens will expire after 1 month
         expireRefreshTokenCode: 'P1M' 
+        # possible definitions can be found here: http://php.net/manual/en/dateinterval.createfromdatestring.php
     
     # Configuration of general settings
     general:
