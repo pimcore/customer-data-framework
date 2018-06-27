@@ -9,8 +9,8 @@
 namespace CustomerManagementFrameworkBundle\Controller\OAuth;
 
 use CustomerManagementFrameworkBundle\Form\AuthType;
-use CustomerManagementFrameworkBundle\Service\AuthorizationServer;
-use CustomerManagementFrameworkBundle\Service\UserInfo;
+use CustomerManagementFrameworkBundle\OAuth\Service\AuthorizationServer;
+use CustomerManagementFrameworkBundle\OAuth\Service\UserInfo;
 use Pimcore\Controller\FrontendController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

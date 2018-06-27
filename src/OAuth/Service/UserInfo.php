@@ -6,7 +6,7 @@
  * Time: 15:06
  */
 
-namespace CustomerManagementFrameworkBundle\Service;
+namespace CustomerManagementFrameworkBundle\OAuth\Service;
 
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Entity\Service\Auth\AccessToken;
@@ -27,6 +27,9 @@ class UserInfo{
      */
     private $authorizationServer;
 
+    /**
+     * @var CustomerProviderInterface
+     */
     private $customerProvider;
 
     public function __construct(\Doctrine\ORM\EntityManager $entity_manager, AuthorizationServer $authorizationServer, CustomerProviderInterface $customerProvider)
@@ -39,10 +42,8 @@ class UserInfo{
     /**
      * @param Request $request
      * @return array
-     * @throws Exception
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \League\OAuth2\Server\Exception\OAuthServerException
      * @throws \Exception
      */
     public function getByAccessTokenRequest(Request $request){

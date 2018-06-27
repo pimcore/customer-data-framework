@@ -72,7 +72,7 @@ you can either use an Auth-, an Implicit or a Password-Grant.
   /**
    * REQUEST A NEW AUTH-CODE BY LOGGING IN
    * @param Request $request
-   * @Route("/form_auth_code", name="form_auth_code_path")
+   * @Route("/form_auth_code", name="cmf_form_auth_code_path")
    * @return RedirectResponse
    * @throws \Exception
    */
@@ -113,7 +113,7 @@ you can either use an Auth-, an Implicit or a Password-Grant.
   /**
    * REQUEST AN ACCESS-TOKEN BY USING AN AUTH-CODE
    * @param Request $request
-   * @Route("/access_token", name="access_token_path")
+   * @Route("/access_token", name="cmf_access_token_path")
    * @return JsonResponse
    * @throws \Exception
    */
@@ -177,7 +177,7 @@ you can either use an Auth-, an Implicit or a Password-Grant.
   /**
    * REQUEST A NEW ACCESS-TOKEN BY USING A REFRESH-TOKEN
    * @param Request $request
-   * @Route("/refresh_token", name="refresh_token_path")
+   * @Route("/refresh_token", name="cmf_refresh_token_path")
    * @return JSONResponse
    * @throws \Exception
    */
@@ -218,7 +218,7 @@ you can either use an Auth-, an Implicit or a Password-Grant.
   /**
    * REQUEST A NEW ACCESS-TOKEN BY USING AN IMPLICIT GRANT
    * @param Request $request
-   * @Route("/form_auth_implicit", name="form_auth_implicit_path")
+   * @Route("/form_auth_implicit", name="cmf_form_auth_implicit_path")
    * @return RedirectResponse|Response
    * @throws \Exception
    */
@@ -277,7 +277,7 @@ you can either use an Auth-, an Implicit or a Password-Grant.
   /**
    * REQUEST A NEW ACCESS-TOKEN BY USING AN IMPLICIT GRANT
    * @param Request $request
-   * @Route("/form_auth_password", name="form_auth_password_path")
+   * @Route("/form_auth_password", name="cmf_form_auth_password_path")
    * @return RedirectResponse|Response|JSONResponse
    * @throws \Exception
    */

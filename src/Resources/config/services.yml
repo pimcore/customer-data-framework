@@ -263,7 +263,7 @@ services:
         tags:
             - { name: pimcore.data_object.import.operator_factory, id: CustomerSegments }
 
-    CustomerManagementFrameworkBundle\Service\AuthorizationServer:
+    CustomerManagementFrameworkBundle\OAuth\Service\AuthorizationServer:
         public: true
         autowire: true
 
@@ -291,6 +291,6 @@ services:
         public: true
         autowire: true
 
-    CustomerManagementFrameworkBundle\Service\UserInfo:
+    CustomerManagementFrameworkBundle\OAuth\Service\UserInfo:
             public: true
             autowire: true
