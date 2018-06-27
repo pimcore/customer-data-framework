@@ -29,6 +29,8 @@ class RefreshTokenRepository extends \Doctrine\ORM\EntityRepository implements R
 
     /**
      * {@inheritdoc}
+     * @param RefreshTokenEntityInterface $refreshTokenEntityInterface
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntityInterface)
     {
@@ -39,18 +41,35 @@ class RefreshTokenRepository extends \Doctrine\ORM\EntityRepository implements R
 
     /**
      * {@inheritdoc}
+     * @param string $tokenId
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function revokeRefreshToken($tokenId)
     {
-        // Some logic to revoke the refresh token in a database
+        /**
+         * @var RefreshToken $refreshToken
+         */
+        $refreshToken = $this->entity_manager->getRepository(RefreshToken::class)->findOneByIdentifier($tokenId);
+        if($refreshToken) {
+            $this->entity_manager->remove($refreshToken);
+            $this->entity_manager->flush();
+        }
     }
 
     /**
      * {@inheritdoc}
+     * @param string $tokenId
+     * @return bool
+     * @throws \Doctrine\ORM\ORMException
      */
     public function isRefreshTokenRevoked($tokenId)
     {
-        return false; // The refresh token has not been revoked
+        /**
+         * @var RefreshToken $refreshToken
+         */
+        $refreshToken = $this->entity_manager->getRepository(RefreshToken::class)->findOneByIdentifier($tokenId);
+        return !$refreshToken || ($refreshToken && (new \DateTime() > $refreshToken->getExpiryDateTime()));
     }
 
     /**

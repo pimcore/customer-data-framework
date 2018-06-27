@@ -10,6 +10,7 @@ namespace CustomerManagementFrameworkBundle\Controller\OAuth;
 
 use CustomerManagementFrameworkBundle\Form\AuthType;
 use CustomerManagementFrameworkBundle\Service\AuthorizationServer;
+use CustomerManagementFrameworkBundle\Service\UserInfo;
 use Pimcore\Controller\FrontendController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,11 +25,11 @@ class ServerController extends FrontendController
     /**
      * REQUEST A NEW AUTH-CODE BY LOGGING IN
      * @param Request $request
-     * @Route("/form_auth_code", name="form_auth_code_path")
-     * @return RedirectResponse
-     * @throws \Exception
+     * @param AuthorizationServer $authorizationServer
+     * @Route("/form_auth_code", name="cmf_form_auth_code_path")
+     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse|JsonResponse|RedirectResponse|Response
      */
-    public function formAuthorizeAuthGrantClient(Request $request)
+    public function formAuthorizeAuthGrantClient(Request $request, AuthorizationServer $authorizationServer)
     {
 
         try {
@@ -40,41 +41,32 @@ class ServerController extends FrontendController
             $responseType = $request->query->get("response_type");
 
             if (!$clientId) {
-                throw new \Exception("GET-PARAM: client_id is missing",400);
+                throw new HttpException(400,"GET-PARAM: client_id is missing");
             }
 
             if (!$redirectUrl) {
-                throw new \Exception("GET-PARAM: redirect_uri is missing",400);
+                throw new HttpException(400,"GET-PARAM: redirect_uri is missing");
             }
 
             if (!$responseType) {
-                throw new \Exception("GET-PARAM: response_type is missing",400);
+                throw new HttpException(400,"GET-PARAM: response_type is missing");
             }
 
             if ($form->isSubmitted() && $form->isValid()) {
 
-                /**
-                 * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
-                 */
-                $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
+                $authorizationServer->authUser($request->request->get("username"), $request->request->get("password"));
 
-                $authServerService->authUser($request->request->get("username"), $request->request->get("password"));
-
-                $redirectResponse = $authServerService->validateClient(AuthorizationServer::$GRANT_TYPE_AUTH_GRANT, $request);
+                $redirectResponse = $authorizationServer->validateClient(AuthorizationServer::GRANT_TYPE_AUTH_GRANT, $request);
 
                 return $redirectResponse;
             }
 
-            $allQueryArray = $request->query->all();
-            $allQueryParamNames = array_keys($allQueryArray);
-            $queryUrlString = array_reduce($allQueryParamNames, function ($prevQuery, $currQueryName) use ($allQueryArray) {
-                return $prevQuery . $currQueryName . "=" . $allQueryArray[$currQueryName] . "&";
-            }, '');
+            return $this->render(  "PimcoreCustomerManagementFrameworkBundle:OAuth/Server:formAuthorizeAuthGrantClient.html.php", [
+                'form' => $form->createView(),
+                'pageTitle' => "Auth Grant Client",
+                'formAction' => $this->generateUrl("cmf_form_auth_code_path", $request->query->all())
+            ]);
 
-            $this->view->form = $form->createView();
-            $this->view->queryUrlString = substr($queryUrlString, 0, strlen($queryUrlString) - 1);
-            $this->view->formAction = $this->generateUrl("form_auth_code_path");
-            $this->view->pageTitle = "Auth Grant Client";
         }
         catch(\Exception $error){
             return $this->sendJSONError($error);
@@ -85,25 +77,22 @@ class ServerController extends FrontendController
     /**
      * REQUEST AN ACCESS-TOKEN BY USING AN AUTH-CODE
      * @param Request $request
-     * @Route("/access_token", name="access_token_path")
+     * @param AuthorizationServer $authorizationServer
+     * @Route("/access_token", name="cmf_access_token_path")
      * @return JsonResponse
      * @throws \Exception
      */
-    public function accessToken(Request $request)
+    public function accessToken(Request $request, AuthorizationServer $authorizationServer)
     {
         try {
-            /**
-             * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
-             */
-            $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
 
-            if (!$request->request->get("client_id")) throw new \Exception("POST-PARAM: client_id is missing",400);
-            if (!$request->request->get("client_secret")) throw new \Exception("POST-PARAM: client_secret is missing",400);
-            if (!$request->request->get("code")) throw new \Exception("POST-PARAM: code is missing",400);
-            if (!$request->request->get("grant_type")) throw new \Exception("POST-PARAM: grant_type is missing",400);
-            if (!$request->request->get("redirect_uri")) throw new \Exception("POST-PARAM: redirect_uri is missing",400);
+            if (!$request->request->get("client_id")) throw new HttpException(400,"POST-PARAM: client_id is missing");
+            if (!$request->request->get("client_secret")) throw new HttpException(400,"POST-PARAM: client_secret is missing");
+            if (!$request->request->get("code")) throw new HttpException(400,"POST-PARAM: code is missing");
+            if (!$request->request->get("grant_type")) throw new HttpException(400,"POST-PARAM: grant_type is missing");
+            if (!$request->request->get("redirect_uri")) throw new HttpException(400,"POST-PARAM: redirect_uri is missing");
 
-            $response = $authServerService->getAccessTokenForAuthGrantClient($request);
+            $response = $authorizationServer->getAccessTokenForAuthGrantClient($request);
 
             return $this->sendResponse($response);
         }
@@ -115,11 +104,12 @@ class ServerController extends FrontendController
     /**
      * REQUEST A NEW ACCESS-TOKEN BY USING AN IMPLICIT GRANT
      * @param Request $request
-     * @Route("/form_auth_implicit", name="form_auth_implicit_path")
+     * @param AuthorizationServer $authorizationServer
+     * @Route("/form_auth_implicit", name="cmf_form_auth_implicit_path")
      * @return RedirectResponse|Response
      * @throws \Exception
      */
-    public function formAuthorizeImplicitGrantClient(Request $request)
+    public function formAuthorizeImplicitGrantClient(Request $request, AuthorizationServer $authorizationServer)
     {
 
         try {
@@ -130,40 +120,27 @@ class ServerController extends FrontendController
             $responseType = $request->query->get("response_type");
 
             if (!$clientId) {
-                throw new \Exception("GET-PARAM: client_id is missing",400);
+                throw new HttpException(400,"GET-PARAM: client_id is missing");
             }
 
             if (!$responseType) {
-                throw new \Exception("GET-PARAM: response_type is missing",400);
+                throw new HttpException(400,"GET-PARAM: response_type is missing");
             }
 
             if ($form->isSubmitted() && $form->isValid()) {
 
-                /**
-                 * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
-                 */
-                $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
+                $authorizationServer->authUser($request->request->get("username"), $request->request->get("password"));
 
-                $authServerService->authUser($request->request->get("username"), $request->request->get("password"));
-
-                $redirectResponse = $authServerService->validateClient(AuthorizationServer::$GRANT_TYPE_IMPLICIT_GRANT, $request);
+                $redirectResponse = $authorizationServer->validateClient(AuthorizationServer::GRANT_TYPE_IMPLICIT_GRANT, $request);
 
                 return $redirectResponse;
             }
 
-            $allQueryArray = $request->query->all();
-            $allQueryParamNames = array_keys($allQueryArray);
-            $queryUrlString = array_reduce($allQueryParamNames, function ($prevQuery, $currQueryName) use ($allQueryArray) {
-                return $prevQuery . $currQueryName . "=" . $allQueryArray[$currQueryName] . "&";
-            }, '');
-
-            $this->view->form = $form->createView();
-            $this->view->queryUrlString = substr($queryUrlString, 0, strlen($queryUrlString) - 1);
-            $this->view->pageTitle = "Implicit Grant Client";
-            $this->view->formAction = $this->generateUrl("form_auth_implicit_path");
-
-            $templateAbsolutePath = str_replace("Controller/OAuth", "Resources/views/OAuth/Server/", __DIR__);
-            return $this->render($templateAbsolutePath . "formAuthorizeAuthGrantClient.html.php", $this->view->getAllParameters());
+            return $this->render(  "PimcoreCustomerManagementFrameworkBundle:OAuth/Server:formAuthorizeAuthGrantClient.html.php", [
+                'form' => $form->createView(),
+                'pageTitle' => "Implicit Grant Client",
+                'formAction' => $this->generateUrl("cmf_form_auth_implicit_path", $request->query->all())
+            ]);
         }
         catch(\Exception $error){
             return $this->sendJSONError($error);
@@ -173,11 +150,12 @@ class ServerController extends FrontendController
     /**
      * REQUEST A NEW ACCESS-TOKEN BY USING AN IMPLICIT GRANT
      * @param Request $request
-     * @Route("/form_auth_password", name="form_auth_password_path")
+     * @param AuthorizationServer $authorizationServer
+     * @Route("/form_auth_password", name="cmf_form_auth_password_path")
      * @return RedirectResponse|Response|JSONResponse
      * @throws \Exception
      */
-    public function authorizePasswordGrantClient(Request $request)
+    public function authorizePasswordGrantClient(Request $request, AuthorizationServer $authorizationServer)
     {
         try {
             $clientId = $request->request->get("client_id");
@@ -186,30 +164,24 @@ class ServerController extends FrontendController
             $password = $request->request->get("password");
 
             if(!$clientId){
-                throw new \Exception("POST-PARAM: client_id is missing",400);
+                throw new HttpException(400, "POST-PARAM: client_id is missing");
             }
 
             if(!$responseType){
-                throw new \Exception("POST-PARAM: grant_type is missing",400);
+                throw new HttpException(400, "POST-PARAM: grant_type is missing");
             }
 
             if(!$username){
-                throw new \Exception("POST-PARAM: username is missing",400);
+                throw new HttpException(400, "POST-PARAM: username is missing");
             }
 
             if(!$password){
-                throw new \Exception("POST-PARAM: password is missing",400);
+                throw new HttpException(400,"POST-PARAM: password is missing");
             }
 
+            $authorizationServer->authUser($request->request->get("username"), $request->request->get("password"));
 
-            /**
-             * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
-             */
-            $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
-
-            $authServerService->authUser($request->request->get("username"), $request->request->get("password"));
-
-            $redirectResponse = $authServerService->validateClient(AuthorizationServer::$GRANT_TYPE_PASSWORD_GRANT, $request);
+            $redirectResponse = $authorizationServer->validateClient(AuthorizationServer::GRANT_TYPE_PASSWORD_GRANT, $request);
 
             return $redirectResponse;
 
@@ -222,18 +194,15 @@ class ServerController extends FrontendController
     /**
      * REQUEST AN SPECIFIC USER-INFO BY USING AN ACCESS-TOKEN, THE USER-INFO CAN BE CONFIGURED IN THE CONFIG.yml (pimcore_customer_management_framework.oauth_server.user_exporter) FILE
      * @param Request $request
-     * @Route("/userinfo", name="userinfo_path")
+     * @param UserInfo $userInfo
+     * @Route("/userinfo", name="cmf_userinfo_path")
      * @return JSONResponse
      * @throws \Exception
      */
-    public function getUserInfo(Request $request){
+    public function getUserInfo(Request $request, UserInfo $userInfo){
         try{
-            /**
-             * @var \CustomerManagementFrameworkBundle\Service\UserInfo $userInfoService
-             */
-            $userInfoService = \Pimcore::getContainer()->get('CustomerManagementFrameworkBundle\Service\UserInfo');
-            $userInfoResponse = $userInfoService->getByAccessTokenRequest($request);
 
+            $userInfoResponse = $userInfo->getByAccessTokenRequest($request);
             return new JsonResponse($userInfoResponse);
 
         } catch(\Exception $error) {
@@ -244,24 +213,21 @@ class ServerController extends FrontendController
     /**
      * REQUEST A NEW ACCESS-TOKEN BY USING A REFRESH-TOKEN
      * @param Request $request
-     * @Route("/refresh_token", name="refresh_token_path")
+     * @param AuthorizationServer $authorizationServer
+     * @Route("/refresh_token", name="cmf_refresh_token_path")
      * @return JSONResponse
      * @throws \Exception
      */
-    public function refreshToken(Request $request)
+    public function refreshToken(Request $request, AuthorizationServer $authorizationServer)
     {
         try{
-            /**
-             * @var \CustomerManagementFrameworkBundle\Service\AuthorizationServer $authServerService
-             */
-            $authServerService = \Pimcore::getContainer()->get("CustomerManagementFrameworkBundle\Service\AuthorizationServer");
 
-            if(!$request->request->get("client_id"))throw new \Exception("POST-PARAM: client_id is missing",400);
-            if(!$request->request->get("client_secret"))throw new \Exception("POST-PARAM: client_secret is missing",400);
-            if(!$request->request->get("refresh_token"))throw new \Exception("POST-PARAM: refresh_token is missing",400);
-            if(!$request->request->get("grant_type"))throw new \Exception("POST-PARAM: grant_type is missing",400);
+            if(!$request->request->get("client_id"))throw new HttpException(400, "POST-PARAM: client_id is missing");
+            if(!$request->request->get("client_secret"))throw new HttpException(400, "POST-PARAM: client_secret is missing");
+            if(!$request->request->get("refresh_token"))throw new HttpException(400, "POST-PARAM: refresh_token is missing");
+            if(!$request->request->get("grant_type"))throw new HttpException(400, "POST-PARAM: grant_type is missing");
 
-            $response = $authServerService->getRefreshTokenForAuthGrantClient($request);
+            $response = $authorizationServer->getRefreshTokenForAuthGrantClient($request);
 
             return $this->sendResponse($response);
 
@@ -280,7 +246,10 @@ class ServerController extends FrontendController
             $httpResponse->headers->set($key, $value, true);
         }
 
-        $httpResponse->setData(json_decode($response->getContent()));
+        $jsonPayload = json_decode($response->getContent());
+        $jsonPayload->success = true;
+
+        $httpResponse->setData($jsonPayload);
 
 
         return $httpResponse;

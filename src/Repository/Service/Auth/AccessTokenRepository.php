@@ -54,6 +54,7 @@ class AccessTokenRepository extends \Doctrine\ORM\EntityRepository implements Ac
     public function revokeAccessToken($tokenId)
     {
         // Some logic here to revoke the access token
+        
     }
 
     /**
@@ -70,16 +71,10 @@ class AccessTokenRepository extends \Doctrine\ORM\EntityRepository implements Ac
      * @param array $scopes
      * @param null $userIdentifier
      * @return AccessToken|AccessTokenEntityInterface
-     * @throws Exception
+     * @throws \Exception
      */
     public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null)
     {
-        /* deactivated: do not remove last access-token
-        $authCode = $this->entity_manager->getRepository(AuthCode::class)->findOneByUserIdentifier($userIdentifier);
-        if($authCode) {
-            $this->entity_manager->remove($authCode);
-            $this->entity_manager->flush();
-        }
 
         /* deactivated: do not edit own access-token but create a new one
         $entryFound = $this->entity_manager->getRepository(AccessToken::class)->findOneByUserIdentifier($userIdentifier);
@@ -100,7 +95,7 @@ class AccessTokenRepository extends \Doctrine\ORM\EntityRepository implements Ac
         }
 
         if(!$accessToken->getUserIdentifier()){
-            throw new Exception("AccessTokenRepository ERROR: user-idenfifier not set");
+            throw new \Exception("AccessTokenRepository ERROR: user-idenfifier not set");
         }
 
         return $accessToken;

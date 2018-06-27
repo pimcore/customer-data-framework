@@ -26,7 +26,7 @@
 
     <?= $this->form()->start($form, [
         'attr' => [
-            'action' => $this->formAction."?".$this->queryUrlString,
+            'action' => $this->formAction,
             'class' => 'form-horizontal'
         ]
     ]); ?>
