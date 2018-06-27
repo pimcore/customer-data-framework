@@ -14,6 +14,7 @@ use CustomerManagementFrameworkBundle\Repository\Service\Auth\AuthCodeRepository
 use CustomerManagementFrameworkBundle\Repository\Service\Auth\ClientRepository;
 use CustomerManagementFrameworkBundle\Repository\Service\Auth\RefreshTokenRepository;
 use CustomerManagementFrameworkBundle\Repository\Service\Auth\ScopeRepository;
+use CustomerManagementFrameworkBundle\Repository\Service\Auth\UserRepository;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Grant\ImplicitGrant;
 use Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse;
@@ -54,6 +55,11 @@ class AuthorizationServer{
     private $clientRepository = null;
 
     /**
+     * @var UserRepository
+     */
+    private $userRepository = null;
+
+    /**
      * @var RefreshTokenRepository
      */
     private $refreshTokenRepository = null;
@@ -73,9 +79,10 @@ class AuthorizationServer{
      */
     private $currentUser = null;
 
-    public function __construct(ClientRepository $clientRepository, ScopeRepository $scopeRepository, AccessTokenRepository $accessTokenRepository, AuthCodeRepository $authCodeRepository, RefreshTokenRepository $refreshTokenRepository)
+    public function __construct(ClientRepository $clientRepository, UserRepository $userRepository,ScopeRepository $scopeRepository, AccessTokenRepository $accessTokenRepository, AuthCodeRepository $authCodeRepository, RefreshTokenRepository $refreshTokenRepository)
     {
         $this->clientRepository = $clientRepository;
+        $this->userRepository = $userRepository;
         $this->scopeRepository = $scopeRepository;
         $this->accessTokenRepository = $accessTokenRepository;
         $this->authCodeRepository = $authCodeRepository;

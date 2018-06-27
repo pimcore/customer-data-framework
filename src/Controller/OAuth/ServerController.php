@@ -118,6 +118,7 @@ class ServerController extends FrontendController
 
             $clientId = $request->query->get("client_id");
             $responseType = $request->query->get("response_type");
+            $redirectUri = $request->query->get("redirect_uri");
 
             if (!$clientId) {
                 throw new HttpException(400,"GET-PARAM: client_id is missing");
@@ -125,6 +126,10 @@ class ServerController extends FrontendController
 
             if (!$responseType) {
                 throw new HttpException(400,"GET-PARAM: response_type is missing");
+            }
+
+            if (!$redirectUri) {
+                throw new HttpException(400,"GET-PARAM: redirect_uri is missing");
             }
 
             if ($form->isSubmitted() && $form->isValid()) {

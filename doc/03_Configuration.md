@@ -86,9 +86,13 @@ pimcore_customer_management_framework:
         # define your clients here
         # keep the secret's secure
         clients:
+            # the name can be any value, the client_id, secret and redirect_uri must match the form-parameters though, is_confidential is used to compare the given secret
             - { name: 'Auth-Grant-Client', client_id: 'myawesomeauthgrant', secret: 'my_secret_password', redirect_uri: 'https://my_website.com', is_confidential: true }
-            - { name: 'Implicit-Grant-Client', client_id: 'myawesomeimplicitgrant', secret: 'my_secret_password', redirect_uri: 'https://my_website2.com', is_confidential: false }
-            - { name: 'Implicit-Password-Client', client_id: 'myawesomepasswordgrant', secret: 'my_secret_password', redirect_uri: 'https://my_website3.com', is_confidential: false }
+            # you can define either an array of redirect_uri's
+            - { name: 'Implicit-Grant-Client', client_id: 'myawesomeimplicitgrant', secret: 'my_secret_password', redirect_uri: ['https://my_website2.com','https://my_website3.com'], is_confidential: false }
+            # or a wildcard 
+            - { name: 'Implicit-Grant-Client', client_id: 'myawesomeimplicitgrant2', secret: 'my_secret_password', redirect_uri: null, is_confidential: false }
+            - { name: 'Implicit-Password-Client', client_id: 'myawesomepasswordgrant', secret: 'my_secret_password', is_confidential: false }
         # path to private key, you can create it by using this command: openssl genrsa -out private.key 2048
         privateKeyDir: 'path_to_private.key'
         # path to public key, you create it by using this command: openssl rsa -in private.key -pubout -out public.key

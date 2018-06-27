@@ -169,10 +169,21 @@ class Configuration implements ConfigurationInterface
 
             ->arrayNode('clients')
                 ->prototype('array')
-                    ->prototype('scalar')->end()->end()
-                ->example([
-                    ['client_id', 'name', 'secret', 'redirect_uri', 'is_confidential']
-                ])
+                    ->children()
+                        ->scalarNode('client_id')->end()
+                        ->scalarNode('name')->end()
+                        ->scalarNode('secret')->end()
+                        ->scalarNode('is_confidential')->end()
+                        ->variableNode('redirect_uri')
+                            ->validate()
+                                ->ifTrue(function ($v) {
+                                    return $v !== null && false === is_string($v) && false === is_array($v);
+                                })
+                                ->thenInvalid('it must either be of type null, a string or an array')
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
                 ->info('Auth Server Required Fields')
             ->end()
 
