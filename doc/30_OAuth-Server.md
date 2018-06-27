@@ -1,17 +1,10 @@
-# Installation
-
-Steps to install bundle via command.....
-
-Before you can use the OAuth-Server you have to define some options in the [Configuration Tree](./03_Configuration.md). 
-
 # Working with OAuth
 
-This chapter describes of how to use the OAuth - Server. To help you build a authentication/authorization-system 
-as quickly as possible to handle a client coming from different types of devices or platforms (Web- or mobile App).
+This chapter describes of how to use the OAuth - Server to help you on building a authentication/authorization-system 
+as quickly as possible to handle client's coming from different types of devices or platforms (Web- or mobile App).
 
-There are several ways to authenticate and authorize an user. 
-For authentication/authorization-issues you can use grants to identify a certain user. 
-Before those grants are described in detail, 
+There are several ways to authenticate and authorize a Person, for this the OAuth - Server uses so-called Grants. 
+There are some Grants you can use, but before those Grants are described in detail
 there are some terms that need to be described first:
 
 - User 
