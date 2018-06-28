@@ -49,7 +49,7 @@ there are some terms that need to be described first:
   ```
 
   This services requires you to put a valid Access-Token into the Authorization-Header, as you can see in the example above.
-  Additional information of how you can request user-specific information can be found [here](#AccessTokenCustomerController).
+  Additional information of how you can request user-specific information can be found [here](#accesstokencustomercontroller).
 
 - Auth - Code
  
@@ -343,7 +343,7 @@ The OAuth-Server can be configured with different options. For Details see [Conf
 
 All information described above can be found on [oauth2.thephpleague.com](https://oauth2.thephpleague.com/) as well.
 
-## [AccessTokenCustomerController](#AccessTokenCustomerController)
+## [AccessTokenCustomerController](#accesstokencustomercontroller)
 
 This controller provides two actions that you can use to read or update a customer.
 Both actions expect to get a request that contains a valid Access-Token in the Authorization-Header.
