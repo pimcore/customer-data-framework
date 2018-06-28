@@ -132,6 +132,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
         /** @var CustomerInterface|ElementInterface|Concrete $customer */
         $customer = $this->createCustomerInstance();
         $customer->setValues($data);
+        $customer->setActive(true);
         $customer->setPublished(true);
         $this->applyObjectNamingScheme($customer);
 

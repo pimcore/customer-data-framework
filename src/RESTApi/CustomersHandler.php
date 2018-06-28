@@ -16,9 +16,12 @@
 namespace CustomerManagementFrameworkBundle\RESTApi;
 
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
+use CustomerManagementFrameworkBundle\CustomerSaveValidator\Exception\DuplicateCustomerException;
 use CustomerManagementFrameworkBundle\Filter\ExportCustomersFilterParams;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\OAuth\Service\UserInfo;
 use CustomerManagementFrameworkBundle\RESTApi\Exception\ResourceNotFoundException;
+use CustomerManagementFrameworkBundle\RESTApi\Traits\CustomerGenerator;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResourceUrlGenerator;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResponseGenerator;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
@@ -31,6 +34,7 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
     use LoggerAware;
     use ResponseGenerator;
     use ResourceUrlGenerator;
+    use CustomerGenerator;
 
     /**
      * @var CustomerProviderInterface
@@ -118,6 +122,14 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
             /** @var CustomerInterface|Concrete $customer */
             $customer = $this->customerProvider->create($data);
             $customer->save();
+        } catch(DuplicateCustomerException $e) {
+            $duplicateCustomer = $e->getDuplicateCustomer();
+            $response = $this->createErrorResponse('duplicate customer found');
+            $content = json_decode($response->getContent(), true);
+            $content['duplicateCustomer'] = $duplicateCustomer->getId();
+            $response->setContent(json_encode($content));
+
+            return $response;
         } catch (\Exception $e) {
             return $this->createErrorResponse($e->getMessage());
         }
@@ -203,59 +215,4 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
         return $customer;
     }
 
-    /**
-     * Create customer response with hydrated customer data
-     *
-     * @param CustomerInterface $customer
-     * @param Request $request
-     * @param ExportCustomersFilterParams $params
-     *
-     * @return Response
-     */
-    protected function createCustomerResponse(
-        CustomerInterface $customer,
-        Request $request,
-        ExportCustomersFilterParams $params = null
-    ) {
-        if (null === $params) {
-            $params = ExportCustomersFilterParams::fromRequest($request);
-        }
-
-        $response = $this->createResponse(
-            $this->hydrateCustomer($customer, $params)
-        );
-
-        return $response;
-    }
-
-    /**
-     * @param CustomerInterface $customer
-     * @param ExportCustomersFilterParams $params
-     *
-     * @return array
-     */
-    protected function hydrateCustomer(CustomerInterface $customer, ExportCustomersFilterParams $params)
-    {
-        $data = $customer->cmfToArray();
-
-        if ($params->getIncludeActivities()) {
-            $data['activities'] = \Pimcore::getContainer()->get('cmf.activity_store')->getActivityDataForCustomer(
-                $customer
-            );
-        }
-
-        $links = isset($data['_links']) ? $data['_links'] : [];
-
-        if ($selfLink = $this->generateResourceApiUrl($customer->getId())) {
-            $links[] = [
-                'rel' => 'self',
-                'href' => $selfLink,
-                'method' => 'GET',
-            ];
-        }
-
-        $data['_links'] = $links;
-
-        return $data;
-    }
 }
