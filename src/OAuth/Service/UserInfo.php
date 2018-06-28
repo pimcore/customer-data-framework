@@ -41,13 +41,11 @@ class UserInfo{
 
     /**
      * @param Request $request
-     * @return array
+     * @return CustomerInterface|\Exception
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \Exception
      */
-    public function getByAccessTokenRequest(Request $request){
-
+    public function getCustomerByAccessTokenRequest(Request $request){
 
         $accessTokenInfo =  $this->authorizationServer->validateAuthenticatedRequest($request);
 
@@ -73,8 +71,19 @@ class UserInfo{
 
         $customer = $this->customerProvider->getById($accessToken->getUserIdentifier());
 
-        return $this->getByCustomer($customer);
+        return $customer;
+    }
 
+    /**
+     * @param Request $request
+     * @return array
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function getByAccessTokenRequest(Request $request){
+        $customer = $this->getCustomerByAccessTokenRequest($request);
+
+        return $this->getByCustomer($customer);
     }
 
     /**
