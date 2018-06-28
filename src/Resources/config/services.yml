@@ -299,5 +299,9 @@ services:
         autowire: true
 
     CustomerManagementFrameworkBundle\OAuth\Service\UserInfo:
-            public: true
-            autowire: true
+        public: true
+        autowire: true
+
+    CustomerManagementFrameworkBundle\OAuth\Service\PSR7RequestTransformer:
+        public: true
+        autowire: true
