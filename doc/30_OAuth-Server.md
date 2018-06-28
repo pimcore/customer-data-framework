@@ -48,6 +48,9 @@ there are some terms that need to be described first:
   );
   ```
 
+  This services requires you to put a valid Access-Token into the Authorization-Header, as you can see in the example above.
+  Additional information of how you can request user-specific information can be found [here](#AccessTokenCustomerController).
+
 - Auth - Code
  
   In exchange for an Access-Token an Auth-Code is needed. 
@@ -339,3 +342,50 @@ The OAuth-Server can be configured with different options. For Details see [Conf
 ## Other sources
 
 All information described above can be found on [oauth2.thephpleague.com](https://oauth2.thephpleague.com/) as well.
+
+## [AccessTokenCustomerController](#AccessTokenCustomerController)
+
+This controller provides two actions that you can use to read or update a customer.
+Both actions expect to get a request that contains a valid Access-Token in the Authorization-Header.
+
+To read a customer you can use `readCustomerByAccessTokenRequest`:
+
+  ```php
+  /**
+   * @param Request $request
+   * @param UserInfo $userInfo
+   * @Route("/accesstoken", name="cmf_read_customer_access_token_path")
+   * @Method({"GET"})
+   * @return JsonResponse|Response
+   */
+  public function readCustomerByAccessTokenRequest(Request $request, UserInfo $userInfo)
+  {
+     ....
+  }
+  ``` 
+  
+  This action expects to get a GET-Request.
+  
+  
+To update a customer you can use `updateCustomerByAccessTokenRequest`:
+
+  ```php
+  /**
+   * @param Request $request
+   * @param CustomerProviderInterface $customerProvider
+   * @param UserInfo $userInfo
+   * @Route("/accesstoken", name="cmf_write_customer_access_token_path")
+   * @Method({"POST", "PUT"})
+   * @return \CustomerManagementFrameworkBundle\RESTApi\Response|null|\Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
+   * @throws \Doctrine\ORM\ORMException
+   * @throws \Doctrine\ORM\OptimisticLockException
+   */
+  public function updateCustomerByAccessTokenRequest(Request $request, CustomerProviderInterface $customerProvider, UserInfo $userInfo)
+  {
+     ....
+  }
+  ``` 
+  
+  This action expects to get a POST- or PUT-Request.
+  
+
