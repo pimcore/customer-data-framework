@@ -39,11 +39,11 @@ class AccessTokenCustomerController extends FrontendController
     /**
      * @param Request $request
      * @param UserInfo $userInfo
-     * @Route("/accesstoken")
+     * @Route("/accesstoken", name="cmf_read_customer_access_token_path")
      * @Method({"GET"})
      * @return JsonResponse|Response
      */
-    public function readRecordByAccessTokenRequest(Request $request, UserInfo $userInfo)
+    public function readCustomerByAccessTokenRequest(Request $request, UserInfo $userInfo)
     {
         try {
             $customer = $this->loadCustomerByAccessTokenRequest($request, $userInfo);
@@ -59,13 +59,13 @@ class AccessTokenCustomerController extends FrontendController
      * @param Request $request
      * @param CustomerProviderInterface $customerProvider
      * @param UserInfo $userInfo
-     * @Route("/accesstoken")
+     * @Route("/accesstoken", name="cmf_write_customer_access_token_path")
      * @Method({"POST", "PUT"})
      * @return \CustomerManagementFrameworkBundle\RESTApi\Response|null|\Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function updateRecordByAccessTokenRequest(Request $request, CustomerProviderInterface $customerProvider, UserInfo $userInfo)
+    public function updateCustomerByAccessTokenRequest(Request $request, CustomerProviderInterface $customerProvider, UserInfo $userInfo)
     {
         $customer = $this->loadCustomerByAccessTokenRequest($request,$userInfo);
         $data = $this->getRequestData($request);
