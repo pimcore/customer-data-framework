@@ -19,7 +19,6 @@ use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Grant\ImplicitGrant;
 use Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse;
 use Pimcore\Model\DataObject;
-use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -79,7 +78,13 @@ class AuthorizationServer{
      */
     private $currentUser = null;
 
-    public function __construct(ClientRepository $clientRepository, UserRepository $userRepository,ScopeRepository $scopeRepository, AccessTokenRepository $accessTokenRepository, AuthCodeRepository $authCodeRepository, RefreshTokenRepository $refreshTokenRepository)
+    /**
+     * @var PSR7RequestTransformer $psr7Transformer
+     */
+    private $psr7Transformer = null;
+
+
+    public function __construct(ClientRepository $clientRepository, UserRepository $userRepository,ScopeRepository $scopeRepository, AccessTokenRepository $accessTokenRepository, AuthCodeRepository $authCodeRepository, RefreshTokenRepository $refreshTokenRepository, PSR7RequestTransformer $PSR7RequestTransformer)
     {
         $this->clientRepository = $clientRepository;
         $this->userRepository = $userRepository;
@@ -87,6 +92,7 @@ class AuthorizationServer{
         $this->accessTokenRepository = $accessTokenRepository;
         $this->authCodeRepository = $authCodeRepository;
         $this->refreshTokenRepository = $refreshTokenRepository;
+        $this->psr7Transformer = $PSR7RequestTransformer;
     }
 
     /**
@@ -128,10 +134,7 @@ class AuthorizationServer{
 
             $this->initAuthGrantServer();
 
-            $psr7Info = $this->getPsr7RequestAndResponse($request);
-
-            $httpFoundationFactory = new HttpFoundationFactory();
-            $symfonyResponse = $httpFoundationFactory->createResponse($this->server->respondToAccessTokenRequest($psr7Info["request"],$psr7Info["response"]));
+            $symfonyResponse = $this->getAccessTokenResponseFromSymfonyRequest($request);
 
             return $symfonyResponse;
 
@@ -156,10 +159,7 @@ class AuthorizationServer{
 
             $this->initRefreshGrantServer();
 
-            $psr7Info = $this->getPsr7RequestAndResponse($request);
-
-            $httpFoundationFactory = new HttpFoundationFactory();
-            $symfonyResponse = $httpFoundationFactory->createResponse($this->server->respondToAccessTokenRequest($psr7Info["request"],$psr7Info["response"]));
+            $symfonyResponse = $this->getAccessTokenResponseFromSymfonyRequest($request);
 
             return $symfonyResponse;
 
@@ -245,8 +245,7 @@ class AuthorizationServer{
         new \League\OAuth2\Server\Middleware\ResourceServerMiddleware($server);
 
         try{
-            $psr7Factory = new DiactorosFactory();
-            $psrRequest = $psr7Factory->createRequest($request);
+            $psrRequest = $this->psr7Transformer->transformToPSR7Request($request);
 
             return $server->validateAuthenticatedRequest($psrRequest);
         }
@@ -412,8 +411,7 @@ class AuthorizationServer{
 
         $this->initAuthGrantServer();
 
-        $psr7Factory = new DiactorosFactory();
-        $psrRequest = $psr7Factory->createRequest($request);
+        $psrRequest = $this->psr7Transformer->transformToPSR7Request($request);
 
         try {
 
@@ -432,8 +430,7 @@ class AuthorizationServer{
 
             // Return the HTTP redirect response
 
-            $symfonyResponse = new Response();
-            $psrResponse = $psr7Factory->createResponse($symfonyResponse);
+            $psrResponse = $this->psr7Transformer->getPSR7Response();
 
             $response = $this->server->completeAuthorizationRequest($authRequest, $psrResponse);
 
@@ -459,8 +456,7 @@ class AuthorizationServer{
 
         $this->initImplicitGrantServer();
 
-        $psr7Factory = new DiactorosFactory();
-        $psrRequest = $psr7Factory->createRequest($request);
+        $psrRequest = $this->psr7Transformer->transformToPSR7Request($request);
 
         try {
 
@@ -479,8 +475,7 @@ class AuthorizationServer{
 
             // Return the HTTP redirect response
 
-            $symfonyResponse = new Response();
-            $psrResponse = $psr7Factory->createResponse($symfonyResponse);
+            $psrResponse = $this->psr7Transformer->getPSR7Response();
 
             $response = $this->server->completeAuthorizationRequest($authRequest, $psrResponse);
 
@@ -508,10 +503,7 @@ class AuthorizationServer{
 
             $this->initPasswordGrantServer();
 
-            $psr7Info = $this->getPsr7RequestAndResponse($request);
-
-            $httpFoundationFactory = new HttpFoundationFactory();
-            $symfonyResponse = $httpFoundationFactory->createResponse($this->server->respondToAccessTokenRequest($psr7Info["request"],$psr7Info["response"]));
+            $symfonyResponse = $this->getAccessTokenResponseFromSymfonyRequest($request);
 
             return $symfonyResponse;
 
@@ -523,18 +515,26 @@ class AuthorizationServer{
 
     }
 
-    private function getPsr7RequestAndResponse(Request $request){
-        $psr7Factory = new DiactorosFactory();
-        $psrRequest = $psr7Factory->createRequest($request);
-
-        $symfonyResponse = new Response();
-        $psrResponse = $psr7Factory->createResponse($symfonyResponse);
-        return [
-            "request" => $psrRequest,
-            "response" => $psrResponse
+    /**
+     * @param Request $request
+     * @return Response
+     * @throws OAuthServerException
+     */
+    private function getAccessTokenResponseFromSymfonyRequest(Request $request){
+        $psr7Info = [
+            "request" => $this->psr7Transformer->transformToPSR7Request($request),
+            "response" => $this->psr7Transformer->getPSR7Response()
         ];
+        $httpFoundationFactory = new HttpFoundationFactory();
+        return $httpFoundationFactory->createResponse($this->server->respondToAccessTokenRequest($psr7Info["request"],$psr7Info["response"]));
     }
 
+    /**
+     * @param bool $checkAuthCode
+     * @param bool $checkRefreshToken
+     * @return array
+     * @throws \Exception
+     */
     private function handleConfigOptions(bool $checkAuthCode=true, bool $checkRefreshToken=true){
         $oauthServerConfig = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
 
