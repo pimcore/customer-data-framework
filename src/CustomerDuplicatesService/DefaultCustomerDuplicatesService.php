@@ -203,14 +203,15 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
             return;
         }
 
-        if (strpos($fd->getColumnType(), 'char') == !false) {
-            $this->addNormalizedMysqlCompareConditionForStringFields($list, $field, $value);
+        if ($value instanceof Carbon || $value instanceof \Pimcore\Date || $value instanceof \DateTime) {
+            $this->addNormalizedMysqlCompareConditionForDateFields($list, $field, $value);
 
             return;
         }
 
-        if ($value instanceof Carbon || $value instanceof \Pimcore\Date || $value instanceof \DateTime) {
-            $this->addNormalizedMysqlCompareConditionForDateFields($list, $field, $value);
+        
+        if (strpos($fd->getQueryColumnType(), 'char') == !false) {
+            $this->addNormalizedMysqlCompareConditionForStringFields($list, $field, $value);
 
             return;
         }
