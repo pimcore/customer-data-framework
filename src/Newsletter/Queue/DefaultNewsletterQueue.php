@@ -92,13 +92,15 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
         }
 
         $this->getLogger()->info('execute immidiate async queue items');
-
-        foreach($this->immidateAsyncQueueItems as $item) {
-            $php = Console::getExecutable('php');
-            $cmd = sprintf($php . ' ' . PIMCORE_PROJECT_ROOT . "/bin/console cmf:newsletter-sync --process-queue-item='%s'", $item->toJson());
-            $this->getLogger()->info('execute async process queue item cmd: ' . $cmd);
-            Console::execInBackground($cmd);
-        }
+        
+        if (count($this->immidateAsyncQueueItems) <= 1) { //avoid too many parallel scripts running
+            foreach($this->immidateAsyncQueueItems as $item) {
+                $php = Console::getExecutable('php');
+                $cmd = sprintf($php . ' ' . PIMCORE_PROJECT_ROOT . "/bin/console cmf:newsletter-sync --process-queue-item='%s'", $item->toJson());
+                $this->getLogger()->info('execute async process queue item cmd: ' . $cmd);
+                Console::execInBackground($cmd);
+            }
+        }       
     }
 
     /**
