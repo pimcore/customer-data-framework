@@ -9,6 +9,7 @@ services:
             $segmentAssignmentTypes: '%pimcore_customer_management_framework.segment_assignment_classes.types%'
 
     CustomerManagementFrameworkBundle\Targeting\EventListener\SegmentTrackedListener: ~
+    CustomerManagementFrameworkBundle\Targeting\EventListener\TargetingToolbarListener: ~
 
     CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer: ~
     CustomerManagementFrameworkBundle\Targeting\DataProvider\CustomerSegments: ~
