@@ -48,31 +48,10 @@ $cv = $this->customerView;
             <!-- /.box-header -->
 
             <div class="box-body no-padding table-responsive">
-                <table class="table table-striped table-bordered table-hover">
-                    <thead>
-                    <tr>
-                        <th class="table-id-column">#</th>
-                        <th class="reference-id-column">ID</th>
-                        <th class="icon-column icon-column--center"></th>
-                        <th><?= $cv->translate('cmf_filters_customer_name') ?></th>
-                        <th><?= $cv->translate('cmf_filters_customer_email') ?></th>
-                        <th><?= $cv->translate('cmf_filters_customer_gender') ?></th>
-                        <th><?= $cv->translate('cmf_filters_segments') ?></th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-
-                    <?php
-                    foreach ($paginator as $customer) {
-                        echo $this->template($cv->getOverviewTemplate($customer), [
-                            'customer' => $customer
-                        ]);
-                    }
-                    ?>
-
-                    </tbody>
-                </table>
+                <?=$this->template($cv->getOverviewWrapperTemplate(), [
+                    'paginator' => $paginator,
+                    'cv' => $cv
+                ]);?>
             </div>
             <!-- /.box-body -->
             <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Partial/Table:pagination-footer.html.php') ?>

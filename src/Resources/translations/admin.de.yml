@@ -149,6 +149,7 @@ plugin_cmf_automationtrigger_assign_target_group_documents: "via Dokument"
 plugin_cmf_automationtrigger_assign_target_group_targetingRules: "via Targeting Regel"
 plugin_cmf_actiontriggerrule_conditionCountTargetGroupWeight: "[Targeting] Prüfe Gewichtung der zugewiesenen Zielgruppe"
 plugin_cmf_actiontriggerrule_assigned_target_group_weight: "Bedingung"
+plugin_cmf_targetingaction_consider_profiling_consent: "Profiling Consent berücksichtigen"
 
 plugin_cmf_actiontriggerrule_actionAddTargetGroupSegment: "[Targeting] Zielgruppen Segment zuweisen"
 
@@ -163,6 +164,7 @@ plugin_cmf_actiontriggerrule_number_condition_>=: "wenn Anzahl größer/gleich"
 plugin_cmf_actiontriggerrule_for_condition: "Für"
 plugin_cmf_actiontriggerrule_for_condition_empty_all: "Leere Auswahl bedeutet alle."
 plugin_cmf_actiontriggerrule_for_condition_segments: "Segmente"
+plugin_cmf_actiontriggerrule_consider_profiling_consent: "Profiling Consent berücksichtigen"
 
 plugin_cmf_targeting_action_apply_target_groups_from_segments: "[CMF] Zielgruppen von zugewiesenen Kundensegmenten übernehmen"
 plugin_cmf_targeting_action_apply_for: "Für"
@@ -174,3 +176,5 @@ plugin_cmf_targeting_action_apply_target_groups_from_segments_only_merge: "nur Z
 cmf_segment_import_customers: "Kunden CSV-Liste importieren"
 cmf_replace_segments: "Segmente ersetzen"
 cmf_operator_customer_segments: "Operator Kundensegmente"
+newsletter_SegmentAddressSource: "CMF: Kundensegmente"
+cmf_newsletter_selectedSegments: "Gewählte Segmente"

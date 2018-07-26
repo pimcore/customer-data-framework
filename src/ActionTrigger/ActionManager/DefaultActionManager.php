@@ -19,12 +19,23 @@ use CustomerManagementFrameworkBundle\ActionTrigger\Action\ActionDefinitionInter
 use CustomerManagementFrameworkBundle\ActionTrigger\Action\ActionInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Factory;
+use CustomerManagementFrameworkBundle\GDPR\Consent\ConsentCheckerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 
 class DefaultActionManager implements ActionManagerInterface
 {
     use LoggerAware;
+
+    /**
+     * @var ConsentCheckerInterface
+     */
+    protected $consentChecker;
+
+    public function __construct(ConsentCheckerInterface $consentChecker)
+    {
+        $this->consentChecker = $consentChecker;
+    }
 
     public function processAction(
         ActionDefinitionInterface $action,
@@ -39,7 +50,7 @@ class DefaultActionManager implements ActionManagerInterface
             $actionImpl = Factory::getInstance()->createObject(
                 $action->getImplementationClass(),
                 ActionInterface::class,
-                ['logger' => $this->getLogger()]
+                ['logger' => $this->getLogger(), $this->consentChecker]
             );
 
             $actionImpl->process($action, $customer, $environment);

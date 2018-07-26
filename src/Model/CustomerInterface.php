@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\Model;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\SaveOptions;
 use Pimcore\Model\DataObject\CustomerSegment;
+use Pimcore\Model\DataObject\Data\Consent;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
 use Pimcore\Model\Element\ElementInterface;
 
@@ -203,6 +204,11 @@ interface CustomerInterface extends ElementInterface
      * @return void
      */
     public function setIdEncoded($idEncoded);
+
+    /**
+     * @return Consent|bool|null
+     */
+    public function getProfilingConsent();
 
     /**
      * @return array

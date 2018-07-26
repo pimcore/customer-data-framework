@@ -18,9 +18,11 @@ declare(strict_types=1);
 namespace CustomerManagementFrameworkBundle\Targeting\ActionHandler;
 
 use CustomerManagementFrameworkBundle\ActivityManager\ActivityManagerInterface;
+use CustomerManagementFrameworkBundle\GDPR\Consent\ConsentCheckerInterface;
 use CustomerManagementFrameworkBundle\Model\Activity\TargetGroupAssignActivity;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer;
+use Pimcore\Model\DataObject\Data\Consent;
 use Pimcore\Model\Tool\Targeting\Rule;
 use Pimcore\Model\Tool\Targeting\TargetGroup;
 use Pimcore\Targeting\ActionHandler\AssignTargetGroup;
@@ -46,6 +48,11 @@ class AssignTargetGroupAndSegment extends AssignTargetGroup {
      */
     protected $dataLoader;
 
+    /**
+     * @var ConsentCheckerInterface
+     */
+    protected $consentChecker;
+
 
     /**
      * AssignTargetGroupAndSegment constructor.
@@ -59,7 +66,8 @@ class AssignTargetGroupAndSegment extends AssignTargetGroup {
         TargetingStorageInterface $storage,
         SegmentManagerInterface $segmentManager,
         ActivityManagerInterface $activityManager,
-        DataLoaderInterface $dataLoader
+        DataLoaderInterface $dataLoader,
+        ConsentCheckerInterface $consentChecker
     )
     {
         parent::__construct($conditionMatcher, $storage);
@@ -67,6 +75,7 @@ class AssignTargetGroupAndSegment extends AssignTargetGroup {
         $this->segmentManager = $segmentManager;
         $this->activityManager = $activityManager;
         $this->dataLoader = $dataLoader;
+        $this->consentChecker = $consentChecker;
     }
 
 
@@ -81,6 +90,10 @@ class AssignTargetGroupAndSegment extends AssignTargetGroup {
         $this->dataLoader->loadDataFromProviders($visitorInfo, [Customer::PROVIDER_KEY]);
         $customer = $visitorInfo->get(Customer::PROVIDER_KEY);
         if(!$customer) {
+            return;
+        }
+
+        if(isset($action['considerProfilingConsent']) && $action['considerProfilingConsent'] !== false && !$this->consentChecker->hasProfilingConsent($customer)) {
             return;
         }
 

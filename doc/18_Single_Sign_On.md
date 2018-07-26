@@ -107,7 +107,7 @@ You can find the annotated example of a simple username/password login form with
 To re-implement the sample, following steps are necessary: 
 
 1) Make sure the customer class implements all necessary interfaces. See [Installation](./02_Installation.md) for details. 
-2) Activate HIOWOauthBundle in your `App.php`. 
+2) Activate `HIOWOauthBundle` and `HttplugBundle` in your `App.php`. 
 3) Activate the SSO in CMF configuration. See [Configuration](./03_Configuration.md) for details. 
 4) Configure your firewalls in symfony security configuration. See also the 
    [configuration of the sample](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/src/AppBundle/Resources/config/pimcore/security.yml#L9).

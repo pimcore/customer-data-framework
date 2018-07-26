@@ -147,6 +147,13 @@
                             checked: data.trackActivity
                         },
                         {
+                            xtype: "checkbox",
+                            labelWidth: 200,
+                            name: "considerProfilingConsent",
+                            fieldLabel: t("plugin_cmf_targetingaction_consider_profiling_consent"),
+                            checked: typeof data.considerProfilingConsent == 'undefined' ? true : data.considerProfilingConsent
+                        },
+                        {
                             xtype: "hidden",
                             name: "type",
                             value: "assign_target_group"

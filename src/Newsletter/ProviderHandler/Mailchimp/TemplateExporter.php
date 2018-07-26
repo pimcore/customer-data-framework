@@ -52,6 +52,10 @@ class TemplateExporter
         $remoteId = $exportService->getRemoteId($document, self::LIST_ID_PLACEHOLDER);
 
         $html = \Pimcore\Model\Document\Service::render($document);
+
+        //dirty hack to prevent absolutize unsubscribe url placeholder of mailchimp
+        $html = str_replace(["*|UNSUB|*", "*|FORWARD|*", "*|UPDATE_PROFILE|*"], ["data:*|UNSUB|*", "data:*|FORWARD|*", "data:*|UPDATE_PROFILE|*"], $html);
+
         // modifying the content e.g set absolute urls...
         $html = Mail::embedAndModifyCss($html, $document);
         $html = Mail::setAbsolutePaths($html, $document);
@@ -59,6 +63,10 @@ class TemplateExporter
         //dirty hack to make sure mailchimp merge tags are not url-encoded
         $html = str_replace("*%7C", "*|", $html);
         $html = str_replace("%7C*", "|*", $html);
+
+        //dirty hack to prevent absolutize unsubscribe url placeholder of mailchimp
+        $html = str_replace(["data:*|UNSUB|*", "data:*|FORWARD|*", "data:*|UPDATE_PROFILE|*"], ["*|UNSUB|*", "*|FORWARD|*", "*|UPDATE_PROFILE|*"], $html);
+
 
         $templateExists = false;
 

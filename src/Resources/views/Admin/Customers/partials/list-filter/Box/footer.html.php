@@ -15,11 +15,11 @@ $userAllowedToUpdate = ($filterDefinition->getId() && $filterDefinition->isUserA
 $userAllowedToShare = ($filterDefinition->getId() && $filterDefinition->isUserAllowedToShare(\Pimcore\Tool\Admin::getCurrentUser()));
 
 /** @noinspection PhpUndefinedMethodInspection */
-$this->jsConfig()->add('registerSaveFilterDefinition', true);
+$this->jsConfigHelper()->add('registerSaveFilterDefinition', true);
 /** @noinspection PhpUndefinedMethodInspection */
-$this->jsConfig()->add('registerUpdateFilterDefinition', true);
+$this->jsConfigHelper()->add('registerUpdateFilterDefinition', true);
 /** @noinspection PhpUndefinedMethodInspection */
-$this->jsConfig()->add('registerShareFilterDefinition', true);
+$this->jsConfigHelper()->add('registerShareFilterDefinition', true);
 ?>
 
 </div>

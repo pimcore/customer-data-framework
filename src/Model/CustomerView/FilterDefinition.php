@@ -59,7 +59,7 @@ class FilterDefinition extends AbstractModel
     /**
      * @return int|null
      */
-    public function getOwnerId()
+    public function getOwnerId(): int
     {
         return $this->ownerId;
     }
@@ -67,7 +67,7 @@ class FilterDefinition extends AbstractModel
     /**
      * @param int|null $ownerId
      */
-    public function setOwnerId($ownerId)
+    public function setOwnerId(int $ownerId)
     {
         $this->ownerId = $ownerId;
     }

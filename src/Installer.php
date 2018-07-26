@@ -25,7 +25,7 @@ class Installer extends MigrationInstaller
 {
     public function getMigrationVersion(): string
     {
-        return '20180102103153';
+        return '20180410085629';
     }
 
     public function migrateInstall(Schema $schema, Version $version)
@@ -240,6 +240,9 @@ class Installer extends MigrationInstaller
                 'storedFunctionDocument.sql',
                 'storedFunctionAsset.sql',
                 'storedFunctionObject.sql',
+            ],
+            __DIR__ . '/Resources/sql/activityMetadata/' => [
+                'datamodel.sql'
             ]
         ];
 

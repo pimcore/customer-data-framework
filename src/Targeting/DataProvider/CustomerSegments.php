@@ -19,6 +19,7 @@ namespace CustomerManagementFrameworkBundle\Targeting\DataProvider;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentExtractor\SegmentExtractorInterface;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
 use Pimcore\Targeting\DataProvider\DataProviderInterface;
 use Pimcore\Targeting\DataProviderDependentInterface;
@@ -27,6 +28,16 @@ use Pimcore\Targeting\Model\VisitorInfo;
 class CustomerSegments implements DataProviderInterface, DataProviderDependentInterface
 {
     const PROVIDER_KEY = 'cmf_customer_segments';
+
+    /**
+     * @var SegmentExtractorInterface
+     */
+    private $segmentExtractor;
+
+    public function __construct(SegmentExtractorInterface $segmentExtractor)
+    {
+        $this->segmentExtractor = $segmentExtractor;
+    }
 
     /**
      * @inheritDoc
@@ -56,43 +67,6 @@ class CustomerSegments implements DataProviderInterface, DataProviderDependentIn
             return [];
         }
 
-        $segments = [];
-        $segments = $this->extractSegmentsFromPimcoreFieldData($customer->getManualSegments(), $segments);
-        $segments = $this->extractSegmentsFromPimcoreFieldData($customer->getCalculatedSegments(), $segments);
-
-        return $segments;
-    }
-
-    private function extractSegmentsFromPimcoreFieldData($field, array $segments = []): array
-    {
-        if (!is_array($field) || empty($field)) {
-            return $segments;
-        }
-
-        foreach ($field as $segment) {
-            $segmentId = null;
-            $count     = 1;
-
-            if ($segment instanceof CustomerSegmentInterface) {
-                $segmentId = $segment->getId();
-            } elseif ($segment instanceof ObjectMetadata && $segment->getObject() instanceof CustomerSegmentInterface) {
-                $segmentId = $segment->getObject()->getId();
-
-                $count = $segment->getApplication_counter();
-                if (is_numeric($count)) {
-                    $count = (int)$count;
-                } else {
-                    $count = 1;
-                }
-            }
-
-            if (!isset($segments[$segmentId])) {
-                $segments[$segmentId] = 0;
-            }
-
-            $segments[$segmentId] += $count;
-        }
-
-        return $segments;
+        return $this->segmentExtractor->getAllSegmentApplicationCounters($customer);
     }
 }

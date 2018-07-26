@@ -35,6 +35,11 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
     protected $maxItemsPerRound;
 
+    /**
+     * @var NewsletterQueueItemInterface[]
+     */
+    private $immidateAsyncQueueItems = [];
+
     public function __construct($maxItemsPerRound = 500)
     {
         $this->maxItemsPerRound = $maxItemsPerRound;
@@ -64,12 +69,38 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
         );
 
         if ($immediateAsyncProcessQueueItem) {
-            $item = new DefaultNewsletterQueueItem($customer->getId(), null, $email, $operation, $modificationDate);
-            $php = Console::getExecutable('php');
-            $cmd = sprintf($php . ' ' . PIMCORE_PROJECT_ROOT . "/bin/console cmf:newsletter-sync --process-queue-item='%s'", $item->toJson());
-            $this->getLogger()->info('execute async process queue item cmd: ' . $cmd);
-            Console::execInBackground($cmd);
+            $this->addImmidiateAsyncQueueItem($customer, $email, $operation, $modificationDate);
         }
+    }
+
+
+    private function addImmidiateAsyncQueueItem(NewsletterAwareCustomerInterface $customer, $email, $operation, $modificationDate)
+    {
+        $item = new DefaultNewsletterQueueItem($customer->getId(), null, $email, $operation, $modificationDate);
+
+        $this->immidateAsyncQueueItems[$customer->getId() . '_' . $operation] = $item;
+
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function executeImmidiateAsyncQueueItems()
+    {
+        if(!sizeof($this->immidateAsyncQueueItems)) {
+            return;
+        }
+
+        $this->getLogger()->info('execute immidiate async queue items');
+        
+        if (count($this->immidateAsyncQueueItems) <= 1) { //avoid too many parallel scripts running
+            foreach($this->immidateAsyncQueueItems as $item) {
+                $php = Console::getExecutable('php');
+                $cmd = sprintf($php . ' ' . PIMCORE_PROJECT_ROOT . "/bin/console cmf:newsletter-sync --process-queue-item='%s'", $item->toJson());
+                $this->getLogger()->info('execute async process queue item cmd: ' . $cmd);
+                Console::execInBackground($cmd);
+            }
+        }       
     }
 
     /**
@@ -107,9 +138,16 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
     {
         $db = Db::get();
 
-        $db->query('delete from ' . self::QUEUE_TABLE . ' where customerId = ? and email = ? and operation = ? and modificationDate = ?', [
-            $item->getCustomerId(), $item->getEmail(), $item->getOperation(), $item->getModificationDate()
-        ]);
+        if(!is_null($item->getEmail())) {
+            $db->query('delete from ' . self::QUEUE_TABLE . ' where customerId = ? and email = ? and operation = ? and modificationDate = ?', [
+                $item->getCustomerId(), $item->getEmail(), $item->getOperation(), $item->getModificationDate()
+            ]);
+        } else {
+            $db->query('delete from ' . self::QUEUE_TABLE . ' where customerId = ? and email is null and operation = ? and modificationDate = ?', [
+                $item->getCustomerId(), $item->getOperation(), $item->getModificationDate()
+            ]);
+        }
+
 
         $this->getLogger()->info(sprintf(
             'newsletter queue item removed [customerId: %s, email: %s, operation: %s, modificationDate: %s]',

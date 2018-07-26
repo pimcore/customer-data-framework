@@ -64,6 +64,9 @@ services:
     CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface:
         class: CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\DefaultSegmentBuilderExecutor
 
+    CustomerManagementFrameworkBundle\SegmentManager\SegmentExtractor\SegmentExtractorInterface:
+        class: CustomerManagementFrameworkBundle\SegmentManager\SegmentExtractor\DefaultSegmentExtractor
+
     CustomerManagementFrameworkBundle\CustomerMerger\CustomerMergerInterface:
         class: CustomerManagementFrameworkBundle\CustomerMerger\DefaultCustomerMerger
 
@@ -245,6 +248,10 @@ services:
         arguments:
             $config: '%pimcore.gdpr-data-extrator.customers%'
 
+
+    CustomerManagementFrameworkBundle\GDPR\Consent\ConsentCheckerInterface:
+        class: CustomerManagementFrameworkBundle\GDPR\Consent\ConsentChecker
+        public: false
 
     cmf.pimcore.data_object.import.operator.factory.customer_segments:
         class: Pimcore\DataObject\Import\ColumnConfig\Operator\Factory\DefaultOperatorFactory

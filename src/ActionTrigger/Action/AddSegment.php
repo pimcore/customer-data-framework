@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Action;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
+use CustomerManagementFrameworkBundle\GDPR\Consent\ConsentCheckerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\DataObject\CustomerSegment;
 
@@ -32,6 +33,10 @@ class AddSegment extends AddTrackedSegment
     )
     {
         $options = $actionDefinition->getOptions();
+
+        if(isset($options[self::OPTION_CONSIDER_PROFILING_CONSENT]) && $options[self::OPTION_CONSIDER_PROFILING_CONSENT] !== false && !$this->consentChecker->hasProfilingConsent($customer)) {
+            return;
+        }
 
         if (empty($options[self::OPTION_SEGMENT_ID])) {
             $this->logger->error($this->name . ' action: segmentId option not set');

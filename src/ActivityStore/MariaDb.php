@@ -21,6 +21,8 @@ use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use Doctrine\DBAL\Exception\TableNotFoundException;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\Concrete;
 use Zend\Paginator\Paginator;
@@ -28,7 +30,10 @@ use Zend\Paginator\Paginator;
 class MariaDb implements ActivityStoreInterface
 {
     const ACTIVITIES_TABLE = 'plugin_cmf_activities';
+    const ACTIVITIES_METADATA_TABLE = 'plugin_cmf_activities_metadata';
     const DELETIONS_TABLE = 'plugin_cmf_deletions';
+
+    use LoggerAware;
 
     /**
      * @param ActivityInterface $activity
@@ -135,20 +140,51 @@ class MariaDb implements ActivityStoreInterface
         $data['md5'] = $db->quote(md5(serialize($md5Data)));
         $data['modificationDate'] = $time;
 
-        if ($entry->getId()) {
-            \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->update(
-                self::ACTIVITIES_TABLE,
-                $data,
-                'id = '.$entry->getId()
-            );
-        } else {
-            $data['creationDate'] = $time;
-            $id = \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->insert(
-                self::ACTIVITIES_TABLE,
-                $data
-            );
-            $entry->setId($id);
+        $db = Db::get();
+
+        $db->beginTransaction();
+
+        try {
+            if ($entry->getId()) {
+                \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->update(
+                    self::ACTIVITIES_TABLE,
+                    $data,
+                    'id = '.$entry->getId()
+                );
+            } else {
+                $data['creationDate'] = $time;
+                $id = \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->insert(
+                    self::ACTIVITIES_TABLE,
+                    $data
+                );
+                $entry->setId($id);
+            }
+
+            try {
+                $db->query('delete from ' . self::ACTIVITIES_METADATA_TABLE . ' where activityId = ' . intval($entry->getId()));
+
+                foreach($entry->getMetadata() as $key => $data) {
+
+                    $db->insert(
+                        self::ACTIVITIES_METADATA_TABLE,
+                        [
+                            'activityId' => $entry->getId(),
+                            'key' => $key,
+                            'data' => $data
+                        ]
+                    );
+                }
+            } catch(TableNotFoundException $ex) {
+                $this->getLogger()->error(sprintf('table %s not found - please press the update button of the CMF bundle in the extension manager', self::ACTIVITIES_METADATA_TABLE));
+            }
+
+
+            $db->commit();
+        } catch(\Exception $e) {
+            $this->getLogger()->error(sprintf('save activity (%s) failed: %s', $entry->getId(), $e->getMessage()));
+            $db->rollBack();
         }
+
     }
 
     /**
@@ -467,5 +503,34 @@ class MariaDb implements ActivityStoreInterface
         }
 
         return $entry;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function lazyLoadMetadataOfEntry(ActivityStoreEntryInterface $entry)
+    {
+        if(!$entry->getId()) {
+            return;
+        }
+
+        try {
+            $rows = Db::get()->fetchAll(sprintf('select * from %s where activityId = %s',
+                self::ACTIVITIES_METADATA_TABLE,
+                $entry->getId()
+            ));
+        } catch(\Exception $e) {
+            $this->getLogger()->error('fetching of activity store metadata failed: ' . $e->getMessage());
+            $rows = [];
+        }
+
+
+        $metadata = [];
+
+        foreach($rows as $row) {
+            $metadata[$row['key']] = $row['data'];
+        }
+
+        $entry->setMetadata($metadata);
     }
 }

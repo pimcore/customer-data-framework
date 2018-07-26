@@ -15,11 +15,17 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Action;
 
+use CustomerManagementFrameworkBundle\GDPR\Consent\ConsentCheckerInterface;
 use Psr\Log\LoggerInterface;
 
 abstract class AbstractAction implements ActionInterface
 {
     protected $logger;
+
+    /**
+     * @var ConsentCheckerInterface
+     */
+    protected $consentChecker;
 
     protected static $actionDelayMultiplier = [
         'm' => 1,
@@ -27,9 +33,10 @@ abstract class AbstractAction implements ActionInterface
         'd' => 60 * 24,
     ];
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, ConsentCheckerInterface $consentChecker)
     {
         $this->logger = $logger;
+        $this->consentChecker = $consentChecker;
     }
 
     public static function createActionDefinitionFromEditmode(\stdClass $setting)
@@ -49,5 +56,10 @@ abstract class AbstractAction implements ActionInterface
     public static function getDataForEditmode(ActionDefinitionInterface $actionDefinition)
     {
         return $actionDefinition->toArray();
+    }
+
+    public function getConsentChecker(): ConsentCheckerInterface
+    {
+        return $this->consentChecker;
     }
 }

@@ -26,10 +26,12 @@ class Objects
     public static function getValidKey($key)
     {
         if (!method_exists('Pimcore\Model\Element\Service', 'getValidKey')) {
-            return File::getValidFilename($key);
+            $result = File::getValidFilename($key);
+        } else {
+            $result = Service::getValidKey($key, 'object');
         }
 
-        return Service::getValidKey($key, 'object');
+        return str_replace('%', '-', $result);
     }
 
     public static function checkObjectKey(Concrete $object)
@@ -44,8 +46,9 @@ class Objects
         $list = new \Pimcore\Model\DataObject\Listing;
         $list->setUnpublished(true);
         $list->setCondition(
-            "o_path = '".(string)$object->getParent()."/' and o_key = '".$object->getKey(
-            )."' and o_id != ".$object->getId()
+            'o_path = ? and o_key = ? and o_id != ?',
+            [(string)$object->getParent() . '/', $object->getKey(), $object->getId()]
+
         );
         $list->setLimit(1);
         $list = $list->load();

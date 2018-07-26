@@ -23,6 +23,7 @@ use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentAssignment\StoredFunctions\StoredFunctionsInterface;
 use CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapperInterface;
 use CustomerManagementFrameworkBundle\SegmentBuilder\SegmentBuilderInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentExtractor\SegmentExtractorInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\CustomerSegment;
@@ -541,7 +542,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     public function getCalculatedSegmentsFromCustomer(CustomerInterface $customer)
     {
-        return $this->extractSegmentsFromPimcoreFieldData($customer->getCalculatedSegments());
+        return $this->getSegmentExtractor()->getCalculatedSegmentsFromCustomer($customer);
     }
 
     /**
@@ -549,37 +550,15 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     public function getManualSegmentsFromCustomer(CustomerInterface $customer)
     {
-        return $this->extractSegmentsFromPimcoreFieldData($customer->getManualSegments());
+        return $this->getSegmentExtractor()->getManualSegmentsFromCustomer($customer);
     }
 
     /**
-     * The CMF supports object with metadata and "normal" object relations as store for the segments of a customer.
-     * This methods extracts the segments if object with metadata is used.
-     *
-     * @param CustomerSegmentInterface[]|ObjectMetadata[]|null $segments
-     *
-     * @return CustomerSegmentInterface[]
+     * @inheritdoc
      */
-    protected function extractSegmentsFromPimcoreFieldData($segments)
+    public function getSegmentExtractor(): SegmentExtractorInterface
     {
-        if (!is_array($segments)) {
-            return [];
-        }
-
-        if (!sizeof($segments)) {
-            return [];
-        }
-
-        $result = [];
-        foreach ($segments as $segment) {
-            if ($segment instanceof CustomerSegmentInterface) {
-                $result[] = $segment;
-            } elseif ($segment instanceof ObjectMetadata && $segment->getObject() instanceof CustomerSegmentInterface) {
-                $result[] = $segment->getObject();
-            }
-        }
-
-        return $result;
+        return \Pimcore::getContainer()->get(SegmentExtractorInterface::class);
     }
 
     /**
