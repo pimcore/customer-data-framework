@@ -37,11 +37,11 @@ interface CustomerSaveHandlerInterface
     /**
      * Setter for the originalCustomer property
      *
-     * @param CustomerInterface $originalCustomer
+     * @param CustomerInterface|null $originalCustomer
      *
      * @return void
      */
-    public function setOriginalCustomer(CustomerInterface $originalCustomer);
+    public function setOriginalCustomer(CustomerInterface $originalCustomer = null);
 
     /**
      * Called in preAdd and preUpdate hook of customer objects

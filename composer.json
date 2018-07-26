@@ -9,12 +9,14 @@
         "box/spout": "^2.7",
         "drewm/mailchimp-api": "*",
         "guzzlehttp/guzzle": ">=4.1.4 <7.0",
-        "hwi/oauth-bundle": "^0.5.3",
+        "hwi/oauth-bundle": "~0.6.2",
+        "php-http/httplug-bundle": "~1.10.0",
+        "php-http/guzzle6-adapter": "^1.1",
         "mtdowling/cron-expression": "^1.1.0",
         "pear/archive_tar": "^1.4.3",
-        "pimcore/core-version": "~5.1.2",
+        "pimcore/core-version": ">=5.2.0 <5.5",
         "pimcore/number-sequence-generator": "^1.0.1",
-        "pimcore/object-merger": "~1.1",
+        "pimcore/object-merger": "~1.2",
         "pimcore/search-query-parser": "^1.2.4"
     },
     "require-dev": {

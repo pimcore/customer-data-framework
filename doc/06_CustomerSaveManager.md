@@ -50,7 +50,26 @@ Sets the email field to an empty value if the given email address is in a define
 #### MarkEmailAddressAsValid
 Marks an email address as valid if it has a valid format. Marking as valid means that a special checkbox get checked. 
 
+#### AttributeLogic
+Allows to setup a logic for overwriting field values based on other field values.
 
+##### Example:
+```yaml
+appbundle.cmf.customer_save_handler.attribute_logic:
+   class: CustomerManagementFrameworkBundle\CustomerSaveHandler\AttributeLogic
+   arguments:
+      - from: profileStreet
+        to: street
+        overwriteIfNotEmpty: true
+      - from: profileZip
+        to: zip
+        overwriteIfNotEmpty: true
+```
+
+In this example "street" will be overwritten if "profileStreet" changes (the same for zip and profileZip).
+If `overwriteIfNotEmpty` is set to false the to field will be overwritten only when it's empty.
+
+**Important:** The field value of the to-field will be overwritten only if the from field changed during the current save process and the to-field value did not change.
 
 ## Automatic Object Naming Scheme
 The CMF automatically applies a naming scheme for customer objects depending on a configured logic. This automatic naming 

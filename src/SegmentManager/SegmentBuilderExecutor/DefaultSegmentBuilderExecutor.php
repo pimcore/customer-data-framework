@@ -123,19 +123,21 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
             $conditionParts[] = sprintf('o_id in (select customerId from %s)', self::CHANGES_QUEUE_TABLE);
         }
 
-        if ($activeState !== null) {
-            if ($activeState === true) {
-                // active only
-                $conditionParts[] = 'active = 1';
-            } elseif ($activeState === false) {
-                // inactive only
-                $conditionParts[] = '(active IS NULL OR active != 1)';
-            }
-        }
-
         if (!empty($conditionParts)) {
             $customerList->setCondition(implode(' AND ', $conditionParts), $conditionVariables);
         }
+
+
+        if ($activeState !== null) {
+            if ($activeState === true) {
+                // active only
+                $this->customerProvider->addActiveCondition($customerList);
+            } elseif ($activeState === false) {
+                // inactive only
+                $this->customerProvider->addInActiveCondition($customerList);
+            }
+        }
+
         $customerList->setOrderKey('o_id');
 
         // parse options
@@ -325,8 +327,8 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
 
     protected function getIntOption(array $options, $option)
     {
-        return isset($options['pageSize']) && (is_int($options['pageSize']) || ctype_digit($options['pageSize']))
-            ? (int)$options['pageSize'] : null;
+        return isset($options[$option]) && (is_int($options[$option]) || ctype_digit($options[$option]))
+            ? (int)$options[$option] : null;
     }
 
     /**

@@ -15,9 +15,12 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
+use CustomerManagementFrameworkBundle\Import\CustomerImportService;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse;
+use Pimcore\Model\DataObject\ClassDefinition;
+use Pimcore\Model\ImportConfig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -116,13 +119,29 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
      * @return Response
      * @Route("/settings-json")
      */
-    public function settingJsonAction()
+    public function settingJsonAction(CustomerImportService $importService)
     {
+
+
+        $customerClassId = null;
+        if($class = ClassDefinition::getByName($this->getParameter('pimcore_customer_management_framework.general.customerPimcoreClass'))) {
+            $customerClassId = $class->getId();
+        }
+
+        $customerImporterId = $this->getParameter('pimcore_customer_management_framework.import.customerImporterId');
+
+        if(!$importService->isImporterIdAllowed($customerImporterId, $customerClassId)) {
+            $customerImporterId = 0;
+        }
+
         $settings = [
             'newsletterSyncEnabled' => $this->container->getParameter('pimcore_customer_management_framework.newsletter.newsletterSyncEnabled'),
             'duplicatesViewEnabled' => $this->container->getParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.enabled'),
             'segmentAssignment' => $this->getParameter('pimcore_customer_management_framework.segment_assignment_classes.types'),
             'customerClassName' => $this->getParameter('pimcore_customer_management_framework.general.customerPimcoreClass'),
+            'customerClassId' => $customerClassId,
+            'customerImporterId' => $customerImporterId,
+            'customerImportParentId' => $this->getParameter('pimcore_customer_management_framework.import.customerImportParentId'),
             'shortcutFilterDefinitions' => FilterDefinition::prepareDataForMenu(FilterDefinition::getAllShortcutAvailableForUser($this->getAdminUser()))
         ];
 

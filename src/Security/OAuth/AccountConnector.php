@@ -82,7 +82,7 @@ class AccountConnector implements AccountConnectorInterface
             $user,
             $provider,
             $identifier,
-            json_encode($response->getResponse())
+            json_encode($response->getData())
         );
 
         $this->applyCredentialsToSsoIdentity($ssoIdentity, $response);
@@ -242,7 +242,7 @@ class AccountConnector implements AccountConnectorInterface
             'phone'
         ];
 
-        $rawResponse = $response->getResponse();
+        $rawResponse = $response->getData();
         foreach ($responseProperties as $responseProperty) {
             if (isset($rawResponse[$responseProperty])) {
                 $this->setIfEmpty($customer, $responseProperty, $rawResponse[$responseProperty]);

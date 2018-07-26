@@ -81,8 +81,10 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
         $logger->notice('tables truncated');
 
-        $customerList = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
-        $customerList->setCondition('active = 1');
+        $customerProvider = \Pimcore::getContainer()->get('cmf.customer_provider');
+        $customerList = $customerProvider->getList();
+
+        $customerProvider->addActiveCondition($customerList);
         $customerList->setOrderKey('o_id');
 
         $paginator = new Paginator($customerList);

@@ -64,6 +64,9 @@ class MailchimpStatusChangeActivity extends AbstractActivity
         return self::TYPE;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function cmfToArray()
     {
         $attributes = $this->additionalAttributes;

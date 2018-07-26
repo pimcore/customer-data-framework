@@ -42,6 +42,7 @@ class Configuration implements ConfigurationInterface
         $rootNode->append($this->buildCustomerSaveManagerNode());
         $rootNode->append($this->buildCustomerProviderNode());
         $rootNode->append($this->buildCustomerSaveValidatorNode());
+        $rootNode->append($this->buildImportNode());
         $rootNode->append($this->buildSegmentManagerNode());
         $rootNode->append($this->buildCustomerListNode());
         $rootNode->append($this->buildCustomerDuplicatesServicesNode());
@@ -552,5 +553,34 @@ class Configuration implements ConfigurationInterface
 
         return $dataObjects;
 
+    }
+
+    private function buildImportNode()
+    {
+        $treeBuilder = new TreeBuilder();
+
+        $general = $treeBuilder->root('import');
+
+        $general
+            ->addDefaultsIfNotSet()
+            ->info('Configuration of CSV importer');
+
+        $general
+            ->children()
+                ->integerNode('customerImporterId')
+                    ->info(
+                        'Pimcore CSV importer ID. Share the configuration with this ID with all users which should get access to the CSV import button in the customer list and in CustomerSegment objects.'
+                    )
+                    ->defaultValue(0)
+                ->end()
+                ->integerNode('customerImportParentId')
+                    ->info(
+                        'Default Parent ID of customer CSV importer. Only relevant when automatic naming scheme is disabled.'
+                    )
+                    ->defaultValue(1)
+                ->end()
+        ;
+
+        return $general;
     }
 }

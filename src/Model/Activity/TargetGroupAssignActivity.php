@@ -79,9 +79,7 @@ class TargetGroupAssignActivity extends AbstractActivity
     }
 
     /**
-     * Returns an array representation of this activity.
-     *
-     * @return array
+     * @inheritdoc
      */
     public function cmfToArray()
     {

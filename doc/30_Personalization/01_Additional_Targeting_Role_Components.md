@@ -27,7 +27,9 @@ The CMF extends the default `Assign Target Group` action with following options:
 - `Assign connected Customer Segment to logged-in Customer`: If a user is logged-in, the action checks if there is 
   a segment object connected to the given target group. If so, it assigns it to the customer object.
 - `Track Customer Activity to logged-in Customer`; If a user is logged-in, the action tracks an activity to the customer 
-  object. This action can then used for further processing later on.     
+  object. This action can then used for further processing later on. 
+- `Consider profiling consent`: If a user is logged-in, the action checks the `profilingConsent` attribute of the user. 
+  If `profilingConsent` is not true, the action will be ignored.    
 
 ![Assign Target Group](../img/assign-target-group.jpg)
 

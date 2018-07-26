@@ -2,6 +2,11 @@
 /** @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $cv */
 $cv = $this->customerView;
 
+/**
+ * @var \CustomerManagementFrameworkBundle\Import\CustomerImportService $customerImportService
+ */
+$customerImportService;
+
 $exporterConfigs = Pimcore::getContainer()
     ->get('cmf.customer_exporter_manager')
     ->getExporterConfig();
@@ -15,6 +20,14 @@ if (count($exporterConfigs) === 0) {
     <div class="box-body">
         <div class="row">
             <div class="col-xs-12 text-right">
+
+                <?php if($customerImportService->isCustomerImportAllowed()) {?>
+                    <a href="#" data-href="<?= $exportUrl ?>" class="btn btn-default js-customer-import">
+                        <i class="fa fa-upload"></i>
+                        <?= $cv->translate('cmf_segment_import_customers') ?>
+                    </a>
+                <?php }?>
+
                 <?php foreach ($exporterConfigs as $exporter => $exporterConfig): ?>
 
                     <?php

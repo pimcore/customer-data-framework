@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\SegmentManager;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentBuilder\SegmentBuilderInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentExtractor\SegmentExtractorInterface;
 use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
 use Pimcore\Model\Element\ElementInterface;
@@ -282,6 +283,11 @@ interface SegmentManagerInterface
      * @return CustomerSegmentInterface[]
      */
     public function getManualSegmentsFromCustomer(CustomerInterface $customer);
+
+    /**
+     * @return SegmentExtractorInterface
+     */
+    public function getSegmentExtractor(): SegmentExtractorInterface;
 
     /**
      * Return segments of given customers which are within given customer segment group.

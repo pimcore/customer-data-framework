@@ -57,6 +57,7 @@ Following options to prepare the customer class are available:
   * `calculatedSegments`: objects relation to `CustomerSegments` or objects with metadata to `CustomerSegments` with 
      `created_timestamp` and `application_counter` as numeric meta fields
   * `idEncoded`: input field
+  * `profilingConsent`: consent (optional)
   
   As starting point this [class definition](https://github.com/pimcore/customer-data-framework/blob/master/install/class_source/optional/class_Customer_export.json) can be used.
 

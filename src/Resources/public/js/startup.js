@@ -181,14 +181,47 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
 
             object.tab.items.items[1].insert(1, panel);
             panel.updateLayout();
-        } else if ("object" === type && object.data.general.o_className === "CustomerSegment" && pimcore.globalmanager.get("user").isAllowed(CustomerView.config.PERMISSION)) {
+        } else if ("object" === type && object.data.general.o_className === "CustomerSegment" && pimcore.settings.cmf.customerImporterId) {
             var panel = new CustomerView.CustomerTab(object, type).getPanel();
 
             object.tab.items.items[1].insert(1, panel);
             panel.updateLayout();
+
+            object.tab.items.items[0].add({
+                text: t('cmf_segment_import_customers'),
+                iconCls: 'pimcore_icon_import',
+                scale: 'small',
+                handler: function (obj) {
+
+                    this.startCustomerImport(obj.data.general.o_id)
+
+                }.bind(this, object)
+            });
+            pimcore.layout.refresh();
         }
 
         this.addSegmentAssignmentTab(object, 'object', type);
+    },
+
+    startCustomerImport: function(customerSegmentId) {
+        var importid = uniqid();
+
+        pimcore.helpers.uploadDialog('/admin/object-helper/import-upload?importId=' + importid, "Filedata", function (res) {
+
+
+            var dialog = new pimcore.object.helpers.import.configDialog({
+                classId: pimcore.settings.cmf.customerClassId,                   // instructs the importer not to ask for the file
+                importConfigId: pimcore.settings.cmf.customerImporterId,         // the saved configuration id
+                parentId: pimcore.settings.cmf.customerImportParentId,           // the tree parent id (optional)
+                uniqueImportId: importid,             // the unique id of this import (IMPORTANT: CSV is expected to be available at ' PIMCORE_SYSTEM_TEMP_DIRECTORY + '/import_' + [uniqueImportId])
+                mode: "direct",
+                additionalData: {                   // optional data passed to the event handler
+                    customerSegmentId: customerSegmentId
+                }
+            });
+        }.bind(this), function () {
+            Ext.MessageBox.alert(t("error"), t("error"));
+        });
     },
 
     pluginObjectMergerPostMerge: function (data) {

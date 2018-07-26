@@ -143,7 +143,7 @@ class HasSegment extends AbstractVariableCondition implements DataProviderDepend
             );
 
             if ($result) {
-                $this->setMatchedVariables($segments);
+                $this->setMatchedVariables([$this->segmentId => $segments[$this->segmentId]]);
             }
 
             return $result;

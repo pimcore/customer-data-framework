@@ -25,6 +25,7 @@ class AddTrackedSegment extends AbstractAction
 {
     const OPTION_REMOVE_OTHER_SEGMENTS_FROM_SEGMENT_GROUP = 'removeOtherSegmentsFromGroup';
     const OPTION_INCREASE_SEGMENT_APPLICATION_COUNTER = 'increaseSegmentApplicationCounter';
+    const OPTION_CONSIDER_PROFILING_CONSENT = 'considerProfilingConsent';
 
     protected $name = 'AddTrackedSegment';
 
@@ -34,6 +35,12 @@ class AddTrackedSegment extends AbstractAction
         RuleEnvironmentInterface $environment
     )
     {
+        $options = $actionDefinition->getOptions();
+
+        if(isset($options[self::OPTION_CONSIDER_PROFILING_CONSENT]) && $options[self::OPTION_CONSIDER_PROFILING_CONSENT] !== false && !$this->consentChecker->hasProfilingConsent($customer)) {
+            return;
+        }
+
         $segmentManager = \Pimcore::getContainer()->get('cmf.segment_manager');
 
         $trackedSegment = $environment->get(SegmentTracked::STORAGE_KEY);

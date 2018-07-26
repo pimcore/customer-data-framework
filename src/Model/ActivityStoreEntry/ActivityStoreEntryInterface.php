@@ -147,4 +147,28 @@ interface ActivityStoreEntryInterface
      * @return array
      */
     public function getData();
+
+    /**
+     * @return array
+     */
+    public function getMetadata(): array;
+
+    /**
+     * @param array $metadata
+     * @return void
+     */
+    public function setMetadata(array $metadata);
+
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    public function getMetadataItem($key);
+
+    /**
+     * @param string $key
+     * @param mixed $data
+     * @return void;
+     */
+    public function setMetadataItem($key, $data);
 }

@@ -17,6 +17,7 @@ namespace CustomerManagementFrameworkBundle\CustomerDuplicatesService;
 
 use Carbon\Carbon;
 
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\DataObject\Listing\Concrete;
@@ -86,11 +87,16 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
             return null;
         }
 
-        $list = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
+        /**
+         * @var CustomerProviderInterface $customerProvider;
+         */
+        $customerProvider = \Pimcore::getContainer()->get('cmf.customer_provider');
+
+        $list = $customerProvider->getList();
+        $customerProvider->addActiveCondition($list);
 
         $list
-            ->addConditionParam('o_published = ?', 1)
-            ->addConditionParam('active = ?', 1);
+            ->addConditionParam('o_published = ?', 1);
 
         foreach ($data as $field => $value) {
             if (is_null($value) || $value === '') {
@@ -197,14 +203,15 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
             return;
         }
 
-        if (strpos($fd->getColumnType(), 'char') == !false) {
-            $this->addNormalizedMysqlCompareConditionForStringFields($list, $field, $value);
+        if ($value instanceof Carbon || $value instanceof \Pimcore\Date || $value instanceof \DateTime) {
+            $this->addNormalizedMysqlCompareConditionForDateFields($list, $field, $value);
 
             return;
         }
 
-        if ($value instanceof Carbon || $value instanceof \Pimcore\Date || $value instanceof \DateTime) {
-            $this->addNormalizedMysqlCompareConditionForDateFields($list, $field, $value);
+        
+        if (strpos($fd->getQueryColumnType(), 'char') == !false) {
+            $this->addNormalizedMysqlCompareConditionForStringFields($list, $field, $value);
 
             return;
         }
