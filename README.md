@@ -49,3 +49,12 @@ Following aspects are short cuts into the documentation for start working with t
 ## Contributing and Development
 
 For details see our [Contributing guide](CONTRIBUTING.md).
+
+
+## Running with Pimcore < 5.4
+With Pimcore 5.4 the location of static Pimcore files like icons has changed. In order to make this bundle work 
+with Pimcore < 5.4, please add following rewrite rule to your `.htaccess`.
+```
+    # rewrite rule for pre pimcore 5.4 core static files
+    RewriteRule ^bundles/pimcoreadmin/(.*) /pimcore/static6/$1 [PT,L]
+``` 
