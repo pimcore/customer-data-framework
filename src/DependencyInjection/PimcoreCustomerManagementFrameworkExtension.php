@@ -26,12 +26,16 @@ use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidato
 use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
+use Pimcore\Cache\Core\Exception\InvalidArgumentException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
+use Symfony\Component\Yaml\Exception\ParseException;
+use Symfony\Component\Yaml\Yaml;
 
-class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
+class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension implements PrependExtensionInterface
 {
     protected function loadInternal(array $config, ContainerBuilder $container)
     {
@@ -57,6 +61,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         }
 
         $this->registerGeneralConfiguration($container, $config['general']);
+        $this->registerAuthServerConfiguration($container, $config['oauth_server']);
         $this->registerEncryptionConfiguration($container, $config['encryption']);
         $this->registerCustomerSaveManagerConfiguration($container, $config['customer_save_manager']);
         $this->registerCustomerSaveValidatorConfiguration($container, $config['customer_save_validator']);
@@ -76,6 +81,11 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
     {
         $container->setParameter('pimcore_customer_management_framework.general.customerPimcoreClass', $config['customerPimcoreClass']);
         $container->setParameter('pimcore_customer_management_framework.general.mailBlackListFile', $config['mailBlackListFile']);
+    }
+
+    private function registerAuthServerConfiguration(ContainerBuilder $container, array $config)
+    {
+        $container->setParameter('pimcore_customer_management_framework.oauth_server', $config);
     }
 
     private function registerEncryptionConfiguration(ContainerBuilder $container, array $config)
@@ -149,6 +159,10 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
 
             $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.apiKey', $config['mailchimp']['apiKey']);
             $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.cliUpdatesPimcoreUserName', $config['mailchimp']['cliUpdatesPimcoreUserName']);
+
+            $container->setParameter('pimcore_customer_management_framework.newsletter.newsletter2Go.username', $config['newsletter2Go']['username']);
+            $container->setParameter('pimcore_customer_management_framework.newsletter.newsletter2Go.password', $config['newsletter2Go']['password']);
+            $container->setParameter('pimcore_customer_management_framework.newsletter.newsletter2Go.apiKey', $config['newsletter2Go']['apiKey']);
         }
     }
 
@@ -175,4 +189,22 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $container->setParameter('pimcore.gdpr-data-extrator.customers', $config['customer']);
 
     }
+
+
+    public function prepend(ContainerBuilder $container)
+    {
+        $yamlParser = new Yaml();
+        $filename = __DIR__.'/../Resources/config/doctrine.yml';
+
+        try {
+            $doctrineConfig = $yamlParser->parse(
+                file_get_contents($filename)
+            );
+        } catch (ParseException $e) {
+            throw new InvalidArgumentException(sprintf('The file "%s" does not contain valid YAML.', $filename), 0, $e);
+        }
+
+        $container->prependExtensionConfig('doctrine', $doctrineConfig['doctrine']);
+    }
+
 }

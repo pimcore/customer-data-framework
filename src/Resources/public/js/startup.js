@@ -282,7 +282,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
     },
     postOpenDocument: function (document, type) {
 
-        if (pimcore.settings.cmf.newsletterSyncEnabled && type === 'email') {
+        if (pimcore.settings.cmf.newsletterSyncEnabled && (type === 'email' || type === 'newsletter')) {
             document.tab.items.items[0].add({
                 text: t('plugin_cmf_newsletter_export_template'),
                 iconCls: 'plugin_cmf_icon_export_action',

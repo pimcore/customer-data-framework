@@ -15,12 +15,13 @@
 
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 
+use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterTemplateExporterInterface;
 use CustomerManagementFrameworkBundle\Traits\ApplicationLoggerAware;
 use DrewM\MailChimp\MailChimp;
 use Pimcore\Helper\Mail;
 use Pimcore\Model\Document;
 
-class TemplateExporter
+class TemplateExporter implements NewsletterTemplateExporterInterface
 {
     use ApplicationLoggerAware;
 
@@ -44,7 +45,7 @@ class TemplateExporter
         $this->setLoggerComponent('NewsletterSync');
     }
 
-    public function exportTemplate(Document\PageSnippet $document)
+    public function exportTemplate(Document\Newsletter $document)
     {
         $exportService = $this->exportService;
         $apiClient = $exportService->getApiClient();

@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\Command;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Manager\NewsletterManagerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
+use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Newsletter2Go;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\DefaultNewsletterQueueItem;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use Pimcore\Model\Tool\Lock;
@@ -42,6 +43,7 @@ class NewsletterSyncCommand extends AbstractCommand
             ->addOption('force-segments', 's', null, 'force update of segments (otherwise only changed segments will be exported)')
             ->addOption('force-customers', 'f', null, 'force update of customers (otherwise only changed customers will be exported)')
             ->addOption('mailchimp-status-sync', 'm', null, 'mailchimp status sync (direction mailchimp => pimcore) for all mailchimp newsletter provider handlers')
+            ->addOption('newsletter2go-status-sync', null, null, 'newsletter 2 go status sync (direction newsletter2go => pimcore) for all newsletter2go newsletter provider handlers')
             ->addOption('delete-non-existing-items-in-mailchimp', null, null, 'delete email addresses in mailchimp which do not exist in the CMF database any more (only for maintenance purpose, should not be needed when the system is running regularly)')
             ->addOption('process-queue-item', null, InputOption::VALUE_REQUIRED, 'process single queue item (provide json data of queue item)');
     }
@@ -64,7 +66,7 @@ class NewsletterSyncCommand extends AbstractCommand
 
         if ($input->getOption('customer-data-sync') || $input->getOption('all-customers')) {
             $lockKey = 'plugin_cmf_newsletter_sync_queue';
-            if (Lock::isLocked($lockKey, (60 * 60 * 12))) {
+            if (Lock::isLocked($lockKey, (60 * 60 * 12)) && false) {
                 die('locked - not starting now');
             }
 
@@ -81,6 +83,10 @@ class NewsletterSyncCommand extends AbstractCommand
 
         if ($input->getOption('mailchimp-status-sync')) {
             $this->mailchimpStatusSync();
+        }
+
+        if($input->getOption('newsletter2go-status-sync')) {
+            $this->newsletter2GoStatusSync();
         }
 
         if($input->getOption('delete-non-existing-items-in-mailchimp')) {
@@ -122,5 +128,13 @@ class NewsletterSyncCommand extends AbstractCommand
         $cliSyncProcessor = \Pimcore::getContainer()->get(Mailchimp\CliSyncProcessor::class);
 
         $cliSyncProcessor->deleteNonExistingItems();
+    }
+
+
+    protected function newsletter2GoStatusSync() {
+        /** @var Newsletter2Go\CliSyncProcessor $cliSyncProcessor */
+        $cliSyncProcessor = \Pimcore::getContainer()->get(Newsletter2Go\CliSyncProcessor::class);
+
+        $cliSyncProcessor->syncStatusChanges();
     }
 }

@@ -16,9 +16,17 @@ services:
         arguments:
             - '@DrewM\MailChimp\MailChimp'
 
+    CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Newsletter2Go\Newsletter2GoExportService:
+        arguments:
+            - '@NL2GO\Newsletter2Go_REST_Api'
+
     CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\SegmentExporter: ~
 
     CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\TemplateExporter: ~
+
+    CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Newsletter2Go\TemplateExporter:
+        arguments:
+            - '@NL2GO\Newsletter2Go_REST_Api'
 
     CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CustomerExporter\SingleExporter: ~
     CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CustomerExporter\BatchExporter: ~
@@ -29,10 +37,20 @@ services:
         arguments:
            - '%pimcore_customer_management_framework.newsletter.mailchimp.cliUpdatesPimcoreUserName%'
 
+    CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Newsletter2Go\CliSyncProcessor:
+        class: CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Newsletter2Go\CliSyncProcessor
 
     DrewM\MailChimp\MailChimp:
         arguments:
             - '%pimcore_customer_management_framework.newsletter.mailchimp.apiKey%'
+
+
+    NL2GO\Newsletter2Go_REST_Api:
+        arguments:
+            - '%pimcore_customer_management_framework.newsletter.newsletter2Go.apiKey%'
+            - '%pimcore_customer_management_framework.newsletter.newsletter2Go.username%'
+            - '%pimcore_customer_management_framework.newsletter.newsletter2Go.password%'
+
 
     cmf.document.newsletter.factory.segmentAddressSource:
         class: Pimcore\Document\Newsletter\DefaultAddressSourceAdapterFactory
