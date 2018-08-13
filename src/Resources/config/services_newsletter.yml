@@ -38,3 +38,9 @@ services:
         class: Pimcore\Document\Newsletter\DefaultAddressSourceAdapterFactory
         arguments:
             - 'CustomerManagementFrameworkBundle\Newsletter\AddressSource\SegmentAddressSource'
+
+
+    CustomerManagementFrameworkBundle\Event\NewsletterTerminateListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.terminate, method: onTerminate }
+            - { name: kernel.event_listener, event: console.terminate, method: onTerminate }

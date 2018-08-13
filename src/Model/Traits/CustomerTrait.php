@@ -62,6 +62,9 @@ trait CustomerTrait
 
     public function getProfilingConsent()
     {
+        if(is_callable('parent::getProfilingConsent' )) {
+            return parent::getProfilingConsent();
+        }
         return true;
     }
 

@@ -61,6 +61,11 @@ interface NewsletterQueueInterface
     /**
      * @return void
      */
+    public function executeImmidiateAsyncQueueItems();
+
+    /**
+     * @return void
+     */
     public function enqueueAllCustomers();
 
     /**

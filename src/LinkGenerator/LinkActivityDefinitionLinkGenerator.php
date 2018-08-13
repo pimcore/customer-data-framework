@@ -47,6 +47,10 @@ class LinkActivityDefinitionLinkGenerator implements LinkGeneratorInterface
             Site::setCurrentSite($site);
         }
 
+        if(!$object->getLink()) {
+            return '';
+        }
+
         $href = $object->getLink()->getHref();
 
         $url = new \Net_URL2($href);

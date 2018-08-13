@@ -1510,7 +1510,7 @@
                                         "visibleSearch": false
                                     },
                                     {
-                                        "allowedClassId": 4,
+                                        "allowedClassId": "CustomerSegment",
                                         "visibleFields": "name",
                                         "columns": [
                                             {
