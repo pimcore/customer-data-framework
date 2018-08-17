@@ -74,7 +74,7 @@ class TrackedUrlActivity extends AbstractActivity
      */
     public static function cmfCreate(array $data, $fromWebservice = false)
     {
-        if (!isset($data['activityDefinitionId'])) {
+        if (!isset($data['activityDefinitionId']) || LinkActivityDefinition::getById($data['activityDefinitionId']) == null) {
             return null;
         }
 
