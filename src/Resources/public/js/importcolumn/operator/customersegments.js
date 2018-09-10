@@ -17,7 +17,7 @@
 
 pimcore.registerNS("pimcore.object.importcolumn.operator.customersegments");
 
-pimcore.object.importcolumn.operator.customersegments = Class.create(pimcore.object.gridcolumn.operator.Text, {
+pimcore.object.importcolumn.operator.customersegments = Class.create(pimcore.object.gridcolumn.operator.text, {
     type: "operator",
     class: "CustomerSegments",
     iconCls: "plugin_cmf_icon_customer_segment",
