@@ -79,7 +79,7 @@ class Permission extends AbstractFilter implements OnCreateQueryFilterInterface
             if($workspace->getList()) {
                 // prepare condition to allow sub paths (with wildcard) and path itself (with equation)
                 $condition = sprintf("(CONCAT(o_path,o_key) LIKE '%s/%%' OR CONCAT(o_path,o_key) = '%s')",
-                    $workspace->getCpath(),
+                    $workspace->getCpath() == '/' ? '' : $workspace->getCpath(),
                     $workspace->getCpath());
                 // add allow condition
                 $allowConditions[] = $condition;
@@ -87,7 +87,7 @@ class Permission extends AbstractFilter implements OnCreateQueryFilterInterface
             else {
                 // prepare condition to allow sub paths (with wildcard) and path itself (with equation)
                 $condition = sprintf("(CONCAT(o_path,o_key) NOT LIKE '%s/%%' AND CONCAT(o_path,o_key) <> '%s')",
-                    $workspace->getCpath(),
+                    $workspace->getCpath() == '/' ? '' : $workspace->getCpath(),
                     $workspace->getCpath());
                 // add allow condition
                 $denyConditions[] = $condition;
