@@ -52,7 +52,7 @@ class Dao extends AbstractDao
     /**
      * @param SegmentAssignmentInterface $model
      */
-    public function __construct(?SegmentAssignmentInterface $model)
+    public function __construct(SegmentAssignmentInterface $model)
     {
         $this->setModel($model);
     }

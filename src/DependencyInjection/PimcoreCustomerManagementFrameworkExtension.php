@@ -198,13 +198,15 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension 
 
         try {
             $doctrineConfig = $yamlParser->parse(
-                file_get_contents($filename)
+                @file_get_contents($filename)
             );
         } catch (ParseException $e) {
             throw new InvalidArgumentException(sprintf('The file "%s" does not contain valid YAML.', $filename), 0, $e);
         }
 
-        $container->prependExtensionConfig('doctrine', $doctrineConfig['doctrine']);
+        if($doctrineConfig) {
+            $container->prependExtensionConfig('doctrine', $doctrineConfig['doctrine']);
+        }
     }
 
 }
