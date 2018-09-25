@@ -27,6 +27,7 @@ services:
     CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Newsletter2Go\TemplateExporter:
         arguments:
             - '@NL2GO\Newsletter2Go_REST_Api'
+            - '7ajpme6f'
 
     CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CustomerExporter\SingleExporter: ~
     CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CustomerExporter\BatchExporter: ~

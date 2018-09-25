@@ -44,8 +44,10 @@ class Newsletter2Go implements NewsletterProviderHandlerInterface
     protected $statusMapping;
     protected $reverseStatusMapping;
 
+    protected $doubleOptInFormCode;
 
-    public function __construct($shortcut, $listId, array $statusMapping = [], array $reverseStatusMapping = [], Newsletter2Go\Newsletter2GoExportService $exportService)
+
+    public function __construct($shortcut, $listId, $doubleOptInFormCode, array $statusMapping = [], array $reverseStatusMapping = [], Newsletter2Go\Newsletter2GoExportService $exportService)
     {
         $this->shortcut = $shortcut;
         $this->listId = $listId;
@@ -54,6 +56,8 @@ class Newsletter2Go implements NewsletterProviderHandlerInterface
 
         $this->statusMapping = $statusMapping;
         $this->reverseStatusMapping = $reverseStatusMapping;
+
+        $this->doubleOptInFormCode = $doubleOptInFormCode;
     }
 
     /**
@@ -78,7 +82,6 @@ class Newsletter2Go implements NewsletterProviderHandlerInterface
     public function processCustomerQueueItems(array $items, $forceUpdate = false)
     {
         $this->getLogger()->info('newsletter 2 go customer queue process started');
-        var_dump(count($items));
         $this->exportService->exportMultiple($items, $this);
     }
 
@@ -111,7 +114,6 @@ class Newsletter2Go implements NewsletterProviderHandlerInterface
                 NewsletterQueueInterface::OPERATION_UPDATE
             );
 
-            //todo check for errors
             $this->exportService->update($item, $this);
         }
 
@@ -137,7 +139,6 @@ class Newsletter2Go implements NewsletterProviderHandlerInterface
                 NewsletterQueueInterface::OPERATION_DELETE
             );
 
-            //todo check for errors
             $this->exportService->delete($item, $this);
 
             return true;
@@ -159,11 +160,7 @@ class Newsletter2Go implements NewsletterProviderHandlerInterface
             NewsletterQueueInterface::OPERATION_UPDATE
         );
 
-        if($this->exportService->register($item, $this)) {
-        }else {
-            //error
-        }
-
+        $this->exportService->register($item, $this);
     }
 
     public function getExternalData(NewsletterAwareCustomerInterface $customer) {
@@ -177,15 +174,8 @@ class Newsletter2Go implements NewsletterProviderHandlerInterface
     }
 
     public function getDoubleOptInFormCode() {
-        return 'reo1gmeb-vnkyt9av-bsi';
+        return $this->doubleOptInFormCode;
     }
-
-
-
-
-
-
-
 
 
 

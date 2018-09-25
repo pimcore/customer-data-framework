@@ -19,9 +19,10 @@ class TemplateExporter implements NewsletterTemplateExporterInterface
 
     protected $newsletter2GoRESTApi;
 
-    public function __construct(\NL2GO\Newsletter2Go_REST_Api $newsletter2GoRESTApi)
+    public function __construct(\NL2GO\Newsletter2Go_REST_Api $newsletter2GoRESTApi, $listId)
     {
         $this->newsletter2GoRESTApi = $newsletter2GoRESTApi;
+        $this->listId = $listId;
     }
 
 
@@ -40,11 +41,6 @@ class TemplateExporter implements NewsletterTemplateExporterInterface
         $html = \Pimcore\Helper\Mail::setAbsolutePaths($html, $document);
 
 
-
-        $response = $this->newsletter2GoRESTApi->createNewsletter('7ajpme6f', 'default', $document->getKey(), $document->getFrom(), $document->getSubject(), $html);
-
-
-        //TODO...
-        var_dump($response);
+        $response = $this->newsletter2GoRESTApi->createNewsletter($this->listId, 'default', $document->getKey(), $document->getFrom(), $document->getSubject(), $html);
     }
 }
