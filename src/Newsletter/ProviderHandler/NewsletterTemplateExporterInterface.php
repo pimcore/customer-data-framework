@@ -14,5 +14,5 @@ use Pimcore\Model\Document;
 
 interface NewsletterTemplateExporterInterface {
 
-    public function exportTemplate(Document\Newsletter $document);
+    public function exportTemplate(Document $document);
 }

@@ -15,7 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
-use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\TemplateExporter;
+use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterTemplateExporterInterface;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Model\Document\PageSnippet;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,7 +28,7 @@ class TemplatesController extends AdminController
 {
     /**
      * @param Request $request
-     * @param TemplateExporter $templateExporter
+     * @param NewsletterTemplateExporterInterface $templateExporter
      *
      * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
      *
@@ -37,10 +37,12 @@ class TemplatesController extends AdminController
      */
     public function exportAction(Request $request)
     {
-        $templateExporter = $this->get(TemplateExporter::class);
+        $exporterClass = $request->get('templateExporter');
+        $templateExporter = $this->get($exporterClass);
+
         $document = PageSnippet::getById($request->get('document_id'));
 
-        if ($document) {
+        if ($document && $templateExporter instanceof NewsletterTemplateExporterInterface) {
             $templateExporter->exportTemplate($document);
 
             return $this->adminJson(['success' => true]);

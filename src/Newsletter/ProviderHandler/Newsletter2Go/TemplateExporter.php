@@ -33,7 +33,7 @@ class TemplateExporter implements NewsletterTemplateExporterInterface
      * @param Document\Newsletter $document
      * @throws \Exception
      */
-    public function exportTemplate(Document\Newsletter $document)
+    public function exportTemplate(Document $document)
     {
         $html = \Pimcore\Model\Document\Service::render($document);
         // modifying the content e.g set absolute urls...

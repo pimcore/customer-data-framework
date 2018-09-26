@@ -159,10 +159,13 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension 
 
             $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.apiKey', $config['mailchimp']['apiKey']);
             $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.cliUpdatesPimcoreUserName', $config['mailchimp']['cliUpdatesPimcoreUserName']);
+            $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.enableTemplateExporter', $config['mailchimp']['enableTemplateExporter']);
+
 
             $container->setParameter('pimcore_customer_management_framework.newsletter.newsletter2Go.username', $config['newsletter2Go']['username']);
             $container->setParameter('pimcore_customer_management_framework.newsletter.newsletter2Go.password', $config['newsletter2Go']['password']);
             $container->setParameter('pimcore_customer_management_framework.newsletter.newsletter2Go.apiKey', $config['newsletter2Go']['apiKey']);
+            $container->setParameter('pimcore_customer_management_framework.newsletter.newsletter2Go.enableTemplateExporter', $config['newsletter2Go']['enableTemplateExporter']);
         }
     }
 

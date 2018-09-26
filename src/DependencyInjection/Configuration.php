@@ -544,6 +544,7 @@ class Configuration implements ConfigurationInterface
             ->children()
             ->scalarNode('apiKey')->end()
             ->scalarNode('cliUpdatesPimcoreUserName')->end()
+            ->booleanNode('enableTemplateExporter')->defaultFalse()->end()
             ->end()
             ->end()
             ->arrayNode('newsletter2Go')
@@ -551,6 +552,7 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('username')->end()
                     ->scalarNode('password')->end()
                     ->scalarNode('apiKey')->end()
+                    ->scalarNode('enableTemplateExporter')->defaultFalse()->end()
                 ->end()
             ->end()
             ->end();

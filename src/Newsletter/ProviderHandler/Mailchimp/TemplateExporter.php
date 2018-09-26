@@ -45,7 +45,7 @@ class TemplateExporter implements NewsletterTemplateExporterInterface
         $this->setLoggerComponent('NewsletterSync');
     }
 
-    public function exportTemplate(Document\Newsletter $document)
+    public function exportTemplate(Document $document)
     {
         $exportService = $this->exportService;
         $apiClient = $exportService->getApiClient();
