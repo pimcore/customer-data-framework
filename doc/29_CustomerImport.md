@@ -13,6 +13,12 @@ When you are finished the configuration might look something like this:
 
 ![CSV importer config example](./img/customer-csv-importer-config.png)
 
+There exists a resolver based on the email field. Set the emailColumnIndex for Additional Data to the column index of the email field.
+
+Here is an example configuration:
+
+![CSV importer config example](./img/CustomerImportIdAndEmailResolver_config.jpg)
+
 ### Step 2:
 
 In the CMF config setup the following configuration options
