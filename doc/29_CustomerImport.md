@@ -19,6 +19,8 @@ Here is an example configuration:
 
 ![CSV importer config example](./img/CustomerImportIdAndEmailResolver_config.jpg)
 
+If the checkbox 'Create on demand' is checked, new customers are created and imported, otherwise the import of new customers is rejected.
+
 ### Step 2:
 
 In the CMF config setup the following configuration options
