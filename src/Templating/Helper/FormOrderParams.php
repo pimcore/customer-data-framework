@@ -62,4 +62,36 @@ class FormOrderParams extends Helper
             QueryBuilder::SQL_DESC,
         ];
     }
+
+    /**
+     * @param Request $request
+     * @param $param
+     * @return mixed
+     */
+    public function getNexSortOrder(Request $request, $param) {
+        $val = $request->get('order')[$param];
+        if ($val == null || empty($val)) {
+            return QueryBuilder::SQL_ASC;
+        } else if ($val == QueryBuilder::SQL_ASC) {
+            return QueryBuilder::SQL_DESC;
+        }
+        return '';
+    }
+
+
+    /**
+     * @param Request $request
+     * @param $param
+     * @return string
+     */
+    public function getOrderParams(Request $request, $param) {
+        $params = $request->query->all();
+        $order = $this->getNexSortOrder($request, $param);
+        if (empty($order)) {
+            unset($params['order'][$param]);
+        } else {
+            $params['order'][$param] = $order;
+        }
+        return $params;
+    }
 }

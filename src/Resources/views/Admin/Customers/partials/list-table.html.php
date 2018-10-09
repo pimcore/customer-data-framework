@@ -4,17 +4,47 @@ $paginator = $this->paginator;
 
 /** @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $cv */
 $cv = $this->customerView;
+
+$clearUrlParams = $request->query->all();
+unset($clearUrlParams['order']);
 ?>
 
-<table class="table table-striped table-bordered table-hover">
+<a href="<?= $this->selfUrl()->get(true, $this->addPerPageParam()->add($clearUrlParams ?: [])) ?>"
+   class="btn btn-default">
+    <i class="fa fa-ban"></i>
+    <?= $cv->translate('cmf_sorting_clear'); ?>
+</a>
+
+<table class="table table-striped table-bordered table-hover dataTable">
     <thead>
     <tr>
         <th class="table-id-column">#</th>
-        <th class="reference-id-column">ID</th>
+        <th>
+            <div class="pos">
+                <a class="<?= "sorting". $request->get('order')["o_id"] ?>" href="<?= $this->url('customermanagementframework_admin_customers_list', $this->formOrderParams()->getOrderParams($request, "o_id")) ?>">ID</a>
+            </div>
+        </th>
         <th class="icon-column icon-column--center"></th>
-        <th><?= $cv->translate('cmf_filters_customer_name') ?></th>
-        <th><?= $cv->translate('cmf_filters_customer_email') ?></th>
-        <th><?= $cv->translate('cmf_filters_customer_gender') ?></th>
+        <th>
+            <div class="pos">
+                <a class="<?= "sorting". $request->get('order')["firstname"] ?>" href="<?= $this->url('customermanagementframework_admin_customers_list', $this->formOrderParams()->getOrderParams($request, "firstname")) ?>"><?= $cv->translate('cmf_filters_customer_firstname') ?></a>
+            </div>
+        </th>
+        <th>
+            <div class="pos">
+                <a class="<?= "sorting".  $request->get('order')["lastname"] ?>" href="<?= $this->url('customermanagementframework_admin_customers_list', $this->formOrderParams()->getOrderParams($request, "lastname")) ?>"><?= $cv->translate('cmf_filters_customer_lastname') ?></a>
+            </div>
+        </th>
+        <th>
+            <div class="pos">
+                <a class="<?= "sorting".  $request->get('order')["email"] ?>" href="<?= $this->url('customermanagementframework_admin_customers_list', $this->formOrderParams()->getOrderParams($request, "email")) ?>"><?= $cv->translate('cmf_filters_customer_email') ?></a>
+            </div>
+        </th>
+        <th>
+            <div class="pos">
+                <a class="<?= "sorting".  $request->get('order')["gender"] ?>" href="<?= $this->url('customermanagementframework_admin_customers_list', $this->formOrderParams()->getOrderParams($request, "gender")) ?>"><?= $cv->translate('cmf_filters_customer_gender') ?></a>
+            </div>
+        </th>
         <th><?= $cv->translate('cmf_filters_segments') ?></th>
     </tr>
     </thead>

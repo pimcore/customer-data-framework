@@ -180,3 +180,38 @@ table .label-column label {
 
 .select2-selection__rendered {
   text-align: left; }
+
+table.dataTable thead, table.dataTable thead, table.dataTable thead, table.dataTable thead, table.dataTable thead {
+  cursor: pointer;
+  position: relative;
+}
+
+table.dataTable thead .sorting a, table.dataTable thead .sortingASC a, table.dataTable thead .sortingDESC a {
+  display: block;
+}
+
+table.dataTable thead .sorting:after, table.dataTable thead .sortingASC:after, table.dataTable thead .sortingDESC:after {
+  position: absolute;
+  top: 2px;
+  right: 3px;
+  display: block;
+  font-family: 'Glyphicons Halflings';
+  opacity: 0.5;
+}
+
+table.dataTable thead .sorting:after {
+  opacity: 0.2;
+  content: "\e150";
+}
+
+table.dataTable thead .sortingASC:after {
+  content: "\e155";
+}
+
+table.dataTable thead .sortingDESC:after {
+  content: "\e156";
+}
+
+.pos {
+  position: relative;
+}
