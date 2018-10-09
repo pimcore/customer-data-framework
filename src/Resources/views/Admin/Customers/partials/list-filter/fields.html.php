@@ -11,6 +11,28 @@
         <?= $customerView->translate('cmf_filters_customer') ?>
     </legend>
 
+    <div class="row">
+        <div class="col-md-6">
+            <div class="dropdown plugin-icheck">
+                <div class="form-group">
+                    <?php $or = $customerView->translate('cmf_filters_options_or');?>
+                    <?php $and = $customerView->translate('cmf_filters_options_and');?>
+                    <label for="form-filter-operator"><?= $customerView->translate('cmf_filters_options_operator') ?></label>
+                    <select
+                            id="form-filter-operator"
+                            name="filter[operator]"
+                            class="form-control plugin-select2"
+                            data-placeholder="<?= $customerView->translate('cmf_filters_options_operator')  ?>">
+
+                        <option <?= $filters['operator'] == 'OR' ? 'selected="selected"' : '' ?> value="OR"><?= $or ?></option>
+                        <option <?= $filters['operator'] == 'AND' ? 'selected="selected"' : '' ?> value="AND"><?= $and ?></option>
+
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="form-group">
         <label for="form-filter-id"><?= $customerView->translate('cmf_filters_customer_id') ?></label>
         <input type="number" name="filter[id]" id="form-filter-id" class="form-control" placeholder="<?= $customerView->translate('cmf_filters_customer_id') ?>" value="<?= $this->escape($filters['id']) ?>"<?= $filterDefinition->isLocked('id') ? ' disabled' : '' ?>>

@@ -92,6 +92,10 @@ class SearchHelper {
     {
         $handler = new FilterHandler($listing);
 
+        if(array_key_exists('operator', $filters)) {
+            $operator = $filters['operator'];
+        }
+
         $filterProperties = \Pimcore::getContainer()->getParameter('pimcore_customer_management_framework.customer_list.filter_properties');
 
         $equalsProperties = isset($filterProperties['equals']) ? $filterProperties['equals'] : [];
@@ -107,7 +111,7 @@ class SearchHelper {
             if(array_key_exists($property, $filters)
                 && !empty($filters[$property])
                 && is_string($filters[$property])) {
-                $handler->addFilter(new SearchQuery($databaseFields, $filters[$property]));
+                $handler->addFilter(new SearchQuery($databaseFields, $filters[$property]), $operator);
             }
         }
 
