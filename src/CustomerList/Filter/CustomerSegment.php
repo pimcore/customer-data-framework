@@ -66,10 +66,11 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      * @param DataObject\CustomerSegmentGroup|null $segmentGroup
      * @param string $type
      */
-    public function __construct(array $segments, DataObject\CustomerSegmentGroup $segmentGroup = null)
+    public function __construct(array $segments, DataObject\CustomerSegmentGroup $segmentGroup = null, $type = Db\ZendCompatibility\QueryBuilder::SQL_AND)
     {
         $this->identifier = $this->buildIdentifier($segmentGroup);
         $this->segmentGroup = $segmentGroup;
+        $this->type = $type;
 
         foreach ($segments as $segment) {
             $this->addCustomerSegment($segment);

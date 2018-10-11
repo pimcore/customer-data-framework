@@ -17,15 +17,15 @@
                 <div class="form-group">
                     <?php $or = $customerView->translate('cmf_filters_options_or');?>
                     <?php $and = $customerView->translate('cmf_filters_options_and');?>
-                    <label for="form-filter-operator"><?= $customerView->translate('cmf_filters_options_operator') ?></label>
+                    <label for="form-filter-operator-customer"><?= $customerView->translate('cmf_filters_options_operator') ?></label>
                     <select
-                            id="form-filter-operator"
-                            name="filter[operator]"
+                            id="form-filter-operator-customer"
+                            name="filter[operator-customer]"
                             class="form-control plugin-select2"
                             data-placeholder="<?= $customerView->translate('cmf_filters_options_operator')  ?>">
 
-                        <option <?= $filters['operator'] == 'OR' ? 'selected="selected"' : '' ?> value="OR"><?= $or ?></option>
-                        <option <?= $filters['operator'] == 'AND' ? 'selected="selected"' : '' ?> value="AND"><?= $and ?></option>
+                        <option <?= $filters['operator-customer'] == 'AND' ? 'selected="selected"' : '' ?> value="AND"><?= $and ?></option>
+                        <option <?= $filters['operator-customer'] == 'OR' ? 'selected="selected"' : '' ?> value="OR"><?= $or ?></option>
 
                     </select>
                 </div>

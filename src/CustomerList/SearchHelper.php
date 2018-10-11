@@ -92,8 +92,11 @@ class SearchHelper {
     {
         $handler = new FilterHandler($listing);
 
-        if(array_key_exists('operator', $filters)) {
-            $operator = $filters['operator'];
+        if(array_key_exists('operator-customer', $filters)) {
+            $operatorCustomer = $filters['operator-customer'];
+        }
+        if(array_key_exists('operator-segments', $filters)) {
+            $operatorSegments = $filters['operator-segments'];
         }
 
         $filterProperties = \Pimcore::getContainer()->getParameter('pimcore_customer_management_framework.customer_list.filter_properties');
@@ -111,7 +114,7 @@ class SearchHelper {
             if(array_key_exists($property, $filters)
                 && !empty($filters[$property])
                 && is_string($filters[$property])) {
-                $handler->addFilter(new SearchQuery($databaseFields, $filters[$property]), $operator);
+                $handler->addFilter(new SearchQuery($databaseFields, $filters[$property]), $operatorCustomer);
             }
         }
 
@@ -133,7 +136,7 @@ class SearchHelper {
                     }
                     $segments[] = $segment;
                 }
-                $handler->addFilter(new CustomerSegmentFilter($segments, $segmentGroup));
+                $handler->addFilter(new CustomerSegmentFilter($segments, $segmentGroup, $operatorSegments));
             }
         }
 

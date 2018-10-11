@@ -37,6 +37,28 @@ foreach ($segmentGroups as $segmentGroup) {
             </div>
         </legend>
 
+        <div class="row">
+            <div class="col-md-6">
+                <div class="dropdown plugin-icheck">
+                    <div class="form-group">
+                        <?php $or = $customerView->translate('cmf_filters_options_or');?>
+                        <?php $and = $customerView->translate('cmf_filters_options_and');?>
+                        <label for="form-filter-operator-segments"><?= $customerView->translate('cmf_filters_options_operator') ?></label>
+                        <select
+                                id="form-filter-operator-segments"
+                                name="filter[operator-segments]"
+                                class="form-control plugin-select2"
+                                data-placeholder="<?= $customerView->translate('cmf_filters_options_operator')  ?>">
+
+                            <option <?= $filters['operator-segments'] == 'AND' ? 'selected="selected"' : '' ?> value="AND"><?= $and ?></option>
+                            <option <?= $filters['operator-segments'] == 'OR' ? 'selected="selected"' : '' ?> value="OR"><?= $or ?></option>
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <?php if (!$hideAdvancedFilterSettings): ?>
             <div id="show-segments-modal" class="modal fade text-left" role="dialog">
                 <div class="modal-dialog">

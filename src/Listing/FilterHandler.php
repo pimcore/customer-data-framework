@@ -79,7 +79,9 @@ class FilterHandler
     {
         $this->filters[] = $filter;
         $this->setFilterCallback();
-        $this->operator = $operator;
+        if($filter instanceof QueryConditionFilterInterface) {
+            $this->operator = $operator;
+        }
 
         if ($filter instanceof ListingFilterInterface) {
             $this->listing->getQuery()->
