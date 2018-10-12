@@ -24,7 +24,7 @@ interface QueryConditionFilterInterface extends FilterInterface
     /**
      * @return string
      */
-    public function createQueryCondition(): string;
+    public function createQueryCondition(QueryBuilder $query): string;
 
 
 }

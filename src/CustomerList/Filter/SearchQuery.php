@@ -55,7 +55,7 @@ class SearchQuery extends AbstractFilter implements QueryConditionFilterInterfac
     }
 
 
-    public function createQueryCondition(): string
+    public function createQueryCondition(QueryBuilder $query): string
     {
         $db = Db::get();
 
@@ -79,7 +79,7 @@ class SearchQuery extends AbstractFilter implements QueryConditionFilterInterfac
             ]
         );
 
-        $subQuery = $this->query->getAdapter()->select();
+        $subQuery = $query->getAdapter()->select();
 
         $queryBuilder->processQuery($subQuery, $this->parsedQuery);
 

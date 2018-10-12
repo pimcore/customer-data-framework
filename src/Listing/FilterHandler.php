@@ -102,7 +102,7 @@ class FilterHandler
                     }
 
                     if($filter instanceof QueryConditionFilterInterface) {
-                        if($condition = $filter->createQueryCondition()) {
+                        if($condition = $filter->createQueryCondition($query)) {
                             $conditions[] = $condition;
                         }
                     }
