@@ -104,8 +104,6 @@ cmf_filters_save_error_name: "Name is required"
 cmf_filters_share_headline: "Share the filter"
 cmf_filters_share_confirm: "Share"
 
-cmf_sorting_clear: "Clear sorting"
-
 cmf_filter_definition_errors_access: "Not allowed to access filter."
 cmf_filter_definition_errors_change: "Not allowed to change filter."
 cmf_filter_definition_errors_deletion_failed: "Deletion of filter failed. (%s)"

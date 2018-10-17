@@ -105,8 +105,6 @@ cmf_filters_save_error_name: "Der Filtername ist notwendig."
 cmf_filters_share_headline: "Filter teilen"
 cmf_filters_share_confirm: "Teilen"
 
-cmf_sorting_clear: "Sortierung löschen"
-
 cmf_filter_definition_errors_access: "Nicht berechtigt auf den Filter zuzugreifen."
 cmf_filter_definition_errors_change: "Nicht berechtigt den Filter zu ändern."
 cmf_filter_definition_errors_deletion_failed: "Löschen des Filters fehlgeschlagen. (%s)"
