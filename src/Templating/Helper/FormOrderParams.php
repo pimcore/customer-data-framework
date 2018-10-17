@@ -87,6 +87,7 @@ class FormOrderParams extends Helper
     public function getOrderParams(Request $request, $param) {
         $params = $request->query->all();
         $order = $this->getNexSortOrder($request, $param);
+        unset($params['order']); # only one order
         if (empty($order)) {
             unset($params['order'][$param]);
         } else {

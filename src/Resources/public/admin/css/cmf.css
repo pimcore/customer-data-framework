@@ -186,8 +186,13 @@ table.dataTable thead, table.dataTable thead, table.dataTable thead, table.dataT
   position: relative;
 }
 
-table.dataTable thead .sorting a, table.dataTable thead .sortingASC a, table.dataTable thead .sortingDESC a {
+table.dataTable thead .sorting, table.dataTable thead .sortingASC, table.dataTable thead .sortingDESC {
   display: block;
+  color: #1e1f26 ;
+}
+
+table.dataTable thead .sortingASC, table.dataTable thead .sortingDESC {
+  color: #337ab7;
 }
 
 table.dataTable thead .sorting:after, table.dataTable thead .sortingASC:after, table.dataTable thead .sortingDESC:after {
@@ -196,7 +201,7 @@ table.dataTable thead .sorting:after, table.dataTable thead .sortingASC:after, t
   right: 3px;
   display: block;
   font-family: 'Glyphicons Halflings';
-  opacity: 0.5;
+  opacity: 0.8;
 }
 
 table.dataTable thead .sorting:after {
