@@ -72,12 +72,13 @@ class CustomersController extends Admin
     public function listAction(Request $request, CustomerImportService $customerImportService)
     {
         $filters = $this->fetchListFilters($request);
+        $orders = $this->fetchListOrder($request);
         $errors = $request->get('errors', []);
         $paginator = null;
         $customerView = \Pimcore::getContainer()->get('cmf.customer_view');
 
         try {
-            $listing = $this->buildListing($filters);
+            $listing = $this->buildListing($filters, $orders);
             $paginator = $this->buildPaginator($request, $listing);
         } catch(SearchQueryException $e) {
             $errors[] = $customerView->translate('There was an error in you search query: %s', $e->getMessage());
@@ -387,15 +388,23 @@ class CustomersController extends Admin
 
     /**
      * @param array $filters
+     * @param array $orders
      * @return Listing\Concrete
      */
-    protected function buildListing(array $filters = [])
+    protected function buildListing(array $filters = [], array $orders = [])
     {
         /** @var Listing|Listing\Concrete $listing */
         $listing = $this->getSearchHelper()->getCustomerProvider()->getList();
-        $listing
-            ->setOrderKey('o_id')
-            ->setOrder('ASC');
+        if (count($orders) > 0) {
+            $listing
+                ->setOrderKey(array_keys($orders), false)
+                ->setOrder(array_values($orders), false);
+        } else {
+            $listing
+                ->setOrderKey('o_id')
+                ->setOrder('ASC');
+        }
+
         $this->getSearchHelper()->addListingFilters($listing, $filters, $this->getAdminUser());
 
         return $listing;
@@ -415,6 +424,27 @@ class CustomersController extends Admin
         return $filters;
     }
 
+    /**
+     * Fetch orders and set them on view
+     *
+     * @param Request $request
+     * @return array
+     */
+    protected function fetchListOrder(Request $request)
+    {
+        $orders = $request->get('order', []);
+        $ordersNullsLast = [];
+
+        foreach ($orders as $key => $val) {
+            if ($val == QueryBuilder::SQL_ASC) {
+                $ordersNullsLast['ISNULL(`'.$key.'`)'] =  strtoupper($val);
+                $ordersNullsLast['(`'.$key.'` = "")'] =  strtoupper($val);
+            }
+            $ordersNullsLast['TRIM(`'.$key.'`)'] =  strtoupper($val);
+        }
+
+        return $ordersNullsLast;
+    }
     /**
      * @param Request $request
      * @param array $filters

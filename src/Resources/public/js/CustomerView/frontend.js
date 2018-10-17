@@ -61,5 +61,19 @@ $(function() {
         }
     };
 
+    $('body').on('click','.pos a', function (event) {
+        event.preventDefault();
+        let url = $(this).attr("href");
+        $('.customer-table-content').css('opacity',0.5);
+        $.ajax({
+            url: url,
+            success: function(data) {
+                $('.customer-table-content').html(data);
+                $('.customer-table-content').css('opacity',1);
+            },
+            error: 'customer data list request failed'
+        });
+    });
+
     customerExporter.init();
 }());
