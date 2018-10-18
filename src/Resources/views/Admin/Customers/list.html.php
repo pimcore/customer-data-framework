@@ -4,15 +4,22 @@
  * @var \Pimcore\Templating\PhpEngine $view
  * @var \Pimcore\Templating\GlobalVariables $app
  */
-$this->extend('PimcoreCustomerManagementFrameworkBundle::layout.html.php');
-
-$this->headScript()->appendFile('/bundles/pimcorecustomermanagementframework/js/CustomerView/frontend.js');
 
 /** @var \Zend\Paginator\Paginator|\CustomerManagementFrameworkBundle\Model\CustomerInterface[] $paginator */
 $paginator = $this->paginator;
 
 /** @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $cv */
 $cv = $this->customerView;
+
+if ($request->isXmlHttpRequest()) {
+    echo $this->template($cv->getOverviewWrapperTemplate(), [
+        'paginator' => $paginator,
+        'cv' => $cv
+    ]);
+    return;
+}
+$this->extend('PimcoreCustomerManagementFrameworkBundle::layout.html.php');
+$this->headScript()->appendFile('/bundles/pimcorecustomermanagementframework/js/CustomerView/frontend.js');
 ?>
 
 <section class="content">
@@ -47,7 +54,7 @@ $cv = $this->customerView;
             </div>
             <!-- /.box-header -->
 
-            <div class="box-body no-padding table-responsive">
+            <div class="box-body no-padding table-responsive customer-table-content">
                 <?=$this->template($cv->getOverviewWrapperTemplate(), [
                     'paginator' => $paginator,
                     'cv' => $cv

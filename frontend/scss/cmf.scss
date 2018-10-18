@@ -65,4 +65,44 @@
     margin-top: 2px;
     margin-left: 10px;
     margin-bottom: 4px;
+  
+table.dataTable thead, table.dataTable thead, table.dataTable thead, table.dataTable thead, table.dataTable thead {
+    cursor: pointer;
+    position: relative;
+}
+
+table.dataTable thead .sorting, table.dataTable thead .sortingASC, table.dataTable thead .sortingDESC {
+    display: block;
+    color: #1e1f26 ;
+}
+
+table.dataTable thead .sortingASC, table.dataTable thead .sortingDESC {
+    color: #337ab7;
+}
+
+table.dataTable thead .sorting:after, table.dataTable thead .sortingASC:after, table.dataTable thead .sortingDESC:after {
+    position: absolute;
+    top: 2px;
+    right: 3px;
+    display: block;
+    font-family: 'Glyphicons Halflings';
+    opacity: 0.8;
+}
+
+table.dataTable thead .sorting:after {
+    opacity: 0.2;
+    content: "\e150";
+}
+
+table.dataTable thead .sortingASC:after {
+    content: "\e155";
+}
+
+table.dataTable thead .sortingDESC:after {
+    content: "\e156";
+}
+
+
+.pos {
+    position: relative;
 }

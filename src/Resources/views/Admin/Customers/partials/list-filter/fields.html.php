@@ -34,8 +34,13 @@
     </div>
 
     <div class="form-group">
-        <label for="form-filter-name"><?= $customerView->translate('cmf_filters_customer_name') ?></label>
-        <input type="text" name="filter[name]" id="form-filter-name" class="form-control" placeholder="<?= $customerView->translate('cmf_filters_customer_name') ?>" value="<?= $this->escapeFormValue($filters['name']) ?>"<?= $filterDefinition->isLocked('name') ? ' disabled' : '' ?>>
+        <label for="form-filter-firstname"><?= $customerView->translate('cmf_filters_customer_firstname') ?></label>
+        <input type="text" name="filter[firstname]" id="form-filter-firstname" class="form-control" placeholder="<?= $customerView->translate('cmf_filters_customer_firstname') ?>" value="<?= $this->escapeFormValue($filters['firstname']) ?>"<?= $filterDefinition->isLocked('firstname') ? ' disabled' : '' ?>>
+    </div>
+
+    <div class="form-group">
+        <label for="form-filter-lastname"><?= $customerView->translate('cmf_filters_customer_lastname') ?></label>
+        <input type="text" name="filter[lastname]" id="form-filter-lastname" class="form-control" placeholder="<?= $customerView->translate('cmf_filters_customer_lastname') ?>" value="<?= $this->escapeFormValue($filters['lastname']) ?>"<?= $filterDefinition->isLocked('lastname') ? ' disabled' : '' ?>>
     </div>
 </fieldset>
 
