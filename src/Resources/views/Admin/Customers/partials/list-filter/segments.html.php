@@ -24,11 +24,26 @@ foreach ($segmentGroups as $segmentGroup) {
     <fieldset>
         <legend>
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-6">
                     <?= $customerView->translate('cmf_filters_segments') ?>
+
+                    <?php $or = $customerView->translate('cmf_filters_options_or');?>
+                    <?php $and = $customerView->translate('cmf_filters_options_and');?>
+
+                    <select
+                            id="form-filter-operator-segments"
+                            name="filter[operator-segments]"
+                            class="form-filter-operator"
+                            data-placeholder="<?= $customerView->translate('cmf_filters_options_operator')  ?>">
+
+                        <option <?= $filters['operator-segments'] == 'AND' ? 'selected="selected"' : '' ?> value="AND"><?= $and ?></option>
+                        <option <?= $filters['operator-segments'] == 'OR' ? 'selected="selected"' : '' ?> value="OR"><?= $or ?></option>
+
+                    </select>
+
                 </div>
                 <?php if (!$hideAdvancedFilterSettings && !$filterDefinition->isReadOnly()) : ?>
-                    <div class="col-md-10 text-right">
+                    <div class="col-md-6 text-right">
                         <a type="button" class="btn btn-sm" data-toggle="modal"
                            data-target="#show-segments-modal"><?= $customerView->translate('cmf_filters_segments_edit') ?>
                         </a>
@@ -36,28 +51,6 @@ foreach ($segmentGroups as $segmentGroup) {
                 <?php endif; ?>
             </div>
         </legend>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="dropdown plugin-icheck">
-                    <div class="form-group">
-                        <?php $or = $customerView->translate('cmf_filters_options_or');?>
-                        <?php $and = $customerView->translate('cmf_filters_options_and');?>
-                        <label for="form-filter-operator-segments"><?= $customerView->translate('cmf_filters_options_operator') ?></label>
-                        <select
-                                id="form-filter-operator-segments"
-                                name="filter[operator-segments]"
-                                class="form-control plugin-select2"
-                                data-placeholder="<?= $customerView->translate('cmf_filters_options_operator')  ?>">
-
-                            <option <?= $filters['operator-segments'] == 'AND' ? 'selected="selected"' : '' ?> value="AND"><?= $and ?></option>
-                            <option <?= $filters['operator-segments'] == 'OR' ? 'selected="selected"' : '' ?> value="OR"><?= $or ?></option>
-
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <?php if (!$hideAdvancedFilterSettings): ?>
             <div id="show-segments-modal" class="modal fade text-left" role="dialog">
