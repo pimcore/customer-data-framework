@@ -10,6 +10,11 @@ filter criteria independently of their location in the object tree. Although use
 
 ![Customers of a CustomerSegment](./img/customer-list-2.png)
 
+There are "Customer" filters and "Segments" filters. It is possible to choose between "or" (match any) and "and" (match all) conditions.
+Please note that the condition between customer and segments filters is always "and".
+ 
+The list can be sorted by clicking on the column headers.
+
 #### Configuration options
 - **Search Columns**: In [CMF configuration](./03_Configuration.md) it can be configured which columns should be considered 
   during searching and filtering in the customer list. For details see the [CMF configuration section](./03_Configuration.md).
