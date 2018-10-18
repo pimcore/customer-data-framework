@@ -17,15 +17,16 @@ namespace CustomerManagementFrameworkBundle\CustomerList\Filter;
 
 use CustomerManagementFrameworkBundle\CustomerList\Filter\Exception\SearchQueryException;
 use CustomerManagementFrameworkBundle\Listing\Filter\AbstractFilter;
-use CustomerManagementFrameworkBundle\Listing\Filter\OnCreateQueryFilterInterface;
+use CustomerManagementFrameworkBundle\Listing\Filter\QueryConditionFilterInterface;
 use Phlexy\LexingException;
+use Pimcore\Db;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\Model\DataObject\Listing as CoreListing;
 use SearchQueryParser\ParserException;
 use SearchQueryParser\QueryBuilder\ZendCompatibility;
 use SearchQueryParser\SearchQueryParser;
 
-class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
+class SearchQuery extends AbstractFilter implements QueryConditionFilterInterface
 {
     /**
      * @var array
@@ -53,29 +54,36 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
         $this->parsedQuery = $this->parseQuery($query);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $query)
+
+    public function createQueryCondition(QueryBuilder $query): string
     {
-        // for single fields directly check field content without overhead of parsing
+        $db = Db::get();
+
         if(sizeof($this->fields) === 1) {
             if(strpos($this->query, '*') !== false) {
-                $query->where(sprintf('%s like ?', $this->fields[0]), str_replace('*', '%', $this->query));
+                $value = str_replace('*', '%', $this->query);;
+                $condition = sprintf('%s like %s', $this->fields[0], $db->quote($value));
             } else {
-                $query->where(sprintf('%s = ?', $this->fields[0]), $this->query);
+                $value = $this->query;
+                $condition = sprintf('%s = %s', $this->fields[0], $db->quote($value));
             }
-            return;
+
+            return $condition;
         }
+
 
         $queryBuilder = new ZendCompatibility(
             $this->fields,
             [
-            'stripWildcards' => false // allow LIKE wildcards
-        ]
+                'stripWildcards' => false // allow LIKE wildcards
+            ]
         );
 
-        $queryBuilder->processQuery($query, $this->parsedQuery);
+        $subQuery = $query->getAdapter()->select();
+
+        $queryBuilder->processQuery($subQuery, $this->parsedQuery);
+
+        return implode(' ', $subQuery->getPart(QueryBuilder::WHERE));
     }
 
     /**

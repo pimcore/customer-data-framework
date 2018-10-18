@@ -9,6 +9,18 @@
 <fieldset>
     <legend>
         <?= $customerView->translate('cmf_filters_customer') ?>
+        <?php $or = $customerView->translate('cmf_filters_options_or');?>
+        <?php $and = $customerView->translate('cmf_filters_options_and');?>
+        <select
+                id="form-filter-operator-customer"
+                name="filter[operator-customer]"
+                class="form-filter-operator"
+                data-placeholder="<?= $customerView->translate('cmf_filters_options_operator')  ?>">
+
+            <option <?= $filters['operator-customer'] == 'AND' ? 'selected="selected"' : '' ?> value="AND"><?= $and ?></option>
+            <option <?= $filters['operator-customer'] == 'OR' ? 'selected="selected"' : '' ?> value="OR"><?= $or ?></option>
+
+        </select>
     </legend>
 
     <div class="form-group">
