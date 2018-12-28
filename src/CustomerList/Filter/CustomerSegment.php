@@ -223,7 +223,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
 
         // relation matches one of our field names and relates to our current object
         $baseCondition = sprintf(
-            '%1$s.fieldname IN (%3$s) AND %1$s.src_id = %2$s.o_id',
+            '`%1$s`.fieldname IN (%3$s) AND `%1$s`.src_id = `%2$s`.o_id',
             $joinName,
             $tableName,
             $relationNames
