@@ -91,7 +91,7 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
     {
         $select = Db::get()
             ->select()
-            ->from(sprintf('object_relations_%d', $this->customerProvider->getCustomerClassId()), ['src_id'])
+            ->from('object_relations_'.$this->customerProvider->getCustomerClassId(), ['src_id'])
             ->where('fieldname = ?', 'ssoIdentities')
             ->where('dest_id = ?', $ssoIdentity->getId());
 
