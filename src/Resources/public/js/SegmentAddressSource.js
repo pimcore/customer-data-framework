@@ -11,7 +11,6 @@ pimcore.document.newsletters.addressSourceAdapters.SegmentAddressSource = Class.
         return this.layout;
     },
     getValues: function () {
-        console.log();
         return {
             segmentIds: this.segmentStore.getData().items.map(item => item.id),
             operator: this.operatorsBox.getValue()
@@ -34,6 +33,7 @@ pimcore.document.newsletters.addressSourceAdapters.SegmentAddressSource = Class.
 
         var segmentGrid = Ext.create('Ext.grid.Panel', {
             minHeight: 90,
+            height:200,
             border: true,
             cls: 'object_field',
             tbar: {
@@ -132,7 +132,7 @@ pimcore.document.newsletters.addressSourceAdapters.SegmentAddressSource = Class.
         });
 
         var form = Ext.create('Ext.form.Panel', {
-            height: 200,
+            height: 300,
             items: [
                 segmentGrid,
                 this.operatorsBox
