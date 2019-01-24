@@ -9,6 +9,18 @@
 <fieldset>
     <legend>
         <?= $customerView->translate('cmf_filters_customer') ?>
+        <?php $or = $customerView->translate('cmf_filters_options_or');?>
+        <?php $and = $customerView->translate('cmf_filters_options_and');?>
+        <select
+                id="form-filter-operator-customer"
+                name="filter[operator-customer]"
+                class="form-filter-operator"
+                data-placeholder="<?= $customerView->translate('cmf_filters_options_operator')  ?>">
+
+            <option <?= $filters['operator-customer'] == 'AND' ? 'selected="selected"' : '' ?> value="AND"><?= $and ?></option>
+            <option <?= $filters['operator-customer'] == 'OR' ? 'selected="selected"' : '' ?> value="OR"><?= $or ?></option>
+
+        </select>
     </legend>
 
     <div class="form-group">
@@ -22,8 +34,13 @@
     </div>
 
     <div class="form-group">
-        <label for="form-filter-name"><?= $customerView->translate('cmf_filters_customer_name') ?></label>
-        <input type="text" name="filter[name]" id="form-filter-name" class="form-control" placeholder="<?= $customerView->translate('cmf_filters_customer_name') ?>" value="<?= $this->escapeFormValue($filters['name']) ?>"<?= $filterDefinition->isLocked('name') ? ' disabled' : '' ?>>
+        <label for="form-filter-firstname"><?= $customerView->translate('cmf_filters_customer_firstname') ?></label>
+        <input type="text" name="filter[firstname]" id="form-filter-firstname" class="form-control" placeholder="<?= $customerView->translate('cmf_filters_customer_firstname') ?>" value="<?= $this->escapeFormValue($filters['firstname']) ?>"<?= $filterDefinition->isLocked('firstname') ? ' disabled' : '' ?>>
+    </div>
+
+    <div class="form-group">
+        <label for="form-filter-lastname"><?= $customerView->translate('cmf_filters_customer_lastname') ?></label>
+        <input type="text" name="filter[lastname]" id="form-filter-lastname" class="form-control" placeholder="<?= $customerView->translate('cmf_filters_customer_lastname') ?>" value="<?= $this->escapeFormValue($filters['lastname']) ?>"<?= $filterDefinition->isLocked('lastname') ? ' disabled' : '' ?>>
     </div>
 </fieldset>
 

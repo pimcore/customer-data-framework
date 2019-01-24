@@ -38,6 +38,8 @@ if ($cv->hasDetailView($customer)) {
     </td>
     <td>
         <?= $this->escape($customer->getFirstname()) ?>
+    </td>
+    <td>
         <?= $this->escape($customer->getLastname()) ?>
     </td>
     <td>

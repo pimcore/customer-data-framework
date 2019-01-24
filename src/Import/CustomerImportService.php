@@ -50,10 +50,10 @@ class CustomerImportService  {
 
     /**
      * @param int $importerId
-     * @param int|null $pimcoreClassId
+     * @param mixed|null $pimcoreClassId
      * @return bool
      */
-    public function isImporterIdAllowed(int $importerId, int $pimcoreClassId = null): bool
+    public function isImporterIdAllowed(int $importerId, $pimcoreClassId = null): bool
     {
         if(!$importerId) {
             return false;

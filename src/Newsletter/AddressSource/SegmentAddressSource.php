@@ -21,11 +21,20 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
     /* @var SendingParamContainer[] */
     private $sendingParamContainers = [];
 
+    private $operator = SegmentManagerInterface::CONDITION_OR;
+
+
     /**
-     * @param array $arguments ['segmentIds' => string[]]
+     * @param array $arguments ['segmentIds' => string[], 'operator' => string]
      */
     public function __construct(array $arguments)
     {
+        $operator = $arguments['operator'];
+        if ($operator == "and") {
+            $this->operator = SegmentManagerInterface::CONDITION_AND;
+        } else {
+            $this->operator = SegmentManagerInterface::CONDITION_OR;
+        }
         $this->segmentManager = \Pimcore::getContainer()->get(SegmentManagerInterface::class);
         $this->sendingParamContainers = $this->setUpSendingParamContainers(array_filter($arguments['segmentIds']));
     }
@@ -92,7 +101,7 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
 
                         return new SendingParamContainer($customer->getEmail(), ['emailAddress' => $customer->getEmail()]);
                     },
-                    $this->segmentManager->getCustomersBySegmentIds($segmentIds)->getObjects() ?? []
+                    $this->segmentManager->getCustomersBySegmentIds($segmentIds, $this->operator)->getObjects() ?? []
                 )
             );
     }

@@ -11,9 +11,9 @@ pimcore.document.newsletters.addressSourceAdapters.SegmentAddressSource = Class.
         return this.layout;
     },
     getValues: function () {
-        console.log();
         return {
-            segmentIds: this.segmentStore.getData().items.map(item => item.id)
+            segmentIds: this.segmentStore.getData().items.map(item => item.id),
+            operator: this.operatorsBox.getValue()
         };
     },
 
@@ -23,8 +23,17 @@ pimcore.document.newsletters.addressSourceAdapters.SegmentAddressSource = Class.
             fields: ['id', 'name']
         });
 
+        this.operatorsStore = new Ext.data.Store({
+            fields: ['name'],
+            data : [
+                {'name': t('cmf_newsletter_or'), 'val' : 'or'},
+                {'name': t('cmf_newsletter_and'), 'val' : 'and'}
+            ]
+        });
+
         var segmentGrid = Ext.create('Ext.grid.Panel', {
             minHeight: 90,
+            height:200,
             border: true,
             cls: 'object_field',
             tbar: {
@@ -111,7 +120,26 @@ pimcore.document.newsletters.addressSourceAdapters.SegmentAddressSource = Class.
             });
         }.bind(this));
 
-        return segmentGrid;
+        this.operatorsBox = Ext.create('Ext.form.ComboBox', {
+            fieldLabel: t('cmf_newsletter_operators'),
+            store: this.operatorsStore,
+            queryMode: 'local',
+            displayField: 'name',
+            valueField: 'val',
+            width: 400,
+            style: "padding-top:30px",
+            value: this.operatorsStore.first(),
+        });
+
+        var form = Ext.create('Ext.form.Panel', {
+            height: 300,
+            items: [
+                segmentGrid,
+                this.operatorsBox
+            ]
+        });
+
+        return form;
     },
 
     isFromTree: function (ddSource) {

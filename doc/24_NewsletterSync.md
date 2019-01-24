@@ -22,7 +22,7 @@ newsletter related settings.
 
 ### Customer
 
-It's needed to add a `newslettStatus` and `mailchimpStatus` field into the customer class for each MailChimp list:  
+It's needed to add a `newsletterStatus` and `mailchimpStatus` field into the customer class for each MailChimp list:  
 
 ![Customer newsletter status](./img/mailchimp/customer-newsletter-status.png)
 
