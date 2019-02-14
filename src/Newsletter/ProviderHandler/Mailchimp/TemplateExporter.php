@@ -54,7 +54,7 @@ class TemplateExporter
         $html = \Pimcore\Model\Document\Service::render($document);
 
         //dirty hack to prevent absolutize unsubscribe url placeholder of mailchimp
-        $html = str_replace(["*|UNSUB|*", "*|FORWARD|*", "*|UPDATE_PROFILE|*"], ["data:*|UNSUB|*", "data:*|FORWARD|*", "data:*|UPDATE_PROFILE|*"], $html);
+        $html = str_replace(["*|UNSUB|*", "*|FORWARD|*", "*|UPDATE_PROFILE|*", "*|ARCHIVE|*"], ["data:*|UNSUB|*", "data:*|FORWARD|*", "data:*|UPDATE_PROFILE|*", "data:*|ARCHIVE|*"], $html);
 
         // modifying the content e.g set absolute urls...
         $html = Mail::embedAndModifyCss($html, $document);
@@ -65,7 +65,7 @@ class TemplateExporter
         $html = str_replace("%7C*", "|*", $html);
 
         //dirty hack to prevent absolutize unsubscribe url placeholder of mailchimp
-        $html = str_replace(["data:*|UNSUB|*", "data:*|FORWARD|*", "data:*|UPDATE_PROFILE|*"], ["*|UNSUB|*", "*|FORWARD|*", "*|UPDATE_PROFILE|*"], $html);
+        $html = str_replace(["data:*|UNSUB|*", "data:*|FORWARD|*", "data:*|UPDATE_PROFILE|*", "data:*|ARCHIVE|*"], ["*|UNSUB|*", "*|FORWARD|*", "*|UPDATE_PROFILE|*", "*|ARCHIVE|*"], $html);
 
 
         $templateExists = false;
