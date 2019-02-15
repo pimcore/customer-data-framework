@@ -509,7 +509,15 @@ class Mailchimp implements NewsletterProviderHandlerInterface
         foreach (array_keys($mergeFieldsMapping) as $field) {
             $mapping = $this->mapMergeField($field, $customer);
 
-            $mergeFields[$mapping['field']] = $mapping['value'];
+            // Check if this is a multi-value field e.g. ADDRESS and needs
+            // merging itself.
+            if (isset($mergeFields[$mapping['field']]) && is_array($mergeFields[$mapping['field']])) {
+              $mergeFields[$mapping['field']] += $mapping['value'];
+            }
+            else {
+              $mergeFields[$mapping['field']] = $mapping['value'];
+            }
+
         }
 
         $emailCleaner = new Email();

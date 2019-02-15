@@ -33,6 +33,35 @@ services:
             - m/d/Y
             - Y-m-d
 
+    # Special data transformer to handle multi-value merge field.
+    appbundle.cmf.mailchimp.address-addr1-transformer:
+      class: CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\DataTransformer\Address
+      arguments:
+        - addr1
+    appbundle.cmf.mailchimp.address-addr2-transformer:
+      class: CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\DataTransformer\Address
+      arguments:
+        - addr2
+    appbundle.cmf.mailchimp.address-zip-transformer:
+      class: CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\DataTransformer\Address
+      arguments:
+        - zip
+    appbundle.cmf.mailchimp.address-city-transformer:
+      class: CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\DataTransformer\Address
+      arguments:
+        - city
+        - true
+    appbundle.cmf.mailchimp.address-state-transformer:
+      class: CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\DataTransformer\Address
+      arguments:
+        - state
+        - true
+    appbundle.cmf.mailchimp.address-country-transformer:
+      class: CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\DataTransformer\Address
+      arguments:
+        - country
+        - true
+
     appbundle.cmf.mailchimp.handler.list1:
         class: CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp
         autowire: true
@@ -58,12 +87,22 @@ services:
             # Mapping of Pimcore data object attributes => Mailchimp merge fields
             - firstname: FNAME
               lastname: LNAME
-              street: STREET
+              # See the data transformer below why we can map muliple fields to 
+              # the same merge field.
+              street: ADDRESS
+              zip: ADDRESS
+              city: ADDRESS
+              countryCode: ADDRESS
               birthDate: BIRTHDATE
 
-            # Special data transfromer for the birthDate field. 
+            # Special data transformer for the birthDate field. 
             # This ensures that the correct data format will be used.
             - birthDate: '@appbundle.cmf.mailchimp.birthdate-transformer'
+              # Special data transformer for the multi-value field ADDRESS. 
+              street: '@appbundle.cmf.mailchimp.address-addr1-transformer'
+              zip: '@appbundle.cmf.mailchimp.address-zip-transformer'
+              city: '@appbundle.cmf.mailchimp.address-city-transformer'
+              countryCode: '@appbundle.cmf.mailchimp.address-country-transformer'
 
         tags: [cmf.newsletter_provider_handler]
         
