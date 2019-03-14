@@ -55,17 +55,12 @@ abstract class SqlActivityStore
 
         if (null !== $activity) {
             $data['attributes'] = $this->getAttributeInsertData($activity);
-            $data['type'] = $db->quote($activity->cmfGetType());
-            $data['implementationClass'] = $db->quote(get_class($activity));
-        } else {
-            $data['type'] = $db->quote($data['type']);
-            $data['implementationClass'] = $db->quote($data['implementationClass']);
+            $data['type'] = $activity->cmfGetType();
+            $data['implementationClass'] = get_class($activity);
         }
 
-        $data['a_id'] = $db->quote($data['a_id']);
-
         if ($activity instanceof ActivityExternalIdInterface) {
-            $data['a_id'] = $db->quote($activity->getId());
+            $data['a_id'] = $activity->getId();
         }
 
         $data['customerId'] = null !== $activity ? $activity->getCustomer()->getId() : $entry->getCustomerId();
@@ -80,7 +75,7 @@ abstract class SqlActivityStore
             'attributes' => $data['attributes'],
         ];
 
-        $data['md5'] = $db->quote(md5(serialize($md5Data)));
+        $data['md5'] = md5(serialize($md5Data));
         $data['modificationDate'] = $time;
 
         if ($entry->getId()) {
