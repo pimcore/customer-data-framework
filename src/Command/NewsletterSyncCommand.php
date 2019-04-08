@@ -62,6 +62,10 @@ class NewsletterSyncCommand extends AbstractCommand
             $newsletterQueue->enqueueAllCustomers();
         }
 
+        if ($input->getOption('force-segments')) {
+            $this->newsletterManager->syncSegments(true);
+        }
+
         if ($input->getOption('customer-data-sync') || $input->getOption('all-customers')) {
             $lockKey = 'plugin_cmf_newsletter_sync_queue';
             if (Lock::isLocked($lockKey, (60 * 60 * 12))) {
@@ -70,7 +74,10 @@ class NewsletterSyncCommand extends AbstractCommand
 
             Lock::lock($lockKey);
 
-            $this->newsletterManager->syncSegments((bool)$input->getOption('force-segments'));
+            if(!$input->getOption('force-segments')) {
+                $this->newsletterManager->syncSegments();
+            }
+
             $this->newsletterManager->syncCustomers(
                 (bool)$input->getOption('all-customers'),
                 (bool)$input->getOption('force-customers')
