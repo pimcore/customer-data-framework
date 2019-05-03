@@ -18,7 +18,7 @@ segments, etc.) and personalization.
 ## Detailed Configuration Workflow
 
 1) Create `LinkActivityDefinition` object and fill out data (at least `Type` and `Landing page link`)
-![LinkActivityDefinition](../img/LinkActivityDefinition.png)
+![LinkActivityDefinition](../img/linkActivityDefinition.png)
 
 2) Link `LinkActivityDefinition` object in link in newsletter (just via d&d) - Pimcore generates corresponding link to landing page with all parameters.
   
@@ -32,7 +32,7 @@ segments, etc.) and personalization.
    tracked for customer: 
    - Type = Type in `LinkActivityDefinition` object
    - All additional attributes in `LinkActivityDefinition` object will be added as attributes in the activity
-![LinkActivityDefinition](../img/LinkActivityTracking.png)   
+![LinkActivityDefinition](../img/linkActivityTracking.png)   
    
 
 ## Additional Configuration
