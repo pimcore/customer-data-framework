@@ -59,7 +59,7 @@ remove implicitly assigned segments of parents from that node's children.
 ## Use Assigned Segments for Targeting and Personalization
 The assigned segment can be a valuable data source for targeting and personalization. Therefore Pimcore automatically 
 issues `Track Segement` actions every time a document with assigned segments is opened by an user. This information is
-stored in the Targeting Store of Pimcore and can be used by the Pimcore Targeting Rules. See [Personalization](30_Personalization.md)
+stored in the Targeting Store of Pimcore and can be used by the Pimcore Targeting Rules. See [Personalization](30_Personalization/README.md)
 for details.   
 
 For assets and objects, no automatic action or functionality is provided. 
