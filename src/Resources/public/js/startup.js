@@ -167,7 +167,9 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
             this.navEl = Ext.get(
                 insertPoint.insertHtml(
                     'afterEnd',
-                    '<li id="pimcore_menu_cmf" class="pimcore_menu_item compatibility" data-menu-tooltip="' + t('plugin_cmf_mainmenu') + '"></li>'
+                    '<li id="pimcore_menu_cmf" class="pimcore_menu_item pimcore_menu_needs_children " data-menu-tooltip="'
+                    + t('plugin_cmf_mainmenu') +
+                    '"><img src="/bundles/pimcorecustomermanagementframework/icons/outline-group-24px.svg"></li>'
                 )
             );
 

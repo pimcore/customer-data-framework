@@ -1,6 +1,3 @@
-#pimcore_menu_cmf {
-    background-image: url(/bundles/pimcoreadmin/img/flat-color-icons/contacts.svg) !important;
-}
 
 .pimcore_icon_activities {
     background: url(/bundles/pimcoreadmin/img/flat-color-icons/sports_mode.svg) center center no-repeat !important;
@@ -102,4 +99,13 @@
 
 .plugin_cmf_icon_export_action {
     background: url("/bundles/pimcoreadmin/img/flat-color-icons/export.svg") center center no-repeat !important;
+}
+
+/* Compatibility for Pimcore < 5.9 */
+#pimcore_navigation li > img {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    top: 13px;
+    left: 18px;
 }
