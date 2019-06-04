@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\Controller;
 
+use CustomerManagementFrameworkBundle\Templating\Helper\DefaultPageSize;
 use CustomerManagementFrameworkBundle\Templating\Helper\JsConfig;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Controller\EventedControllerInterface;
@@ -25,6 +26,23 @@ use Zend\Paginator\Paginator;
 
 class Admin extends AdminController implements EventedControllerInterface
 {
+
+    /**
+     * @var JsConfig
+     */
+    protected $jsConfigHelper;
+
+    /**
+     * @var DefaultPageSize
+     */
+    protected $defaultPageSize;
+
+    public function __construct(JsConfig $jsConfigHelper, DefaultPageSize $defaultPageSize)
+    {
+        $this->jsConfigHelper = $jsConfigHelper;
+        $this->defaultPageSize = $defaultPageSize;
+    }
+
     /**
      * @param FilterControllerEvent $event
      */
@@ -55,10 +73,7 @@ class Admin extends AdminController implements EventedControllerInterface
      */
     protected function getJsConfigHelper()
     {
-        /** @var JsConfig $jsConfig */
-        $jsConfig = \Pimcore::getContainer()->get('pimcore.templating.view_helper.jsConfig');
-
-        return $jsConfig;
+        return $this->jsConfigHelper;
     }
 
     /**
@@ -97,9 +112,7 @@ class Admin extends AdminController implements EventedControllerInterface
     protected function buildPaginator(Request $request, $data, $defaultPageSize = null)
     {
         if (is_null($defaultPageSize)) {
-            $defaultPageSize = \Pimcore::getContainer()->get(
-                'pimcore.templating.view_helper.defaultPageSize'
-            )->defaultPageSize();
+            $defaultPageSize = $this->defaultPageSize;
         }
 
         $paginator = new Paginator($data);

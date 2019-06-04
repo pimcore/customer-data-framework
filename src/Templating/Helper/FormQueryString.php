@@ -20,6 +20,23 @@ use Symfony\Component\Templating\Helper\Helper;
 
 class FormQueryString extends Helper
 {
+    /**
+     * @var FormFilterParams
+     */
+    protected $formFilterParams;
+
+    /**
+     * @var FormOrderParams
+     */
+    protected $formOrderParams;
+
+    public function __construct(FormFilterParams $formFilterParams, FormOrderParams $formOrderParams)
+    {
+        $this->formFilterParams = $formFilterParams;
+        $this->formOrderParams = $formOrderParams;
+
+    }
+
     public function getName()
     {
         return 'formQueryString';
@@ -91,10 +108,7 @@ class FormQueryString extends Helper
      */
     public function getFilterParams(Request $request)
     {
-        /** @var FormFilterParams $helper */
-        $helper = \Pimcore::getContainer()->get('pimcore.templating.view_helper.formFilterParams');
-        $params = $helper->formFilterParams($request);
-
+        $params = $this->formFilterParams->formFilterParams($request);
         return $params;
     }
 
@@ -105,10 +119,7 @@ class FormQueryString extends Helper
      */
     public function getOrderParams(Request $request)
     {
-        /** @var FormOrderParams $helper */
-        $helper = \Pimcore::getContainer()->get('pimcore.templating.view_helper.formOrderParams');
-        $params = $helper->formOrderParams($request);
-
+        $params = $this->formOrderParams->formOrderParams($request);
         return $params;
     }
 
