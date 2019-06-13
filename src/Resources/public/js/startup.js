@@ -39,7 +39,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
 
             var customerMenu = Ext.create('Ext.menu.Item', {
                 text: t('plugin_cmf_customerview'),
-                iconCls: 'pimcore_icon_customers',
+                iconCls: 'pimcore_nav_icon_customers',
                 hideOnClick: false,
                 menu: menuOptions,
                 handler: function () {
@@ -69,7 +69,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
                 var filterName = this.name;
                 var filterItem = {
                     text: filterName,
-                    iconCls: 'pimcore_icon_customers',
+                    iconCls: 'pimcore_nav_icon_customers',
                     handler: function () {
                         try {
                             pimcore.globalmanager.get(filterKey).activate();
@@ -96,7 +96,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
             var customerDuplicateViewPanelId = 'plugin_cmf_customerduplicatesview';
             var item = {
                 text: t('plugin_cmf_customerduplicatesview'),
-                iconCls: 'pimcore_icon_customerduplicates',
+                iconCls: 'pimcore_nav_icon_customerduplicates ',
                 handler: function () {
                     try {
                         pimcore.globalmanager.get(customerDuplicateViewPanelId).activate();
@@ -123,7 +123,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
             var customerAutomationRulesPanelId = 'plugin_cmf_customerautomationrules';
             var item = {
                 text: t('plugin_cmf_customerautomationrules'),
-                iconCls: 'pimcore_icon_customerautomationrules',
+                iconCls: 'pimcore_nav_icon_customerautomationrules ',
                 handler: function () {
                     try {
                         pimcore.globalmanager.get(customerAutomationRulesPanelId).activate();
@@ -140,7 +140,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
         if (pimcore.settings.cmf.newsletterSyncEnabled && user.isAllowed('plugin_cmf_perm_newsletter_enqueue_all_customers')) {
             var item = {
                 text: t('plugin_cmf_newsletter_enqueue_all_customers'),
-                iconCls: 'pimcore_icon_newsletter_enqueue_all_customers',
+                iconCls: 'pimcore_nav_icon_newsletter_enqueue_all_customers',
                 handler: function () {
                     Ext.Ajax.request({
                         url: "/webservice/cmf/newsletter/enqueue-all-customers",
