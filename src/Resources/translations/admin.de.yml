@@ -17,6 +17,7 @@ plugin_cmf_actiontriggerrule_conditionCountActivities: "Aktivitätenanzahl vom T
 plugin_cmf_actiontriggerrule_conditionCountTrackedSegment: "[Targeting] Gemessene Segmente zählen"
 plugin_cmf_actiontriggerrule_conditionCustomer: "Kunde"
 plugin_cmf_actiontriggerrule_conditionSegment: "Kundensegment"
+plugin_cmf_actiontriggerrule_conditionCustomerField: "Kundenfeld"
 plugin_cmf_actiontriggerrule_countactivities_type: "Aktivitätenanzahl vom Typ"
 plugin_cmf_actiontriggerrule_countactivities_must_be: "Bedingung"
 plugin_cmf_actiontriggerrule_not: "nicht"
@@ -177,6 +178,7 @@ plugin_cmf_actiontriggerrule_send_mail_explanation: '
     <p>Für das E-Mail Dokument ist es möglich Platzhalter zu verwenden(zB %customerLanguage%). Alle Felder des Customer Objektes sind hier möglich (vorausgesetzt sie können zu string gecastet werden). <br>
     Wenn ein Platzhalter im Custoemr Objekt nicht verfügbar ist oder es einem leeren String gleicht, wird die E-Mail nicht versendet und ein Error wird geloggt</p>
     <p>An Kunden versenden (default aktiviert) fügt die Customer E-Mail Adresse zu den Empfängern des E-Mail Dokuments hinzu</p>'
+plugin_cmf_actiontriggerrule_customerfield_explanation: '<p>Feldwert darf keine " (doppelte Anführungszeichen) enthalten. Diese werden herausgefiltert!</p>'
 
 plugin_cmf_targeting_action_apply_target_groups_from_segments: "[CMF] Zielgruppen von zugewiesenen Kundensegmenten übernehmen"
 plugin_cmf_targeting_action_apply_for: "Für"

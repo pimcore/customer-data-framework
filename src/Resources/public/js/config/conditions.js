@@ -554,3 +554,56 @@ pimcore.plugin.cmf.rule.conditions.CountTargetGroupWeight = Class.create(pimcore
         ];
     }
 });
+
+pimcore.registerNS("pimcore.plugin.cmf.rule.conditions.CustomerField");
+pimcore.plugin.cmf.rule.conditions.CustomerField = Class.create(pimcore.plugin.cmf.rule.conditions.AbstractCondition,{
+    name: 'CustomerField',
+    implementationClass: '\\CustomerManagementFrameworkBundle\\ActionTrigger\\Condition\\CustomerField',
+    getFormItems: function () {
+        return [
+            {
+                xtype: 'panel',
+                html: '<div style="margin-bottom: 10px; padding: 5px 10px; background-color: #d9edf7; border-color: #bce8f1 !important; color: #31708f;">' + t("plugin_cmf_actiontriggerrule_customerfield_explanation") + '</div>'
+            },
+            {
+                xtype: "fieldcontainer",
+                layout: {
+                    type: 'table',
+                    tdAttrs: {
+                        valign: 'center'
+                    }
+                },
+                items: [
+                    {
+                        xtype: "textfield",
+                        fieldLabel: t("plugin_cmf_actiontriggerrule_fieldname_condition"),
+                        name: "fieldname",
+                        style: "margin-right: 10px;",
+                        width: 365,
+                        value: this.options.fieldname,
+                    },
+                    {
+                        xtype: "textfield",
+                        fieldLabel: t("plugin_cmf_actiontriggerrule_fieldvalue_condition"),
+                        name: "fieldvalue",
+                        width: 365,
+                        value: this.options.fieldvalue
+                    }
+                ]
+            },
+            {
+                xtype: "checkbox",
+                name:'not',
+                value:this.options.not,
+                fieldLabel: t("plugin_cmf_actiontriggerrule_not"),
+                layout: {
+                    type: 'table',
+                    tdAttrs: {
+                        valign: 'center'
+                    }
+                }
+            }
+
+        ];
+    }
+});

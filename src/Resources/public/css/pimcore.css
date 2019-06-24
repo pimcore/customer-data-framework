@@ -112,6 +112,10 @@
     background: url(/bundles/pimcoreadmin/img/flat-color-icons/email.svg) center center no-repeat !important;
 }
 
+.plugin_cmf_icon_actiontriggerrule_CustomerField {
+    background: url(/bundles/pimcoreadmin/img/flat-color-icons/voice_presentation.svg) center center no-repeat !important;
+}
+
 .pimcore_icon_newsletter_enqueue_all_customers {
     background: url(/bundles/pimcoreadmin/img/flat-color-icons/address_book.svg) center center no-repeat !important;
 }

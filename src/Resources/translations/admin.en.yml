@@ -17,6 +17,7 @@ plugin_cmf_actiontriggerrule_conditionCountActivities: "Activities count of type
 plugin_cmf_actiontriggerrule_conditionCountTrackedSegment: "[Targeting] Tracked Segments Count"
 plugin_cmf_actiontriggerrule_conditionCustomer: "Customer"
 plugin_cmf_actiontriggerrule_conditionSegment: "Customer segment:"
+plugin_cmf_actiontriggerrule_conditionCustomerField: "Customer Field"
 plugin_cmf_actiontriggerrule_countactivities_type: "Activities count of type"
 plugin_cmf_actiontriggerrule_countactivities_must_be: "must be"
 plugin_cmf_actiontriggerrule_not: "not"
@@ -171,6 +172,7 @@ plugin_cmf_actiontriggerrule_send_mail_explanation: '
     <p>For the email document it is possible to use placeholders (ex %customerLanguage%). All fields of the customer object are possible (given that they are castable to string). <br>
     If one of these placeholders are not available in the customer object or are equal to empty string, the email will not be send for this customer and a error will be logged</p>
     <p>Send to Customer (default enabled) will add the customer email address to the receiver addresses of the email document</p>'
+plugin_cmf_actiontriggerrule_customerfield_explanation: '<p>Fieldvalue cannot contain " (double quotation marks). These will be filtered!</p>'
 
 plugin_cmf_targeting_action_apply_target_groups_from_segments: "[CMF] Apply Target Groups from Assigned Customer Segments"
 plugin_cmf_targeting_action_apply_for: "For"

@@ -24,6 +24,7 @@ Currently following implementations of triggers, conditions and actions are avai
   [Personalization](30_Personalization.md) chapter.
 - [Targeting] Check Weight of Assigned Target Group: Checks weight of assigned target group that issued the trigger. 
   For more details see [Personalization](30_Personalization.md) chapter. 
+- Customer Field: Only apply rule for customer with specific value in given field.
 
 The Conditions can be combined with AND, OR, AND NOT and brackets. 
 
