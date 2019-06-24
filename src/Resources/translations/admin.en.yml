@@ -11,6 +11,7 @@ plugin_cmf_actiontriggerrule_triggerExecuteSegmentBuilders: "Segment building"
 plugin_cmf_actiontriggerrule_triggerCron: "Cron"
 plugin_cmf_actiontriggerrule_actionAddSegment: "Add segment"
 plugin_cmf_actiontriggerrule_actionAddTrackedSegment: "[Targeting] Add tracked segment"
+plugin_cmf_actiontriggerrule_actionSendMail: "Send Mail"
 plugin_cmf_actiontriggerrule_actionDelay: "Action delay"
 plugin_cmf_actiontriggerrule_conditionCountActivities: "Activities count of type x"
 plugin_cmf_actiontriggerrule_conditionCountTrackedSegment: "[Targeting] Tracked Segments Count"
@@ -164,6 +165,12 @@ plugin_cmf_actiontriggerrule_for_condition: "For"
 plugin_cmf_actiontriggerrule_for_condition_empty_all: "If selection empty, all apply."
 plugin_cmf_actiontriggerrule_for_condition_segments: "Segments"
 plugin_cmf_actiontriggerrule_consider_profiling_consent: "consider profiling consent"
+plugin_cmf_actiontriggerrule_send_to_customer: "Send to Customer"
+plugin_cmf_actiontriggerrule_send_mail_explanation: '
+    <p>If the email document is not extistant or not of type email the email will not be sent</p>
+    <p>For the email document it is possible to use placeholders (ex %customerLanguage%). All fields of the customer object are possible (given that they are castable to string). <br>
+    If one of these placeholders are not available in the customer object or are equal to empty string, the email will not be send for this customer and a error will be logged</p>
+    <p>Send to Customer (default enabled) will add the customer email address to the receiver addresses of the email document</p>'
 
 plugin_cmf_targeting_action_apply_target_groups_from_segments: "[CMF] Apply Target Groups from Assigned Customer Segments"
 plugin_cmf_targeting_action_apply_for: "For"

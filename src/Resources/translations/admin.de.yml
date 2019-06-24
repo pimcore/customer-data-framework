@@ -11,6 +11,7 @@ plugin_cmf_actiontriggerrule_triggerExecuteSegmentBuilders: "Segmentbildung"
 plugin_cmf_actiontriggerrule_triggerCron: "Cron"
 plugin_cmf_actiontriggerrule_actionAddSegment: "Segment hinzufügen"
 plugin_cmf_actiontriggerrule_actionAddTrackedSegment: "[Targeting] Gemessenes Segment hinzufügen"
+plugin_cmf_actiontriggerrule_actionSendMail: "Mail versenden"
 plugin_cmf_actiontriggerrule_actionDelay: "Zeitverzögerung"
 plugin_cmf_actiontriggerrule_conditionCountActivities: "Aktivitätenanzahl vom Typ x"
 plugin_cmf_actiontriggerrule_conditionCountTrackedSegment: "[Targeting] Gemessene Segmente zählen"
@@ -170,6 +171,12 @@ plugin_cmf_actiontriggerrule_for_condition: "Für"
 plugin_cmf_actiontriggerrule_for_condition_empty_all: "Leere Auswahl bedeutet alle."
 plugin_cmf_actiontriggerrule_for_condition_segments: "Segmente"
 plugin_cmf_actiontriggerrule_consider_profiling_consent: "Profiling Consent berücksichtigen"
+plugin_cmf_actiontriggerrule_send_to_customer: "An Kunden versenden"
+plugin_cmf_actiontriggerrule_send_mail_explanation: '
+    <p>Wenn das E-Mail Dokument nicht existiert oder nicht von Typ email ist, wird die E-Mail nicht versendet</p>
+    <p>Für das E-Mail Dokument ist es möglich Platzhalter zu verwenden(zB %customerLanguage%). Alle Felder des Customer Objektes sind hier möglich (vorausgesetzt sie können zu string gecastet werden). <br>
+    Wenn ein Platzhalter im Custoemr Objekt nicht verfügbar ist oder es einem leeren String gleicht, wird die E-Mail nicht versendet und ein Error wird geloggt</p>
+    <p>An Kunden versenden (default aktiviert) fügt die Customer E-Mail Adresse zu den Empfängern des E-Mail Dokuments hinzu</p>'
 
 plugin_cmf_targeting_action_apply_target_groups_from_segments: "[CMF] Zielgruppen von zugewiesenen Kundensegmenten übernehmen"
 plugin_cmf_targeting_action_apply_for: "Für"

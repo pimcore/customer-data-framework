@@ -43,6 +43,8 @@ The Conditions can be combined with AND, OR, AND NOT and brackets.
   Optionally all other segments of the same group are removed, the segment application counter is 
   increased and an action delay can be defined (execute action a certain amount of time after the trigger & condition matched).
   For more details see [Personalization](30_Personalization.md) chapter.
+- Send Mail: Sends an email (optionally to the customer - default true). It is possible to use placeholders with fields of the customer object in the path of the email document to for example send different emails based on language and an action delay can be defined (execute action a certain amount of time after the trigger & condition matched). Additionally it's possible to configure, if the `profilingConsent` attribute of the customer object should be considered.
+  For more details see [Personalization](30_Personalization.md) chapter.
 	
   
 
