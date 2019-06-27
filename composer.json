@@ -16,7 +16,7 @@
         "pear/archive_tar": "^1.4.3",
         "pimcore/pimcore": ">=5.4 <6.1",
         "pimcore/number-sequence-generator": "^1.0.1",
-        "pimcore/object-merger": "~1.4",
+        "pimcore/object-merger": "~2.0",
         "pimcore/search-query-parser": "^1.2.4"
     },
     "require-dev": {
