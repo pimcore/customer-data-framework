@@ -112,7 +112,7 @@ class Admin extends AdminController implements EventedControllerInterface
     protected function buildPaginator(Request $request, $data, $defaultPageSize = null)
     {
         if (is_null($defaultPageSize)) {
-            $defaultPageSize = $this->defaultPageSize;
+            $defaultPageSize = $this->defaultPageSize->defaultPageSize();
         }
 
         $paginator = new Paginator($data);
