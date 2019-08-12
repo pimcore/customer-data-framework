@@ -10,7 +10,7 @@
         "drewm/mailchimp-api": "*",
         "guzzlehttp/guzzle": ">=4.1.4 <7.0",
         "hwi/oauth-bundle": "~0.6.2",
-        "php-http/httplug-bundle": "~1.10.0",
+        "php-http/httplug-bundle": "~1.12",
         "php-http/guzzle6-adapter": "^2.0",
         "mtdowling/cron-expression": "^1.1.0",
         "pear/archive_tar": "^1.4.3",
