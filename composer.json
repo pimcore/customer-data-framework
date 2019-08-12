@@ -9,7 +9,7 @@
         "box/spout": "^2.7",
         "drewm/mailchimp-api": "*",
         "guzzlehttp/guzzle": ">=4.1.4 <7.0",
-        "hwi/oauth-bundle": "~0.6.2",
+        "hwi/oauth-bundle": "~0.6.2 || dev-master",
         "php-http/httplug-bundle": "~1.14",
         "php-http/guzzle6-adapter": "^2.0",
         "mtdowling/cron-expression": "^1.1.0",
