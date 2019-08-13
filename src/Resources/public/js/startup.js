@@ -8,6 +8,12 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
     initialize: function () {
         pimcore.plugin.broker.registerPlugin(this);
 
+        this.navEl = Ext.get('pimcore_menu_search').insertSibling('<li id="pimcore_menu_cmf" data-menu-tooltip="'
+            + t('plugin_cmf_mainmenu') +
+            '" class="pimcore_menu_item pimcore_menu_needs_children"><img src="/bundles/pimcorecustomermanagementframework/icons/outline-group-24px.svg"></li>', 'before');
+        this.menu = new Ext.menu.Menu({cls: 'pimcore_navigation_flyout'});
+
+        pimcore.layout.toolbar.prototype.cmfMenu = this.menu;
     },
 
     pimcoreReady: function (params, broker) {
@@ -20,12 +26,6 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
     initToolbar: function () {
         var toolbar = pimcore.globalmanager.get('layout_toolbar');
         var user = pimcore.globalmanager.get('user');
-
-        var menuItems = toolbar.cmfMenu;
-        if (!menuItems) {
-            menuItems = new Ext.menu.Menu({cls: 'pimcore_navigation_flyout'});
-            toolbar.cmfMenu = menuItems;
-        }
 
         // customer view
         if (user.isAllowed('plugin_cmf_perm_customerview')) {
@@ -61,7 +61,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
             });
 
             // add to menu
-            menuItems.add(customerMenu);
+            this.menu.add(customerMenu);
 
             $(pimcore.settings.cmf.shortcutFilterDefinitions).each(function(){
                 var filterId = this.id;
@@ -116,7 +116,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
             };
 
             // add to menu
-            menuItems.add(item);
+            this.menu.add(item);
         }
 
         if (user.isAllowed('plugin_cmf_perm_customer_automation_rules')) {
@@ -134,7 +134,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
                 }
             };
 
-            menuItems.add(item);
+            this.menu.add(item);
         }
 
         if (pimcore.settings.cmf.newsletterSyncEnabled && user.isAllowed('plugin_cmf_perm_newsletter_enqueue_all_customers')) {
@@ -153,28 +153,17 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
                 }.bind(this)
             };
 
-            menuItems.add(item);
+            this.menu.add(item);
         }
 
-        // add main menu
-        if (menuItems.items.length > 0) {
-            var insertPoint = Ext.get('pimcore_menu_settings');
-            if (!insertPoint) {
-                var dom = Ext.dom.Query.select('#pimcore_navigation ul li:last');
-                insertPoint = Ext.get(dom[0]);
-            }
-
-            this.navEl = Ext.get(
-                insertPoint.insertHtml(
-                    'afterEnd',
-                    '<li id="pimcore_menu_cmf" class="pimcore_menu_item pimcore_menu_needs_children " data-menu-tooltip="'
-                    + t('plugin_cmf_mainmenu') +
-                    '"><img src="/bundles/pimcorecustomermanagementframework/icons/outline-group-24px.svg"></li>'
-                )
-            );
-
-            this.navEl.on('mousedown', toolbar.showSubMenu.bind(menuItems));
+        // remove main menu
+        if (this.menu.items.length === 0) {
+            Ext.get('pimcore_menu_cmf').remove();
+            return;
         }
+
+        this.navEl.on('mousedown', toolbar.showSubMenu.bind(toolbar.cmfMenu));
+        pimcore.plugin.broker.fireEvent("cmfMenuReady", toolbar.cmfMenu);
     },
 
     postOpenObject: function (object, type) {
