@@ -144,7 +144,7 @@
         ],
         "locked": false
     },
-    "icon": "\/pimcore\/static6\/img\/flat-color-icons\/data_configuration.svg",
+    "icon": "\/bundles\/pimcoreadmin\/img\/flat-color-icons\/data_configuration.svg",
     "previewUrl": null,
     "group": "CustomerManagement",
     "propertyVisibility": {
