@@ -116,7 +116,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
 
         unset($data['attributes']);
         if (!is_null($activity)) {
-            $data['attributes'] = $this->getActivityAttributeDataAsDynamicColumnInsert($activity);
+            $data['attributes'] = $this->getAttributeInsertData($activity);
             $data['type'] = $db->quote($activity->cmfGetType());
             $data['implementationClass'] = $db->quote(get_class($activity));
         } else {
