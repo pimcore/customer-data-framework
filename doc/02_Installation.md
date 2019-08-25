@@ -6,7 +6,7 @@ This section describes the installation of the Customer Management Framework and
 
 ## Installation
 
-1) Add dependency for CMF to your composer.json and run composer update. 
+1) Add dependency for CMF to your `composer.json` and run `composer update`. Alternatively, in Pimcore directory, run `composer require pimcore/customer-management-framework-bundle`.
 ```json
     ...
     "require": {
@@ -17,7 +17,7 @@ This section describes the installation of the Customer Management Framework and
    ... 
 ```
 
-2) Open Pimcore Admin UI, navigate to `Tools` > `Extensions` and activate and install 
+2) Open Pimcore Admin UI, navigate to `Tools` > `Bundles` and activate and install 
 `PimcoreCustomerManagementFrameworkBundle` and `ObjectMergerBundle`. 
 
 ![Extension Manager](./img/install.jpg)
