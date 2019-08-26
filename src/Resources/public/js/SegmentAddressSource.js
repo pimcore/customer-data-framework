@@ -13,7 +13,8 @@ pimcore.document.newsletters.addressSourceAdapters.SegmentAddressSource = Class.
     getValues: function () {
         return {
             segmentIds: this.segmentStore.getData().items.map(item => item.id),
-            operator: this.operatorsBox.getValue()
+            operator: this.operatorsBox.getValue(),
+            filterFlags: this.filterFlags.getValue()
         };
     },
 
@@ -131,11 +132,36 @@ pimcore.document.newsletters.addressSourceAdapters.SegmentAddressSource = Class.
             value: this.operatorsStore.first(),
         });
 
+        this.filterFlags = Ext.create('Ext.ux.form.MultiSelect', {
+            name: 'filterFlags',
+            triggerAction: "all",
+            editable: false,
+            fieldLabel: t('cmf_newsletter_filter_flags'),
+            store: new Ext.data.Store({
+                autoDestroy: true,
+                proxy: {
+                    type: 'ajax',
+                    url: "/admin/customermanagementframework/helper/newsletter/possible-filter-flags",
+                    reader: {
+                        type: 'json',
+                        rootProperty: 'data'
+                    }
+                },
+                autoLoad: true,
+                fields: ["name", "label"]
+            }),
+            valueField: 'name',
+            displayField: 'label',
+            width: 400,
+            height: 110
+        });
+
         var form = Ext.create('Ext.form.Panel', {
-            height: 300,
+            height: 400,
             items: [
                 segmentGrid,
-                this.operatorsBox
+                this.operatorsBox,
+                this.filterFlags
             ]
         });
 
