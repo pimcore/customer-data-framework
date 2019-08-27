@@ -27,9 +27,9 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
         });
 
         return this.layout = new Ext.Panel({
-            title: t('segmentAssignment'),
+            tooltip: t('segmentAssignment'),
             border: false,
-            iconCls: "plugin_cmf_icon_actiontriggerrule_ExecuteSegmentBuilders",
+            iconCls: "plugin_cmf_icon_actiontriggerrule_ExecuteSegmentBuilders pimcore_material_icon",
             bodyStyle:'padding: 0 10px;',
             cls: "pimcore_object_panel_edit",
             tbar: [],
