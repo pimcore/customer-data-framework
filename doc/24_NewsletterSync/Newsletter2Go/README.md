@@ -1,3 +1,5 @@
+# Newsletter2Go
+
 ## Find Double Opt In Code
 Go to https://ui.newsletter2go.com/forms and create your double opt in form. ![nl2goform](../../img/newsletter2go/create-form-1.png)
 
@@ -5,7 +7,7 @@ In the next step click to view your hosted form.
 
 You can find the code in the url: ![code](../../img/newsletter2go/create-form-2.png)
 
-## Checking Users inside Newsletter2Gos Webinterface
+## Checking users in Newsletter2Gos webinterface
 Sometimes it takes a really long time for Customers to actually show up within Newsletter2Go's web interface. It is therefore better to use the API to check if a user exists or not.
 
 ## Find your login Data / API key

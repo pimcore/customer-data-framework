@@ -1,5 +1,15 @@
 # Newsletter Sync
 
+## Provider specific Configs
+Have a look at the according doc pages:
+
+
+[Mailchimp](./Mailchimp/README.md)
+
+
+[Newsletter2Go](./Newsletter2Go/README.md)
+
+
 The CMF offers built-in support for synchronizing customer data with MailChimp and Newsletter2Go. It synchronizes configured parts of the 
 customer data and optionally also can export mail templates based on Pimcore mail documents. 
 
@@ -45,20 +55,20 @@ MailChimp should be allowed. The CMF processes updates of simple merge fields bu
 Customer segments/interest groups definitely can not be synced back to Pimcore.**
 
 
-## Exporting newsletter templates to MailChimp
+## Exporting newsletter templates
 
-Has to be Configured in the NewsletterProvider options.
-The config option for this behaviour is called `enableTemplateExporter` 
+To display the buttons you have to configure the Newsletter provider.
+The config option for this is called `enableTemplateExporter` 
 (see [Configuration](../03_Configuration.md)).
 
 ![template_exporter](../img/mailchimp/mailchimp-export-template.png)
 
-With this it's possible to create the newsletter within Pimcore and then use it for emailing campaigns within MailChimp.
+With this it's possible to create the newsletter within Pimcore and then use it for emailing campaigns within the newsletter provider.
 
 
 ## Logging
 
-The CMF logs MailChimp sync related changes on three different levels:
+The CMF logs Customer sync related changes on three different levels:
 - Customer activities are tracked on each MailChimp status change
 - In the notes and events tab of the customer a list of successful exports will be shown.
 - Errors are logged into the application logger.  

@@ -76,7 +76,7 @@ services:
             #list id
             - 'XXXXX'
             # code for the double opt in form - can be found within the newsletter2go interface
-            - 'nzd8p6qr-n2sm2wg7-15ak'
+            - 'XXXXXX-XXXXXX-XXXX'
             -   subscribed: subscribed
                 pending: pending
                 unsubscribed: unsubscribed
