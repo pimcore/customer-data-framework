@@ -13,8 +13,6 @@ Have a look at the according doc pages:
 The CMF offers built-in support for synchronizing customer data with MailChimp and Newsletter2Go. It synchronizes configured parts of the 
 customer data and optionally also can export mail templates based on Pimcore mail documents. 
 
-> Other newsletter systems could be integrated too by implementing the `NewsletterProviderHandlerInterface`.
-
 ## Configuration
 
 The newsletter synchronisation has to be enabled in CMF configuration. Additional configurations are
@@ -51,7 +49,7 @@ The config option for this behaviour is called `newsletterQueueImmediateAsyncExe
 
 
 > **Caution: Pimcore should be the master data base. Therefore no changes of user data (e.g. interest groups) within 
-MailChimp should be allowed. The CMF processes updates of simple merge fields but it's much better to disallow such updates. 
+newsletter providers should be allowed. The CMF processes updates of simple merge fields but it's much better to disallow such updates. 
 Customer segments/interest groups definitely can not be synced back to Pimcore.**
 
 
