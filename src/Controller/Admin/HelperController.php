@@ -136,12 +136,18 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
 
 
         $templateExporters = [];
-        if($this->container->getParameter('pimcore_customer_management_framework.newsletter.mailchimp.enableTemplateExporter')) {
-            $templateExporters['mailchimp'] = \CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\TemplateExporter::class;
+        if($this->container->hasParameter('pimcore_customer_management_framework.newsletter.mailchimp.enableTemplateExporter')) {
+            if($this->container->getParameter('pimcore_customer_management_framework.newsletter.mailchimp.enableTemplateExporter')) {
+                $templateExporters['mailchimp'] = \CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\TemplateExporter::class;
+            }
         }
-        if($this->container->getParameter('pimcore_customer_management_framework.newsletter.newsletter2Go.enableTemplateExporter')) {
-            $templateExporters['newsletter2Go'] = \CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Newsletter2Go\TemplateExporter::class;
+
+        if($this->container->hasParameter('pimcore_customer_management_framework.newsletter.newsletter2Go.enableTemplateExporter')) {
+            if($this->container->getParameter('pimcore_customer_management_framework.newsletter.newsletter2Go.enableTemplateExporter')) {
+                $templateExporters['newsletter2Go'] = \CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Newsletter2Go\TemplateExporter::class;
+            }
         }
+
 
         $settings = [
             'newsletterSyncEnabled' => $this->container->getParameter('pimcore_customer_management_framework.newsletter.newsletterSyncEnabled'),

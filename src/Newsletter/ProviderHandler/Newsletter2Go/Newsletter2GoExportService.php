@@ -35,50 +35,31 @@ class Newsletter2GoExportService
 
         foreach($items as $item) {
             $customer = $item->getCustomer();
-            if($newsletter2GoProviderHandler->getNewsletterStatus($customer) == 'unsubscribed' || $item->getOperation() == NewsletterQueueInterface::OPERATION_DELETE) {
-                $deleteItems[] = $item;
-            } else if($newsletter2GoProviderHandler->getNewsletterStatus($customer) == 'subscribed' ) {
-                $updateItems[] = $item;
+
+            if($customer) {
+                if ($newsletter2GoProviderHandler->getNewsletterStatus($customer) == 'unsubscribed' || $item->getOperation() == NewsletterQueueInterface::OPERATION_DELETE) {
+                    $deleteItems[] = $item;
+                } else if ($newsletter2GoProviderHandler->getNewsletterStatus($customer) == 'subscribed') {
+                    $updateItems[] = $item;
+                } else {
+                    $item->setSuccessfullyProcessed(true);
+                }
             } else {
                 $item->setSuccessfullyProcessed(true);
             }
         }
-
 
         if(count($deleteItems)) {
             $this->deleteMultiple($items, $newsletter2GoProviderHandler);
         }
 
         if(count($updateItems)) {
-            $this->updateMultiple($items, $newsletter2GoProviderHandler);
-        }
-    }
-
-
-
-
-
-    protected function buildCustomerParams(NewsletterQueueItemInterface $item, Newsletter2Go $newsletter2GoProviderHandler) {
-        $customer = $item->getCustomer();
-
-        $data = [];
-
-        $data['list_id'] = $newsletter2GoProviderHandler->getListId();
-        $data['email'] = $customer->getEmail();
-        $data['phone'] = $customer->getPhone();
-        if($gender = $customer->getGender()) {
-            if($gender == 'male') {
-                $data['gender'] = 'm';
-            } else if($gender == 'female') {
-                $data['gender'] = 'f';
+            foreach($updateItems as $updateItem) {
+                $this->update($updateItem, $newsletter2GoProviderHandler);
             }
         }
-        $data['first_name'] = $customer->getFirstname();
-        $data['last_name'] = $customer->getLastname();
-
-
-        return $data;
     }
+
 
     /**
      * @param NewsletterQueueItemInterface $item
@@ -99,19 +80,20 @@ class Newsletter2GoExportService
         if(count($items)) {
             $data = [];
             foreach($items as $updateItem) {
-                $data[] = $this->buildCustomerParams($updateItem, $newsletter2GoProviderHandler);
+                if($updateItem->getCustomer()) {
+                    $data[] = $newsletter2GoProviderHandler->buildEntry($updateItem);
+                }
             }
+
 
             $endpoint = '/recipients';
             $response = $this->newsletter2GoRESTApi->curl($endpoint, $data, 'POST');
 
-
-
-            //how the heck should we match to an id here? another req getting the data??
-            //todo we need to check if it was successfull...
             foreach($items as $item) {
-                $customer = $item->getCustomer();
-                $newsletter2GoProviderHandler->updateNewsletter2GoStatus($customer, $newsletter2GoProviderHandler->mapNewsletterStatus('subscribed'));
+                if($customer = $item->getCustomer()) {
+                    $newsletter2GoProviderHandler->updateNewsletter2GoStatus($customer, $newsletter2GoProviderHandler->mapNewsletterStatus('subscribed'));
+                    $newsletter2GoProviderHandler->updateNewsletterStatus($customer, 'subscribed');
+                }
                 $item->setSuccessfullyProcessed(true);
             }
         }
@@ -146,10 +128,11 @@ class Newsletter2GoExportService
 
             //todo find a better way for this...
             foreach($items as $item) {
-                $customer = $item->getCustomer();
+                if($customer = $item->getCustomer()) {
+                    $newsletter2GoProviderHandler->updateNewsletter2GoStatus($customer, 'unsubscribed');
+                    $newsletter2GoProviderHandler->updateNewsletterStatus($customer, 'unsubscribed');
+                }
                 $item->setSuccessfullyProcessed(true);
-                $newsletter2GoProviderHandler->updateNewsletter2GoStatus($customer, '');
-                $newsletter2GoProviderHandler->updateNewsletterStatus($customer, '');
             }
         }
 
@@ -202,7 +185,7 @@ class Newsletter2GoExportService
     public function register(NewsletterQueueItemInterface $item,  Newsletter2Go $newsletter2GoProviderHandler) {
 
         $customer = $item->getCustomer();
-        $params['recipient'] = $this->buildCustomerParams($item, $newsletter2GoProviderHandler);
+        $params['recipient'] = $newsletter2GoProviderHandler->buildEntry($item);
         unset($params['recipient']['list_id']);
 
 

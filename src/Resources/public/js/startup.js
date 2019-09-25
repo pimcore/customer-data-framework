@@ -282,7 +282,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
     },
     postOpenDocument: function (document, type) {
 
-        if (pimcore.settings.cmf.newsletterSyncEnabled && (type === 'email' || type === 'newsletter')) {
+        if (pimcore.settings.cmf && pimcore.settings.cmf.newsletterSyncEnabled && (type === 'email' || type === 'newsletter')) {
 
             if(pimcore.settings.cmf.templateExporters && !Ext.Object.isEmpty(pimcore.settings.cmf.templateExporters)) {
 

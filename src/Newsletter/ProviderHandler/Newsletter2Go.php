@@ -9,6 +9,7 @@
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler;
 
 
+use CustomerManagementFrameworkBundle\Model\Activity\Newsletter2GoStatusChangeActivity;
 use CustomerManagementFrameworkBundle\Model\NewsletterAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Newsletter2Go\Newsletter2GoExportService;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\DefaultNewsletterQueueItem;
@@ -38,6 +39,16 @@ class Newsletter2Go implements NewsletterProviderHandlerInterface
 
 
     /**
+     * @var array
+     */
+    protected $mergeFieldMapping;
+
+    /**
+     * @var array
+     */
+    protected $fieldTransformers;
+
+    /**
      * @var array $statusMapping
      * @var array $reverseStatusMapping
      */
@@ -47,7 +58,7 @@ class Newsletter2Go implements NewsletterProviderHandlerInterface
     protected $doubleOptInFormCode;
 
 
-    public function __construct($shortcut, $listId, $doubleOptInFormCode, array $statusMapping = [], array $reverseStatusMapping = [], Newsletter2Go\Newsletter2GoExportService $exportService)
+    public function __construct($shortcut, $listId, $doubleOptInFormCode, array $statusMapping = [], array $reverseStatusMapping = [], array $mergeFieldMapping = [], array $fieldTransformers = [], Newsletter2Go\Newsletter2GoExportService $exportService)
     {
         $this->shortcut = $shortcut;
         $this->listId = $listId;
@@ -58,6 +69,10 @@ class Newsletter2Go implements NewsletterProviderHandlerInterface
         $this->reverseStatusMapping = $reverseStatusMapping;
 
         $this->doubleOptInFormCode = $doubleOptInFormCode;
+
+        $this->mergeFieldMapping = $mergeFieldMapping;
+
+        $this->fieldTransformers = $fieldTransformers;
     }
 
     /**
@@ -160,7 +175,7 @@ class Newsletter2Go implements NewsletterProviderHandlerInterface
             NewsletterQueueInterface::OPERATION_UPDATE
         );
 
-        $this->exportService->register($item, $this);
+        return $this->exportService->register($item, $this);
     }
 
     public function getExternalData(NewsletterAwareCustomerInterface $customer) {
@@ -235,6 +250,16 @@ class Newsletter2Go implements NewsletterProviderHandlerInterface
     }
 
 
+    protected function trackStatusChangeActivity(NewsletterAwareCustomerInterface $customer, $status)
+    {
+        $activity = new Newsletter2GoStatusChangeActivity($customer, $status, ['listId' => $this->getListId(), 'shortcut' => $this->getShortcut()]);
+        /**
+         * @var \CustomerManagementFrameworkBundle\ActivityManager\ActivityManagerInterface $activityManager
+         */
+        $activityManager = \Pimcore::getContainer()->get('cmf.activity_manager');
+        $activityManager->trackActivity($activity);
+    }
+
 
     public function setNewsletter2GoStatus(NewsletterAwareCustomerInterface $customer, $status)
     {
@@ -247,6 +272,8 @@ class Newsletter2Go implements NewsletterProviderHandlerInterface
             ));
         }
         $customer->$setter($status);
+
+        $this->trackStatusChangeActivity($customer, $status);
     }
 
     public function getNewsletter2GoStatus(NewsletterAwareCustomerInterface $customer)
@@ -305,6 +332,42 @@ class Newsletter2Go implements NewsletterProviderHandlerInterface
         }
 
         return null;
+    }
+
+
+    public function buildEntry(NewsletterQueueItemInterface $item) {
+        $customer = $item->getCustomer();
+
+        $data = [];
+
+        $data['list_id'] = $this->getListId();
+        $data['email'] = $customer->getEmail();
+
+        if($gender = $customer->getGender()) {
+            if($gender == 'male') {
+                $data['gender'] = 'm';
+            } else if($gender == 'female') {
+                $data['gender'] = 'f';
+            }
+        }
+        $data['first_name'] = $customer->getFirstname();
+        $data['last_name'] = $customer->getLastname();
+
+        if(count($this->mergeFieldMapping)) {
+            foreach($this->mergeFieldMapping as $keyPimcore => $keyNL2Go) {
+                $method = 'get' . ucfirst($keyPimcore);
+                if(method_exists($customer, $method)) {
+                    $value = $customer->{$method}();
+                    if (isset($this->fieldTransformers[$keyPimcore])) {
+                        $transformer = $this->fieldTransformers[$keyPimcore];
+                        $value = $transformer->transformFromPimcoreToMailchimp($value);
+                    }
+                    $data[$keyNL2Go] = $value;
+                }
+            }
+        }
+
+        return $data;
     }
 }
 

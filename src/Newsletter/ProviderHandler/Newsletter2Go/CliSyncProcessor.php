@@ -68,16 +68,12 @@ class CliSyncProcessor
     protected function proccessCustomerChunk($customerChunk, Newsletter2Go $newsletterProviderHandler) {
         $externalRecords = $this->exportService->getExternalDataMultiple($customerChunk, $newsletterProviderHandler);
 
-        if(empty($externalRecords)) {
-            foreach($customerChunk as $customer) {
-                //unsubscribe if it has been deleted
-                $newsletterProviderHandler->setNewsletterStatus($customer, 'unsubscribed');
-                $newsletterProviderHandler->setNewsletter2GoStatus($customer, $newsletterProviderHandler->mapNewsletterStatus('unsubscribed'));
-                $customer->save();
-            }
+        $externalEmails = [];
+        foreach($externalRecords?:[] as $externalRecord) {
+            $externalEmails[] = $externalRecord->email;
         }
 
-        foreach($externalRecords as $externalRecord) {
+        foreach($externalRecords?:[] as $externalRecord) {
 
             $customer = $customerChunk[$externalRecord->email];
             if($customer) {
@@ -94,11 +90,6 @@ class CliSyncProcessor
                     $newsletterProviderHandler->setNewsletter2GoStatus($customer, $newsletterProviderHandler->mapNewsletterStatus('unsubscribed'));
                     $customer->save();
                 }
-            } else {
-                //unsubscribe if it has been deleted
-                $newsletterProviderHandler->setNewsletterStatus($customer, 'unsubscribed');
-                $newsletterProviderHandler->setNewsletter2GoStatus($customer, $newsletterProviderHandler->mapNewsletterStatus('unsubscribed'));
-                $customer->save();
             }
         }
 

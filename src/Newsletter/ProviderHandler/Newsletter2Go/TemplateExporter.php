@@ -36,10 +36,16 @@ class TemplateExporter implements NewsletterTemplateExporterInterface
     public function exportTemplate(Document $document)
     {
         $html = \Pimcore\Model\Document\Service::render($document);
+        //prevent nl2go placeholders to be encoded and get applied with the domain
+        $html = str_replace('href="{{ ', 'data-save-my-link="{{ ', $html);
+
+
         // modifying the content e.g set absolute urls...
         $html = \Pimcore\Helper\Mail::embedAndModifyCss($html, $document);
         $html = \Pimcore\Helper\Mail::setAbsolutePaths($html, $document);
 
+        //prevent nl2go placeholders to be encoded and get applied with the domain
+        $html = str_replace('data-save-my-link="{{ ', 'href="{{ ', $html);
 
         $response = $this->newsletter2GoRESTApi->createNewsletter($this->listId, 'default', $document->getKey(), $document->getFrom(), $document->getSubject(), $html);
     }
