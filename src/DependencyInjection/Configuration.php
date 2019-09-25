@@ -32,13 +32,12 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-            ->arrayNode('oauth_client')
-            ->canBeEnabled()
-            ->end()
+                ->arrayNode('oauth_client')
+                    ->canBeEnabled()
+                ->end()
             ->end();
 
         $rootNode->append($this->buildGeneralNode());
-        $rootNode->append($this->buildAuthServerNode());
         $rootNode->append($this->buildEncryptionNode());
         $rootNode->append($this->buildCustomerSaveManagerNode());
         $rootNode->append($this->buildCustomerProviderNode());
@@ -67,12 +66,12 @@ class Configuration implements ConfigurationInterface
 
         $general
             ->children()
-            ->scalarNode('customerPimcoreClass')
-            ->defaultValue('Customer')
-            ->end()
-            ->scalarNode('mailBlackListFile')
-            ->defaultValue(PIMCORE_CONFIGURATION_DIRECTORY . '/cmf/mail-blacklist.txt')
-            ->end()
+                ->scalarNode('customerPimcoreClass')
+                    ->defaultValue('Customer')
+                ->end()
+                ->scalarNode('mailBlackListFile')
+                    ->defaultValue(PIMCORE_CONFIGURATION_DIRECTORY . '/cmf/mail-blacklist.txt')
+                ->end()
             ->end()
         ;
 
@@ -85,110 +84,6 @@ class Configuration implements ConfigurationInterface
             ->defaultValue(PIMCORE_CONFIGURATION_DIRECTORY . '/cmf/mail-blacklist.txt')
             ->end()
             ->end();
-
-        return $general;
-    }
-
-    private function buildAuthServerNode()
-    {
-        $treeBuilder = new TreeBuilder();
-
-        $general = $treeBuilder->root('oauth_server');
-
-        $general
-            ->addDefaultsIfNotSet()
-            ->info('Configuration of general doctrine settings');
-
-        $general
-            ->children()
-
-            ->scalarNode('encryptionKey')
-            ->info(
-                'create it randomly, should look like so: lxZFUEsBCJ2Yb14IF2ygAHI5N4+ZAUXXaSeeJm6+twsUmIen'
-            )
-            ->defaultValue('')
-            ->end()
-
-
-            ->scalarNode('privateKeyDir')
-            ->info(
-                'create it by using this command: openssl genrsa -out private.key 2048'
-            )
-            ->defaultValue('')
-            ->end()
-
-
-            ->scalarNode('publicKeyDir')
-            ->info(
-                'create it by using this command: openssl rsa -in private.key -pubout -out public.key'
-            )
-            ->defaultValue('')
-            ->end()
-
-
-            ->scalarNode('expireAuthorizationCode')
-            ->info(
-                'datetime when authorization code expires'
-            )
-            ->defaultValue('')
-            ->end()
-
-
-            ->scalarNode('expireAccessTokenCode')
-            ->info(
-                'datetime when access token expires'
-            )
-            ->defaultValue('')
-            ->end()
-
-
-            ->scalarNode('expireRefreshTokenCode')
-            ->info(
-                'datetime when refresh token expires'
-            )
-            ->defaultValue('')
-            ->end()
-
-
-            ->scalarNode('privateKeyDir')
-            ->info(
-                'create it by using this command: openssl genrsa -out private.key 2048'
-            )
-            ->defaultValue('')
-            ->end()
-
-
-            ->arrayNode('userExporter')
-            ->prototype('scalar')->end()
-            ->example([
-                ['firstname', 'lastname']
-            ])
-            ->defaultValue(['firstname', 'lastname', 'email', 'gender', 'street', 'zip', 'city', 'countryCode', 'email', 'phone'])
-            ->end()
-
-
-            ->arrayNode('clients')
-            ->prototype('array')
-            ->children()
-            ->scalarNode('client_id')->end()
-            ->scalarNode('name')->end()
-            ->scalarNode('secret')->end()
-            ->scalarNode('is_confidential')->end()
-            ->variableNode('redirect_uri')
-            ->validate()
-            ->ifTrue(function ($v) {
-                return $v !== null && false === is_string($v) && false === is_array($v);
-            })
-            ->thenInvalid('it must either be of type null, a string or an array')
-            ->end()
-            ->end()
-            ->end()
-            ->end()
-            ->info('Auth Server Required Fields')
-            ->end()
-
-            ->end()
-        ;
 
         return $general;
     }
@@ -206,11 +101,11 @@ class Configuration implements ConfigurationInterface
         $general
             ->children()
             ->scalarNode('secret')
-            ->info(
-                'echo \Defuse\Crypto\Key::createNewRandomKey()->saveToAsciiSafeString();' . PHP_EOL .
-                'keep it secret'
-            )
-            ->defaultValue('')
+                ->info(
+                    'echo \Defuse\Crypto\Key::createNewRandomKey()->saveToAsciiSafeString();' . PHP_EOL .
+                    'keep it secret'
+                )
+                ->defaultValue('')
             ->end()
         ;
 
@@ -229,10 +124,10 @@ class Configuration implements ConfigurationInterface
 
         $customerSaveManager
             ->children()
-            ->booleanNode('enableAutomaticObjectNamingScheme')
-            ->defaultFalse()
-            ->info('If enabled the automatic object naming scheme will be applied on each customer save. See: customer_provider -> namingScheme option')
-            ->end()
+                ->booleanNode('enableAutomaticObjectNamingScheme')
+                    ->defaultFalse()
+                    ->info('If enabled the automatic object naming scheme will be applied on each customer save. See: customer_provider -> namingScheme option')
+                ->end()
         ;
 
         return $customerSaveManager;
@@ -250,19 +145,19 @@ class Configuration implements ConfigurationInterface
 
         $customerSaveValidator
             ->children()
-            ->booleanNode('checkForDuplicates')
-            ->info('If enabled an exception will be thrown when saving a customer object if duplicate customers exist.')
-            ->defaultFalse()
-            ->end()
-            ->arrayNode('requiredFields')
-            ->prototype('array')
-            ->prototype('scalar')->end()
-            ->info('Provide valid field combinations. The customer object then is valid as soon as at least one of these field combinations is filled up.')
-            ->example([
-                ['email'],
-                ['firstname', 'lastname', 'zip', 'city'],
-            ])
-            ->end()
+                ->booleanNode('checkForDuplicates')
+                ->info('If enabled an exception will be thrown when saving a customer object if duplicate customers exist.')
+                    ->defaultFalse()
+                ->end()
+                ->arrayNode('requiredFields')
+                        ->prototype('array')
+                            ->prototype('scalar')->end()
+                        ->info('Provide valid field combinations. The customer object then is valid as soon as at least one of these field combinations is filled up.')
+                        ->example([
+                            ['email'],
+                            ['firstname', 'lastname', 'zip', 'city'],
+                        ])
+                ->end()
         ;
 
         return $customerSaveValidator;
@@ -280,18 +175,18 @@ class Configuration implements ConfigurationInterface
 
         $segmentManager
             ->children()
-            ->arrayNode('segmentFolder')
-            ->addDefaultsIfNotSet()
-            ->children()
-            ->scalarNode('manual')
-            ->defaultValue('/segments/manual')
-            ->info('parent folder of manual segments + segment groups')
-            ->end()
-            ->scalarNode('calculated')
-            ->defaultValue('/segments/calculated')
-            ->info('parent folder of calculated segments + segment groups')
-            ->end()
-            ->end()
+                ->arrayNode('segmentFolder')
+                ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('manual')
+                            ->defaultValue('/segments/manual')
+                            ->info('parent folder of manual segments + segment groups')
+                        ->end()
+                        ->scalarNode('calculated')
+                            ->defaultValue('/segments/calculated')
+                            ->info('parent folder of calculated segments + segment groups')
+                        ->end()
+                ->end()
         ;
 
         return $segmentManager;
@@ -309,23 +204,23 @@ class Configuration implements ConfigurationInterface
 
         $customerProvider
             ->children()
-            ->scalarNode('parentPath')
-            ->defaultValue('/customers')
-            ->info('parent folder for active customers')
-            ->end()
-            ->scalarNode('archiveDir')
-            ->defaultValue('/customers/_archive')
-            ->info('parent folder for customers which are unpublished and inactive')
-            ->end()
-            ->scalarNode('namingScheme')
-            ->defaultNull()
-            ->example('{countryCode}/{zip}/{firstname}-{lastname}')
-            ->info('If a naming scheme is configured customer objects will be automatically renamend and moved to the configured folder structure as soon as the naming scheme gets applied.')
-            ->end()
-            ->scalarNode('newCustomersTempDir')
-            ->defaultValue('/customers/_temp')
-            ->info('parent folder for customers which are created via the "new customer" button in the customer list view')
-            ->end()
+                ->scalarNode('parentPath')
+                    ->defaultValue('/customers')
+                    ->info('parent folder for active customers')
+                ->end()
+                ->scalarNode('archiveDir')
+                    ->defaultValue('/customers/_archive')
+                    ->info('parent folder for customers which are unpublished and inactive')
+                ->end()
+                ->scalarNode('namingScheme')
+                    ->defaultNull()
+                    ->example('{countryCode}/{zip}/{firstname}-{lastname}')
+                    ->info('If a naming scheme is configured customer objects will be automatically renamend and moved to the configured folder structure as soon as the naming scheme gets applied.')
+                ->end()
+                ->scalarNode('newCustomersTempDir')
+                    ->defaultValue('/customers/_temp')
+                    ->info('parent folder for customers which are created via the "new customer" button in the customer list view')
+                ->end()
         ;
 
         return $customerProvider;
@@ -411,37 +306,37 @@ class Configuration implements ConfigurationInterface
 
         $customerList
             ->children()
-            ->arrayNode('exporters')
-            ->prototype('array')
-            ->children()
-            ->scalarNode('name')->isRequired()->end()
-            ->scalarNode('icon')->isRequired()->end()
-            ->scalarNode('exporter')->isRequired()->end()
-            ->booleanNode('exportSegmentsAsColumns')->defaultFalse()->end()
-            ->arrayNode('properties')->isRequired()->prototype('scalar')->end()
-            ->end()
-            ->end()
-            ->end()
-            ->defaultValue($defaultExporters)
-            ->end()
+                ->arrayNode('exporters')
+                    ->prototype('array')
+                        ->children()
+                            ->scalarNode('name')->isRequired()->end()
+                            ->scalarNode('icon')->isRequired()->end()
+                            ->scalarNode('exporter')->isRequired()->end()
+                            ->booleanNode('exportSegmentsAsColumns')->defaultFalse()->end()
+                            ->arrayNode('properties')->isRequired()->prototype('scalar')->end()
+                        ->end()
+                    ->end()
+                ->end()
+                ->defaultValue($defaultExporters)
+                ->end()
 
-            ->arrayNode('filter_properties')
-            ->addDefaultsIfNotSet()
+                ->arrayNode('filter_properties')
+                    ->addDefaultsIfNotSet()
 
-            ->children()
-            ->arrayNode('equals')
-            ->defaultValue($defaultFilterPropertiesEquals)
+                    ->children()
+                        ->arrayNode('equals')
+                            ->defaultValue($defaultFilterPropertiesEquals)
 
-            ->prototype('scalar')->end()
-            ->end()
-            ->arrayNode('search')
-            ->defaultValue($defaultFilterPropertiesSearch)
+                            ->prototype('scalar')->end()
+                        ->end()
+                        ->arrayNode('search')
+                            ->defaultValue($defaultFilterPropertiesSearch)
 
-            ->prototype('array')
-            ->prototype('scalar')
-            ->end()
-            ->end()
-            ->end()
+                            ->prototype('array')
+                                ->prototype('scalar')
+                    ->end()
+                ->end()
+                ->end()
         ;
 
         return $customerList;
@@ -467,58 +362,58 @@ class Configuration implements ConfigurationInterface
 
         $customerList
             ->children()
-            ->arrayNode('duplicateCheckFields')
-            ->defaultValue([])
+                ->arrayNode('duplicateCheckFields')
+                    ->defaultValue([])
 
-            ->prototype('array')
-            ->prototype('scalar')->end()
-            ->end()
-            ->end()
+                    ->prototype('array')
+                        ->prototype('scalar')->end()
+                    ->end()
+                ->end()
 
-            ->arrayNode('duplicateCheckTrimmedFields')
-            ->info('Performance improvement: add duplicate check fields which are trimmed (trim() called on the field value) by a customer save handler. No trim operation will be needed in the resulting query.')
-            ->prototype('scalar')->end()
-            ->end()
+                ->arrayNode('duplicateCheckTrimmedFields')
+                    ->info('Performance improvement: add duplicate check fields which are trimmed (trim() called on the field value) by a customer save handler. No trim operation will be needed in the resulting query.')
+                    ->prototype('scalar')->end()
+                ->end()
 
-            ->arrayNode('duplicates_view')
-            ->children()
-            ->booleanNode('enabled')->defaultFalse()->end()
-            ->arrayNode('listFields')
-            ->prototype('array')
-            ->prototype('scalar')
-            ->end()
-            ->end()
-            ->defaultValue($defaultListFields)
-            ->end()
-            ->end()
-            ->end()
+                ->arrayNode('duplicates_view')
+                    ->children()
+                        ->booleanNode('enabled')->defaultFalse()->end()
+                        ->arrayNode('listFields')
+                            ->prototype('array')
+                                ->prototype('scalar')
+                                ->end()
+                            ->end()
+                            ->defaultValue($defaultListFields)
+                        ->end()
+                    ->end()
+                ->end()
 
-            ->arrayNode('duplicates_index')
-            ->children()
-            ->booleanNode('enableDuplicatesIndex')
-            ->defaultFalse()
-            ->end()
+                ->arrayNode('duplicates_index')
+                    ->children()
+                        ->booleanNode('enableDuplicatesIndex')
+                            ->defaultFalse()
+                        ->end()
 
-            ->arrayNode('duplicateCheckFields')
+                        ->arrayNode('duplicateCheckFields')
 
-            ->prototype('array')
-            ->prototype('array')
-            ->children()
-            ->booleanNode('soundex')->defaultFalse()->end()
-            ->booleanNode('metaphone')->defaultFalse()->end()
-            ->scalarNode('similarity')->defaultValue('\CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText')->end()
-            ->scalarNode('similarityThreshold')->defaultNull()->end()
-            ->end()
-            ->end()
-            ->end()
-            ->end()
+                            ->prototype('array')
+                                ->prototype('array')
+                                    ->children()
+                                        ->booleanNode('soundex')->defaultFalse()->end()
+                                        ->booleanNode('metaphone')->defaultFalse()->end()
+                                        ->scalarNode('similarity')->defaultValue('\CustomerManagementFrameworkBundle\DataSimilarityMatcher\SimilarText')->end()
+                                        ->scalarNode('similarityThreshold')->defaultNull()->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
 
-            ->arrayNode('dataTransformers')
-            ->prototype('scalar')->end()
-            ->end()
+                        ->arrayNode('dataTransformers')
+                            ->prototype('scalar')->end()
+                        ->end()
 
-            ->end()
-            ->end()
+                    ->end()
+                ->end()
 
             ->end()
         ;
@@ -538,23 +433,23 @@ class Configuration implements ConfigurationInterface
 
         $newsletter
             ->children()
-            ->booleanNode('newsletterSyncEnabled')->defaultFalse()->end()
-            ->booleanNode('newsletterQueueImmediateAsyncExecutionEnabled')->defaultTrue()->end()
-            ->arrayNode('mailchimp')
-            ->children()
-            ->scalarNode('apiKey')->end()
-            ->scalarNode('cliUpdatesPimcoreUserName')->end()
-            ->booleanNode('enableTemplateExporter')->defaultFalse()->end()
-            ->end()
-            ->end()
-            ->arrayNode('newsletter2Go')
-                ->children()
-                    ->scalarNode('username')->end()
-                    ->scalarNode('password')->end()
-                    ->scalarNode('apiKey')->end()
-                    ->scalarNode('enableTemplateExporter')->defaultFalse()->end()
+                ->booleanNode('newsletterSyncEnabled')->defaultFalse()->end()
+                ->booleanNode('newsletterQueueImmediateAsyncExecutionEnabled')->defaultTrue()->end()
+                ->arrayNode('mailchimp')
+                    ->children()
+                        ->scalarNode('apiKey')->end()
+                        ->scalarNode('cliUpdatesPimcoreUserName')->end()
+                        ->booleanNode('enableTemplateExporter')->defaultFalse()->end()
+                    ->end()
                 ->end()
-            ->end()
+                ->arrayNode('newsletter2Go')
+                    ->children()
+                        ->scalarNode('username')->end()
+                        ->scalarNode('password')->end()
+                        ->scalarNode('apiKey')->end()
+                        ->scalarNode('enableTemplateExporter')->defaultFalse()->end()
+                    ->end()
+                ->end()
             ->end();
 
         return $newsletter;
@@ -572,8 +467,8 @@ class Configuration implements ConfigurationInterface
 
         $tracker
             ->children()
-            ->booleanNode('enabled')->defaultTrue()->end()
-            ->scalarNode('linkCmfcPlaceholder')->defaultValue('*|ID_ENCODED|*')->info('used for automatic link generation of LinkActivityDefinition data objects')->end()
+                ->booleanNode('enabled')->defaultTrue()->end()
+                ->scalarNode('linkCmfcPlaceholder')->defaultValue('*|ID_ENCODED|*')->info('used for automatic link generation of LinkActivityDefinition data objects')->end()
             ->end();
 
         return $tracker;
@@ -588,50 +483,50 @@ class Configuration implements ConfigurationInterface
         $assignment
             ->addDefaultsIfNotSet()
             ->children()
-            ->arrayNode('types')
-            ->addDefaultsIfNotSet()
-            ->children()
-            ->arrayNode('document')->info('expects sub types of document')
-            ->addDefaultsIfNotSet()
-            ->children()
-            ->scalarNode('folder')->defaultFalse()->end()
-            ->scalarNode('page')->defaultFalse()->end()
-            ->scalarNode('snippet')->defaultFalse()->end()
-            ->scalarNode('link')->defaultFalse()->end()
-            ->scalarNode('hardlink')->defaultFalse()->end()
-            ->scalarNode('email')->defaultFalse()->end()
-            ->scalarNode('newsletter')->defaultFalse()->end()
-            ->scalarNode('printpage')->defaultFalse()->end()
-            ->scalarNode('printcontainer')->defaultFalse()->end()
-            ->end()
-            ->end()
-            ->arrayNode('asset')->info('expects sub types of asset')
-            ->addDefaultsIfNotSet()
-            ->children()
-            ->scalarNode('folder')->defaultFalse()->end()
-            ->scalarNode('image')->defaultFalse()->end()
-            ->scalarNode('text')->defaultFalse()->end()
-            ->scalarNode('audio')->defaultFalse()->end()
-            ->scalarNode('video')->defaultFalse()->end()
-            ->scalarNode('document')->defaultFalse()->end()
-            ->scalarNode('archive')->defaultFalse()->end()
-            ->scalarNode('unknown')->defaultFalse()->end()
-            ->end()
-            ->end()
-            ->arrayNode('object')->info('expects sub types of object')
-            ->addDefaultsIfNotSet()
-            ->children()
-            ->scalarNode(AbstractObject::OBJECT_TYPE_FOLDER)->defaultFalse()->end()
-            ->arrayNode(AbstractObject::OBJECT_TYPE_OBJECT)
-            ->prototype('boolean')->end()
-            ->end()
-            ->arrayNode(AbstractObject::OBJECT_TYPE_VARIANT)
-            ->prototype('boolean')->end()
-            ->end()
-            ->end()
-            ->end()
-            ->end()
-            ->end()
+                ->arrayNode('types')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('document')->info('expects sub types of document')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('folder')->defaultFalse()->end()
+                                ->scalarNode('page')->defaultFalse()->end()
+                                ->scalarNode('snippet')->defaultFalse()->end()
+                                ->scalarNode('link')->defaultFalse()->end()
+                                ->scalarNode('hardlink')->defaultFalse()->end()
+                                ->scalarNode('email')->defaultFalse()->end()
+                                ->scalarNode('newsletter')->defaultFalse()->end()
+                                ->scalarNode('printpage')->defaultFalse()->end()
+                                ->scalarNode('printcontainer')->defaultFalse()->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('asset')->info('expects sub types of asset')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('folder')->defaultFalse()->end()
+                                ->scalarNode('image')->defaultFalse()->end()
+                                ->scalarNode('text')->defaultFalse()->end()
+                                ->scalarNode('audio')->defaultFalse()->end()
+                                ->scalarNode('video')->defaultFalse()->end()
+                                ->scalarNode('document')->defaultFalse()->end()
+                                ->scalarNode('archive')->defaultFalse()->end()
+                                ->scalarNode('unknown')->defaultFalse()->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('object')->info('expects sub types of object')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode(AbstractObject::OBJECT_TYPE_FOLDER)->defaultFalse()->end()
+                                ->arrayNode(AbstractObject::OBJECT_TYPE_OBJECT)
+                                    ->prototype('boolean')->end()
+                                ->end()
+                                ->arrayNode(AbstractObject::OBJECT_TYPE_VARIANT)
+                                    ->prototype('boolean')->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end();
 
         return $assignment;
@@ -648,20 +543,20 @@ class Configuration implements ConfigurationInterface
 
         $dataObjects
             ->children()
-            ->arrayNode('customer')
-            ->addDefaultsIfNotSet()
-            ->info('Configure which classes should be considered, array key is class name')
-            ->children()
-            ->booleanNode("allowDelete")
-            ->info("Allow delete of objects directly in preview grid.")
-            ->defaultFalse()
-            ->end()
-            ->arrayNode('includedRelations')
-            ->info('List relation attributes that should be included recursively into export.')
-            ->prototype('scalar')->end()
-            ->end()
-            ->end()
-            ->end()
+                ->arrayNode('customer')
+                    ->addDefaultsIfNotSet()
+                    ->info('Configure which classes should be considered, array key is class name')
+                    ->children()
+                        ->booleanNode("allowDelete")
+                            ->info("Allow delete of objects directly in preview grid.")
+                            ->defaultFalse()
+                        ->end()
+                        ->arrayNode('includedRelations')
+                            ->info('List relation attributes that should be included recursively into export.')
+                            ->prototype('scalar')->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 
@@ -681,18 +576,18 @@ class Configuration implements ConfigurationInterface
 
         $general
             ->children()
-            ->integerNode('customerImporterId')
-            ->info(
-                'Pimcore CSV importer ID. Share the configuration with this ID with all users which should get access to the CSV import button in the customer list and in CustomerSegment objects.'
-            )
-            ->defaultValue(0)
-            ->end()
-            ->integerNode('customerImportParentId')
-            ->info(
-                'Default Parent ID of customer CSV importer. Only relevant when automatic naming scheme is disabled.'
-            )
-            ->defaultValue(1)
-            ->end()
+                ->integerNode('customerImporterId')
+                    ->info(
+                        'Pimcore CSV importer ID. Share the configuration with this ID with all users which should get access to the CSV import button in the customer list and in CustomerSegment objects.'
+                    )
+                    ->defaultValue(0)
+                ->end()
+                ->integerNode('customerImportParentId')
+                    ->info(
+                        'Default Parent ID of customer CSV importer. Only relevant when automatic naming scheme is disabled.'
+                    )
+                    ->defaultValue(1)
+                ->end()
         ;
 
         return $general;
