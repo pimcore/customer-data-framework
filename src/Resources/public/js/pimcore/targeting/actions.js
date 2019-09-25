@@ -14,6 +14,7 @@
                 return new Ext.form.FormPanel({
                     id: id,
                     forceLayout: true,
+                    border: true,
                     style: "margin: 10px 0 0 0",
                     bodyStyle: "padding: 10px 30px 10px 30px; min-height:40px;",
                     tbar: pimcore.settings.targeting.actions.getTopBar(this, id, panel),
@@ -90,6 +91,7 @@
                 return new Ext.form.FormPanel({
                     id: id,
                     forceLayout: true,
+                    border: true,
                     style: "margin: 10px 0 0 0",
                     labelWidth: 200,
                     bodyStyle: "padding: 10px 30px 10px 30px; min-height:40px;",
@@ -178,6 +180,7 @@
                 return new Ext.form.FormPanel({
                     id: id,
                     forceLayout: true,
+                    border: true,
                     style: "margin: 10px 0 0 0",
                     labelWidth: 50,
                     bodyStyle: "padding: 10px 30px 10px 30px; min-height:40px;",

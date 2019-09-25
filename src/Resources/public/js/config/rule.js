@@ -139,7 +139,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
 //            var caption = pimcore.plugin.cmf.rule.triggers[method](null, null, true);
 
             // triggerDocument_Create_After
-            path = method.replace('trigger', '').split('_');
+            var path = method.replace('trigger', '').split('_');
             var current = complexMenu;
             for(var index in path)
             {
@@ -199,6 +199,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
             title: t("plugin_cmf_icon_rule_triggers"),
             autoScroll: true,
             forceLayout: true,
+            bodyStyle: 'padding: 0 10px 10px 10px;',
             tbar: [{
                 iconCls: "pimcore_icon_add",
                 menu: getMenu( complexMenu, '' )
@@ -272,6 +273,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
             iconCls: "plugin_cmf_icon_rule_actions",
             title: t("actions"),
             autoScroll: true,
+            bodyStyle: 'padding: 0 10px 10px 10px;',
             forceLayout: true,
             tbar: [{
                 iconCls: "pimcore_icon_add",
@@ -302,6 +304,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
         var item =  new Ext.form.FormPanel({
             event: trigger.getEventName(),
             forceLayout: true,
+            border: true,
             style: "margin: 10px 0 0 0",
             bodyStyle: "padding: 10px 30px 10px 30px;",
             id:myId,
@@ -337,6 +340,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
             id: myId,
             type: 'Admin',
             forceLayout: true,
+
             style: "margin: 10px 0 0 0",
             bodyStyle: "padding: 10px 30px 10px 30px; min-height: 40px;",
             tbar: condition.getTopBar(myId, this),
@@ -443,6 +447,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
             implementationClass: action.getImplementationClass(),
             actionData: data,
             forceLayout: true,
+            border: true,
             style: "margin: 10px 0 0 0",
             bodyStyle: "padding: 10px 30px 10px 30px;",
             id:myId,

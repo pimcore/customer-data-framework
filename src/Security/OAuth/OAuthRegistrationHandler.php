@@ -157,7 +157,7 @@ class OAuthRegistrationHandler
     }
 
     /**
-     * Builds authorizaiton URL for a given resource owner
+     * Builds authorization URL for a given resource owner
      *
      * @param Request $request
      * @param string $resourceOwner

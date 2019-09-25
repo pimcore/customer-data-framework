@@ -257,3 +257,76 @@ pimcore.plugin.cmf.rule.actions.AddTargetGroupSegment = Class.create(pimcore.plu
     }
 });
 
+pimcore.registerNS("pimcore.plugin.cmf.rule.actions.SendMail");
+pimcore.plugin.cmf.rule.actions.SendMail = Class.create(pimcore.plugin.cmf.rule.actions.AbstractAction,{
+    name: 'SendMail',
+    implementationClass: '\\CustomerManagementFrameworkBundle\\ActionTrigger\\Action\\SendMail',
+    getFormItems: function() {
+
+        return [{
+            xtype: 'panel',
+            html: '<div style="margin-bottom: 10px; padding: 5px 10px; background-color: #d9edf7; border-color: #bce8f1 !important; color: #31708f;">' + t("plugin_cmf_actiontriggerrule_send_mail_explanation") + '</div>'
+        },
+            {
+                name: "emailDoc",
+                fieldLabel: t('emailDoc'),
+                xtype: "textfield",
+                width: 500,
+                cls: "input_drop_target",
+                value: this.options.emailDoc,
+                listeners: {
+                    "render": function (el) {
+                        new Ext.dd.DropZone(el.getEl(), {
+                            reference: this,
+                            ddGroup: "element",
+                            getTargetFromEvent: function (e) {
+                                return this.getEl();
+                            }.bind(el),
+
+                            onNodeOver: function (target, dd, e, data) {
+
+
+                                data = data.records[0].data;
+
+                                if(data.type != 'email') {
+                                    return Ext.dd.DropZone.prototype.dropNotAllowed;
+                                }
+
+                                return Ext.dd.DropZone.prototype.dropAllowed;
+                            },
+
+                            onNodeDrop: function (target, dd, e, data) {
+
+
+                                data = data.records[0].data;
+
+                                if(data.type != 'email') {
+                                    return false;
+                                }
+
+                                this.setValue(data.path);
+                                return true;
+                            }.bind(el)
+                        });
+                    }
+                }
+            },
+            {
+                xtype: "checkbox",
+                labelWidth: 350,
+                width: 500,
+                name: "toCustomer",
+                fieldLabel: t("plugin_cmf_actiontriggerrule_send_to_customer"),
+                checked: typeof this.options.toCustomer == 'undefined' ? true : this.options.toCustomer
+            },
+            {
+                xtype: "checkbox",
+                labelWidth: 350,
+                width: 500,
+                name: "considerProfilingConsent",
+                fieldLabel: t("plugin_cmf_actiontriggerrule_consider_profiling_consent"),
+                checked: typeof this.options.considerProfilingConsent == 'undefined' ? true : this.options.considerProfilingConsent
+            }
+        ];
+    }
+});

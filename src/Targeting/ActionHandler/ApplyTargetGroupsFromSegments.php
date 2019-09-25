@@ -205,7 +205,9 @@ class ApplyTargetGroupsFromSegments implements ActionHandlerInterface, DataProvi
             if(in_array($targetGroupId, $consideredTargetGroupIds) && !isset($targetGroupsToAssign[$targetGroupId])) {
                 $targetGroup = TargetGroup::getById($targetGroupId);
                 unset($storageData[$targetGroupId]);
-                $visitorInfo->clearAssignedTargetGroup($targetGroup);
+                if($targetGroup) {
+                    $visitorInfo->clearAssignedTargetGroup($targetGroup);
+                }
             }
 
         }

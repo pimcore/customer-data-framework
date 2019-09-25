@@ -14,7 +14,7 @@ The newsletter synchronisation has to be enabled in CMF configuration. Additiona
 Further than that, the CMF can handle multiple MailChimp lists. Each list is one separate symfony service tagged with 
 `cmf.newsletter_provider_handler`. 
 
-See [Configuration](03_Configuration.md) for an example configuration of such a service and for a list of general 
+See [Configuration](../03_Configuration.md) for an example configuration of such a service and for a list of general 
 newsletter related settings.
 
 
@@ -22,7 +22,7 @@ newsletter related settings.
 
 ### Customer
 
-It's needed to add a `newslettStatus` and `mailchimpStatus` field into the customer class for each MailChimp list:  
+It's needed to add a `newsletterStatus` and `mailchimpStatus` field into the customer class for each MailChimp list:  
 
 ![Customer newsletter status](./img/mailchimp/customer-newsletter-status.png)
 
@@ -67,7 +67,7 @@ A cronjob in the background, which should run every few minutes, then processes 
 processed, they will be removed from the queue. 
 
 If the sync does not work (e.g. because MailChimp does not respond properly, etc.) they stay in the queue and will be 
-executed later on. See also [CronJobs](04_Cronjobs.md).
+executed later on. See also [CronJobs](../04_Cronjobs.md).
 
 ##### Immediate execution of export on customer save
 
@@ -76,10 +76,10 @@ after a customer is saved. This will still run as background task. The queue wil
 for the saved customer. If the export is not successful, the entry will stay in the queue. 
 
 The config option for this behaviour is called `newsletterQueueImmediateAsyncExecutionEnabled` 
-(see [Configuration](03_Configuration.md)).
+(see [Configuration](../03_Configuration.md)).
 
 
-### Webhook
+### Webhook 
 
 The CMF offers a MailChimp webhook endpoint to receive updates from MailChimp. The webhook is implemented as webservice 
 and is handled the same way as the REST webservice in the Pimcore core.
@@ -91,7 +91,7 @@ So the steps to enable the webhook are as following:
 - Add a webhook in the MailChimp web interface with the following URL: 
   `https://mydomain.com/webservice/cmf/mailchimp/webhook?apikey=53c5f6f3427545e712fe59ce043489f86ee0eb4b64a7c098d89d4288167eec1c`
   The webhook needs to be configured like this:
-  ![Webhook options](./img/mailchimp/mailchimp-webhook-options.png)
+  ![Webhook options](../img/mailchimp/mailchimp-webhook-options.png)
 
 > **Caution: Pimcore should be the master data base. Therefore no changes of user data (e.g. interest groups) within 
 MailChimp should be allowed. The CMF processes updates of simple merge fields but it's much better to disallow such updates. 
@@ -101,7 +101,7 @@ Customer segments/interest groups definitely can not be synced back to Pimcore.*
 
 The webhook makes it possible that updates in MailChimp are synced in more or less real time to Pimcore. But sometimes 
 this might not work (for example when the server is down). Therefore the CMF offers an additional cronjob, which could 
-run once a day and synchronize needed updates to Pimcore. See also [CronJobs - Mailchimp status sync](04_Cronjobs.md).
+run once a day and synchronize needed updates to Pimcore. See also [CronJobs - Mailchimp status sync](../04_Cronjobs.md).
 
 
 
@@ -111,7 +111,7 @@ Customer segment exports are handled by the newsletter queue too (see above). Ma
 (the equivalent for CustomerSegments in MailChimp) per list. Therefore the CMF offers a configuration option for what 
 CustomerSegmentGroups should be exported (all segments within this group will be exported).
 
-![Webhook options](./img/mailchimp/mailchimp-export-segment-group.png)
+![Webhook options](../img/mailchimp/mailchimp-export-segment-group.png)
 
 It's necessary to add a checkbox `exportNewsletter{PROVIDER_HANDLER_SHORTCUT}` for each provider handler (mailchimp list) 
 into the CustomersSegmentGroup data objects.
@@ -120,7 +120,7 @@ into the CustomersSegmentGroup data objects.
 
 As soon as the newsletter sync is enabled, a "Export Template to MailChimp" button will appear in email documents:
 
-![Webhook options](./img/mailchimp/mailchimp-export-template.png)
+![Webhook options](../img/mailchimp/mailchimp-export-template.png)
 
 With this it's possible to create the newsletter within Pimcore and then use it for emailing campaigns within MailChimp.
 
@@ -136,7 +136,7 @@ The CMF logs MailChimp sync related changes on three different levels:
 
 The CMF comes equipped with its own address source adapter, selectable from the Newsletter Sending Panel in newsletter documents.
 
-![Webhook options](./img/SegmentAddressSource.png)
+![Segment Address Source Adapter](../img/SegmentAddressSource.png)
 
 Here multiple customer segments can be selected to send a newsletter to all customers related to any of them.
 For this adapter to become available it must be configured as shown in the example below:

@@ -23,6 +23,7 @@ As a result, working with customers is pretty much like working with Pimcore dat
 Other than that - just use the customer object like every other data object in Pimcore.
 
 In addition to customers, there are two additional data entities provided by the CMF
-- [Customer Activities](./09_Activities.md): For storing all kind of activities of customers like registering for newsletters, 
+- [Customer Activities](./09_Activities/README.md): For storing all kind of activities of customers like registering for newsletters, 
   placing orders, etc. 
 - [Customer Segments](./11_CustomerSegments.md): For segmenting customers and grouping them together by interests or behavior.  
+ 

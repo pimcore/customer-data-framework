@@ -1,9 +1,15 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: kzumueller
- * Date: 08.03.2018
- * Time: 11:24
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
 namespace CustomerManagementFrameworkBundle\Newsletter\AddressSource;
@@ -11,8 +17,10 @@ namespace CustomerManagementFrameworkBundle\Newsletter\AddressSource;
 use CustomerManagementFrameworkBundle\DataValidator\EmailValidator;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
+use Pimcore\Db;
 use Pimcore\Document\Newsletter\AddressSourceAdapterInterface;
 use Pimcore\Document\Newsletter\SendingParamContainer;
+
 class SegmentAddressSource implements AddressSourceAdapterInterface
 {
     /* @var SegmentManagerInterface */
@@ -22,12 +30,22 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
     private $sendingParamContainers = [];
 
     /**
-     * @param array $arguments ['segmentIds' => string[]]
+     * @param array $arguments ['segmentIds' => string[], 'operator' => string, 'filterFlags' => string[]]
      */
     public function __construct(array $arguments)
     {
+        $operator = $arguments['operator'];
+        if ($operator == "and") {
+            $operator = SegmentManagerInterface::CONDITION_AND;
+        } else {
+            $operator = SegmentManagerInterface::CONDITION_OR;
+        }
         $this->segmentManager = \Pimcore::getContainer()->get(SegmentManagerInterface::class);
-        $this->sendingParamContainers = $this->setUpSendingParamContainers(array_filter($arguments['segmentIds']));
+        $this->sendingParamContainers = $this->setUpSendingParamContainers(
+            array_filter($arguments['segmentIds']),
+            $operator,
+            $arguments['filterFlags']
+        );
     }
 
     /**
@@ -68,12 +86,28 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
      *
      * @uses SegmentManagerInterface
      * @param string[]|int[] $segmentIds
+     * @param string $operator
+     * @param string[] $filterFlags
      * @return SendingParamContainer[]
      */
-    private function setUpSendingParamContainers(array $segmentIds): array
+    private function setUpSendingParamContainers(array $segmentIds, string $operator, array $filterFlags): array
     {
         if(empty($segmentIds)) {
             return [];
+        }
+
+        $customerListing = $this->segmentManager->getCustomersBySegmentIds($segmentIds, $operator);
+
+        if($filterFlags) {
+            $originalCondition = $customerListing->getCondition();
+            $conditionParts = [];
+            $db = Db::get();
+            foreach($filterFlags as $filterFlag) {
+                $conditionParts[] = $db->quoteIdentifier($filterFlag) . ' = 1';
+            }
+
+            $condition = '(' . $originalCondition . ') AND (' . implode(' AND ', $conditionParts) . ')';
+            $customerListing->setCondition($condition);
         }
 
         return
@@ -92,7 +126,7 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
 
                         return new SendingParamContainer($customer->getEmail(), ['emailAddress' => $customer->getEmail()]);
                     },
-                    $this->segmentManager->getCustomersBySegmentIds($segmentIds)->getObjects() ?? []
+                    $customerListing->getObjects() ?? []
                 )
             );
     }

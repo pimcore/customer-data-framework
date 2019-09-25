@@ -1,0 +1,52 @@
+{% import '@PimcoreCore/Targeting/toolbar/macros.html.twig' as toolbar %}
+
+{% extends cmfOriginalTemplate %}
+
+{% block documentTargetGroups %}
+    {{ parent() }}
+
+    {% block cmfTrackedSegments %}
+        {% if cmfTrackedSegments is not empty %}
+            <h2
+                class="_ptgtb__collapse__trigger--block"
+                data-ptgtb-toggle="collapse"
+                data-ptgtb-target="#{{ toolbar.identifier(token, 'cmf-tracked-segments') }}"
+                data-ptgtb-collapse-store="cmf-tracked-segments"
+            >
+                CMF: Tracked Segments
+                {{ toolbar.label(cmfTrackedSegments|length) }}
+            </h2>
+
+            <table id="{{ toolbar.identifier(token, 'cmf-tracked-segments') }}" class="_ptgtb__table">
+                {% block cmfTrackedSegmentsTable %}
+                    {% for trackedSegment in cmfTrackedSegments %}
+                        {% set rowIdentifier = toolbar.identifier(token, 'cmf-tracked-segments-details', loop.index) %}
+
+                        <tr class="_ptgtb__table__row-with-details">
+                            <td>
+                                {{ toolbar.trigger_label(trackedSegment.name, '#' ~ rowIdentifier, ['_ptgtb__label--target-group']) }}
+                            </td>
+                            <td class="_ptgtb__table__col-right">
+                                {{ toolbar.label(trackedSegment.count) }}
+                            </td>
+                        </tr>
+                        <tr id="{{ rowIdentifier }}" class="_ptgtb__table__row-details">
+                            <td colspan="2">
+                                {{ toolbar.metric('Segment ID', trackedSegment.id) }}
+
+                                {% if trackedSegment.group is not empty %}
+                                    {{ toolbar.metric('Group', trackedSegment.group) }}
+                                {% endif %}
+
+                                {% if trackedSegment.calculated %}
+                                    {{ toolbar.label('calculated') }}
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+                {% endblock %}
+            </table>
+        {% endif %}
+    {% endblock %}
+{% endblock %}

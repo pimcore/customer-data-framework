@@ -34,7 +34,7 @@ abstract class AbstractFilter
             return $this->tableName;
         }
 
-        return $prefix.(int)$classId;
+        return $prefix.$classId;
     }
 
     /**

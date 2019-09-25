@@ -66,10 +66,11 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      * @param DataObject\CustomerSegmentGroup|null $segmentGroup
      * @param string $type
      */
-    public function __construct(array $segments, DataObject\CustomerSegmentGroup $segmentGroup = null)
+    public function __construct(array $segments, DataObject\CustomerSegmentGroup $segmentGroup = null, $type = Db\ZendCompatibility\QueryBuilder::SQL_AND)
     {
         $this->identifier = $this->buildIdentifier($segmentGroup);
         $this->segmentGroup = $segmentGroup;
+        $this->type = $type;
 
         foreach ($segments as $segment) {
             $this->addCustomerSegment($segment);
@@ -222,7 +223,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
 
         // relation matches one of our field names and relates to our current object
         $baseCondition = sprintf(
-            '%1$s.fieldname IN (%3$s) AND %1$s.src_id = %2$s.o_id',
+            '`%1$s`.fieldname IN (%3$s) AND `%1$s`.src_id = `%2$s`.o_id',
             $joinName,
             $tableName,
             $relationNames

@@ -106,37 +106,39 @@ You can find the annotated example of a simple username/password login form with
 
 To re-implement the sample, following steps are necessary: 
 
-1) Make sure the customer class implements all necessary interfaces. See [Installation](./02_Installation.md) for details. 
-2) Activate `HIOWOauthBundle` and `HttplugBundle` in your `App.php`. 
-3) Activate the SSO in CMF configuration. See [Configuration](./03_Configuration.md) for details. 
-4) Configure your firewalls in symfony security configuration. See also the 
+1) Make sure the customer class implements all necessary interfaces. See [Installation](./02_Installation.md) for details.
+2) Add  `hwi/oauth-bundle` and dependencies to your `composer.json`, e.g. with command `composer require hwi/oauth-bundle php-http/guzzle6-adapter:^1 php-http/httplug-bundle`. 
+   If you need more updated versions of `guzzle6-adapter` you might need to go for `dev-master` of `hwi/oauth-bundle`. 
+3) Activate `HIOWOauthBundle` and `HttplugBundle` in your `App.php`. 
+4) Activate the SSO in CMF configuration. See [Configuration](./03_Configuration.md) for details. 
+5) Configure your firewalls in symfony security configuration. See also the 
    [configuration of the sample](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/src/AppBundle/Resources/config/pimcore/security.yml#L9).
-5) Configure the HIOWOauthBundle in symfony configuration. See the [example](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/src/AppBundle/Resources/config/pimcore/config.yml#L9) 
+6) Configure the HIOWOauthBundle in symfony configuration. See the [example](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/src/AppBundle/Resources/config/pimcore/config.yml#L9) 
    and the [documentation of HIOWOauthBundle](https://github.com/hwi/HWIOAuthBundle/blob/master/Resources/doc/index.md).  
-6) Add routes for [login](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/src/AppBundle/Controller/AuthController.php#L54) (need to have a controller action somewhere) and 
+7) Add routes for [login](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/src/AppBundle/Controller/AuthController.php#L54) (need to have a controller action somewhere) and 
    [logout](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/src/AppBundle/Resources/config/pimcore/routing.yml#L5) (no action needed, will be covered with event listener).
     
-7) Build [Controller](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/src/AppBundle/Controller/AuthController.php#L62) 
+8) Build [Controller](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/src/AppBundle/Controller/AuthController.php#L62) 
    and [Views](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/app/Resources/views/Auth/login.html.php) 
    for login. 
 
-8) Build some [protected page](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/src/AppBundle/Controller/ContentController.php#L38).
+9) Build some [protected page](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/src/AppBundle/Controller/ContentController.php#L38).
 
-9) Build [Controller](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/src/AppBundle/Controller/AuthController.php#L123) 
+10) Build [Controller](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/src/AppBundle/Controller/AuthController.php#L123) 
    and [Views](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/app/Resources/views/Auth/register.html.php)
    for register.
 
-10) Add route for [oauth login](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/src/AppBundle/Resources/config/pimcore/routing.yml#L8). 
+11) Add route for [oauth login](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/src/AppBundle/Resources/config/pimcore/routing.yml#L8). 
     and make sure the 'Login with Adapter' [buttons link to that route](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/app/Resources/views/Auth/partials/social-login-buttons.html.php#L12-L11). 
 
-11) Setup `resource_owners` with all needed information (`id`, `secret`) in 
+12) Setup `resource_owners` with all needed information (`id`, `secret`) in 
    [HIOWOauthBundle config](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/src/AppBundle/Resources/config/pimcore/config.yml#L14) 
    in [firewall config](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client/src/AppBundle/Resources/config/pimcore/security.yml#L33)
    and in [parameters file]. 
     
-12) Setup encryption secret in CMF configuration. See [Configuration](./03_Configuration.md) for details.      
+13) Setup encryption secret in CMF configuration. See [Configuration](./03_Configuration.md) for details.      
     
-13) Optional for e-commerce: Add custom authentication listener for login and logout to update e-commerce framework environment 
+14) Optional for e-commerce: Add custom authentication listener for login and logout to update e-commerce framework environment 
    (currently active user). 
    
    

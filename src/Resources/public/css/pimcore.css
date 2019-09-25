@@ -1,60 +1,95 @@
-#pimcore_menu_cmf {
-    background-image: url(/pimcore/static6/img/flat-color-icons/contacts.svg) !important;
-}
 
 .pimcore_icon_activities {
-    background: url(/pimcore/static6/img/flat-color-icons/sports_mode.svg) center center no-repeat !important;
+    background: url(/bundles/pimcoreadmin/img/flat-color-icons/sports_mode.svg) center center no-repeat !important;
 }
+
+.pimcore_version_6 .pimcore_nav_icon_customers {
+    background: url(/bundles/pimcoreadmin/img/flat-white-icons/conference_call.svg) center center no-repeat !important;
+}
+
+.pimcore_version_6 .pimcore_nav_icon_customerduplicates {
+    background: url(/bundles/pimcoreadmin/img/flat-white-icons/copy.svg) center center no-repeat !important;
+}
+
+.pimcore_version_6 .pimcore_nav_icon_customerautomationrules {
+    background: url(/bundles/pimcoreadmin/img/flat-white-icons/services.svg) center center no-repeat !important;
+}
+
+.pimcore_version_6 .pimcore_nav_icon_newsletter_enqueue_all_customers {
+    background: url(/bundles/pimcoreadmin/img/flat-white-icons/address_book.svg) center center no-repeat !important;
+}
+
+.pimcore_version_6 .plugin_cmf_icon_actiontriggerrule_ExecuteSegmentBuilders  {
+    background: url(/bundles/pimcoreadmin/img/flat-white-icons/address_book.svg) center center no-repeat !important;
+}
+
+.pimcore_nav_icon_customers {
+    background: url(/bundles/pimcorecustomermanagementframework/icons/customer.svg) center center no-repeat !important;
+}
+
+.pimcore_nav_icon_customerduplicates {
+    background: url(/bundles/pimcoreadmin/img/flat-color-icons/copy.svg) center center no-repeat !important;
+}
+
+.pimcore_nav_icon_customerautomationrules {
+    background: url(/bundles/pimcoreadmin/img/flat-color-icons/services.svg) center center no-repeat !important;
+}
+
+.pimcore_nav_icon_newsletter_enqueue_all_customers {
+    background: url(/bundles/pimcoreadmin/img/flat-color-icons/address_book.svg) center center no-repeat !important;
+}
+
 
 .pimcore_icon_customers {
     background: url(/bundles/pimcorecustomermanagementframework/icons/customer.svg) center center no-repeat !important;
 }
+
 .pimcore_icon_customerduplicates {
-    background: url(/pimcore/static6/img/flat-color-icons/copy.svg) center center no-repeat !important;
+    background: url(/bundles/pimcoreadmin/img/flat-color-icons/copy.svg) center center no-repeat !important;
 }
 
 .pimcore_icon_customerautomationrules {
-    background: url(/pimcore/static6/img/flat-color-icons/services.svg) center center no-repeat !important;
+    background: url(/bundles/pimcoreadmin/img/flat-color-icons/services.svg) center center no-repeat !important;
 }
 
 .plugin_cmf_icon_rule_enabled {
-    background: url("/pimcore/static6/img/flat-color-icons/publish.svg") no-repeat scroll left center transparent !important;
+    background: url("/bundles/pimcoreadmin/img/flat-color-icons/publish.svg") no-repeat scroll left center transparent !important;
 }
 .plugin_cmf_icon_rule_disabled {
-    background: url("/pimcore/static6/img/flat-color-icons/cancel.svg") no-repeat scroll left center transparent !important;
+    background: url("/bundles/pimcoreadmin/img/flat-color-icons/cancel.svg") no-repeat scroll left center transparent !important;
 }
 
 
 /** Customer Automation Rules Tabs **/
 .plugin_cmf_icon_rule_settings {
-    background: url("/pimcore/static6/img/flat-color-icons/settings.svg") no-repeat scroll left center transparent !important;
+    background: url("/bundles/pimcoreadmin/img/flat-color-icons/settings.svg") no-repeat scroll left center transparent !important;
 }
 .plugin_cmf_icon_rule_triggers {
-    background: url("/pimcore/static6/img/flat-color-icons/phone.svg") no-repeat scroll left center transparent !important;
+    background: url("/bundles/pimcoreadmin/img/flat-color-icons/phone.svg") no-repeat scroll left center transparent !important;
 }
 .plugin_cmf_icon_rule_conditions {
-    background: url("/pimcore/static6/img/flat-color-icons/binoculars.svg") no-repeat scroll left center transparent !important;
+    background: url("/bundles/pimcoreadmin/img/flat-color-icons/binoculars.svg") no-repeat scroll left center transparent !important;
 }
 .plugin_cmf_icon_rule_actions {
-    background: url("/pimcore/static6/img/flat-color-icons/flash_on.svg") no-repeat scroll left center transparent !important;
+    background: url("/bundles/pimcoreadmin/img/flat-color-icons/flash_on.svg") no-repeat scroll left center transparent !important;
 }
 
 /** Triggers & Actions **/
 
 .plugin_cmf_icon_actiontriggerrule_NewActivity {
-    background: url(/pimcore/static6/img/flat-color-icons/sports_mode.svg) center center no-repeat !important;
+    background: url(/bundles/pimcoreadmin/img/flat-color-icons/sports_mode.svg) center center no-repeat !important;
 }
 
 .plugin_cmf_icon_actiontriggerrule_ExecuteSegmentBuilders  {
-    background: url(/bundles/pimcorecustomermanagementframework/icons/segment.svg) center center no-repeat !important;
+    background: url(/bundles/pimcoreadmin/img/flat-color-icons/address_book.svg) center center no-repeat !important;
 }
 
 .plugin_cmf_icon_actiontriggerrule_Cron {
-    background: url(/pimcore/static6/img/flat-color-icons/clock.svg) center center no-repeat !important;
+    background: url(/bundles/pimcoreadmin/img/flat-color-icons/clock.svg) center center no-repeat !important;
 }
 
 .plugin_cmf_icon_actiontriggerrule_CountActivities {
-    background: url(/pimcore/static6/img/flat-color-icons/sports_mode.svg) center center no-repeat !important;
+    background: url(/bundles/pimcoreadmin/img/flat-color-icons/sports_mode.svg) center center no-repeat !important;
 }
 
 .plugin_cmf_icon_actiontriggerrule_AddSegment,
@@ -70,19 +105,27 @@
 .plugin_cmf_icon_actiontriggerrule_TargetGroupAssigned,
 .plugin_cmf_icon_actiontriggerrule_CountTargetGroupWeight,
 .plugin_cmf_icon_actiontriggerrule_AddTargetGroupSegment {
-    background: url(/pimcore/static6/img/flat-color-icons/manager.svg) center center no-repeat !important;
+    background: url(/bundles/pimcoreadmin/img/flat-color-icons/manager.svg) center center no-repeat !important;
 }
 
 .plugin_cmf_icon_actiontriggerrule_ChangeFieldValue,.plugin_cmf_icon_actiontriggerrule_Customer {
     background: url(/bundles/pimcorecustomermanagementframework/icons/customer.svg) center center no-repeat !important;
 }
 
+.plugin_cmf_icon_actiontriggerrule_SendMail {
+    background: url(/bundles/pimcoreadmin/img/flat-color-icons/email.svg) center center no-repeat !important;
+}
+
+.plugin_cmf_icon_actiontriggerrule_CustomerField {
+    background: url(/bundles/pimcoreadmin/img/flat-color-icons/voice_presentation.svg) center center no-repeat !important;
+}
+
 .pimcore_icon_newsletter_enqueue_all_customers {
-    background: url(/pimcore/static6/img/flat-color-icons/address_book.svg) center center no-repeat !important;
+    background: url(/bundles/pimcoreadmin/img/flat-color-icons/address_book.svg) center center no-repeat !important;
 }
 
 #pimcore_bundle_customerManagementFramework_newsletter_queue_status {
-    background-image: url(/pimcore/static6/img/flat-color-icons/address_book.svg) !important;
+    background-image: url(/bundles/pimcoreadmin/img/flat-color-icons/address_book.svg) !important;
     filter: grayscale(0%) !important;
     -webkit-filter: grayscale(0%) !important;
     position: relative;
@@ -101,5 +144,14 @@
 
 
 .plugin_cmf_icon_export_action {
-    background: url("/pimcore/static6/img/flat-color-icons/export.svg") center center no-repeat !important;
+    background: url("/bundles/pimcoreadmin/img/flat-color-icons/export.svg") center center no-repeat !important;
+}
+
+/* Compatibility for Pimcore < 5.9 */
+#pimcore_navigation li > img {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    top: 13px;
+    left: 18px;
 }

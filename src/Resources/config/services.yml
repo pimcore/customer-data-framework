@@ -259,3 +259,10 @@ services:
             $className: CustomerManagementFrameworkBundle\Import\ColumnConfig\Operator\CustomerSegments
         tags:
             - { name: pimcore.data_object.import.operator_factory, id: CustomerSegments }
+
+    CustomerManagementFrameworkBundle\Import\CustomerImportService: ~
+
+    cmf.document.newsletter.factory.segmentAddressSource:
+        class: Pimcore\Document\Newsletter\DefaultAddressSourceAdapterFactory
+        arguments:
+            - 'CustomerManagementFrameworkBundle\Newsletter\AddressSource\SegmentAddressSource'

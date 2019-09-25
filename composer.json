@@ -9,34 +9,21 @@
         "box/spout": "^2.7",
         "drewm/mailchimp-api": "*",
         "guzzlehttp/guzzle": ">=4.1.4 <7.0",
-        "hwi/oauth-bundle": "~0.6.2",
-        "php-http/httplug-bundle": "~1.10.0",
-        "php-http/guzzle6-adapter": "^1.1",
         "mtdowling/cron-expression": "^1.1.0",
         "pear/archive_tar": "^1.4.3",
-        "pimcore/core-version": "~5.2.0",
+        "pimcore/pimcore": ">=5.4 <6.3",
         "pimcore/number-sequence-generator": "^1.0.1",
-        "pimcore/object-merger": "~1.1",
+        "pimcore/object-merger": "~2.0",
         "pimcore/search-query-parser": "^1.2.4",
-        "symfony/psr-http-message-bridge": "^1.0",
-        "zendframework/zend-code": "~3.1.0",
-        "zendframework/zend-diactoros": "^1.7",
-        "zendframework/zend-paginator": "^2.7",
-        "zendframework/zend-servicemanager": "^3.2",
-        "doctrine/annotations": "~1.4.0",
-        "doctrine/cache": "~1.6.2",
-        "doctrine/collections": "~1.4.0",
-        "doctrine/common": "~2.7.3",
-        "doctrine/dbal": "~2.5.13",
-        "doctrine/orm": "~2.5.14",
-        "doctrine/doctrine-bundle": "~1.6.8",
-        "doctrine/doctrine-migrations-bundle": "~1.2.1",
-        "doctrine/instantiator": "~1.0.5",
-        "doctrine/migrations": "^1.5",
         "newsletter2go/api": "~1.1.1"
     },
     "require-dev": {
         "codeception/codeception": "^2.2"
+    },
+    "suggest": {
+        "hwi/oauth-bundle": "~0.6.2",
+        "php-http/httplug-bundle": "~1.10.0",
+        "php-http/guzzle6-adapter": "^1.1"
     },
     "autoload": {
         "psr-4": {

@@ -61,6 +61,8 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
             if ($type = $request->get('type')) {
                 $select = $list->getQuery(false);
                 $select->where('type = ?', $type);
+                $condition = implode(' ', $list->getQuery()->getPart('where'));
+                $list->setCondition($condition);
             }
 
             $paginator = new Paginator($list);

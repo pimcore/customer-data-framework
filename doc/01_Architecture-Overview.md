@@ -9,7 +9,7 @@ configured and used.
 For Details for the components see additional documentation pages like: 
 
 * Data Entities for [Customer](./05_Working-with-Customers.md) and [Customer Segments](./11_CustomerSegments.md)
-* [Activity Manager](./09_Activities.md)
+* [Activity Manager](./09_Activities/README.md)
 * [Customer Duplicates Service](./15_CustomerDuplicatesService.md)
 * [Segment Manager](./11_CustomerSegments.md)
 * [Customer Save Manager](./06_CustomerSaveManager.md)
@@ -18,4 +18,4 @@ For Details for the components see additional documentation pages like:
 * [List Views](./28_ListViews.md)
 * [Integration with Pimcore Personalization](./30_Personalization.md)
 * [SSO and Social Logins](./18_Single_Sign_On.md)
-* [MailChimp Integration](./24_NewsletterSync.md)
+* [MailChimp Integration](./24_NewsletterSync/README.md)

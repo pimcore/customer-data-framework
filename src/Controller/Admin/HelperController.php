@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Import\CustomerImportService;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
@@ -169,5 +170,35 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
         ';
 
         return new Response($content, 200, ['content-type' => 'application/javascript']);
+    }
+
+    /**
+     * @Route("/newsletter/possible-filter-flags")
+     *
+     * @param CustomerProviderInterface $customerProvider
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Exception
+     */
+    public function possibleNewsletterFilterFlagsAction(CustomerProviderInterface $customerProvider) {
+
+        $classDefinition = ClassDefinition::getById($customerProvider->getCustomerClassId());
+
+        $possibleFlags = [];
+        $fields = $classDefinition->getFieldDefinitions();
+        foreach ($fields as $field) {
+
+            if(
+                $field instanceof ClassDefinition\Data\Consent ||
+                $field instanceof ClassDefinition\Data\NewsletterConfirmed ||
+                $field instanceof ClassDefinition\Data\NewsletterActive
+            ) {
+                $possibleFlags[] = [ 'name' => $field->getName(), 'label' => $field->getTitle() ];
+            }
+
+        }
+
+        return $this->json([
+            'data' => $possibleFlags
+        ]);
     }
 }

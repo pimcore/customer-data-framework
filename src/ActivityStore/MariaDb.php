@@ -27,13 +27,18 @@ use Pimcore\Db;
 use Pimcore\Model\DataObject\Concrete;
 use Zend\Paginator\Paginator;
 
-class MariaDb implements ActivityStoreInterface
+class MariaDb extends SqlActivityStore implements ActivityStoreInterface
 {
     const ACTIVITIES_TABLE = 'plugin_cmf_activities';
     const ACTIVITIES_METADATA_TABLE = 'plugin_cmf_activities_metadata';
     const DELETIONS_TABLE = 'plugin_cmf_deletions';
 
     use LoggerAware;
+
+    protected function getActivityStoreConnection()
+    {
+        return \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance();
+    }
 
     /**
      * @param ActivityInterface $activity
@@ -111,7 +116,7 @@ class MariaDb implements ActivityStoreInterface
 
         unset($data['attributes']);
         if (!is_null($activity)) {
-            $data['attributes'] = $this->getActivityAttributeDataAsDynamicColumnInsert($activity);
+            $data['attributes'] = $this->getAttributeInsertData($activity);
             $data['type'] = $db->quote($activity->cmfGetType());
             $data['implementationClass'] = $db->quote(get_class($activity));
         } else {
@@ -140,51 +145,20 @@ class MariaDb implements ActivityStoreInterface
         $data['md5'] = $db->quote(md5(serialize($md5Data)));
         $data['modificationDate'] = $time;
 
-        $db = Db::get();
-
-        $db->beginTransaction();
-
-        try {
-            if ($entry->getId()) {
-                \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->update(
-                    self::ACTIVITIES_TABLE,
-                    $data,
-                    'id = '.$entry->getId()
-                );
-            } else {
-                $data['creationDate'] = $time;
-                $id = \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->insert(
-                    self::ACTIVITIES_TABLE,
-                    $data
-                );
-                $entry->setId($id);
-            }
-
-            try {
-                $db->query('delete from ' . self::ACTIVITIES_METADATA_TABLE . ' where activityId = ' . intval($entry->getId()));
-
-                foreach($entry->getMetadata() as $key => $data) {
-
-                    $db->insert(
-                        self::ACTIVITIES_METADATA_TABLE,
-                        [
-                            'activityId' => $entry->getId(),
-                            'key' => $key,
-                            'data' => $data
-                        ]
-                    );
-                }
-            } catch(TableNotFoundException $ex) {
-                $this->getLogger()->error(sprintf('table %s not found - please press the update button of the CMF bundle in the extension manager', self::ACTIVITIES_METADATA_TABLE));
-            }
-
-
-            $db->commit();
-        } catch(\Exception $e) {
-            $this->getLogger()->error(sprintf('save activity (%s) failed: %s', $entry->getId(), $e->getMessage()));
-            $db->rollBack();
+        if ($entry->getId()) {
+            \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->update(
+                self::ACTIVITIES_TABLE,
+                $data,
+                'id = '.$entry->getId()
+            );
+        } else {
+            $data['creationDate'] = $time;
+            $id = \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->insert(
+                self::ACTIVITIES_TABLE,
+                $data
+            );
+            $entry->setId($id);
         }
-
     }
 
     /**
@@ -457,7 +431,7 @@ class MariaDb implements ActivityStoreInterface
         return Db::get()->fetchCol($sql);
     }
 
-    protected function getActivityAttributeDataAsDynamicColumnInsert(ActivityInterface $activity)
+    protected function getAttributeInsertData(ActivityInterface $activity)
     {
         $attributes = $activity->cmfToArray();
         if (!is_array($attributes)) {

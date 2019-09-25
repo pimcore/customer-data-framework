@@ -19,7 +19,7 @@ use CustomerManagementFrameworkBundle\ActivityStore\MariaDb;
 use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList;
 use Pimcore\Db;
 
-class Dao
+class MariaDbDao
 {
     /**
      * @var DefaultMariaDbActivityList

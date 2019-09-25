@@ -36,7 +36,7 @@ It's also possible to save activities only in the ActivityStore. The framework i
 which could be used for these cases: 
 [`CustomerManagementFrameworkBundle\Model\Activity\GenericActivity`](https://github.com/pimcore/customer-data-framework/blob/master/src/Model/Activity/GenericActivity.php). 
 
-This activity is used as a standard in the [REST API](./Webservice.md) if no `implentationClass` is defined. It can handle 
+This activity is used as a standard in the [REST API](../Webservice.md) if no `implentationClass` is defined. It can handle 
 a nested, associative array of data which is only saved in the ActivityStore. 
 
 But this doesn't mean that only this `GenericActivity` implementation can be used for activities without it's own 
@@ -79,7 +79,7 @@ Example:
 
 The CMF plugin contains a list view for displaying activities. This is added as a tab within the customer objects.
 
-![ActivityView](./img/ActivityView.png)
+![ActivityView](../img/ActivityView.png)
 
 
 ### Handle how activities are displayed in the ActivityView

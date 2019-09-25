@@ -4,26 +4,34 @@ services:
             tags:
                 - { name: templating.helper, alias: minifiedAssetUrl }
 
-    pimcore.templating.view_helper.jsConfig:
-        class: CustomerManagementFrameworkBundle\Templating\Helper\JsConfig
+    CustomerManagementFrameworkBundle\Templating\Helper\JsConfig:
         tags:
             - { name: templating.helper, alias: jsConfigHelper }
+
+    pimcore.templating.view_helper.jsConfig:
+        alias: CustomerManagementFrameworkBundle\Templating\Helper\JsConfig
+        deprecated: 'The "%alias_id%" service alias is deprecated.'
 
     pimcore.templating.view_helper.filterFormAction:
         class: CustomerManagementFrameworkBundle\Templating\Helper\FilterFormAction
         tags:
             - { name: templating.helper, alias: filterFormAction }
 
-    pimcore.templating.view_helper.formFilterParams:
-        class: CustomerManagementFrameworkBundle\Templating\Helper\FormFilterParams
+    CustomerManagementFrameworkBundle\Templating\Helper\FormFilterParams:
         tags:
             - { name: templating.helper, alias: formFilterParams }
 
-    pimcore.templating.view_helper.formOrderParams:
-        class: CustomerManagementFrameworkBundle\Templating\Helper\FormOrderParams
+    pimcore.templating.view_helper.formFilterParams:
+        alias: CustomerManagementFrameworkBundle\Templating\Helper\FormFilterParams
+        deprecated: 'The "%alias_id%" service alias is deprecated.'
+
+    CustomerManagementFrameworkBundle\Templating\Helper\FormOrderParams:
         tags:
             - { name: templating.helper, alias: formOrderParams }
 
+    pimcore.templating.view_helper.formOrderParams:
+        alias: CustomerManagementFrameworkBundle\Templating\Helper\FormOrderParams
+        deprecated: 'The "%alias_id%" service alias is deprecated.'
 
     pimcore.templating.view_helper.addPerPageParam:
         class: CustomerManagementFrameworkBundle\Templating\Helper\AddPerPageParam
@@ -36,19 +44,24 @@ services:
             - { name: templating.helper, alias: selfUrl }
 
     pimcore.templating.view_helper.formQueryString:
-            class: CustomerManagementFrameworkBundle\Templating\Helper\FormQueryString
-            tags:
-                - { name: templating.helper, alias: formQueryString }
+        autowire: true
+        class: CustomerManagementFrameworkBundle\Templating\Helper\FormQueryString
+        tags:
+            - { name: templating.helper, alias: formQueryString }
+
+    CustomerManagementFrameworkBundle\Templating\Helper\DefaultPageSize:
+        tags:
+            - { name: templating.helper, alias: defaultPageSize }
+
 
     pimcore.templating.view_helper.defaultPageSize:
-            class: CustomerManagementFrameworkBundle\Templating\Helper\DefaultPageSize
-            tags:
-                - { name: templating.helper, alias: defaultPageSize }
+        alias: CustomerManagementFrameworkBundle\Templating\Helper\DefaultPageSize
+        deprecated: 'The "%alias_id%" service alias is deprecated.'
 
     pimcore.templating.view_helper.escapeFormValue:
-            class: CustomerManagementFrameworkBundle\Templating\Helper\EscapeFormValue
-            tags:
-                - { name: templating.helper, alias: escapeFormValue }
+        class: CustomerManagementFrameworkBundle\Templating\Helper\EscapeFormValue
+        tags:
+            - { name: templating.helper, alias: escapeFormValue }
 
     CustomerManagementFrameworkBundle\Templating\Helper\Encryption:
         autowire: true

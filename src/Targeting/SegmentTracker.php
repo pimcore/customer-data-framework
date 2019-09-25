@@ -142,6 +142,56 @@ class SegmentTracker
         );
     }
 
+    /**
+     * Returns assigned segments filtered for $allowedSegmentGroupReferences grouped by segment groups
+     *
+     * @param VisitorInfo $visitorInfo
+     * @param array $allowedSegmentGroupReferences
+     * @param int $limitSegmentCountPerGroup
+     * @return array
+     */
+    public function getFilteredAssignments(VisitorInfo $visitorInfo, array $allowedSegmentGroupReferences, int $limitSegmentCountPerGroup): array
+    {
+        $trackedSegments = $this->getAssignments($visitorInfo);
+
+        //get relevant segments
+        $segmentCollection = [];
+        foreach ($trackedSegments as $segmentId => $count) {
+            $segment = $this->segmentManager->getSegmentById($segmentId);
+            if ($segment) {
+                $reference = $segment->getGroup()->getReference();
+                if (in_array($reference, $allowedSegmentGroupReferences)) {
+                    $segmentCollection[$reference][] = [
+                        'segment' => $segment,
+                        'count' => $count
+                    ];
+                }
+            }
+        }
+
+        if (empty($segmentCollection)) {
+            return [];
+        }
+
+        //order segments by count, pick $limitSegmentCountPerGroup top segments
+        foreach ($segmentCollection as $group => $groupCollection) {
+            if (!empty($groupCollection)) {
+                usort($groupCollection, function ($left, $right) {
+                    if ($left['count'] === $right['count']) {
+                        return 0;
+                    }
+
+                    return ($left['count'] < $right['count']) ? 1 : -1;
+                });
+
+                $segmentCollection[$group] = array_slice($groupCollection, 0, $limitSegmentCountPerGroup);
+            }
+        }
+
+        return $segmentCollection;
+    }
+
+
     private function dispatchTrackEvent(VisitorInfo $visitorInfo, int $segmentId, int $count)
     {
         $this->dataLoader->loadDataFromProviders($visitorInfo, [Customer::PROVIDER_KEY]);
