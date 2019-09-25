@@ -152,7 +152,6 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
 
         $settings = [
             'newsletterSyncEnabled' => $this->container->getParameter('pimcore_customer_management_framework.newsletter.newsletterSyncEnabled'),
-            //TODO templateExporters
             'templateExporters' => $templateExporters,
             'duplicatesViewEnabled' => $this->container->getParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.enabled'),
             'segmentAssignment' => $this->getParameter('pimcore_customer_management_framework.segment_assignment_classes.types'),

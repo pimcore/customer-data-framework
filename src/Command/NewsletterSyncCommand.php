@@ -70,7 +70,7 @@ class NewsletterSyncCommand extends AbstractCommand
 
         if ($input->getOption('customer-data-sync') || $input->getOption('all-customers')) {
             $lockKey = 'plugin_cmf_newsletter_sync_queue';
-            if (Lock::isLocked($lockKey, (60 * 60 * 12)) && false) {
+            if (Lock::isLocked($lockKey, (60 * 60 * 12))) {
                 die('locked - not starting now');
             }
 

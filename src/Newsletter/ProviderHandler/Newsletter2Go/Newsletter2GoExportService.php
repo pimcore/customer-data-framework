@@ -126,7 +126,6 @@ class Newsletter2GoExportService
 
             $response = $this->newsletter2GoRESTApi->curl($endpoint, $data, 'DELETE');
 
-            //todo find a better way for this...
             foreach($items as $item) {
                 if($customer = $item->getCustomer()) {
                     $newsletter2GoProviderHandler->updateNewsletter2GoStatus($customer, 'unsubscribed');
