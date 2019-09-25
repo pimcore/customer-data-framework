@@ -67,7 +67,29 @@ services:
 
         tags: [cmf.newsletter_provider_handler]
         
+    # example newsletter2go list
+    appbundle.newsletter-2-go.list2:
+        class: CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Newsletter2Go
+        autowire: true
+        arguments:
+            - 'list2'
+            #list id
+            - 'XXXXX'
+            # code for the double opt in form - can be found within the newsletter2go interface
+            - 'nzd8p6qr-n2sm2wg7-15ak'
+            -   subscribed: subscribed
+                pending: pending
+                unsubscribed: unsubscribed
+            -   subscribed: subscribed
+                pending: pending
+                unsubscribed: unsubscribed
+            -   firstname: first_name
+                lastname: last_name
+                phone: phone
+                dob: birthday
+            -   dob: '@appbundle.cmf.dob-transformer'
     
+        tags: [cmf.newsletter_provider_handler]
 ```        
 
 
@@ -97,6 +119,15 @@ pimcore_customer_management_framework:
         mailchimp:
           apiKey: d1a40ajzf41d5154455a9455cc7b71b9-us14
           cliUpdatesPimcoreUserName: mailchimp-cli
+          #show export button on email / newsletter documents
+          enableTemplateExporter: true
+          
+        newsletter2Go:
+          username: username
+          password: password
+          apiKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          #show export button on email / newsletter documents
+          enableTemplateExporter: true
 
     # Configuration of EncryptionService
     encryption:

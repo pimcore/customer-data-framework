@@ -57,3 +57,9 @@ Setup a Pimcore user name (e.g. mailchimp-cli) in the CMF config - this user wil
 ```
 * * * * * php /home/project/www/bin/console.php cmf:newsletter-sync -m > /home/project/www/log/cmf-mailchimp-status-sync-lastrun.log 
 ```
+
+## Newsletter2Go status sync
+Should run as a nightly job to sync the status back to Pimcore. Since Newsletter2Go has no webhook implemented this job is required to get the data back into Pimcore.
+```
+* * * * * php /home/project/www/bin/console cmf:newsletter-sync --newsletter2go-status-sync > /home/project/www/log/cmf-newsletter2go-status-sync-lastrun.log 
+```
