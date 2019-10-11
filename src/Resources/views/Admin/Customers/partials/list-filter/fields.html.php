@@ -9,7 +9,7 @@
 <fieldset>
     <legend>
         <?= $customerView->translate('cmf_filters_customer') ?>
-        <?php $or = $customerView->translate('cmf_filters_options_or');?>
+        <?php $or = $customerView->translate('cmf_filters_options_any');?>
         <?php $and = $customerView->translate('cmf_filters_options_and');?>
         <select
                 id="form-filter-operator-customer"

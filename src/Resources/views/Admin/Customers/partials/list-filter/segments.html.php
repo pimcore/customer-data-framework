@@ -29,6 +29,7 @@ foreach ($segmentGroups as $segmentGroup) {
 
                     <?php $or = $customerView->translate('cmf_filters_options_or');?>
                     <?php $and = $customerView->translate('cmf_filters_options_and');?>
+                    <?php $any = $customerView->translate('cmf_filters_options_any');?>
 
                     <select
                             id="form-filter-operator-segments"
@@ -38,6 +39,7 @@ foreach ($segmentGroups as $segmentGroup) {
 
                         <option <?= $filters['operator-segments'] == 'AND' ? 'selected="selected"' : '' ?> value="AND"><?= $and ?></option>
                         <option <?= $filters['operator-segments'] == 'OR' ? 'selected="selected"' : '' ?> value="OR"><?= $or ?></option>
+                        <option <?= $filters['operator-segments'] == 'ANY' ? 'selected="selected"' : '' ?> value="ANY"><?= $any ?></option>
 
                     </select>
 
