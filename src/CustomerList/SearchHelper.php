@@ -22,6 +22,7 @@ use CustomerManagementFrameworkBundle\Listing\Filter\Permission as PermissionFil
 use CustomerManagementFrameworkBundle\Listing\Filter\Equals;
 use CustomerManagementFrameworkBundle\Listing\FilterHandler;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
+use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\Model\DataObject\Listing\Concrete;
 use Pimcore\Model\User;
 
@@ -119,24 +120,38 @@ class SearchHelper {
         }
 
         if(array_key_exists('segments', $filters)) {
-            foreach($filters['segments'] as $groupId => $segmentIds) {
-                $segmentGroup = null;
-                if($groupId !== 'default') {
-                    /** @var \Pimcore\Model\DataObject\CustomerSegmentGroup $segmentGroup */
-                    $segmentGroup = $this->getSegmentManager()->getSegmentGroupById($groupId);
-                    if(!$segmentGroup) {
-                        throw new \Exception(sprintf('Segment group %d was not found', $groupId));
-                    }
-                }
+            if ($operatorSegments == "ANY") {
                 $segments = [];
-                foreach($segmentIds as $segmentId) {
-                    $segment = $this->getSegmentManager()->getSegmentById($segmentId);
-                    if(!$segment) {
-                        throw new \Exception(sprintf('Segment %d was not found', $segmentId));
+                foreach($filters['segments'] as $groupId => $segmentIds) {
+                    foreach($segmentIds as $segmentId) {
+                        $segment = $this->getSegmentManager()->getSegmentById($segmentId);
+                        if(!$segment) {
+                            throw new \Exception(sprintf('Segment %d was not found', $segmentId));
+                        }
+                        $segments[] = $segment;
                     }
-                    $segments[] = $segment;
                 }
-                $handler->addFilter(new CustomerSegmentFilter($segments, $segmentGroup, $operatorSegments));
+                $handler->addFilter(new CustomerSegmentFilter($segments, null, QueryBuilder::SQL_OR));
+            } else {
+                foreach($filters['segments'] as $groupId => $segmentIds) {
+                    $segmentGroup = null;
+                    if($groupId !== 'default') {
+                        /** @var \Pimcore\Model\DataObject\CustomerSegmentGroup $segmentGroup */
+                        $segmentGroup = $this->getSegmentManager()->getSegmentGroupById($groupId);
+                        if(!$segmentGroup) {
+                            throw new \Exception(sprintf('Segment group %d was not found', $groupId));
+                        }
+                    }
+                    $segments = [];
+                    foreach($segmentIds as $segmentId) {
+                        $segment = $this->getSegmentManager()->getSegmentById($segmentId);
+                        if(!$segment) {
+                            throw new \Exception(sprintf('Segment %d was not found', $segmentId));
+                        }
+                        $segments[] = $segment;
+                    }
+                    $handler->addFilter(new CustomerSegmentFilter($segments, $segmentGroup, $operatorSegments));
+                }
             }
         }
 
