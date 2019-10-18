@@ -69,16 +69,22 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     private $originalCustomer;
 
     /**
+     * @var ActivityStoreInterface
+     */
+    protected $activityStore;
+
+    /**
      * DefaultCustomerSaveManager constructor.
      *
      * @param bool $enableAutomaticObjectNamingScheme
      */
-    public function __construct(SaveOptions $saveOptions, CustomerProviderInterface $customerProvider, RequestStack $requestStack)
+    public function __construct(SaveOptions $saveOptions, CustomerProviderInterface $customerProvider, RequestStack $requestStack, ActivityStoreInterface $activityStore)
     {
         $this->saveOptions = $saveOptions;
         $this->defaultSaveOptions = clone $saveOptions;
         $this->customerProvider = $customerProvider;
         $this->requestStack = $requestStack;
+        $this->activityStore = $activityStore;
     }
 
     protected function applyNamingScheme(CustomerInterface $customer)
@@ -237,11 +243,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         $duplicatesIndex = \Pimcore::getContainer()->get(DuplicatesIndexInterface::class);
         $duplicatesIndex->deleteCustomerFromDuplicateIndex($customer);
 
-        /**
-         * @var ActivityStoreInterface $activityStore
-         */
-        $activityStore = \Pimcore::getContainer()->get(ActivityStoreInterface::class);
-        $activityStore->deleteCustomer($customer);
+        $this->activityStore->deleteCustomer($customer);
     }
 
     public function validateOnSave(CustomerInterface $customer, $withDuplicatesCheck = true)
