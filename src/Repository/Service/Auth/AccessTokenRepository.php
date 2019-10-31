@@ -4,6 +4,7 @@ namespace CustomerManagementFrameworkBundle\Repository\Service\Auth;
 
 use CustomerManagementFrameworkBundle\Entity\Service\Auth\AccessToken;
 use CustomerManagementFrameworkBundle\Entity\Service\Auth\AuthCode;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
@@ -20,12 +21,12 @@ class AccessTokenRepository extends \Doctrine\ORM\EntityRepository implements Ac
 {
 
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManagerInterface
      */
     private $entity_manager = null;
 
 
-    public function __construct(\Doctrine\ORM\EntityManager $entity_manager)
+    public function __construct(EntityManagerInterface $entity_manager)
     {
         $this->entity_manager = $entity_manager;
         parent::__construct($entity_manager, $entity_manager->getClassMetadata("CustomerManagementFrameworkBundle\Entity\Service\Auth\AccessToken"));

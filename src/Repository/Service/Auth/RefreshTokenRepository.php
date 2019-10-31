@@ -10,6 +10,7 @@
 namespace CustomerManagementFrameworkBundle\Repository\Service\Auth;
 
 use CustomerManagementFrameworkBundle\Entity\Service\Auth\RefreshToken;
+use Doctrine\ORM\EntityManagerInterface;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 
@@ -17,11 +18,11 @@ class RefreshTokenRepository extends \Doctrine\ORM\EntityRepository implements R
 {
 
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManagerInterface
      */
     private $entity_manager = null;
 
-    public function __construct(\Doctrine\ORM\EntityManager $entity_manager)
+    public function __construct(EntityManagerInterface $entity_manager)
     {
         $this->entity_manager = $entity_manager;
         parent::__construct($entity_manager, $entity_manager->getClassMetadata("CustomerManagementFrameworkBundle\Entity\Service\Auth\RefreshToken"));

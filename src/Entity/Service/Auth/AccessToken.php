@@ -2,6 +2,7 @@
 
 namespace CustomerManagementFrameworkBundle\Entity\Service\Auth;
 
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
@@ -107,7 +108,7 @@ class AccessToken implements \League\OAuth2\Server\Entities\AccessTokenEntityInt
      *
      * @return AccessToken
      */
-    public function setExpiryDateTime(\DateTime $expiryDateTime)
+    public function setExpiryDateTime(DateTimeImmutable $expiryDateTime)
     {
         $this->expiryDateTime = $expiryDateTime;
 

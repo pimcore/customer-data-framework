@@ -10,6 +10,7 @@
 namespace CustomerManagementFrameworkBundle\Repository\Service\Auth;
 
 use CustomerManagementFrameworkBundle\Entity\Service\Auth\AuthCode;
+use Doctrine\ORM\EntityManagerInterface;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 
@@ -17,12 +18,12 @@ class AuthCodeRepository extends \Doctrine\ORM\EntityRepository implements AuthC
 {
 
     /**
-     * @var \Doctrine\ORM\EntityManager $entity_manager
+     * @var EntityManagerInterface $entity_manager
      */
     private $entity_manager = null;
 
 
-    public function __construct(\Doctrine\ORM\EntityManager $entity_manager)
+    public function __construct(EntityManagerInterface $entity_manager)
     {
         $this->entity_manager = $entity_manager;
         parent::__construct($this->entity_manager, $this->entity_manager->getClassMetadata("CustomerManagementFrameworkBundle\Entity\Service\Auth\AuthCode"));

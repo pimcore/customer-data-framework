@@ -23,7 +23,7 @@ class ClientRepository implements ClientRepositoryInterface
         $clients = \Pimcore::getContainer()->getParameter("pimcore_customer_management_framework.oauth_server");
 
         if(!key_exists("clients", $clients)){
-            throw new Exception("AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.clients NOT DEFINED IN config.xml");
+            throw new \Exception("AuthorizationServer ERROR: pimcore_customer_management_framework.oauth_server.clients NOT DEFINED IN config.xml");
         }
 
         $clients = $clients["clients"];
@@ -64,5 +64,20 @@ class ClientRepository implements ClientRepositoryInterface
         $client->setRedirectUri($currentClient['redirect_uri']);
 
         return $client;
+    }
+
+    /**
+     * Validate a client's secret.
+     *
+     * @param string $clientIdentifier The client's identifier
+     * @param null|string $clientSecret The client's secret (if sent)
+     * @param null|string $grantType The type of grant the client is using (if sent)
+     *
+     * @return bool
+     */
+    public function validateClient($clientIdentifier, $clientSecret, $grantType)
+    {
+        throw new \Exception("Validate Client not implemented yet!");
+        // TODO: Implement validateClient() method.
     }
 }

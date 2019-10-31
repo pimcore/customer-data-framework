@@ -15,16 +15,9 @@
         "pimcore/number-sequence-generator": "^1.0.1",
         "pimcore/object-merger": "~2.0",
         "pimcore/search-query-parser": "^1.2.4",
-        "doctrine/annotations": "~1.4.0",
-        "doctrine/cache": "~1.6.2",
-        "doctrine/collections": "~1.4.0",
-        "doctrine/common": "~2.7.3",
-        "doctrine/dbal": "~2.5.13",
-        "doctrine/orm": "~2.5.14",
-        "doctrine/doctrine-bundle": "~1.6.8",
-        "doctrine/doctrine-migrations-bundle": "~1.2.1",
-        "doctrine/instantiator": "~1.0.5",
-        "doctrine/migrations": "^1.5"
+        "doctrine/orm": "~2.6.0",
+        "symfony/psr-http-message-bridge": "~1.2.0",
+        "league/oauth2-server": "~8.0.0"
     },
     "require-dev": {
         "codeception/codeception": "^2.2"

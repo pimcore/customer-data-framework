@@ -8,17 +8,17 @@
 
 namespace CustomerManagementFrameworkBundle\OAuth\Service;
 
-use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
+use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class PSR7RequestTransformer {
 
     /**
-     * @var \Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory $diactorosFactory
+     * @var HttpMessageFactoryInterface
      */
     private $diactorosFactory = null;
 
-    public function __construct(DiactorosFactory $diactorosFactory)
+    public function __construct(HttpMessageFactoryInterface $diactorosFactory)
     {
         $this->diactorosFactory = $diactorosFactory;
     }

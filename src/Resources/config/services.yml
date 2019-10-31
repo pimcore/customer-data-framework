@@ -305,3 +305,5 @@ services:
     CustomerManagementFrameworkBundle\OAuth\Service\PSR7RequestTransformer:
         public: true
         autowire: true
+        arguments:
+            - sensio_framework_extra.psr7.http_message_factory

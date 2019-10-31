@@ -61,11 +61,11 @@ class RefreshToken implements \League\OAuth2\Server\Entities\RefreshTokenEntityI
     /**
      * Set expiryDateTime
      *
-     * @param \DateTime $dateTime
+     * @param \DateTimeImmutable $dateTime
      *
      * @return RefreshToken
      */
-    public function setExpiryDateTime(\DateTime $dateTime)
+    public function setExpiryDateTime(\DateTimeImmutable $dateTime)
     {
         $this->expiryDateTime = $dateTime;
 

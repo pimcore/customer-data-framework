@@ -11,6 +11,7 @@ namespace CustomerManagementFrameworkBundle\OAuth\Service;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Entity\Service\Auth\AccessToken;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Pimcore\Tool\RestClient\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -18,7 +19,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class UserInfo{
 
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManagerInterface
      */
     private $entity_manager = null;
 
@@ -32,7 +33,7 @@ class UserInfo{
      */
     private $customerProvider;
 
-    public function __construct(\Doctrine\ORM\EntityManager $entity_manager, AuthorizationServer $authorizationServer, CustomerProviderInterface $customerProvider)
+    public function __construct(EntityManagerInterface $entity_manager, AuthorizationServer $authorizationServer, CustomerProviderInterface $customerProvider)
     {
         $this->entity_manager = $entity_manager;
         $this->authorizationServer = $authorizationServer;
