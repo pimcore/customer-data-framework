@@ -58,3 +58,6 @@ with Pimcore < 5.4, please add following rewrite rule to your `.htaccess`.
     # rewrite rule for pre pimcore 5.4 core static files
     RewriteRule ^bundles/pimcoreadmin/(.*) /pimcore/static6/$1 [PT,L]
 ``` 
+
+## Upgrade Notes
+see [Upgrade Notes](./doc/30_UpgradeNotes.md)

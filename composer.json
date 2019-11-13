@@ -14,7 +14,8 @@
         "pimcore/pimcore": ">=5.4 <6.4",
         "pimcore/number-sequence-generator": "^1.0.1",
         "pimcore/object-merger": "~2.0",
-        "pimcore/search-query-parser": "^1.2.4"
+        "pimcore/search-query-parser": "^1.2.4",
+        "newsletter2go/api": "~1.1.1"
     },
     "require-dev": {
         "codeception/codeception": "^2.2"
