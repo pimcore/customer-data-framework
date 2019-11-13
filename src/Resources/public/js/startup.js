@@ -63,10 +63,10 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
             // add to menu
             this.menu.add(customerMenu);
 
-            $(pimcore.settings.cmf.shortcutFilterDefinitions).each(function(){
-                var filterId = this.id;
-                var filterKey = 'plugin_cmf_customerview_filter_' + this.id;
-                var filterName = this.name;
+            pimcore.settings.cmf.shortcutFilterDefinitions.forEach(function (definition) {
+                var filterId = definition.id;
+                var filterKey = 'plugin_cmf_customerview_filter_' + definition.id;
+                var filterName = definition.name;
                 var filterItem = {
                     text: filterName,
                     iconCls: 'pimcore_nav_icon_customers',
