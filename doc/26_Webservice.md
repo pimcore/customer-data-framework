@@ -25,6 +25,7 @@ The `GET` requests can be filtered by passing the following params as query para
 | segments              | comma-separated list of IDs   | filter by segments                                          |
 | page                  | int                           | page number for paging                                      |
 | pageSize              | int                           | page size   for paging                                      |
+| modificationTimestamp | int                           | filter for customers with newer ModificationTimestamp       |
 
 
 ### Activities API

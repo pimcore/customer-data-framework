@@ -23,6 +23,7 @@ use CustomerManagementFrameworkBundle\RESTApi\Traits\ResourceUrlGenerator;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResponseGenerator;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\DataObject\Customer;
 use Symfony\Component\HttpFoundation\Request;
 use Zend\Paginator\Paginator;
 
@@ -64,9 +65,16 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
             $customers = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
         }
 
+        /**
+         * @var $customers Customer\Listing
+         */
         $customers->setOrderKey('o_id');
         $customers->setOrder('asc');
         $customers->setUnpublished(false);
+
+        if($params->getModificationTimestamp()) {
+            $customers->addConditionParam('o_modificationDate > ?', $params->getModificationTimestamp());
+        }
 
         $paginator = new Paginator($customers);
         $this->handlePaginatorParams($paginator, $request);

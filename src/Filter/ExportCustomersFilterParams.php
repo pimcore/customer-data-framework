@@ -35,6 +35,11 @@ class ExportCustomersFilterParams
     private $segments;
 
     /**
+     * @var int
+     */
+    private $modificationTimestamp;
+
+    /**
      * @param Request $request
      *
      * @return static
@@ -44,6 +49,7 @@ class ExportCustomersFilterParams
         $params = new static();
         $params->setIncludeActivities($request->get('includeActivities') == 'true' ? true : false);
         $params->setSegments($request->get('segments'));
+        $params->setModificationTimestamp(intval($request->get('modificationTimestamp')));
         $params->setAllParams($request->request->all());
 
         return $params;
@@ -102,4 +108,22 @@ class ExportCustomersFilterParams
             $this->segments = [];
         }
     }
+
+    /**
+     * @return int
+     */
+    public function getModificationTimestamp(): int
+    {
+        return $this->modificationTimestamp;
+    }
+
+    /**
+     * @param int $modificationTimestamp
+     */
+    public function setModificationTimestamp(int $modificationTimestamp): void
+    {
+        $this->modificationTimestamp = $modificationTimestamp;
+    }
+
+
 }
