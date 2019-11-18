@@ -24,7 +24,7 @@ newsletter related settings.
 
 It's needed to add a `newsletterStatus` and `mailchimpStatus` field into the customer class for each MailChimp list:  
 
-![Customer newsletter status](./img/mailchimp/customer-newsletter-status.png)
+![Customer newsletter status](../img/mailchimp/customer-newsletter-status.png)
 
 The fields need to be named with the shortcut of the associated provider handler as a suffix (e.g. `newsletterStatusList1` 
 and `mailchimpStatusList1`). 
