@@ -43,21 +43,27 @@ class Objects
     {
         $origKey = is_null($origKey) ? self::getValidKey($object->getKey()) : $origKey;
 
-        $list = new \Pimcore\Model\DataObject\Listing;
-        $list->setUnpublished(true);
-        $list->setCondition(
-            'o_path = ? and o_key = ? and o_id != ?',
-            [(string)$object->getParent() . '/', $object->getKey(), $object->getId()]
+        $notUnique = true;
+        while($notUnique) {
 
-        );
-        $list->setLimit(1);
-        $list = $list->load();
+            $list = new \Pimcore\Model\DataObject\Listing;
+            $list->setUnpublished(true);
+            $list->setCondition(
+                'o_path = ? and o_key = ? and o_id != ?',
+                [(string)$object->getParent() . '/', $object->getKey(), $object->getId()]
+            );
+            $list->setLimit(1);
+            $list = $list->load();
 
-        if (sizeof($list)) {
-            $keyCounter++;
-            $object->setKey($origKey.'-'.$keyCounter);
-            self::checkObjectKeyHelper($object, $origKey, $keyCounter);
+            if (sizeof($list)) {
+                $keyCounter++;
+                $object->setKey($origKey.'-'.$keyCounter);
+            } else {
+                $notUnique = false;
+            }
+
         }
+
     }
 
     /**
