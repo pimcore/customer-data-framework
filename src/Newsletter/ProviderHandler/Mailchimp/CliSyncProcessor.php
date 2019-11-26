@@ -110,6 +110,7 @@ class CliSyncProcessor
                                 $this->getLogger()->error(
                                     sprintf('multiple active customers with email %s found', $row['email_address'])
                                 );
+                                continue;
                             }
 
                             if (!$customer) {
