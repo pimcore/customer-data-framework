@@ -118,7 +118,7 @@ class GenericActivity implements ActivityExternalIdInterface
     {
         if (empty($this->customer)) {
             $this->customer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById(
-                $this->data['customerId']
+                $this->data['customer']
             );
         }
 
