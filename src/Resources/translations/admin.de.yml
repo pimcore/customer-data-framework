@@ -187,6 +187,8 @@ plugin_cmf_targeting_action_apply_do: ""
 plugin_cmf_targeting_action_apply_target_groups_from_segments_cleanup_and_overwrite: "Bereinigen und Überschreiben"
 plugin_cmf_targeting_action_apply_target_groups_from_segments_cleanup_and_merge: "Bereinigen und Zusammenführen"
 plugin_cmf_targeting_action_apply_target_groups_from_segments_only_merge: "nur Zusammenführen"
+plugin_cmf_targeting_action_track_activity: "Aktivität anlegen"
+plugin_cmf_targeting_activity_type: "Aktivitätstyp"
 
 cmf_segment_import_customers: "Kunden CSV-Liste importieren"
 cmf_replace_segments: "Segmente ersetzen"

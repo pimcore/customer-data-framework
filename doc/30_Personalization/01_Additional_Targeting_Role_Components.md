@@ -41,6 +41,16 @@ be used later on, e.g. with the `Has Segment` condition.
 ![Track Segment](../img/track-segment.jpg)
 
 
+### Action `[CMF] Track Activity`
+The `Track Activity` action tracks an activity of the given `Activity Type` to the currently logged in user. 
+- `Consider profiling consent`: If a user is logged-in, the action checks the `profilingConsent` attribute of the user. 
+  If `profilingConsent` is not true, the action will be ignored.  
+  
+It does nothing if no user is logged in. 
+
+![Track Segment](../img/track-activity.jpg)
+
+
 ### Action `[CMF] Apply Target Groups from Assigned Customer Segments`
 The `Apply Target Groups from Assigned Customer Segments` action applies all customer segements from the currently 
 logged-in customer that are linked to a target group to the targeting engine. This might be necessary for keeping information

@@ -181,6 +181,8 @@ plugin_cmf_targeting_action_apply_do: "Do"
 plugin_cmf_targeting_action_apply_target_groups_from_segments_cleanup_and_overwrite: "Cleanup and Overwrite"
 plugin_cmf_targeting_action_apply_target_groups_from_segments_cleanup_and_merge: "Cleanup and Merge"
 plugin_cmf_targeting_action_apply_target_groups_from_segments_only_merge: "Only Merge"
+plugin_cmf_targeting_action_track_activity: "Track Activity"
+plugin_cmf_targeting_activity_type: "Activity Type"
 
 cmf_segment_import_customers: "Import customer CSV list"
 cmf_replace_segments: "replace segments"

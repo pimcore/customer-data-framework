@@ -244,4 +244,49 @@
         })
     );
 
+    pimcore.settings.targeting.actions.register(
+        "cmf_track_activity",
+        Class.create(pimcore.settings.targeting.action.abstract, {
+            getName: function () {
+                return t('plugin_cmf_targeting_action_track_activity');
+            },
+
+            getPanel: function (panel, data) {
+                var id = Ext.id();
+
+                return new Ext.form.FormPanel({
+                    id: id,
+                    forceLayout: true,
+                    border: true,
+                    style: "margin: 10px 0 0 0",
+                    labelWidth: 50,
+                    bodyStyle: "padding: 10px 30px 10px 30px; min-height:40px;",
+                    tbar: pimcore.settings.targeting.actions.getTopBar(this, id, panel),
+                    items: [
+                        {
+                            fieldLabel: t("plugin_cmf_targeting_activity_type"),
+                            xtype: "textfield",
+                            labelWidth: 200,
+                            name: "activityType",
+                            width: 500,
+                            value: data.activityType
+                        },
+                        {
+                            xtype: "checkbox",
+                            labelWidth: 200,
+                            name: "considerProfilingConsent",
+                            fieldLabel: t("plugin_cmf_targetingaction_consider_profiling_consent"),
+                            checked: typeof data.considerProfilingConsent == 'undefined' ? true : data.considerProfilingConsent
+                        },
+                        {
+                            xtype: "hidden",
+                            name: "type",
+                            value: "cmf_track_activity"
+                        }
+                    ]
+                });
+            }
+        })
+    );
+
 }());
