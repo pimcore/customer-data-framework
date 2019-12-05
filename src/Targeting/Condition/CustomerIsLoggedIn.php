@@ -17,90 +17,20 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Targeting\Condition;
 
-use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer;
-use CustomerManagementFrameworkBundle\Targeting\DataProvider\CustomerSegments;
-use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
-use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Targeting\Condition\AbstractVariableCondition;
-use Pimcore\Targeting\DataProvider\TargetingStorage;
 use Pimcore\Targeting\DataProviderDependentInterface;
 use Pimcore\Targeting\Model\VisitorInfo;
-use Pimcore\Targeting\Storage\TargetingStorageInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CustomerIsLoggedIn extends AbstractVariableCondition implements DataProviderDependentInterface
 {
-    /**
-     * @var int|null
-     */
-    private $segmentId;
-
-    /**
-     * @var array
-     */
-    private $options = [];
-
-    /**
-     * @param int|null $segmentId
-     * @param array $options
-     */
-    public function __construct()
-    {
-//        $this->segmentId = $segmentId;
-//
-//        $resolver = new OptionsResolver();
-//        $this->configureOptions($resolver);
-//
-//        $this->options = $resolver->resolve($options);
-    }
-
-    private function configureOptions(OptionsResolver $resolver)
-    {
-//        $resolver->setDefaults([
-//            'operator'                 => '>=',
-//            'value'                    => 1,
-//            'considerCustomerSegments' => true,
-//            'considerTrackedSegments'  => true
-//        ]);
-//
-//        $resolver->setAllowedTypes('operator', 'string');
-//        $resolver->setAllowedValues('operator', ['%', '=', '<', '<=', '>', '>=']);
-//
-//        $resolver->setAllowedTypes('value', 'int');
-//        $resolver->setAllowedValues('value', function ($value) {
-//            return $value > 0;
-//        });
-//
-//        $resolver->setAllowedTypes('considerCustomerSegments', 'bool');
-//        $resolver->setAllowedTypes('considerTrackedSegments', 'bool');
-    }
 
     /**
      * @inheritDoc
      */
     public static function fromConfig(array $config)
     {
-//        $segmentId = null;
-//        if (is_numeric($config['segment'])) {
-//            $segmentId = (int)$config['segment'];
-//        } else {
-//            // TODO load from segment manager?
-//            $segment = CustomerSegment::getByPath($config['segment']);
-//            if ($segment instanceof CustomerSegmentInterface) {
-//                $segmentId = $segment->getId();
-//            }
-//        }
-
         return new self();
-//            $segmentId,
-//            [
-//                'operator'                 => $config['condition_operator'] ?? '>=',
-//                'value'                    => $config['value'] ?? 1,
-//                'considerCustomerSegments' => $config['considerCustomerSegments'] ?? true,
-//                'considerTrackedSegments'  => $config['considerTrackedSegments'] ?? true
-//            ]
-//        );
     }
 
     /**
@@ -111,14 +41,6 @@ class CustomerIsLoggedIn extends AbstractVariableCondition implements DataProvid
         $providers = [
             Customer::PROVIDER_KEY
         ];
-
-//        if ($this->options['considerCustomerSegments']) {
-//            $providers[] = CustomerSegments::PROVIDER_KEY;
-//        }
-//
-//        if ($this->options['considerTrackedSegments']) {
-//            $providers[] = TargetingStorage::PROVIDER_KEY;
-//        }
 
         return $providers;
     }
@@ -140,106 +62,6 @@ class CustomerIsLoggedIn extends AbstractVariableCondition implements DataProvid
         $customer = $visitorInfo->get(Customer::PROVIDER_KEY);
         return !empty($customer);
 
-//        /** @var TargetingStorageInterface $storage */
-//        $storage = $visitorInfo->get(TargetingStorage::PROVIDER_KEY);
-//
-//        $segments = $storage->get(
-//            $visitorInfo,
-//            TargetingStorageInterface::SCOPE_VISITOR,
-//            SegmentTracker::KEY_SEGMENTS,
-//            []
-//        );
-//
-//        $segments = $this->loadSegments($visitorInfo);
-//
-//        if (isset($segments[$this->segmentId])) {
-//            $result = $this->matchCondition(
-//                $segments[$this->segmentId],
-//                $this->options['operator'],
-//                $this->options['value']
-//            );
-//
-//            if ($result) {
-//                $this->setMatchedVariables($segments);
-//            }
-//
-//            return $result;
-//        }
-
-//        return false;
     }
 
-//    private function matchCondition(int $segmentCount, string $operator, int $value): bool
-//    {
-//        switch ($operator) {
-//            case '%':
-//                return $segmentCount % $value === 0;
-//
-//            case '=':
-//                return $segmentCount === $value;
-//
-//            case '>':
-//                return $segmentCount > $value;
-//
-//            case '>=':
-//                return $segmentCount >= $value;
-//
-//            case '<':
-//                return $segmentCount < $value;
-//
-//            case '<=':
-//                return $segmentCount <= $value;
-//        }
-//
-//        throw new \InvalidArgumentException(sprintf('Unsupported operator "%s"', $operator));
-//    }
-
-//    private function loadSegments(VisitorInfo $visitorInfo): array
-//    {
-//        $segments = [];
-//
-//        if ($this->options['considerCustomerSegments']) {
-//            $segments = $this->mergeSegments(
-//                $segments,
-//                $visitorInfo->get(CustomerSegments::PROVIDER_KEY)
-//            );
-//        }
-//
-//        if ($this->options['considerTrackedSegments']) {
-//            $segments = $this->mergeSegments(
-//                $segments,
-//                $this->loadTrackedSegments($visitorInfo)
-//            );
-//        }
-//
-//        return $segments;
-//    }
-
-//    private function loadTrackedSegments(VisitorInfo $visitorInfo): array
-//    {
-//        /** @var TargetingStorageInterface $storage */
-//        $storage = $visitorInfo->get(TargetingStorage::PROVIDER_KEY);
-//
-//        $segments = $storage->get(
-//            $visitorInfo,
-//            TargetingStorageInterface::SCOPE_VISITOR,
-//            SegmentTracker::KEY_SEGMENTS,
-//            []
-//        );
-//
-//        return $segments;
-//    }
-//
-//    private function mergeSegments(array $segments, array $data): array
-//    {
-//        foreach ($data as $segmentId => $count) {
-//            if (!isset($segments[$segmentId])) {
-//                $segments[$segmentId] = 0;
-//            }
-//
-//            $segments[$segmentId] += $count;
-//        }
-//
-//        return $segments;
-//    }
 }
