@@ -80,14 +80,17 @@ class TargetingEventListener
 
                 $targetGroup = TargetGroup::getById($action['targetGroup']);
 
-                $event = TargetGroupAssigned::create(
-                    $customer,
-                    TargetGroupAssigned::ASSIGNMENT_TYPE_TARGETING_RULE,
-                    $targetGroup,
-                    $visitorInfo
-                );
+                if(null !== $targetGroup) {
+                    $event = TargetGroupAssigned::create(
+                        $customer,
+                        TargetGroupAssigned::ASSIGNMENT_TYPE_TARGETING_RULE,
+                        $targetGroup,
+                        $visitorInfo
+                    );
 
-                $this->eventDispatcher->dispatch($event->getName(), $event);
+                    $this->eventDispatcher->dispatch($event->getName(), $event);
+                }
+
             }
         }
 
