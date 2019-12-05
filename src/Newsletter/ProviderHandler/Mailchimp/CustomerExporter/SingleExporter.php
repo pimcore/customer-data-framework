@@ -136,11 +136,12 @@ class SingleExporter extends AbstractExporter
         } else {
             $this->getLogger()->error(
                 sprintf(
-                    '[MailChimp][CUSTOMER %s][%s] Export failed: %s %s',
+                    '[MailChimp][CUSTOMER %s][%s] Export failed: %s %s %s',
                     $customer->getId(),
                     $mailchimpProviderHandler->getShortcut(),
                     json_encode($apiClient->getLastError()),
-                    $apiClient->getLastResponse()['body']
+                    $apiClient->getLastResponse()['body'],
+                    implode('; ', $apiClient->getLastRequest())
                 ),
                 [
                     'relatedObject' => $customer
