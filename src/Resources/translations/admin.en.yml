@@ -137,6 +137,7 @@ cmf_gdpr_export_customers: "Customers"
 plugin_cmf_targeting_condition_segment_tracked: "[CMF] Segment Tracked"
 plugin_cmf_targeting_condition_has_segment: "[CMF] Has Segment"
 plugin_cmf_targeting_condition_customer_is_loggedin: "[CMF] Customer Logged-In"
+plugin_cmf_targeting_condition_customer_segments_have_changed: "[CMF] Customer Segments have changed"
 plugin_cmf_targeting_action_track_segment: "[CMF] Track Segment"
 
 plugin_cmf_consider_tracked_segments: "Consider Tracked Segments"

@@ -37,9 +37,9 @@ This can be done with initialization targeting rules, like the `init_target_grou
 
 ![Init Target Groups](../img/init-target-groups.jpg)
 
-This action only can be executed when a customer is logged in (use `[CMF] Customer Logged-in`) as condition and should be 
-executed only once in a session (use `Session` as Action Scope). 
-
+This action only can be executed when a customer is logged in. 
+Use condition `[CMF] Customer Segments have changed` as condition and set action scope to `Session (with variables)` to 
+make sure, that initialization is executed only once per session and as soon as segments of customer object have changed. 
 
 
 ## Use Customer Segments as more fine-grained Profiling Entity

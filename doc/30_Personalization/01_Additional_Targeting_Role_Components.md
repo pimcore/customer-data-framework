@@ -20,6 +20,11 @@ This condition checks if currently a user is logged in. There are no further con
 ![Customer Logged-In](../img/customer-is-loggedin.jpg)
 
 
+### Condition `[CMF] Customer Segments have changed`
+This condition checks if the segments of the currently logged-in user have changed. If no user is logged in, condition 
+always returns null. There are no further config options to this condition.
+
+![Customer Segments have changed](../img/customer-segments-have-changed.jpg)
 
 ### Action `Assign Target Group`
 The CMF extends the default `Assign Target Group` action with following options: 

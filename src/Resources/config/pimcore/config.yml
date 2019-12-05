@@ -14,6 +14,7 @@ pimcore:
         conditions:
             cmf_has_segment: CustomerManagementFrameworkBundle\Targeting\Condition\HasSegment
             cmf_customer_is_loggedin: CustomerManagementFrameworkBundle\Targeting\Condition\CustomerIsLoggedIn
+            cmf_customers_segment_have_changed: CustomerManagementFrameworkBundle\Targeting\Condition\CustomerSegmentsHaveChanged
         action_handlers:
             cmf_track_segment: CustomerManagementFrameworkBundle\Targeting\ActionHandler\TrackSegment
             cmf_apply_target_groups_from_segments: CustomerManagementFrameworkBundle\Targeting\ActionHandler\ApplyTargetGroupsFromSegments
