@@ -187,6 +187,9 @@ class SegmentAssigner implements SegmentAssignerInterface
      */
     public function removeElementById(string $elementId, string $type): bool
     {
+        $db = $this->getDb();
+        $tActive = $db->isTransactionActive();
+
         try {
             $deletePattern = 'DELETE FROM %s WHERE `elementId` = :elementId AND `elementType` = :elementType; ';
 
@@ -194,7 +197,10 @@ class SegmentAssigner implements SegmentAssignerInterface
                 sprintf($deletePattern, $this->getSegmentAssignmentQueueTable()) .
                 sprintf($deletePattern, $this->getSegmentAssignmentIndexTable());
 
-            $this->getDb()->beginTransaction();
+            if (!$tActive) {
+                // start a new transaction
+                $db->beginTransaction();
+            }
 
             $this->getDb()->executeQuery($statement,
                 [
@@ -203,10 +209,15 @@ class SegmentAssigner implements SegmentAssignerInterface
                 ]
             );
 
-            $this->getDb()->commit();
+            if (!$tActive) {
+                $db->commit();
+            }
 
             return true;
         } catch (\Throwable $exception) {
+            if (!$tActive) {
+                $db->rollBack();
+            }
             Logger::error($exception->getMessage());
 
             return false;
