@@ -188,7 +188,7 @@
                         {
                             xtype: "hidden",
                             name: "type",
-                            value: "cmf_customers_segment_have_changed"
+                            value: "cmf_customer_segments_have_changed"
                         }
                     ]
                 });
