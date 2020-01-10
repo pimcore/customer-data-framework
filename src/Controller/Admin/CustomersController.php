@@ -526,7 +526,8 @@ class CustomersController extends Admin
         // fetch filter definition information
         $filterDefinitionData = $request->get('filterDefinition', []);
         // build default FilterDefinition object if no selected
-        $DefaultFilterDefinition = (new FilterDefinition())->setShowSegments(Objects::getIdsFromArray($this->loadSegmentGroups()));
+        $segmentGroups = $this->loadSegmentGroups();
+        $DefaultFilterDefinition = (new FilterDefinition())->setShowSegments(Objects::getIdsFromArray($segmentGroups));
         // check if filter definition given
         if(!array_key_exists('id', $filterDefinitionData)) {
             // no filter definition found

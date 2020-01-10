@@ -90,7 +90,7 @@ class GenderSegmentBuilder extends AbstractSegmentBuilder
     public function calculateSegments(CustomerInterface $customer, SegmentManagerInterface $segmentManager)
     {
         $valueMapping = $this->valueMapping;
-        $gender = $valueMapping[$customer->getGender()] ?: self::NOT_SET;
+        $gender = $valueMapping[$customer->getGender()] ?? self::NOT_SET;
 
         if ($gender == self::MALE) {
             $segment = $this->maleSegment;

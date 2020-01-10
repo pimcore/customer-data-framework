@@ -93,6 +93,8 @@ class SearchHelper {
     {
         $handler = new FilterHandler($listing);
 
+        $operatorCustomer = null;
+        $operatorSegments = null;
         if(array_key_exists('operator-customer', $filters)) {
             $operatorCustomer = $filters['operator-customer'];
         }

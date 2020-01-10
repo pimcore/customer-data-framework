@@ -61,7 +61,9 @@ class AddSegment extends AddTrackedSegment
 
         if (isset($options['segment'])) {
             $segment = CustomerSegment::getByPath($options['segment']);
-            $options['segmentId'] = $segment->getId();
+            if($segment) {
+                $options['segmentId'] = $segment->getId();
+            }
             unset($options['segment']);
         }
 

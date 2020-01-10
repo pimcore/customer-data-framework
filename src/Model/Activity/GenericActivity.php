@@ -36,7 +36,7 @@ class GenericActivity implements ActivityExternalIdInterface
 
     public function getId()
     {
-        return $this->data['a_id'];
+        return $this->data['a_id'] ?? null;
     }
 
     public function cmfIsActive()

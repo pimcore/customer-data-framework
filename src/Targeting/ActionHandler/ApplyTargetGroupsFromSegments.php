@@ -163,6 +163,9 @@ class ApplyTargetGroupsFromSegments implements ActionHandlerInterface, DataProvi
                 $targetGroupId = $segmentObject->getTargetGroup();
 
                 if(in_array($targetGroupId, $targetGroupsToConsider)) {
+                    if(!isset($targetGroupInitSet[$targetGroupId])) {
+                        $targetGroupInitSet[$targetGroupId] = 0;
+                    }
                     $targetGroupInitSet[$targetGroupId] += $segmentAssignmentCount;
                 }
 
@@ -237,7 +240,7 @@ class ApplyTargetGroupsFromSegments implements ActionHandlerInterface, DataProvi
             $targetGroup = TargetGroup::getById($targetGroupId);
 
             if($targetGroup && $targetGroup->getActive()) {
-                $oldCount = $storageData[$targetGroup->getId()];
+                $oldCount = $storageData[$targetGroup->getId()] ?? 0;
 
                 //only update count if new count is higher
                 if($oldCount < $count) {

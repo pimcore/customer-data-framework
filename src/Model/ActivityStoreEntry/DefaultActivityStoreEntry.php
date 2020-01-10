@@ -102,7 +102,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     {
         $this->data = $data;
 
-        $this->setId($data['id']);
+        $this->setId($data['id'] ?? null);
         $this->setActivityDate($data['activityDate']);
         $this->setType($data['type']);
         $this->setImplementationClass($data['implementationClass']);
@@ -114,9 +114,9 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
                 )
             );
         }
-        $this->setMd5($data['md5']);
-        $this->setCreationDate($data['creationDate']);
-        $this->setModificationDate($data['modificationDate']);
+        $this->setMd5($data['md5'] ?? null);
+        $this->setCreationDate($data['creationDate'] ?? null);
+        $this->setModificationDate($data['modificationDate'] ?? null);
         $this->o_id = $data['o_id'];
         $this->a_id = $data['a_id'];
         $this->customerId = intval($data['customerId']);

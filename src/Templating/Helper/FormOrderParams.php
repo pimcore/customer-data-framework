@@ -69,7 +69,7 @@ class FormOrderParams extends Helper
      * @return mixed
      */
     public function getNexSortOrder(Request $request, $param) {
-        $val = $request->get('order')[$param];
+        $val = ($request->get('order')? $request->get('order')[$param] : null);
         if ($val == null || empty($val)) {
             return QueryBuilder::SQL_ASC;
         } else if ($val == QueryBuilder::SQL_ASC) {
