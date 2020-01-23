@@ -152,6 +152,29 @@ class SingleExporter extends AbstractExporter
         return false;
     }
 
+    /**
+     * @param Mailchimp $mailchimpProviderHandler
+     * @param MailchimpAwareCustomerInterface $customer
+     * @return array|null
+     */
+    public function fetchCustomer(Mailchimp $mailchimpProviderHandler, MailchimpAwareCustomerInterface $customer)
+    {
+        $apiClient = $this->apiClient;
+        $exportService = $this->exportService;
+        $remoteId = $apiClient->subscriberHash($customer->getEmail());
+
+
+        $result = $apiClient->get(
+            $exportService->getListResourceUrl($mailchimpProviderHandler->getListId(), sprintf('members/%s', $remoteId)),
+        );
+
+        if(!$apiClient->success()) {
+            return null;
+        }
+
+        return $result;
+    }
+
     protected function handleChangedEmail(MailchimpAwareCustomerInterface $customer, NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler, $remoteId)
     {
         $exportService = $this->exportService;
