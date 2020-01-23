@@ -313,7 +313,47 @@ class Mailchimp implements NewsletterProviderHandlerInterface
         return $updateNeededItems;
     }
 
+    /**
+     * Fetches customer data via the Mailchimp API.
+     *
+     * @param NewsletterAwareCustomerInterface $customer
+     * @return array|null
+     */
+    public function fetchCustomer(NewsletterAwareCustomerInterface $customer)
+    {
+        return $this->getSingleExporter()->fetchCustomer($this, $customer);
+    }
+
+    /**
+     * Directly Subscribes/exports a customer with mailchimp status "subscribed" via the Mailchimp API.
+     *
+     * @param NewsletterAwareCustomerInterface $customer
+     * @return bool success
+     */
     public function subscribeCustomer(NewsletterAwareCustomerInterface $customer)
+    {
+        return $this->subscribeCustomerWithStatus($customer, self::STATUS_SUBSCRIBED);
+    }
+
+    /**
+     * Directly Subscribes/exports a customer with mailchimp status "pending" via the Mailchimp API.
+     *
+     * @param NewsletterAwareCustomerInterface $customer
+     * @return bool success
+     */
+    public function subscribeCustomerPending(NewsletterAwareCustomerInterface $customer)
+    {
+        return $this->subscribeCustomerWithStatus($customer, self::STATUS_PENDING);
+    }
+
+
+    /**
+     * Directly Subscribes/exports a customer with given mailchimp status "subscribed" via the Mailchimp API.
+     *
+     * @param NewsletterAwareCustomerInterface $customer
+     * @return bool success
+     */
+    public function subscribeCustomerWithStatus(NewsletterAwareCustomerInterface $customer, string $status)
     {
         /**
          * @var MailchimpAwareCustomerInterface $customer;
@@ -551,7 +591,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
             if(!$remoteSegmentId) {
                 continue;
             }
-            
+
             if (isset($customerSegments[$segment->getId()])) {
                 $data[$remoteSegmentId] = true;
             } else {
