@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerProvider;
 
+use CustomerManagementFrameworkBundle\CustomerProvider\Exception\DuplicateCustomersFoundException;
 use CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\DataObject\Concrete;
@@ -194,12 +195,11 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     /**
      * Get active customer by email
      *
-     * @param int $id
-     * @param bool $foce
+     * @param string $email
      *
      * @return CustomerInterface|null
      *
-     * @throws \RuntimeException
+     * @throws DuplicateCustomersFoundException
      */
     public function getActiveCustomerByEmail($email)
     {
@@ -213,7 +213,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
         $list->addConditionParam('trim(email) like ?', [trim($email)]);
 
         if ($list->count() > 1) {
-            throw new \Exception(sprintf('multiple active and published customers with email %s found', $email));
+            throw new DuplicateCustomersFoundException(sprintf('multiple active and published customers with email %s found', $email));
         }
 
         return $list->current();

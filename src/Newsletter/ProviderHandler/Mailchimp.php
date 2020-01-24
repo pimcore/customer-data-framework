@@ -820,11 +820,11 @@ class Mailchimp implements NewsletterProviderHandlerInterface
         if(!$email) {
             return false;
         }
-        /**
-         * @var CustomerProviderInterface $customerProvider
-         */
-        $customerProvider = \Pimcore::getContainer()->get(CustomerProviderInterface::class);
+
+        $customerProvider = $this->getCustomerProvider();
+
         $list = $customerProvider->getList();
+        $customerProvider->addActiveCondition($list);
         if($customerId) {
             $list->setCondition('trim(lower(email)) = ? and o_id != ?', [trim(strtolower($email)), $customerId]);
         } else {
@@ -839,5 +839,30 @@ class Mailchimp implements NewsletterProviderHandlerInterface
         }
 
         return false;
+    }
+
+    /**
+     * Override this method if you have multiple tenants
+     *
+     * @param string $email
+     * @return NewsletterAwareCustomerInterface
+     */
+    public function getActiveCustomerByEmail($email)
+    {
+        /**
+         * @var NewsletterAwareCustomerInterface $customer
+         */
+        $customer = $this->getCustomerProvider()->getActiveCustomerByEmail($email);
+        return $customer;
+    }
+
+    protected function getCustomerProvider(): CustomerProviderInterface
+    {
+        /**
+         * @var CustomerProviderInterface $customerProvider
+         */
+        $customerProvider = \Pimcore::getContainer()->get(CustomerProviderInterface::class);
+
+        return $customerProvider;
     }
 }

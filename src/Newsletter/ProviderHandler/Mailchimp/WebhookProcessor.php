@@ -49,7 +49,7 @@ class WebhookProcessor
         $logger->info($webhookData['data']['email']);
 
         try {
-            if (!$customer = $this->customerProvider->getActiveCustomerByEmail($webhookData['data']['email'])) {
+            if (!$customer = $mailchimpHandler->getActiveCustomerByEmail($webhookData['data']['email'])) {
                 $logger->error(sprintf('no active customer with email %s found', $webhookData['data']['email']));
 
                 return true;
