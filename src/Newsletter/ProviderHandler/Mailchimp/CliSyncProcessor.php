@@ -17,6 +17,7 @@ namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp
 
 use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
+use CustomerManagementFrameworkBundle\CustomerProvider\Exception\DuplicateCustomersFoundException;
 use CustomerManagementFrameworkBundle\Model\MailchimpAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Manager\NewsletterManagerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
@@ -99,17 +100,20 @@ class CliSyncProcessor
                              * @var MailchimpAwareCustomerInterface $customer
                              */
                             try {
-                                if (!$customer = $this->customerProvider->getActiveCustomerByEmail(
+                                if (!$customer = $newsletterProviderHandler->getActiveCustomerByEmail(
                                     $row['email_address']
                                 )) {
                                     $this->getLogger()->error(
                                         sprintf('no active customer with email %s found', $row['email_address'])
                                     );
                                 }
-                            } catch (\Exception $e) {
+                            } catch (DuplicateCustomersFoundException $e) {
                                 $this->getLogger()->error(
                                     sprintf('multiple active customers with email %s found', $row['email_address'])
                                 );
+                                continue;
+                            } catch (\Exception $e) {
+                                $this->getLogger()->error($e->getMessage());
                                 continue;
                             }
 
