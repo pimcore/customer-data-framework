@@ -192,22 +192,27 @@ class SegmentAssigner implements SegmentAssignerInterface
 
         try {
             $deletePattern = 'DELETE FROM %s WHERE `elementId` = :elementId AND `elementType` = :elementType; ';
-
-            $statement = sprintf($deletePattern, $this->getSegmentAssignmentTable()) .
-                sprintf($deletePattern, $this->getSegmentAssignmentQueueTable()) .
-                sprintf($deletePattern, $this->getSegmentAssignmentIndexTable());
+            $tables = [
+                $this->getSegmentAssignmentTable(),
+                $this->getSegmentAssignmentQueueTable(),
+                $this->getSegmentAssignmentIndexTable(),
+            ];
 
             if (!$tActive) {
                 // start a new transaction
                 $db->beginTransaction();
             }
 
-            $this->getDb()->executeQuery($statement,
-                [
-                    'elementId' => $elementId,
-                    'elementType' => $type
-                ]
-            );
+            foreach ($tables as $table) {
+                $statement = sprintf($deletePattern, $table);
+
+                $this->getDb()->executeQuery($statement,
+                    [
+                        'elementId' => $elementId,
+                        'elementType' => $type
+                    ]
+                );
+            }
 
             if (!$tActive) {
                 $db->commit();
