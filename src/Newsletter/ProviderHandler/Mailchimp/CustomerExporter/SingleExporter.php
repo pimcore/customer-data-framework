@@ -165,7 +165,7 @@ class SingleExporter extends AbstractExporter
 
 
         $result = $apiClient->get(
-            $exportService->getListResourceUrl($mailchimpProviderHandler->getListId(), sprintf('members/%s', $remoteId)),
+            $exportService->getListResourceUrl($mailchimpProviderHandler->getListId(), sprintf('members/%s', $remoteId))
         );
 
         if(!$apiClient->success()) {
