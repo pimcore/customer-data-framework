@@ -358,8 +358,8 @@ class Mailchimp implements NewsletterProviderHandlerInterface
         /**
          * @var MailchimpAwareCustomerInterface $customer;
          */
-        if (!$newsletterStatus = $this->reverseMapNewsletterStatus(self::STATUS_SUBSCRIBED)) {
-            $this->getLogger()->error(sprintf('subscribe failed: could not reverse map mailchimp status %s', self::STATUS_SUBSCRIBED));
+        if (!$newsletterStatus = $this->reverseMapNewsletterStatus($status)) {
+            $this->getLogger()->error(sprintf('subscribe failed: could not reverse map mailchimp status %s', $status));
 
             return false;
         }
