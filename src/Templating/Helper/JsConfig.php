@@ -136,7 +136,7 @@ class JsConfig extends Helper
         ];
 
         foreach ($this->variables as $index => $varKey) {
-            if (array_key_exists($varKey, $this->config) && is_countable($this->config[$varKey]) && count($this->config[$varKey]) > 0) {
+            if (is_array($this->config[$varKey] ?? null) && count($this->config[$varKey]) > 0) {
                 $values = $this->config[$varKey];
             } else {
                 $values = new \stdClass();
