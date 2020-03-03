@@ -11,7 +11,7 @@
         "guzzlehttp/guzzle": ">=4.1.4 <7.0",
         "mtdowling/cron-expression": "^1.1.0",
         "pear/archive_tar": "^1.4.3",
-        "pimcore/pimcore": ">=5.4 <6.6",
+        "pimcore/pimcore": ">=5.4 <6.7",
         "pimcore/number-sequence-generator": "^1.0.1",
         "pimcore/object-merger": "~2.0",
         "pimcore/search-query-parser": "^1.2.4"
