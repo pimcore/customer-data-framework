@@ -9,7 +9,7 @@
  * @license    GPLv3
  */
 
-namespace CustomerManagementFrameworkBundle\Adapter;
+namespace CustomerManagementFrameworkBundle\CustomReport\Adapter;
 
 use CustomerManagementFrameworkBundle\Model\AbstractTermSegmentBuilderDefinition;
 use Pimcore\Db;
