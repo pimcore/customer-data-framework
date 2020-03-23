@@ -23,7 +23,6 @@ use Pimcore\Bundle\AdminBundle\Controller\Rest\AbstractRestController;
 use Pimcore\Db;
 use Pimcore\Log\ApplicationLogger;
 use Pimcore\Log\Handler\ApplicationLoggerDb;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,8 +31,7 @@ class WebhookController extends AbstractRestController
 {
     /**
      * @param Request $request
-     * @Route("/mailchimp/webhook")
-     * @Method({"GET","POST"})
+     * @Route("/mailchimp/webhook", methods={"GET","POST"})
      */
     public function process(Request $request)
     {
