@@ -53,6 +53,16 @@ abstract class AbstractExporter
         $this->newsletterQueue = $newsletterQueue;
         $this->setLoggerComponent('NewsletterSync');
     }
+    
+    /**
+     * Get an array containing the HTTP headers and the body of the API response.
+     *
+     * @return array  Assoc array with keys 'headers' and 'body'
+     */
+    public function getLastResponse()
+    {
+        return $this->apiClient->getLastResponse();
+    }
 
     /**
      * @param int $id
