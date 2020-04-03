@@ -18,7 +18,7 @@ namespace CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\GDPR\DataProvider\Customers;
 use GDPRDataExtractorBundle\DataProvider\DataObjects;
 use Pimcore\Model\DataObject\AbstractObject;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
 /**

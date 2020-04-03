@@ -17,7 +17,6 @@ namespace CustomerManagementFrameworkBundle\Controller\Rest;
 
 use CustomerManagementFrameworkBundle\RESTApi\CrudHandlerInterface;
 use CustomerManagementFrameworkBundle\RESTApi\Exception\ExceptionInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -30,8 +29,7 @@ abstract class CrudHandlerController extends RestHandlerController
 
     /**
      * @param Request $request
-     * @Route("")
-     * @Method({"GET"})
+     * @Route("", methods={"GET"})
      */
     public function listRecords(Request $request)
     {
@@ -52,8 +50,7 @@ abstract class CrudHandlerController extends RestHandlerController
 
     /**
      * @param Request $request
-     * @Route("/{id}")
-     * @Method({"GET"})
+     * @Route("/{id}", methods={"GET"})
      */
     public function readRecord(Request $request)
     {
@@ -74,8 +71,7 @@ abstract class CrudHandlerController extends RestHandlerController
 
     /**
      * @param Request $request
-     * @Route("/{id}")
-     * @Method({"DELETE"})
+     * @Route("/{id}", methods={"DELETE"})
      */
     public function deleteRecord(Request $request)
     {
@@ -96,8 +92,7 @@ abstract class CrudHandlerController extends RestHandlerController
 
     /**
      * @param Request $request
-     * @Route("/{id}")
-     * @Method({"PUT", "POST"})
+     * @Route("/{id}", methods={"PUT", "POST"})
      */
     public function updateRecord(Request $request)
     {
@@ -118,8 +113,7 @@ abstract class CrudHandlerController extends RestHandlerController
 
     /**
      * @param Request $request
-     * @Route("")
-     * @Method({"PUT", "POST"})
+     * @Route("", methods={"PUT", "POST"})
      */
     public function createRecord(Request $request)
     {

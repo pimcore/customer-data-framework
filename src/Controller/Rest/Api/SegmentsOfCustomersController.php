@@ -17,7 +17,6 @@ namespace CustomerManagementFrameworkBundle\Controller\Rest\Api;
 
 use CustomerManagementFrameworkBundle\Controller\Rest\RestHandlerController;
 use CustomerManagementFrameworkBundle\RESTApi\Exception\ExceptionInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -28,8 +27,7 @@ class SegmentsOfCustomersController extends RestHandlerController
 {
     /**
      * @param Request $request
-     * @Route("")
-     * @Method({"PUT", "POST"})
+     * @Route("", methods={"PUT", "POST"})
      */
     public function updateRecordsAction(Request $request)
     {
