@@ -241,7 +241,7 @@ services:
     cmf.custom_report.adapter.term_segment_builder:
         class: Pimcore\Model\Tool\CustomReport\Adapter\DefaultCustomReportAdapterFactory
         arguments:
-          - 'CustomerManagementFrameworkBundle\Adapter\TermSegmentBuilder'
+          - 'CustomerManagementFrameworkBundle\CustomReport\Adapter\TermSegmentBuilder'
 
     CustomerManagementFrameworkBundle\GDPR\DataProvider\Customers:
         public: false
