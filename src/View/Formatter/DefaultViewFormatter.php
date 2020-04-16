@@ -84,7 +84,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
      */
     public function formatValueByFieldDefinition(Data $fd, $value)
     {
-        if ($fd instanceof Data\Checkbox) {
+        if ($fd instanceof Data\Checkbox || $fd instanceof Data\Consent) {
             return $this->formatBooleanValue($value);
         }
 
