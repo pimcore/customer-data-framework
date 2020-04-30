@@ -95,6 +95,7 @@ class CliSyncProcessor
                     if ($client->success() && sizeof($result['members'])) {
                         foreach ($result['members'] as $row) {
 
+                            $customer = null;
                             // var_dump($row);
                             /**
                              * @var MailchimpAwareCustomerInterface $customer
