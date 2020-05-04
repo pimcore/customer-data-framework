@@ -289,8 +289,10 @@ class Configuration implements ConfigurationInterface
             'email' => [
                 'email'
             ],
-            'name' => [
-                'firstname',
+            'firstname' => [
+                'firstname'
+            ],
+            'lastname' => [
                 'lastname'
             ],
             'search' => [

@@ -234,8 +234,10 @@ pimcore_customer_management_framework:
                   - email
                   
                 # name search filter
-                name:
+                firstname:
                   - firstname
+                      
+                lastname: 
                   - lastname
                   
                 # main search filter
