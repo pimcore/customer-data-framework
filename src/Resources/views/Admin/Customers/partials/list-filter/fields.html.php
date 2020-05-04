@@ -25,22 +25,22 @@
 
     <div class="form-group">
         <label for="form-filter-id"><?= $customerView->translate('cmf_filters_customer_id') ?></label>
-        <input type="number" name="filter[id]" id="form-filter-id" class="form-control" placeholder="<?= $customerView->translate('cmf_filters_customer_id') ?>" value="<?= $this->escape($filters['id'] ?? null) ?>"<?= $filterDefinition->isLocked('id') ? ' disabled' : '' ?>>
+        <input type="number" autocomplete="no" name="filter[id]" id="form-filter-id" class="form-control" placeholder="<?= $customerView->translate('cmf_filters_customer_id') ?>" value="<?= $this->escape($filters['id'] ?? null) ?>"<?= $filterDefinition->isLocked('id') ? ' disabled' : '' ?>>
     </div>
 
     <div class="form-group">
         <label for="form-filter-email"><?= $customerView->translate('cmf_filters_customer_email') ?></label>
-        <input type="text" name="filter[email]" id="form-filter-email" class="form-control" placeholder="<?= $customerView->translate('cmf_filters_customer_email') ?>" value="<?= $this->escape($filters['email'] ?? null) ?>"<?= $filterDefinition->isLocked('email') ? ' disabled' : '' ?>>
+        <input type="text" autocomplete="no" name="filter[email]" id="form-filter-email" class="form-control" placeholder="<?= $customerView->translate('cmf_filters_customer_email') ?>" value="<?= $this->escape($filters['email'] ?? null) ?>"<?= $filterDefinition->isLocked('email') ? ' disabled' : '' ?>>
     </div>
 
     <div class="form-group">
         <label for="form-filter-firstname"><?= $customerView->translate('cmf_filters_customer_firstname') ?></label>
-        <input type="text" name="filter[firstname]" id="form-filter-firstname" class="form-control" placeholder="<?= $customerView->translate('cmf_filters_customer_firstname') ?>" value="<?= $this->escapeFormValue($filters['firstname'] ?? null) ?>"<?= $filterDefinition->isLocked('firstname') ? ' disabled' : '' ?>>
+        <input type="text" autocomplete="no" name="filter[firstname]" id="form-filter-firstname" class="form-control" placeholder="<?= $customerView->translate('cmf_filters_customer_firstname') ?>" value="<?= $this->escapeFormValue($filters['firstname'] ?? null) ?>"<?= $filterDefinition->isLocked('firstname') ? ' disabled' : '' ?>>
     </div>
 
     <div class="form-group">
         <label for="form-filter-lastname"><?= $customerView->translate('cmf_filters_customer_lastname') ?></label>
-        <input type="text" name="filter[lastname]" id="form-filter-lastname" class="form-control" placeholder="<?= $customerView->translate('cmf_filters_customer_lastname') ?>" value="<?= $this->escapeFormValue($filters['lastname'] ?? null) ?>"<?= $filterDefinition->isLocked('lastname') ? ' disabled' : '' ?>>
+        <input type="text" autocomplete="no" name="filter[lastname]" id="form-filter-lastname" class="form-control" placeholder="<?= $customerView->translate('cmf_filters_customer_lastname') ?>" value="<?= $this->escapeFormValue($filters['lastname'] ?? null) ?>"<?= $filterDefinition->isLocked('lastname') ? ' disabled' : '' ?>>
     </div>
 </fieldset>
 

@@ -3,7 +3,7 @@
 $cv = $this->customerView;
 ?>
 
-<form class="search-filters" role="form" action="<?= $this->filterFormAction()->get($this->paginator) ?>">
+<form class="search-filters" role="form" action="<?= $this->filterFormAction()->get($this->paginator) ?>" autocomplete="off">
 
     <?php if (count($this->searchBarFields) > 0): ?>
         <div class="box box-default box-collapsible-state search-filters-box search-filters-box--standalone" data-identifier="customer-search-bar">
@@ -11,7 +11,7 @@ $cv = $this->customerView;
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="form-group" id="searchBar">
-                            <input type="text" name="filter[search]" class="form-control" placeholder="<?= $cv->translate('cmf_filters_search') ?>..." value="<?= $this->filters['search'] ?? null ?>">
+                            <input type="text" autocomplete="no" name="filter[search]" class="form-control" placeholder="<?= $cv->translate('cmf_filters_search') ?>..." value="<?= $this->filters['search'] ?? null ?>">
                             <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter:search-bar-help.html.php') ?>
                         </div>
                     </div>

@@ -105,6 +105,7 @@ foreach ($segmentGroups as $segmentGroup) {
                                     id="form-filter-segment-<?= $segmentGroup->getId() ?>"
                                     name="filter[segments][<?= $segmentGroup->getId() ?>][]"
                                     class="form-control plugin-select2"
+                                    autocomplete="no"
                                     multiple="multiple"
                                     data-placeholder="<?= $segmentGroup->getName() ?>"
                                     data-select2-options='<?= json_encode([
