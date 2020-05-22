@@ -40,6 +40,9 @@
             "bundles": [
                 "CustomerManagementFrameworkBundle\\PimcoreCustomerManagementFrameworkBundle"
             ]
+        },
+        "branch-alias": {
+            "dev-master": "2.4-dev"
         }
     }
 }
