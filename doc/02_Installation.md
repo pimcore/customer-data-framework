@@ -70,7 +70,7 @@ Following options to prepare the customer class are available:
       /** Implementation for firstname **/
       public function getFirstname()
       {
-            return $this-getCustomerAddress()->getFirstname() ;
+            return $this->getCustomerAddress()->getFirstname() ;
       }
 
       ...
