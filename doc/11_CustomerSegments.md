@@ -26,7 +26,7 @@ The SegmentManager is responsible for managing, creating and reading `CustomerSe
 the CMF. Take a look at the [`SegmentManagerInterface`](https://github.com/pimcore/customer-data-framework/blob/master/src/SegmentManager/SegmentManagerInterface.php) 
 for additional inline PHP docs for each implemented method.
 
-Se SegmentManager is registered as `CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface` on the container. 
+The SegmentManager is registered as `CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface` on the container. 
 An integral part of the SegmentManager are SegmentBuilders which do the actual work of calculating segments for a customer. 
 
 ### SegmentBuilders
