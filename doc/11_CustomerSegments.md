@@ -97,7 +97,7 @@ If you would like to use the creation date + counter storing feature, it's neces
 - `created_timestamp` (type `number`)
 - `application_counter` (type `number`)
 
-** SegmentManager sample calls with usage of the timestamp + counter storage features (take a look at the PHPdoc of the 
+**SegmentManager sample calls with usage of the timestamp + counter storage features (take a look at the PHPdoc of the 
 `SegmentManagerInterface` for more details):**
 ```php
 <?php 
