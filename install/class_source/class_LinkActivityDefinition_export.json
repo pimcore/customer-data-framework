@@ -1,14 +1,19 @@
 {
-    "description": null,
-    "parentClass": null,
-    "useTraits": null,
+    "id": "5",
+    "description": "",
+    "parentClass": "",
+    "implementsInterfaces": "",
+    "listingParentClass": "",
+    "useTraits": "",
+    "listingUseTraits": "",
     "allowInherit": true,
-    "allowVariants": false,
+    "allowVariants": null,
     "showVariants": false,
     "layoutDefinitions": {
         "fieldtype": "panel",
         "labelWidth": 100,
         "layout": null,
+        "border": false,
         "name": "pimcore_root",
         "type": null,
         "region": null,
@@ -16,7 +21,7 @@
         "width": null,
         "height": null,
         "collapsible": false,
-        "collapsed": null,
+        "collapsed": false,
         "bodyStyle": null,
         "datatype": "layout",
         "permissions": null,
@@ -25,6 +30,7 @@
                 "fieldtype": "panel",
                 "labelWidth": 100,
                 "layout": null,
+                "border": false,
                 "name": "Layout",
                 "type": null,
                 "region": null,
@@ -32,7 +38,7 @@
                 "width": null,
                 "height": null,
                 "collapsible": false,
-                "collapsed": null,
+                "collapsed": false,
                 "bodyStyle": null,
                 "datatype": "layout",
                 "permissions": null,
@@ -41,6 +47,7 @@
                         "fieldtype": "panel",
                         "labelWidth": 100,
                         "layout": null,
+                        "border": false,
                         "name": "Layout",
                         "type": null,
                         "region": null,
@@ -48,7 +55,7 @@
                         "width": null,
                         "height": null,
                         "collapsible": false,
-                        "collapsed": null,
+                        "collapsed": false,
                         "bodyStyle": null,
                         "datatype": "layout",
                         "permissions": null,
@@ -56,12 +63,14 @@
                             {
                                 "fieldtype": "input",
                                 "width": null,
+                                "defaultValue": null,
                                 "queryColumnType": "varchar",
                                 "columnType": "varchar",
                                 "columnLength": 190,
                                 "phpdocType": "string",
                                 "regex": "",
-                                "unique": null,
+                                "unique": false,
+                                "showCharCount": false,
                                 "name": "code",
                                 "title": "code (cmfa)",
                                 "tooltip": "",
@@ -74,11 +83,13 @@
                                 "datatype": "data",
                                 "relationType": false,
                                 "invisible": false,
-                                "visibleGridView": false,
-                                "visibleSearch": false
+                                "visibleGridView": true,
+                                "visibleSearch": true,
+                                "defaultValueGenerator": ""
                             }
                         ],
-                        "locked": false
+                        "locked": false,
+                        "icon": null
                     },
                     {
                         "fieldtype": "region",
@@ -98,6 +109,7 @@
                                 "fieldtype": "panel",
                                 "labelWidth": 150,
                                 "layout": null,
+                                "border": false,
                                 "name": "Basic Data",
                                 "type": null,
                                 "region": "west",
@@ -113,12 +125,14 @@
                                     {
                                         "fieldtype": "input",
                                         "width": 320,
+                                        "defaultValue": null,
                                         "queryColumnType": "varchar",
                                         "columnType": "varchar",
                                         "columnLength": 190,
                                         "phpdocType": "string",
                                         "regex": "",
                                         "unique": false,
+                                        "showCharCount": null,
                                         "name": "attributeType",
                                         "title": "type",
                                         "tooltip": "",
@@ -132,17 +146,20 @@
                                         "relationType": false,
                                         "invisible": false,
                                         "visibleGridView": false,
-                                        "visibleSearch": false
+                                        "visibleSearch": false,
+                                        "defaultValueGenerator": ""
                                     },
                                     {
                                         "fieldtype": "input",
                                         "width": 320,
+                                        "defaultValue": null,
                                         "queryColumnType": "varchar",
                                         "columnType": "varchar",
                                         "columnLength": 190,
                                         "phpdocType": "string",
                                         "regex": "",
                                         "unique": false,
+                                        "showCharCount": null,
                                         "name": "label",
                                         "title": "label",
                                         "tooltip": "",
@@ -156,7 +173,8 @@
                                         "relationType": false,
                                         "invisible": false,
                                         "visibleGridView": false,
-                                        "visibleSearch": false
+                                        "visibleSearch": false,
+                                        "defaultValueGenerator": ""
                                     },
                                     {
                                         "fieldtype": "link",
@@ -194,9 +212,11 @@
                                         "defaultValue": "1",
                                         "optionsProviderClass": "",
                                         "optionsProviderData": "",
-                                        "queryColumnType": "varchar(190)",
-                                        "columnType": "varchar(190)",
+                                        "queryColumnType": "varchar",
+                                        "columnType": "varchar",
+                                        "columnLength": "190",
                                         "phpdocType": "string",
+                                        "dynamicOptions": false,
                                         "name": "active",
                                         "title": "active",
                                         "tooltip": "",
@@ -210,15 +230,18 @@
                                         "relationType": false,
                                         "invisible": false,
                                         "visibleGridView": false,
-                                        "visibleSearch": false
+                                        "visibleSearch": false,
+                                        "defaultValueGenerator": ""
                                     }
                                 ],
-                                "locked": false
+                                "locked": false,
+                                "icon": null
                             },
                             {
                                 "fieldtype": "panel",
                                 "labelWidth": 240,
                                 "layout": null,
+                                "border": false,
                                 "name": "Google Analytics",
                                 "type": null,
                                 "region": "center",
@@ -234,12 +257,14 @@
                                     {
                                         "fieldtype": "input",
                                         "width": null,
+                                        "defaultValue": null,
                                         "queryColumnType": "varchar",
                                         "columnType": "varchar",
                                         "columnLength": 190,
                                         "phpdocType": "string",
                                         "regex": "",
                                         "unique": false,
+                                        "showCharCount": null,
                                         "name": "utm_source",
                                         "title": "Campaign Source (utm_source)",
                                         "tooltip": "",
@@ -253,17 +278,20 @@
                                         "relationType": false,
                                         "invisible": false,
                                         "visibleGridView": false,
-                                        "visibleSearch": false
+                                        "visibleSearch": false,
+                                        "defaultValueGenerator": ""
                                     },
                                     {
                                         "fieldtype": "input",
                                         "width": null,
+                                        "defaultValue": null,
                                         "queryColumnType": "varchar",
                                         "columnType": "varchar",
                                         "columnLength": 190,
                                         "phpdocType": "string",
                                         "regex": "",
                                         "unique": false,
+                                        "showCharCount": null,
                                         "name": "utm_medium",
                                         "title": "Campaign Medium (utm_medium)",
                                         "tooltip": "",
@@ -277,17 +305,20 @@
                                         "relationType": false,
                                         "invisible": false,
                                         "visibleGridView": false,
-                                        "visibleSearch": false
+                                        "visibleSearch": false,
+                                        "defaultValueGenerator": ""
                                     },
                                     {
                                         "fieldtype": "input",
                                         "width": null,
+                                        "defaultValue": null,
                                         "queryColumnType": "varchar",
                                         "columnType": "varchar",
                                         "columnLength": 190,
                                         "phpdocType": "string",
                                         "regex": "",
                                         "unique": false,
+                                        "showCharCount": null,
                                         "name": "utm_campaign",
                                         "title": "Campaign Name (utm_campaign)",
                                         "tooltip": "",
@@ -301,17 +332,20 @@
                                         "relationType": false,
                                         "invisible": false,
                                         "visibleGridView": false,
-                                        "visibleSearch": false
+                                        "visibleSearch": false,
+                                        "defaultValueGenerator": ""
                                     },
                                     {
                                         "fieldtype": "input",
                                         "width": null,
+                                        "defaultValue": null,
                                         "queryColumnType": "varchar",
                                         "columnType": "varchar",
                                         "columnLength": 190,
                                         "phpdocType": "string",
                                         "regex": "",
                                         "unique": false,
+                                        "showCharCount": null,
                                         "name": "utm_term",
                                         "title": "Campaign Term (utm_term)",
                                         "tooltip": "",
@@ -325,17 +359,20 @@
                                         "relationType": false,
                                         "invisible": false,
                                         "visibleGridView": false,
-                                        "visibleSearch": false
+                                        "visibleSearch": false,
+                                        "defaultValueGenerator": ""
                                     },
                                     {
                                         "fieldtype": "input",
                                         "width": null,
+                                        "defaultValue": null,
                                         "queryColumnType": "varchar",
                                         "columnType": "varchar",
                                         "columnLength": 190,
                                         "phpdocType": "string",
                                         "regex": "",
                                         "unique": false,
+                                        "showCharCount": null,
                                         "name": "utm_content",
                                         "title": "Campaign Content (utm_content)",
                                         "tooltip": "",
@@ -349,28 +386,34 @@
                                         "relationType": false,
                                         "invisible": false,
                                         "visibleGridView": false,
-                                        "visibleSearch": false
+                                        "visibleSearch": false,
+                                        "defaultValueGenerator": ""
                                     }
                                 ],
-                                "locked": false
+                                "locked": false,
+                                "icon": null
                             }
                         ],
-                        "locked": false
+                        "locked": false,
+                        "icon": null
                     },
                     {
                         "fieldtype": "block",
+                        "lazyLoading": null,
                         "disallowAddRemove": null,
                         "disallowReorder": null,
                         "collapsible": false,
                         "collapsed": false,
-                        "queryColumnType": "longtext",
+                        "maxItems": null,
                         "columnType": "longtext",
-                        "phpdocType": "\\Pimcore\\Model\\DataObject\\Data\\Block",
+                        "styleElement": "",
+                        "phpdocType": "\\Pimcore\\Model\\DataObject\\Data\\BlockElement[][]",
                         "childs": [
                             {
                                 "fieldtype": "panel",
                                 "labelWidth": 80,
                                 "layout": null,
+                                "border": false,
                                 "name": "Layout",
                                 "type": null,
                                 "region": null,
@@ -386,12 +429,14 @@
                                     {
                                         "fieldtype": "input",
                                         "width": null,
+                                        "defaultValue": null,
                                         "queryColumnType": "varchar",
                                         "columnType": "varchar",
                                         "columnLength": 190,
                                         "phpdocType": "string",
                                         "regex": "",
                                         "unique": false,
+                                        "showCharCount": null,
                                         "name": "attribute",
                                         "title": "attribute",
                                         "tooltip": "",
@@ -405,17 +450,20 @@
                                         "relationType": false,
                                         "invisible": false,
                                         "visibleGridView": false,
-                                        "visibleSearch": false
+                                        "visibleSearch": false,
+                                        "defaultValueGenerator": ""
                                     },
                                     {
                                         "fieldtype": "input",
                                         "width": null,
+                                        "defaultValue": null,
                                         "queryColumnType": "varchar",
                                         "columnType": "varchar",
                                         "columnLength": 190,
                                         "phpdocType": "string",
                                         "regex": "",
                                         "unique": null,
+                                        "showCharCount": null,
                                         "name": "attributeValue",
                                         "title": "value",
                                         "tooltip": "",
@@ -429,10 +477,12 @@
                                         "relationType": false,
                                         "invisible": false,
                                         "visibleGridView": false,
-                                        "visibleSearch": false
+                                        "visibleSearch": false,
+                                        "defaultValueGenerator": ""
                                     }
                                 ],
-                                "locked": false
+                                "locked": false,
+                                "icon": null
                             }
                         ],
                         "layout": null,
@@ -453,28 +503,37 @@
                         "visibleSearch": false
                     }
                 ],
-                "locked": false
+                "locked": false,
+                "icon": null
             }
         ],
-        "locked": false
+        "locked": false,
+        "icon": null
     },
     "icon": "\/bundles\/pimcoreadmin\/img\/flat-color-icons\/sports_mode.svg",
     "previewUrl": "\/__customermanagementframework\/object-preview\/link-activity-definition-preview",
     "group": "CustomerManagement",
+    "showAppLoggerTab": false,
+    "linkGeneratorReference": "@cmf.link-activity-definition.linkgenerator",
+    "compositeIndices": [],
+    "showFieldLookup": false,
     "propertyVisibility": {
         "grid": {
             "id": true,
+            "key": false,
             "path": true,
             "published": true,
-            "modificationDate": true,
-            "creationDate": true
+            "modificationDate": false,
+            "creationDate": false
         },
         "search": {
             "id": true,
+            "key": false,
             "path": true,
             "published": true,
-            "modificationDate": true,
-            "creationDate": true
+            "modificationDate": false,
+            "creationDate": false
         }
-    }
+    },
+    "enableGridLocking": false
 }
