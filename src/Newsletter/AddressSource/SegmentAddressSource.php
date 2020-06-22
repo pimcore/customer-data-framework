@@ -124,7 +124,7 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
                             return null;
                         }
 
-                        return new SendingParamContainer($customer->getEmail(), ['emailAddress' => $customer->getEmail()]);
+                        return new SendingParamContainer($customer->getEmail(), ['emailAddress' => $customer->getEmail(), 'ID_ENCODED' => $customer->getIdEncoded()]);
                     },
                     $customerListing->getObjects() ?? []
                 )

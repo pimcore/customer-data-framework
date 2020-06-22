@@ -22,7 +22,7 @@ segments, etc.) and personalization.
 
 2) Link `LinkActivityDefinition` object in link in newsletter (just via d&d) - Pimcore generates corresponding link to landing page with all parameters.
   
-  > Link will look like something like that: `http://demo-advanced.pimcore.org/en?utm_source=newsletter&utm_medium=button&utm_campaign=summer&cmfa=5ccc38eacb2be&cmfc=*|ID_ENCODED|*` 
+  > Link will look like something like that: `https://demo.pimcore.fun/en?utm_source=newsletter&utm_medium=button&utm_campaign=summer&cmfa=5ccc38eacb2be&cmfc=*|ID_ENCODED|*` 
 
 3) Send newsletter via newsletter provider, e.g. mailchimp
 
@@ -47,3 +47,14 @@ In CMF symfony configuration tree, there are two options for the link activity t
 - linkCmfcPlaceholder: Define placeholder for customer id that needs to be replaced when sending newsletter. Default value
 is for mailchimp.  
 
+
+## Usage in combination with built-in Newsletter sending
+Link activity tracking can also be used with internal Pimcore newsletters. Configuration workflow stays the same, the 
+only thing that needs to be adapted it the `linkCmfcPlaceholder` in configuration tree: 
+
+```yml 
+    activity_url_tracker:
+        enabled: true
+        # used for automatic link generation of LinkActivityDefinition data objects
+        linkCmfcPlaceholder: '%Text(ID_ENCODED);'
+```
