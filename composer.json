@@ -9,7 +9,7 @@
         "box/spout": "^2.7",
         "drewm/mailchimp-api": "*",
         "guzzlehttp/guzzle": ">=4.1.4 <7.0",
-        "mtdowling/cron-expression": "^1.1.0",
+        "dragonmantank/cron-expression": "^3.0",
         "pear/archive_tar": "^1.4.3",
         "pimcore/pimcore": ">=5.4 <6.8",
         "pimcore/number-sequence-generator": "^1.0.1",
