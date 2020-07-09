@@ -19,7 +19,7 @@ when the customer visits from a different device.
 ![VIP Customer Rule](../img/assign-target-group-vip-customer.jpg)
  
 See the targeting rules `profiling_new-customer`, `profiling_regular-customer` and `profiling_vip-customer` in our
-[advanced demo](https://demo-advanced.pimcore.org/admin). 
+[demo](https://demo.pimcore.fun/admin). 
  
   
 For details on the configuration options also see the [details page](./01_Additional_Targeting_Role_Components.md).
@@ -32,7 +32,7 @@ visit, thus the connected target groups should be assigned as the the customers 
 device. 
 
 This can be done with initialization targeting rules, like the `init_target_groups` rule in the 
-[advanced demo](https://demo-advanced.pimcore.org/admin). 
+[demo](https://demo.pimcore.fun/admin). 
 
 
 ![Init Target Groups](../img/init-target-groups.jpg)
@@ -73,17 +73,16 @@ With the [Segment Assignment](../12_SegmentAssignment.md) feature, segements can
 Once segments are assigned, they are tracked automatically when a visitor opens the document page. 
 
 For samples see the pages like 
-[/en/special-functions/tenantswitches]([https://demo-advanced.pimcore.org/en/special-functions/tenantswitches])
-[/en/special-functions/productmodel](https://demo-advanced.pimcore.org/en/special-functions/productmodel)
-[/en/special-functions/outputchannels-for-attributes](https://demo-advanced.pimcore.org/en/special-functions/outputchannels-for-attributes)
-in our advanced demo. 
+[/en/More-Stuff/Landingpages/Chevrolet]([https://demo.pimcore.fun/en/More-Stuff/Landingpages/Chevrolet])
+[/en/More-Stuff/Landingpages/Ford-Musclecars](https://demo.pimcore.fun/en/More-Stuff/Landingpages/Ford-Musclecars)
+in our demo. 
 
 2) **Tracking Segments with targeting rules**
 Also with targeting rules segments can be tracked - e.g. instead of assigning target groups. Just use the 
 `[CMF] Track Segment` action. 
 ![Track Segment](../img/track-segment.jpg) 
  
-As example see the rules `profiling_running` or `profiling_outdoor` in our [advanced demo](https://demo-advanced.pimcore.org/admin). 
+As example see the rule `profiling_sports-car-fan` in our [demo](https://demo.pimcore.fun/admin). 
 
 
 ### 2) Calculate Target Groups based on Tracked Customer Segmentts
@@ -96,8 +95,8 @@ every fifth time when a segment is tracked. To do so, a targeting rule with `[CM
 
 For details on the configuration options also see the [details page](./01_Additional_Targeting_Role_Components.md).
  
-See the rules `profiling_outdoor-apply-targetgroup` and `profiling_running-apply-targetgroup` in our 
-[advanced demo](https://demo-advanced.pimcore.org/admin).
+See the rule `profiling_sports-car-fan_apply-targetgroup` in our 
+[demo](https://demo.pimcore.fun/admin).
 
 
 
@@ -112,5 +111,5 @@ a `[Targeting] Tracked Segments Count` condition and a `[Targeting] Add tracked 
 
 ![Visit Counter](../img/visitcounter.jpg)
 
-As example see the `Visit Counter` rule in our [advanced demo](https://demo-advanced.pimcore.org/admin).
+As example see the `Visit Counter` rule in our [demo](https://demo.pimcore.fun/admin).
 
