@@ -183,7 +183,9 @@ class ApplyTargetGroupsFromSegments implements ActionHandlerInterface, DataProvi
         foreach($consideredTargetGroupIds as $targetGroupId) {
             $targetGroup = TargetGroup::getById($targetGroupId);
             unset($storageData[$targetGroupId]);
-            $visitorInfo->clearAssignedTargetGroup($targetGroup);
+            if($targetGroup && $targetGroup->getActive()) {
+                $visitorInfo->clearAssignedTargetGroup($targetGroup);
+            }
         }
 
         foreach($targetGroupsToAssign as $targetGroupId => $count) {
