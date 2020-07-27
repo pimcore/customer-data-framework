@@ -17,8 +17,8 @@
                 class="form-filter-operator"
                 data-placeholder="<?= $customerView->translate('cmf_filters_options_operator')  ?>">
 
-            <option <?= $filters['operator-customer'] ?? null == 'AND' ? 'selected="selected"' : '' ?> value="AND"><?= $and ?></option>
-            <option <?= $filters['operator-customer'] ?? null  == 'OR' ? 'selected="selected"' : '' ?> value="OR"><?= $or ?></option>
+            <option <?= ($filters['operator-customer'] ?? null) == 'AND' ? 'selected="selected"' : '' ?> value="AND"><?= $and ?></option>
+            <option <?= ($filters['operator-customer'] ?? null)  == 'OR' ? 'selected="selected"' : '' ?> value="OR"><?= $or ?></option>
 
         </select>
     </legend>
