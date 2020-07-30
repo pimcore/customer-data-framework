@@ -177,7 +177,10 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
                 }
             } catch(TableNotFoundException $ex) {
                 $this->getLogger()->error(sprintf('table %s not found - please press the update button of the CMF bundle in the extension manager', self::ACTIVITIES_METADATA_TABLE));
+                $db->rollBack();
             }
+
+            $db->commit();
 
         } catch(\Exception $e) {
             $this->getLogger()->error(sprintf('save activity (%s) failed: %s', $entry->getId(), $e->getMessage()));
