@@ -8,6 +8,7 @@ use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception\TableNotFoundException;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\Concrete;
 use Zend\Paginator\Paginator;
@@ -15,6 +16,7 @@ use Zend\Paginator\Paginator;
 abstract class SqlActivityStore
 {
     const ACTIVITIES_TABLE = 'plugin_cmf_activities';
+    const ACTIVITIES_METADATA_TABLE = 'plugin_cmf_activities_metadata';
     const DELETIONS_TABLE = 'plugin_cmf_deletions';
 
     public function insertActivityIntoStore(ActivityInterface $activity)
@@ -78,19 +80,46 @@ abstract class SqlActivityStore
         $data['md5'] = md5(serialize($md5Data));
         $data['modificationDate'] = $time;
 
-        if ($entry->getId()) {
-            $this->getActivityStoreConnection()->update(
-                self::ACTIVITIES_TABLE,
-                $data,
-                'id = '.$entry->getId()
-            );
-        } else {
-            $data['creationDate'] = $time;
-            $db->insert(
-                self::ACTIVITIES_TABLE,
-                $data
-            );
-            $entry->setId($db->lastInsertId());
+        $db->beginTransaction();
+
+        try {
+
+            if ($entry->getId()) {
+                $this->getActivityStoreConnection()->update(
+                    self::ACTIVITIES_TABLE,
+                    $data,
+                    'id = '.$entry->getId()
+                );
+            } else {
+                $data['creationDate'] = $time;
+                $db->insert(
+                    self::ACTIVITIES_TABLE,
+                    $data
+                );
+                $entry->setId($db->lastInsertId());
+            }
+
+            try {
+                $db->query('delete from ' . self::ACTIVITIES_METADATA_TABLE . ' where activityId = ' . intval($entry->getId()));
+
+                foreach($entry->getMetadata() as $key => $data) {
+
+                    $db->insert(
+                        self::ACTIVITIES_METADATA_TABLE,
+                        [
+                            'activityId' => $entry->getId(),
+                            'key' => $key,
+                            'data' => $data
+                        ]
+                    );
+                }
+            } catch(TableNotFoundException $ex) {
+                $this->getLogger()->error(sprintf('table %s not found - please press the update button of the CMF bundle in the extension manager', self::ACTIVITIES_METADATA_TABLE));
+            }
+
+        } catch(\Exception $e) {
+            $this->getLogger()->error(sprintf('save activity (%s) failed: %s', $entry->getId(), $e->getMessage()));
+            $db->rollBack();
         }
     }
 
