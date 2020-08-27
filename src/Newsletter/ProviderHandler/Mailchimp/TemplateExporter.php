@@ -15,10 +15,13 @@
 
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 
+use CustomerManagementFrameworkBundle\Event\Newsletter\Mailchimp\TemplateExportResolveProviderHandlerEvent;
+use CustomerManagementFrameworkBundle\Newsletter\Manager\NewsletterManagerInterface;
+use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 use CustomerManagementFrameworkBundle\Traits\ApplicationLoggerAware;
-use DrewM\MailChimp\MailChimp;
 use Pimcore\Helper\Mail;
 use Pimcore\Model\Document;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class TemplateExporter
 {
@@ -27,26 +30,33 @@ class TemplateExporter
     const LIST_ID_PLACEHOLDER = 'global';
 
     /**
+     * @var NewsletterManagerInterface
+     */
+    private $newsletterManager;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
      * @var MailChimpExportService
      */
     private $exportService;
 
     /**
      * TemplateExporter constructor.
-     *
-     * @param MailChimp $apiClient
-     * @param string $listId
      */
-    public function __construct(MailChimpExportService $exportService)
+    public function __construct(NewsletterManagerInterface $newsletterManager, EventDispatcherInterface $eventDispatcher)
     {
-        $this->exportService = $exportService;
-
+        $this->newsletterManager = $newsletterManager;
+        $this->eventDispatcher = $eventDispatcher;
         $this->setLoggerComponent('NewsletterSync');
     }
 
     public function exportTemplate(Document\PageSnippet $document)
     {
-        $exportService = $this->exportService;
+        $exportService = $this->resolveProviderHandler($document)->getExportService();
         $apiClient = $exportService->getApiClient();
 
         $remoteId = $exportService->getRemoteId($document, self::LIST_ID_PLACEHOLDER);
@@ -127,5 +137,27 @@ class TemplateExporter
 
             throw new \Exception('[MailChimp] Creating new Template failed: ' . json_encode($apiClient->getLastError()));
         }
+    }
+
+    /**
+     * @param Document\PageSnippet $document
+     * @return Mailchimp
+     * @throws \Exception
+     */
+    protected function resolveProviderHandler(Document\PageSnippet $document): Mailchimp
+    {
+        $event = new TemplateExportResolveProviderHandlerEvent($document);
+        $this->eventDispatcher->dispatch($event->getName(), $event);
+        if(!empty($event->getProviderHandler())) {
+            return $event->getProviderHandler();
+        }
+
+        foreach($this->newsletterManager->getNewsletterProviderHandlers() as $newsletterProviderHandler) {
+            if($newsletterProviderHandler instanceof Mailchimp) {
+                return $newsletterProviderHandler;
+            }
+        }
+
+        throw new \Exception('No mailchimp provider handlers are registered');
     }
 }

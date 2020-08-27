@@ -17,6 +17,8 @@ Further than that, the CMF can handle multiple MailChimp lists. Each list is one
 See [Configuration](../03_Configuration.md) for an example configuration of such a service and for a list of general 
 newsletter related settings.
 
+See [Multiple Mailchimp Accounts](./MultipleMailchimpAccounts.md) if you need to handle lists within different Mailchimp accounts.
+
 
 ## Prepare Data Objects for MailChimp Sync
 
