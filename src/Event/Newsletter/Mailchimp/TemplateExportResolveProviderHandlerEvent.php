@@ -17,6 +17,7 @@ namespace CustomerManagementFrameworkBundle\Event\Newsletter\Mailchimp;
 
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 use Symfony\Component\EventDispatcher\Event;
+use Pimcore\Model\Document;
 
 class TemplateExportResolveProviderHandlerEvent extends Event
 {
