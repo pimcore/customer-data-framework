@@ -73,7 +73,7 @@ With the [Segment Assignment](../12_SegmentAssignment.md) feature, segements can
 Once segments are assigned, they are tracked automatically when a visitor opens the document page. 
 
 For samples see the pages like 
-[/en/More-Stuff/Landingpages/Chevrolet]([https://demo.pimcore.fun/en/More-Stuff/Landingpages/Chevrolet])
+[/en/More-Stuff/Landingpages/Chevrolet](https://demo.pimcore.fun/en/More-Stuff/Landingpages/Chevrolet)
 [/en/More-Stuff/Landingpages/Ford-Musclecars](https://demo.pimcore.fun/en/More-Stuff/Landingpages/Ford-Musclecars)
 in our demo. 
 

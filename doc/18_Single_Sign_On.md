@@ -94,7 +94,7 @@ Currently, the CMF ships with a sample client integration for OAuth 1 and 2 by i
 [HWIOAuthBundle](https://github.com/hwi/HWIOAuthBundle) into CMF's data model. 
  
 You can find the annotated example of a simple username/password login form with added OAuth social login functionality in
-[../frontend-samples/sso_client](../frontend-samples/sso_client).
+[Frontend Samples](https://github.com/pimcore/customer-data-framework/blob/master/frontend-samples/sso_client).
 
 > Please note that the sample does not use any of `HWIOAuthBundle`'s routing definitions and the registration/connect functionality
 > provided by the `ConnectController` is not used as the registration flow in the bundle lacks flexibility and does not work

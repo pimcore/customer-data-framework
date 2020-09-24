@@ -7,7 +7,7 @@ orders.
 
 The third big group of structured data besides products and transaction is customer data. 
 The Customer Management Framework (CMF) for Pimcore adds additional functionality  for customer data management, 
-segmentation, personalization and marketing automation. So it allows to aggregate customer data and user profiles, 
+segmentation, personalization and marketing automation. So it allows aggregating customer data and user profiles, 
 enrich data, link social profiles, build audience segments, trigger events, personalize experience, execute marketing 
 automation and much more.
 
@@ -25,7 +25,7 @@ solutions and is tightly integrated into Pimcore core functionality.
 - Default integration to external newsletter systems like MailChimp
 - Rest API for integration of external systems for data import or data export
 
-For a first impression have a look at our [Advanced Demo](https://demo-advanced.pimcore.org/). For more complex solutions
+For a first impression have a look at our [Demo](https://demo.pimcore.fun/). For more complex solutions
 have a look at our [case studies](https://pimcore.com/en/customers).
 
 
@@ -48,7 +48,7 @@ Following aspects are short cuts into the documentation for start working with t
 
 ## Contributing and Development
 
-For details see our [Contributing guide](CONTRIBUTING.md).
+For details see our [Contributing guide](https://github.com/pimcore/customer-data-framework/blob/master/CONTRIBUTING.md).
 
 
 ## Running with Pimcore < 5.4
