@@ -25,8 +25,8 @@ abstract class AbstractTransformer implements DataTransformerInterface
     {
         foreach ($this->zipRegions as $state => $regions) {
             foreach ($regions as $region) {
-                $from = $region[0];
-                $to = $region[1];
+                $from = $region[0] ?? null;
+                $to = $region[1] ?? null;
 
                 if (strlen($data) != strlen($from)) {
                     return null;
