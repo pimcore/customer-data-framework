@@ -31,7 +31,7 @@ class SingleExporter extends AbstractExporter
      * Run the actual export
      *
      * @param NewsletterQueueItemInterface $item
-     * @param string $listId
+     * @param Mailchimp $mailchimpProviderHandler
      *
      * @return void
      */
@@ -58,7 +58,7 @@ class SingleExporter extends AbstractExporter
     /**
      * @param MailchimpAwareCustomerInterface $customer
      * @param NewsletterQueueItemInterface $item
-     * @param string $listId
+     * @param Mailchimp $mailchimpProviderHandler
      *
      * @return bool
      */
@@ -238,7 +238,7 @@ class SingleExporter extends AbstractExporter
     /**
      * @param MailchimpAwareCustomerInterface $customer
      * @param NewsletterQueueItemInterface $item
-     * @param string $listId
+     * @param Mailchimp $mailchimpProviderHandler
      */
     protected function delete(MailchimpAwareCustomerInterface $customer, NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler)
     {

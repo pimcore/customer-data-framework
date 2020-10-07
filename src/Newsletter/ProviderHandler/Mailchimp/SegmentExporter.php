@@ -420,7 +420,7 @@ class SegmentExporter
         if(is_array($result['categories'])) {
             foreach ($result['categories'] as $category) {
                 if (!in_array($category['id'], $existingGroupIds)) {
-                    $this->deleteGroupByRemoteId($category['id'], $listId);
+                    $this->deleteGroupByRemoteId($category['id'], $mailchimpProviderHandler);
                 }
             }
         }

@@ -17,6 +17,7 @@ namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp
 
 use Carbon\Carbon;
 use DrewM\MailChimp\MailChimp;
+use Pimcore\Cache\Runtime;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\Concrete;
@@ -31,11 +32,6 @@ class MailChimpExportService
      * @var MailChimp
      */
     protected $apiClient;
-
-    /**
-     * @var Note[][][]
-     */
-    protected $notes = [];
 
     /**
      * @param MailChimp $apiClient
@@ -187,7 +183,10 @@ class MailChimpExportService
      */
     public function getExportNotes(ElementInterface $object, $listId, $refresh = false)
     {
-        if (!isset($this->notes[$listId][$object->getId()]) || $refresh) {
+        $cacheKey = 'cmf-mailchimp-export-notes';
+        $notes = Runtime::isRegistered($cacheKey) ? Runtime::get($cacheKey) : [];
+
+        if (!isset($notes[$listId][$object->getId()]) || $refresh) {
             /** @var Note\Listing|\Pimcore\Model\DataObject\Listing\Dao $list */
             $list = new Note\Listing();
             $list->setOrderKey('date');
@@ -196,10 +195,12 @@ class MailChimpExportService
             $list->addConditionParam('description = ?', $listId);
             $list->addConditionParam('cid = ?', $object->getId());
 
-            $this->notes[$listId][$object->getId()] = $list->load();
+            $notes[$listId][$object->getId()] = $list->load();
         }
 
-        return $this->notes[$listId][$object->getId()];
+        Runtime::set($cacheKey, $notes);
+
+        return $notes[$listId][$object->getId()];
     }
 
     /**
