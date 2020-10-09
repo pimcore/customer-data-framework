@@ -42,12 +42,11 @@ class Customers extends DataObjects
     protected $activityStore = null;
 
 
-    public function __construct(\Pimcore\Model\Webservice\Service $service, CustomerProviderInterface $customerProvider, ActivityStoreInterface $activityStore, array $config)
+    public function __construct(CustomerProviderInterface $customerProvider, ActivityStoreInterface $activityStore, array $config)
     {
         $customerClassId = $customerProvider->getCustomerClassId();
         $this->customerClassName = ClassDefinition::getById($customerClassId)->getName();
 
-        $this->service = $service;
         $this->activityStore = $activityStore;
 
         $config['include'] = true;
@@ -97,7 +96,9 @@ class Customers extends DataObjects
 
         foreach(array_keys($this->exportIds['object']) as $id) {
 
-            $data = $this->service->getObjectConcreteById($id);
+            // @TODO: needs to be fixed since Pimcore\Model\Webservice\Service is not available anymore
+            // $data = $this->service->getObjectConcreteById($id);
+            $data = [];
             $data = (array)$data;
 
             if($data['className'] == $this->customerClassName) {
@@ -117,7 +118,8 @@ class Customers extends DataObjects
         }
         if($this->exportIds['image']) {
             foreach(array_keys($this->exportIds['image']) as $id) {
-                $exportResult[] = $this->service->getAssetFileById($id);
+                // @TODO: needs to be fixed since Pimcore\Model\Webservice\Service is not available anymore
+                //$exportResult[] = $this->service->getAssetFileById($id);
             }
         }
 
