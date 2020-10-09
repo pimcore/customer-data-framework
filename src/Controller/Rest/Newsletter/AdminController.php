@@ -16,7 +16,7 @@
 namespace CustomerManagementFrameworkBundle\Controller\Rest\Newsletter;
 
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
-use Pimcore\Bundle\AdminBundle\Controller\Rest\AbstractRestController;
+use \CustomerManagementFrameworkBundle\Controller\Rest\AbstractRestController;
 use Pimcore\Tool\Console;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;

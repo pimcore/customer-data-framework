@@ -19,7 +19,7 @@ use CustomerManagementFrameworkBundle\Newsletter\Manager\NewsletterManagerInterf
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 use DrewM\MailChimp\Webhook;
 use Monolog\Handler\StreamHandler;
-use Pimcore\Bundle\AdminBundle\Controller\Rest\AbstractRestController;
+use \CustomerManagementFrameworkBundle\Controller\Rest\AbstractRestController;
 use Pimcore\Db;
 use Pimcore\Log\ApplicationLogger;
 use Pimcore\Log\Handler\ApplicationLoggerDb;
