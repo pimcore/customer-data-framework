@@ -42,7 +42,7 @@
             ]
         },
         "branch-alias": {
-            "dev-master": "2.4-dev"
+            "dev-master": "3.0-dev"
         }
     }
 }
