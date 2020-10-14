@@ -18,13 +18,14 @@ namespace CustomerManagementFrameworkBundle\Controller;
 use CustomerManagementFrameworkBundle\Templating\Helper\DefaultPageSize;
 use CustomerManagementFrameworkBundle\Templating\Helper\JsConfig;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
-use Pimcore\Controller\EventedControllerInterface;
+use Pimcore\Controller\KernelControllerEventInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Zend\Paginator\Paginator;
 
-class Admin extends AdminController implements EventedControllerInterface
+class Admin extends AdminController implements KernelControllerEventInterface
 {
 
     /**
@@ -46,13 +47,9 @@ class Admin extends AdminController implements EventedControllerInterface
     /**
      * @param FilterControllerEvent $event
      */
-    public function onKernelController(FilterControllerEvent $event)
+    public function onKernelControllerEvent(ControllerEvent $event)
     {
         $this->initJsConfig();
-    }
-
-    public function onKernelResponse(FilterResponseEvent $event)
-    {
     }
 
     /**
