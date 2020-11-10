@@ -25,9 +25,8 @@ class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-
-        $rootNode = $treeBuilder->root('pimcore_customer_management_framework');
+        $treeBuilder = new TreeBuilder('pimcore_customer_management_framework');
+        $rootNode = $treeBuilder->getRootNode();
         $rootNode->addDefaultsIfNotSet();
 
         $rootNode
@@ -56,9 +55,8 @@ class Configuration implements ConfigurationInterface
 
     private function buildGeneralNode()
     {
-        $treeBuilder = new TreeBuilder();
-
-        $general = $treeBuilder->root('general');
+        $treeBuilder = new TreeBuilder('general');
+        $general = $treeBuilder->getRootNode();
 
         $general
             ->addDefaultsIfNotSet()
@@ -90,9 +88,8 @@ class Configuration implements ConfigurationInterface
 
     private function buildEncryptionNode()
     {
-        $treeBuilder = new TreeBuilder();
-
-        $general = $treeBuilder->root('encryption');
+        $treeBuilder = new TreeBuilder('encryption');
+        $general = $treeBuilder->getRootNode();
 
         $general
             ->addDefaultsIfNotSet()
@@ -114,9 +111,8 @@ class Configuration implements ConfigurationInterface
 
     private function buildCustomerSaveManagerNode()
     {
-        $treeBuilder = new TreeBuilder();
-
-        $customerSaveManager = $treeBuilder->root('customer_save_manager');
+        $treeBuilder = new TreeBuilder('customer_save_manager');
+        $customerSaveManager = $treeBuilder->getRootNode();
 
         $customerSaveManager
             ->addDefaultsIfNotSet()
@@ -135,9 +131,8 @@ class Configuration implements ConfigurationInterface
 
     private function buildCustomerSaveValidatorNode()
     {
-        $treeBuilder = new TreeBuilder();
-
-        $customerSaveValidator = $treeBuilder->root('customer_save_validator');
+        $treeBuilder = new TreeBuilder('customer_save_validator');
+        $customerSaveValidator = $treeBuilder->getRootNode();
 
         $customerSaveValidator
             ->addDefaultsIfNotSet()
@@ -165,9 +160,8 @@ class Configuration implements ConfigurationInterface
 
     private function buildSegmentManagerNode()
     {
-        $treeBuilder = new TreeBuilder();
-
-        $segmentManager = $treeBuilder->root('segment_manager');
+        $treeBuilder = new TreeBuilder('segment_manager');
+        $segmentManager = $treeBuilder->getRootNode();
 
         $segmentManager
             ->addDefaultsIfNotSet()
@@ -194,9 +188,8 @@ class Configuration implements ConfigurationInterface
 
     private function buildCustomerProviderNode()
     {
-        $treeBuilder = new TreeBuilder();
-
-        $customerProvider = $treeBuilder->root('customer_provider');
+        $treeBuilder = new TreeBuilder('customer_provider');
+        $customerProvider = $treeBuilder->getRootNode();
 
         $customerProvider
             ->addDefaultsIfNotSet()
@@ -228,9 +221,8 @@ class Configuration implements ConfigurationInterface
 
     private function buildCustomerListNode()
     {
-        $treeBuilder = new TreeBuilder();
-
-        $customerList = $treeBuilder->root('customer_list');
+        $treeBuilder = new TreeBuilder('customer_list');
+        $customerList = $treeBuilder->getRootNode();
 
         $customerList
             ->addDefaultsIfNotSet()
@@ -346,9 +338,8 @@ class Configuration implements ConfigurationInterface
 
     private function buildCustomerDuplicatesServicesNode()
     {
-        $treeBuilder = new TreeBuilder();
-
-        $customerList = $treeBuilder->root('customer_duplicates_services');
+        $treeBuilder = new TreeBuilder('customer_duplicates_services');
+        $customerList = $treeBuilder->getRootNode();
 
         $customerList
             ->addDefaultsIfNotSet()
@@ -425,9 +416,8 @@ class Configuration implements ConfigurationInterface
 
     private function buildNewsletterNode()
     {
-        $treeBuilder = new TreeBuilder();
-
-        $newsletter = $treeBuilder->root('newsletter');
+        $treeBuilder = new TreeBuilder('newsletter');
+        $newsletter = $treeBuilder->getRootNode();
 
         $newsletter
             ->addDefaultsIfNotSet()
@@ -450,9 +440,8 @@ class Configuration implements ConfigurationInterface
 
     private function buildActivityUrlTrackerNode()
     {
-        $treeBuilder = new TreeBuilder();
-
-        $tracker = $treeBuilder->root('activity_url_tracker');
+        $treeBuilder = new TreeBuilder('activity_url_tracker');
+        $tracker = $treeBuilder->getRootNode();
 
         $tracker
             ->addDefaultsIfNotSet()
@@ -469,9 +458,8 @@ class Configuration implements ConfigurationInterface
 
     private function buildSegmentAssignmentClassPermission()
     {
-        $treeBuilder = new TreeBuilder();
-
-        $assignment = $treeBuilder->root('segment_assignment_classes');
+        $treeBuilder = new TreeBuilder('segment_assignment_classes');
+        $assignment = $treeBuilder->getRootNode();
 
         $assignment
             ->addDefaultsIfNotSet()
@@ -527,9 +515,8 @@ class Configuration implements ConfigurationInterface
 
     private function buildGDPRConfigNode() {
 
-        $treeBuilder = new TreeBuilder();
-
-        $dataObjects = $treeBuilder->root('gdprDataProvider');
+        $treeBuilder = new TreeBuilder('gdprDataProvider');
+        $dataObjects = $treeBuilder->getRootNode();
         $dataObjects
             ->addDefaultsIfNotSet()
             ->info('Settings for GDPR DataProvider for customers');
@@ -559,9 +546,8 @@ class Configuration implements ConfigurationInterface
 
     private function buildImportNode()
     {
-        $treeBuilder = new TreeBuilder();
-
-        $general = $treeBuilder->root('import');
+        $treeBuilder = new TreeBuilder('import');
+        $general = $treeBuilder->getRootNode();
 
         $general
             ->addDefaultsIfNotSet()
