@@ -15,20 +15,21 @@
 
 namespace CustomerManagementFrameworkBundle;
 
-use Doctrine\DBAL\Migrations\Version;
-use Doctrine\DBAL\Schema\Schema;
 use Pimcore\Db;
-use Pimcore\Extension\Bundle\Installer\MigrationInstaller;
+use Pimcore\Extension\Bundle\Installer\AbstractInstaller;
 use Pimcore\Logger;
 
-class Installer extends MigrationInstaller
+class Installer extends AbstractInstaller
 {
-    public function getMigrationVersion(): string
-    {
-        return '20180410085629';
-    }
+    private $permissionsToInstall = [
+        'plugin_cmf_perm_activityview',
+        'plugin_cmf_perm_customerview',
+        'plugin_cmf_perm_customerview_admin',
+        'plugin_cmf_perm_customer_automation_rules',
+        'plugin_cmf_perm_newsletter_enqueue_all_customers',
+    ];
 
-    public function migrateInstall(Schema $schema, Version $version)
+    public function install()
     {
         $this->installPermissions();
         $this->installDatabaseTables();
@@ -38,14 +39,27 @@ class Installer extends MigrationInstaller
         return true;
     }
 
-    public function migrateUninstall(Schema $schema, Version $version)
-    {
-
-    }
-
     public function canBeInstalled()
     {
         return !$this->isInstalled();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isInstalled()
+    {
+        $installed = false;
+        try {
+            // check if if first permission is installed
+            $installed = Db::get()->fetchOne('SELECT `key` FROM users_permission_definitions WHERE `key` = :key', [
+                'key' => $this->permissionsToInstall[0]
+            ]);
+        } catch (\Exception $e) {
+            // nothing to do
+        }
+
+        return (bool) $installed;
     }
 
     /**
@@ -58,15 +72,7 @@ class Installer extends MigrationInstaller
 
     public function installPermissions()
     {
-        $permissions = [
-            'plugin_cmf_perm_activityview',
-            'plugin_cmf_perm_customerview',
-            'plugin_cmf_perm_customerview_admin',
-            'plugin_cmf_perm_customer_automation_rules',
-            'plugin_cmf_perm_newsletter_enqueue_all_customers',
-        ];
-
-        foreach ($permissions as $key) {
+        foreach ($this->permissionsToInstall as $key) {
             $permission = new \Pimcore\Model\User\Permission\Definition();
             $permission->setKey($key);
 
