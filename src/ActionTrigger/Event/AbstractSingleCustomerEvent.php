@@ -17,15 +17,16 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger\Event;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\GenericEvent;
 
-abstract class AbstractSingleCustomerEvent extends Event implements SingleCustomerEventInterface
+abstract class AbstractSingleCustomerEvent extends GenericEvent implements SingleCustomerEventInterface
 {
     private $customer;
 
     public function __construct(CustomerInterface $customer)
     {
         $this->customer = $customer;
+        parent::__construct();
     }
 
     public function getCustomer()

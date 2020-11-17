@@ -17,7 +17,7 @@ namespace CustomerManagementFrameworkBundle\Event\Frontend;
 
 use Pimcore\Bundle\CoreBundle\EventListener\Traits\PimcoreContextAwareTrait;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class UrlActivityTracker implements EventSubscriberInterface
@@ -39,9 +39,9 @@ class UrlActivityTracker implements EventSubscriberInterface
     /**
      * Checks for request params cmfa + cmfc and tracks activity if needed
      *
-     * @param GetResponseEvent $event
+     * @param RequestEvent $event
      */
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(RequestEvent $event)
     {
         if (!\Pimcore::getContainer()->getParameter('pimcore_customer_management_framework.url_activity_tracker.enabled')) {
             return;
