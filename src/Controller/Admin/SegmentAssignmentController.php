@@ -36,10 +36,11 @@ class SegmentAssignmentController extends AdminController
      * @Route("/inheritable-segments")
      *
      * @param Request $request
+     * @param SegmentManagerInterface $segmentManager
      *
      * @return JsonResponse
      */
-    public function inheritableSegments(Request $request)
+    public function inheritableSegments(Request $request, SegmentManagerInterface $segmentManager)
     {
         $id = $request->get('id') ?? '';
         $type = $request->get('type') ?? '';
@@ -48,7 +49,7 @@ class SegmentAssignmentController extends AdminController
         $parentIdStatement = sprintf('SELECT `%s` FROM `%s` WHERE `%s` = "%s"', $type === 'object' ? 'o_parentId' : 'parentId', $type.'s', $type === 'object' ? 'o_id' : 'id', $id);
         $parentId = $db->fetchOne($parentIdStatement);
 
-        $segments = $this->get(SegmentManagerInterface::class)->getSegmentsForElementId($parentId, $type);
+        $segments = $segmentManager->getSegmentsForElementId($parentId, $type);
         $data = array_map([$this, 'dehydrateSegment'], array_filter($segments));
 
         return $this->adminJson(['data' => array_values($data)]);
