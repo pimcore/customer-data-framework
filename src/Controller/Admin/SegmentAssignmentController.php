@@ -19,7 +19,6 @@ use CustomerManagementFrameworkBundle\SegmentAssignment\SegmentAssigner\SegmentA
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse;
-use Pimcore\Db\Connection;
 use Pimcore\Model\DataObject\CustomerSegment;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -45,8 +44,7 @@ class SegmentAssignmentController extends AdminController
         $id = $request->get('id') ?? '';
         $type = $request->get('type') ?? '';
 
-        /* @var $db Connection */
-        $db = $this->get(Connection::class);
+        $db = \Pimcore\Db::get();
         $parentIdStatement = sprintf('SELECT `%s` FROM `%s` WHERE `%s` = "%s"', $type === 'object' ? 'o_parentId' : 'parentId', $type.'s', $type === 'object' ? 'o_id' : 'id', $id);
         $parentId = $db->fetchOne($parentIdStatement);
 
@@ -70,7 +68,7 @@ class SegmentAssignmentController extends AdminController
         $id = $request->get('id') ?? '';
         $type = $request->get('type') ?? '';
         $assignmentTable = $this->getParameter('cmf.segmentAssignment.table.raw');
-        $segmentIds = $this->get(Connection::class)->fetchOne("SELECT `segments` FROM $assignmentTable WHERE `elementId` = ? AND `elementType` = ?", [$id, $type]);
+        $segmentIds = \Pimcore\Db::get()->fetchOne("SELECT `segments` FROM $assignmentTable WHERE `elementId` = ? AND `elementType` = ?", [$id, $type]);
 
         $data = array_map(function ($id) {
             $segment = CustomerSegment::getById($id);
@@ -116,7 +114,7 @@ class SegmentAssignmentController extends AdminController
         $type = $request->get('type') ?? '';
         $assignmentTable = $this->getParameter('cmf.segmentAssignment.table.raw');
 
-        $breaksInheritance = $this->get(Connection::class)->fetchOne("SELECT `breaksInheritance` FROM $assignmentTable WHERE `elementId` = ? AND `elementType` = ?", [$id, $type]);
+        $breaksInheritance = \Pimcore\Db::get()->fetchOne("SELECT `breaksInheritance` FROM $assignmentTable WHERE `elementId` = ? AND `elementType` = ?", [$id, $type]);
 
         return $this->adminJson(['breaksInheritance' => $breaksInheritance]);
     }
