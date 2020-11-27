@@ -32,7 +32,7 @@ abstract class AbstractExporter
     protected $exportService;
 
     /**
-     * @var MailChimp
+     * @var MailChimp|null
      */
     protected $apiClient;
 
@@ -42,18 +42,14 @@ abstract class AbstractExporter
     protected $newsletterQueue;
 
     /**
-     * AbstractExporter constructor.
-     *
-     * @param MailChimpExportService $interpreter
+     * @param NewsletterQueueInterface $newsletterQueue
      */
-    public function __construct(MailChimpExportService $exportService, NewsletterQueueInterface $newsletterQueue)
+    public function __construct(NewsletterQueueInterface $newsletterQueue)
     {
-        $this->exportService = $exportService;
-        $this->apiClient = $exportService->getApiClient();
         $this->newsletterQueue = $newsletterQueue;
         $this->setLoggerComponent('NewsletterSync');
     }
-    
+
     /**
      * Get an array containing the HTTP headers and the body of the API response.
      *
@@ -61,7 +57,7 @@ abstract class AbstractExporter
      */
     public function getLastResponse()
     {
-        return $this->apiClient->getLastResponse();
+        return $this->apiClient ? $this->apiClient->getLastResponse() : [];
     }
 
     /**
@@ -74,5 +70,17 @@ abstract class AbstractExporter
         return \Pimcore::getContainer()
             ->get('cmf.customer_provider')
             ->getById($id);
+    }
+
+    /**
+     * used to be able to track the last response independently of the concrete mailchimp account
+     *
+     * @param MailChimpExportService $exportService
+     * @return MailChimp
+     */
+    protected function getApiClientFromExportService(MailChimpExportService $exportService): MailChimp
+    {
+        $this->apiClient = $exportService->getApiClient();
+        return $exportService->getApiClient();
     }
 }

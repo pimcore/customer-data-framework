@@ -34,11 +34,6 @@ class CliSyncProcessor
     protected $pimcoreUserName;
 
     /**
-     * @var MailChimpExportService
-     */
-    protected $exportService;
-
-    /**
      * @var CustomerProviderInterface
      */
     protected $customerProvider;
@@ -53,7 +48,7 @@ class CliSyncProcessor
      */
     protected $newsletterManager;
 
-    public function __construct($pimcoreUserName = null, MailChimpExportService $exportService, CustomerProviderInterface $customerProvider, UpdateFromMailchimpProcessor $updateFromMailchimpProcessor, NewsletterManagerInterface $newsletterManager)
+    public function __construct($pimcoreUserName = null, CustomerProviderInterface $customerProvider, UpdateFromMailchimpProcessor $updateFromMailchimpProcessor, NewsletterManagerInterface $newsletterManager)
     {
         $this->setLoggerComponent('NewsletterSync');
 
@@ -65,7 +60,6 @@ class CliSyncProcessor
             }
         }
 
-        $this->exportService = $exportService;
         $this->customerProvider = $customerProvider;
         $this->updateFromMailchimpProcessor = $updateFromMailchimpProcessor;
         $this->newsletterManager = $newsletterManager;
@@ -73,10 +67,11 @@ class CliSyncProcessor
 
     public function syncStatusChanges()
     {
-        $client = $this->exportService->getApiClient();
-
         foreach ($this->newsletterManager->getNewsletterProviderHandlers() as $newsletterProviderHandler) {
             if ($newsletterProviderHandler instanceof Mailchimp) {
+
+                $exportService = $newsletterProviderHandler->getExportService();
+                $client = $exportService->getApiClient();
 
                 // get updates from the last 30 days
                 $date = Carbon::createFromTimestamp(time() - (60 * 60 * 24 * 30));
@@ -86,7 +81,7 @@ class CliSyncProcessor
                 $page = 0;
                 while(true) {
                     $result = $client->get(
-                        $this->exportService->getListResourceUrl(
+                        $exportService->getListResourceUrl(
                             $newsletterProviderHandler->getListId(),
                             'members/?since_last_changed='.urlencode($date) . '&count=' . $count . '&offset=' . ($page * $count)
                         )
@@ -161,15 +156,17 @@ class CliSyncProcessor
 
     public function deleteNonExistingItems()
     {
-        $client = $this->exportService->getApiClient();
 
         foreach ($this->newsletterManager->getNewsletterProviderHandlers() as $newsletterProviderHandler) {
             if ($newsletterProviderHandler instanceof Mailchimp) {
 
+                $exportService = $newsletterProviderHandler->getExportService();
+                $client = $exportService->getApiClient();
+
                 $count = 20;
                 $page = 0;
                 while(true) {
-                    $url = $this->exportService->getListResourceUrl($newsletterProviderHandler->getListId(), 'members/?count=' . $count . '&offset=' . ($page * $count) );
+                    $url = $exportService->getListResourceUrl($newsletterProviderHandler->getListId(), 'members/?count=' . $count . '&offset=' . ($page * $count) );
                     $result = $client->get(
                         $url
                     );
@@ -201,7 +198,7 @@ class CliSyncProcessor
                             );
 
                             $client->delete(
-                                $this->exportService->getListResourceUrl($newsletterProviderHandler->getListId(), sprintf('members/%s', $remoteId))
+                                $exportService->getListResourceUrl($newsletterProviderHandler->getListId(), sprintf('members/%s', $remoteId))
                             );
 
                             if ($client->success()) {
