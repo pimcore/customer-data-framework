@@ -17,7 +17,7 @@ namespace CustomerManagementFrameworkBundle\SegmentAssignment\SegmentAssigner;
 
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapperInterface;
-use Pimcore\Db\Connection;
+use Pimcore\Db\ConnectionInterface;
 use Pimcore\Logger;
 use Pimcore\Model\Element\ElementInterface;
 use function PHPSTORM_META\elementType;
@@ -25,7 +25,7 @@ use function PHPSTORM_META\elementType;
 class SegmentAssigner implements SegmentAssignerInterface
 {
     /**
-     * @var Connection
+     * @var ConnectionInterface
      */
     private $db = null;
 
@@ -52,7 +52,7 @@ class SegmentAssigner implements SegmentAssignerInterface
     /**
      * @inheritDoc
      */
-    public function __construct(string $segmentAssignmentTable, string $segmentAssignmentQueueTable, string $segmentAssignmentIndexTable, Connection $db, TypeMapperInterface $typeMapper)
+    public function __construct(string $segmentAssignmentTable, string $segmentAssignmentQueueTable, string $segmentAssignmentIndexTable, ConnectionInterface $db, TypeMapperInterface $typeMapper)
     {
         $this->setSegmentAssignmentTable($segmentAssignmentTable);
         $this->setSegmentAssignmentQueueTable($segmentAssignmentQueueTable);
@@ -62,17 +62,17 @@ class SegmentAssigner implements SegmentAssignerInterface
     }
 
     /**
-     * @return Connection
+     * @return ConnectionInterface
      */
-    public function getDb(): Connection
+    public function getDb(): ConnectionInterface
     {
         return $this->db;
     }
 
     /**
-     * @param Connection $db
+     * @param ConnectionInterface $db
      */
-    public function setDb(Connection $db)
+    public function setDb(ConnectionInterface $db)
     {
         $this->db = $db;
     }

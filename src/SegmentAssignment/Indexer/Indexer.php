@@ -18,7 +18,7 @@ namespace CustomerManagementFrameworkBundle\SegmentAssignment\Indexer;
 use CustomerManagementFrameworkBundle\SegmentAssignment\QueueBuilder\QueueBuilderInterface;
 use CustomerManagementFrameworkBundle\SegmentAssignment\StoredFunctions\StoredFunctionsInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Pimcore\Db\Connection;
+use Pimcore\Db\ConnectionInterface;
 use Pimcore\Logger;
 
 class Indexer implements IndexerInterface
@@ -53,7 +53,7 @@ class Indexer implements IndexerInterface
     private $queueBuilder = null;
 
     /**
-     * @var Connection
+     * @var ConnectionInterface
      */
     private $db = null;
 
@@ -63,9 +63,9 @@ class Indexer implements IndexerInterface
      * @param string $segmentAssignmentQueueTable
      * @param StoredFunctionsInterface $storedFunctions
      * @param QueueBuilderInterface $queueBuilder
-     * @param Connection $db
+     * @param ConnectionInterface $db
      */
-    public function __construct(string $segmentAssignmentTable, string $segmentAssignmentIndexTable, string $segmentAssignmentQueueTable, StoredFunctionsInterface $storedFunctions, QueueBuilderInterface $queueBuilder, Connection $db)
+    public function __construct(string $segmentAssignmentTable, string $segmentAssignmentIndexTable, string $segmentAssignmentQueueTable, StoredFunctionsInterface $storedFunctions, QueueBuilderInterface $queueBuilder, ConnectionInterface $db)
     {
         $this->setSegmentAssignmentTable($segmentAssignmentTable);
         $this->setSegmentAssignmentIndexTable($segmentAssignmentIndexTable);
@@ -150,7 +150,7 @@ class Indexer implements IndexerInterface
     }
 
     /**
-     * @return Connection
+     * @return ConnectionInterface
      */
     public function getDb()
     {
@@ -158,7 +158,7 @@ class Indexer implements IndexerInterface
     }
 
     /**
-     * @param Connection $db
+     * @param ConnectionInterface $db
      */
     public function setDb($db)
     {

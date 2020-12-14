@@ -18,12 +18,12 @@
 namespace CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition\Listing;
 
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
-use Pimcore\Db\Connection;
+use Pimcore\Db\ConnectionInterface;
 use Pimcore\Model;
 
 /**
  * @property FilterDefinition\Listing $model
- * @property Connection db
+ * @property ConnectionInterface $db
  */
 class Dao extends Model\Listing\Dao\AbstractDao
 {
