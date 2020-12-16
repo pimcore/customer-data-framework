@@ -38,6 +38,7 @@ services:
          arguments:
             - '%pimcore_customer_management_framework.general.customerPimcoreClass%'
             - '%pimcore_customer_management_framework.customer_provider.parentPath%'
+         lazy: true
 
 
     CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface:
