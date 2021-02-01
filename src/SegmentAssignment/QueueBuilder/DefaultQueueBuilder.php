@@ -92,7 +92,7 @@ class DefaultQueueBuilder implements QueueBuilderInterface {
                 2 => $type === 'object' ? 'o_id' : 'id',
                 3 => $type . 's',
                 4 => $type === 'object' ? 'o_path' : 'path',
-                5 => $type === 'object' ? 'o_key' : 'key',
+                5 => $type === 'object' ? 'o_key' : ($type === 'asset' ? 'filename' : 'key'),
             ];
 
             $enqueueStatement = vsprintf(
