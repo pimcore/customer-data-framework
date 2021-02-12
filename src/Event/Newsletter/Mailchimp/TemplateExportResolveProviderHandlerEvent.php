@@ -49,7 +49,7 @@ class TemplateExportResolveProviderHandlerEvent extends Event
     /**
      * @return Mailchimp|null
      */
-    public function getProviderHandler()
+    public function getProviderHandler(): ?Mailchimp
     {
         return $this->providerHandler;
     }
