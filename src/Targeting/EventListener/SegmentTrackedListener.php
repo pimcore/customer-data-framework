@@ -23,15 +23,15 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SegmentTrackedListener implements EventSubscriberInterface
 {
-    /**
-     * @var Tracker
-     */
-    private $piwikTracker;
-
-    public function __construct(Tracker $piwikTracker)
-    {
-        $this->piwikTracker = $piwikTracker;
-    }
+//    /**
+//     * @var Tracker
+//     */
+//    private $piwikTracker;
+//
+//    public function __construct(Tracker $piwikTracker)
+//    {
+//        $this->piwikTracker = $piwikTracker;
+//    }
 
     /**
      * @inheritDoc
@@ -45,10 +45,10 @@ class SegmentTrackedListener implements EventSubscriberInterface
 
     public function onSegmentTracked(SegmentTracked $event)
     {
-        $this->piwikTracker->addCodePart(sprintf(
-            "_paq.push(['trackEvent', 'CMF.SegmentTracked', '%d', '%d']);",
-            $event->getSegment()->getId(),
-            $event->getCount()
-        ));
+//        $this->piwikTracker->addCodePart(sprintf(
+//            "_paq.push(['trackEvent', 'CMF.SegmentTracked', '%d', '%d']);",
+//            $event->getSegment()->getId(),
+//            $event->getCount()
+//        ));
     }
 }
