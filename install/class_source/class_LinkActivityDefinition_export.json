@@ -8,6 +8,7 @@
     "allowInherit": true,
     "allowVariants": null,
     "showVariants": false,
+    "generateTypeDeclarations": true,
     "layoutDefinitions": {
         "fieldtype": "panel",
         "labelWidth": 100,
