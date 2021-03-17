@@ -247,13 +247,6 @@ services:
         class: CustomerManagementFrameworkBundle\GDPR\Consent\ConsentChecker
         public: false
 
-    cmf.pimcore.data_object.import.operator.factory.customer_segments:
-        class: Pimcore\DataObject\Import\ColumnConfig\Operator\Factory\DefaultOperatorFactory
-        arguments:
-            $className: CustomerManagementFrameworkBundle\Import\ColumnConfig\Operator\CustomerSegments
-        tags:
-            - { name: pimcore.data_object.import.operator_factory, id: CustomerSegments }
-
     CustomerManagementFrameworkBundle\Import\CustomerImportService: ~
 
     cmf.document.newsletter.factory.segmentAddressSource:
