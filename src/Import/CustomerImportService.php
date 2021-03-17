@@ -17,7 +17,6 @@ namespace CustomerManagementFrameworkBundle\Import;
 
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use Pimcore\DataObject\Import\Resolver\AbstractResolver;
-use Pimcore\DataObject\Import\Service as ImportService;
 use Pimcore\Tool\Admin;
 
 class CustomerImportService  {
@@ -32,9 +31,9 @@ class CustomerImportService  {
      */
     protected $customerProvider;
 
-    public function __construct(ImportService $importService)
+    public function __construct()
     {
-        $this->importService = $importService;
+
     }
 
     /**
