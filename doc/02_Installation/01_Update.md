@@ -1,6 +1,8 @@
 # Update Notices
 
 ## Update to Version 3
+- Removed `SegmentTrackedListener` for tracking tracked segments into Piwik/Matomo 
+  (as matomo integration is deprecated in Pimcore 6.9 and removed in Pimcor X)
 
 
 ## Update to Pimcore X
