@@ -16,18 +16,19 @@
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
+use Pimcore\Controller\KernelControllerEventInterface;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Routing\Annotation\Route;
 use Zend\Paginator\Paginator;
 
 /**
  * @Route("/activities")
  */
-class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminController
+class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminController implements KernelControllerEventInterface
 {
-    public function onKernelController(FilterControllerEvent $event)
+    public function onKernelControllerEvent(ControllerEvent $event)
     {
         $this->checkPermission('plugin_cmf_perm_activityview');
     }
