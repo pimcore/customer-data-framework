@@ -13,14 +13,14 @@
  *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
-namespace CustomerManagementFrameworkBundle\Command;
+namespace CustomerManagementFrameworkBundle\Newsletter\Command;
 
+use CustomerManagementFrameworkBundle\Command\AbstractCommand;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Manager\NewsletterManagerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\DefaultNewsletterQueueItem;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
-use Pimcore\Model\Tool\Lock;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

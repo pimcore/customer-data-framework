@@ -38,3 +38,8 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.terminate, method: onTerminate }
             - { name: kernel.event_listener, event: console.terminate, method: onTerminate }
+
+    CustomerManagementFrameworkBundle\Newsletter\Command\NewsletterSyncCommand:
+        public: false
+        calls:
+            - [setLogger, ['@cmf.logger']]
