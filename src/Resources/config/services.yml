@@ -15,6 +15,8 @@ services:
     CustomerManagementFrameworkBundle\Command\:
         resource: '../../Command'
         public: false
+        calls:
+            - [setLogger, ['@cmf.logger']]
 
     CustomerManagementFrameworkBundle\CustomerSaveManager\SaveOptions:
         arguments:
@@ -190,8 +192,13 @@ services:
               - '%pimcore_customer_management_framework.customer_list.exporters%'
 
 
+    CustomerManagementFrameworkBundle\ActionTrigger\Queue\QueueInterface:
+        alias: cmf.action_trigger.queue
+
     cmf.action_trigger.queue:
         class: CustomerManagementFrameworkBundle\ActionTrigger\Queue\DefaultQueue
+        deprecated: 'The "%service_id%" service is deprecated. Use "CustomerManagementFrameworkBundle\ActionTrigger\Queue\QueueInterface" instead'
+
 
     cmf.action_trigger.action_manager:
         class: CustomerManagementFrameworkBundle\ActionTrigger\ActionManager\DefaultActionManager

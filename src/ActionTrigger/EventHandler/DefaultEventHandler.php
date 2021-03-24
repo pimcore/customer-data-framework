@@ -20,6 +20,7 @@ use CustomerManagementFrameworkBundle\ActionTrigger\Event\CustomerListEventInter
 use CustomerManagementFrameworkBundle\ActionTrigger\Event\EventInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\Event\RuleEnvironmentAwareEventInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\Event\SingleCustomerEventInterface;
+use CustomerManagementFrameworkBundle\ActionTrigger\Queue\QueueInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironment;
 use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
@@ -33,7 +34,12 @@ class DefaultEventHandler implements EventHandlerInterface
 
     private $rulesGroupedByEvents;
 
-    public function __construct()
+    /**
+     * @var QueueInterface
+     */
+    protected $actionTriggerQueue;
+
+    public function __construct(QueueInterface $actionTriggerQueue)
     {
         $rules = new Rule\Listing();
         $rules->setCondition('active = 1');
@@ -50,6 +56,8 @@ class DefaultEventHandler implements EventHandlerInterface
         }
 
         $this->rulesGroupedByEvents = $rulesGroupedByEvents;
+
+        $this->actionTriggerQueue = $actionTriggerQueue;
     }
 
     public function handleEvent($event)
@@ -111,7 +119,7 @@ class DefaultEventHandler implements EventHandlerInterface
         if ($actions = $rule->getAction()) {
             foreach ($actions as $action) {
                 if ($action->getActionDelay()) {
-                    \Pimcore::getContainer()->get('cmf.action_trigger.queue')->addToQueue(
+                    $this->actionTriggerQueue->addToQueue(
                         $action,
                         $customer,
                         $environment
