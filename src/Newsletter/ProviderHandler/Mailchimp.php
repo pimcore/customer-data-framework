@@ -438,7 +438,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
 
         $groupIds = [];
         foreach ($groups as $group) {
-            $remoteGroupId = $this->segmentExporter->exportGroup($group, $this->listId, false, $forceUpdate);
+            $remoteGroupId = $this->segmentExporter->exportGroup($group, $this, false, $forceUpdate);
 
             $groupIds[] = $remoteGroupId;
 
@@ -454,13 +454,13 @@ class Mailchimp implements NewsletterProviderHandlerInterface
                 /**
                  * @var CustomerSegment $segment
                  */
-                $segmentIds[] = $this->segmentExporter->exportSegment($segment, $this->listId, $remoteGroupId, $forceCreate, $forceUpdate);
+                $segmentIds[] = $this->segmentExporter->exportSegment($segment, $this, $remoteGroupId, $forceCreate, $forceUpdate);
             }
 
-            $this->segmentExporter->deleteNonExistingSegmentsFromGroup($segmentIds, $this->listId, $remoteGroupId);
+            $this->segmentExporter->deleteNonExistingSegmentsFromGroup($segmentIds, $this, $remoteGroupId);
         }
 
-        $this->segmentExporter->deleteNonExistingGroups($groupIds, $this->listId);
+        $this->segmentExporter->deleteNonExistingGroups($groupIds, $this);
     }
 
     protected function getExportableSegmentGroups()
@@ -862,6 +862,14 @@ class Mailchimp implements NewsletterProviderHandlerInterface
          */
         $customer = $this->getCustomerProvider()->getActiveCustomerByEmail($email);
         return $customer;
+    }
+
+    /**
+     * @return MailChimpExportService
+     */
+    public function getExportService(): MailChimpExportService
+    {
+        return $this->exportService;
     }
 
     protected function getCustomerProvider(): CustomerProviderInterface

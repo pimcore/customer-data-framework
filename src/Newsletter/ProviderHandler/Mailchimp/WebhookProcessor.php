@@ -23,11 +23,6 @@ use Psr\Log\LoggerInterface;
 class WebhookProcessor
 {
     /**
-     * @var MailChimpExportService
-     */
-    protected $exportService;
-
-    /**
      * @var CustomerProviderInterface
      */
     protected $customerProvider;
@@ -37,9 +32,8 @@ class WebhookProcessor
      */
     protected $updateFromMailchimpProcessor;
 
-    public function __construct(MailChimpExportService $exportService, CustomerProviderInterface $customerProvider, UpdateFromMailchimpProcessor $updateFromMailchimpProcessor)
+    public function __construct(CustomerProviderInterface $customerProvider, UpdateFromMailchimpProcessor $updateFromMailchimpProcessor)
     {
-        $this->exportService = $exportService;
         $this->customerProvider = $customerProvider;
         $this->updateFromMailchimpProcessor = $updateFromMailchimpProcessor;
     }

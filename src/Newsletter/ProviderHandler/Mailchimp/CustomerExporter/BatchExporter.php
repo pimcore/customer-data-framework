@@ -60,7 +60,7 @@ class BatchExporter extends AbstractExporter
      */
     public function export(array $items, Mailchimp $mailchimpProviderHandler)
     {
-        $apiClient = $this->apiClient;
+        $apiClient = $this->getApiClientFromExportService($mailchimpProviderHandler->getExportService());
         $batch = $apiClient->new_batch();
 
         foreach ($items as $item) {
@@ -123,7 +123,7 @@ class BatchExporter extends AbstractExporter
         usleep($totalSleepInterval * 1000);
 
         // get batch status (re-try until batch is done and back-off exponentially)
-        $batchStatus = $this->checkBatchStatus($batch);
+        $batchStatus = $this->checkBatchStatus($batch, $apiClient);
 
         if (!$batchStatus) {
             $this->getLogger()->error(
@@ -148,8 +148,8 @@ class BatchExporter extends AbstractExporter
      */
     protected function createBatchUpdateOperation(Batch $batch, CustomerInterface $customer, array $entry, Mailchimp $mailchimpProviderHandler)
     {
-        $exportService = $this->exportService;
-        $apiClient = $this->apiClient;
+        $exportService = $mailchimpProviderHandler->getExportService();
+        $apiClient = $this->getApiClientFromExportService($exportService);
 
         $objectId = $customer->getId();
         $remoteId = $apiClient->subscriberHash($entry['email_address']);
@@ -211,8 +211,8 @@ class BatchExporter extends AbstractExporter
             return;
         }
 
-        $exportService = $this->exportService;
-        $apiClient = $this->apiClient;
+        $exportService = $mailchimpProviderHandler->getExportService();
+        $apiClient = $this->getApiClientFromExportService($exportService);
 
         $objectId = $item->getCustomerId();
         $remoteId = $apiClient->subscriberHash($item->getEmail());
@@ -240,7 +240,7 @@ class BatchExporter extends AbstractExporter
      *
      * @return array|bool
      */
-    protected function checkBatchStatus(Batch $batch, $iteration = 0)
+    protected function checkBatchStatus(Batch $batch, \DrewM\MailChimp\MailChimp $apiClient, $iteration = 0)
     {
         if ($iteration > $this->maxCheckIterations) {
             $this->getLogger()->error(
@@ -275,7 +275,6 @@ class BatchExporter extends AbstractExporter
             )
         );
 
-        $apiClient = $this->apiClient;
         $result = $batch->check_status();
 
         if ($apiClient->success()) {
@@ -308,7 +307,7 @@ class BatchExporter extends AbstractExporter
             );
         }
 
-        return $this->checkBatchStatus($batch, $iteration + 1);
+        return $this->checkBatchStatus($batch, $apiClient, $iteration + 1);
     }
 
     /**
@@ -369,8 +368,8 @@ class BatchExporter extends AbstractExporter
 
     protected function processSuccessfullItem(Mailchimp $mailchimpProviderHandler, NewsletterQueueItemInterface $item)
     {
-        $exportService = $this->exportService;
-        $apiClient = $this->apiClient;
+        $exportService = $mailchimpProviderHandler->getExportService();
+        $apiClient = $this->getApiClientFromExportService($exportService);
 
         /** @var MailchimpAwareCustomerInterface|ElementInterface $customer */
         $customer = $item->getCustomer();
@@ -433,8 +432,8 @@ class BatchExporter extends AbstractExporter
 
     protected function processFailedItem(Mailchimp $mailchimpProviderHandler, NewsletterQueueItemInterface $item, $message)
     {
-        $exportService = $this->exportService;
-        $apiClient = $this->apiClient;
+        $exportService = $mailchimpProviderHandler->getExportService();
+        $apiClient = $this->getApiClientFromExportService($exportService);
 
         /** @var MailchimpAwareCustomerInterface|ElementInterface $customer */
         $customer = $item->getCustomer();

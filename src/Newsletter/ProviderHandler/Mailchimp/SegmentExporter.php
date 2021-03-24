@@ -19,28 +19,19 @@ use CustomerManagementFrameworkBundle\Traits\ApplicationLoggerAware;
 use DrewM\MailChimp\MailChimp;
 use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
+use CustomerManagementFrameworkBundle\Newsletter;
 
 class SegmentExporter
 {
     use ApplicationLoggerAware;
 
-    /**
-     * @var MailChimpExportService
-     */
-    private $exportService;
-
     private $lastCreatedGroupRemoteId;
 
     /**
      * SegmentExporter constructor.
-     *
-     * @param MailChimp $apiClient
-     * @param string $listId
      */
-    public function __construct(MailChimpExportService $exportService)
+    public function __construct()
     {
-        $this->exportService = $exportService;
-
         $this->setLoggerComponent('NewsletterSync');
     }
 
@@ -52,9 +43,10 @@ class SegmentExporter
      *
      * @return null|string
      */
-    public function exportGroup(CustomerSegmentGroup $group, $listId, $forceCreate = false, $forceUpdate = false)
+    public function exportGroup(CustomerSegmentGroup $group, Newsletter\ProviderHandler\Mailchimp $mailchimpProviderHandler, $forceCreate = false, $forceUpdate = false)
     {
-        $exportService = $this->exportService;
+        $exportService = $mailchimpProviderHandler->getExportService();
+        $listId = $mailchimpProviderHandler->getListId();
         $apiClient = $exportService->getApiClient();
 
         $data = [
@@ -193,7 +185,7 @@ class SegmentExporter
                     ]
                 );
 
-                return $this->exportGroup($group, $listId, true);
+                return $this->exportGroup($group, $mailchimpProviderHandler, true);
             }
 
             return null;
@@ -206,16 +198,17 @@ class SegmentExporter
      * Export a segment
      *
      * @param CustomerSegment $segment
-     * @param string $listId
+     * @param Newsletter\ProviderHandler\Mailchimp $mailchimpProviderHandler
      * @param string $remoteGroupId
      * @param bool $forceCreate
      * @param bool $forceUpdate
      *
      * @return null|string
      */
-    public function exportSegment(CustomerSegment $segment, $listId, $remoteGroupId, $forceCreate = false, $forceUpdate = false)
+    public function exportSegment(CustomerSegment $segment, Newsletter\ProviderHandler\Mailchimp $mailchimpProviderHandler, $remoteGroupId, $forceCreate = false, $forceUpdate = false)
     {
-        $exportService = $this->exportService;
+        $exportService = $mailchimpProviderHandler->getExportService();
+        $listId = $mailchimpProviderHandler->getListId();
         $apiClient = $exportService->getApiClient();
         $data = [
             'name' => $segment->getName(),
@@ -345,7 +338,7 @@ class SegmentExporter
                     ]
                 );
 
-                return $this->exportSegment($segment, $listId, $remoteGroupId, true);
+                return $this->exportSegment($segment, $mailchimpProviderHandler, $remoteGroupId, true);
             }
 
             return null;
@@ -358,12 +351,13 @@ class SegmentExporter
      * deletes all segments from given $remoteGroupId in mailchimp which are not within the given $existingSegmentIds array
      *
      * @param array $existingGroupIds
-     * @param string $listId
+     * @param Newsletter\ProviderHandler\Mailchimp $mailchimpProviderHandler
      * @param string $remoteGroupId
      */
-    public function deleteNonExistingSegmentsFromGroup(array $existingSegmentIds, $listId, $remoteGroupId)
+    public function deleteNonExistingSegmentsFromGroup(array $existingSegmentIds, Newsletter\ProviderHandler\Mailchimp $mailchimpProviderHandler, $remoteGroupId)
     {
-        $exportService = $this->exportService;
+        $exportService = $mailchimpProviderHandler->getExportService();
+        $listId = $mailchimpProviderHandler->getListId();
         $apiClient = $exportService->getApiClient();
 
         $result = $apiClient->get(
@@ -409,11 +403,12 @@ class SegmentExporter
      * deletes all groups in mailchimp which are not within the given $existingGroupIds array
      *
      * @param array $existingGroupIds
-     * @param string $listId
+     * @param Newsletter\ProviderHandler\Mailchimp $mailchimpProviderHandler
      */
-    public function deleteNonExistingGroups(array $existingGroupIds, $listId)
+    public function deleteNonExistingGroups(array $existingGroupIds, Newsletter\ProviderHandler\Mailchimp $mailchimpProviderHandler)
     {
-        $exportService = $this->exportService;
+        $exportService = $mailchimpProviderHandler->getExportService();
+        $listId = $mailchimpProviderHandler->getListId();
         $apiClient = $exportService->getApiClient();
 
         $url = $exportService->getListResourceUrl($listId, 'interest-categories');
@@ -425,7 +420,7 @@ class SegmentExporter
         if(is_array($result['categories'])) {
             foreach ($result['categories'] as $category) {
                 if (!in_array($category['id'], $existingGroupIds)) {
-                    $this->deleteGroupByRemoteId($category['id'], $listId);
+                    $this->deleteGroupByRemoteId($category['id'], $mailchimpProviderHandler);
                 }
             }
         }
@@ -441,11 +436,13 @@ class SegmentExporter
 
     /**
      * @param string $remoteGroupId
-     * @param string $listId
+     * @param Newsletter\ProviderHandler\Mailchimp $mailchimpProviderHandler
      */
-    private function deleteGroupByRemoteId($remoteGroupId, $listId)
+    private function deleteGroupByRemoteId($remoteGroupId, Newsletter\ProviderHandler\Mailchimp $mailchimpProviderHandler)
     {
-        $group = $this->exportService->getObjectByRemoteId($remoteGroupId);
+        $exportService = $mailchimpProviderHandler->getExportService();
+        $listId = $mailchimpProviderHandler->getListId();
+        $group = $exportService->getObjectByRemoteId($remoteGroupId);
 
         if ($group instanceof CustomerSegmentGroup) {
             $this->getLogger()->info(
@@ -470,7 +467,6 @@ class SegmentExporter
             );
         }
 
-        $exportService = $this->exportService;
         $apiClient = $exportService->getApiClient();
 
         $apiClient->delete(

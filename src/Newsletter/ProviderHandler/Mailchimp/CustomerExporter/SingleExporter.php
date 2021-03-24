@@ -31,7 +31,7 @@ class SingleExporter extends AbstractExporter
      * Run the actual export
      *
      * @param NewsletterQueueItemInterface $item
-     * @param string $listId
+     * @param Mailchimp $mailchimpProviderHandler
      *
      * @return void
      */
@@ -58,18 +58,18 @@ class SingleExporter extends AbstractExporter
     /**
      * @param MailchimpAwareCustomerInterface $customer
      * @param NewsletterQueueItemInterface $item
-     * @param string $listId
+     * @param Mailchimp $mailchimpProviderHandler
      *
      * @return bool
      */
     public function update(MailchimpAwareCustomerInterface $customer, NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler)
     {
-        $exportService = $this->exportService;
-        $apiClient = $this->apiClient;
+        $exportService = $mailchimpProviderHandler->getExportService();
+        $apiClient = $this->getApiClientFromExportService($exportService);
 
         // entry to send to API
         $entry = $mailchimpProviderHandler->buildEntry($customer);
-        $remoteId = $this->apiClient->subscriberHash($item->getEmail());
+        $remoteId = $apiClient->subscriberHash($item->getEmail());
 
         $this->getLogger()->info(
             sprintf(
@@ -159,8 +159,8 @@ class SingleExporter extends AbstractExporter
      */
     public function fetchCustomer(Mailchimp $mailchimpProviderHandler, MailchimpAwareCustomerInterface $customer)
     {
-        $apiClient = $this->apiClient;
-        $exportService = $this->exportService;
+        $exportService = $mailchimpProviderHandler->getExportService();
+        $apiClient = $this->getApiClientFromExportService($exportService);
         $remoteId = $apiClient->subscriberHash($customer->getEmail());
 
 
@@ -177,8 +177,8 @@ class SingleExporter extends AbstractExporter
 
     protected function handleChangedEmail(MailchimpAwareCustomerInterface $customer, NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler, $remoteId)
     {
-        $exportService = $this->exportService;
-        $apiClient = $exportService->getApiClient();
+        $exportService = $mailchimpProviderHandler->getExportService();
+        $apiClient = $this->getApiClientFromExportService($exportService);
 
         /* if the email address changes we have to delete and recreate it
            as mailchimp does only allow updating of email addresses for subscribed customers */
@@ -229,7 +229,7 @@ class SingleExporter extends AbstractExporter
             }
 
             // change the remote id to the new/current email address => recreate the customer with the new email/ID
-            $remoteId = $this->apiClient->subscriberHash($customer->getEmail());
+            $remoteId = $apiClient->subscriberHash($customer->getEmail());
         }
 
         return $remoteId;
@@ -238,12 +238,12 @@ class SingleExporter extends AbstractExporter
     /**
      * @param MailchimpAwareCustomerInterface $customer
      * @param NewsletterQueueItemInterface $item
-     * @param string $listId
+     * @param Mailchimp $mailchimpProviderHandler
      */
     protected function delete(MailchimpAwareCustomerInterface $customer, NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler)
     {
-        $exportService = $this->exportService;
-        $apiClient = $this->apiClient;
+        $exportService = $mailchimpProviderHandler->getExportService();
+        $apiClient = $this->getApiClientFromExportService($exportService);
 
         if($mailchimpProviderHandler->doesOtherSubscribedCustomerWithEmailExist($customer->getEmail(), $customer->getId())) {
             $this->getLogger()->debug(
@@ -260,7 +260,7 @@ class SingleExporter extends AbstractExporter
 
         // entry to send to API
         $entry = $mailchimpProviderHandler->buildEntry($customer);
-        $remoteId = $this->apiClient->subscriberHash($item->getEmail());
+        $remoteId = $apiClient->subscriberHash($item->getEmail());
 
         $this->getLogger()->debug(
             sprintf(
@@ -331,8 +331,8 @@ class SingleExporter extends AbstractExporter
 
     protected function processDeleteQueueItem(NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler)
     {
-        $exportService = $this->exportService;
-        $apiClient = $this->apiClient;
+        $exportService = $mailchimpProviderHandler->getExportService();
+        $apiClient = $this->getApiClientFromExportService($exportService);
 
         if($mailchimpProviderHandler->doesOtherSubscribedCustomerWithEmailExist($item->getEmail(), $item->getCustomerId())) {
             $this->getLogger()->info(
@@ -348,7 +348,7 @@ class SingleExporter extends AbstractExporter
         }
 
         // entry to send to API
-        $remoteId = $this->apiClient->subscriberHash($item->getEmail());
+        $remoteId = $apiClient->subscriberHash($item->getEmail());
 
         $this->getLogger()->info(
             sprintf(

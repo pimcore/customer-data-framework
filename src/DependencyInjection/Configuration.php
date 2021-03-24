@@ -369,6 +369,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
 
                 ->arrayNode('duplicates_view')
+                    ->addDefaultsIfNotSet()
                     ->children()
                         ->booleanNode('enabled')->defaultFalse()->end()
                         ->arrayNode('listFields')
@@ -382,6 +383,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
 
                 ->arrayNode('duplicates_index')
+                    ->addDefaultsIfNotSet()
                     ->children()
                         ->booleanNode('enableDuplicatesIndex')
                             ->defaultFalse()

@@ -40,7 +40,6 @@ services:
             - '%pimcore_customer_management_framework.customer_provider.parentPath%'
          lazy: true
 
-
     CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface:
          class: CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\DefaultObjectNamingScheme
          arguments:
