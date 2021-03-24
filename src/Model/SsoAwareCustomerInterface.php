@@ -20,10 +20,10 @@ interface SsoAwareCustomerInterface
     /**
      * @return SsoIdentityInterface[]
      */
-    public function getSsoIdentities();
+    public function getSsoIdentities(): ?array;
 
     /**
      * @param SsoIdentityInterface[] $ssoIdentities
      */
-    public function setSsoIdentities($ssoIdentities);
+    public function setSsoIdentities(?array $ssoIdentities);
 }

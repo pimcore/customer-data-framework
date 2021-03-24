@@ -47,146 +47,146 @@ interface CustomerInterface extends ElementInterface
     /**
      * @return bool
      */
-    public function getActive();
+    public function getActive() :?bool;
 
     /**
      * @param bool $active
      *
      * @return void
      */
-    public function setActive($active);
+    public function setActive(?bool $active);
 
     /**
      * @return string
      */
-    public function getGender();
+    public function getGender(): ?string;
 
     /**
      * @param $gender
      *
      * @return void
      */
-    public function setGender($gender);
+    public function setGender(?string $gender);
 
     /**
      * @return string
      */
-    public function getFirstname();
+    public function getFirstname(): ?string;
 
     /**
      * @param $firstname
      *
      * @return void
      */
-    public function setFirstname($firstname);
+    public function setFirstname(?string $firstname);
 
     /**
      * @return string
      */
-    public function getLastname();
+    public function getLastname(): ?string;
 
     /**
      * @param $lastname
      *
      * @return void
      */
-    public function setLastname($lastname);
+    public function setLastname(?string $lastname);
 
     /**
      * @return string
      */
-    public function getStreet();
+    public function getStreet(): ?string;
 
     /**
      * @param $street
      *
      * @return void
      */
-    public function setStreet($street);
+    public function setStreet(?string $street);
 
     /**
      * @return string
      */
-    public function getZip();
+    public function getZip(): ?string;
 
     /**
      * @param $zip
      *
      * @return void
      */
-    public function setZip($zip);
+    public function setZip(?string $zip);
 
     /**
      * @return string
      */
-    public function getCity();
+    public function getCity(): ?string;
 
     /**
      * @param $city
      *
      * @return void
      */
-    public function setCity($city);
+    public function setCity(?string $city);
 
     /**
      * @return string
      */
-    public function getCountryCode();
+    public function getCountryCode(): ?string;
 
     /**
      * @param $countryCode
      *
      * @return void
      */
-    public function setCountryCode($countryCode);
+    public function setCountryCode(?string $countryCode);
 
     /**
      * @return string
      */
-    public function getEmail();
+    public function getEmail(): ?string;
 
     /**
      * @param $email
      *
      * @return void
      */
-    public function setEmail($email);
+    public function setEmail(?string $email);
 
     /**
      * @return string
      */
-    public function getPhone();
+    public function getPhone(): ?string;
 
     /**
      * @param $phone
      *
      * @return void
      */
-    public function setPhone($phone);
+    public function setPhone(?string $phone);
 
     /**
-     * @return CustomerSegmentInterface[]|ObjectMetadata[]|null
+     * @return CustomerSegmentInterface[]|ObjectMetadata[]
      */
-    public function getManualSegments();
-
-    /**
-     * @param array $segments
-     *
-     * @return void
-     */
-    public function setManualSegments($segments);
-
-    /**
-     * @return CustomerSegmentInterface[]|ObjectMetadata[]|null
-     */
-    public function getCalculatedSegments();
+    public function getManualSegments(): array;
 
     /**
      * @param array $segments
      *
      * @return void
      */
-    public function setCalculatedSegments($segments);
+    public function setManualSegments(?array $segments);
+
+    /**
+     * @return CustomerSegmentInterface[]|ObjectMetadata[]
+     */
+    public function getCalculatedSegments(): array;
+
+    /**
+     * @param array $segments
+     *
+     * @return void
+     */
+    public function setCalculatedSegments(?array $segments);
 
     /**
      * @return CustomerSegment[]
@@ -196,14 +196,14 @@ interface CustomerInterface extends ElementInterface
     /**
      * @return string
      */
-    public function getIdEncoded();
+    public function getIdEncoded(): ?string;
 
     /**
      * @param $idEncoded
      *
      * @return void
      */
-    public function setIdEncoded($idEncoded);
+    public function setIdEncoded(?string $idEncoded);
 
     /**
      * @return Consent|bool|null

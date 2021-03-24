@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\Model;
 
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
+use Pimcore\Model\Element\AbstractElement;
 
 interface CustomerSegmentInterface
 {
@@ -27,7 +28,7 @@ interface CustomerSegmentInterface
     /**
      * @return string
      */
-    public function getName();
+    public function getName(): ?string;
 
     /**
      * @param $name
@@ -39,7 +40,7 @@ interface CustomerSegmentInterface
     /**
      * @return string
      */
-    public function getReference();
+    public function getReference(): ?string;
 
     /**
      * @param string $reference
@@ -51,19 +52,19 @@ interface CustomerSegmentInterface
     /**
      * @return CustomerSegmentGroup
      */
-    public function getGroup();
+    public function getGroup(): ?AbstractElement;
 
     /**
      * @param CustomerSegmentGroup $group
      *
      * @return void
      */
-    public function setGroup(?CustomerSegmentGroup $group);
+    public function setGroup(?AbstractElement $group);
 
     /**
      * @return bool
      */
-    public function getCalculated();
+    public function getCalculated(): ?bool;
 
     /**
      * @param bool $calculated
@@ -75,12 +76,12 @@ interface CustomerSegmentInterface
     /**
      * @return bool
      */
-    public function getUseAsTargetGroup();
+    public function getUseAsTargetGroup(): ?bool;
 
     /**
      * @return string
      */
-    public function getTargetGroup();
+    public function getTargetGroup(): ?string;
 
     /**
      * @param string $targetGroup
