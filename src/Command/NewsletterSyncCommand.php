@@ -21,16 +21,43 @@ use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\DefaultNewsletterQueueItem;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use Pimcore\Model\Tool\Lock;
+use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class NewsletterSyncCommand extends AbstractCommand
 {
+    use LockableTrait;
+
     /**
      * @var NewsletterManagerInterface
      */
-    private $newsletterManager;
+    protected $newsletterManager;
+
+    /**
+     * @var NewsletterQueueInterface
+     */
+    protected $newsletterQueue;
+
+    /**
+     * @var CustomerProviderInterface
+     */
+    protected $customerProvider;
+
+    /**
+     * @param NewsletterManagerInterface $newsletterManager
+     * @param NewsletterQueueInterface $newsletterQueue
+     * @param CustomerProviderInterface $customerProvider
+     */
+    public function __construct(NewsletterManagerInterface $newsletterManager, NewsletterQueueInterface $newsletterQueue, CustomerProviderInterface $customerProvider)
+    {
+        parent::__construct();
+        $this->newsletterManager = $newsletterManager;
+        $this->newsletterQueue = $newsletterQueue;
+        $this->customerProvider = $customerProvider;
+    }
+
 
     protected function configure()
     {
@@ -52,14 +79,8 @@ class NewsletterSyncCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->newsletterManager = \Pimcore::getContainer()->get(NewsletterManagerInterface::class);
-
         if ($input->getOption('enqueue-all-customers')) {
-            /**
-             * @var NewsletterQueueInterface $newsletterQueue
-             */
-            $newsletterQueue = \Pimcore::getContainer()->get(NewsletterQueueInterface::class);
-            $newsletterQueue->enqueueAllCustomers();
+            $this->newsletterQueue->enqueueAllCustomers();
         }
 
         if ($input->getOption('force-segments')) {
@@ -68,11 +89,8 @@ class NewsletterSyncCommand extends AbstractCommand
 
         if ($input->getOption('customer-data-sync') || $input->getOption('all-customers')) {
             $lockKey = 'plugin_cmf_newsletter_sync_queue';
-            if (Lock::isLocked($lockKey, (60 * 60 * 12))) {
-                die('locked - not starting now');
-            }
 
-            Lock::lock($lockKey);
+            $this->lock($lockKey);
 
             if(!$input->getOption('force-segments')) {
                 $this->newsletterManager->syncSegments();
@@ -83,7 +101,7 @@ class NewsletterSyncCommand extends AbstractCommand
                 (bool)$input->getOption('force-customers')
             );
 
-            Lock::release($lockKey);
+            $this->release();
         }
 
         if ($input->getOption('mailchimp-status-sync')) {
@@ -97,18 +115,15 @@ class NewsletterSyncCommand extends AbstractCommand
         if ($processQueueItem = $input->getOption('process-queue-item')) {
             $data = json_decode($processQueueItem, true);
 
-            /**
-             * @var CustomerProviderInterface $customerProvider
-             */
-            $customerProvider = \Pimcore::getContainer()->get('cmf.customer_provider');
-
             if (empty($data['customerId']) || empty($data['email']) || empty($data['operation']) || empty($data['modificationDate'])) {
                 throw new \Exception('invalid item');
             }
 
-            $item = new DefaultNewsletterQueueItem($data['customerId'], $customerProvider->getById($data['customerId']), $data['email'], $data['operation'], $data['modificationDate']);
+            $item = new DefaultNewsletterQueueItem($data['customerId'], $this->customerProvider->getById($data['customerId']), $data['email'], $data['operation'], $data['modificationDate']);
             $this->newsletterManager->syncSingleCustomerQueueItem($item);
         }
+
+        return 0;
     }
 
     protected function mailchimpStatusSync()

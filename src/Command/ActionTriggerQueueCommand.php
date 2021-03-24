@@ -15,13 +15,28 @@
 
 namespace CustomerManagementFrameworkBundle\Command;
 
-use Pimcore\Model\Tool\Lock;
+use CustomerManagementFrameworkBundle\ActionTrigger\Queue\QueueInterface;
+use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ActionTriggerQueueCommand extends AbstractCommand
 {
+    use LockableTrait;
+
     const LOCK_KEY = 'cmf_actiontrigger_queue';
+
+    /**
+     * @var QueueInterface
+     */
+    protected $actionTriggerQueue;
+
+    public function __construct(QueueInterface $actionTriggerQueue)
+    {
+        parent::__construct();
+        $this->actionTriggerQueue = $actionTriggerQueue;
+    }
+
 
     protected function configure()
     {
@@ -35,18 +50,16 @@ class ActionTriggerQueueCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (Lock::isLocked(self::LOCK_KEY)) {
-            die('locked - not starting now');
-        }
-
-        Lock::lock(self::LOCK_KEY);
+        $this->lock(self::LOCK_KEY);
 
         try {
-            \Pimcore::getContainer()->get('cmf.action_trigger.queue')->processQueue();
+            $this->actionTriggerQueue->processQueue();
         } catch (\Exception $e) {
             $this->getLogger()->error($e->getMessage());
         }
 
-        Lock::release(self::LOCK_KEY);
+        $this->release();
+
+        return 0;
     }
 }

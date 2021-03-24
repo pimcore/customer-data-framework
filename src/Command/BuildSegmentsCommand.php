@@ -115,5 +115,7 @@ class BuildSegmentsCommand extends AbstractCommand
             // capture ctrl+c + kill signal
             true
         );
+
+        return 0;
     }
 }

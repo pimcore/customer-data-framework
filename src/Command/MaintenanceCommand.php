@@ -21,6 +21,22 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MaintenanceCommand extends AbstractCommand
 {
+
+    /**
+     * @var MaintenanceWorker
+     */
+    protected $maintenanceWorker;
+
+    /**
+     * @param MaintenanceWorker $maintenanceWorker
+     */
+    public function __construct(MaintenanceWorker $maintenanceWorker)
+    {
+        parent::__construct();
+        $this->maintenanceWorker = $maintenanceWorker;
+    }
+
+
     protected function configure()
     {
         $this->setName('cmf:maintenance')
@@ -35,10 +51,11 @@ class MaintenanceCommand extends AbstractCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        \Pimcore::getContainer()->get(MaintenanceWorker::class)->execute();
+        $this->maintenanceWorker->execute();
+        return 0;
     }
 }
