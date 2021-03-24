@@ -27,6 +27,7 @@ use CustomerManagementFrameworkBundle\Import\CustomerImportService;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
+use Pimcore\Controller\KernelControllerEventInterface;
 use Pimcore\Db;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\Model\DataObject\AbstractObject;
@@ -40,7 +41,7 @@ use Pimcore\Model\DataObject\Service;
 use Pimcore\Model\Element\ValidationException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Routing\Annotation\Route;
 use Zend\Paginator\Adapter\ArrayAdapter;
 
@@ -57,9 +58,8 @@ class CustomersController extends Admin
      */
     private $segmentGroups = null;
 
-    public function onKernelController(FilterControllerEvent $event)
+    public function onKernelControllerEvent(ControllerEvent $event)
     {
-        parent::onKernelController($event);
         $this->checkPermission('plugin_cmf_perm_customerview');
         AbstractObject::setHideUnpublished(true);
     }
