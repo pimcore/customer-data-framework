@@ -34,7 +34,7 @@ have a look at our [case studies](https://pimcore.com/en/customers).
 Following aspects are short cuts into the documentation for start working with the Customer Management Framework (CMF): 
 
 * [Architecture Overview](./doc/01_Architecture-Overview.md)
-* [Installation](./doc/02_Installation.md) and [Configuration](./doc/03_Configuration.md)
+* [Installation](./doc/02_Installation/README.md) and [Configuration](./doc/03_Configuration.md)
 * [Working with Customers](./doc/05_Working-with-Customers.md)
 * [Working with Activities (ActivityManager, ActivityStore, ActivityView)](./doc/09_Activities/README.md)
 * [Working with Customer Segments](./doc/11_CustomerSegments.md)
@@ -49,12 +49,3 @@ Following aspects are short cuts into the documentation for start working with t
 ## Contributing and Development
 
 For details see our [Contributing guide](https://github.com/pimcore/customer-data-framework/blob/master/CONTRIBUTING.md).
-
-
-## Running with Pimcore < 5.4
-With Pimcore 5.4 the location of static Pimcore files like icons has changed. In order to make this bundle work 
-with Pimcore < 5.4, please add following rewrite rule to your `.htaccess`.
-```
-    # rewrite rule for pre pimcore 5.4 core static files
-    RewriteRule ^bundles/pimcoreadmin/(.*) /pimcore/static6/$1 [PT,L]
-``` 
