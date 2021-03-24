@@ -20,15 +20,15 @@ interface SsoIdentityInterface
     /**
      * @return string
      */
-    public function getProvider();
+    public function getProvider(): ?string;
 
     /**
      * @return string
      */
-    public function getIdentifier();
+    public function getIdentifier(): ?string;
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getProfileData();
+    public function getProfileData(): ?string;
 }
