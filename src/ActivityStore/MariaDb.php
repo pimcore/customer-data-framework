@@ -234,7 +234,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
      *
      * @return Paginator
      */
-    public function getActivitiesDataForWebservice($pageSize, $page = 1, ExportActivitiesFilterParams $params)
+    public function getActivitiesDataForWebservice($pageSize, $page, ExportActivitiesFilterParams $params)
     {
         $db = Db::get();
 

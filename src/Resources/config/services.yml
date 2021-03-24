@@ -38,6 +38,7 @@ services:
          arguments:
             - '%pimcore_customer_management_framework.general.customerPimcoreClass%'
             - '%pimcore_customer_management_framework.customer_provider.parentPath%'
+         lazy: true
 
 
     CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface:
@@ -245,13 +246,6 @@ services:
     CustomerManagementFrameworkBundle\GDPR\Consent\ConsentCheckerInterface:
         class: CustomerManagementFrameworkBundle\GDPR\Consent\ConsentChecker
         public: false
-
-    cmf.pimcore.data_object.import.operator.factory.customer_segments:
-        class: Pimcore\DataObject\Import\ColumnConfig\Operator\Factory\DefaultOperatorFactory
-        arguments:
-            $className: CustomerManagementFrameworkBundle\Import\ColumnConfig\Operator\CustomerSegments
-        tags:
-            - { name: pimcore.data_object.import.operator_factory, id: CustomerSegments }
 
     CustomerManagementFrameworkBundle\Import\CustomerImportService: ~
 

@@ -89,7 +89,7 @@ class SearchHelper {
      * @param User $adminUser
      * @throws \Exception
      */
-    public function addListingFilters(Concrete $listing, array $filters = [], User $adminUser)
+    public function addListingFilters(Concrete $listing, array $filters, User $adminUser)
     {
         $handler = new FilterHandler($listing);
 

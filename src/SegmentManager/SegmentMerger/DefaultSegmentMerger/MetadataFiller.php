@@ -35,9 +35,9 @@ class MetadataFiller
         CustomerInterface $customer,
         array $addSegments,
         array $addedSegments,
-        $calculated = false,
-        $segmentCreatedTimestamp = null,
-        $segmentApplicationCounter = null,
+        $calculated,
+        $segmentCreatedTimestamp,
+        $segmentApplicationCounter,
         $saveNeeded,
         DefaultSegmentMerger $segmentMerger
     ) {

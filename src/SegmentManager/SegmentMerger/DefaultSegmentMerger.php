@@ -130,8 +130,8 @@ class DefaultSegmentMerger implements SegmentMergerInterface
     protected function mergeSegmentsHelper(
         CustomerInterface $customer,
         array $addSegments,
-        array $deleteSegments = [],
-        $calculated = false,
+        array $deleteSegments,
+        $calculated,
         $hintForNotes,
         $segmentCreatedTimestamp = null,
         $segmentApplicationCounter = null

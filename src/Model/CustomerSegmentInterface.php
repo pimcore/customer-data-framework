@@ -34,7 +34,7 @@ interface CustomerSegmentInterface
      *
      * @return string
      */
-    public function setName($name);
+    public function setName(?string $name);
 
     /**
      * @return string
@@ -46,7 +46,7 @@ interface CustomerSegmentInterface
      *
      * @return void
      */
-    public function setReference($reference);
+    public function setReference(?string $reference);
 
     /**
      * @return CustomerSegmentGroup
@@ -58,7 +58,7 @@ interface CustomerSegmentInterface
      *
      * @return void
      */
-    public function setGroup($group);
+    public function setGroup(?CustomerSegmentGroup $group);
 
     /**
      * @return bool
@@ -70,7 +70,7 @@ interface CustomerSegmentInterface
      *
      * @return void
      */
-    public function setCalculated($calculated);
+    public function setCalculated(bool $calculated);
 
     /**
      * @return bool
@@ -86,7 +86,7 @@ interface CustomerSegmentInterface
      * @param string $targetGroup
      * @return $this
      */
-    public function setTargetGroup($targetGroup);
+    public function setTargetGroup(?string $targetGroup);
 
     /**
      * @return []
