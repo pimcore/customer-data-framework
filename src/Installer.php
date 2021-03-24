@@ -15,11 +15,12 @@
 
 namespace CustomerManagementFrameworkBundle;
 
+use CustomerManagementFrameworkBundle\Migrations\Version20210305134111;
 use Pimcore\Db;
-use Pimcore\Extension\Bundle\Installer\AbstractInstaller;
+use Pimcore\Extension\Bundle\Installer\SettingsStoreAwareInstaller;
 use Pimcore\Logger;
 
-class Installer extends AbstractInstaller
+class Installer extends SettingsStoreAwareInstaller
 {
     private $permissionsToInstall = [
         'plugin_cmf_perm_activityview',
@@ -36,30 +37,9 @@ class Installer extends AbstractInstaller
         $this->installClasses();
         $this->installBricks();
 
+        parent::install();
+
         return true;
-    }
-
-    public function canBeInstalled()
-    {
-        return !$this->isInstalled();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isInstalled()
-    {
-        $installed = false;
-        try {
-            // check if if first permission is installed
-            $installed = Db::get()->fetchOne('SELECT `key` FROM users_permission_definitions WHERE `key` = :key', [
-                'key' => $this->permissionsToInstall[0]
-            ]);
-        } catch (\Exception $e) {
-            // nothing to do
-        }
-
-        return (bool) $installed;
     }
 
     /**
@@ -321,5 +301,10 @@ class Installer extends AbstractInstaller
                 Logger::err("Could not import $brickKey brick.");
             }
         }
+    }
+
+    public function getLastMigrationVersionClassName(): ?string
+    {
+        return Version20210305134111::class;
     }
 }

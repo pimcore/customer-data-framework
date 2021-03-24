@@ -1,0 +1,3 @@
+doctrine_migrations:
+    migrations_paths:
+        'AdvancedObjectSearchBundle\Migrations\PimcoreX': '@AdvancedObjectSearchBundle/Migrations/PimcoreX'

@@ -237,6 +237,8 @@ services:
 
     CustomerManagementFrameworkBundle\Installer:
         public: true
+        arguments:
+            $bundle: "@=service('kernel').getBundle('PimcoreCustomerManagementFrameworkBundle')"
 
     cmf.custom_report.adapter.term_segment_builder:
         class: Pimcore\Model\Tool\CustomReport\Adapter\DefaultCustomReportAdapterFactory

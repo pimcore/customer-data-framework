@@ -28,11 +28,27 @@ use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
-class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
+class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension implements PrependExtensionInterface
 {
+    /**
+     * @param ContainerBuilder $container
+     */
+    public function prepend(ContainerBuilder $container)
+    {
+        if ($container->hasExtension('doctrine_migrations')) {
+            $loader = new YamlFileLoader(
+                $container,
+                new FileLocator(__DIR__ . '/../Resources/config')
+            );
+
+            $loader->load('doctrine_migrations.yml');
+        }
+    }
+
     protected function loadInternal(array $config, ContainerBuilder $container)
     {
         $loader = new YamlFileLoader(
@@ -175,4 +191,5 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension
         $container->setParameter('pimcore.gdpr-data-extrator.customers', $config['customer']);
 
     }
+
 }
