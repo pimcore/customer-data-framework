@@ -32,8 +32,12 @@ services:
           tags:
               - { name: kernel.event_listener, event: pimcore.system.maintenance, method: onMaintenance }
 
+    CustomerManagementFrameworkBundle\ActionTrigger\EventHandler\EventHandlerInterface:
+        alias: cmf.event_listener.action_trigger
+
     cmf.event_listener.action_trigger:
         class: CustomerManagementFrameworkBundle\ActionTrigger\EventHandler\DefaultEventHandler
+        deprecated: 'The "%service_id%" service is deprecated. Use "CustomerManagementFrameworkBundle\ActionTrigger\Queue\QueueInterface" instead'
         tags:
             - { name: kernel.event_listener, event: plugin.cmf.new-activity, method: handleEvent }
             - { name: kernel.event_listener, event: plugin.cmf.execute-segment-builders, method: handleEvent }

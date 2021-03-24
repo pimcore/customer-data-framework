@@ -21,6 +21,22 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DuplicatesIndexCommand extends AbstractCommand
 {
+
+    /**
+     * @var DuplicatesIndexInterface
+     */
+    protected $duplicatesIndex;
+
+    /**
+     * @param DuplicatesIndexInterface $duplicatesIndex
+     */
+    public function __construct(DuplicatesIndexInterface $duplicatesIndex)
+    {
+        parent::__construct();
+        $this->duplicatesIndex = $duplicatesIndex;
+    }
+
+
     protected function configure()
     {
         $this->setName('cmf:duplicates-index')
@@ -36,29 +52,27 @@ class DuplicatesIndexCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $logger = \Pimcore::getContainer()->get('cmf.logger');
+        $logger = $this->getLogger();
 
-        /**
-         * @var DuplicatesIndexInterface $duplicatesIndex
-         */
-        $duplicatesIndex = \Pimcore::getContainer()->get('cmf.customer_duplicates_index');
 
         if ($input->getOption('analyze')) {
-            $duplicatesIndex->setAnalyzeFalsePositives(true);
+            $this->duplicatesIndex->setAnalyzeFalsePositives(true);
         } else {
-            $duplicatesIndex->setAnalyzeFalsePositives(false);
+            $this->duplicatesIndex->setAnalyzeFalsePositives(false);
         }
 
         if ($input->getOption('recreate')) {
             $logger->notice('start recreate index');
-            $duplicatesIndex->recreateIndex();
+            $this->duplicatesIndex->recreateIndex();
             $logger->notice('finished recreate index');
         }
 
         if ($input->getOption('calculate')) {
             $logger->notice('start calculating potential duplicates');
-            $duplicatesIndex->calculatePotentialDuplicates($output);
+            $this->duplicatesIndex->calculatePotentialDuplicates($output);
             $logger->notice('finished calculating potential duplicates');
         }
+
+        return 0;
     }
 }

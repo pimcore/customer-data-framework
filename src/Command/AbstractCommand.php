@@ -15,15 +15,9 @@
 
 namespace CustomerManagementFrameworkBundle\Command;
 
-use Psr\Log\LoggerInterface;
+use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 
 abstract class AbstractCommand extends \Pimcore\Console\AbstractCommand
 {
-    /**
-     * @return LoggerInterface
-     */
-    protected function getLogger()
-    {
-        return \Pimcore::getContainer()->get('cmf.logger');
-    }
+    use LoggerAware;
 }
