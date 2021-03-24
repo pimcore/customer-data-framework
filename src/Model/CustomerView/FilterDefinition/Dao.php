@@ -9,7 +9,7 @@
 namespace CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
-use Pimcore\Db\Connection;
+use Pimcore\Db\ConnectionInterface;
 use Pimcore\Logger;
 use Pimcore\Model\Dao\AbstractDao;
 use Pimcore\Model\Dao\DaoTrait;
@@ -17,8 +17,8 @@ use Pimcore\Model\Dao\DaoTrait;
 /**
  * Class Dao
  * @package CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition
- * @property FilterDefinition model
- * @property Connection db
+ * @property FilterDefinition $model
+ * @property ConnectionInterface $db
  */
 class Dao extends AbstractDao {
 
