@@ -106,7 +106,7 @@ You can find the annotated example of a simple username/password login form with
 
 To re-implement the sample, following steps are necessary: 
 
-1) Make sure the customer class implements all necessary interfaces. See [Installation](./02_Installation.md) for details.
+1) Make sure the customer class implements all necessary interfaces. See [Installation](./02_Installation/README.md) for details.
 2) Add  `hwi/oauth-bundle` and dependencies to your `composer.json`, e.g. with command `composer require hwi/oauth-bundle php-http/guzzle6-adapter:^1 php-http/httplug-bundle`. 
    If you need more updated versions of `guzzle6-adapter` you might need to go for `dev-master` of `hwi/oauth-bundle`. 
 3) Activate `HIOWOauthBundle` and `HttplugBundle` in your `App.php`. 
