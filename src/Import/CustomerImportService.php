@@ -16,7 +16,6 @@
 namespace CustomerManagementFrameworkBundle\Import;
 
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
-use Pimcore\DataObject\Import\Resolver\AbstractResolver;
 use Pimcore\Tool\Admin;
 
 class CustomerImportService  {

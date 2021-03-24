@@ -33,7 +33,7 @@ class Cron implements CustomerListEventInterface
 
         $options = $trigger->getOptions();
 
-        $cron = CronExpression::factory($options['definition']);
+        $cron = new CronExpression($options['definition']);
 
         return $cron->isDue();
     }

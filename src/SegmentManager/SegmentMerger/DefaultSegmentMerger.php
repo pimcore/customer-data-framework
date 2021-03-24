@@ -244,7 +244,7 @@ class DefaultSegmentMerger implements SegmentMergerInterface
             $classDefinition = ClassDefinition::getById($classId);
             $fd = $classDefinition->getFieldDefinition($fieldname);
 
-            $hasObjectMetdataSegmentsField = $fd instanceof ClassDefinition\Data\ObjectsMetadata;
+            $hasObjectMetdataSegmentsField = $fd instanceof ClassDefinition\Data\AdvancedManyToManyObjectRelation;
 
             Cache\Runtime::save($hasObjectMetdataSegmentsField, $cacheKey);
         } else {

@@ -21,12 +21,6 @@ use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface
 use Pimcore\Bundle\AdminBundle\GDPR\DataProvider\DataObjects;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\ClassDefinition;
-use Pimcore\Model\DataObject\ClassDefinition\Data\MultihrefMetadata;
-use Pimcore\Model\DataObject\Concrete;
-use Pimcore\Model\DataObject\Data\ObjectMetadata;
-use Pimcore\Model\Element\ElementInterface;
-use Pimcore\Model\Element\Service;
-use Pimcore\Model\Search\Backend\Data;
 
 class Customers extends DataObjects
 {
