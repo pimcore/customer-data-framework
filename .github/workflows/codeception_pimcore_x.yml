@@ -28,7 +28,7 @@ jobs:
             matrix:
                 include:
                     - { php-version: 8.0, database: "mariadb:10.5", dependencies: highest, experimental: false }
-                    - { php-version: 8.0, database: "mariadb:10.3", dependencies: lowest, experimental: false }
+#                    - { php-version: 8.0, database: "mariadb:10.3", dependencies: lowest, experimental: false }
 #                    - { php-version: 8.0, database: "mysql:5.7", dependencies: lowest, experimental: false }
 #                    - { php-version: 8.0, database: "mysql:8.0", dependencies: lowest, experimental: false }
 #                    - { php-version: 8.0, database: "percona:8.0", dependencies: lowest, experimental: false }
@@ -59,7 +59,7 @@ jobs:
 
             - name: Verify MariaDB connection
               run: |
-                  cp .github/ci/files/.my.cnf ~/.my.cnf
+                  cp .github/ci/pimcore_x/files/.my.cnf ~/.my.cnf
                   while ! mysqladmin ping --silent; do
                     sleep 1
                   done
