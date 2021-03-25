@@ -5,3 +5,4 @@ modules:
         - \Pimcore\Tests\Helper\Pimcore:
             connect_db: true
         - \Pimcore\Tests\Helper\ClassManager
+        - Asserts
