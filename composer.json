@@ -35,6 +35,14 @@
             "install/"
         ]
     },
+    "autoload-dev": {
+      "psr-4": {
+        "CustomerManagementFrameworkBundle\\Tests\\": "tests"
+      },
+      "files": [
+        "src/Kernel.php"
+      ]
+    },
     "extra": {
         "pimcore": {
             "bundles": [
