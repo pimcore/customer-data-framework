@@ -20,6 +20,20 @@ class Model extends AbstractDefinitionHelper
 
         $this->debug('[CMF] Running cmf installer');
 
+
+        //create migrations table in order to allow installation
+        \Pimcore\Db::get()->exec('
+create table migration_versions
+(
+	version varchar(1024) not null
+		primary key,
+	executed_at datetime null,
+	execution_time int null
+)
+collate=utf8_unicode_ci;
+
+');
+
         // install ecommerce framework
         $installer = $pimcoreModule->getContainer()->get(Installer::class);
         $installer->install();
