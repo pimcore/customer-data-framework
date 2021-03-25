@@ -3,6 +3,7 @@
 set -eu
 
 mkdir -p var/config
+mkdir -p bin
 
 cp -r .github/ci/pimcore_x/files/config/. config
 cp -r .github/ci/pimcore_x/files/templates templates
