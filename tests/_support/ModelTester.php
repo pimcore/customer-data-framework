@@ -1,19 +1,8 @@
 <?php
-
-/**
- * Pimcore Customer Management Framework Bundle
- * Full copyright and license information is available in
- * LICENSE.md which is distributed with this source code.
- *
- * @copyright  Copyright (C) Elements.at New Media Solutions GmbH
- * @license    GPLv3
- */
-
 namespace CustomerManagementFrameworkBundle\Tests;
 
 /**
  * Inherited Methods
- *
  * @method void wantToTest($text)
  * @method void wantTo($text)
  * @method void execute($callable)
@@ -26,12 +15,12 @@ namespace CustomerManagementFrameworkBundle\Tests;
  * @method \Codeception\Lib\Friend haveFriend($name, $actorClass = NULL)
  *
  * @SuppressWarnings(PHPMD)
- */
-class UnitTester extends \Codeception\Actor
+*/
+class ModelTester extends \Codeception\Actor
 {
-    use _generated\UnitTesterActions;
+    use _generated\ModelTesterActions;
 
-    /**
-     * Define custom actions here
-     */
+   /**
+    * Define custom actions here
+    */
 }

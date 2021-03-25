@@ -23,7 +23,7 @@ class Ru implements DataTransformerInterface
     {
         preg_match('/\\b\\d{6}\\b/', $data, $matches);
 
-        if ($match = $matches[0]) {
+        if ($match = ($matches[0] ?? 0)) {
             return $match;
         }
 

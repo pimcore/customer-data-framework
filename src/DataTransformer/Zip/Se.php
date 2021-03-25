@@ -24,7 +24,7 @@ class Se implements DataTransformerInterface
         preg_match('/\\b\\d{3} {0,1}\\d{2}\\b/', $data, $matches);
 
         $result = $data;
-        if ($match = $matches[0]) {
+        if ($match = ($matches[0] ?? 0)) {
             if (strlen($match) == 5) {
                 $result = substr($match, 0, 3).' '.substr($match, 3);
             } else {

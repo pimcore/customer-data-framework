@@ -29,7 +29,7 @@ class Gb implements DataTransformerInterface
             $matches
         );
 
-        if ($match = $matches[0]) {
+        if ($match = ($matches[0] ?? 0)) {
             if (strpos($match, ' ') === false && strlen($match) > 4) {
                 return substr($match, 0, 3).' '.substr($match, 3);
             } else {
