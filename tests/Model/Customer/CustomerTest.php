@@ -29,7 +29,7 @@ class CustomerTest extends ModelTestCase
         $customer->setKey('foo');
         $customer->setPublished(true);
         $customer->setActive(true);
-        $customer->setParentId(0);
+        $customer->setParentId(1);
         $customer->setFirstname('Peter');
         $customer->setLastname('Hugo');
         $customer->save();
