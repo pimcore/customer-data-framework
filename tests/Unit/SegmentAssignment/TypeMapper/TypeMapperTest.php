@@ -11,6 +11,7 @@ namespace CustomerManagementFrameworkBundle\Tests\Unit\SegmentAssignment\TypeMap
 use CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapper;
 use PHPUnit\Framework\TestCase;
 use Pimcore\Model\Asset;
+use Pimcore\Model\DataObject;
 use Pimcore\Model\Document;
 use Pimcore\Model\DataObject\AbstractObject;
 
@@ -27,7 +28,7 @@ class TypeMapperTest extends TestCase {
     }
 
     public function testGetTypeStringByObject() {
-        $objects = [new Document(), new Asset(), new AbstractObject()];
+        $objects = [new Document(), new Asset(), new DataObject()];
         $expected = ['document', 'asset', 'object'];
         $actual = array_map(function($item) {
             return $this->sut->getTypeStringByObject($item);

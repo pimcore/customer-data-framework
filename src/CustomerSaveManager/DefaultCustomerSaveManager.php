@@ -94,7 +94,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
             $request = $this->requestStack->getMasterRequest();
 
-            $this->setPimcoreContextResolver(\Pimcore::getContainer()->get('pimcore.service.request.pimcore_context_resolver'));
+            //$this->setPimcoreContextResolver(\Pimcore::getContainer()->get('pimcore.service.request.pimcore_context_resolver'));
 
             /**
              * @var Concrete $customer
@@ -141,7 +141,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         if ($customer->getPublished()) {
             $this->validateOnSave($customer);
         }
-        
+
         $this->rememberOriginalCustomer($customer);
 
         if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
@@ -150,7 +150,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
         $request = $this->requestStack->getMasterRequest();
 
-        $this->setPimcoreContextResolver(\Pimcore::getContainer()->get('pimcore.service.request.pimcore_context_resolver'));
+        //$this->setPimcoreContextResolver(\Pimcore::getContainer()->get('pimcore.service.request.pimcore_context_resolver'));
 
         if(!$request || ($request && !$this->matchesPimcoreContext($request, PimcoreContextResolver::CONTEXT_ADMIN))) {
             $this->applyNamingScheme($customer);

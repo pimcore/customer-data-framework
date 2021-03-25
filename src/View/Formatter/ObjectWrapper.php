@@ -36,7 +36,7 @@ class ObjectWrapper
     public function __toString()
     {
         if (!is_object($this->object)) {
-            return $this->object;
+            return $this->object ?? '';
         }
 
         if (method_exists($this->object, '__toString')) {
