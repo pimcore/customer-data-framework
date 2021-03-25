@@ -40,7 +40,8 @@
         "CustomerManagementFrameworkBundle\\Tests\\": "tests"
       },
       "files": [
-        "kernel/Kernel.php"
+        "kernel/Kernel.php",
+        "app/AppKernel.php"
       ]
     },
     "extra": {
