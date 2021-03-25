@@ -1,15 +1,17 @@
 {
     "description": null,
     "parentClass": "\\CustomerManagementFrameworkBundle\\Model\\AbstractCustomerSegment",
-    "useTraits": null,
+    "implementsInterfaces": null,
+    "listingParentClass": "",
+    "useTraits": "",
+    "listingUseTraits": "",
     "allowInherit": false,
-    "allowVariants": false,
+    "allowVariants": null,
     "showVariants": false,
-    "generateTypeDeclarations": true,
     "layoutDefinitions": {
         "fieldtype": "panel",
-        "labelWidth": 100,
         "layout": null,
+        "border": false,
         "name": "pimcore_root",
         "type": null,
         "region": null,
@@ -17,15 +19,15 @@
         "width": null,
         "height": null,
         "collapsible": false,
-        "collapsed": null,
+        "collapsed": false,
         "bodyStyle": null,
         "datatype": "layout",
         "permissions": null,
         "childs": [
             {
                 "fieldtype": "panel",
-                "labelWidth": 100,
                 "layout": null,
+                "border": false,
                 "name": "Layout",
                 "type": null,
                 "region": null,
@@ -40,7 +42,6 @@
                 "childs": [
                     {
                         "fieldtype": "fieldset",
-                        "labelWidth": 180,
                         "name": "Layout",
                         "type": null,
                         "region": null,
@@ -56,12 +57,11 @@
                             {
                                 "fieldtype": "input",
                                 "width": 400,
-                                "queryColumnType": "varchar",
-                                "columnType": "varchar",
+                                "defaultValue": null,
                                 "columnLength": 255,
-                                "phpdocType": "string",
                                 "regex": "",
-                                "unique": null,
+                                "unique": false,
+                                "showCharCount": false,
                                 "name": "name",
                                 "title": "Segment name",
                                 "tooltip": "",
@@ -82,7 +82,6 @@
                     },
                     {
                         "fieldtype": "fieldset",
-                        "labelWidth": 180,
                         "name": "Layout",
                         "type": null,
                         "region": null,
@@ -96,21 +95,15 @@
                         "permissions": null,
                         "childs": [
                             {
-                                "fieldtype": "href",
+                                "fieldtype": "manyToOneRelation",
                                 "width": 700,
                                 "assetUploadPath": "",
                                 "relationType": true,
-                                "queryColumnType": {
-                                    "id": "int(11)",
-                                    "type": "enum('document','asset','object')"
-                                },
-                                "phpdocType": "\\Pimcore\\Model\\Document\\Page | \\Pimcore\\Model\\Document\\Snippet | \\Pimcore\\Model\\Document | \\Pimcore\\Model\\Asset | \\Pimcore\\Model\\DataObject\\AbstractObject",
                                 "objectsAllowed": true,
                                 "assetsAllowed": false,
                                 "assetTypes": [],
                                 "documentsAllowed": false,
                                 "documentTypes": [],
-                                "lazyLoading": true,
                                 "classes": [],
                                 "pathFormatterClass": "",
                                 "name": "group",
@@ -123,7 +116,6 @@
                                 "style": "",
                                 "permissions": null,
                                 "datatype": "data",
-                                "columnType": null,
                                 "invisible": false,
                                 "visibleGridView": false,
                                 "visibleSearch": false
@@ -131,12 +123,11 @@
                             {
                                 "fieldtype": "input",
                                 "width": 400,
-                                "queryColumnType": "varchar",
-                                "columnType": "varchar",
+                                "defaultValue": null,
                                 "columnLength": 255,
-                                "phpdocType": "string",
                                 "regex": "",
                                 "unique": null,
+                                "showCharCount": null,
                                 "name": "reference",
                                 "title": "Reference",
                                 "tooltip": "needs to be unique within the group",
@@ -155,9 +146,6 @@
                             {
                                 "fieldtype": "checkbox",
                                 "defaultValue": 0,
-                                "queryColumnType": "tinyint(1)",
-                                "columnType": "tinyint(1)",
-                                "phpdocType": "boolean",
                                 "name": "calculated",
                                 "title": "calculated",
                                 "tooltip": "",
@@ -176,9 +164,6 @@
                             {
                                 "fieldtype": "checkbox",
                                 "defaultValue": 0,
-                                "queryColumnType": "tinyint(1)",
-                                "columnType": "tinyint(1)",
-                                "phpdocType": "boolean",
                                 "name": "useAsTargetGroup",
                                 "title": "Use As Target Group",
                                 "tooltip": "",
@@ -196,37 +181,18 @@
                             },
                             {
                                 "fieldtype": "targetGroup",
-                                "options": [
-                                    {
-                                        "value": 5,
-                                        "key": "Outdoor"
-                                    },
-                                    {
-                                        "value": 20,
-                                        "key": "TechnicalGuy"
-                                    },
-                                    {
-                                        "value": 15,
-                                        "key": "Vouchers1"
-                                    },
-                                    {
-                                        "value": 8,
-                                        "key": "Wandern"
-                                    }
-                                ],
+                                "options": null,
                                 "width": "",
                                 "defaultValue": null,
                                 "optionsProviderClass": null,
                                 "optionsProviderData": null,
-                                "queryColumnType": "varchar",
-                                "columnType": "varchar",
                                 "columnLength": 190,
-                                "phpdocType": "string",
+                                "dynamicOptions": false,
                                 "name": "targetGroup",
                                 "title": "Linked TargetGroup",
                                 "tooltip": "",
                                 "mandatory": false,
-                                "noteditable": true,
+                                "noteditable": false,
                                 "index": false,
                                 "locked": false,
                                 "style": "",
@@ -247,23 +213,30 @@
         "locked": false
     },
     "icon": "\/bundles\/pimcorecustomermanagementframework\/icons\/segment.svg",
-    "previewUrl": null,
+    "previewUrl": "",
     "group": "CustomerManagement",
-    "linkGeneratorReference": null,
+    "showAppLoggerTab": false,
+    "linkGeneratorReference": "",
+    "compositeIndices": [],
+    "generateTypeDeclarations": true,
+    "showFieldLookup": false,
     "propertyVisibility": {
         "grid": {
             "id": true,
+            "key": false,
             "path": false,
             "published": true,
-            "modificationDate": true,
-            "creationDate": true
+            "modificationDate": false,
+            "creationDate": false
         },
         "search": {
             "id": true,
+            "key": false,
             "path": false,
             "published": true,
-            "modificationDate": true,
-            "creationDate": true
+            "modificationDate": false,
+            "creationDate": false
         }
-    }
+    },
+    "enableGridLocking": false
 }

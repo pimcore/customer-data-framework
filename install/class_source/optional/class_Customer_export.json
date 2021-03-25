@@ -1,15 +1,18 @@
 {
     "description": null,
     "parentClass": "\\CustomerManagementFrameworkBundle\\Model\\AbstractCustomer",
-    "useTraits": null,
+    "implementsInterfaces": null,
+    "listingParentClass": "",
+    "useTraits": "",
+    "listingUseTraits": "",
     "allowInherit": false,
-    "allowVariants": false,
+    "allowVariants": null,
     "showVariants": false,
-    "generateTypeDeclarations": true,
     "layoutDefinitions": {
         "fieldtype": "panel",
         "labelWidth": 100,
         "layout": null,
+        "border": false,
         "name": "pimcore_root",
         "type": null,
         "region": null,
@@ -17,7 +20,7 @@
         "width": null,
         "height": null,
         "collapsible": false,
-        "collapsed": null,
+        "collapsed": false,
         "bodyStyle": null,
         "datatype": "layout",
         "permissions": null,
@@ -26,6 +29,7 @@
                 "fieldtype": "panel",
                 "labelWidth": 100,
                 "layout": null,
+                "border": false,
                 "name": "Layout",
                 "type": null,
                 "region": null,
@@ -40,6 +44,8 @@
                 "childs": [
                     {
                         "fieldtype": "tabpanel",
+                        "border": false,
+                        "tabPosition": "top",
                         "name": "Layout",
                         "type": null,
                         "region": null,
@@ -56,6 +62,7 @@
                                 "fieldtype": "panel",
                                 "labelWidth": 140,
                                 "layout": null,
+                                "border": false,
                                 "name": "Layout",
                                 "type": null,
                                 "region": null,
@@ -71,9 +78,7 @@
                                     {
                                         "fieldtype": "checkbox",
                                         "defaultValue": 1,
-                                        "queryColumnType": "tinyint(1)",
-                                        "columnType": "tinyint(1)",
-                                        "phpdocType": "boolean",
+                                        "phpdocType": "bool",
                                         "name": "active",
                                         "title": "Active",
                                         "tooltip": "",
@@ -87,7 +92,8 @@
                                         "relationType": false,
                                         "invisible": false,
                                         "visibleGridView": false,
-                                        "visibleSearch": false
+                                        "visibleSearch": false,
+                                        "defaultValueGenerator": ""
                                     },
                                     {
                                         "fieldtype": "fieldset",
@@ -107,12 +113,12 @@
                                             {
                                                 "fieldtype": "firstname",
                                                 "width": null,
-                                                "queryColumnType": "varchar",
-                                                "columnType": "varchar",
+                                                "defaultValue": null,
                                                 "columnLength": 255,
                                                 "phpdocType": "string",
                                                 "regex": "",
                                                 "unique": false,
+                                                "showCharCount": null,
                                                 "name": "firstname",
                                                 "title": "First name",
                                                 "tooltip": "",
@@ -126,17 +132,18 @@
                                                 "relationType": false,
                                                 "invisible": false,
                                                 "visibleGridView": false,
-                                                "visibleSearch": false
+                                                "visibleSearch": false,
+                                                "defaultValueGenerator": ""
                                             },
                                             {
                                                 "fieldtype": "lastname",
                                                 "width": null,
-                                                "queryColumnType": "varchar",
-                                                "columnType": "varchar",
+                                                "defaultValue": null,
                                                 "columnLength": 255,
                                                 "phpdocType": "string",
                                                 "regex": "",
                                                 "unique": false,
+                                                "showCharCount": null,
                                                 "name": "lastname",
                                                 "title": "Last name",
                                                 "tooltip": "",
@@ -150,7 +157,8 @@
                                                 "relationType": false,
                                                 "invisible": false,
                                                 "visibleGridView": false,
-                                                "visibleSearch": false
+                                                "visibleSearch": false,
+                                                "defaultValueGenerator": ""
                                             },
                                             {
                                                 "fieldtype": "select",
@@ -168,10 +176,9 @@
                                                 "defaultValue": "",
                                                 "optionsProviderClass": "",
                                                 "optionsProviderData": "",
-                                                "queryColumnType": "varchar",
-                                                "columnType": "varchar",
                                                 "columnLength": 190,
                                                 "phpdocType": "string",
+                                                "dynamicOptions": false,
                                                 "name": "gender",
                                                 "title": "Gender",
                                                 "tooltip": "",
@@ -185,12 +192,11 @@
                                                 "relationType": false,
                                                 "invisible": false,
                                                 "visibleGridView": false,
-                                                "visibleSearch": false
+                                                "visibleSearch": false,
+                                                "defaultValueGenerator": ""
                                             },
                                             {
                                                 "fieldtype": "date",
-                                                "queryColumnType": "bigint(20)",
-                                                "columnType": "bigint(20)",
                                                 "phpdocType": "\\Carbon\\Carbon",
                                                 "defaultValue": null,
                                                 "useCurrentDate": false,
@@ -207,7 +213,8 @@
                                                 "relationType": false,
                                                 "invisible": false,
                                                 "visibleGridView": false,
-                                                "visibleSearch": false
+                                                "visibleSearch": false,
+                                                "defaultValueGenerator": ""
                                             }
                                         ],
                                         "locked": false
@@ -230,12 +237,12 @@
                                             {
                                                 "fieldtype": "input",
                                                 "width": null,
-                                                "queryColumnType": "varchar",
-                                                "columnType": "varchar",
+                                                "defaultValue": null,
                                                 "columnLength": 255,
                                                 "phpdocType": "string",
                                                 "regex": "",
                                                 "unique": false,
+                                                "showCharCount": null,
                                                 "name": "street",
                                                 "title": "Street",
                                                 "tooltip": "",
@@ -249,17 +256,18 @@
                                                 "relationType": false,
                                                 "invisible": false,
                                                 "visibleGridView": false,
-                                                "visibleSearch": false
+                                                "visibleSearch": false,
+                                                "defaultValueGenerator": ""
                                             },
                                             {
                                                 "fieldtype": "input",
                                                 "width": null,
-                                                "queryColumnType": "varchar",
-                                                "columnType": "varchar",
+                                                "defaultValue": null,
                                                 "columnLength": 255,
                                                 "phpdocType": "string",
                                                 "regex": "",
                                                 "unique": false,
+                                                "showCharCount": null,
                                                 "name": "zip",
                                                 "title": "ZIP",
                                                 "tooltip": "",
@@ -273,17 +281,18 @@
                                                 "relationType": false,
                                                 "invisible": false,
                                                 "visibleGridView": false,
-                                                "visibleSearch": false
+                                                "visibleSearch": false,
+                                                "defaultValueGenerator": ""
                                             },
                                             {
                                                 "fieldtype": "input",
                                                 "width": null,
-                                                "queryColumnType": "varchar",
-                                                "columnType": "varchar",
+                                                "defaultValue": null,
                                                 "columnLength": 255,
                                                 "phpdocType": "string",
                                                 "regex": "",
                                                 "unique": false,
+                                                "showCharCount": null,
                                                 "name": "city",
                                                 "title": "City",
                                                 "tooltip": "",
@@ -297,7 +306,8 @@
                                                 "relationType": false,
                                                 "invisible": false,
                                                 "visibleGridView": false,
-                                                "visibleSearch": false
+                                                "visibleSearch": false,
+                                                "defaultValueGenerator": ""
                                             },
                                             {
                                                 "fieldtype": "country",
@@ -1348,10 +1358,9 @@
                                                 "defaultValue": null,
                                                 "optionsProviderClass": null,
                                                 "optionsProviderData": null,
-                                                "queryColumnType": "varchar",
-                                                "columnType": "varchar",
                                                 "columnLength": "190",
                                                 "phpdocType": "string",
+                                                "dynamicOptions": false,
                                                 "name": "countryCode",
                                                 "title": "Country",
                                                 "tooltip": "",
@@ -1365,7 +1374,8 @@
                                                 "relationType": false,
                                                 "invisible": false,
                                                 "visibleGridView": false,
-                                                "visibleSearch": false
+                                                "visibleSearch": false,
+                                                "defaultValueGenerator": ""
                                             }
                                         ],
                                         "locked": false
@@ -1388,12 +1398,12 @@
                                             {
                                                 "fieldtype": "email",
                                                 "width": null,
-                                                "queryColumnType": "varchar",
-                                                "columnType": "varchar",
+                                                "defaultValue": null,
                                                 "columnLength": 190,
                                                 "phpdocType": "string",
                                                 "regex": "",
                                                 "unique": false,
+                                                "showCharCount": null,
                                                 "name": "email",
                                                 "title": "E-Mail",
                                                 "tooltip": "",
@@ -1407,17 +1417,18 @@
                                                 "relationType": false,
                                                 "invisible": false,
                                                 "visibleGridView": false,
-                                                "visibleSearch": false
+                                                "visibleSearch": false,
+                                                "defaultValueGenerator": ""
                                             },
                                             {
                                                 "fieldtype": "input",
                                                 "width": null,
-                                                "queryColumnType": "varchar",
-                                                "columnType": "varchar",
+                                                "defaultValue": null,
                                                 "columnLength": 255,
                                                 "phpdocType": "string",
                                                 "regex": "",
                                                 "unique": false,
+                                                "showCharCount": null,
                                                 "name": "phone",
                                                 "title": "Phone",
                                                 "tooltip": "",
@@ -1431,7 +1442,8 @@
                                                 "relationType": false,
                                                 "invisible": false,
                                                 "visibleGridView": false,
-                                                "visibleSearch": false
+                                                "visibleSearch": false,
+                                                "defaultValueGenerator": ""
                                             }
                                         ],
                                         "locked": false
@@ -1439,11 +1451,6 @@
                                     {
                                         "fieldtype": "consent",
                                         "defaultValue": 0,
-                                        "queryColumnType": "tinyint(1)",
-                                        "columnType": {
-                                            "consent": "tinyint(1)",
-                                            "note": "int(11)"
-                                        },
                                         "phpdocType": "\\Pimcore\\Model\\DataObject\\Data\\Consent",
                                         "width": null,
                                         "name": "profilingConsent",
@@ -1462,12 +1469,14 @@
                                         "visibleSearch": false
                                     }
                                 ],
-                                "locked": false
+                                "locked": false,
+                                "icon": null
                             },
                             {
                                 "fieldtype": "panel",
                                 "labelWidth": 100,
                                 "layout": null,
+                                "border": false,
                                 "name": "Segment",
                                 "type": null,
                                 "region": null,
@@ -1481,14 +1490,16 @@
                                 "permissions": null,
                                 "childs": [
                                     {
-                                        "fieldtype": "objects",
+                                        "fieldtype": "manyToManyObjectRelation",
                                         "width": "",
                                         "height": "",
                                         "maxItems": "",
-                                        "queryColumnType": "text",
                                         "phpdocType": "array",
                                         "relationType": true,
-                                        "lazyLoading": true,
+                                        "visibleFields": null,
+                                        "allowToCreateNewObject": true,
+                                        "optimizedAdminLoading": false,
+                                        "visibleFieldDefinitions": [],
                                         "classes": [
                                             {
                                                 "classes": "CustomerSegment"
@@ -1505,7 +1516,6 @@
                                         "style": "",
                                         "permissions": null,
                                         "datatype": "data",
-                                        "columnType": null,
                                         "invisible": false,
                                         "visibleGridView": false,
                                         "visibleSearch": false
@@ -1531,14 +1541,21 @@
                                                 "label": "Segment application counter"
                                             }
                                         ],
-                                        "fieldtype": "objectsMetadata",
+                                        "columnKeys": [
+                                            "created_timestamp",
+                                            "application_counter"
+                                        ],
+                                        "fieldtype": "advancedManyToManyObjectRelation",
                                         "phpdocType": "\\Pimcore\\Model\\DataObject\\Data\\ObjectMetadata[]",
+                                        "enableBatchEdit": null,
+                                        "allowMultipleAssignments": null,
+                                        "visibleFieldDefinitions": [],
                                         "width": "",
                                         "height": "",
                                         "maxItems": "",
-                                        "queryColumnType": "text",
                                         "relationType": true,
-                                        "lazyLoading": true,
+                                        "allowToCreateNewObject": true,
+                                        "optimizedAdminLoading": false,
                                         "classes": [
                                             {
                                                 "classes": "CustomerSegment"
@@ -1555,22 +1572,19 @@
                                         "style": "",
                                         "permissions": null,
                                         "datatype": "data",
-                                        "columnType": null,
                                         "invisible": false,
                                         "visibleGridView": false,
-                                        "visibleSearch": false,
-                                        "columnKeys": [
-                                            "created_timestamp",
-                                            "application_counter"
-                                        ]
+                                        "visibleSearch": false
                                     }
                                 ],
-                                "locked": false
+                                "locked": false,
+                                "icon": null
                             },
                             {
                                 "fieldtype": "panel",
                                 "labelWidth": 100,
                                 "layout": null,
+                                "border": false,
                                 "name": "Authentication\/SSO",
                                 "type": null,
                                 "region": null,
@@ -1586,8 +1600,6 @@
                                     {
                                         "fieldtype": "password",
                                         "width": "",
-                                        "queryColumnType": "varchar(190)",
-                                        "columnType": "varchar(190)",
                                         "phpdocType": "string",
                                         "algorithm": "password_hash",
                                         "salt": "",
@@ -1608,14 +1620,16 @@
                                         "visibleSearch": false
                                     },
                                     {
-                                        "fieldtype": "objects",
+                                        "fieldtype": "manyToManyObjectRelation",
                                         "width": "",
                                         "height": "",
                                         "maxItems": "",
-                                        "queryColumnType": "text",
                                         "phpdocType": "array",
                                         "relationType": true,
-                                        "lazyLoading": true,
+                                        "visibleFields": null,
+                                        "allowToCreateNewObject": true,
+                                        "optimizedAdminLoading": false,
+                                        "visibleFieldDefinitions": [],
                                         "classes": [
                                             {
                                                 "classes": "SsoIdentity"
@@ -1632,18 +1646,19 @@
                                         "style": "",
                                         "permissions": null,
                                         "datatype": "data",
-                                        "columnType": null,
                                         "invisible": false,
                                         "visibleGridView": false,
                                         "visibleSearch": false
                                     }
                                 ],
-                                "locked": false
+                                "locked": false,
+                                "icon": null
                             },
                             {
                                 "fieldtype": "panel",
                                 "labelWidth": 100,
                                 "layout": null,
+                                "border": false,
                                 "name": "Others",
                                 "type": null,
                                 "region": null,
@@ -1659,12 +1674,12 @@
                                     {
                                         "fieldtype": "input",
                                         "width": null,
-                                        "queryColumnType": "varchar",
-                                        "columnType": "varchar",
+                                        "defaultValue": null,
                                         "columnLength": 190,
                                         "phpdocType": "string",
                                         "regex": "",
                                         "unique": false,
+                                        "showCharCount": null,
                                         "name": "idEncoded",
                                         "title": "Encoded ID (cmfc)",
                                         "tooltip": "",
@@ -1678,24 +1693,32 @@
                                         "relationType": false,
                                         "invisible": false,
                                         "visibleGridView": true,
-                                        "visibleSearch": true
+                                        "visibleSearch": true,
+                                        "defaultValueGenerator": ""
                                     }
                                 ],
-                                "locked": false
+                                "locked": false,
+                                "icon": null
                             }
                         ],
                         "locked": false
                     }
                 ],
-                "locked": false
+                "locked": false,
+                "icon": null
             }
         ],
-        "locked": false
+        "locked": false,
+        "icon": null
     },
     "icon": "\/bundles\/pimcorecustomermanagementframework\/icons\/customer.svg",
     "previewUrl": null,
     "group": "CustomerManagement",
+    "showAppLoggerTab": false,
     "linkGeneratorReference": null,
+    "compositeIndices": [],
+    "generateTypeDeclarations": true,
+    "showFieldLookup": false,
     "propertyVisibility": {
         "grid": {
             "id": true,
@@ -1711,5 +1734,6 @@
             "modificationDate": true,
             "creationDate": true
         }
-    }
+    },
+    "enableGridLocking": false
 }
