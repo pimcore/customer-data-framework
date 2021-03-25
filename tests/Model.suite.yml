@@ -1,7 +1,7 @@
 actor: ModelTester
 modules:
     enabled:
-        - \CustomerManagementFrameworkBundle\Tests\Helper\Model
-                connect_db: true
+        - \CustomerManagementFrameworkBundle\Tests\Helper\Model:
+            connect_db: true
         - \Pimcore\Tests\Helper\ClassManager
         - \Pimcore\Tests\Helper\Model
