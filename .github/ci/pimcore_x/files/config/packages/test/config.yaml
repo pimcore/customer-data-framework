@@ -22,9 +22,11 @@ doctrine:
                 dbname: ~
                 user: ~
                 password: ~
+                server_version: 5.5.5-10.5.0-MariaDB-0+deb10u1-log
                 mapping_types:
                     enum: string
                     bit: boolean
+
 
 parameters:
     pimcore_test.db.dsn: '%env(PIMCORE_TEST_DB_DSN)%'
