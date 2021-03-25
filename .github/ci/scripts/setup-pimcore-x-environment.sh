@@ -17,3 +17,7 @@ cp .github/ci/pimcore_x/files/.env ./
 composer config minimum-stability "dev"
 composer config prefer-stable true
 composer require pimcore/pimcore:dev-master --no-update
+
+# move that to composer.json when only pimcore X
+composer require codeception/module-symfony:^1.6.0 --no-update
+composer require codeception/phpunit-wrapper:^9 --no-update
