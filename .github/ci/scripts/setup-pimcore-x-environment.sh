@@ -14,6 +14,9 @@ cp -r .github/ci/pimcore_x/files/public public
 cp .github/ci/pimcore_x/files/extensions.template.php var/config/extensions.php
 cp .github/ci/pimcore_x/files/.env ./
 
+ls -la .
+ls -la src
+
 # temp. until elasticsearch/elasticsearch 7.11 is released
 composer config minimum-stability "dev"
 composer config prefer-stable true
