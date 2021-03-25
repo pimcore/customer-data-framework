@@ -21,7 +21,7 @@ class Model extends AbstractDefinitionHelper
         $this->debug('[CMF] Running cmf installer');
 
 
-        //create migrations table in order to allow installation
+        //create migrations table in order to allow installation - needed for SettingsStoreAware Installer
         \Pimcore\Db::get()->exec('
 create table migration_versions
 (
