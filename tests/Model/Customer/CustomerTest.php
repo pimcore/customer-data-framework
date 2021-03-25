@@ -11,13 +11,13 @@ use Pimcore\Tests\Util\TestHelper;
 class CustomerTest extends ModelTestCase
 {
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         TestHelper::cleanUp();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         TestHelper::cleanUp();
         parent::tearDown();
