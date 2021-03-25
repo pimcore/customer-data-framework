@@ -22,6 +22,7 @@ return [
         "wysiwyg-with-images" => TRUE
     ],
     "bundle" => [
-        "Pimcore\\Bundle\\EcommerceFrameworkBundle\\PimcoreEcommerceFrameworkBundle" => FALSE
+        "Pimcore\\Bundle\\EcommerceFrameworkBundle\\PimcoreEcommerceFrameworkBundle" => FALSE,
+        "CustomerManagementFrameworkBundle\\PimcoreCustomerManagementFrameworkBundle" => TRUE
     ]
 ];
