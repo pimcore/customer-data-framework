@@ -9,6 +9,7 @@ cp -r .github/ci/pimcore_6_9/files/app app
 cp -r .github/ci/pimcore_6_9/files/bin/console bin/console
 chmod 755 bin/console
 cp -r .github/ci/pimcore_6_9/files/web web
+cp -r .github/ci/pimcore_6_9/files/kernel kernel
 
 cp .github/ci/pimcore_6_9/files/extensions.template.php var/config/extensions.php
 cp app/config/parameters.example.yml app/config/parameters.yml
