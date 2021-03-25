@@ -5,12 +5,12 @@ set -eu
 mkdir -p var/config
 mkdir -p bin
 
-cp -r .github/ci/files/app app
-cp -r .github/ci/files/bin/console bin/console
+cp -r .github/ci/pimcore_6_9/files/app app
+cp -r .github/ci/pimcore_6_9/files/bin/console bin/console
 chmod 755 bin/console
-cp -r .github/ci/files/web web
+cp -r .github/ci/pimcore_6_9/files/web web
 
-cp .github/ci/files/extensions.template.php var/config/extensions.php
+cp .github/ci/pimcore_6_9/files/extensions.template.php var/config/extensions.php
 cp app/config/parameters.example.yml app/config/parameters.yml
 
 # temp. until elasticsearch/elasticsearch 7.11 is released
