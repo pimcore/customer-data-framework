@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\CustomerList;
 use CustomerManagementFrameworkBundle\CustomerList\Filter\SearchQuery;
 use CustomerManagementFrameworkBundle\CustomerList\Filter\CustomerSegment as CustomerSegmentFilter;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
+use CustomerManagementFrameworkBundle\Listing\Filter\BoolCombinator;
 use CustomerManagementFrameworkBundle\Listing\Filter\Permission as PermissionFilter;
 use CustomerManagementFrameworkBundle\Listing\Filter\Equals;
 use CustomerManagementFrameworkBundle\Listing\FilterHandler;
@@ -113,12 +114,16 @@ class SearchHelper {
             }
         }
 
+        $searchFilters = [];
         foreach($searchProperties as $property => $databaseFields) {
             if(array_key_exists($property, $filters)
                 && !empty($filters[$property])
                 && is_string($filters[$property])) {
-                $handler->addFilter(new SearchQuery($databaseFields, $filters[$property]), $operatorCustomer);
+                $searchFilters[] = new SearchQuery($databaseFields, $filters[$property]);
             }
+        }
+        if(!empty($searchFilters)) {
+            $handler->addFilter(new BoolCombinator($searchFilters, $operatorCustomer));
         }
 
         if(array_key_exists('segments', $filters)) {

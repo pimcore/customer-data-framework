@@ -3,6 +3,7 @@
 namespace CustomerManagementFrameworkBundle\Tests\Model\Customer;
 
 
+use CustomerManagementFrameworkBundle\Listing\FilterHandler;
 use Pimcore\Model\DataObject\Customer;
 use Pimcore\Tests\Test\ModelTestCase;
 use Pimcore\Tests\Util\Autoloader;
@@ -34,6 +35,7 @@ class CustomerTest extends ModelTestCase
         $customer->setLastname('Hugo');
         $customer->save();
 
+        $this->assertGreaterThan(0, $customer->getId());
     }
 
 }
