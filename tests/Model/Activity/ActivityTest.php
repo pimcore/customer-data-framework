@@ -24,7 +24,7 @@ class ActivityTest extends ModelTestCase
 
     protected function createCustomer(): Customer {
         $customer = new Customer();
-        $customer->setKey('foo');
+        $customer->setKey(uniqid());
         $customer->setPublished(true);
         $customer->setActive(true);
         $customer->setParentId(1);
