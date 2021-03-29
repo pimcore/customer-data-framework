@@ -111,7 +111,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
                 is_array($data['attributes']) ? $data['attributes'] : json_decode(
                     Json::cleanUpJson($data['attributes']),
                     true
-                )
+                ) ?? []
             );
         }
         $this->setMd5($data['md5'] ?? null);
