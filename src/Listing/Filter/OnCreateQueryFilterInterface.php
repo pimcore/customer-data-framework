@@ -16,7 +16,7 @@
 namespace CustomerManagementFrameworkBundle\Listing\Filter;
 
 use CustomerManagementFrameworkBundle\Listing\FilterInterface;
-use Pimcore\Db\ZendCompatibility\QueryBuilder;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Pimcore\Model\DataObject\Listing as CoreListing;
 
 interface OnCreateQueryFilterInterface extends FilterInterface

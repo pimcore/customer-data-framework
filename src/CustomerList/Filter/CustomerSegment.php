@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\CustomerList\Filter;
 use CustomerManagementFrameworkBundle\Listing\Filter\AbstractFilter;
 use CustomerManagementFrameworkBundle\Listing\Filter\OnCreateQueryFilterInterface;
 use CustomerManagementFrameworkBundle\Service\MariaDb;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Pimcore\Db;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Listing as CoreListing;
@@ -39,7 +40,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
     /**
      * @var string
      */
-    protected $type = Db\ZendCompatibility\QueryBuilder::SQL_OR;
+    protected $type = self::OPERATOR_OR;
 
     /**
      * @var DataObject\CustomerSegmentGroup
@@ -66,7 +67,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      * @param DataObject\CustomerSegmentGroup|null $segmentGroup
      * @param string $type
      */
-    public function __construct(array $segments, DataObject\CustomerSegmentGroup $segmentGroup = null, $type = Db\ZendCompatibility\QueryBuilder::SQL_AND)
+    public function __construct(array $segments, DataObject\CustomerSegmentGroup $segmentGroup = null, $type = self::OPERATOR_AND)
     {
         $this->identifier = $this->buildIdentifier($segmentGroup);
         $this->segmentGroup = $segmentGroup;
@@ -136,18 +137,18 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      * Apply filter directly to query
      *
      * @param CoreListing\Concrete|CoreListing\Dao $listing
-     * @param Db\ZendCompatibility\QueryBuilder $query
+     * @param QueryBuilder $queryBuilder
      */
-    public function applyOnCreateQuery(CoreListing\Concrete $listing, Db\ZendCompatibility\QueryBuilder $query)
+    public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $queryBuilder)
     {
         if (count($this->segments) === 0) {
             return;
         }
 
-        if ($this->type === Db\ZendCompatibility\QueryBuilder::SQL_OR) {
-            $this->applyOrQuery($listing, $query);
+        if ($this->type === self::OPERATOR_OR) {
+            $this->applyOrQuery($listing, $queryBuilder);
         } else {
-            $this->applyAndQuery($listing, $query);
+            $this->applyAndQuery($listing, $queryBuilder);
         }
     }
 
@@ -155,9 +156,9 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      * Add a single join with a IN() conditions. If any of the segment IDs matches, the row will be returned
      *
      * @param CoreListing\Concrete|CoreListing\Dao $listing
-     * @param Db\ZendCompatibility\QueryBuilder $query
+     * @param QueryBuilder $queryBuilder
      */
-    protected function applyOrQuery(CoreListing\Concrete $listing, Db\ZendCompatibility\QueryBuilder $query)
+    protected function applyOrQuery(CoreListing\Concrete $listing, QueryBuilder $queryBuilder)
     {
         $segmentIds = array_map(
             function (DataObject\CustomerSegment $segment) {
@@ -172,16 +173,16 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
             strtolower($this->type)[0]
         );
 
-        $this->addJoin($listing, $query, $joinName, $segmentIds);
+        $this->addJoin($listing, $queryBuilder, $joinName, $segmentIds);
     }
 
     /**
      * Add one join per ID we want to search. If any of the joins does not match, the query will fail
      *
      * @param CoreListing\Concrete|CoreListing\Dao $listing
-     * @param Db\ZendCompatibility\QueryBuilder $query
+     * @param QueryBuilder $queryBuilder
      */
-    protected function applyAndQuery(CoreListing\Concrete $listing, Db\ZendCompatibility\QueryBuilder $query)
+    protected function applyAndQuery(CoreListing\Concrete $listing, QueryBuilder $queryBuilder)
     {
         $index = 0;
         foreach ($this->segments as $segment) {
@@ -192,7 +193,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
                 $index++
             );
 
-            $this->addJoin($listing, $query, $joinName, $segment->getId());
+            $this->addJoin($listing, $queryBuilder, $joinName, $segment->getId());
         }
     }
 
@@ -200,13 +201,13 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      * Add the actual INNER JOIN acting as filter
      *
      * @param CoreListing\Concrete $listing
-     * @param Db\ZendCompatibility\QueryBuilder $query
+     * @param QueryBuilder $queryBuilder
      * @param string $joinName
      * @param int|array $conditionValue
      */
     protected function addJoin(
         CoreListing\Concrete $listing,
-        Db\ZendCompatibility\QueryBuilder $query,
+        QueryBuilder $queryBuilder,
         $joinName,
         $conditionValue
     ) {
@@ -230,7 +231,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
 
         $condition = $baseCondition;
 
-        if ($this->type === Db\ZendCompatibility\QueryBuilder::SQL_OR) {
+        if ($this->type === self::OPERATOR_OR) {
             // must match any of the passed IDs
             $condition .= sprintf(
                 ' AND %1$s.dest_id IN (%2$s)',
@@ -246,10 +247,11 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
             );
         }
 
-        $query->join(
-            [$joinName => $relationsTableName],
-            $condition,
-            ''
+        $queryBuilder->join(
+            $tableName,
+            $relationsTableName,
+            $joinName,
+            $condition
         );
     }
 }

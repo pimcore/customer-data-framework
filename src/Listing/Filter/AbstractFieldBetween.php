@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\Listing\Filter;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\Listing as CoreListing;
 
@@ -102,9 +103,9 @@ abstract class AbstractFieldBetween extends AbstractFilter implements OnCreateQu
      * Apply filter directly to query
      *
      * @param CoreListing\Concrete|CoreListing\Dao $listing
-     * @param Db\ZendCompatibility\QueryBuilder $query
+     * @param QueryBuilder $query
      */
-    public function applyOnCreateQuery(CoreListing\Concrete $listing, Db\ZendCompatibility\QueryBuilder $query)
+    public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $query)
     {
         $from = $this->getFromValue();
         $to = $this->getToValue();
@@ -114,18 +115,18 @@ abstract class AbstractFieldBetween extends AbstractFilter implements OnCreateQu
         }
 
         $tableName = $this->getTableName($listing->getClassId());
-        $subSelect = Db::getConnection()->select();
+        $subSelect = Db::getConnection()->createQueryBuilder();
 
         if (null !== $from) {
             $operator = $this->getOperator(static::TYPE_FROM);
-            $subSelect->where(sprintf('`%s`.`%s` %s ?', $tableName, $this->field, $operator), $from);
+            $subSelect->andWhere(sprintf('`%s`.`%s` %s %s', $tableName, $this->field, $operator, $listing->quote($from)));
         }
 
         if (null !== $to) {
             $operator = $this->getOperator(static::TYPE_TO);
-            $subSelect->where(sprintf('`%s`.`%s` %s ?', $tableName, $this->field, $operator), $to);
+            $subSelect->andWhere(sprintf('`%s`.`%s` %s %s', $tableName, $this->field, $operator, $listing->quote($to)));
         }
 
-        $query->where(implode(' ', $subSelect->getPart(Db\ZendCompatibility\QueryBuilder::WHERE)));
+        $query->andWhere((string) $subSelect->getQueryPart('where'));
     }
 }
