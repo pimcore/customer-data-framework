@@ -7,6 +7,8 @@
   - `Customer`
   - `CustomerSegment`
   - `SsoIdentity`
+- `FilterHandler::addFilter` as not operator as parameter anymore (as this was only considered with `SearchQuery` filters). 
+  Use new `BoolanCombinator` for combining multiple filters with OR operator instead. 
     
 
 ## Update to Pimcore X
