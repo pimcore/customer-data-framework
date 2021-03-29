@@ -17,16 +17,15 @@ namespace CustomerManagementFrameworkBundle\CustomerList\Filter;
 
 use CustomerManagementFrameworkBundle\CustomerList\Filter\Exception\SearchQueryException;
 use CustomerManagementFrameworkBundle\Listing\Filter\AbstractFilter;
-use CustomerManagementFrameworkBundle\Listing\Filter\QueryConditionFilterInterface;
+use CustomerManagementFrameworkBundle\Listing\Filter\OnCreateQueryFilterInterface;
 use Phlexy\LexingException;
-use Pimcore\Db;
-use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\Model\DataObject\Listing as CoreListing;
+use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use SearchQueryParser\ParserException;
 use SearchQueryParser\QueryBuilder\ZendCompatibility;
 use SearchQueryParser\SearchQueryParser;
 
-class SearchQuery extends AbstractFilter implements QueryConditionFilterInterface
+class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
 {
     /**
      * @var array
@@ -55,20 +54,16 @@ class SearchQuery extends AbstractFilter implements QueryConditionFilterInterfac
     }
 
 
-    public function createQueryCondition(QueryBuilder $query): string
+    public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $query)
     {
-        $db = Db::get();
-
-        if(sizeof($this->fields) === 1) {
+        if(sizeof($this->fields) === 1 && preg_match('/AND|OR|!|\(.*\)/', $this->query) === 0) {
             if(strpos($this->query, '*') !== false) {
-                $value = str_replace('*', '%', $this->query);;
-                $condition = sprintf('%s like %s', $this->fields[0], $db->quote($value));
+                $query->where(sprintf('%s like ?', $this->fields[0]), str_replace('*', '%', $this->query));
             } else {
-                $value = $this->query;
-                $condition = sprintf('%s = %s', $this->fields[0], $db->quote($value));
+                $query->where(sprintf('%s = ?', $this->fields[0]), $this->query);
             }
 
-            return $condition;
+            return;
         }
 
 
@@ -79,11 +74,7 @@ class SearchQuery extends AbstractFilter implements QueryConditionFilterInterfac
             ]
         );
 
-        $subQuery = $query->getAdapter()->select();
-
-        $queryBuilder->processQuery($subQuery, $this->parsedQuery);
-
-        return implode(' ', $subQuery->getPart(QueryBuilder::WHERE));
+        $queryBuilder->processQuery($query, $this->parsedQuery);
     }
 
     /**

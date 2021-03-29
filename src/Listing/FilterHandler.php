@@ -16,7 +16,6 @@
 namespace CustomerManagementFrameworkBundle\Listing;
 
 use CustomerManagementFrameworkBundle\Listing\Filter\OnCreateQueryFilterInterface;
-use CustomerManagementFrameworkBundle\Listing\Filter\QueryConditionFilterInterface;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\Model\DataObject\Listing as CoreListing;
 
@@ -34,8 +33,6 @@ class FilterHandler
      * @var FilterInterface[]
      */
     protected $filters = [];
-
-    protected $operator =  QueryBuilder::SQL_AND;
 
     /**
      * @param CoreListing\Concrete|CoreListing\Dao $listing
@@ -64,27 +61,22 @@ class FilterHandler
     /**
      * @param FilterInterface[] $filters
      */
-    public function addFilters(array $filters, $operator = QueryBuilder::SQL_AND)
+    public function addFilters(array $filters)
     {
         foreach ($filters as $filter) {
-            $this->addFilter($filter, $operator);
+            $this->addFilter($filter);
         }
     }
 
     /**
      * @param FilterInterface $filter
-     * @param string $operator
      */
-    public function addFilter(FilterInterface $filter, $operator = QueryBuilder::SQL_AND)
+    public function addFilter(FilterInterface $filter)
     {
         $this->filters[] = $filter;
         $this->setFilterCallback();
-        if($filter instanceof QueryConditionFilterInterface) {
-            $this->operator = $operator;
-        }
 
         if ($filter instanceof ListingFilterInterface) {
-            $this->listing->getQuery()->
             $filter->applyToListing($this->listing);
         }
     }
@@ -93,23 +85,12 @@ class FilterHandler
     {
         $this->listing->onCreateQuery(
             function (QueryBuilder $query) {
-                $conditions = [];
-
                 foreach ($this->filters as $filter) {
 
                     if($filter instanceof OnCreateQueryFilterInterface) {
                         $filter->applyOnCreateQuery($this->listing, $query);
                     }
 
-                    if($filter instanceof QueryConditionFilterInterface) {
-                        if($condition = $filter->createQueryCondition($query)) {
-                            $conditions[] = $condition;
-                        }
-                    }
-
-                }
-                if(sizeof($conditions)) {
-                    $query->where('(' . implode(' ' . $this->operator . ' ', $conditions) . ')');
                 }
             }
         );
