@@ -110,14 +110,14 @@ class MariaDbDao
             ]
         );
 
-        return Db::get()->fetchOne($query);
+        return Db::get()->fetchOne($query, $this->model->getConditionVariables(), $this->model->getConditionVariableTypes());
     }
 
     public function load()
     {
         $query = $this->getQuery();
 
-        $result = Db::get()->fetchAll($query);
+        $result = Db::get()->fetchAll($query, $this->model->getConditionVariables(), $this->model->getConditionVariableTypes());
 
         return $result;
     }
@@ -132,11 +132,7 @@ class MariaDbDao
         $condition = $this->model->getCondition();
 
         if ($condition) {
-            if ($conditionVariables = $this->model->getConditionVariables()) {
-                $select->where($condition, $conditionVariables);
-            } else {
-                $select->where($condition);
-            }
+            $select->where($condition);
         }
 
         return $this;

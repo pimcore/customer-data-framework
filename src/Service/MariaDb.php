@@ -74,7 +74,13 @@ class MariaDb
             }
         }
 
-        return 'COLUMN_CREATE('.$insert.')';
+        if($insert) {
+            return 'COLUMN_CREATE('.$insert.')';
+        } else {
+            return "''";
+        }
+
+
     }
 
     private function castDynamicColumnDatatype($dataType)
