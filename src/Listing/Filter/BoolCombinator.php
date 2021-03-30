@@ -4,8 +4,8 @@
 namespace CustomerManagementFrameworkBundle\Listing\Filter;
 
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use Pimcore\Db;
-use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\Model\DataObject\Listing as CoreListing;
 
 class BoolCombinator extends AbstractFilter implements OnCreateQueryFilterInterface
@@ -39,19 +39,19 @@ class BoolCombinator extends AbstractFilter implements OnCreateQueryFilterInterf
     }
 
 
-    public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $query)
+    public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $queryBuilder)
     {
         if(count($this->filters) === 1) {
             $filter = $this->filters[0];
-            $filter->applyOnCreateQuery($listing, $query);
+            $filter->applyOnCreateQuery($listing, $queryBuilder);
         } else if(count($this->filters)) {
             $queryParts = [];
             foreach($this->filters as $filter) {
-                $subQuery = Db::get()->select();
+                $subQuery = Db::get()->createQueryBuilder();
                 $filter->applyOnCreateQuery($listing, $subQuery);
-                $queryParts[] = implode(' ', $subQuery->getPart(Db\ZendCompatibility\QueryBuilder::WHERE));
+                $queryParts[] = $subQuery->getQueryPart('where');
             }
-            $query->where(implode(' ' . $this->operator . ' ', $queryParts));
+            $queryBuilder->andWhere(implode(' ' . $this->operator . ' ', $queryParts));
         }
     }
 }

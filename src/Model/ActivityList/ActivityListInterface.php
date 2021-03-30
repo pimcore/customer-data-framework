@@ -15,10 +15,9 @@
 
 namespace CustomerManagementFrameworkBundle\Model\ActivityList;
 
-use Zend\Paginator\Adapter\AdapterInterface;
-use Zend\Paginator\AdapterAggregateInterface;
+use Pimcore\Model\Paginator\PaginateListingInterface;
 
-interface ActivityListInterface extends AdapterInterface, AdapterAggregateInterface, \Iterator
+interface ActivityListInterface extends PaginateListingInterface
 {
     public function setCondition($condition, $conditionVariables = null);
 }

@@ -92,7 +92,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
         }
 
         $this->getLogger()->info('execute immidiate async queue items');
-        
+
         if (count($this->immidateAsyncQueueItems) <= 1) { //avoid too many parallel scripts running
             foreach($this->immidateAsyncQueueItems as $item) {
                 $php = Console::getExecutable('php');
@@ -100,7 +100,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
                 $this->getLogger()->info('execute async process queue item cmd: ' . $cmd);
                 Console::execInBackground($cmd);
             }
-        }       
+        }
     }
 
     /**
@@ -239,10 +239,8 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
     {
         $db = Db::get();
 
-        $select = $db->select();
-        $select
-            ->from(self::QUEUE_TABLE)
-        ;
+        $select = $db->createQueryBuilder();
+        $select->from(self::QUEUE_TABLE);
 
         $rows = $db->fetchAll($select);
         $paginator = new Paginator(new ArrayAdapter($rows));

@@ -94,7 +94,7 @@ class SearchHelper {
     {
         $handler = new FilterHandler($listing);
 
-        $operatorCustomer = null;
+        $operatorCustomer = 'AND';
         $operatorSegments = null;
         if(array_key_exists('operator-customer', $filters)) {
             $operatorCustomer = $filters['operator-customer'];
@@ -138,7 +138,7 @@ class SearchHelper {
                         $segments[] = $segment;
                     }
                 }
-                $handler->addFilter(new CustomerSegmentFilter($segments, null, QueryBuilder::SQL_OR));
+                $handler->addFilter(new CustomerSegmentFilter($segments, null, 'OR'));
             } else {
                 foreach($filters['segments'] as $groupId => $segmentIds) {
                     $segmentGroup = null;

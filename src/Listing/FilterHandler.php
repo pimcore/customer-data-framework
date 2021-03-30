@@ -16,7 +16,7 @@
 namespace CustomerManagementFrameworkBundle\Listing;
 
 use CustomerManagementFrameworkBundle\Listing\Filter\OnCreateQueryFilterInterface;
-use Pimcore\Db\ZendCompatibility\QueryBuilder;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Pimcore\Model\DataObject\Listing as CoreListing;
 
 /**
@@ -83,12 +83,12 @@ class FilterHandler
 
     protected function setFilterCallback()
     {
-        $this->listing->onCreateQuery(
-            function (QueryBuilder $query) {
+        $this->listing->onCreateQueryBuilder(
+            function (QueryBuilder $queryBuilder) {
                 foreach ($this->filters as $filter) {
 
                     if($filter instanceof OnCreateQueryFilterInterface) {
-                        $filter->applyOnCreateQuery($this->listing, $query);
+                        $filter->applyOnCreateQuery($this->listing, $queryBuilder);
                     }
 
                 }

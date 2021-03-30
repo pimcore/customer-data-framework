@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\Listing\Filter;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\Listing as CoreListing;
 
@@ -72,31 +73,31 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
      * Apply filter directly to query
      *
      * @param CoreListing\Concrete|CoreListing\Dao $listing
-     * @param Db\ZendCompatibility\QueryBuilder $query
+     * @param QueryBuilder $queryBuilder
      */
-    public function applyOnCreateQuery(CoreListing\Concrete $listing, Db\ZendCompatibility\QueryBuilder $query)
+    public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $queryBuilder)
     {
         if (empty($this->value)) {
             return;
         }
 
         $value = $this->processValue($this->value);
-        $tableName = $this->getTableName($listing->getClassId());
+
 
         // we just have one field so match -> no sub-query needed
         if (count($this->fields) === 1) {
-            $this->applyFieldCondition($this->fields[0], $value, $tableName, $query);
+            $this->applyFieldCondition($this->fields[0], $value, $listing, $queryBuilder);
         } else {
             // build a sub-query to assemble where condition
-            $subQuery = Db::get()->select();
+            $subQuery = Db::get()->createQueryBuilder();
             $operator = $this->getBooleanFieldOperator();
 
             foreach ($this->fields as $field) {
-                $this->applyFieldCondition($field, $value, $tableName, $subQuery, $operator);
+                $this->applyFieldCondition($field, $value, $listing, $subQuery, $operator);
             }
 
             // add assembled sub-query where condition to our main query
-            $query->where(implode(' ', $subQuery->getPart(Db\ZendCompatibility\QueryBuilder::WHERE)));
+            $queryBuilder->andWhere(implode(' ', $subQuery->getQueryPart('where')));
         }
     }
 
@@ -105,28 +106,31 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
      *
      * @param $field
      * @param $value
-     * @param $tableName
-     * @param Db\ZendCompatibility\QueryBuilder $query
+     * @param CoreListing\Concrete $listing
+     * @param QueryBuilder $queryBuilder
      * @param string $operator
      */
     protected function applyFieldCondition(
         $field,
         $value,
-        $tableName,
-        Db\ZendCompatibility\QueryBuilder $query,
-        $operator = Db\ZendCompatibility\QueryBuilder::SQL_AND
+        CoreListing\Concrete $listing,
+        QueryBuilder $queryBuilder,
+        $operator = self::OPERATOR_AND
     ) {
+        $tableName = $this->getTableName($listing->getClassId());
+
         $condition = sprintf(
-            '`%s`.`%s` %s ?',
+            '`%s`.`%s` %s %s',
             $tableName,
             $field,
-            $this->getComparisonOperator()
+            $this->getComparisonOperator(),
+            $listing->quote($value)
         );
 
-        if ($operator === Db\ZendCompatibility\QueryBuilder::SQL_OR) {
-            $query->orWhere($condition, $value);
+        if ($operator === self::OPERATOR_OR) {
+            $queryBuilder->orWhere($condition); //->setParameter($parameterName);
         } else {
-            $query->where($condition, $value);
+            $queryBuilder->andWhere($condition); //->setParameter($parameterName);
         }
     }
 
@@ -138,9 +142,9 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
     protected function getBooleanFieldOperator()
     {
         if ($this->inverse) {
-            return Db\ZendCompatibility\QueryBuilder::SQL_AND;
+            return self::OPERATOR_AND;
         } else {
-            return Db\ZendCompatibility\QueryBuilder::SQL_OR;
+            return self::OPERATOR_OR;
         }
     }
 

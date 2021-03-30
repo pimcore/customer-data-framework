@@ -18,11 +18,11 @@ namespace CustomerManagementFrameworkBundle\CustomerList\Filter;
 use CustomerManagementFrameworkBundle\CustomerList\Filter\Exception\SearchQueryException;
 use CustomerManagementFrameworkBundle\Listing\Filter\AbstractFilter;
 use CustomerManagementFrameworkBundle\Listing\Filter\OnCreateQueryFilterInterface;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Phlexy\LexingException;
 use Pimcore\Model\DataObject\Listing as CoreListing;
-use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use SearchQueryParser\ParserException;
-use SearchQueryParser\QueryBuilder\ZendCompatibility;
+use SearchQueryParser\QueryBuilder\Doctrine;
 use SearchQueryParser\SearchQueryParser;
 
 class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
@@ -54,27 +54,27 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
     }
 
 
-    public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $query)
+    public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $queryBuilder)
     {
         if(sizeof($this->fields) === 1 && preg_match('/AND|OR|!|\(.*\)/', $this->query) === 0) {
             if(strpos($this->query, '*') !== false) {
-                $query->where(sprintf('%s like ?', $this->fields[0]), str_replace('*', '%', $this->query));
+                $queryBuilder->andWhere(sprintf('%s like %s', $this->fields[0], $listing->quote(str_replace('*', '%', $this->query))));
             } else {
-                $query->where(sprintf('%s = ?', $this->fields[0]), $this->query);
+                $queryBuilder->andWhere(sprintf('%s = %s', $this->fields[0], $listing->quote($this->query)));
             }
 
             return;
         }
 
 
-        $queryBuilder = new ZendCompatibility(
+        $parserQueryBuilder = new Doctrine(
             $this->fields,
             [
                 'stripWildcards' => false // allow LIKE wildcards
             ]
         );
 
-        $queryBuilder->processQuery($query, $this->parsedQuery);
+        $parserQueryBuilder->processQuery($queryBuilder, $this->parsedQuery);
     }
 
     /**

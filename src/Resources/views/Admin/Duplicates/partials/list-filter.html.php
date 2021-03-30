@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="form-group" id="searchBar">
-                        <input type="text" name="filter[search]" class="form-control" placeholder="<?= $this->duplicatesView->translate('cmf_filters_search') ?>..." value="<?= $this->filters['search'] ?>">
+                        <input type="text" name="filter[search]" class="form-control" placeholder="<?= $this->duplicatesView->translate('cmf_filters_search') ?>..." value="<?= $this->filters['search'] ?? null ?>">
                         <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Duplicates/partials:list-filter-helper.html.php') ?>
                     </div>
                 </div>

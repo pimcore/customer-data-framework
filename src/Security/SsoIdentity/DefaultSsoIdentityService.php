@@ -90,13 +90,13 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
     protected function findCustomerBySsoIdentity(SsoIdentityInterface $ssoIdentity)
     {
         $select = Db::get()
-            ->select()
-            ->from('object_relations_'.$this->customerProvider->getCustomerClassId(), ['src_id'])
-            ->where('fieldname = ?', 'ssoIdentities')
-            ->where('dest_id = ?', $ssoIdentity->getId());
+            ->createQueryBuilder()
+            ->from('object_relations_' . $this->customerProvider->getCustomerClassId())
+            ->select('src_id')
+            ->andWhere('fieldname = ' . Db::get()->quote('ssoIdentities'))
+            ->andWhere('dest_id = ' . Db::get()->quote($ssoIdentity->getId()));
 
-        $stmt = $select->query();
-        $result = $stmt->fetchAll();
+        $result = Db::get()->fetchAll($select->getSQL());
 
         if (count($result) === 1) {
             return $this->customerProvider->getById((int)$result[0]['src_id']);

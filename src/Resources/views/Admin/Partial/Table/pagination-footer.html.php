@@ -5,7 +5,7 @@
  * @var \Pimcore\Templating\GlobalVariables $app
  */
 
-/** @var \Zend\Paginator\Paginator $paginator */
+/** @var \Knp\Component\Pager\Pagination\PaginationInterface $paginator */
 $paginator = $this->paginator;
 
 $showPageSelector = (isset($this->showPageSelector)) ? (bool)$this->showPageSelector : true;
@@ -48,11 +48,12 @@ $showPageSelector = (isset($this->showPageSelector)) ? (bool)$this->showPageSele
         </div>
 
 
+        <?php $paginationData = $paginator->getPaginationData(); ?>
         <div class="pagination-footer__pagination col-md-8">
-            <?php if ($paginator->getPages()->pageCount > 1): ?>
+            <?php if ($paginationData['pageCount'] > 1): ?>
                 <?= $this->render(
                     'PimcoreCustomerManagementFrameworkBundle:Admin/Partial/Pagination:default.html.php',
-                    get_object_vars($paginator->getPages('Sliding'))
+                    $paginationData
                 ); ?>
             <?php endif; ?>
         </div>
@@ -60,8 +61,8 @@ $showPageSelector = (isset($this->showPageSelector)) ? (bool)$this->showPageSele
         <div class="pagination-footer__summary col-md-2">
             <?php printf(
                 'Showing items %d to %d of total %d',
-                $paginator->getPages()->firstItemNumber,
-                $paginator->getPages()->lastItemNumber,
+                $paginationData['firstItemNumber']->firstItemNumber,
+                $paginationData['lastItemNumber']->lastItemNumber,
                 $paginator->getTotalItemCount()
             ); ?>
         </div>

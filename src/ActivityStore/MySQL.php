@@ -111,25 +111,20 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
     {
         $db = Db::get();
 
-        $select = $db->select();
-        $select
-            ->from(
-                self::ACTIVITIES_TABLE,
-                [
-                    'id',
-                    'customerId',
-                    'activityDate',
-                    'type',
-                    'implementationClass',
-                    'o_id',
-                    'a_id',
-                    'md5',
-                    'creationDate',
-                    'modificationDate',
-                    'attributes',
-                ]
-            )
-            ->order('activityDate asc');
+        $select = $db->createQueryBuilder()
+            ->from(self::ACTIVITIES_TABLE)
+            ->select('id',
+                'customerId',
+                'activityDate',
+                'type',
+                'implementationClass',
+                'o_id',
+                'a_id',
+                'md5',
+                'creationDate',
+                'modificationDate',
+                'attributes')
+            ->addOrderBy('activityDate', 'asc');
 
         if ($ts = $params->getModifiedSinceTimestamp()) {
             $select->where('modificationDate >= ?', $ts);

@@ -102,14 +102,13 @@ $this->jsConfigHelper()->add('declineDuplicates', true);
 
     </table>
 
-    <?php if($this->paginator->getPages()->pageCount > 1): ?>
+    <?php $paginationData = $paginator->getPaginationData(); ?>
+    <?php if($paginationData['pageCount'] > 1): ?>
         <div class="text-center">
-            <?php if ($paginator->getPages()->pageCount > 1): ?>
-                <?= $this->render(
-                    "PimcoreCustomerManagementFrameworkBundle:Admin/Partial/Pagination:default.html.php",
-                    get_object_vars($paginator->getPages("Sliding"))
-                ); ?>
-            <?php endif; ?>
+            <?= $this->render(
+                "PimcoreCustomerManagementFrameworkBundle:Admin/Partial/Pagination:default.html.php",
+                $paginationData
+            ); ?>
         </div>
     <?php endif; ?>
 </div>

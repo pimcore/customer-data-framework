@@ -15,9 +15,9 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
+use CustomerManagementFrameworkBundle\ActivityStore\MariaDb;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use Pimcore\Controller\KernelControllerEventInterface;
-use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Routing\Annotation\Route;
@@ -50,20 +50,18 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
             $list->setOrderKey('activityDate');
             $list->setOrder('desc');
 
-            $select = $list->getQuery();
-            $select->reset(QueryBuilder::COLUMNS);
-            $select->reset(QueryBuilder::FROM);
-            $select->from(
-                \CustomerManagementFrameworkBundle\ActivityStore\MariaDb::ACTIVITIES_TABLE,
-                ['type' => 'distinct(type)']
-            );
+            $select = $list->getQueryBuilder()
+                ->resetQueryParts(['select', 'from'])
+                ->from(MariaDb::ACTIVITIES_TABLE)
+                ->select('type')
+                ->distinct();
+
             $types = \Pimcore\Db::get()->fetchCol($select);
 
             if ($type = $request->get('type')) {
-                $select = $list->getQuery(false);
-                $select->where('type = ?', $type);
-                $condition = implode(' ', $list->getQuery()->getPart('where'));
-                $list->setCondition($condition);
+                $select = $list->getQueryBuilder(false);
+                $select->andWhere('type = ' . $list->quote($type));
+                $list->setCondition((string) $select->getQueryPart('where'));
             }
 
             $paginator = new Paginator($list);

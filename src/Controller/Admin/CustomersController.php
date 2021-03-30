@@ -155,9 +155,9 @@ class CustomersController extends Admin
         $filters = $this->fetchListFilters($request);
         $listing = $this->buildListing($filters);
 
-        $query = $listing->getQuery();
-        $query->reset(QueryBuilder::COLUMNS);
-        $query->columns(['o_id']);
+        $query = $listing->getQueryBuilder()
+            ->resetQueryPart('select')
+            ->select('o_id');
         $ids = Db::get()->fetchCol($query);
 
         $jobId = uniqid();
@@ -436,7 +436,7 @@ class CustomersController extends Admin
         $ordersNullsLast = [];
 
         foreach ($orders as $key => $val) {
-            if ($val == QueryBuilder::SQL_ASC) {
+            if (strtolower($val) == 'asc') {
                 $ordersNullsLast['ISNULL(`'.$key.'`)'] =  strtoupper($val);
                 $ordersNullsLast['(`'.$key.'` = "")'] =  strtoupper($val);
             }
