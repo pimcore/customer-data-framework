@@ -30,7 +30,7 @@ class MySqlDao
      *
      * @throws \Exception
      */
-    public function getQuery($clone = true)
+    public function getQueryBuilder($clone = true)
     {
         if (is_null($this->query)) {
             // init
@@ -88,7 +88,7 @@ class MySqlDao
 
     public function getCount()
     {
-        $query = $this->getQuery();
+        $query = $this->getQueryBuilder();
         $query->setMaxResults(null)->setFirstResult(null);
 
         $query
@@ -100,7 +100,7 @@ class MySqlDao
 
     public function load()
     {
-        $query = $this->getQuery();
+        $query = $this->getQueryBuilder();
 
         $result = Db::get()->fetchAll($query, $this->model->getConditionVariables(), $this->model->getConditionVariableTypes());
 

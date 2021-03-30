@@ -15,9 +15,9 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
+use CustomerManagementFrameworkBundle\ActivityStore\MariaDb;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use Pimcore\Controller\KernelControllerEventInterface;
-use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Routing\Annotation\Route;
@@ -50,19 +50,17 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
             $list->setOrderKey('activityDate');
             $list->setOrder('desc');
 
-            $select = $list->getQuery();
-            $select->reset(QueryBuilder::COLUMNS);
-            $select->reset(QueryBuilder::FROM);
-            $select->from(
-                \CustomerManagementFrameworkBundle\ActivityStore\MariaDb::ACTIVITIES_TABLE,
-                ['type' => 'distinct(type)']
-            );
+            $select = $list->getQueryBuilder();
+            $select->from(MariaDb::ACTIVITIES_TABLE);
+            $select->select('type');
+            $select->distinct();
             $types = \Pimcore\Db::get()->fetchCol($select);
 
             if ($type = $request->get('type')) {
-                $select = $list->getQuery(false);
-                $select->where('type = ?', $type);
-                $condition = implode(' ', $list->getQuery()->getPart('where'));
+                $select = $list->getQueryBuilder(false);
+                $select->andWhere('type = ' . $list->quote($type));
+
+                $condition = (string) $list->getQueryBuilder()->getQueryPart('where');
                 $list->setCondition($condition);
             }
 

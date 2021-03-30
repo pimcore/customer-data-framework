@@ -43,7 +43,7 @@ class MariaDbDao
      *
      * @throws \Exception
      */
-    public function getQuery($clone = true)
+    public function getQueryBuilder($clone = true)
     {
         if (is_null($this->query)) {
             // init
@@ -99,7 +99,7 @@ class MariaDbDao
 
     public function getCount()
     {
-        $query = $this->getQuery();
+        $query = $this->getQueryBuilder();
         $query->setFirstResult(null);
         $query->setMaxResults(null);
         $query->from(MariaDb::ACTIVITIES_TABLE);
@@ -110,7 +110,7 @@ class MariaDbDao
 
     public function load()
     {
-        $query = $this->getQuery();
+        $query = $this->getQueryBuilder();
 
         $result = Db::get()->fetchAll($query, $this->model->getConditionVariables(), $this->model->getConditionVariableTypes());
 
