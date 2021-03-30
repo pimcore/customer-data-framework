@@ -22,7 +22,7 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use Phlexy\LexingException;
 use Pimcore\Model\DataObject\Listing as CoreListing;
 use SearchQueryParser\ParserException;
-use SearchQueryParser\QueryBuilder\ZendCompatibility;
+use SearchQueryParser\QueryBuilder\Doctrine;
 use SearchQueryParser\SearchQueryParser;
 
 class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
@@ -67,14 +67,14 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
         }
 
 
-        $queryBuilder = new ZendCompatibility(
+        $parserQueryBuilder = new Doctrine(
             $this->fields,
             [
                 'stripWildcards' => false // allow LIKE wildcards
             ]
         );
 
-        $queryBuilder->processQuery($queryBuilder, $this->parsedQuery);
+        $parserQueryBuilder->processQuery($queryBuilder, $this->parsedQuery);
     }
 
     /**
