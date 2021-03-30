@@ -20,7 +20,8 @@ use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityList\ActivityListInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use Zend\Paginator\Paginator;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+
 
 /**
  * Interface ActivityStoreInterface
@@ -106,7 +107,7 @@ interface ActivityStoreInterface
      * @param int $page
      * @param ExportActivitiesFilterParams $params
      *
-     * @return Paginator
+     * @return PaginationInterface
      */
     public function getActivitiesDataForWebservice($pageSize, $page, ExportActivitiesFilterParams $params);
 

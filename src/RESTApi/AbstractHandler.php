@@ -16,9 +16,9 @@
 namespace CustomerManagementFrameworkBundle\RESTApi;
 
 use CustomerManagementFrameworkBundle\RESTApi\Exception\MissingRequestBodyException;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Route;
-use Zend\Paginator\Paginator;
 
 /**
  * Routing handler implementation using the symfony route component to dispatch requests to actions.
@@ -27,23 +27,39 @@ use Zend\Paginator\Paginator;
  */
 abstract class AbstractHandler implements HandlerInterface
 {
+
     /**
-     * @param Paginator $paginator
+     * @var PaginatorInterface
+     */
+    protected $paginator;
+
+    /**
+     * @param PaginatorInterface $paginator
+     */
+    public function __construct(PaginatorInterface $paginator)
+    {
+        $this->paginator = $paginator;
+    }
+
+
+    /**
+     * @param mixed $listing
      * @param Request $request
      * @param int $defaultPageSize
      * @param int $defaultPage
+     * @return PaginationInterface
      */
     protected function handlePaginatorParams(
-        Paginator $paginator,
+        $listing,
         Request $request,
         $defaultPageSize = 100,
         $defaultPage = 1
-    ) {
+    ): PaginationInterface {
         $pageSize = intval($request->get('pageSize', $defaultPageSize));
         $page = intval($request->get('page', $defaultPage));
 
-        $paginator->setItemCountPerPage($pageSize);
-        $paginator->setCurrentPageNumber($page);
+
+        return $this->paginator->paginate($listing, $page, $pageSize);
     }
 
     /**

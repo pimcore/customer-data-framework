@@ -21,13 +21,13 @@ use CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Standard;
 use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use Knp\Component\Pager\Pagination\SlidingPagination;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Db;
 use Pimcore\Logger;
 use Pimcore\Model\DataObject\Listing\Concrete;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
-use Zend\Paginator\Paginator;
 
 class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 {
@@ -94,13 +94,16 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         $customerProvider->addActiveCondition($customerList);
         $customerList->setOrderKey('o_id');
 
-        $paginator = new Paginator($customerList);
-        $paginator->setItemCountPerPage(200);
+        /**
+         * @var $paginator SlidingPagination
+         */
+        $paginator = $this->paginator->paginate($customerList);
+        $paginator->setItemNumberPerPage(200);
 
-        $totalPages = $paginator->getPages()->pageCount;
+        $totalPages = $paginator->getPaginationData()['pageCount'];
         for ($pageNumber = 1; $pageNumber <= $totalPages; $pageNumber++) {
             $logger->notice(sprintf('execute page %s of %s', $pageNumber, $totalPages));
-            $paginator->setCurrentPageNumber($pageNumber);
+            $paginator = $this->paginator->paginate($customerList, $pageNumber, 200);
 
             foreach ($paginator as $customer) {
                 $logger->notice(sprintf('update index for %s', (string)$customer));
@@ -257,10 +260,6 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
         $paginator = $this->paginator->paginate($select, $page ?: 0, $pageSize);
 
-//        $paginator = new Paginator(new Db\ZendCompatibility\QueryBuilder\PaginationAdapter($select));
-//        $paginator->setItemCountPerPage($pageSize);
-//        $paginator->setCurrentPageNumber($page ?: 0);
-
         $items = $paginator->getItems();
         foreach ($items as &$row) {
 
@@ -314,10 +313,6 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
             ->addOrderBy('row1', 'asc');
 
         $paginator = $this->paginator->paginate($select, $page ?: 0, $pageSize);
-
-//        $paginator = new Paginator(new Db\ZendCompatibility\QueryBuilder\PaginationAdapter($select));
-//        $paginator->setItemCountPerPage($pageSize);
-//        $paginator->setCurrentPageNumber($page ?: 1);
 
         return $paginator;
     }

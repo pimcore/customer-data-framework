@@ -21,16 +21,13 @@ use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Doctrine\DBAL\Exception\TableNotFoundException;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\Concrete;
-use Zend\Paginator\Paginator;
 
 class MariaDb extends SqlActivityStore implements ActivityStoreInterface
 {
-
-    use LoggerAware;
 
     protected function getActivityStoreConnection()
     {
@@ -259,7 +256,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
      * @param int $page
      * @param ExportActivitiesFilterParams $params
      *
-     * @return Paginator
+     * @return PaginationInterface
      */
     public function getActivitiesDataForWebservice($pageSize, $page, ExportActivitiesFilterParams $params)
     {
@@ -287,13 +284,13 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
             $select->where('modificationDate >= ?', $ts);
         }
 
-        $paginator = new Paginator(new Db\ZendCompatibility\QueryBuilder\PaginationAdapter($select));
-        $paginator->setItemCountPerPage($pageSize);
-        $paginator->setCurrentPageNumber($page);
+        $paginator = $this->paginator->paginate($select, $page, $pageSize);
 
-        foreach ($paginator as &$value) {
+        $items = $paginator->getItems();
+        foreach ($items as &$value) {
             $value = $this->createEntryInstance($value);
         }
+        $paginator->setItems($items);
 
         return $paginator;
     }

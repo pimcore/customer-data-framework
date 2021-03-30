@@ -16,9 +16,27 @@
 namespace CustomerManagementFrameworkBundle\SegmentBuilder;
 
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 abstract class AbstractSegmentBuilder implements SegmentBuilderInterface
 {
+
+    /**
+     * @var PaginatorInterface
+     */
+    protected $paginator;
+
+    /**
+     * @param PaginatorInterface $paginator
+     * @required
+     */
+    public function setPaginator(PaginatorInterface $paginator): void
+    {
+        $this->paginator = $paginator;
+    }
+
+
+
     /**
      * return the name of the segment builder
      *

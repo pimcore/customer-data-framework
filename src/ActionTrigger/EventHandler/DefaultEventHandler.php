@@ -26,7 +26,8 @@ use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Zend\Paginator\Paginator;
+use Knp\Component\Pager\Pagination\SlidingPagination;
+use Knp\Component\Pager\PaginatorInterface;
 
 class DefaultEventHandler implements EventHandlerInterface
 {
@@ -39,7 +40,12 @@ class DefaultEventHandler implements EventHandlerInterface
      */
     protected $actionTriggerQueue;
 
-    public function __construct(QueueInterface $actionTriggerQueue)
+    /**
+     * @var PaginatorInterface
+     */
+    protected $paginator;
+
+    public function __construct(QueueInterface $actionTriggerQueue, PaginatorInterface $paginator)
     {
         $rules = new Rule\Listing();
         $rules->setCondition('active = 1');
@@ -58,6 +64,7 @@ class DefaultEventHandler implements EventHandlerInterface
         $this->rulesGroupedByEvents = $rulesGroupedByEvents;
 
         $this->actionTriggerQueue = $actionTriggerQueue;
+        $this->paginator = $paginator;
     }
 
     public function handleEvent($event)
@@ -93,16 +100,18 @@ class DefaultEventHandler implements EventHandlerInterface
                 $listing->setOrderKey('o_id');
                 $listing->setOrder('asc');
 
-                $paginator = new Paginator($listing);
-                $paginator->setItemCountPerPage(100);
+                /**
+                 * @var $paginator SlidingPagination
+                 */
+                $paginator = $this->paginator->paginate($listing, 1, 100);
 
                 $this->getLogger()->info(
                     sprintf('handleCustomerListEvent: found %s matching customers', $paginator->getTotalItemCount())
                 );
 
-                $totalPages = $paginator->getPages()->pageCount;
+                $totalPages = $paginator->getPaginationData()['totalCount'];
                 for ($i = 1; $i <= $totalPages; $i++) {
-                    $paginator->setCurrentPageNumber($i);
+                    $paginator = $this->paginator->paginate($listing, $i, 100);
 
                     foreach ($paginator as $customer) {
                         $this->handleActionsForCustomer($rule, $customer, $environment);

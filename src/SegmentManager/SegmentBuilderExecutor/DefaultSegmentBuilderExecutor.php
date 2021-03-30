@@ -21,8 +21,9 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\SegmentBuilder\SegmentBuilderInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Db;
-use Zend\Paginator\Paginator;
+use Pimcore\Model\DataObject\Concrete;
 
 class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
 {
@@ -45,11 +46,17 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
      */
     protected $customerSaveManager;
 
-    public function __construct(SegmentManagerInterface $segmentManager, CustomerProviderInterface $customerProvider, CustomerSaveManagerInterface $customerSaveManager)
+    /**
+     * @var PaginatorInterface
+     */
+    protected $paginator;
+
+    public function __construct(SegmentManagerInterface $segmentManager, CustomerProviderInterface $customerProvider, CustomerSaveManagerInterface $customerSaveManager, PaginatorInterface $paginator)
     {
         $this->segmentManager = $segmentManager;
         $this->customerProvider = $customerProvider;
         $this->customerSaveManager = $customerSaveManager;
+        $this->paginator = $paginator;
     }
 
     /**
@@ -149,14 +156,12 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
         $logger->notice('Pre-fetching all ids via adapter for speedup and coherent paging');
 
         // note: listing is now constant and may be flushed per iteration
-        $paginator = new Paginator(
-            new \CustomerManagementFrameworkBundle\Pimcore\Model\Tool\ListingAdapter($customerList)
-        );
-
         $pageSize = $desiredPageSize !== null && $desiredPageSize > 0 ? $desiredPageSize : 250;
-        $paginator->setItemCountPerPage($pageSize);
+        $idList = $customerList->loadIdList();
+        $paginator = $this->paginator->paginate($idList, 1, $pageSize);
+
         $totalAmount = $paginator->getTotalItemCount();
-        $totalPages = $paginator->count();
+        $totalPages = $paginator->getPaginationData()['pageCount'];
 
         $startPage = $desiredStartPage !== null && $desiredStartPage > 0 ? min($totalPages, $desiredStartPage) : 1;
         $endPage = $totalPages;
@@ -238,9 +243,11 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
                     )
                 );
 
-                $paginator->setCurrentPageNumber($pageNumber);
+                $paginator = $this->paginator->paginate($idList, $pageNumber, $pageSize);
+
                 /** @var CustomerInterface $customer */
-                foreach ($paginator as $customer) {
+                foreach ($paginator as $customerId) {
+                    $customer = Concrete::getById($customerId);
                     if ($itemCount % $progressCount === 0) {
                         $remaining = $totalAmount - $itemCount;
                         $taskRemaining = $taskTotalAmount - $itemCount;

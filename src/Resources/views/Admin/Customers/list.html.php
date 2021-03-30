@@ -5,7 +5,7 @@
  * @var \Pimcore\Templating\GlobalVariables $app
  */
 
-/** @var \Zend\Paginator\Paginator|\CustomerManagementFrameworkBundle\Model\CustomerInterface[] $paginator */
+/** @var \Knp\Component\Pager\Pagination\PaginationInterface|\CustomerManagementFrameworkBundle\Model\CustomerInterface[] $paginator */
 $paginator = $this->paginator;
 
 /** @var \CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface $cv */

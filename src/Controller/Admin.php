@@ -17,11 +17,12 @@ namespace CustomerManagementFrameworkBundle\Controller;
 
 use CustomerManagementFrameworkBundle\Templating\Helper\DefaultPageSize;
 use CustomerManagementFrameworkBundle\Templating\Helper\JsConfig;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Controller\KernelControllerEventInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
-use Zend\Paginator\Paginator;
 
 class Admin extends AdminController implements KernelControllerEventInterface
 {
@@ -36,10 +37,16 @@ class Admin extends AdminController implements KernelControllerEventInterface
      */
     protected $defaultPageSize;
 
-    public function __construct(JsConfig $jsConfigHelper, DefaultPageSize $defaultPageSize)
+    /**
+     * @var PaginatorInterface
+     */
+    protected $paginator;
+
+    public function __construct(JsConfig $jsConfigHelper, DefaultPageSize $defaultPageSize, PaginatorInterface $paginator)
     {
         $this->jsConfigHelper = $jsConfigHelper;
         $this->defaultPageSize = $defaultPageSize;
+        $this->paginator = $paginator;
     }
 
     /**
@@ -102,7 +109,7 @@ class Admin extends AdminController implements KernelControllerEventInterface
      * @param mixed $data
      * @param int $defaultPageSize
      *
-     * @return Paginator
+     * @return PaginationInterface
      */
     protected function buildPaginator(Request $request, $data, $defaultPageSize = null)
     {
@@ -110,9 +117,9 @@ class Admin extends AdminController implements KernelControllerEventInterface
             $defaultPageSize = $this->defaultPageSize->defaultPageSize();
         }
 
-        $paginator = new Paginator($data);
-        $paginator->setItemCountPerPage((int)$request->get('perPage', $defaultPageSize));
-        $paginator->setCurrentPageNumber((int)$request->get('page', 1));
+        $page = (int)$request->get('page', 1);
+        $pageSize = (int)$request->get('perPage', $defaultPageSize);
+        $paginator = $this->paginator->paginate($data, $page, $pageSize);
 
         return $paginator;
     }

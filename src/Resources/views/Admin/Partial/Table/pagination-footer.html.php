@@ -36,7 +36,7 @@ $showPageSelector = (isset($this->showPageSelector)) ? (bool)$this->showPageSele
                                 $countUrl = $this->formQueryString(Pimcore::getContainer()->get('request_stack')->getCurrentRequest(), $this->pimcoreUrl($countParams));
                                 ?>
 
-                                <option data-url="<?= $countUrl ?>" value="<?= $itemCount ?>" <?= ($paginator->getItemCountPerPage() === $itemCount) ? 'selected' : '' ?>>
+                                <option data-url="<?= $countUrl ?>" value="<?= $itemCount ?>" <?= ($paginator->getItemNumberPerPage() === $itemCount) ? 'selected' : '' ?>>
                                     <?= $itemCount ?>
                                 </option>
 
@@ -61,8 +61,8 @@ $showPageSelector = (isset($this->showPageSelector)) ? (bool)$this->showPageSele
         <div class="pagination-footer__summary col-md-2">
             <?php printf(
                 'Showing items %d to %d of total %d',
-                $paginationData['firstItemNumber']->firstItemNumber,
-                $paginationData['lastItemNumber']->lastItemNumber,
+                $paginationData['firstItemNumber'],
+                $paginationData['lastItemNumber'],
                 $paginator->getTotalItemCount()
             ); ?>
         </div>
