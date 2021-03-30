@@ -67,9 +67,10 @@ class DuplicatesController extends Admin
         );
 
         return $this->render(
-            'PimcoreCustomerManagementFrameworkBundle:Admin\Duplicates:list.html.php',
+            'PimcoreCustomerManagementFrameworkBundle:Admin\Duplicates:list.html.twig',
             [
                 'paginator' => $paginator,
+                'paginationVariables' => $paginator->getPaginationData(),
                 'duplicates' => $paginator->getItems(),
                 'duplicatesView' => \Pimcore::getContainer()->get('cmf.customer_duplicates_view'),
                 'searchBarFields' => $this->getSearchHelper()->getConfiguredSearchBarFields(),

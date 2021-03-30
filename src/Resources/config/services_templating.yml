@@ -72,3 +72,9 @@ services:
         autowire: true
         tags:
             - { name: templating.helper, alias: cmfSsoIdentity }
+
+
+    # twig extensions
+    CustomerManagementFrameworkBundle\Twig\Extension\CmfFrontendUtilsExtension:
+        autowire: true
+        tags: [ 'twig.extension' ]

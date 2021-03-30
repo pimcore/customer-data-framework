@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Customer Management</title>
+
+    {% apply spaceless %}
+        {% do pimcore_head_link().appendStylesheet(cmf_minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/css/lib.css')) %}
+        {% do pimcore_head_link().appendStylesheet(cmf_minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/css/cmf.css')) %}
+    {% endapply %}
+
+    {% block head_stylesheets deferred %}
+        {{ pimcore_head_link() }}
+    {% endblock %}
+</head>
+<body class="sidebar-collapse">
+
+    <div class="wrapper">
+        <div class="content-wrapper">
+            {{ block('content') }}
+        </div>
+    </div>
+
+    {{ cmf_jsConfig() | raw }}
+
+    {% apply spaceless %}
+        {% do pimcore_head_script().prependFile(cmf_minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/js/cmf.js')) %}
+        {% do pimcore_head_script().prependFile(cmf_minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/js/lib.js')) %}
+    {% endapply %}
+
+    {% block headscripts deferred %}
+        {{ pimcore_head_script() }}
+    {% endblock %}
+
+</body>
+</html>
