@@ -102,6 +102,7 @@ class MariaDbDao
         $query = $this->getQueryBuilder();
         $query->setFirstResult(null);
         $query->setMaxResults(null);
+        $query->resetQueryPart('from');
         $query->from(MariaDb::ACTIVITIES_TABLE);
         $query->select('count(*) totalCount');
 

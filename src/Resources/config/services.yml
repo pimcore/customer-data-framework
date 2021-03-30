@@ -82,9 +82,9 @@ services:
     CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface:
         class: CustomerManagementFrameworkBundle\DuplicatesIndex\DefaultMariaDbDuplicatesIndex
         arguments:
-            - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.enableDuplicatesIndex%'
-            - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.duplicateCheckFields%'
-            - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.dataTransformers%'
+            $enableDuplicatesIndex: '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.enableDuplicatesIndex%'
+            $duplicateCheckFields: '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.duplicateCheckFields%'
+            $dataTransformers: '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.dataTransformers%'
 
     CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\IndexerInterface:
         class: CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\Indexer

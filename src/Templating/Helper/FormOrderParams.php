@@ -58,8 +58,8 @@ class FormOrderParams extends Helper
     public static function getValidDirections()
     {
         return [
-            QueryBuilder::SQL_ASC,
-            QueryBuilder::SQL_DESC,
+            'ASC',
+            'DESC'
         ];
     }
 
@@ -71,9 +71,9 @@ class FormOrderParams extends Helper
     public function getNexSortOrder(Request $request, $param) {
         $val = ($request->get('order')? $request->get('order')[$param] : null);
         if ($val == null || empty($val)) {
-            return QueryBuilder::SQL_ASC;
-        } else if ($val == QueryBuilder::SQL_ASC) {
-            return QueryBuilder::SQL_DESC;
+            return 'ASC';
+        } else if (strtoupper($val) == 'ASC') {
+            return 'DESC';
         }
         return '';
     }
@@ -82,7 +82,7 @@ class FormOrderParams extends Helper
     /**
      * @param Request $request
      * @param $param
-     * @return string
+     * @return array
      */
     public function getOrderParams(Request $request, $param) {
         $params = $request->query->all();

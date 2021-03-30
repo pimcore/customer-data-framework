@@ -50,18 +50,18 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
             $list->setOrderKey('activityDate');
             $list->setOrder('desc');
 
-            $select = $list->getQueryBuilder();
-            $select->from(MariaDb::ACTIVITIES_TABLE);
-            $select->select('type');
-            $select->distinct();
+            $select = $list->getQueryBuilder()
+                ->resetQueryParts(['select', 'from'])
+                ->from(MariaDb::ACTIVITIES_TABLE)
+                ->select('type')
+                ->distinct();
+
             $types = \Pimcore\Db::get()->fetchCol($select);
 
             if ($type = $request->get('type')) {
                 $select = $list->getQueryBuilder(false);
                 $select->andWhere('type = ' . $list->quote($type));
-
-                $condition = (string) $list->getQueryBuilder()->getQueryPart('where');
-                $list->setCondition($condition);
+                $list->setCondition((string) $select->getQueryPart('where'));
             }
 
             $paginator = new Paginator($list);

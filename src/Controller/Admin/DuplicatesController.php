@@ -70,7 +70,7 @@ class DuplicatesController extends Admin
             'PimcoreCustomerManagementFrameworkBundle:Admin\Duplicates:list.html.php',
             [
                 'paginator' => $paginator,
-                'duplicates' => $paginator->getCurrentItems(),
+                'duplicates' => $paginator->getItems(),
                 'duplicatesView' => \Pimcore::getContainer()->get('cmf.customer_duplicates_view'),
                 'searchBarFields' => $this->getSearchHelper()->getConfiguredSearchBarFields(),
                 'filters' => $filters,

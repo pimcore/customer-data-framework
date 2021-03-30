@@ -155,8 +155,9 @@ class CustomersController extends Admin
         $filters = $this->fetchListFilters($request);
         $listing = $this->buildListing($filters);
 
-        $query = $listing->getQueryBuilder();
-        $query->select('o_id');
+        $query = $listing->getQueryBuilder()
+            ->resetQueryPart('select')
+            ->select('o_id');
         $ids = Db::get()->fetchCol($query);
 
         $jobId = uniqid();

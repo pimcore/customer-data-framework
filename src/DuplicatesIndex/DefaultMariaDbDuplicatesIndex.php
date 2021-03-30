@@ -21,6 +21,7 @@ use CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Standard;
 use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Db;
 use Pimcore\Logger;
 use Pimcore\Model\DataObject\Listing\Concrete;
@@ -53,17 +54,23 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
     protected $analyzeFalsePositives = false;
 
     /**
+     * @var PaginatorInterface
+     */
+    protected $paginator;
+
+    /**
      * DefaultMariaDbDuplicatesIndex constructor.
      *
      * @param bool $enableDuplicatesIndex
      * @param array $duplicateCheckFields
      * @param array $dataTransformers
      */
-    public function __construct($enableDuplicatesIndex = false, array $duplicateCheckFields = [], array $dataTransformers = [])
+    public function __construct(PaginatorInterface $paginator, $enableDuplicatesIndex = false, array $duplicateCheckFields = [], array $dataTransformers = [])
     {
         $this->enableDuplicatesIndex = $enableDuplicatesIndex;
         $this->duplicateCheckFields = $duplicateCheckFields;
         $this->dataTransformers = $dataTransformers;
+        $this->paginator = $paginator;
     }
 
     public function recreateIndex()
@@ -217,44 +224,45 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
     {
         $db = \Pimcore\Db::get();
 
-        $select = $db->select();
+        $select = $db->createQueryBuilder();
 
         $select
-            ->from(
-                self::POTENTIAL_DUPLICATES_TABLE,
-                [
+            ->from(self::POTENTIAL_DUPLICATES_TABLE)
+            ->select(
                     'id',
                     'duplicateCustomerIds',
                     'declined',
                     'fieldCombinations',
                     'creationDate',
-                    'modificationDate',
-                ]
+                    'modificationDate'
             )
-            ->order('id asc');
+            ->addOrderBy('id', 'asc');
 
         if(!is_null($filterCustomerList)) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            $query = $filterCustomerList->getQuery()
-                ->reset(Db\ZendCompatibility\QueryBuilder::COLUMNS)
-                ->columns(['o_id']);
+            $query = $filterCustomerList->getQueryBuilder()
+                ->resetQueryPart('select')
+                ->select('o_id');
+            $joinTable = 'object_' . $filterCustomerList->getClassId();
             $select
                 ->distinct()
-                ->joinInner('object_' . $filterCustomerList->getClassId(), 'FIND_IN_SET(o_id, duplicateCustomerIds)', [])
-                ->where('o_id in (' . $query . ')');
+                ->innerJoin(self::POTENTIAL_DUPLICATES_TABLE, $joinTable, $joinTable, 'FIND_IN_SET(o_id, duplicateCustomerIds)')
+                ->andWhere('o_id in (' . $query . ')');
         }
 
         if ($declined) {
-            $select->where('(declined = 1)');
+            $select->andWhere('(declined = 1)');
         } else {
-            $select->where('(declined is null or declined = 0)');
+            $select->andWhere('(declined is null or declined = 0)');
         }
 
-        $paginator = new Paginator(new Db\ZendCompatibility\QueryBuilder\PaginationAdapter($select));
-        $paginator->setItemCountPerPage($pageSize);
-        $paginator->setCurrentPageNumber($page ?: 0);
+        $paginator = $this->paginator->paginate($select, $page ?: 0, $pageSize);
 
-        foreach ($paginator as &$row) {
+//        $paginator = new Paginator(new Db\ZendCompatibility\QueryBuilder\PaginationAdapter($select));
+//        $paginator->setItemCountPerPage($pageSize);
+//        $paginator->setCurrentPageNumber($page ?: 0);
+
+        $items = $paginator->getItems();
+        foreach ($items as &$row) {
 
             /**
              * @var \CustomerManagementFrameworkBundle\Model\CustomerDuplicates\PotentialDuplicateItemInterface $item
@@ -286,6 +294,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
             $row = $item;
         }
+        $paginator->setItems($items);
 
         return $paginator;
     }
@@ -294,22 +303,21 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
     {
         $db = \Pimcore\Db::get();
 
-        $select = $db->select();
+        $select = $db->createQueryBuilder();
         $select
-            ->from(
-                self::FALSE_POSITIVES_TABLE,
-                [
-                    'row1',
+            ->from(self::FALSE_POSITIVES_TABLE)
+            ->select('row1',
                     'row2',
                     'row1Details',
-                    'row2Details',
-                ]
+                    'row2Details'
             )
-            ->order('row1 asc');
+            ->addOrderBy('row1', 'asc');
 
-        $paginator = new Paginator(new Db\ZendCompatibility\QueryBuilder\PaginationAdapter($select));
-        $paginator->setItemCountPerPage($pageSize);
-        $paginator->setCurrentPageNumber($page ?: 1);
+        $paginator = $this->paginator->paginate($select, $page ?: 0, $pageSize);
+
+//        $paginator = new Paginator(new Db\ZendCompatibility\QueryBuilder\PaginationAdapter($select));
+//        $paginator->setItemCountPerPage($pageSize);
+//        $paginator->setCurrentPageNumber($page ?: 1);
 
         return $paginator;
     }

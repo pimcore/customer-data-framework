@@ -2,9 +2,8 @@
 
 namespace CustomerManagementFrameworkBundle\Listing\Filter;
 
-use Pimcore\Db\ZendCompatibility\QueryBuilder;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Pimcore\Model\DataObject\Listing as CoreListing;
-use Pimcore\Model\DataObject\Listing;
 use Pimcore\Model\User;
 use Pimcore\Model\User\Workspace\DataObject;
 
@@ -26,12 +25,12 @@ class Permission extends AbstractFilter implements OnCreateQueryFilterInterface
      * Apply filter directly to query
      *
      * @param CoreListing\Concrete|CoreListing\Dao $listing
-     * @param QueryBuilder $query
+     * @param QueryBuilder $queryBuilder
      */
-    public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $query)
+    public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $queryBuilder)
     {
         // add permission conditions
-        $this->addPermissionFilters($query);
+        $this->addPermissionFilters($queryBuilder);
     }
 
     /**
@@ -64,9 +63,9 @@ class Permission extends AbstractFilter implements OnCreateQueryFilterInterface
     /**
      * Add user directory permissions to filter only for accessible customers
      *
-     * @param QueryBuilder $query
+     * @param QueryBuilder $queryBuilder
      */
-    protected function addPermissionFilters(QueryBuilder $query)
+    protected function addPermissionFilters(QueryBuilder $queryBuilder)
     {
         // fetch workspaces of user (including workspaces of roles)
         $workspaces = $this->getWorkspacesOfUser();
@@ -108,6 +107,6 @@ class Permission extends AbstractFilter implements OnCreateQueryFilterInterface
             $conditions[] = '0';
         }
         // add conditions
-        $query->where('(' . implode(' AND ', $conditions) . ')');
+        $queryBuilder->andWhere('(' . implode(' AND ', $conditions) . ')');
     }
 }

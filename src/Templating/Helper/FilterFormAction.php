@@ -15,10 +15,10 @@
 
 namespace CustomerManagementFrameworkBundle\Templating\Helper;
 
+use Knp\Component\Pager\Pagination\PaginationInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Templating\Helper\Helper;
-use Zend\Paginator\Paginator;
 
 class FilterFormAction extends Helper
 {
@@ -28,11 +28,11 @@ class FilterFormAction extends Helper
     }
 
     /**
-     * @param Paginator|null $paginator
+     * @param PaginationInterface|null $paginator
      *
      * @return string
      */
-    public function get(Paginator $paginator)
+    public function get(PaginationInterface $paginator)
     {
         // reset page when changing filters
         $formActionParams = [
@@ -40,8 +40,8 @@ class FilterFormAction extends Helper
             'perPage' => null,
         ];
 
-        if (null !== $paginator && $paginator->getItemCountPerPage() !== 25) {
-            $formActionParams['perPage'] = $paginator->getItemCountPerPage();
+        if (null !== $paginator && $paginator->getItemNumberPerPage() !== 25) {
+            $formActionParams['perPage'] = $paginator->getItemNumberPerPage();
         }
 
         /**

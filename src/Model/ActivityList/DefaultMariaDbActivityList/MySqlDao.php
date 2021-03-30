@@ -88,8 +88,10 @@ class MySqlDao
 
     public function getCount()
     {
-        $query = $this->getQueryBuilder();
-        $query->setMaxResults(null)->setFirstResult(null);
+        $query = $this->getQueryBuilder()
+            ->setMaxResults(null)
+            ->setFirstResult(null)
+            ->resetQueryPart('from');
 
         $query
             ->from(MariaDb::ACTIVITIES_TABLE)
