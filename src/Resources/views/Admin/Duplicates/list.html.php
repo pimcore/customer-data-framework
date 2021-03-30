@@ -61,7 +61,7 @@ $this->jsConfigHelper()->add('declineDuplicates', true);
                         <?php
         } ?>
 
-                        <?php if (PIMCORE_DEBUG) {
+                        <?php if (Pimcore::inDebugMode()) {
             $fieldCombinations = $duplicate->getFieldCombinations();
             foreach ($fieldCombinations as $key => $combination) {
                 $fieldCombinations[$key] = implode(', ', $combination);
