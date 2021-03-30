@@ -265,25 +265,23 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
     {
         $db = Db::get();
 
-        $select = $db->select();
+        $select = $db->createQueryBuilder();
         $select
-            ->from(
-                self::ACTIVITIES_TABLE,
-                [
-                    'id',
-                    'customerId',
-                    'activityDate',
-                    'type',
-                    'implementationClass',
-                    'o_id',
-                    'a_id',
-                    'md5',
-                    'creationDate',
-                    'modificationDate',
-                    'attributes' => 'COLUMN_JSON(attributes)',
-                ]
+            ->from(self::ACTIVITIES_TABLE)
+            ->select(
+                'id',
+                'customerId',
+                'activityDate',
+                'type',
+                'implementationClass',
+                'o_id',
+                'a_id',
+                'md5',
+                'creationDate',
+                'modificationDate',
+                'COLUMN_JSON(attributes) attributes'
             )
-            ->order('activityDate asc');
+            ->addOrderBy('activityDate', 'asc');
 
         if ($ts = $params->getModifiedSinceTimestamp()) {
             $select->where('modificationDate >= ?', $ts);

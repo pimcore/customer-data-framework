@@ -17,6 +17,7 @@ namespace CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbAct
 
 use CustomerManagementFrameworkBundle\ActivityStore\MariaDb;
 use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Pimcore\Db;
 
 class MariaDbDao
@@ -38,7 +39,7 @@ class MariaDbDao
      *
      * @param bool $clone
      *
-     * @return Db\ZendCompatibility\QueryBuilder
+     * @return QueryBuilder
      *
      * @throws \Exception
      */
@@ -46,12 +47,11 @@ class MariaDbDao
     {
         if (is_null($this->query)) {
             // init
-            $select = Db::get()->select();
+            $select = Db::get()->createQueryBuilder();
 
             // create base
-            $select->from(
-                MariaDb::ACTIVITIES_TABLE,
-                [
+            $select->from(MariaDb::ACTIVITIES_TABLE)
+                ->select(
                     'id',
                     'customerId',
                     'activityDate',
@@ -59,12 +59,11 @@ class MariaDbDao
                     'implementationClass',
                     'o_id',
                     'a_id',
-                    'attributes' => 'COLUMN_JSON(attributes)',
+                    'COLUMN_JSON(attributes) attributes',
                     'md5',
                     'creationDate',
-                    'modificationDate',
-                ]
-            );
+                    'modificationDate'
+                );
 
             // add condition
             $this->addConditions($select);
@@ -85,30 +84,26 @@ class MariaDbDao
         return $this->query;
     }
 
-    public function setQuery(Db\ZendCompatibility\QueryBuilder $query = null)
+    public function setQuery(QueryBuilder $query = null)
     {
         $this->query = $query;
     }
 
-    private function addLimit(Db\ZendCompatibility\QueryBuilder $select)
+    private function addLimit(QueryBuilder $select)
     {
         if ($limit = $this->model->getLimit()) {
-            $select->limit($limit, $this->model->getOffset());
+            $select->setMaxResults($limit);
+            $select->setFirstResult($this->model->getOffset());
         }
     }
 
     public function getCount()
     {
         $query = $this->getQuery();
-        $query->limit(null, null);
-        $query->reset('from');
-
-        $query->from(
-            MariaDb::ACTIVITIES_TABLE,
-            [
-                'totalCount' => 'count(*)',
-            ]
-        );
+        $query->setFirstResult(null);
+        $query->setMaxResults(null);
+        $query->from(MariaDb::ACTIVITIES_TABLE);
+        $query->select('count(*) totalCount');
 
         return Db::get()->fetchOne($query, $this->model->getConditionVariables(), $this->model->getConditionVariableTypes());
     }
@@ -123,33 +118,29 @@ class MariaDbDao
     }
 
     /**
-     * @param Db\ZendCompatibility\QueryBuilder $select
+     * @param QueryBuilder $select
      *
      * @return $this
      */
-    protected function addConditions(Db\ZendCompatibility\QueryBuilder $select)
+    protected function addConditions(QueryBuilder $select)
     {
         $condition = $this->model->getCondition();
 
         if ($condition) {
-            $select->where($condition);
+            $select->andWhere($condition);
         }
 
         return $this;
     }
 
-    protected function addOrder(Db\ZendCompatibility\QueryBuilder $select)
+    protected function addOrder(QueryBuilder $select)
     {
         $orderKey = $this->model->getOrderKey() ?: [];
         $order = $this->model->getOrder();
 
         foreach ($orderKey as $i => $key) {
             $orderString = str_replace('`', '', trim($key));
-            if ($order[$i]) {
-                $orderString .= ' '.$order[$i];
-            }
-
-            $select->order($orderString);
+            $select->addOrderBy($orderString, $order[$i] ?? null);
         }
 
         return $this;
