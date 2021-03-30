@@ -24,7 +24,6 @@ use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
 use Symfony\Component\HttpFoundation\Request;
-use Zend\Paginator\Paginator;
 
 class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
 {
@@ -47,8 +46,7 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
         $list->setOrder('asc');
         $list->setUnpublished(false);
 
-        $paginator = new Paginator($list);
-        $this->handlePaginatorParams($paginator, $request);
+        $paginator = $this->handlePaginatorParams($list, $request);
 
         $timestamp = time();
 
@@ -60,7 +58,7 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
         return new Response(
             [
                 'page' => $paginator->getCurrentPageNumber(),
-                'totalPages' => $paginator->getPages()->pageCount,
+                'totalPages' => $paginator->getPaginationData()['pageCount'],
                 'timestamp' => $timestamp,
                 'data' => $result,
             ]

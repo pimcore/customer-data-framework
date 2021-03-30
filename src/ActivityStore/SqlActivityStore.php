@@ -7,17 +7,34 @@ use CustomerManagementFrameworkBundle\Model\ActivityExternalIdInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\TableNotFoundException;
+use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\Concrete;
-use Zend\Paginator\Paginator;
 
 abstract class SqlActivityStore
 {
+    use LoggerAware;
+
     const ACTIVITIES_TABLE = 'plugin_cmf_activities';
     const ACTIVITIES_METADATA_TABLE = 'plugin_cmf_activities_metadata';
     const DELETIONS_TABLE = 'plugin_cmf_deletions';
+
+    /**
+     * @var PaginatorInterface
+     */
+    protected $paginator;
+
+    /**
+     * @param PaginatorInterface $paginator
+     */
+    public function __construct(PaginatorInterface $paginator)
+    {
+        $this->paginator = $paginator;
+    }
+
 
     public function insertActivityIntoStore(ActivityInterface $activity)
     {

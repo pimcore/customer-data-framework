@@ -7,7 +7,7 @@
 $this->extend('PimcoreCustomerManagementFrameworkBundle::layout.html.php');
 
 /**
- * @var \Zend\Paginator\Paginator $paginator
+ * @var \Knp\Component\Pager\Pagination\PaginationInterface $paginator
  */
 $paginator = $this->activities;
 
@@ -58,7 +58,7 @@ $this->jsConfigHelper()->add('formAutoSubmit', true);
                         <th><?= $av->translate('cmf_activities_activity_details') ?></th>
                     </tr>
 
-                    <?php foreach($paginator as $activity) {
+                    <?php foreach($paginator->getItems() as $activity) {
                         /**
                          * @var \CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface $activity
                          */ ?>
@@ -99,14 +99,13 @@ $this->jsConfigHelper()->add('formAutoSubmit', true);
 
                 </table>
 
-                <?php if($paginator->getPages()->pageCount > 1): ?>
+                <?php $paginationData = $paginator->getPaginationData(); ?>
+                <?php if($paginationData['pageCount'] > 1): ?>
                     <div class="text-center">
-                        <?php if($paginator->getPages()->pageCount > 1): ?>
-                            <?= $this->render(
-                                'PimcoreCustomerManagementFrameworkBundle:Admin/Partial/Pagination:default.html.php',
-                                get_object_vars($paginator->getPages('Sliding'))
-                            ); ?>
-                        <?php endif; ?>
+                        <?= $this->render(
+                            'PimcoreCustomerManagementFrameworkBundle:Admin/Partial/Pagination:default.html.php',
+                            $paginationData
+                        ); ?>
                     </div>
                 <?php endif; ?>
 

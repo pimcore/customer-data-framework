@@ -18,7 +18,6 @@ namespace CustomerManagementFrameworkBundle\Model\ActivityList;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList\MariaDbDao;
 use Pimcore\Model\Listing\AbstractListing;
-use Zend\Paginator\Adapter\AdapterInterface;
 
 class DefaultMariaDbActivityList extends AbstractListing implements ActivityListInterface
 {
@@ -128,12 +127,10 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
 
     /**
      * Return a fully configured Paginator Adapter from this method.
-     *
-     * @return AdapterInterface
      */
     public function getPaginatorAdapter()
     {
-        return $this;
+        throw new \Exception('Not implemented anymore.');
     }
 
     /**

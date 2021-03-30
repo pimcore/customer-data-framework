@@ -22,10 +22,9 @@ use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProvi
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\DefaultNewsletterQueueItem;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
 use CustomerManagementFrameworkBundle\Traits\ApplicationLoggerAware;
+use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Db;
 use Pimcore\Tool\Console;
-use Zend\Paginator\Adapter\ArrayAdapter;
-use Zend\Paginator\Paginator;
 
 class DefaultNewsletterQueue implements NewsletterQueueInterface
 {
@@ -40,9 +39,15 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
      */
     private $immidateAsyncQueueItems = [];
 
-    public function __construct($maxItemsPerRound = 500)
+    /**
+     * @var PaginatorInterface
+     */
+    protected $paginator;
+
+    public function __construct(PaginatorInterface $paginator, $maxItemsPerRound = 500)
     {
         $this->maxItemsPerRound = $maxItemsPerRound;
+        $this->paginator = $paginator;
         $this->setLoggerComponent('NewsletterSync');
     }
 
@@ -206,13 +211,11 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
         $list = $customerProvider->getList();
 
-        $paginator = new Paginator($list);
-        $paginator->setItemCountPerPage($this->maxItemsPerRound);
-
-        $pageCount = $paginator->getPages()->pageCount;
+        $paginator = $this->paginator->paginate($list, 1, $this->maxItemsPerRound);
+        $pageCount = $paginator->getPaginationData()['pageCount'];
 
         for ($i = 1; $i <= $pageCount; $i++) {
-            $paginator->setCurrentPageNumber($i);
+            $paginator = $this->paginator->paginate($list, $i, $this->maxItemsPerRound);
             $items = [];
             foreach ($paginator as $customer) {
                 if ($item = $this->createUpdateItem($customer)) {
@@ -243,13 +246,12 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
         $select->from(self::QUEUE_TABLE);
 
         $rows = $db->fetchAll($select);
-        $paginator = new Paginator(new ArrayAdapter($rows));
-        $paginator->setItemCountPerPage($this->maxItemsPerRound);
 
-        $pageCount = $paginator->getPages()->pageCount;
+        $paginator = $this->paginator->paginate($rows, 1, $this->maxItemsPerRound);
+        $pageCount = $paginator->getPaginationData()['pageCount'];
 
         for ($i = 1; $i <= $pageCount; $i++) {
-            $paginator->setCurrentPageNumber($i);
+            $paginator = $this->paginator->paginate($rows, $i, $this->maxItemsPerRound);
             $items = [];
             foreach ($paginator as $row) {
                 if ($item = $this->createItemFromData($row)) {

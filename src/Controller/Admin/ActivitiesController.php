@@ -17,17 +17,28 @@ namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\ActivityStore\MariaDb;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Controller\KernelControllerEventInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Routing\Annotation\Route;
-use Zend\Paginator\Paginator;
 
 /**
  * @Route("/activities")
  */
 class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminController implements KernelControllerEventInterface
 {
+
+    /**
+     * @var PaginatorInterface
+     */
+    protected $paginator;
+
+    public function __construct(PaginatorInterface $paginator)
+    {
+        $this->paginator = $paginator;
+    }
+
     public function onKernelControllerEvent(ControllerEvent $event)
     {
         $this->checkPermission('plugin_cmf_perm_activityview');
@@ -64,9 +75,7 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
                 $list->setCondition((string) $select->getQueryPart('where'));
             }
 
-            $paginator = new Paginator($list);
-            $paginator->setItemCountPerPage(25);
-            $paginator->setCurrentPageNumber($request->get('page', 1));
+            $paginator = $this->paginator->paginate($list, $request->get('page', 1), 25);
         }
 
         return $this->render(

@@ -22,7 +22,6 @@ use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
 use Symfony\Component\HttpFoundation\Request;
-use Zend\Paginator\Paginator;
 
 class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterface
 {
@@ -45,8 +44,7 @@ class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterfa
         $list->setOrder('asc');
         $list->setUnpublished(false);
 
-        $paginator = new Paginator($list);
-        $this->handlePaginatorParams($paginator, $request);
+        $paginator = $this->handlePaginatorParams($list, $request);
 
         $timestamp = time();
 
@@ -58,7 +56,7 @@ class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterfa
         return new Response(
             [
                 'page' => $paginator->getCurrentPageNumber(),
-                'totalPages' => $paginator->getPages()->pageCount,
+                'totalPages' => $paginator->getPaginationData()['pageCount'],
                 'timestamp' => $timestamp,
                 'data' => $result,
             ]

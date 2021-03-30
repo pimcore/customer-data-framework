@@ -10,7 +10,6 @@ use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntr
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\Concrete;
-use Zend\Paginator\Paginator;
 
 class MySQL extends SqlActivityStore implements ActivityStoreInterface
 {
@@ -130,13 +129,13 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
             $select->where('modificationDate >= ?', $ts);
         }
 
-        $paginator = new Paginator(new Db\ZendCompatibility\QueryBuilder\PaginationAdapter($select));
-        $paginator->setItemCountPerPage($pageSize);
-        $paginator->setCurrentPageNumber($page);
+        $paginator = $this->paginator->paginate($select, $page, $pageSize);
 
-        foreach ($paginator as &$value) {
+        $items = $paginator->getItems();
+        foreach ($items as &$value) {
             $value = $this->createEntryInstance($value);
         }
+        $paginator->setItems($items);
 
         return $paginator;
     }
