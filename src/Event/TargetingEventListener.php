@@ -60,7 +60,7 @@ class TargetingEventListener
             $visitorInfo
         );
 
-        $this->eventDispatcher->dispatch($event->getName(), $event);
+        $this->eventDispatcher->dispatch($event, $event->getName());
     }
 
     public function onPostRuleActions(TargetingRuleEvent $event) {
@@ -88,7 +88,7 @@ class TargetingEventListener
                         $visitorInfo
                     );
 
-                    $this->eventDispatcher->dispatch($event->getName(), $event);
+                    $this->eventDispatcher->dispatch($event, $event->getName());
                 }
 
             }
