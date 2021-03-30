@@ -105,7 +105,7 @@ class DefaultActivityManager implements ActivityManagerInterface
                 );
                 $event->setActivity($activity);
                 $event->setEntry($entry);
-                \Pimcore::getEventDispatcher()->dispatch($event->getName(), $event);
+                \Pimcore::getEventDispatcher()->dispatch($event, $event->getName());
             }
         }
 
@@ -115,7 +115,7 @@ class DefaultActivityManager implements ActivityManagerInterface
             );
             $event->setActivity($activity);
             $event->setEntry($entry);
-            \Pimcore::getEventDispatcher()->dispatch($event->getName(), $event);
+            \Pimcore::getEventDispatcher()->dispatch($event, $event->getName());
         }
     }
 

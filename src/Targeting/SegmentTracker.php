@@ -209,6 +209,6 @@ class SegmentTracker
 
         $event = SegmentTracked::create($customer, $segment, $count);
 
-        $this->eventDispatcher->dispatch($event->getName(), $event);
+        $this->eventDispatcher->dispatch($event, $event->getName());
     }
 }
