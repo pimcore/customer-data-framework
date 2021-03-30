@@ -290,7 +290,7 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
                     $event = new \CustomerManagementFrameworkBundle\ActionTrigger\Event\ExecuteSegmentBuilders(
                         $customer
                     );
-                    \Pimcore::getEventDispatcher()->dispatch($event->getName(), $event);
+                    \Pimcore::getEventDispatcher()->dispatch($event, $event->getName());
 
                     if ($removeCustomerFromQueue) {
                         // delay queue removal to prevent paging issue

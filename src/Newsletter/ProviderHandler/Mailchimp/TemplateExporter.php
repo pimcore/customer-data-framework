@@ -147,7 +147,7 @@ class TemplateExporter
     protected function resolveProviderHandler(Document\PageSnippet $document): Mailchimp
     {
         $event = new TemplateExportResolveProviderHandlerEvent($document);
-        $this->eventDispatcher->dispatch($event->getName(), $event);
+        $this->eventDispatcher->dispatch($event, $event->getName());
         if(!empty($event->getProviderHandler())) {
             return $event->getProviderHandler();
         }
