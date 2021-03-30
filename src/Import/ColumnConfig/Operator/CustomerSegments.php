@@ -20,7 +20,6 @@ namespace CustomerManagementFrameworkBundle\Import\ColumnConfig\Operator;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
-use Pimcore\DataObject\Import\ColumnConfig\AbstractConfigElement;
 use Pimcore\DataObject\Import\ColumnConfig\Operator\AbstractOperator;
 use Pimcore\Model\DataObject\AbstractObject;
 
