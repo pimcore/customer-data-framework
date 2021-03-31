@@ -32,12 +32,11 @@
                 </div>
                 <!-- /.box-header -->
 
-                <div class="box-body no-padding table-responsive customer-table-content">
-                    {% include customerView.overviewWrapperTemplate with {'paginator': paginator, 'customerView': customerView} only %}
+                <div class="customer-table-content">
+                    {% include customerView.overviewWrapperTemplate with {'paginator': paginator, 'customerView': customerView, 'paginationVariables': paginationVariables} only %}
+                    <!-- /.box-body -->
                 </div>
-                <!-- /.box-body -->
 
-                {% include '@PimcoreCustomerManagementFramework/Admin/Partial/Table/pagination-footer.html.twig' %}
                 {% include '@PimcoreCustomerManagementFramework/Admin/Customers/partials/list-export.html.twig' %}
             </div>
 

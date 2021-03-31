@@ -49,9 +49,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CustomersController extends Admin
 {
-    // params still needed when clearing all filters
-    protected $clearUrlParams = [];
-
     /**
      * @var CustomerSegmentGroup[]|null
      */
@@ -94,6 +91,7 @@ class CustomersController extends Admin
         if ($request->isXmlHttpRequest()) {
             return $this->render($customerView->getOverviewWrapperTemplate(), [
                 'paginator' => $paginator,
+                'paginationVariables' => $paginator->getPaginationData(),
                 'customerView' => $customerView
             ]);
         } else {
@@ -108,7 +106,6 @@ class CustomersController extends Admin
                     'customerView' => $customerView,
                     'searchBarFields' => $this->getSearchHelper()->getConfiguredSearchBarFields(),
                     'request' => $request,
-                    'clearUrlParams' => $this->clearUrlParams,
                     'filterDefinitions' => $this->getFilterDefinitions(),
                     'filterDefinition' => $this->getFilterDefinition($request),
                     'accessToTempCustomerFolder' => boolval($this->hasUserAccessToTempCustomerFolder()),
@@ -498,8 +495,6 @@ class CustomersController extends Admin
             if(!$segment) {
                 throw new \InvalidArgumentException(sprintf('Segment %d was not found', $segmentId));
             }
-
-            $this->clearUrlParams['segmentId'] = $segment->getId();
 
             return $segment;
         }

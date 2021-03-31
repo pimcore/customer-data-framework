@@ -25,12 +25,9 @@
         </div>
 
 
-        <?php if (sizeof($this->clearUrlParams)) { ?>
-            <?php foreach ($this->clearUrlParams as $key => $value) { ?>
-                <xxinput type="xxhidden" name="<?=$key?>" value="<?=$value?>"/>
-            <?php
-        } ?>
-        <?php } ?>
+        {% if false and app.request.get('perPage') %}
+            <input type="hidden" name="perPage" value="{{ app.request.get('perPage') }}"/>
+        {% endif %}
 
         {% include('@PimcoreCustomerManagementFramework/Admin/Customers/partials/list-filter/Box/footer.html.twig')  %}
     </div>

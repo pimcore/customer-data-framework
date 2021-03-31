@@ -131,7 +131,7 @@
         </div>
     {% endif %}
 
-    <a href="<?= $this->selfUrl()->get(true, $this->addPerPageParam()->add($clearUrlParams ?: [])) ?>"
+    <a href="{{ pimcore_url([], null, true) }}"
        class="btn btn-default">
         <i class="fa fa-ban"></i>
         {{ 'cmf_filters_clear' | trans({}, 'admin') }}

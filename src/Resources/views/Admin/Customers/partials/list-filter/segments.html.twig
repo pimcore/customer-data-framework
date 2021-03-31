@@ -86,9 +86,9 @@
                                     id="form-filter-segment-{{ segmentGroup.id }}"
                                     name="filter[segments][{{ segmentGroup.id }}][]"
                                     class="form-control plugin-select2"
-                                    autocomplete="no"
+                                    autocomplete="off"
                                     multiple="multiple"
-                                    data-placeholder="{{ segmentGroup.name }}>"
+                                    data-placeholder="{{ segmentGroup.name }}"
                                     data-select2-options="{{ { 'allowClear': false, 'disabled': filterDefinition.isLockedSegment(segmentGroup.id) } | json_encode  }}">
 
                                 {% for segment in cmf_segmentsForGroup(segmentGroup) %}

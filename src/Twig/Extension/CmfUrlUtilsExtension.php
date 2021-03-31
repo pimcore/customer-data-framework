@@ -8,7 +8,6 @@ use CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface;
 use CustomerManagementFrameworkBundle\LinkGenerator\LinkActivityDefinitionLinkGenerator;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
-use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\LinkActivityDefinition;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
