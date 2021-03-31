@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mmoser
- * Date: 15.11.2016
- * Time: 11:15
- */
 declare(strict_types=1);
 
 /**
@@ -20,11 +14,9 @@ declare(strict_types=1);
  *  @license    http://www.pimcore.org/license     GPLv3 and PEL
  */
 
-namespace CustomerManagementFrameworkBundle\Templating\Helper;
+namespace CustomerManagementFrameworkBundle\Helper;
 
-use Symfony\Component\Templating\Helper\Helper;
-
-class JsConfig extends Helper
+class JsConfigService
 {
     const DEFAULT_VAR_NAME = '_config';
 
@@ -58,22 +50,14 @@ class JsConfig extends Helper
     }
 
     /**
-     * @inheritDoc
-     */
-    public function getName(): string
-    {
-        return 'jsConfig';
-    }
-
-    /**
-     * Returns the helper instance. If a var name is set, it changes
+     * Returns the service instance. If a var name is set, it changes
      * the current variable to the given var before returning the instance.
      *
      * @param string|null $varName
      *
      * @return self
      */
-    public function __invoke(string $varName = null): JsConfig
+    public function __invoke(string $varName = null): JsConfigService
     {
         if (null !== $varName) {
             return $this->jsConfig($varName);
@@ -89,7 +73,7 @@ class JsConfig extends Helper
      *
      * @return self
      */
-    public function jsConfig(string $varName = self::DEFAULT_VAR_NAME): JsConfig
+    public function jsConfig(string $varName = self::DEFAULT_VAR_NAME): JsConfigService
     {
         if (!in_array($varName, $this->variables)) {
             $this->variables[] = $varName;

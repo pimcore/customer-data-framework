@@ -269,3 +269,6 @@ services:
         class: Pimcore\Document\Newsletter\DefaultAddressSourceAdapterFactory
         arguments:
             - 'CustomerManagementFrameworkBundle\Newsletter\AddressSource\SegmentAddressSource'
+
+
+    CustomerManagementFrameworkBundle\Helper\JsConfigService: ~

@@ -19,7 +19,7 @@ namespace CustomerManagementFrameworkBundle\Twig\Extension;
 use CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
-use CustomerManagementFrameworkBundle\Templating\Helper\JsConfig;
+use CustomerManagementFrameworkBundle\Helper\JsConfigService;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
 use Pimcore\Model\User;
 use Symfony\Component\Asset\Packages;
@@ -35,7 +35,7 @@ class CmfFrontendUtilsExtension extends AbstractExtension
     private $packages;
 
     /**
-     * @var JsConfig
+     * @var JsConfigService
      */
     private $jsConfigService;
 
@@ -52,11 +52,11 @@ class CmfFrontendUtilsExtension extends AbstractExtension
     /**
      * CmfFrontendUtilsExtension constructor.
      * @param Packages $packages
-     * @param JsConfig $jsConfigService
+     * @param JsConfigService $jsConfigService
      * @param SegmentManagerInterface $segmentManager
      * @param ExporterManagerInterface $customerExportManager
      */
-    public function __construct(Packages $packages, JsConfig $jsConfigService, SegmentManagerInterface $segmentManager, ExporterManagerInterface $customerExportManager)
+    public function __construct(Packages $packages, JsConfigService $jsConfigService, SegmentManagerInterface $segmentManager, ExporterManagerInterface $customerExportManager)
     {
         $this->packages = $packages;
         $this->jsConfigService = $jsConfigService;
@@ -118,7 +118,7 @@ class CmfFrontendUtilsExtension extends AbstractExtension
         return $this->packages->getUrl(implode('.', $parts), $packageName);
     }
 
-    public function getJsConfig(): JsConfig {
+    public function getJsConfig(): JsConfigService {
         return $this->jsConfigService;
     }
 
