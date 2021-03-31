@@ -59,6 +59,7 @@ class CustomersController extends Admin
 
     public function onKernelControllerEvent(ControllerEvent $event)
     {
+        parent::onKernelControllerEvent($event);
         $this->checkPermission('plugin_cmf_perm_customerview');
         AbstractObject::setHideUnpublished(true);
     }
