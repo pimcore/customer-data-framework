@@ -1,0 +1,45 @@
+{% extends '@PimcoreCustomerManagementFramework/layout.html.twig' %}
+
+{% do pimcore_head_script().appendFile(asset('/bundles/pimcorecustomermanagementframework/vendor/clipboardjs/clipboard.min.js')) %}
+{% do pimcore_head_script().appendFile(asset('/bundles/pimcorecustomermanagementframework/js/LinkActivityDefinition/preview.js')) %}
+
+{% block content %}
+
+    <div class="wrapper">
+        <div class="content-wrapper">
+
+            <section class="content">
+                <div class="container">
+
+                    <div class="box box-info">
+
+                        <div class="box-header with-border">
+                            <h3 class="box-title">
+                                <i class="fa fa-link"></i>
+                                Link
+                            </h3>
+                        </div>
+                        <div class="box-body">
+                            {% if activityDefinition is defined %}
+                                {% set link = cmf_activityDefinitionUrl(activityDefinition) %}
+                                {% if link is defined and not link is empty %}
+                                    <a href="#" data-clipboard-target="#js-copy-to-clipboard-container" style="margin-right: 10px;" class="btn btn-sm btn-default pull-left js-copy-to-clipboard" title="copy to clipboard">
+                                        <i class="fa fa-clipboard"></i>
+                                    </a>
+
+                                    <div id="js-copy-to-clipboard-container" style="padding-top: 5px;" href="{{ link }}">{{ link }}</div>
+
+                                {% else %}
+                                    -
+                                {% endif %}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+{% endblock %}

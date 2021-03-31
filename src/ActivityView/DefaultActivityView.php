@@ -91,13 +91,6 @@ class DefaultActivityView implements ActivityViewInterface
         return false;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function translate($messageId, $parameters = [])
-    {
-        return $this->viewFormatter->translate($messageId, $parameters);
-    }
 
     /**
      * @param       $implementationClass
@@ -177,7 +170,7 @@ class DefaultActivityView implements ActivityViewInterface
 
         return sprintf('<a href="javascript:%s" class="%s">%s</a>', $link, $buttonCssClass, $this->translate($buttonTranslationKey));
     }
-    
+
     /**
      * @param array $attributes
      * @param array $visibleKeys

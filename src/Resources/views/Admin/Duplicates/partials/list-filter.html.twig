@@ -6,7 +6,7 @@
                 <div class="col-xs-12">
                     <div class="form-group" id="searchBar">
                         <input type="text" name="filter[search]" class="form-control" placeholder="{{ 'cmf_filters_search' | trans({}, 'admin') }}..." value="{{ filters['search'] ?? '' }}">
-                        <!--<?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Duplicates/partials:list-filter-helper.html.php') ?>-->
+                        {% include('@PimcoreCustomerManagementFramework/Admin/Partial/list-filter-helper.html.twig') %}
                     </div>
                 </div>
             </div>

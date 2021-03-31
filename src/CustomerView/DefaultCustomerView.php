@@ -51,7 +51,7 @@ class DefaultCustomerView implements CustomerViewInterface
      */
     public function getOverviewTemplate(CustomerInterface $customer)
     {
-        return 'PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials:list-row.html.php';
+        return '@PimcoreCustomerManagementFramework/Admin/Customers/partials/list-row.html.twig';
     }
 
 
@@ -60,22 +60,22 @@ class DefaultCustomerView implements CustomerViewInterface
      */
     public function getOverviewWrapperTemplate()
     {
-        return 'PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials:list-table.html.php';
+        return '@PimcoreCustomerManagementFramework/Admin/Customers/partials/list-table.html.twig';
     }
 
     public function getFilterWrapperTemplate()
     {
-        return 'PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter:filter-wrapper.html.php';
+        return '@PimcoreCustomerManagementFramework/Admin/Customers/partials/list-filter/filter-wrapper.html.twig';
     }
 
     public function getFieldsFilterTemplate()
     {
-        return 'PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter:fields.html.php';
+        return '@PimcoreCustomerManagementFramework/Admin/Customers/partials/list-filter/fields.html.twig';
     }
 
     public function getSegmentsFilterTemplate()
     {
-        return 'PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter:segments.html.php';
+        return '@PimcoreCustomerManagementFramework/Admin/Customers/partials/list-filter/segments.html.twig';
     }
 
 
@@ -98,7 +98,7 @@ class DefaultCustomerView implements CustomerViewInterface
      */
     public function getDetailviewTemplate(CustomerInterface $customer)
     {
-        return 'PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials:detail.html.php';
+        return '@PimcoreCustomerManagementFramework/Admin/Customers/partials/detail.html.twig';
     }
 
     /**

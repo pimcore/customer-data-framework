@@ -87,27 +87,35 @@ class CustomersController extends Admin
 
         //empty paginator as the view expects a valid paginator
         if(null === $paginator) {
-            $paginator = $this->buildPaginator($request, new ArrayAdapter([]));
+            $paginator = $this->buildPaginator($request, []);
         }
 
-        return $this->render(
-            'PimcoreCustomerManagementFrameworkBundle:Admin\Customers:list.html.php',
-            [
-                'segmentGroups' => $this->loadSegmentGroups(),
-                'filters' => $filters,
-                'errors' => $errors,
+        if ($request->isXmlHttpRequest()) {
+            return $this->render($customerView->getOverviewWrapperTemplate(), [
                 'paginator' => $paginator,
-                'customerView' => $customerView,
-                'searchBarFields' => $this->getSearchHelper()->getConfiguredSearchBarFields(),
-                'request' => $request,
-                'clearUrlParams' => $this->clearUrlParams,
-                'filterDefinitions' => $this->getFilterDefinitions(),
-                'filterDefinition' => $this->getFilterDefinition($request),
-                'accessToTempCustomerFolder' => boolval($this->hasUserAccessToTempCustomerFolder()),
-                'hideAdvancedFilterSettings' => boolval($request->get('segmentId')),
-                'customerImportService' => $customerImportService
-            ]
-        );
+                'customerView' => $customerView
+            ]);
+        } else {
+            return $this->render(
+                'PimcoreCustomerManagementFrameworkBundle:Admin\Customers:list.html.twig',
+                [
+                    'segmentGroups' => $this->loadSegmentGroups(),
+                    'filters' => $filters,
+                    'errors' => $errors,
+                    'paginator' => $paginator,
+                    'paginationVariables' => $paginator->getPaginationData(),
+                    'customerView' => $customerView,
+                    'searchBarFields' => $this->getSearchHelper()->getConfiguredSearchBarFields(),
+                    'request' => $request,
+                    'clearUrlParams' => $this->clearUrlParams,
+                    'filterDefinitions' => $this->getFilterDefinitions(),
+                    'filterDefinition' => $this->getFilterDefinition($request),
+                    'accessToTempCustomerFolder' => boolval($this->hasUserAccessToTempCustomerFolder()),
+                    'hideAdvancedFilterSettings' => boolval($request->get('segmentId')),
+                    'customerImportService' => $customerImportService
+                ]
+            );
+        }
     }
 
     /**
@@ -132,7 +140,7 @@ class CustomersController extends Admin
             }
 
             return $this->render(
-                'PimcoreCustomerManagementFrameworkBundle:Admin\Customers:detail.html.php',
+                'PimcoreCustomerManagementFrameworkBundle:Admin\Customers:detail.html.twig',
                 [
                     'customer' => $customer,
                     'customerView' => $customerView,

@@ -18,7 +18,7 @@ namespace CustomerManagementFrameworkBundle\ActivityView;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Translate\TranslatorInterface;
 
-interface ActivityViewInterface extends TranslatorInterface
+interface ActivityViewInterface
 {
     /**
      * @param ActivityStoreEntryInterface $activityEntry

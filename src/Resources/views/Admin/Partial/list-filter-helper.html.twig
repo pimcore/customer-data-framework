@@ -1,0 +1,54 @@
+
+{% set exampleQueries = [
+    'foo',
+    'foo AND bar',
+    'foo OR bar',
+    'foo OR !bar',
+    'foo AND "bar"',
+    'foo OR (bar AND baz)',
+]
+%}
+
+{% set modifiers = {
+    'Exact search (field must match exactly)': [
+        '"<term>"',
+    ],
+    'Negation': [
+        '!<term>',
+        '!(<query>)'
+    ]
+}
+%}
+
+<p class="help-block help-block-toggle">
+    <a role="button" data-toggle="collapse" href="#searchBarHelp" aria-expanded="false" aria-controls="searchBarHelp">
+        <i class="fa fa-question-circle"></i>
+        {{ 'cmf_filters_search_show_help' | trans({}, 'admin') }}
+    </a>.
+
+    {{ 'cmf_filters_search_info' | trans({}, 'admin') }}
+</p>
+
+<div class="help-block collapse" id="searchBarHelp">
+    <div id="searchBarFields">
+        <h4>{{ 'cmf_filters_fields_include' | trans({}, 'admin') }}</h4>
+        {{ searchBarFields | cmf_codeList | raw }}
+    </div>
+
+    <div id="searchBarExamples">
+        <h4>{{ 'cmf_filters_example_queries' | trans({}, 'admin') }}</h4>
+        {{ exampleQueries | cmf_codeList | raw }}
+    </div>
+
+    <div id="searchBarModifiers">
+        <h4>{{ 'cmf_filters_modifiers' | trans({}, 'admin') }}</h4>
+        <dl>
+            {% for modifierTitle, modifierExamples in modifiers %}
+                <dt> {{ modifierTitle | trans({}, 'admin') }}</dt>
+                <dd>
+                    {{ modifierExamples | cmf_codeList | raw }}
+                </dd>
+            {% endfor %}
+        </dl>
+    </div>
+</div>

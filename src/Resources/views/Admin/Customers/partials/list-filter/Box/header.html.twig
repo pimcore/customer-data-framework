@@ -1,0 +1,48 @@
+
+{% if accessToTempCustomerFolder %}
+    {% do cmf_jsConfig().add('registerNewCustomerAction', true) %}
+{% endif %}
+
+<!-- Filters -->
+<div class="box-header with-border">
+    <div class="row">
+        <div class="col-sm-3 col-md-6">
+            <h3 class="box-title">
+                <a href="#" data-widget="collapse-trigger">
+                    <i class="fa fa-filter"></i>
+                    {{ 'cmf_filters_filters' | trans({}, 'admin') }}
+                </a>
+            </h3>
+        </div>
+
+        {% if not hideAdvancedFilterSettings %}
+            <div class="col-sm-9 col-md-6 text-right">
+                {% if accessToTempCustomerFolder %}
+                    <button type="button" class="btn btn-primary" id="add-new-customer"
+                            name="add-new-customer">{{ 'cmf_filters_new_customer'| trans({}, 'admin') }}</button>
+                {% endif %}
+                <!--suppress HtmlFormInputWithoutLabel -->
+                <select
+                        id="filterDefinition[id]"
+                        name="filterDefinition[id]"
+                        onchange="this.form.submit()"
+                        class="form-control plugin-select2"
+                        data-select2-options='{{ {'width': '50%'} | json_encode() }}'
+                >
+                    <option value="0">{{ 'cmf_filters_no_filter_selected' | trans({}, 'admin') }}</option>
+                    {% for singleFilterDefinition in filterDefinitions %}
+                        <option value="{{ singleFilterDefinition.id }}" {{ singleFilterDefinition.id == filterDefinition.id ? 'selected' : '' }}>
+                            {{ singleFilterDefinition.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <a class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></a>
+
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+<!-- /.box-header -->
+

@@ -79,15 +79,6 @@ class DuplicatesController extends Admin
         );
     }
 
-    public function falsePositivesAction()
-    {
-        $this->enableLayout();
-
-        $paginator = Factory::getInstance()->getDuplicatesIndex()->getFalsePositives($this->getParam('page', 1), 200);
-
-        $this->view->paginator = $paginator;
-    }
-
     /**
      * @param Request $request
      * @Route("/decline/{id}")

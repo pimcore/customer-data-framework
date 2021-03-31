@@ -46,7 +46,7 @@
                             {% endif %}
 
                             {% if( cmf_inDebug() ) %}
-                                <a class="btn btn-default btn-xs pull-right" style="margin-right: 5px;" data-toggle="tooltip" data-placement="left" data-html="true" title="<div style='text-align:left;'><strong>matched field combinations (duplicate ID {{ duplicate.id }}):</strong><br/><br/>{{ duplicate.getFieldCombinations | cmf_print_field_combinations }}</div>">info (debug)</a>
+                                <a class="btn btn-default btn-xs pull-right" style="margin-right: 5px;" data-toggle="tooltip" data-placement="left" data-html="true" title="<div style='text-align:left;'><strong>matched field combinations (duplicate ID {{ duplicate.id }}):</strong><br/><br/>{{ duplicate.getFieldCombinations | cmf_printFieldCombinations }}</div>">info (debug)</a>
                             {% endif %}
                         </td>
                     </tr>

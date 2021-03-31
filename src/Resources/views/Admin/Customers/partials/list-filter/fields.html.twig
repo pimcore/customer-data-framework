@@ -1,0 +1,50 @@
+<fieldset>
+    <legend>
+        {{ 'cmf_filters_customer' | trans({}, 'admin') }}
+        <select
+                id="form-filter-operator-customer"
+                name="filter[operator-customer]"
+                class="form-filter-operator"
+                data-placeholder="{{  'cmf_filters_options_operator' | trans({}, 'admin') }}">
+
+            <option {{ (filters['operator-customer'] ?? null) == 'AND' ? 'selected="selected"' : '' }} value="AND">{{ 'cmf_filters_options_and' | trans({}, 'admin') }}</option>
+            <option {{ (filters['operator-customer'] ?? null)  == 'OR' ? 'selected="selected"' : '' }} value="OR">{{ 'cmf_filters_options_any' | trans({}, 'admin') }}</option>
+
+        </select>
+    </legend>
+
+    <div class="form-group">
+        <label for="form-filter-id">{{ 'cmf_filters_customer_id' | trans({}, 'admin') }}</label>
+        <input type="number" autocomplete="no" name="filter[id]" id="form-filter-id" class="form-control" placeholder="{{ 'cmf_filters_customer_id' | trans({}, 'admin') }}" value="{{ filters['id'] ?? '' }}" {{ filterDefinition.isLocked('id') ? 'disabled' : ''}}>
+    </div>
+
+    <div class="form-group">
+        <label for="form-filter-email">{{ 'cmf_filters_customer_email' | trans({}, 'admin') }}</label>
+        <input type="text" autocomplete="no" name="filter[email]" id="form-filter-email" class="form-control" placeholder="{{ 'cmf_filters_customer_email' | trans({}, 'admin') }}" value="{{ filters['email'] ?? '' }}" {{ filterDefinition.isLocked('email') ? 'disabled' : ''}}>
+    </div>
+
+    <div class="form-group">
+        <label for="form-filter-firstname">{{ 'cmf_filters_customer_firstname' | trans({}, 'admin') }}</label>
+        <input type="text" autocomplete="no" name="filter[firstname]" id="form-filter-firstname" class="form-control" placeholder="{{ 'cmf_filters_customer_firstname' | trans({}, 'admin') }}" value="{{ filters['firstname'] ?? '' }}" {{ filterDefinition.isLocked('firstname') ? 'disabled' : ''}}>
+    </div>
+
+    <div class="form-group">
+        <label for="form-filter-lastname">{{ 'cmf_filters_customer_lastname' | trans({}, 'admin') }}</label>
+        <input type="text" autocomplete="no" name="filter[lastname]" id="form-filter-lastname" class="form-control" placeholder="{{ 'cmf_filters_customer_lastname' | trans({}, 'admin') }}" value="{{ filters['lastname'] ?? '' }}" {{ filterDefinition.isLocked('lastname') ? 'disabled' : ''}}>
+    </div>
+</fieldset>
+
+<fieldset>
+    <legend>
+        {{ 'cmf_filters_options' | trans({}, 'admin') }}
+    </legend>
+
+    <div class="form-group">
+        <div class="checkbox">
+            <label>
+                <input name="filter[active]" value="1" type="checkbox" {{ (filters['active'] ?? false) ? 'checked="checked"' : '' }}>
+                {{ 'cmf_filters_options_only_active' | trans({}, 'admin') }}
+            </label>
+        </div>
+    </div>
+</fieldset>

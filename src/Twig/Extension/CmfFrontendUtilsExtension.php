@@ -16,11 +16,13 @@
 namespace CustomerManagementFrameworkBundle\Twig\Extension;
 
 
+use CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface;
+use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Templating\Helper\JsConfig;
-use Knp\Component\Pager\Pagination\PaginationInterface;
+use Pimcore\Model\DataObject\CustomerSegmentGroup;
+use Pimcore\Model\User;
 use Symfony\Component\Asset\Packages;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\RouterInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -38,28 +40,28 @@ class CmfFrontendUtilsExtension extends AbstractExtension
     private $jsConfigService;
 
     /**
-     * @var RouterInterface
+     * @var SegmentManagerInterface
      */
-    private $router;
+    private $segmentManager;
 
     /**
-     * @var RequestStack
+     * @var ExporterManagerInterface
      */
-    private $requestStack;
+    private $customerExportManager;
 
     /**
      * CmfFrontendUtilsExtension constructor.
      * @param Packages $packages
      * @param JsConfig $jsConfigService
-     * @param RouterInterface $router
-     * @param RequestStack $requestStack
+     * @param SegmentManagerInterface $segmentManager
+     * @param ExporterManagerInterface $customerExportManager
      */
-    public function __construct(Packages $packages, JsConfig $jsConfigService, RouterInterface $router, RequestStack $requestStack)
+    public function __construct(Packages $packages, JsConfig $jsConfigService, SegmentManagerInterface $segmentManager, ExporterManagerInterface $customerExportManager)
     {
         $this->packages = $packages;
         $this->jsConfigService = $jsConfigService;
-        $this->router = $router;
-        $this->requestStack = $requestStack;
+        $this->segmentManager = $segmentManager;
+        $this->customerExportManager = $customerExportManager;
     }
 
 
@@ -72,14 +74,23 @@ class CmfFrontendUtilsExtension extends AbstractExtension
             new TwigFunction('cmf_minifiedAssetUrl', [$this, 'minifiedAssetUrl']),
             new TwigFunction('cmf_jsConfig', [$this, 'getJsConfig']),
             new TwigFunction('cmf_inDebug', [$this, 'inDebug']),
-            new TwigFunction('cmf_filterFormAction', [$this, 'filterFormAction'])
+            new TwigFunction('cmf_arrayChunkSize', [$this, 'calculateArrayChunkSize']),
+            new TwigFunction('cmf_segmentsForGroup', [$this, 'getSegmentsForGroup']),
+            new TwigFunction('cmf_filterSegmentGroups', [$this, 'getFilteredSegmentGroups']),
+            new TwigFunction('cmf_userAllowedToUpdate', [$this, 'getUserAllowedToUpdate']),
+            new TwigFunction('cmf_userAllowedToShare', [$this, 'getUserAllowedToShare']),
+            new TwigFunction('cmf_isCurrentUserFilterSharer', [$this, 'isCurrentUserFilterSharer']),
+            new TwigFunction('cmf_loadUsers', [$this, 'getUsers']),
+            new TwigFunction('cmf_loadRoles', [$this, 'getRoles']),
+            new TwigFunction('cmf_loadExporterConfigs', [$this, 'getExporterConfigs']),
         ];
     }
 
     public function getFilters()
     {
         return [
-            new TwigFilter('cmf_print_field_combinations', [$this, 'printFieldCombinations'])
+            new TwigFilter('cmf_printFieldCombinations', [$this, 'printFieldCombinations']),
+            new TwigFilter('cmf_codeList', [$this, 'buildCodeList'])
         ];
     }
 
@@ -115,6 +126,57 @@ class CmfFrontendUtilsExtension extends AbstractExtension
         return \Pimcore::inDebugMode();
     }
 
+    public function calculateArrayChunkSize(array $array) {
+        $chunkSize = ceil(sizeof($array) / 2);
+        return $chunkSize > 0 ? $chunkSize : 1;
+    }
+
+    public function getSegmentsForGroup(CustomerSegmentGroup $segmentGroup): array {
+        return $this->segmentManager->getSegmentsFromSegmentGroup($segmentGroup);
+    }
+
+    public function getFilteredSegmentGroups($segmentGroups, $showSegments): array {
+        $filteredSegmentGroups = [];
+        foreach ($segmentGroups as $segmentGroup) {
+            if (in_array($segmentGroup->getId(), $showSegments)) {
+                $filteredSegmentGroups[] = $segmentGroup;
+            }
+        }
+        return $filteredSegmentGroups;
+    }
+
+    public function getUserAllowedToUpdate(FilterDefinition $filterDefinition): bool {
+        return ($filterDefinition->getId() && $filterDefinition->isUserAllowedToUpdate(\Pimcore\Tool\Admin::getCurrentUser()));
+    }
+
+    public function getUserAllowedToShare(FilterDefinition $filterDefinition): bool {
+        return ($filterDefinition->getId() && $filterDefinition->isUserAllowedToShare(\Pimcore\Tool\Admin::getCurrentUser()));
+    }
+
+    public function isCurrentUserFilterSharer(): bool {
+        return FilterDefinition::isFilterSharer(\Pimcore\Tool\Admin::getCurrentUser());
+    }
+
+    public function getUsers(): User\Listing {
+        $listing = new User\Listing();
+        $listing->setCondition('`type` = "user"');
+        return $listing;
+    }
+
+    public function getRoles(): User\Role\Listing {
+        $listing = new User\Role\Listing();
+        $listing->setCondition('`type` = "role"');
+        return $listing;
+    }
+
+    public function getExporterConfigs(): array {
+        return $this->customerExportManager->getExporterConfig();
+    }
+
+    /** ===================
+     *  Filters
+     *  ==================== */
+
     public function printFieldCombinations($fieldCombinations): string {
         if($fieldCombinations) {
             foreach ($fieldCombinations as $key => $combination) {
@@ -126,21 +188,11 @@ class CmfFrontendUtilsExtension extends AbstractExtension
         return '';
     }
 
-    public function filterFormAction(PaginationInterface $paginator): string
-    {
-        // reset page when changing filters
-        $formActionParams = [
-            'page' => null,
-            'perPage' => null,
-        ];
-
-        if (null !== $paginator && $paginator->getItemNumberPerPage() !== 25) {
-            $formActionParams['perPage'] = $paginator->getItemNumberPerPage();
-        }
-
-        $request = $this->requestStack->getMasterRequest();
-
-        return $this->router->generate($request->get('_route'), $formActionParams);
+    public function buildCodeList(array $values): string {
+        $codeValues = array_map(function ($value) {
+            return '<code>' . $value . '</code>';
+        }, $values);
+        return implode(' ', $codeValues);
     }
 
 }

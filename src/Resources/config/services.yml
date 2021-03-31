@@ -151,8 +151,12 @@ services:
     cmf.activity_url_tracker:
         class: CustomerManagementFrameworkBundle\ActivityUrlTracker\DefaultActivityUrlTracker
 
+    CustomerManagementFrameworkBundle\LinkGenerator\LinkActivityDefinitionLinkGenerator:
+        alias: cmf.link-activity-definition.linkgenerator
+
     cmf.link-activity-definition.linkgenerator:
         class: CustomerManagementFrameworkBundle\LinkGenerator\LinkActivityDefinitionLinkGenerator
+        deprecated: 'The "%service_id%" service is deprecated. Use "CustomerManagementFrameworkBundle\LinkGenerator\LinkActivityDefinitionLinkGenerator" instead'
         arguments:
           - '%pimcore_customer_management_framework.url_activity_tracker.linkCmfcPlaceholder%'
 
@@ -186,8 +190,12 @@ services:
         shared: false
 
 
+    CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface:
+        alias: cmf.customer_exporter_manager
+
     cmf.customer_exporter_manager:
          class: CustomerManagementFrameworkBundle\CustomerList\ExporterManager
+         deprecated: 'The "%service_id%" service is deprecated. Use "CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface" instead'
          arguments:
               - '%pimcore_customer_management_framework.customer_list.exporters%'
 

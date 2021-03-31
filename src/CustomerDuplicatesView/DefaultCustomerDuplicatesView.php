@@ -92,12 +92,4 @@ class DefaultCustomerDuplicatesView implements CustomerDuplicatesViewInterface
 
         return $value;
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function translate($messageId, $parameters = [])
-    {
-        return $this->viewFormatter->translate($messageId, $parameters);
-    }
 }

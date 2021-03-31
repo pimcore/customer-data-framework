@@ -1,0 +1,6 @@
+
+{% if customer.active %}
+    <span class="fa fa-check-circle text-success tooltip-trigger" title="{{ 'cmf_filters_customer_active' | trans({}, 'admin') }}"></span>
+{% else %}
+    <span class="fa fa-times-circle text-danger tooltip-trigger" title="{{ 'cmf_filters_customer_inactive' | trans({}, 'admin') }}"></span>
+{% endif %}
