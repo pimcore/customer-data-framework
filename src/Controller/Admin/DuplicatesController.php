@@ -67,7 +67,7 @@ class DuplicatesController extends Admin
         );
 
         return $this->render(
-            '@PimcoreCustomerManagementFramework/Admin/Duplicates/list.html.twig',
+            '@PimcoreCustomerManagementFramework/admin/duplicates/list.html.twig',
             [
                 'paginator' => $paginator,
                 'paginationVariables' => $paginator->getPaginationData(),

@@ -7,7 +7,7 @@
                     <div class="col-xs-12">
                         <div class="form-group" id="searchBar">
                             <input type="text" autocomplete="no" name="filter[search]" class="form-control" placeholder="{{ 'cmf_filters_search' | trans({}, 'admin') }}..." value="{{ filters['search'] ?? '' }}">
-                            {% include('@PimcoreCustomerManagementFramework/Admin/Partial/list-filter-helper.html.twig') %}
+                            {% include('@PimcoreCustomerManagementFramework/admin/partial/list_filter_helper.html.twig') %}
                         </div>
                     </div>
                 </div>
@@ -18,7 +18,7 @@
     <!-- Filters -->
     <div class="box box-default box-collapsible-state search-filters-box" data-identifier="customer-search-filter">
 
-        {% include('@PimcoreCustomerManagementFramework/Admin/Customers/partials/list-filter/Box/header.html.twig')  %}
+        {% include('@PimcoreCustomerManagementFramework/admin/customers/partials/list_filter/box/header.html.twig')  %}
 
         <div class="box-body">
             {% include(customerView.getFilterWrapperTemplate())  %}
@@ -29,6 +29,6 @@
             <input type="hidden" name="perPage" value="{{ app.request.get('perPage') }}"/>
         {% endif %}
 
-        {% include('@PimcoreCustomerManagementFramework/Admin/Customers/partials/list-filter/Box/footer.html.twig')  %}
+        {% include('@PimcoreCustomerManagementFramework/admin/customers/partials/list_filter/box/footer.html.twig')  %}
     </div>
 </form>

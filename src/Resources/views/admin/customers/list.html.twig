@@ -14,7 +14,7 @@
             {% endfor %}
         {% endif %}
 
-        {% include '@PimcoreCustomerManagementFramework/Admin/Customers/partials/list-filter.html.twig' %}
+        {% include '@PimcoreCustomerManagementFramework/admin/customers/partials/list_filter.html.twig' %}
 
         {% if paginator.totalItemCount is same as (0) %}
             <div class="callout callout-warning">
@@ -37,7 +37,7 @@
                     <!-- /.box-body -->
                 </div>
 
-                {% include '@PimcoreCustomerManagementFramework/Admin/Customers/partials/list-export.html.twig' %}
+                {% include '@PimcoreCustomerManagementFramework/admin/customers/partials/list_export.html.twig' %}
             </div>
 
         {% endif %}

@@ -51,7 +51,7 @@ class DefaultCustomerView implements CustomerViewInterface
      */
     public function getOverviewTemplate(CustomerInterface $customer)
     {
-        return '@PimcoreCustomerManagementFramework/Admin/Customers/partials/list-row.html.twig';
+        return '@PimcoreCustomerManagementFramework/admin/customers/partials/list_row.html.twig';
     }
 
 
@@ -60,22 +60,22 @@ class DefaultCustomerView implements CustomerViewInterface
      */
     public function getOverviewWrapperTemplate()
     {
-        return '@PimcoreCustomerManagementFramework/Admin/Customers/partials/list-table.html.twig';
+        return '@PimcoreCustomerManagementFramework/admin/customers/partials/list_table.html.twig';
     }
 
     public function getFilterWrapperTemplate()
     {
-        return '@PimcoreCustomerManagementFramework/Admin/Customers/partials/list-filter/filter-wrapper.html.twig';
+        return '@PimcoreCustomerManagementFramework/admin/customers/partials/list_filter/filter_wrapper.html.twig';
     }
 
     public function getFieldsFilterTemplate()
     {
-        return '@PimcoreCustomerManagementFramework/Admin/Customers/partials/list-filter/fields.html.twig';
+        return '@PimcoreCustomerManagementFramework/admin/customers/partials/list_filter/fields.html.twig';
     }
 
     public function getSegmentsFilterTemplate()
     {
-        return '@PimcoreCustomerManagementFramework/Admin/Customers/partials/list-filter/segments.html.twig';
+        return '@PimcoreCustomerManagementFramework/admin/customers/partials/list_filter/segments.html.twig';
     }
 
 
@@ -98,7 +98,7 @@ class DefaultCustomerView implements CustomerViewInterface
      */
     public function getDetailviewTemplate(CustomerInterface $customer)
     {
-        return '@PimcoreCustomerManagementFramework/Admin/Customers/partials/detail.html.twig';
+        return '@PimcoreCustomerManagementFramework/admin/customers/partials/detail.html.twig';
     }
 
     /**
