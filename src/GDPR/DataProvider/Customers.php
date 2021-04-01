@@ -18,9 +18,11 @@ namespace CustomerManagementFrameworkBundle\GDPR\DataProvider;
 
 use CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
+use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 use Pimcore\Bundle\AdminBundle\GDPR\DataProvider\DataObjects;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\ClassDefinition;
+use Pimcore\Model\DataObject\Concrete;
 
 class Customers extends DataObjects
 {
@@ -87,33 +89,31 @@ class Customers extends DataObjects
 
         $exportResult = [];
 
+        $objectToArrayHelper = ObjectToArray::getInstance();
 
         foreach(array_keys($this->exportIds['object']) as $id) {
 
-            // @TODO: needs to be fixed since Pimcore\Model\Webservice\Service is not available anymore
-            // $data = $this->service->getObjectConcreteById($id);
-            $data = [];
-            $data = (array)$data;
+            $object = Concrete::getById($id);
+            if(!empty($object)) {
+                $data = [
+                    'className' => $object->getClass()->getName()
+                ];
+                $data['data'] = $objectToArrayHelper->toArray($object);
 
-            if($data['className'] == $this->customerClassName) {
-                $list = $this->activityStore->getActivityList();
-                $list->setCondition("customerId = " . intval($data['id']));
+                if($data['className'] == $this->customerClassName) {
+                    $list = $this->activityStore->getActivityList();
+                    $list->setCondition("customerId = " . intval($data['id']));
 
-                $data['activities'] = [];
-                foreach ($list as $activity) {
-                    $activityData = $activity->getData();
-                    $activityData['attributes'] = $activity->getAttributes();
-                    unset($activityData['implementationClass']);
-                    $data['activities'][] = $activityData;
+                    $data['activities'] = [];
+                    foreach ($list as $activity) {
+                        $activityData = $activity->getData();
+                        $activityData['attributes'] = $activity->getAttributes();
+                        unset($activityData['implementationClass']);
+                        $data['activities'][] = $activityData;
+                    }
                 }
-            }
 
-            $exportResult[] = $data;
-        }
-        if($this->exportIds['image']) {
-            foreach(array_keys($this->exportIds['image']) as $id) {
-                // @TODO: needs to be fixed since Pimcore\Model\Webservice\Service is not available anymore
-                //$exportResult[] = $this->service->getAssetFileById($id);
+                $exportResult[] = $data;
             }
         }
 
