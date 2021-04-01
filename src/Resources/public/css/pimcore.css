@@ -23,6 +23,10 @@
     background: url(/bundles/pimcoreadmin/img/flat-white-icons/address_book.svg) center center no-repeat !important;
 }
 
+.pimcore_version_6 .pimcore_nav_icon_webservice_settings {
+    background: url(/bundles/pimcoreadmin/img/flat-white-icons/key.svg) center center no-repeat !important;
+}
+
 .pimcore_nav_icon_customers {
     background: url(/bundles/pimcorecustomermanagementframework/icons/customer.svg) center center no-repeat !important;
 }
@@ -38,6 +42,8 @@
 .pimcore_nav_icon_newsletter_enqueue_all_customers {
     background: url(/bundles/pimcoreadmin/img/flat-color-icons/address_book.svg) center center no-repeat !important;
 }
+
+
 
 
 .pimcore_icon_customers {

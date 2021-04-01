@@ -17,8 +17,6 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
     },
 
     pimcoreReady: function (params, broker) {
-        // alert("CustomerManagementFramework Plugin Ready!");
-
         this.initToolbar();
         this.initNewsletterQueueInfo();
     },
@@ -151,6 +149,24 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
                         }.bind(this)
                     });
                 }.bind(this)
+            };
+
+            this.menu.add(item);
+        }
+
+        if(user.admin) {
+            const webserviceConfigurationView = 'plugin_cmf_webserviceConfigurationView';
+            var item = {
+                text: t('plugin_cmf_webserviceConfigurationView'),
+                iconCls: 'pimcore_nav_icon_webservice_settings ',
+                handler: function () {
+                    try {
+                        pimcore.globalmanager.get(webserviceConfigurationView).activate();
+                    }
+                    catch (e) {
+                        pimcore.globalmanager.add(webserviceConfigurationView, new pimcore.plugin.customermanagementframework.webserviceConfigurationView(webserviceConfigurationView));
+                    }
+                }
             };
 
             this.menu.add(item);

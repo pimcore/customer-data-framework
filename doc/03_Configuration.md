@@ -1,11 +1,10 @@
 # Configuration of CMF
 
 Being a framework, there are a lot of settings in the CMF. These settings can be configured in a combination of 
-container service definitions for certain tags  and a symfony config tree. 
+container service definitions for certain tags and a symfony config tree. 
 
 Following you see a full featured example of the configuration. For details of a functionality see corresponding sections
 in this documentation.  
-
 
 ## Services
 

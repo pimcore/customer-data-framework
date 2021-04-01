@@ -194,3 +194,8 @@ cmf_newsletter_operators: "Operator"
 cmf_newsletter_or: "Or"
 cmf_newsletter_and: "And"
 cmf_newsletter_filter_flags: "Flags to filter for"
+
+plugin_cmf_webserviceConfigurationView: "Webservice Configuration View"
+plugin_cmf_webserviceConfigurationView_generate: "Generate Key"
+plugin_cmf_webserviceConfigurationView_copy: "Copy Key"
+plugin_cmf_webserviceConfigurationView_key: "API Key"
