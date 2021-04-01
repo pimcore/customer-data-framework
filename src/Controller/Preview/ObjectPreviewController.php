@@ -35,7 +35,7 @@ class ObjectPreviewController extends FrontendController
         $activityDefinition = LinkActivityDefinition::getById($request->get('pimcore_object_preview'));
 
         return $this->render(
-            'PimcoreCustomerManagementFrameworkBundle:Preview\ObjectPreview:link-activity-definition-preview.html.twig',
+            '@PimcoreCustomerManagementFramework/Preview\ObjectPreview/link-activity-definition-preview.html.twig',
             [
                 'activityDefinition' => $activityDefinition,
             ]

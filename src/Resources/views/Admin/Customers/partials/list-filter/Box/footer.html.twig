@@ -21,8 +21,7 @@
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <?= $this->template('PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials/list-filter:user-roles.html.php',
-                            ['preselected' => false]) ?>
+                        {% include '@PimcoreCustomerManagementFramework/Admin/Customers/partials/list-filter/user-roles.html.twig' with {'preselected': false}  %}
                     </div>
                     <div class="modal-footer">
                         <input type="button" class="btn btn-default" value="Cancel" data-dismiss="modal"/>

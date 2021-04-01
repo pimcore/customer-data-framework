@@ -44,7 +44,7 @@ Additional filter settings will be hidden when viewing customers of a segment di
 When selecting a customer in the list, the detail view of this customer is opened. By default this detail view is a very 
 basic view that shows all attributes of the customer. Optionally, a custom view can be provided by overwriting the 
 `cmf.customer_view` service in symfony container and overwriting the `public function getDetailviewTemplate(CustomerInterface $customer)`
-method, that returns the path to the template of the customer (by default `PimcoreCustomerManagementFrameworkBundle:Admin/Customers/partials:detail.html.php`).  
+method, that returns the path to the template of the customer (by default `@PimcoreCustomerManagementFramework/Admin/Customers/partials/detail.html.php`).  
 
 In the same service, also the presentation of a customer in the customer listing can be customized. Just overwrite the 
 `public function getOverviewTemplate(CustomerInterface $customer)` method and return the path to the custom template.  

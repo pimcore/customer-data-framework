@@ -96,7 +96,7 @@ class CustomersController extends Admin
             ]);
         } else {
             return $this->render(
-                'PimcoreCustomerManagementFrameworkBundle:Admin\Customers:list.html.twig',
+                '@PimcoreCustomerManagementFramework/Admin/Customers/list.html.twig',
                 [
                     'segmentGroups' => $this->loadSegmentGroups(),
                     'filters' => $filters,
@@ -138,7 +138,7 @@ class CustomersController extends Admin
             }
 
             return $this->render(
-                'PimcoreCustomerManagementFrameworkBundle:Admin\Customers:detail.html.twig',
+                '@PimcoreCustomerManagementFramework/Admin/Customers/detail.html.twig',
                 [
                     'customer' => $customer,
                     'customerView' => $customerView,

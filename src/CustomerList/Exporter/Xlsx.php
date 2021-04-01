@@ -62,7 +62,7 @@ class Xlsx extends AbstractExporter
 
         $stat = fstat($this->stream);
 
-        return $stat['size'];
+        return $stat['size'] ?? 0;
     }
 
     public function generateExportFile(array $exportData)
