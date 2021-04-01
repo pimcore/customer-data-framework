@@ -17,6 +17,7 @@ namespace CustomerManagementFrameworkBundle\Model;
 
 use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
+use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 
 abstract class AbstractObjectActivity extends \Pimcore\Model\DataObject\Concrete implements PersistentActivityInterface
 {
@@ -48,15 +49,7 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\DataObject\Concrete
      */
     public function cmfToArray()
     {
-        $fieldDefintions = $this->getClass()->getFieldDefinitions();
-
-        $result = [];
-
-        foreach ($fieldDefintions as $fd) {
-            $fieldName = $fd->getName();
-            $result[$fieldName] = $fd->getForWebserviceExport($this);
-        }
-
+        $result = ObjectToArray::getInstance()->toArray($this);
         unset($result['customer']);
 
         $result['o_id'] = $this->getId();
