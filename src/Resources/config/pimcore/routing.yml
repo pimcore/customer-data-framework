@@ -2,6 +2,8 @@ _pimcore_customermanagementframework_backend:
     resource: "@PimcoreCustomerManagementFrameworkBundle/Controller/Admin"
     type:     annotation
     prefix:   /admin/customermanagementframework
+    options:
+        expose: true
 
 _pimcore_customermanagementframework_backend_report:
     resource: "@PimcoreCustomerManagementFrameworkBundle/Controller/Report"
@@ -11,7 +13,7 @@ _pimcore_customermanagementframework_backend_report:
 _pimcore_customermanagementframework_rest:
     resource: "@PimcoreCustomerManagementFrameworkBundle/Controller/Rest"
     type:     annotation
-    prefix:   /webservice/cmf
+    prefix:   /__customermanagementframework/webservice
 
 _pimcore_customermanagementframework_preview:
     resource: "@PimcoreCustomerManagementFrameworkBundle/Controller/Preview"

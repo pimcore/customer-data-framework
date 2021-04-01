@@ -10,11 +10,19 @@
 - Migrate all templates to twig.
 - `AbstractObjectActivity::toArray` and GDPR exporter results might be different, as it utilizes new `normalize` methods 
   instead of deprecated `getDataForWebservice` methods.
-  
+- Webservices URLs changed to ` /__customermanagementframework/webservice/*`
+- Add following line to your firewalls configuration in the `security.yml` of your app after the `pimcore_admin` firewall.
+```yml 
+security:
+    firewalls:
+        pimcore_admin: 
+            # ...
+        cmf_webservice: '%customer_management_framework.firewall_settings%'
+``` 
 
 ### Removed features in Version 3   
 - Removed `SegmentTrackedListener` for tracking tracked segments into Piwik/Matomo
-  (as matomo integration is deprecated in Pimcore 6.9 and removed in Pimcor X).
+  (as matomo integration is deprecated in Pimcore 6.9 and removed in Pimcore X).
 - Migrated all templates to php templates and removed templating helpers.
 
 ## Update to Pimcore X

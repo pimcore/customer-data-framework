@@ -106,6 +106,21 @@ The CMF ships with an default configuration for basic functionality. To start up
 needed. To activate additional or customize existing functionality, please have a look at the 
 [configuration chapter](03_Configuration.md).  
 
+#### Configure Symfony firewall
+To configure the symfony firewall for the webservices, add following line to your firewalls configuration
+in the `security.yml` of your app after the `pimcore_admin` firewall.
+
+```yml 
+security:
+    firewalls:
+        pimcore_admin: 
+            # ...
+        cmf_webservice: '%customer_management_framework.firewall_settings%'
+```
+Of course, it is also possible to customize the firewall settings for the webservices by defining your custom settings instead
+of using the provided parameter. But, this is not recommended and might break in future versions of the customer 
+management framework (because the customer management framework does changes at the firewall configuration)!
+
 ## Setting Up necessary cron jobs
 There are several cron jobs needed by the CMF. These need to be configured and setup based on the solution requirements. 
 See [CronJob Docs](./04_Cronjobs.md) for details. 
