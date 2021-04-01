@@ -1,0 +1,43 @@
+
+{% if cmf_isCurrentUserFilterSharer()  %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label for="filterDefinition[allowedUserIds]">{{ 'cmf_filters_save_share_user' | trans({}, 'admin') }}</label>
+                <select
+                        id="filterDefinition[allowedUserIds]"
+                        name="filterDefinition[allowedUserIds][]"
+                        class="form-control plugin-select2"
+                        multiple="multiple"
+                        data-placeholder="{{ 'cmf_filters_save_share_user' | trans({}, 'admin') }}"
+                        data-select2-options='{{ {'allowClear': false} | json_encode }}'>
+
+                    {% for user in cmf_loadUsers() %}
+                        <option value="{{ user.id }}" {{ (preselected and user.id in filterDefinition.getAllowedUserIds()) ? 'selected="selected"' : '' }}>
+                            {{ user.name }}{{ not (user.firstname ~ user.lastname) is empty ? ('(' ~ ((user.firstname ~ ' ' ~ user.lastname) | trim)) ~')' : '' }}
+                        </option>
+
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label for="filterDefinition[allowedRoleIds]">{{ 'cmf_filters_save_share_role' | trans({}, 'admin') }}</label>
+                <select
+                        id="filterDefinition[allowedRoleIds]"
+                        name="filterDefinition[allowedRoleIds][]"
+                        class="form-control plugin-select2"
+                        multiple="multiple"
+                        data-placeholder="{{ 'cmf_filters_save_share_role' | trans({}, 'admin') }}"
+                        data-select2-options='{{ {'allowClear': false} | json_encode }}'>
+                    {% for user in cmf_loadRoles() %}
+                        <option value="{{ role.id }}" {{ (preselected and role.id in filterDefinition.getAllowedUserIds()) ? 'selected="selected"' : '' }}>
+                            {{ role.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+{% endif %}

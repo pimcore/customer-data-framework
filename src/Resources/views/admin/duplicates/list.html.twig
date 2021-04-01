@@ -1,0 +1,79 @@
+{% extends '@PimcoreCustomerManagementFramework/layout.html.twig' %}
+
+{% block content %}
+
+    {% do cmf_jsConfig().add('declineDuplicates', true) %}
+
+    <div class="container">
+        <h2>{{ 'cmf_duplicates_potential_duplicates' | trans({}, 'admin') }}</h2>
+        <div>
+            {{ include('@PimcoreCustomerManagementFramework/admin/duplicates/partials/list_filter.html.twig') }}
+        </div>
+
+        <div>
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist" style="margin-bottom:20px;">
+                <li role="presentation" {{ (not(app.request.get('declined'))) ? 'class="active"' : '' }}>
+                    <a href="{{ pimcore_url({'declined': 0}) }}">{{ 'cmf_duplicates_current' | trans({}, 'admin') }}</a>
+                </li>
+                <li role="presentation" {{ (app.request.get('declined')) ? 'class="active"' : '' }}>
+                    <a href="{{ pimcore_url({'declined': 1}) }}">{{ 'cmf_duplicates_declined' | trans({}, 'admin') }}</a>
+                </li>
+            </ul>
+
+        </div>
+
+        <table class="table">
+
+            <thead>
+                <th colspan="42">
+                    <h4>{{ 'cmf_duplicates_number_total' | trans({}, 'admin') }}: {{ paginator.getTotalItemCount() }}</h4>
+                </th>
+            </thead>
+            {% for duplicate in duplicates %}
+                {% set listData = duplicatesView.listData(duplicate.getDuplicateCustomers[0]) %}
+
+                <tbody id="customerduplicates_{{ duplicate.getDuplicateCustomers[0].getId() }}_{{ duplicate.getDuplicateCustomers[1].getId() }}" class="js-duplicates-item duplicates-item" >
+                    <tr>
+                        <td colspan="99">
+                            <a class="btn btn-primary btn-xs pull-right" onClick="new window.top.pimcore.plugin.objectmerger.panel({{ duplicate.getDuplicateCustomers[0].getId() }}, {{ duplicate.getDuplicateCustomers[1].getId() }}); ">
+                                {{ 'cmf_duplicates_merge' | trans({}, 'admin')  }}
+                            </a>
+                            {% if(not app.request.get('declined')) %}
+                                <a class="btn btn-danger btn-xs pull-right js-decline-duplicate" data-id="{{ duplicate.id }}" style="margin-right: 5px;">
+                                    {{ 'cmf_duplicates_decline_duplicate' | trans({}, 'admin') }}
+                                </a>
+                            {% endif %}
+
+                            {% if( cmf_inDebug() ) %}
+                                <a class="btn btn-default btn-xs pull-right" style="margin-right: 5px;" data-toggle="tooltip" data-placement="left" data-html="true" title="<div style='text-align:left;'><strong>matched field combinations (duplicate ID {{ duplicate.id }}):</strong><br/><br/>{{ duplicate.getFieldCombinations | cmf_printFieldCombinations }}</div>">info (debug)</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        {% for label, value in listData %}
+                            <th>{{ label }}</th>
+                        {% endfor %}
+                    </tr>
+
+                    {% for customer in duplicate.getDuplicateCustomers() %}
+
+                        <tr>
+                            {% for label, value in duplicatesView.listData(customer) %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+            </tbody>
+            {% endfor %}
+
+        </table>
+
+        <div class="text-center">
+            {{ include('@PimcoreCustomerManagementFramework/admin/partial/pagination/default.html.twig') }}
+        </div>
+    </div>
+
+
+{% endblock %}

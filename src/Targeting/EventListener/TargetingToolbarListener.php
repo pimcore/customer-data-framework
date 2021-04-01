@@ -72,7 +72,7 @@ class TargetingToolbarListener implements EventSubscriberInterface
             'cmfTrackedSegments'  => $this->getTrackedSegments(),
         ]));
 
-        $event->setTemplate('@PimcoreCustomerManagementFramework/Targeting/toolbar.html.twig');
+        $event->setTemplate('@PimcoreCustomerManagementFramework/targeting/toolbar.html.twig');
     }
 
     private function getTrackedSegments(): array

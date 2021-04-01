@@ -1,0 +1,34 @@
+<form class="search-filters" role="form" action="{{ cmf_filterFormAction(paginator) }}" autocomplete="off">
+
+    {% if searchBarFields|length > 0 %}
+        <div class="box box-default box-collapsible-state search-filters-box search-filters-box--standalone" data-identifier="customer-search-bar">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group" id="searchBar">
+                            <input type="text" autocomplete="no" name="filter[search]" class="form-control" placeholder="{{ 'cmf_filters_search' | trans({}, 'admin') }}..." value="{{ filters['search'] ?? '' }}">
+                            {% include('@PimcoreCustomerManagementFramework/admin/partial/list_filter_helper.html.twig') %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Filters -->
+    <div class="box box-default box-collapsible-state search-filters-box" data-identifier="customer-search-filter">
+
+        {% include('@PimcoreCustomerManagementFramework/admin/customers/partials/list_filter/box/header.html.twig')  %}
+
+        <div class="box-body">
+            {% include(customerView.getFilterWrapperTemplate())  %}
+        </div>
+
+
+        {% if false and app.request.get('perPage') %}
+            <input type="hidden" name="perPage" value="{{ app.request.get('perPage') }}"/>
+        {% endif %}
+
+        {% include('@PimcoreCustomerManagementFramework/admin/customers/partials/list_filter/box/footer.html.twig')  %}
+    </div>
+</form>

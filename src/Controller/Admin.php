@@ -15,8 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\Controller;
 
-use CustomerManagementFrameworkBundle\Templating\Helper\DefaultPageSize;
-use CustomerManagementFrameworkBundle\Templating\Helper\JsConfig;
+use CustomerManagementFrameworkBundle\Helper\JsConfigService;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
@@ -28,24 +27,23 @@ class Admin extends AdminController implements KernelControllerEventInterface
 {
 
     /**
-     * @var JsConfig
+     * @var JsConfigService
      */
-    protected $jsConfigHelper;
+    protected $jsConfigService;
 
     /**
-     * @var DefaultPageSize
+     * @var int
      */
-    protected $defaultPageSize;
+    protected $defaultPageSize = 25;
 
     /**
      * @var PaginatorInterface
      */
     protected $paginator;
 
-    public function __construct(JsConfig $jsConfigHelper, DefaultPageSize $defaultPageSize, PaginatorInterface $paginator)
+    public function __construct(JsConfigService $jsConfigService, PaginatorInterface $paginator)
     {
-        $this->jsConfigHelper = $jsConfigHelper;
-        $this->defaultPageSize = $defaultPageSize;
+        $this->jsConfigService = $jsConfigService;
         $this->paginator = $paginator;
     }
 
@@ -62,7 +60,7 @@ class Admin extends AdminController implements KernelControllerEventInterface
      */
     protected function initJsConfig()
     {
-        $jsConfig = $this->getJsConfigHelper();
+        $jsConfig = $this->getJsConfigService();
         $jsConfig->add('debug', \Pimcore::inDebugMode());
 
         foreach ($this->getJsConfigFeatures() as $feature) {
@@ -71,11 +69,11 @@ class Admin extends AdminController implements KernelControllerEventInterface
     }
 
     /**
-     * @return JsConfig
+     * @return JsConfigService
      */
-    protected function getJsConfigHelper()
+    protected function getJsConfigService()
     {
-        return $this->jsConfigHelper;
+        return $this->jsConfigService;
     }
 
     /**
@@ -114,7 +112,7 @@ class Admin extends AdminController implements KernelControllerEventInterface
     protected function buildPaginator(Request $request, $data, $defaultPageSize = null)
     {
         if (is_null($defaultPageSize)) {
-            $defaultPageSize = $this->defaultPageSize->defaultPageSize();
+            $defaultPageSize = $this->defaultPageSize;
         }
 
         $page = (int)$request->get('page', 1);

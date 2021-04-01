@@ -1,0 +1,56 @@
+<div class="box-body no-padding table-responsive">
+    <table class="table table-striped table-bordered table-hover dataTable">
+        <thead>
+        <tr>
+            <th class="table-id-column">#</th>
+            <th width="80px">
+                <div class="pos">
+                    <a class="sorting{{ cmf_currentOrder('o_id') }}" href="{{ path('customermanagementframework_admin_customers_list', cmf_nextFormOrderParams('o_id')) }}">
+                        ID
+                    </a>
+                </div>
+            </th>
+            <th class="icon-column icon-column--center"></th>
+            <th width="15%">
+                <div class="pos">
+                    <a class="sorting{{ cmf_currentOrder('firstname') }}" href="{{ path('customermanagementframework_admin_customers_list', cmf_nextFormOrderParams('firstname')) }}">
+                        {{ 'cmf_filters_customer_firstname' | trans({}, 'admin') }}
+                    </a>
+                </div>
+            </th>
+            <th width="15%">
+                <div class="pos">
+                    <a class="sorting{{ cmf_currentOrder('lastname') }}" href="{{ path('customermanagementframework_admin_customers_list', cmf_nextFormOrderParams('lastname')) }}">
+                        {{ 'cmf_filters_customer_lastname' | trans({}, 'admin') }}
+                    </a>
+                </div>
+            </th>
+            <th width="15%">
+                <div class="pos">
+                    <a class="sorting{{ cmf_currentOrder('email') }}" href="{{ path('customermanagementframework_admin_customers_list', cmf_nextFormOrderParams('email')) }}">
+                        {{ 'cmf_filters_customer_email' | trans({}, 'admin') }}
+                    </a>
+                </div>
+            </th>
+            <th width="100px">
+                <div class="pos">
+                    <a class="sorting{{ cmf_currentOrder('gender') }}" href="{{ path('customermanagementframework_admin_customers_list', cmf_nextFormOrderParams('gender')) }}">
+                        {{ 'cmf_filters_customer_gender' | trans({}, 'admin') }}
+                    </a>
+                </div>
+            </th>
+            <th>{{ 'cmf_filters_segments'| trans({}, 'admin') }}</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        {% for customer in paginator %}
+            {% include customerView.overviewTemplate(customer) with {customer: customer, customerView: customerView} only %}
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+{% include '@PimcoreCustomerManagementFramework/admin/partial/table/pagination_footer.html.twig' %}

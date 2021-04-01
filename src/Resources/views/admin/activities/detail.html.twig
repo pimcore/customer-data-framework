@@ -1,0 +1,61 @@
+{% extends '@PimcoreCustomerManagementFramework/layout.html.twig' %}
+
+{% block content %}
+
+    {% if activity is defined %}
+
+        <section class="content">
+
+            {% set template = activityView.detailviewTemplate(activity) %}
+            {% if not template is empty %}
+
+                {{ include(template) }}
+            {% else %}
+
+                {% set visibleAttributes = activityView.detailviewData(activity) %}
+
+                <div class="box box-info">
+                    <div class="box-header with-border with-form">
+                        <h3 class="box-title">
+                            {{ activity.type }}
+                        </h3>
+
+                        <div>
+                            <a href="{{ path('customermanagementframework_admin_activities_list', {customerId: app.request.get('customerId')}) }}" class="btn btn-default btn-xs">&laquo; back</a>
+                        </div>
+                    </div>
+
+                    <div class="box-body">
+                        <div class="row">
+                            {% set chunkSize = cmf_arrayChunkSize(visibleAttributes)  %}
+
+                            {% for attributes in visibleAttributes|batch(chunkSize) %}
+
+                                <div class="col col-sm-6">
+                                    <table class="table table-striped">
+
+                                        {% for key, value in attributes %}
+                                            <tr>
+                                                <th width="200">{{ key }}</th>
+                                                <td>
+                                                    {{ value }}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                    </table>
+                                </div>
+
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    {% endif %}
+
+
+{% endblock %}

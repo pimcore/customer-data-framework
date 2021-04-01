@@ -1,0 +1,47 @@
+{% extends '@PimcoreCustomerManagementFramework/layout.html.twig' %}
+
+{% block content %}
+
+    {% do pimcore_head_script().appendFile(asset('/bundles/pimcorecustomermanagementframework/js/CustomerView/frontend.js')) %}
+
+    <section class="content">
+
+        {% if not errors is empty %}
+            {% for error in errors %}
+                <div class="callout callout-danger">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% include '@PimcoreCustomerManagementFramework/admin/customers/partials/list_filter.html.twig' %}
+
+        {% if paginator.totalItemCount is same as (0) %}
+            <div class="callout callout-warning">
+                <p>{{ 'cmf_filters_no_results' | trans({}, 'admin') }}</p>
+            </div>
+        {% else %}
+
+            <!-- List -->
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">
+                        <i class="fa fa-user"></i>
+                        {{ 'cmf_filters_customers'| trans({}, 'admin') }}
+                    </h3>
+                </div>
+                <!-- /.box-header -->
+
+                <div class="customer-table-content">
+                    {% include customerView.overviewWrapperTemplate with {'paginator': paginator, 'customerView': customerView, 'paginationVariables': paginationVariables} only %}
+                    <!-- /.box-body -->
+                </div>
+
+                {% include '@PimcoreCustomerManagementFramework/admin/customers/partials/list_export.html.twig' %}
+            </div>
+
+        {% endif %}
+
+    </section>
+
+{% endblock %}

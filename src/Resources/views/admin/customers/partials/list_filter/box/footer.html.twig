@@ -1,0 +1,144 @@
+
+{% set userAllowedToUpdate = cmf_userAllowedToUpdate(filterDefinition) %}
+{% set userAllowedToShare = cmf_userAllowedToShare(filterDefinition) %}
+{% do cmf_jsConfig().add('registerSaveFilterDefinition', true) %}
+{% do cmf_jsConfig().add('registerUpdateFilterDefinition', true) %}
+{% do cmf_jsConfig().add('registerShareFilterDefinition', true) %}
+
+
+<div class="box-footer text-right">
+
+    {% if (not hideAdvancedFilterSettings) and userAllowedToShare and userAllowedToUpdate %}
+
+        <button type="button" class="btn btn-default" data-toggle="modal"
+                data-target="#share-filter-definition-modal">
+            <i class="fa fa-share"></i>&nbsp;{{ 'cmf_filters_share' | trans({}, 'admin') }}</button>
+        <div id="share-filter-definition-modal" class="modal fade text-left" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title pull-left">{{ 'cmf_filters_share_headline' | trans({}, 'admin') }}</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        {% include '@PimcoreCustomerManagementFramework/admin/customers/partials/list_filter/user_roles.html.twig' with {'preselected': false}  %}
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" value="Cancel" data-dismiss="modal"/>
+                        <a type="button" class="btn btn-primary" name="share-filter-definition"
+                           id="share-filter-definition">
+                            {{ 'cmf_filters_share_confirm' | trans({}, 'admin') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if (not hideAdvancedFilterSettings) %}
+        {% if userAllowedToUpdate %}
+            <button type="button" class="btn btn-danger" data-toggle="modal"
+                    data-target="#delete-filter-definition-modal">
+                <i class="fa fa-trash"></i>&nbsp;{{ 'cmf_filters_delete' | trans({}, 'admin') }}</button>
+            <div id="delete-filter-definition-modal" class="modal fade text-left" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title pull-left">{{ 'cmf_filters_delete_headline' | trans({}, 'admin') }}</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="button" class="btn btn-default" value="Cancel" data-dismiss="modal"/>
+                            <a class="btn btn-danger" href="{{ url('cmf_filter_definition_delete', {'filterDefinition': {'id': filterDefinition.id}}) }}"
+                               name="delete-filter-definition">
+                                {{ 'cmf_filters_delete_confirm' | trans({}, 'admin') }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#save-filter-definition-modal"><i
+                    class="fa fa-save"></i>&nbsp;{{ (userAllowedToUpdate and userAllowedToShare) ? ('cmf_filters_save_share' | trans({}, 'admin')) : ('cmf_filters_save' | trans({}, 'admin')) }}
+        </button>
+        <div id="save-filter-definition-modal" class="modal fade text-left" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title pull-left">{{ 'cmf_filters_save_headline' | trans({}, 'admin') }}</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="alert alert-danger" style="display: none;" id="name-required-message">
+                            {{ 'cmf_filters_save_error_name' | trans({}, 'admin') }}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label for="filterDefinition[name]">{{ 'cmf_filters_save_name' | trans({}, 'admin') }}</label>
+                                    <input type="text" name="filterDefinition[name]" id="filterDefinition[name]"
+                                           class="form-control"
+                                           placeholder="{{ 'cmf_filters_save_name' | trans({}, 'admin') }}"
+                                           value="{{ filterDefinition.name }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        {% include '@PimcoreCustomerManagementFramework/admin/customers/partials/list_filter/user_roles.html.twig' with {'preselected': true}  %}
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="checkbox">
+                                    <label for="filterDefinition[readOnly]">
+                                        <input type="checkbox" name="filterDefinition[readOnly]"
+                                               id="filterDefinition[readOnly]" {{ filterDefinition.isReadOnly() ? 'checked="checked"' : '' }}>
+                                        {{ 'cmf_filters_save_read_only' | trans({}, 'admin') }}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="checkbox">
+                                    <label for="filterDefinition[shortcutAvailable]">
+                                        <input type="checkbox" name="filterDefinition[shortcutAvailable]"
+                                               id="filterDefinition[shortcutAvailable]" {{ filterDefinition.isShortcutAvailable() ? 'checked="checked"' : '' }}>
+                                        {{ 'cmf_filters_save_shortcut_available' | trans({}, 'admin') }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" value="{{ 'cmf_filters_cancel' | trans({}, 'admin') }}"
+                               data-dismiss="modal"/>
+                        <?php if($userAllowedToUpdate): ?>
+                            <a type="button" class="btn btn-primary" name="update-filter-definition"
+                               id="update-filter-definition"><i class="fa fa-save"></i>
+                                {{ 'cmf_filters_save_update' | trans({}, 'admin') }}
+                            </a>
+                        <?php endif; ?>
+                        <a type="button" class="btn btn-success" name="save-filter-definition"
+                           id="save-filter-definition"><i class="fa fa-plus"></i>
+                            {{ 'cmf_filters_save_new' | trans({}, 'admin') }}
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <a href="{{ pimcore_url([], null, true) }}"
+       class="btn btn-default">
+        <i class="fa fa-ban"></i>
+        {{ 'cmf_filters_clear' | trans({}, 'admin') }}
+    </a>
+
+    <button type="submit" class="btn btn-primary">
+        <i class="fa fa-filter"></i>
+        {{ 'cmf_filters_apply' | trans({}, 'admin') }}
+    </button>
+</div>
+<!-- /.box-footer -->

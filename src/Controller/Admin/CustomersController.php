@@ -49,9 +49,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CustomersController extends Admin
 {
-    // params still needed when clearing all filters
-    protected $clearUrlParams = [];
-
     /**
      * @var CustomerSegmentGroup[]|null
      */
@@ -59,6 +56,7 @@ class CustomersController extends Admin
 
     public function onKernelControllerEvent(ControllerEvent $event)
     {
+        parent::onKernelControllerEvent($event);
         $this->checkPermission('plugin_cmf_perm_customerview');
         AbstractObject::setHideUnpublished(true);
     }
@@ -87,27 +85,35 @@ class CustomersController extends Admin
 
         //empty paginator as the view expects a valid paginator
         if(null === $paginator) {
-            $paginator = $this->buildPaginator($request, new ArrayAdapter([]));
+            $paginator = $this->buildPaginator($request, []);
         }
 
-        return $this->render(
-            'PimcoreCustomerManagementFrameworkBundle:Admin\Customers:list.html.php',
-            [
-                'segmentGroups' => $this->loadSegmentGroups(),
-                'filters' => $filters,
-                'errors' => $errors,
+        if ($request->isXmlHttpRequest()) {
+            return $this->render($customerView->getOverviewWrapperTemplate(), [
                 'paginator' => $paginator,
-                'customerView' => $customerView,
-                'searchBarFields' => $this->getSearchHelper()->getConfiguredSearchBarFields(),
-                'request' => $request,
-                'clearUrlParams' => $this->clearUrlParams,
-                'filterDefinitions' => $this->getFilterDefinitions(),
-                'filterDefinition' => $this->getFilterDefinition($request),
-                'accessToTempCustomerFolder' => boolval($this->hasUserAccessToTempCustomerFolder()),
-                'hideAdvancedFilterSettings' => boolval($request->get('segmentId')),
-                'customerImportService' => $customerImportService
-            ]
-        );
+                'paginationVariables' => $paginator->getPaginationData(),
+                'customerView' => $customerView
+            ]);
+        } else {
+            return $this->render(
+                '@PimcoreCustomerManagementFramework/admin/customers/list.html.twig',
+                [
+                    'segmentGroups' => $this->loadSegmentGroups(),
+                    'filters' => $filters,
+                    'errors' => $errors,
+                    'paginator' => $paginator,
+                    'paginationVariables' => $paginator->getPaginationData(),
+                    'customerView' => $customerView,
+                    'searchBarFields' => $this->getSearchHelper()->getConfiguredSearchBarFields(),
+                    'request' => $request,
+                    'filterDefinitions' => $this->getFilterDefinitions(),
+                    'filterDefinition' => $this->getFilterDefinition($request),
+                    'accessToTempCustomerFolder' => boolval($this->hasUserAccessToTempCustomerFolder()),
+                    'hideAdvancedFilterSettings' => boolval($request->get('segmentId')),
+                    'customerImportService' => $customerImportService
+                ]
+            );
+        }
     }
 
     /**
@@ -132,7 +138,7 @@ class CustomersController extends Admin
             }
 
             return $this->render(
-                'PimcoreCustomerManagementFrameworkBundle:Admin\Customers:detail.html.php',
+                '@PimcoreCustomerManagementFramework/admin/customers/detail.html.twig',
                 [
                     'customer' => $customer,
                     'customerView' => $customerView,
@@ -489,8 +495,6 @@ class CustomersController extends Admin
             if(!$segment) {
                 throw new \InvalidArgumentException(sprintf('Segment %d was not found', $segmentId));
             }
-
-            $this->clearUrlParams['segmentId'] = $segment->getId();
 
             return $segment;
         }

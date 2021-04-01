@@ -1,0 +1,31 @@
+{% if paginationVariables.pageCount > 1 %}
+    <nav aria-label="Pagination">
+        <ul class="pagination justify-content-center">
+            {%  if(paginationVariables.previous is defined) %}
+                <li>
+                    <a href="{{  pimcore_url({'page': paginationVariables.previous}) }}" aria-label="Previous">
+                        <span class="glyphicon glyphicon-chevron-left"></span>
+                    </a>
+                </li>
+            {%  endif %}
+
+            {%  for page in paginationVariables.pagesInRange %}
+
+                <li class="{{ (paginationVariables.current == page ? 'active' : '')}}" aria-current="page">
+                  <a href="{{  pimcore_url({'page': page}) }}">
+                    {{  page }}
+                  </a>
+                </li>
+
+            {% endfor %}
+
+            {%  if(paginationVariables.next is defined) %}
+                <li>
+                    <a href="{{  pimcore_url({'page': paginationVariables.next}) }}" aria-label="Next">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                    </a>
+                </li>
+            {%  endif %}
+        </ul>
+    </nav>
+{% endif %}

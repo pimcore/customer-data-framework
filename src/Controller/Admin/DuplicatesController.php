@@ -67,24 +67,16 @@ class DuplicatesController extends Admin
         );
 
         return $this->render(
-            'PimcoreCustomerManagementFrameworkBundle:Admin\Duplicates:list.html.php',
+            '@PimcoreCustomerManagementFramework/admin/duplicates/list.html.twig',
             [
                 'paginator' => $paginator,
+                'paginationVariables' => $paginator->getPaginationData(),
                 'duplicates' => $paginator->getItems(),
                 'duplicatesView' => \Pimcore::getContainer()->get('cmf.customer_duplicates_view'),
                 'searchBarFields' => $this->getSearchHelper()->getConfiguredSearchBarFields(),
                 'filters' => $filters,
             ]
         );
-    }
-
-    public function falsePositivesAction()
-    {
-        $this->enableLayout();
-
-        $paginator = Factory::getInstance()->getDuplicatesIndex()->getFalsePositives($this->getParam('page', 1), 200);
-
-        $this->view->paginator = $paginator;
     }
 
     /**

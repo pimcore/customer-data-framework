@@ -1,0 +1,18 @@
+<form class="search-filters" role="form" action="{{ cmf_filterFormAction(paginator) }}">
+
+    <div class="box box-default box-collapsible-state search-filters-box search-filters-box--standalone" data-identifier="customer-search-bar">
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group" id="searchBar">
+                        <input type="text" name="filter[search]" class="form-control" placeholder="{{ 'cmf_filters_search' | trans({}, 'admin') }}..." value="{{ filters['search'] ?? '' }}">
+                        {% include('@PimcoreCustomerManagementFramework/admin/partial/list_filter_helper.html.twig') %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" name="declined" value="{{ app.request.get('declined') }}"/>
+
+</form>

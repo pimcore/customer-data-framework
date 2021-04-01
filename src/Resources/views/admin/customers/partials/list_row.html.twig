@@ -1,0 +1,39 @@
+{% set userDetailUrl = cmf_userDetailUrl(customer) %}
+
+<tr>
+    <td class="table-id-column">
+        <a href="#" class="js-pimcore-link" data-pimcore-id="{{ customer.id }}">
+            <i class="fa fa-link"></i>
+        </a>
+    </td>
+
+    <td class="reference-id-column">
+        {% if userDetailUrl is not empty %}
+            <a href="{{ userDetailUrl }}">{{ customer.id }}</a>
+        {% else %}
+            <a href="#" class="js-pimcore-link" data-pimcore-id="{{ customer.id }}">{{ customer.id }}</a>
+        {% endif %}
+    </td>
+    <td class="icon-column icon-column--center">
+        {% include '@PimcoreCustomerManagementFramework/admin/customers/partials/active_state.html.twig' with {customer: customer} %}
+    </td>
+    <td>
+        {{ customer.firstname }}
+    </td>
+    <td>
+        {{ customer.lastname }}
+    </td>
+    <td>
+        {{ customer.email }}
+    </td>
+
+    <td>
+        {{ customer.gender }}
+    </td>
+
+    <td>
+        {% for segment in customer.getAllSegments() %}
+            {{ customerView.viewFormatter.formatValue(segment) | raw }}
+        {% endfor %}
+    </td>
+</tr>

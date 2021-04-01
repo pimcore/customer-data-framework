@@ -19,7 +19,7 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Translate\TranslatorInterface;
 use CustomerManagementFrameworkBundle\View\Formatter\ViewFormatterInterface;
 
-interface CustomerDuplicatesViewInterface extends TranslatorInterface
+interface CustomerDuplicatesViewInterface
 {
     /**
      * @return ViewFormatterInterface

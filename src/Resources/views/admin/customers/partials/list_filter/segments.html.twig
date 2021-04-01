@@ -1,0 +1,111 @@
+{% set filteredSegmentGroups = cmf_filterSegmentGroups(segmentGroups, filters['showSegments'])  %}
+
+{% if not segmentGroups is empty %}
+    <fieldset>
+        <legend>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ 'cmf_filters_segments' | trans({}, 'admin') }}
+
+                    <select
+                            id="form-filter-operator-segments"
+                            name="filter[operator-segments]"
+                            class="form-filter-operator"
+                            data-placeholder="<?= $customerView->translate('cmf_filters_options_operator')  ?>">
+
+                        <option {{ (filters['operator-segments'] ?? null) == 'AND' ? 'selected="selected"' : '' }} value="AND">
+                            {{ 'cmf_filters_options_and' | trans({}, 'admin') }}
+                        </option>
+                        <option {{ (filters['operator-segments'] ?? null) == 'OR' ? 'selected="selected"' : '' }} value="OR">
+                            {{ 'cmf_filters_options_or' | trans({}, 'admin') }}
+                        </option>
+                        <option {{ (filters['operator-segments'] ?? null) == 'ANY' ? 'selected="selected"' : '' }} value="ANY">
+                            {{ 'cmf_filters_options_any' | trans({}, 'admin') }}
+                        </option>
+
+                    </select>
+
+                </div>
+                {% if not hideAdvancedFilterSettings and not filterDefinition.isReadOnly() %}
+                    <div class="col-md-6 text-right">
+                        <a type="button" class="btn btn-sm" data-toggle="modal"
+                           data-target="#show-segments-modal">{{ 'cmf_filters_segments_edit' | trans({}, 'admin') }}
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </legend>
+
+        {% if not hideAdvancedFilterSettings %}
+            <div id="show-segments-modal" class="modal fade text-left" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;
+                            </button>
+                            <h4 class="modal-title">{{ 'cmf_filters_segments_headline' | trans({}, 'admin') }}</h4>
+                        </div>
+                        <div class="modal-body">
+                            {% for segmentGroup in segmentGroups %}
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input name="filter[showSegments][]"
+                                                       value="{{ segmentGroup.id }}"
+                                                       type="checkbox"
+                                                       {{ segmentGroup.id in filters['showSegments'] ? ' checked="checked"' : ''  }}
+                                                >
+                                                {{ segmentGroup.name }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="modal-footer">
+                            <input type="button" class="btn btn-default"
+                                   value="{{ 'cmf_filters_cancel' | trans({}, 'admin') }}"
+                                   data-dismiss="modal"/>
+                            <input type="submit" class="btn btn-primary"
+                                   value="{{ 'cmf_filters_segments_confirm' | trans({}, 'admin') }}"
+                                   name="apply-segment-selection"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% for chunk in filteredSegmentGroups|batch(2) %}
+            <div class="row">
+                {% for segmentGroup in chunk %}
+                    <div class="col-md-6 col-xs-12">
+                        <div class="form-group">
+                            <label for="form-filter-segment-{{ segmentGroup.id }}">{{ segmentGroup.name }}</label>
+                            <select
+                                    id="form-filter-segment-{{ segmentGroup.id }}"
+                                    name="filter[segments][{{ segmentGroup.id }}][]"
+                                    class="form-control plugin-select2"
+                                    autocomplete="off"
+                                    multiple="multiple"
+                                    data-placeholder="{{ segmentGroup.name }}"
+                                    data-select2-options="{{ { 'allowClear': false, 'disabled': filterDefinition.isLockedSegment(segmentGroup.id) } | json_encode  }}">
+
+                                {% for segment in cmf_segmentsForGroup(segmentGroup) %}
+
+                                    <option value="{{ segment.id }}" {{ (filters['segments'][segmentGroup.id] ?? [])|filter(id => id == segment.id) ? 'selected="selected"' : '' }}>
+                                        {{ segment.name }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+                        </div>
+                    </div>
+
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+    </fieldset>
+{% endif %}

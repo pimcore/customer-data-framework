@@ -79,11 +79,12 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
         }
 
         return $this->render(
-            'PimcoreCustomerManagementFrameworkBundle:Admin\Activities:list.html.php',
+            '@PimcoreCustomerManagementFramework/admin/activities/list.html.twig',
             [
                 'types' => $types,
-                'type' => $type,
+                'selectedType' => $type,
                 'activities' => $paginator,
+                'paginationVariables' => $paginator->getPaginationData(),
                 'customer' => $customer,
                 'activityView' => \Pimcore::getContainer()->get('cmf.activity_view'),
             ]
@@ -99,7 +100,7 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
         $activity = \Pimcore::getContainer()->get('cmf.activity_store')->getEntryById($request->get('activityId'));
 
         return $this->render(
-            'PimcoreCustomerManagementFrameworkBundle:Admin\Activities:detail.html.php',
+            '@PimcoreCustomerManagementFramework/admin/activities/detail.html.twig',
             [
                 'activity' => $activity,
                 'activityView' => \Pimcore::getContainer()->get('cmf.activity_view'),

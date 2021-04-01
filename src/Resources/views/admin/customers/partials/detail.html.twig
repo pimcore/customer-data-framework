@@ -1,0 +1,48 @@
+{% extends '@PimcoreCustomerManagementFramework/layout.html.twig' %}
+
+{% block content %}
+    {% set backUrl = cmf_formQueryString(url('customermanagementframework_admin_customers_list')) %}
+
+    <div class="box box-info">
+        <div class="box-header with-border with-form">
+            <h3 class="box-title">
+                <a href="#" class="js-pimcore-link" data-pimcore-id="{{ customer.id }}">
+                    <i class="fa fa-link"></i>
+                </a>
+
+                {{ customer.firstname }} {{ customer.lastname }}
+            </h3>
+
+            <div>
+                <a href="{{ backUrl }}" class="btn btn-default btn-xs">
+                    &laquo; {{ 'cmf_filters_customer_back' | trans({}, 'admin') }}
+                </a>
+            </div>
+        </div>
+
+        <div class="box-body">
+            <div class="row">
+                {% set detailAttributes = customerView.getDetailviewData(customer) %}
+                {% set chunkSize = cmf_arrayChunkSize(detailAttributes)  %}
+
+                {% for attributes in detailAttributes|batch(chunkSize) %}
+                    <div class="col col-sm-6">
+                        <table class="table table-striped">
+
+                            {% for key, value in attributes %}
+                                <tr>
+                                    <th width="200">{{ key }}</th>
+                                    <td>
+                                        {{ value | raw }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+                        </table>
+                    </div>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

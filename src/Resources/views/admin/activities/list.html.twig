@@ -1,0 +1,96 @@
+{% extends '@PimcoreCustomerManagementFramework/layout.html.twig' %}
+
+{% block content %}
+
+    {% do cmf_jsConfig().add('formAutoSubmit', true) %}
+
+    {% if activities.totalItemCount %}
+        {% set contextBoxClasses = ['no-padding', 'table-responsive'] %}
+    {% else %}
+        {% set contextBoxClasses = [] %}
+    {% endif %}
+
+    <section class="content">
+        <div class="box box-info">
+            <div class="box-header with-border with-form">
+                <h3 class="box-title">
+                    {{ 'cmf_activities_activities' | trans({}, 'admin') }}
+                </h3>
+
+                <div class="box-tools pull-right">
+                    <form>
+                        <div class="form-group">
+                            <select name="type" class="form-control js-form-auto-submit">
+                                <option value="">{{ 'cmf_activities_all_activity_types' | trans({}, 'admin') }}</option>
+                                {% for type in types %}
+                                    <option value="{{ type }}" {{ selectedType == type ? 'selected="selected"' : '' }}>
+                                        {{ type| trans({}, 'admin') }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+                            <input type="hidden" name="customerId" value="{{ app.request.get('customerId') }}"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="box-body {{ contextBoxClasses | join(' ')}}">
+                {% if activities.totalItemCount %}
+                    <table class="table table-striped table-bordered table-hover">
+                        <tr>
+                            <th>{{ 'cmf_activities_activity' | trans({}, 'admin') }} </th>
+                            <th>{{ 'cmf_activities_activity_date' | trans({}, 'admin') }}</th>
+                            <th>{{ 'cmf_activities_activity_details' | trans({}, 'admin') }}</th>
+                        </tr>
+
+                        {% for activity in activities %}
+
+                            <tr>
+                                <td width="300">
+                                    {{ activity.type | trans({}, 'admin') }}
+                                    <a href="{{ path('customermanagementframework_admin_activities_detail', {
+                                            activityId: activity.id,
+                                            customerId: customer.id
+                                        }
+                                    )  }}" class="btn btn-default btn-xs">
+                                        {{ 'cmf_activities_details' | trans({}, 'admin') }}
+                                    </a>
+                                </td>
+                                <td width="160">{{ activity.activityDate.formatLocalized('%x %X') }}</td>
+                                <td>
+
+                                    {% set data = activityView.overviewAdditionalData(activity) %}
+                                    {% if not data is empty %}
+                                        <table class="overview-data-table">
+                                            <tr>
+                                                {% for key, value in data %}
+                                                    <th>{{ key }}</th>
+                                                {% endfor %}
+                                            </tr>
+                                            <tr>
+                                                {% for key, value in data %}
+                                                    <td>{{ value }}</td>
+                                                {% endfor %}
+                                            </tr>
+                                        </table>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                    </table>
+
+                    {{ include('@PimcoreCustomerManagementFramework/admin/partial/pagination/default.html.twig') }}
+                {% else %}
+
+                    <div class="callout callout-warning">
+                        <p>{{ 'cmf_activities_no_activity_found' | trans({}, 'admin') }}</p>
+                    </div>
+
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
