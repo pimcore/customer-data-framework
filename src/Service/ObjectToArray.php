@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\Service;
 
 use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Normalizer\NormalizerInterface;
 
 class ObjectToArray
 {
@@ -37,6 +38,15 @@ class ObjectToArray
         return self::$instance;
     }
 
+    protected function loadRawDataFromContainer($container, $fieldName) {
+        $data = null;
+        $getter = 'get' . ucfirst($fieldName);
+        if (method_exists($container, $getter)) {
+            $data = $container->$getter();
+        }
+        return $data;
+    }
+
     public function toArray(Concrete $object)
     {
         $fieldDefintions = $object->getClass()->getFieldDefinitions();
@@ -47,7 +57,10 @@ class ObjectToArray
 
         foreach ($fieldDefintions as $fd) {
             $fieldName = $fd->getName();
-            $result[$fieldName] = $fd->getForWebserviceExport($object);
+            $value = $this->loadRawDataFromContainer($object, $fieldName);
+            if(!empty($value) && $fd instanceof NormalizerInterface) {
+                $result[$fieldName] = $fd->normalize($value);
+            }
         }
 
         $result['modificationDate'] = $object->getModificationDate();
