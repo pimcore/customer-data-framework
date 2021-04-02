@@ -21,15 +21,13 @@ class SegmentAssignmentIndexCommand extends AbstractCommand {
     protected $indexer;
 
     /**
-     * SegmentAssignmentIndexCommand constructor.
      * @param IndexerInterface $indexer
+     * @required
      */
-    public function __construct(IndexerInterface $indexer)
+    public function setIndexer(IndexerInterface $indexer): void
     {
-        parent::__construct();
         $this->indexer = $indexer;
     }
-
 
     protected function configure() {
         $this->setName('cmf:segment-assignment-index')

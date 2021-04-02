@@ -29,12 +29,14 @@ class MaintenanceCommand extends AbstractCommand
 
     /**
      * @param MaintenanceWorker $maintenanceWorker
+     * @required
      */
-    public function __construct(MaintenanceWorker $maintenanceWorker)
+    public function setMaintenanceWorker(MaintenanceWorker $maintenanceWorker): void
     {
-        parent::__construct();
         $this->maintenanceWorker = $maintenanceWorker;
     }
+
+
 
 
     protected function configure()

@@ -29,12 +29,13 @@ class DuplicatesIndexCommand extends AbstractCommand
 
     /**
      * @param DuplicatesIndexInterface $duplicatesIndex
+     * @required
      */
-    public function __construct(DuplicatesIndexInterface $duplicatesIndex)
+    public function setDuplicatesIndex(DuplicatesIndexInterface $duplicatesIndex): void
     {
-        parent::__construct();
         $this->duplicatesIndex = $duplicatesIndex;
     }
+
 
 
     protected function configure()

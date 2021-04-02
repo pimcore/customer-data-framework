@@ -30,13 +30,12 @@ class CronTriggerCommand extends AbstractCommand
 
     /**
      * @param EventHandlerInterface $actionTriggerListener
+     * @required
      */
-    public function __construct(EventHandlerInterface $actionTriggerListener)
+    public function setActionTriggerListener(EventHandlerInterface $actionTriggerListener): void
     {
-        parent::__construct();
         $this->actionTriggerListener = $actionTriggerListener;
     }
-
 
     protected function configure()
     {

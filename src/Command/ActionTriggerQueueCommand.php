@@ -31,12 +31,14 @@ class ActionTriggerQueueCommand extends AbstractCommand
      */
     protected $actionTriggerQueue;
 
-    public function __construct(QueueInterface $actionTriggerQueue)
+    /**
+     * @param QueueInterface $actionTriggerQueue
+     * @required
+     */
+    public function setActionTriggerQueue(QueueInterface $actionTriggerQueue): void
     {
-        parent::__construct();
         $this->actionTriggerQueue = $actionTriggerQueue;
     }
-
 
     protected function configure()
     {
