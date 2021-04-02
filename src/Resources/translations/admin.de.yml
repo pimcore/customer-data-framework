@@ -191,9 +191,6 @@ plugin_cmf_targeting_action_apply_target_groups_from_segments_only_merge: "nur Z
 plugin_cmf_targeting_action_track_activity: "Aktivität anlegen"
 plugin_cmf_targeting_activity_type: "Aktivitätstyp"
 
-cmf_segment_import_customers: "Kunden CSV-Liste importieren"
-cmf_replace_segments: "Segmente ersetzen"
-cmf_operator_customer_segments: "Operator Kundensegmente"
 newsletter_SegmentAddressSource: "CMF: Kundensegmente"
 cmf_newsletter_selectedSegments: "Gewählte Segmente"
 cmf_newsletter_operators: "Operator"

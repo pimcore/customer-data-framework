@@ -175,11 +175,6 @@ pimcore_customer_management_framework:
             - [email]
             - [firstname, lastname]
 
-    # Configuration of CSV customer importer
-    import:
-        customerImportParentId: 1 # Default customer import folder. Only relevant when automatic naming scheme is disabled.
-        customerImporterId: 1     # Importer config ID for CSV imports.
-
     # Configuration of segment manager
     segment_manager:
         segmentFolder:
