@@ -33,7 +33,7 @@ class DefaultEventHandler implements EventHandlerInterface
 {
     use LoggerAware;
 
-    private $rulesGroupedByEvents;
+    private $rulesGroupedByEvents = null;
 
     /**
      * @var QueueInterface
@@ -47,24 +47,29 @@ class DefaultEventHandler implements EventHandlerInterface
 
     public function __construct(QueueInterface $actionTriggerQueue, PaginatorInterface $paginator)
     {
-        $rules = new Rule\Listing();
-        $rules->setCondition('active = 1');
-        $rules = $rules->load();
-
-        $rulesGroupedByEvents = [];
-
-        foreach ($rules as $rule) {
-            if ($triggers = $rule->getTrigger()) {
-                foreach ($triggers as $trigger) {
-                    $rulesGroupedByEvents[$trigger->getEventName()][] = $rule;
-                }
-            }
-        }
-
-        $this->rulesGroupedByEvents = $rulesGroupedByEvents;
-
         $this->actionTriggerQueue = $actionTriggerQueue;
         $this->paginator = $paginator;
+    }
+
+    protected function getRulesGroupedByEvents() {
+        if($this->rulesGroupedByEvents === null) {
+            $rules = new Rule\Listing();
+            $rules->setCondition('active = 1');
+            $rules = $rules->load();
+
+            $rulesGroupedByEvents = [];
+
+            foreach ($rules as $rule) {
+                if ($triggers = $rule->getTrigger()) {
+                    foreach ($triggers as $trigger) {
+                        $rulesGroupedByEvents[$trigger->getEventName()][] = $rule;
+                    }
+                }
+            }
+            $this->rulesGroupedByEvents = $rulesGroupedByEvents;
+        }
+
+        return $this->rulesGroupedByEvents;
     }
 
     public function handleEvent($event)
@@ -154,8 +159,8 @@ class DefaultEventHandler implements EventHandlerInterface
     {
         $appliedRules = [];
 
-        if (isset($this->rulesGroupedByEvents[$event->getName()]) && sizeof(
-                $this->rulesGroupedByEvents[$event->getName()]
+        if (isset($this->getRulesGroupedByEvents()[$event->getName()]) && sizeof(
+                $this->getRulesGroupedByEvents()[$event->getName()]
             )
         ) {
             $rules = $this->rulesGroupedByEvents[$event->getName()];
