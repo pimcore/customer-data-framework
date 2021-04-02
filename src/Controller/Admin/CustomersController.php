@@ -330,7 +330,7 @@ class CustomersController extends Admin
     protected function getTemporaryCustomerFolder()
     {
         // fetch customer temp directory
-        $tempDirectory = $this->container->getParameter('pimcore_customer_management_framework.customer_provider.newCustomersTempDir');
+        $tempDirectory = $this->getParameter('pimcore_customer_management_framework.customer_provider.newCustomersTempDir');
 
         /** @var Folder $folder */
         return Service::createFolderByPath($tempDirectory);
