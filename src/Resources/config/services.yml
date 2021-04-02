@@ -263,8 +263,6 @@ services:
         class: CustomerManagementFrameworkBundle\GDPR\Consent\ConsentChecker
         public: false
 
-    CustomerManagementFrameworkBundle\Import\CustomerImportService: ~
-
     cmf.document.newsletter.factory.segmentAddressSource:
         class: Pimcore\Document\Newsletter\DefaultAddressSourceAdapterFactory
         arguments:

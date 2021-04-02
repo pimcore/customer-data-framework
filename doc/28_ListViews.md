@@ -100,8 +100,6 @@ new customer will be created (and opened) inside the defined directory. When the
 
 ![New customer button](./img/new-customer-1.png)
 
-##### Customer CSV import
-[See here](./29_CustomerImport.md)
 
 ## Activity View
 

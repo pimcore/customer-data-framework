@@ -16,12 +16,10 @@
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
-use CustomerManagementFrameworkBundle\Import\CustomerImportService;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse;
 use Pimcore\Model\DataObject\ClassDefinition;
-use Pimcore\Model\ImportConfig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -39,7 +37,7 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
      */
     public function customerFieldListAction(Request $request)
     {
-        $class = \Pimcore\Model\DataObject\ClassDefinition::getById(\Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassId());
+        $class = ClassDefinition::getById(\Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassId());
 
         $result = [];
 
@@ -49,12 +47,12 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
             if (in_array(
                 $class,
                 [
-                    \Pimcore\Model\DataObject\ClassDefinition\Data\Checkbox::class,
-                    \Pimcore\Model\DataObject\ClassDefinition\Data\Input::class,
-                    \Pimcore\Model\DataObject\ClassDefinition\Data\Select::class,
-                    \Pimcore\Model\DataObject\ClassDefinition\Data\Numeric::class,
-                    \Pimcore\Model\DataObject\ClassDefinition\Data\Textarea::class,
-                    \Pimcore\Model\DataObject\ClassDefinition\Data\Slider::class,
+                    ClassDefinition\Data\Checkbox::class,
+                    ClassDefinition\Data\Input::class,
+                    ClassDefinition\Data\Select::class,
+                    ClassDefinition\Data\Numeric::class,
+                    ClassDefinition\Data\Textarea::class,
+                    ClassDefinition\Data\Slider::class,
                 ]
             )) {
                 $result[] = [$fieldDefinition->getName(), $fieldDefinition->getTitle() ?: $fieldDefinition->getName()];
@@ -120,29 +118,13 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
      * @return Response
      * @Route("/settings-json")
      */
-    public function settingJsonAction(CustomerImportService $importService)
+    public function settingJsonAction()
     {
-
-
-        $customerClassId = null;
-        if($class = ClassDefinition::getByName($this->getParameter('pimcore_customer_management_framework.general.customerPimcoreClass'))) {
-            $customerClassId = $class->getId();
-        }
-
-        $customerImporterId = $this->getParameter('pimcore_customer_management_framework.import.customerImporterId');
-
-        if(!$importService->isImporterIdAllowed($customerImporterId, $customerClassId)) {
-            $customerImporterId = 0;
-        }
-
         $settings = [
             'newsletterSyncEnabled' => $this->getParameter('pimcore_customer_management_framework.newsletter.newsletterSyncEnabled'),
             'duplicatesViewEnabled' => $this->getParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.enabled'),
             'segmentAssignment' => $this->getParameter('pimcore_customer_management_framework.segment_assignment_classes.types'),
             'customerClassName' => $this->getParameter('pimcore_customer_management_framework.general.customerPimcoreClass'),
-            'customerClassId' => $customerClassId,
-            'customerImporterId' => $customerImporterId,
-            'customerImportParentId' => $this->getParameter('pimcore_customer_management_framework.import.customerImportParentId'),
             'shortcutFilterDefinitions' => FilterDefinition::prepareDataForMenu(FilterDefinition::getAllShortcutAvailableForUser($this->getAdminUser()))
         ];
 

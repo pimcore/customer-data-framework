@@ -1,17 +1,10 @@
 {% set exporterConfigs = cmf_loadExporterConfigs() %}
 
-{% if customerImportService.isCustomerImportAllowed() or (exporterConfigs | length > 0) %}
+{% if (exporterConfigs | length > 0) %}
     <div class="box box-default">
         <div class="box-body">
             <div class="row">
                 <div class="col-xs-12 text-right">
-
-                    {% if customerImportService.isCustomerImportAllowed() %}
-                        <a href="#" data-href="<?= $exportUrl ?>" class="btn btn-default js-customer-import">
-                            <i class="fa fa-upload"></i>
-                            {{ 'cmf_segment_import_customers' | trans({}, 'admin') }}
-                        </a>
-                    {% endif %}
 
                     {% for exporter, exporterConfig in exporterConfigs %}
 

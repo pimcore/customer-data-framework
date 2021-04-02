@@ -26,6 +26,9 @@ security:
 - Removed `SegmentTrackedListener` for tracking tracked segments into Piwik/Matomo
   (as matomo integration is deprecated in Pimcore 6.9 and removed in Pimcore X).
 - Migrated all templates to php templates and removed templating helpers.
+- CSV Importer integration as it is also removed from Pimcore X. Use 
+  [Pimcore Data Importer](https://github.com/pimcore/data-importer) instead.
+
 
 ## Update to Pimcore X
 - Update to Pimcore 6.9.
