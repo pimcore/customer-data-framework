@@ -63,16 +63,15 @@ class Indexer implements IndexerInterface
      * @param string $segmentAssignmentQueueTable
      * @param StoredFunctionsInterface $storedFunctions
      * @param QueueBuilderInterface $queueBuilder
-     * @param ConnectionInterface $db
      */
-    public function __construct(string $segmentAssignmentTable, string $segmentAssignmentIndexTable, string $segmentAssignmentQueueTable, StoredFunctionsInterface $storedFunctions, QueueBuilderInterface $queueBuilder, ConnectionInterface $db)
+    public function __construct(string $segmentAssignmentTable, string $segmentAssignmentIndexTable, string $segmentAssignmentQueueTable, StoredFunctionsInterface $storedFunctions, QueueBuilderInterface $queueBuilder)
     {
         $this->setSegmentAssignmentTable($segmentAssignmentTable);
         $this->setSegmentAssignmentIndexTable($segmentAssignmentIndexTable);
         $this->setSegmentAssignmentQueueTable($segmentAssignmentQueueTable);
         $this->setStoredFunctions($storedFunctions);
         $this->setQueueBuilder($queueBuilder);
-        $this->setDb($db);
+        $this->setDb(\Pimcore\Db::get());
     }
 
     /**
