@@ -71,7 +71,6 @@ class Indexer implements IndexerInterface
         $this->setSegmentAssignmentQueueTable($segmentAssignmentQueueTable);
         $this->setStoredFunctions($storedFunctions);
         $this->setQueueBuilder($queueBuilder);
-        $this->setDb(\Pimcore\Db::get());
     }
 
     /**
@@ -153,6 +152,9 @@ class Indexer implements IndexerInterface
      */
     public function getDb()
     {
+        if($this->db === null) {
+            $this->db = \Pimcore\Db::get();
+        }
         return $this->db;
     }
 
