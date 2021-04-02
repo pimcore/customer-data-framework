@@ -3,48 +3,29 @@
     background: url(/bundles/pimcoreadmin/img/flat-color-icons/sports_mode.svg) center center no-repeat !important;
 }
 
-.pimcore_version_6 .pimcore_nav_icon_customers {
+.pimcore_nav_icon_customers {
     background: url(/bundles/pimcoreadmin/img/flat-white-icons/conference_call.svg) center center no-repeat !important;
 }
 
-.pimcore_version_6 .pimcore_nav_icon_customerduplicates {
+.pimcore_nav_icon_customerduplicates {
     background: url(/bundles/pimcoreadmin/img/flat-white-icons/copy.svg) center center no-repeat !important;
 }
 
-.pimcore_version_6 .pimcore_nav_icon_customerautomationrules {
+.pimcore_nav_icon_customerautomationrules {
     background: url(/bundles/pimcoreadmin/img/flat-white-icons/services.svg) center center no-repeat !important;
 }
 
-.pimcore_version_6 .pimcore_nav_icon_newsletter_enqueue_all_customers {
+.pimcore_nav_icon_newsletter_enqueue_all_customers {
     background: url(/bundles/pimcoreadmin/img/flat-white-icons/address_book.svg) center center no-repeat !important;
 }
 
-.pimcore_version_6 .plugin_cmf_icon_actiontriggerrule_ExecuteSegmentBuilders  {
+.plugin_cmf_icon_actiontriggerrule_ExecuteSegmentBuilders  {
     background: url(/bundles/pimcoreadmin/img/flat-white-icons/address_book.svg) center center no-repeat !important;
 }
 
-.pimcore_version_6 .pimcore_nav_icon_webservice_settings {
+.pimcore_nav_icon_webservice_settings {
     background: url(/bundles/pimcoreadmin/img/flat-white-icons/key.svg) center center no-repeat !important;
 }
-
-.pimcore_nav_icon_customers {
-    background: url(/bundles/pimcorecustomermanagementframework/icons/customer.svg) center center no-repeat !important;
-}
-
-.pimcore_nav_icon_customerduplicates {
-    background: url(/bundles/pimcoreadmin/img/flat-color-icons/copy.svg) center center no-repeat !important;
-}
-
-.pimcore_nav_icon_customerautomationrules {
-    background: url(/bundles/pimcoreadmin/img/flat-color-icons/services.svg) center center no-repeat !important;
-}
-
-.pimcore_nav_icon_newsletter_enqueue_all_customers {
-    background: url(/bundles/pimcoreadmin/img/flat-color-icons/address_book.svg) center center no-repeat !important;
-}
-
-
-
 
 .pimcore_icon_customers {
     background: url(/bundles/pimcorecustomermanagementframework/icons/customer.svg) center center no-repeat !important;
