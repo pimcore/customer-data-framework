@@ -5,7 +5,9 @@
   - `Customer`
   - `CustomerSegment`
   - `SsoIdentity`
-- `FilterHandler::addFilter` as not operator as parameter anymore (as this was only considered with `SearchQuery` filters). 
+- Migrated `SearchQueryParser\QueryBuilder\ZendCompatibility` to `Doctrine\DBAL\Query\QueryBuilder`.
+- Migrated `Zend\Paginator` to `Knp\Component\Pager`.  
+- `FilterHandler::addFilter` has no operator as parameter anymore (as this was only considered with `SearchQuery` filters). 
   Use new `BoolanCombinator` for combining multiple filters with OR operator instead. 
 - Migrate all templates to twig.
 - `AbstractObjectActivity::toArray` and GDPR exporter results might be different, as it utilizes new `normalize` methods 
