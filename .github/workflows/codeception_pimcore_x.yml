@@ -83,9 +83,9 @@ jobs:
                   php -i
                   ./bin/console pimcore:system:requirements:check
 
-            - name: "Sync Metadata Storage"
-              run: |
-                bin/console doctrine:migrations:sync-metadata-storage
+#            - name: "Sync Metadata Storage"
+#              run: |
+#                bin/console doctrine:migrations:sync-metadata-storage
 
             - name: "Run Codeception"
               run: "vendor/bin/codecept run -c . -vvv --json"
