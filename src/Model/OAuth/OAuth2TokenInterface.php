@@ -27,7 +27,7 @@ interface OAuth2TokenInterface extends OAuthTokenInterface
      *
      * @return string
      */
-    public function getAccessToken();
+    public function getAccessToken(): ?string;
 
     /**
      * Set access token
@@ -36,14 +36,14 @@ interface OAuth2TokenInterface extends OAuthTokenInterface
      *
      * @return $this
      */
-    public function setAccessToken($accessToken);
+    public function setAccessToken(?string $accessToken);
 
     /**
      * Get refresh token
      *
      * @return string
      */
-    public function getRefreshToken();
+    public function getRefreshToken(): ?string;
 
     /**
      * Set refresh token
@@ -52,14 +52,14 @@ interface OAuth2TokenInterface extends OAuthTokenInterface
      *
      * @return $this
      */
-    public function setRefreshToken($refreshToken);
+    public function setRefreshToken(?string $refreshToken);
 
     /**
      * Get token type
      *
      * @return string
      */
-    public function getTokenType();
+    public function getTokenType(): ?string;
 
     /**
      * Set token type
@@ -68,14 +68,14 @@ interface OAuth2TokenInterface extends OAuthTokenInterface
      *
      * @return $this
      */
-    public function setTokenType($tokenType);
+    public function setTokenType(?string $tokenType);
 
     /**
      * Get scope
      *
      * @return string
      */
-    public function getScope();
+    public function getScope(): ?string;
 
     /**
      * Set scope
@@ -84,14 +84,14 @@ interface OAuth2TokenInterface extends OAuthTokenInterface
      *
      * @return $this
      */
-    public function setScope($scope);
+    public function setScope(?string $scope);
 
     /**
      * Get expires at
      *
-     * @return int
+     * @return string
      */
-    public function getExpiresAt();
+    public function getExpiresAt(): ?string;
 
     /**
      * Set expires at
@@ -100,5 +100,5 @@ interface OAuth2TokenInterface extends OAuthTokenInterface
      *
      * @return $this
      */
-    public function setExpiresAt($expiresAt);
+    public function setExpiresAt(?string $expiresAt);
 }
