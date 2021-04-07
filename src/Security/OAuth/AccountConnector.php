@@ -217,7 +217,7 @@ class AccountConnector implements AccountConnectorInterface
                 $value = $this->encryptionService->encrypt($value);
             }
 
-            $token->$setter($value);
+            $token->$setter((string)$value);
         }
     }
 
