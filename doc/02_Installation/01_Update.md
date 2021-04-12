@@ -5,14 +5,7 @@
   - `Customer`
   - `CustomerSegment`
   - `SsoIdentity`
-- Migrated `SearchQueryParser\QueryBuilder\ZendCompatibility` to `Doctrine\DBAL\Query\QueryBuilder`.
-- Migrated `Zend\Paginator` to `Knp\Component\Pager`.  
-- `FilterHandler::addFilter` has no operator as parameter anymore (as this was only considered with `SearchQuery` filters). 
-  Use new `BoolanCombinator` for combining multiple filters with OR operator instead. 
 - Migrate all templates to twig.
-- `AbstractObjectActivity::toArray` and GDPR exporter results might be different, as it utilizes new `normalize` methods 
-  instead of deprecated `getDataForWebservice` methods.
-- Webservices URLs changed to ` /__customermanagementframework/webservice/*`
 - Add following line to your firewalls configuration in the `security.yml` of your app after the `pimcore_admin` firewall.
 ```yml 
 security:
@@ -21,6 +14,16 @@ security:
             # ...
         cmf_webservice: '%customer_management_framework.firewall_settings%'
 ``` 
+- Webservices URLs changed to ` /__customermanagementframework/webservice/*`
+- Execute all migrations of Customer Management Framework.
+
+### Additional code changes (that might affect your application)
+- Migrated `SearchQueryParser\QueryBuilder\ZendCompatibility` to `Doctrine\DBAL\Query\QueryBuilder`.
+- Migrated `Zend\Paginator` to `Knp\Component\Pager`.  
+- `FilterHandler::addFilter` has no operator as parameter anymore (as this was only considered with `SearchQuery` filters). 
+  Use new `BoolanCombinator` for combining multiple filters with OR operator instead. 
+- `AbstractObjectActivity::toArray` and GDPR exporter results might be different, as it utilizes new `normalize` methods 
+  instead of deprecated `getDataForWebservice` methods.
 
 ### Removed features in Version 3   
 - Removed `SegmentTrackedListener` for tracking tracked segments into Piwik/Matomo
