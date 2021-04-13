@@ -138,14 +138,14 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
     public function preAdd(CustomerInterface $customer)
     {
-        if ($customer->getPublished()) {
-            $this->validateOnSave($customer);
-        }
-
         $this->rememberOriginalCustomer($customer);
 
         if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
             $this->applySaveHandlers($customer, 'preAdd', true);
+        }
+        
+        if ($customer->getPublished()) {
+            $this->validateOnSave($customer);
         }
 
         $request = $this->requestStack->getMasterRequest();
