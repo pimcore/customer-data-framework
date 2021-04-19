@@ -11,9 +11,6 @@ pimcore:
             de: ''
         default_language: ''
         disable_usage_statistics: false
-        debug: true
-        debug_ip: ''
-        devmode: false
         instance_identifier: ''
     documents:
         versions:
