@@ -64,6 +64,7 @@ class DefaultQueue implements QueueInterface
 
         $select = $db->createQueryBuilder();
         $select
+            ->select('*')
             ->from(self::QUEUE_TABLE)
             ->addOrderBy('id', 'asc')
             ->andWhere('actionDate <= ' . time());
