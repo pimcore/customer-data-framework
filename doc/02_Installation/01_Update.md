@@ -4,6 +4,7 @@
 - Activate `Generate Type Declarations` for all classes generated/used by the Customer Management Framework:
   - `Customer`
   - `CustomerSegment`
+  - `CustomerSegmentGroup`
   - `SsoIdentity`
 - Migrate all templates to twig.
 - Add following line to your firewalls configuration in the `security.yml` of your app after the `pimcore_admin` firewall.
