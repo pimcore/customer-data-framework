@@ -31,7 +31,7 @@
                         multiple="multiple"
                         data-placeholder="{{ 'cmf_filters_save_share_role' | trans({}, 'admin') }}"
                         data-select2-options='{{ {'allowClear': false} | json_encode }}'>
-                    {% for user in cmf_loadRoles() %}
+                    {% for role in cmf_loadRoles() %}
                         <option value="{{ role.id }}" {{ (preselected and role.id in filterDefinition.getAllowedUserIds()) ? 'selected="selected"' : '' }}>
                             {{ role.name }}
                         </option>
