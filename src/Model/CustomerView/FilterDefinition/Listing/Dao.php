@@ -46,4 +46,9 @@ class Dao extends Model\Listing\Dao\AbstractDao
         $this->model->setFilterDefinitions($filterDefinitions);
         return $filterDefinitions;
     }
+
+    public function getTotalCount()
+    {
+        return $this->db->fetchOne('SELECT count(*) FROM ' . FilterDefinition\Dao::TABLE_NAME . $this->getCondition() . $this->getOrder() . $this->getOffsetLimit(), $this->model->getConditionVariables());
+    }
 }
