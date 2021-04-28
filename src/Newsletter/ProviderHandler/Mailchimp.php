@@ -567,6 +567,10 @@ class Mailchimp implements NewsletterProviderHandlerInterface
             'merge_fields' => $mergeFields
         ];
 
+        if ($language = $customer->getCustomerLanguage()) {
+            $entry['language'] = $language;
+        }
+
         if ($interests = $this->buildCustomerSegmentData($customer)) {
             $result['interests'] = $interests;
         }
