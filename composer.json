@@ -6,7 +6,7 @@
         "sort-packages": true
     },
     "require": {
-        "box/spout": "^2.7",
+        "box/spout": "^3.0",
         "drewm/mailchimp-api": "*",
         "guzzlehttp/guzzle": ">=4.1.4 <8.0",
         "dragonmantank/cron-expression": "^3.0",
