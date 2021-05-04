@@ -33,7 +33,13 @@
                                 <tr>
                                     <th width="200">{{ key }}</th>
                                     <td>
-                                        {{ value | raw }}
+                                        {% if value is same as('true')  %}
+                                            <i class="glyphicon glyphicon-check"></i>
+                                        {% elseif value is same as('false') %}
+                                            <i class="glyphicon glyphicon-unchecked"></i>
+                                        {% else %}
+                                            {{ value }}
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}
