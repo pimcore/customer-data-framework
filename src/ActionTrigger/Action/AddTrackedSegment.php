@@ -77,7 +77,7 @@ class AddTrackedSegment extends AbstractAction
 
         $deleteSegments = [];
 
-        if ($options{self::OPTION_REMOVE_OTHER_SEGMENTS_FROM_SEGMENT_GROUP} && ($segmentGroup = $segment->getGroup())) {
+        if ($options[self::OPTION_REMOVE_OTHER_SEGMENTS_FROM_SEGMENT_GROUP] && ($segmentGroup = $segment->getGroup())) {
             $deleteSegments = $segmentManager->getSegmentsFromSegmentGroup(
                 $segmentGroup,
                 [$segment]

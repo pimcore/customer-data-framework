@@ -35,6 +35,10 @@ class BoolCombinator extends AbstractFilter implements OnCreateQueryFilterInterf
             }
         }
 
+        if(!in_arrayi($operator, ['AND', 'OR'])) {
+            throw new \InvalidArgumentException('Given operator is not valid');
+        }
+
         $this->operator = $operator;
     }
 

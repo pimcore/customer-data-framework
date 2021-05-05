@@ -129,11 +129,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
      */
     public function formatBooleanValue($value)
     {
-        if ($value) {
-            return '<i class="glyphicon glyphicon-check"></i>';
-        }
-
-        return '<i class="glyphicon glyphicon-unchecked"></i>';
+        return $value ? 'true' : 'false';
     }
 
     /**
