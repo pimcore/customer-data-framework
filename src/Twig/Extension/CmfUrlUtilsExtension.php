@@ -1,8 +1,19 @@
 <?php
 
+/**
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Commercial License (PCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
+ */
 
 namespace CustomerManagementFrameworkBundle\Twig\Extension;
-
 
 use CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface;
 use CustomerManagementFrameworkBundle\LinkGenerator\LinkActivityDefinitionLinkGenerator;
@@ -39,6 +50,7 @@ class CmfUrlUtilsExtension extends AbstractExtension
 
     /**
      * CmfUrlUtilsExtension constructor.
+     *
      * @param RouterInterface $router
      * @param RequestStack $requestStack
      * @param CustomerViewInterface $customerView
@@ -51,7 +63,6 @@ class CmfUrlUtilsExtension extends AbstractExtension
         $this->customerView = $customerView;
         $this->linkActivityUrlGenerator = $linkActivityUrlGenerator;
     }
-
 
     public function getFunctions()
     {
@@ -82,15 +93,18 @@ class CmfUrlUtilsExtension extends AbstractExtension
         return $this->router->generate($request->get('_route'), $formActionParams);
     }
 
-    public function getCurrentOrder($param): string {
+    public function getCurrentOrder($param): string
+    {
         $request = $this->requestStack->getCurrentRequest();
-        if($request->get('order')) {
+        if ($request->get('order')) {
             return $request->get('order')[$param] ?? '';
         }
+
         return '';
     }
 
-    public function getNextFormOrderParams($param): array {
+    public function getNextFormOrderParams($param): array
+    {
         $request = $this->requestStack->getCurrentRequest();
         $params = $request->query->all();
 
@@ -98,11 +112,11 @@ class CmfUrlUtilsExtension extends AbstractExtension
         $nextOrder = '';
         if ($currentOrder == null || empty($currentOrder)) {
             $nextOrder = 'ASC';
-        } else if (strtoupper($currentOrder) == 'ASC') {
+        } elseif (strtoupper($currentOrder) == 'ASC') {
             $nextOrder = 'DESC';
         }
 
-        unset($params['order']); # only one order
+        unset($params['order']); // only one order
         $params['order'][$param] = $nextOrder;
 
         return $params;
@@ -158,16 +172,16 @@ class CmfUrlUtilsExtension extends AbstractExtension
         if ($includeFilters) {
             $params['filter'] = $this->getFormFilterParams($request);
 
-            if($fd = $request->get('filterDefinition')) {
-                $params['filterDefinition'] = ['id'=>$fd['id']];
+            if ($fd = $request->get('filterDefinition')) {
+                $params['filterDefinition'] = ['id' => $fd['id']];
             }
         }
 
         return $params;
     }
 
-
-    public function getFormQueryString($url = null, $includeOrder = true, $includeFilters = true): string {
+    public function getFormQueryString($url = null, $includeOrder = true, $includeFilters = true): string
+    {
         $params = $this->getQueryParams($includeOrder, $includeFilters);
         $queryParams = [];
         foreach ($params as $key => $values) {
@@ -191,9 +205,8 @@ class CmfUrlUtilsExtension extends AbstractExtension
         return $url;
     }
 
-
-    public function getUserDetailUrl(CustomerInterface $customer): ?string {
-
+    public function getUserDetailUrl(CustomerInterface $customer): ?string
+    {
         $userDetailUrl = null;
         if ($this->customerView->hasDetailView($customer)) {
             $userDetailUrl = $this->router->generate('customermanagementframework_admin_customers_detail', [
@@ -206,8 +219,8 @@ class CmfUrlUtilsExtension extends AbstractExtension
         return $userDetailUrl;
     }
 
-    public function getActivityDefinitionUrl(LinkActivityDefinition $activityDefinition): ?string {
+    public function getActivityDefinitionUrl(LinkActivityDefinition $activityDefinition): ?string
+    {
         return $this->linkActivityUrlGenerator->generate($activityDefinition);
     }
-
 }

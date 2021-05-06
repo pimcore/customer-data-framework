@@ -1,19 +1,20 @@
 <?php
+
 /**
  * Pimcore
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
+
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Action;
-use CustomerManagementFrameworkBundle\ActionTrigger\Action\AbstractAction;
-use CustomerManagementFrameworkBundle\ActionTrigger\Action\ActionDefinitionInterface;
+
 use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Mail;
@@ -30,15 +31,15 @@ class SendMail extends AbstractAction
         ActionDefinitionInterface $actionDefinition,
         CustomerInterface $customer,
         RuleEnvironmentInterface $environment
-    )
-    {
+    ) {
         $options = $actionDefinition->getOptions();
-        if(isset($options[self::OPTION_CONSIDER_PROFILING_CONSENT]) && $options[self::OPTION_CONSIDER_PROFILING_CONSENT] !== false && !$this->consentChecker->hasProfilingConsent($customer)) {
+        if (isset($options[self::OPTION_CONSIDER_PROFILING_CONSENT]) && $options[self::OPTION_CONSIDER_PROFILING_CONSENT] !== false && !$this->consentChecker->hasProfilingConsent($customer)) {
             return;
         }
 
         if (empty($options[self::OPTION_EMAIL_DOCUMENT])) {
             $this->logger->error($this->name . ' action: emailDoc option not set');
+
             return;
         } else {
 
@@ -53,6 +54,7 @@ class SendMail extends AbstractAction
                 } else {
                     // if one of the required fields does not exist or is empty email will not be sent
                     $this->logger->error($field . ' is empty for customer ID ' . $customer->getId());
+
                     return;
                 }
             }
@@ -60,6 +62,7 @@ class SendMail extends AbstractAction
             $mailDoc = Email::getByPath($mailDocPath);
             if (!$mailDoc instanceof Email) {
                 $this->logger->error($this->name . ' action: mailDoc option must be a Email Document');
+
                 return;
             }
         }

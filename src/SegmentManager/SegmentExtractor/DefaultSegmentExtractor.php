@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\SegmentManager\SegmentExtractor;
@@ -19,8 +19,8 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
 
-class DefaultSegmentExtractor implements SegmentExtractorInterface {
-
+class DefaultSegmentExtractor implements SegmentExtractorInterface
+{
     /**
      * @inheritdoc
      */
@@ -34,7 +34,6 @@ class DefaultSegmentExtractor implements SegmentExtractorInterface {
         return $this->extractSegmentsFromPimcoreFieldData($customer->getManualSegments());
     }
 
-
     /**
      * @inheritdoc
      */
@@ -45,7 +44,6 @@ class DefaultSegmentExtractor implements SegmentExtractorInterface {
         }
         $result = [];
         foreach ($segments as $segment) {
-
             if ($segment instanceof CustomerSegmentInterface) {
                 $result[] = $segment;
             } elseif ($segment instanceof ObjectMetadata && $segment->getObject() instanceof CustomerSegmentInterface) {
@@ -71,7 +69,8 @@ class DefaultSegmentExtractor implements SegmentExtractorInterface {
     /**
      * @inheritdoc
      */
-    public function getSegmentApplicationCounter(CustomerInterface $customer, CustomerSegmentInterface $customerSegment): int {
+    public function getSegmentApplicationCounter(CustomerInterface $customer, CustomerSegmentInterface $customerSegment): int
+    {
         $allCounters = $this->getAllSegmentApplicationCounters($customer);
 
         return isset($allCounters[$customerSegment->getId()]) ? $allCounters[$customerSegment->getId()] : 0;
@@ -84,7 +83,7 @@ class DefaultSegmentExtractor implements SegmentExtractorInterface {
         }
         foreach ($field as $segment) {
             $segmentId = null;
-            $count     = 1;
+            $count = 1;
             if ($segment instanceof CustomerSegmentInterface) {
                 $segmentId = $segment->getId();
             } elseif ($segment instanceof ObjectMetadata && $segment->getObject() instanceof CustomerSegmentInterface) {
@@ -101,6 +100,7 @@ class DefaultSegmentExtractor implements SegmentExtractorInterface {
             }
             $segments[$segmentId] += $count;
         }
+
         return $segments;
     }
 }

@@ -5,21 +5,20 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\GDPR\DataProvider\Customers;
-use GDPRDataExtractorBundle\DataProvider\DataObjects;
 use Pimcore\Model\DataObject\AbstractObject;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class DataObjectController
@@ -28,13 +27,12 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class GDPRDataController extends \Pimcore\Bundle\AdminBundle\Controller\AdminController
 {
-
     /**
      * @param Request $request
      * @Route("/search-data-objects")
      */
-    public function searchDataObjectsAction(Request $request, Customers $service) {
-
+    public function searchDataObjectsAction(Request $request, Customers $service)
+    {
         $allParams = array_merge($request->request->all(), $request->query->all());
 
         $result = $service->searchData(
@@ -48,21 +46,19 @@ class GDPRDataController extends \Pimcore\Bundle\AdminBundle\Controller\AdminCon
         );
 
         return $this->adminJson($result);
-
     }
 
     /**
      * @param Request $request
      * @Route("/export")
      */
-    public function exportDataObjectAction(Request $request, Customers $service) {
-
-        $object = AbstractObject::getById($request->get("id"));
+    public function exportDataObjectAction(Request $request, Customers $service)
+    {
+        $object = AbstractObject::getById($request->get('id'));
         $exportResult = $service->doExportData($object);
         $jsonResponse = $this->adminJson($exportResult);
         $jsonResponse->headers->set('Content-Disposition', 'attachment; filename="export-data-object-' . $object->getId() . '.json"');
 
         return $jsonResponse;
     }
-
 }

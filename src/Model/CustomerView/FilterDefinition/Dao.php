@@ -1,9 +1,16 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: dschroffner
- * Date: 04.12.2017
- * Time: 14:54
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Commercial License (PCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
@@ -16,12 +23,14 @@ use Pimcore\Model\Dao\DaoTrait;
 
 /**
  * Class Dao
+ *
  * @package CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition
+ *
  * @property FilterDefinition $model
  * @property ConnectionInterface $db
  */
-class Dao extends AbstractDao {
-
+class Dao extends AbstractDao
+{
     use DaoTrait {
         assignVariablesToModel as protected assignVariablesToModelDao;
     }
@@ -49,7 +58,7 @@ class Dao extends AbstractDao {
     public function getById($id = null)
     {
         /** @noinspection SqlNoDataSourceInspection */
-        $data = $this->db->fetchAssoc("SELECT * FROM ". self::TABLE_NAME . " WHERE " . self::ATTRIBUTE_ID . "=".intval($id));
+        $data = $this->db->fetchAssoc('SELECT * FROM '. self::TABLE_NAME . ' WHERE ' . self::ATTRIBUTE_ID . '='.intval($id));
         $this->assignVariablesToModel($data);
     }
 
@@ -61,7 +70,7 @@ class Dao extends AbstractDao {
     public function getByName(string $name)
     {
         /** @noinspection SqlNoDataSourceInspection */
-        $data = $this->db->fetchAssoc("SELECT * FROM ". self::TABLE_NAME . " WHERE " . self::ATTRIBUTE_NAME . "='". $name . "'");
+        $data = $this->db->fetchAssoc('SELECT * FROM '. self::TABLE_NAME . ' WHERE ' . self::ATTRIBUTE_NAME . "='". $name . "'");
         $this->assignVariablesToModel($data);
     }
 
@@ -69,9 +78,11 @@ class Dao extends AbstractDao {
      * Try to set db data to model. Extend the assignVariablesToModel from DaoTrait to convert attributes in one step
      *
      * @param array $data data from sql query
+     *
      * @throws \Exception Throws exception if object with id not found
      */
-    protected function assignVariablesToModel($data) {
+    protected function assignVariablesToModel($data)
+    {
         if (isset($data[self::ATTRIBUTE_ID])) {
             $data[self::ATTRIBUTE_DEFINITION] = json_decode($data[self::ATTRIBUTE_DEFINITION], true);
             $data[self::ATTRIBUTE_ALLOWED_USER_IDS] = explode(',', $data[self::ATTRIBUTE_ALLOWED_USER_IDS]);
@@ -93,14 +104,16 @@ class Dao extends AbstractDao {
         $this->model->setModificationDate($datetime);
 
         try {
-            if(!is_null($this->model->getId())) {
+            if (!is_null($this->model->getId())) {
                 $data['id'] = $this->model->getId();
-            } else $data = [];
-            $data = array_merge($data,[
+            } else {
+                $data = [];
+            }
+            $data = array_merge($data, [
                 self::ATTRIBUTE_OWNER_ID => $this->model->getOwnerId(),
                 self::ATTRIBUTE_NAME => $this->model->getName(),
                 self::ATTRIBUTE_DEFINITION => json_encode($this->model->getDefinition()),
-                self::ATTRIBUTE_ALLOWED_USER_IDS => implode(',',$this->model->getAllowedUserIds()),
+                self::ATTRIBUTE_ALLOWED_USER_IDS => implode(',', $this->model->getAllowedUserIds()),
                 self::ATTRIBUTE_READ_ONLY => $this->model->isReadOnly(),
                 self::ATTRIBUTE_SHORTCUT_AVAILABLE => $this->model->isShortcutAvailable(),
                 self::ATTRIBUTE_CREATION_DATE => $this->model->getCreationDate(),
@@ -119,18 +132,22 @@ class Dao extends AbstractDao {
 
     /**
      * Deletes the object
+     *
      * @return bool Return true on deletion success otherwise false
+     *
      * @throws \Exception Throws exception if object not found in database
      */
-    public function delete() {
+    public function delete()
+    {
         try {
-            $this->db->delete(self::TABLE_NAME,[
+            $this->db->delete(self::TABLE_NAME, [
                 self::ATTRIBUTE_ID => $this->model->getId(),
             ]);
         } catch (\Exception $e) {
-            Logger::alert('Could not delete filter definition. Not found in database.',['id' => $this->model->getId()]);
+            Logger::alert('Could not delete filter definition. Not found in database.', ['id' => $this->model->getId()]);
             throw $e;
         }
+
         return true;
     }
 }

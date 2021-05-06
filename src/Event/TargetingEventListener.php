@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Event;
@@ -42,14 +42,14 @@ class TargetingEventListener
         $this->dataLoader = $dataLoader;
     }
 
-    public function onAssignDocumentTargetGroup(AssignDocumentTargetGroupEvent $event) {
-
+    public function onAssignDocumentTargetGroup(AssignDocumentTargetGroupEvent $event)
+    {
         $visitorInfo = $event->getVisitorInfo();
 
         //get customer
         $this->dataLoader->loadDataFromProviders($visitorInfo, [Customer::PROVIDER_KEY]);
         $customer = $visitorInfo->get(Customer::PROVIDER_KEY);
-        if(!$customer) {
+        if (!$customer) {
             return;
         }
 
@@ -63,24 +63,23 @@ class TargetingEventListener
         $this->eventDispatcher->dispatch($event, $event->getName());
     }
 
-    public function onPostRuleActions(TargetingRuleEvent $event) {
-
+    public function onPostRuleActions(TargetingRuleEvent $event)
+    {
         $visitorInfo = $event->getVisitorInfo();
 
         //get customer
         $this->dataLoader->loadDataFromProviders($visitorInfo, [Customer::PROVIDER_KEY]);
         $customer = $visitorInfo->get(Customer::PROVIDER_KEY);
-        if(!$customer) {
+        if (!$customer) {
             return;
         }
 
         $rule = $event->getRule();
-        foreach($rule->getActions() as $action) {
-            if($action['type'] == "assign_target_group") {
-
+        foreach ($rule->getActions() as $action) {
+            if ($action['type'] == 'assign_target_group') {
                 $targetGroup = TargetGroup::getById($action['targetGroup']);
 
-                if(null !== $targetGroup) {
+                if (null !== $targetGroup) {
                     $event = TargetGroupAssigned::create(
                         $customer,
                         TargetGroupAssigned::ASSIGNMENT_TYPE_TARGETING_RULE,
@@ -90,9 +89,7 @@ class TargetingEventListener
 
                     $this->eventDispatcher->dispatch($event, $event->getName());
                 }
-
             }
         }
-
     }
 }

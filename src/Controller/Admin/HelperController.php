@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
@@ -103,9 +103,9 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
 
             foreach ($groupSegments as $groupSegment) {
                 $segments[] = [
-                    'id'        => $groupSegment->getId(),
-                    'name'      => $groupSegment->getName(),
-                    'groupId'   => $group->getId(),
+                    'id' => $groupSegment->getId(),
+                    'name' => $groupSegment->getName(),
+                    'groupId' => $group->getId(),
                     'groupName' => $group->getName()
                 ];
             }
@@ -141,25 +141,25 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
      * @Route("/newsletter/possible-filter-flags")
      *
      * @param CustomerProviderInterface $customerProvider
+     *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
+     *
      * @throws \Exception
      */
-    public function possibleNewsletterFilterFlagsAction(CustomerProviderInterface $customerProvider) {
-
+    public function possibleNewsletterFilterFlagsAction(CustomerProviderInterface $customerProvider)
+    {
         $classDefinition = ClassDefinition::getById($customerProvider->getCustomerClassId());
 
         $possibleFlags = [];
         $fields = $classDefinition->getFieldDefinitions();
         foreach ($fields as $field) {
-
-            if(
+            if (
                 $field instanceof ClassDefinition\Data\Consent ||
                 $field instanceof ClassDefinition\Data\NewsletterConfirmed ||
                 $field instanceof ClassDefinition\Data\NewsletterActive
             ) {
                 $possibleFlags[] = [ 'name' => $field->getName(), 'label' => $field->getTitle() ];
             }
-
         }
 
         return $this->json([

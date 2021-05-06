@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Newsletter\Queue;
@@ -78,13 +78,11 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
         }
     }
 
-
     private function addImmidiateAsyncQueueItem(NewsletterAwareCustomerInterface $customer, $email, $operation, $modificationDate)
     {
         $item = new DefaultNewsletterQueueItem($customer->getId(), null, $email, $operation, $modificationDate);
 
         $this->immidateAsyncQueueItems[$customer->getId() . '_' . $operation] = $item;
-
     }
 
     /**
@@ -92,14 +90,14 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
      */
     public function executeImmidiateAsyncQueueItems()
     {
-        if(!sizeof($this->immidateAsyncQueueItems)) {
+        if (!sizeof($this->immidateAsyncQueueItems)) {
             return;
         }
 
         $this->getLogger()->info('execute immidiate async queue items');
 
         if (count($this->immidateAsyncQueueItems) <= 1) { //avoid too many parallel scripts running
-            foreach($this->immidateAsyncQueueItems as $item) {
+            foreach ($this->immidateAsyncQueueItems as $item) {
                 $php = Console::getExecutable('php');
                 $cmd = sprintf($php . ' ' . PIMCORE_PROJECT_ROOT . "/bin/console cmf:newsletter-sync --process-queue-item='%s'", $item->toJson());
                 $this->getLogger()->info('execute async process queue item cmd: ' . $cmd);
@@ -143,7 +141,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
     {
         $db = Db::get();
 
-        if(!is_null($item->getEmail())) {
+        if (!is_null($item->getEmail())) {
             $db->query('delete from ' . self::QUEUE_TABLE . ' where customerId = ? and email = ? and operation = ? and modificationDate = ?', [
                 $item->getCustomerId(), $item->getEmail(), $item->getOperation(), $item->getModificationDate()
             ]);
@@ -152,7 +150,6 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
                 $item->getCustomerId(), $item->getOperation(), $item->getModificationDate()
             ]);
         }
-
 
         $this->getLogger()->info(sprintf(
             'newsletter queue item removed [customerId: %s, email: %s, operation: %s, modificationDate: %s]',

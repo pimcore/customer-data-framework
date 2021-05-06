@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\SegmentManager;
@@ -28,7 +28,6 @@ use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
-use Pimcore\Model\DataObject\Data\ObjectMetadata;
 use Pimcore\Model\DataObject\Service;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Tool\Targeting\TargetGroup;
@@ -113,14 +112,16 @@ class DefaultSegmentManager implements SegmentManagerInterface
     /**
      * @return StoredFunctionsInterface
      */
-    public function getStoredFunctions(): StoredFunctionsInterface {
+    public function getStoredFunctions(): StoredFunctionsInterface
+    {
         return $this->storedFunctions;
     }
 
     /**
      * @param StoredFunctionsInterface $storedFunctions
      */
-    public function setStoredFunctions(StoredFunctionsInterface $storedFunctions) {
+    public function setStoredFunctions(StoredFunctionsInterface $storedFunctions)
+    {
         $this->storedFunctions = $storedFunctions;
     }
 
@@ -480,9 +481,10 @@ class DefaultSegmentManager implements SegmentManagerInterface
     /**
      * @param CustomerSegmentInterface $segment
      */
-    protected function checkAndUpdateTargetGroupConnection(CustomerSegmentInterface $segment) {
+    protected function checkAndUpdateTargetGroupConnection(CustomerSegmentInterface $segment)
+    {
         //check connection to target groups
-        if($segment->getUseAsTargetGroup() && (empty($segment->getTargetGroup()) || empty(TargetGroup::getById($segment->getTargetGroup())))) {
+        if ($segment->getUseAsTargetGroup() && (empty($segment->getTargetGroup()) || empty(TargetGroup::getById($segment->getTargetGroup())))) {
             $targetGroup = new TargetGroup();
             $targetGroup->setName($segment->getName());
             $targetGroup->setActive(true);
@@ -495,8 +497,9 @@ class DefaultSegmentManager implements SegmentManagerInterface
     /**
      * @inheritdoc
      */
-    public function postSegmentDelete(CustomerSegmentInterface $segment) {
-        if($segment->getUseAsTargetGroup() && !empty($segment->getTargetGroup()) && !empty(TargetGroup::getById($segment->getTargetGroup()))) {
+    public function postSegmentDelete(CustomerSegmentInterface $segment)
+    {
+        if ($segment->getUseAsTargetGroup() && !empty($segment->getTargetGroup()) && !empty(TargetGroup::getById($segment->getTargetGroup()))) {
             $targetGroup = TargetGroup::getById($segment->getTargetGroup());
             $targetGroup->delete();
         }
@@ -505,9 +508,9 @@ class DefaultSegmentManager implements SegmentManagerInterface
     /**
      * @param CustomerSegmentInterface $segment
      */
-    protected function updateGroupRelation(CustomerSegmentInterface $segment) {
+    protected function updateGroupRelation(CustomerSegmentInterface $segment)
+    {
         if ($segment instanceof Concrete) {
-
             $parent = $segment;
 
             $segment->setGroup(null);

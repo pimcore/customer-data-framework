@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Condition;
@@ -19,7 +19,6 @@ use CustomerManagementFrameworkBundle\ActionTrigger\Event\SegmentTracked;
 use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
-use Pimcore\Model\DataObject\CustomerSegment;
 
 class CountTrackedSegment extends AbstractMatchCondition
 {
@@ -34,8 +33,7 @@ class CountTrackedSegment extends AbstractMatchCondition
         ConditionDefinitionInterface $conditionDefinition,
         CustomerInterface $customer,
         RuleEnvironmentInterface $environment
-    )
-    {
+    ) {
         $options = $conditionDefinition->getOptions();
 
         $trackedSegment = $environment->get(SegmentTracked::STORAGE_KEY);
@@ -50,7 +48,7 @@ class CountTrackedSegment extends AbstractMatchCondition
             return false;
         }
 
-        if(!empty($options[self::OPTION_SEGMENTS]) && !in_array($trackedSegment['id'], $options[self::OPTION_SEGMENTS])) {
+        if (!empty($options[self::OPTION_SEGMENTS]) && !in_array($trackedSegment['id'], $options[self::OPTION_SEGMENTS])) {
             return false;
         }
 
@@ -79,8 +77,8 @@ class CountTrackedSegment extends AbstractMatchCondition
     {
         $segmentDataArray = $setting->options->segments;
         $segmentIds = [];
-        if($segmentDataArray) {
-            foreach($segmentDataArray as $segmentData) {
+        if ($segmentDataArray) {
+            foreach ($segmentDataArray as $segmentData) {
                 $segmentIds[] = $segmentData->id;
             }
         }
@@ -102,9 +100,9 @@ class CountTrackedSegment extends AbstractMatchCondition
         $options = $conditionDefinition->getOptions();
         $originalSegments = $options[self::OPTION_SEGMENTS];
         $dataSegments = [];
-        foreach($originalSegments as $originalSegmentData) {
+        foreach ($originalSegments as $originalSegmentData) {
             $segment = $segmentManager->getSegmentById($originalSegmentData);
-            if($segment) {
+            if ($segment) {
                 $dataSegments[] = [
                     $segment->getId(),
                     $segment->getFullPath()

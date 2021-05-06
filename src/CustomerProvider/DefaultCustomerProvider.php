@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\CustomerProvider;
@@ -58,7 +58,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
             throw new \RuntimeException('Customer class is not defined');
         }
 
-        if(!class_exists('Pimcore\\Model\\DataObject\\' . $pimcoreClass)) {
+        if (!class_exists('Pimcore\\Model\\DataObject\\' . $pimcoreClass)) {
             throw new \RuntimeException(sprintf('Configured CMF customer data object class "%s" does not exist.', $pimcoreClass));
         }
 
@@ -150,6 +150,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
 
         /** @var CustomerInterface|ElementInterface|Concrete $customer */
         $customer = $this->modelFactory->build($className);
+
         return $customer;
     }
 
@@ -203,7 +204,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     public function getActiveCustomerByEmail($email)
     {
-        if(!trim($email)) {
+        if (!trim($email)) {
             return null;
         }
 
@@ -257,14 +258,16 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     /**
      * @param \Pimcore\Model\DataObject\Listing\Concrete $list
      */
-    public function addActiveCondition($list) {
+    public function addActiveCondition($list)
+    {
         $list->addConditionParam('active = 1');
     }
 
     /**
      * @param \Pimcore\Model\DataObject\Listing\Concrete $list
      */
-    public function addInActiveCondition($list) {
+    public function addInActiveCondition($list)
+    {
         $list->addConditionParam('(active IS NULL OR active != 1)');
     }
 }

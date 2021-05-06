@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CustomerExporter;
@@ -76,11 +76,13 @@ abstract class AbstractExporter
      * used to be able to track the last response independently of the concrete mailchimp account
      *
      * @param MailChimpExportService $exportService
+     *
      * @return MailChimp
      */
     protected function getApiClientFromExportService(MailChimpExportService $exportService): MailChimp
     {
         $this->apiClient = $exportService->getApiClient();
+
         return $exportService->getApiClient();
     }
 }

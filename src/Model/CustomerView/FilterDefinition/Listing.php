@@ -1,18 +1,16 @@
 <?php
+
 /**
  * Pimcore
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @category   Pimcore
- * @package    Staticroute
- *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
@@ -44,11 +42,13 @@ class Listing extends Model\Listing\AbstractListing
 
     /**
      * @param FilterDefinition[] $filterDefinitions
+     *
      * @return $this
      */
     public function setFilterDefinitions($filterDefinitions)
     {
         $this->filterDefinitions = $filterDefinitions;
+
         return $this;
     }
 
@@ -64,15 +64,19 @@ class Listing extends Model\Listing\AbstractListing
     {
         /** @var FilterDefinition\Listing\Dao $dao */
         $dao = $this->getDao();
+
         return $dao->load();
     }
 
     /**
      * @param array $userIds
      */
-    public function setUserIdsCondition(array $userIds) {
+    public function setUserIdsCondition(array $userIds)
+    {
         // check if no user ids provided
-        if(empty($userIds)) return;
+        if (empty($userIds)) {
+            return;
+        }
         // initialize conditions strings array
         $conditions = [];
         foreach ($userIds as $userId) {

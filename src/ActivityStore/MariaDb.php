@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\ActivityStore;
@@ -28,7 +28,6 @@ use Pimcore\Model\DataObject\Concrete;
 
 class MariaDb extends SqlActivityStore implements ActivityStoreInterface
 {
-
     protected function getActivityStoreConnection()
     {
         return \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance();
@@ -142,7 +141,6 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
         $db->beginTransaction();
 
         try {
-
             if ($entry->getId()) {
                 \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->update(
                     self::ACTIVITIES_TABLE,
@@ -161,8 +159,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
             try {
                 $db->query('delete from ' . self::ACTIVITIES_METADATA_TABLE . ' where activityId = ' . intval($entry->getId()));
 
-                foreach($entry->getMetadata() as $key => $data) {
-
+                foreach ($entry->getMetadata() as $key => $data) {
                     $db->insert(
                         self::ACTIVITIES_METADATA_TABLE,
                         [
@@ -172,14 +169,13 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
                         ]
                     );
                 }
-            } catch(TableNotFoundException $ex) {
+            } catch (TableNotFoundException $ex) {
                 $this->getLogger()->error(sprintf('table %s not found - please press the update button of the CMF bundle in the extension manager', self::ACTIVITIES_METADATA_TABLE));
                 $db->rollBack();
             }
 
             $db->commit();
-
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->getLogger()->error(sprintf('save activity (%s) failed: %s', $entry->getId(), $e->getMessage()));
             $db->rollBack();
         }
@@ -506,7 +502,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
      */
     public function lazyLoadMetadataOfEntry(ActivityStoreEntryInterface $entry)
     {
-        if(!$entry->getId()) {
+        if (!$entry->getId()) {
             return;
         }
 
@@ -515,15 +511,14 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
                 self::ACTIVITIES_METADATA_TABLE,
                 $entry->getId()
             ));
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->getLogger()->error('fetching of activity store metadata failed: ' . $e->getMessage());
             $rows = [];
         }
 
-
         $metadata = [];
 
-        foreach($rows as $row) {
+        foreach ($rows as $row) {
             $metadata[$row['key']] = $row['data'];
         }
 

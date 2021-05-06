@@ -1,15 +1,16 @@
 <?php
+
 /**
  * Pimcore
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Newsletter\AddressSource;
@@ -35,7 +36,7 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
     public function __construct(array $arguments)
     {
         $operator = $arguments['operator'];
-        if ($operator == "and") {
+        if ($operator == 'and') {
             $operator = SegmentManagerInterface::CONDITION_AND;
         } else {
             $operator = SegmentManagerInterface::CONDITION_OR;
@@ -85,24 +86,26 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
      * containing email addresses that are 'ok'
      *
      * @uses SegmentManagerInterface
+     *
      * @param string[]|int[] $segmentIds
      * @param string $operator
      * @param string[] $filterFlags
+     *
      * @return SendingParamContainer[]
      */
     private function setUpSendingParamContainers(array $segmentIds, string $operator, array $filterFlags): array
     {
-        if(empty($segmentIds)) {
+        if (empty($segmentIds)) {
             return [];
         }
 
         $customerListing = $this->segmentManager->getCustomersBySegmentIds($segmentIds, $operator);
 
-        if($filterFlags) {
+        if ($filterFlags) {
             $originalCondition = $customerListing->getCondition();
             $conditionParts = [];
             $db = Db::get();
-            foreach($filterFlags as $filterFlag) {
+            foreach ($filterFlags as $filterFlag) {
                 $conditionParts[] = $db->quoteIdentifier($filterFlag) . ' = 1';
             }
 
@@ -115,12 +118,12 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
                 array_map(
                     function ($customer) {
                         /* @var $customer CustomerInterface */
-                        if(! $customer instanceof CustomerInterface) {
+                        if (! $customer instanceof CustomerInterface) {
                             return null;
                         }
 
                         $validator = new EmailValidator();
-                        if(!$validator->isValid($customer->getEmail())) {
+                        if (!$validator->isValid($customer->getEmail())) {
                             return null;
                         }
 
@@ -130,5 +133,4 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
                 )
             );
     }
-
 }

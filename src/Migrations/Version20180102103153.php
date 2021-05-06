@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Commercial License (PCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
+ */
+
 namespace CustomerManagementFrameworkBundle\Migrations;
 
 use Doctrine\DBAL\Schema\Schema;
@@ -15,7 +28,7 @@ class Version20180102103153 extends AbstractPimcoreMigration
      */
     public function up(Schema $schema)
     {
-        $this->addSql("ALTER TABLE plugin_cmf_actiontrigger_queue ADD environment TEXT NULL;");
+        $this->addSql('ALTER TABLE plugin_cmf_actiontrigger_queue ADD environment TEXT NULL;');
     }
 
     /**
@@ -23,6 +36,6 @@ class Version20180102103153 extends AbstractPimcoreMigration
      */
     public function down(Schema $schema)
     {
-        $this->addSql("ALTER TABLE plugin_cmf_actiontrigger_queue DROP environment;");
+        $this->addSql('ALTER TABLE plugin_cmf_actiontrigger_queue DROP environment;');
     }
 }

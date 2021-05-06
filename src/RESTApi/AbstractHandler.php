@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\RESTApi;
@@ -27,7 +27,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class AbstractHandler implements HandlerInterface
 {
-
     /**
      * @var PaginatorInterface
      */
@@ -41,12 +40,12 @@ abstract class AbstractHandler implements HandlerInterface
         $this->paginator = $paginator;
     }
 
-
     /**
      * @param mixed $listing
      * @param Request $request
      * @param int $defaultPageSize
      * @param int $defaultPage
+     *
      * @return PaginationInterface
      */
     protected function handlePaginatorParams(
@@ -57,7 +56,6 @@ abstract class AbstractHandler implements HandlerInterface
     ): PaginationInterface {
         $pageSize = intval($request->get('pageSize', $defaultPageSize));
         $page = intval($request->get('page', $defaultPage));
-
 
         return $this->paginator->paginate($listing, $page, $pageSize);
     }

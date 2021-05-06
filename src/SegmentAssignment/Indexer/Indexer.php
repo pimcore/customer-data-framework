@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\SegmentAssignment\Indexer;
@@ -19,7 +19,6 @@ use CustomerManagementFrameworkBundle\SegmentAssignment\QueueBuilder\QueueBuilde
 use CustomerManagementFrameworkBundle\SegmentAssignment\StoredFunctions\StoredFunctionsInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db\ConnectionInterface;
-use Pimcore\Logger;
 
 class Indexer implements IndexerInterface
 {
@@ -76,14 +75,16 @@ class Indexer implements IndexerInterface
     /**
      * @return string
      */
-    public function getSegmentAssignmentTable(): string {
+    public function getSegmentAssignmentTable(): string
+    {
         return $this->segmentAssignmentTable;
     }
 
     /**
      * @param string $segmentAssignmentTable
      */
-    public function setSegmentAssignmentTable(string $segmentAssignmentTable) {
+    public function setSegmentAssignmentTable(string $segmentAssignmentTable)
+    {
         $this->segmentAssignmentTable = $segmentAssignmentTable;
     }
 
@@ -122,28 +123,32 @@ class Indexer implements IndexerInterface
     /**
      * @return StoredFunctionsInterface
      */
-    public function getStoredFunctions(): StoredFunctionsInterface {
+    public function getStoredFunctions(): StoredFunctionsInterface
+    {
         return $this->storedFunctions;
     }
 
     /**
      * @param StoredFunctionsInterface $storedFunctions
      */
-    public function setStoredFunctions(StoredFunctionsInterface $storedFunctions) {
+    public function setStoredFunctions(StoredFunctionsInterface $storedFunctions)
+    {
         $this->storedFunctions = $storedFunctions;
     }
 
     /**
      * @return QueueBuilderInterface
      */
-    public function getQueueBuilder(): QueueBuilderInterface {
+    public function getQueueBuilder(): QueueBuilderInterface
+    {
         return $this->queueBuilder;
     }
 
     /**
      * @param QueueBuilderInterface $queueBuilder
      */
-    public function setQueueBuilder(QueueBuilderInterface $queueBuilder) {
+    public function setQueueBuilder(QueueBuilderInterface $queueBuilder)
+    {
         $this->queueBuilder = $queueBuilder;
     }
 
@@ -152,9 +157,10 @@ class Indexer implements IndexerInterface
      */
     public function getDb()
     {
-        if($this->db === null) {
+        if ($this->db === null) {
             $this->db = \Pimcore\Db::get();
         }
+
         return $this->db;
     }
 
@@ -205,9 +211,9 @@ class Indexer implements IndexerInterface
 
         $segmentIds = $this->getStoredFunctions()->retrieve($elementId, $elementType);
 
-
         $values = join(',', array_map(function ($segmentId) use ($elementId, $elementType) {
             $segmentId = '' !== $segmentId ? $segmentId : 0; //filter empty string when nothing is assigned
+
             return sprintf('(%s, "%s", %s)', $elementId, $elementType, $segmentId);
         }, $segmentIds));
 
@@ -246,7 +252,8 @@ class Indexer implements IndexerInterface
      *
      * This is done so elements do not have to be enqueued during the saving process in the pimcore backend
      */
-    private function buildQueue() {
+    private function buildQueue()
+    {
         $parentElements = $this->getDb()->fetchAll("SELECT * FROM `{$this->getSegmentAssignmentTable()}` WHERE `inPreparation` = 1");
 
         foreach ($parentElements as $element) {

@@ -7,12 +7,12 @@ declare(strict_types=1);
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Security\Guard;
@@ -36,8 +36,8 @@ class WebserviceAuthenticator extends AbstractGuardAuthenticator implements Logg
 {
     use LoggerAwareTrait;
 
-    CONST SETTINGS_STORE_KEY = 'api_keys';
-    CONST SETTINGS_STORE_SCOPE = 'cmf';
+    const SETTINGS_STORE_KEY = 'api_keys';
+    const SETTINGS_STORE_SCOPE = 'cmf';
 
     /**
      * {@inheritdoc}
@@ -126,11 +126,11 @@ class WebserviceAuthenticator extends AbstractGuardAuthenticator implements Logg
      */
     protected function loadUserForApiKey($apiKey)
     {
-        $settingsStore = SettingsStore::get(WebserviceAuthenticator::SETTINGS_STORE_KEY, WebserviceAuthenticator::SETTINGS_STORE_SCOPE);
+        $settingsStore = SettingsStore::get(self::SETTINGS_STORE_KEY, self::SETTINGS_STORE_SCOPE);
         $apiKeys = $settingsStore ? json_decode($settingsStore->getData(), true) : [];
 
         $userId = array_search($apiKey, $apiKeys);
-        if($userId) {
+        if ($userId) {
             return User::getById($userId);
         }
 

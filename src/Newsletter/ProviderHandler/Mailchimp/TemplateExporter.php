@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
@@ -64,19 +64,18 @@ class TemplateExporter
         $html = \Pimcore\Model\Document\Service::render($document);
 
         //dirty hack to prevent absolutize unsubscribe url placeholder of mailchimp
-        $html = str_replace(["*|UNSUB|*", "*|FORWARD|*", "*|UPDATE_PROFILE|*", "*|ARCHIVE|*"], ["data:*|UNSUB|*", "data:*|FORWARD|*", "data:*|UPDATE_PROFILE|*", "data:*|ARCHIVE|*"], $html);
+        $html = str_replace(['*|UNSUB|*', '*|FORWARD|*', '*|UPDATE_PROFILE|*', '*|ARCHIVE|*'], ['data:*|UNSUB|*', 'data:*|FORWARD|*', 'data:*|UPDATE_PROFILE|*', 'data:*|ARCHIVE|*'], $html);
 
         // modifying the content e.g set absolute urls...
         $html = Mail::embedAndModifyCss($html, $document);
         $html = Mail::setAbsolutePaths($html, $document);
 
         //dirty hack to make sure mailchimp merge tags are not url-encoded
-        $html = str_replace("*%7C", "*|", $html);
-        $html = str_replace("%7C*", "|*", $html);
+        $html = str_replace('*%7C', '*|', $html);
+        $html = str_replace('%7C*', '|*', $html);
 
         //dirty hack to prevent absolutize unsubscribe url placeholder of mailchimp
-        $html = str_replace(["data:*|UNSUB|*", "data:*|FORWARD|*", "data:*|UPDATE_PROFILE|*", "data:*|ARCHIVE|*"], ["*|UNSUB|*", "*|FORWARD|*", "*|UPDATE_PROFILE|*", "*|ARCHIVE|*"], $html);
-
+        $html = str_replace(['data:*|UNSUB|*', 'data:*|FORWARD|*', 'data:*|UPDATE_PROFILE|*', 'data:*|ARCHIVE|*'], ['*|UNSUB|*', '*|FORWARD|*', '*|UPDATE_PROFILE|*', '*|ARCHIVE|*'], $html);
 
         $templateExists = false;
 
@@ -141,19 +140,21 @@ class TemplateExporter
 
     /**
      * @param Document\PageSnippet $document
+     *
      * @return Mailchimp
+     *
      * @throws \Exception
      */
     protected function resolveProviderHandler(Document\PageSnippet $document): Mailchimp
     {
         $event = new TemplateExportResolveProviderHandlerEvent($document);
         $this->eventDispatcher->dispatch($event, $event->getName());
-        if(!empty($event->getProviderHandler())) {
+        if (!empty($event->getProviderHandler())) {
             return $event->getProviderHandler();
         }
 
-        foreach($this->newsletterManager->getNewsletterProviderHandlers() as $newsletterProviderHandler) {
-            if($newsletterProviderHandler instanceof Mailchimp) {
+        foreach ($this->newsletterManager->getNewsletterProviderHandlers() as $newsletterProviderHandler) {
+            if ($newsletterProviderHandler instanceof Mailchimp) {
                 return $newsletterProviderHandler;
             }
         }

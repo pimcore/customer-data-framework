@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CustomerExporter;
@@ -155,6 +155,7 @@ class SingleExporter extends AbstractExporter
     /**
      * @param Mailchimp $mailchimpProviderHandler
      * @param MailchimpAwareCustomerInterface $customer
+     *
      * @return array|null
      */
     public function fetchCustomer(Mailchimp $mailchimpProviderHandler, MailchimpAwareCustomerInterface $customer)
@@ -163,12 +164,11 @@ class SingleExporter extends AbstractExporter
         $apiClient = $this->getApiClientFromExportService($exportService);
         $remoteId = $apiClient->subscriberHash($customer->getEmail());
 
-
         $result = $apiClient->get(
             $exportService->getListResourceUrl($mailchimpProviderHandler->getListId(), sprintf('members/%s', $remoteId))
         );
 
-        if(!$apiClient->success()) {
+        if (!$apiClient->success()) {
             return null;
         }
 
@@ -245,7 +245,7 @@ class SingleExporter extends AbstractExporter
         $exportService = $mailchimpProviderHandler->getExportService();
         $apiClient = $this->getApiClientFromExportService($exportService);
 
-        if($mailchimpProviderHandler->doesOtherSubscribedCustomerWithEmailExist($customer->getEmail(), $customer->getId())) {
+        if ($mailchimpProviderHandler->doesOtherSubscribedCustomerWithEmailExist($customer->getEmail(), $customer->getId())) {
             $this->getLogger()->debug(
                 sprintf(
                     '[MailChimp][CUSTOMER %s][%s] Skip deletion of customer as another subscribed customer with email %s exists.',
@@ -255,6 +255,7 @@ class SingleExporter extends AbstractExporter
                 )
             );
             $item->setSuccessfullyProcessed(true);
+
             return;
         }
 
@@ -334,7 +335,7 @@ class SingleExporter extends AbstractExporter
         $exportService = $mailchimpProviderHandler->getExportService();
         $apiClient = $this->getApiClientFromExportService($exportService);
 
-        if($mailchimpProviderHandler->doesOtherSubscribedCustomerWithEmailExist($item->getEmail(), $item->getCustomerId())) {
+        if ($mailchimpProviderHandler->doesOtherSubscribedCustomerWithEmailExist($item->getEmail(), $item->getCustomerId())) {
             $this->getLogger()->info(
                 sprintf(
                     '[MailChimp][CUSTOMER %s][%s] Deletion skipped as another subscribed customer with the same email exists.',
@@ -344,6 +345,7 @@ class SingleExporter extends AbstractExporter
             );
 
             $item->setSuccessfullyProcessed(true);
+
             return;
         }
 

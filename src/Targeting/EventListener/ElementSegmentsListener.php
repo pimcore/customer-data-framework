@@ -7,12 +7,12 @@ declare(strict_types=1);
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Targeting\EventListener;
@@ -52,12 +52,11 @@ class ElementSegmentsListener implements EventSubscriberInterface
         DocumentResolver $documentResolver,
         SegmentManagerInterface $segmentManager,
         SegmentTracker $segmentTracker
-    )
-    {
+    ) {
         $this->segmentAssignmentTypes = $segmentAssignmentTypes;
-        $this->documentResolver       = $documentResolver;
-        $this->segmentManager         = $segmentManager;
-        $this->segmentTracker         = $segmentTracker;
+        $this->documentResolver = $documentResolver;
+        $this->segmentManager = $segmentManager;
+        $this->segmentTracker = $segmentTracker;
     }
 
     /**
@@ -109,7 +108,7 @@ class ElementSegmentsListener implements EventSubscriberInterface
         }
 
         $segments = $this->segmentManager->getSegmentsForElement($document);
-        $segments = array_filter($segments, function($segment) {
+        $segments = array_filter($segments, function ($segment) {
             return $segment && $segment instanceof CustomerSegmentInterface;
         });
 

@@ -1,18 +1,16 @@
 <?php
+
 /**
  * Pimcore
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @category   Pimcore
- * @package    Staticroute
- *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition\Listing;
@@ -44,6 +42,7 @@ class Dao extends Model\Listing\Dao\AbstractDao
             $filterDefinitions[] = FilterDefinition::getById($filterDefinitionId);
         }
         $this->model->setFilterDefinitions($filterDefinitions);
+
         return $filterDefinitions;
     }
 

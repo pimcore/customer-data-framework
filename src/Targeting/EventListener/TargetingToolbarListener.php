@@ -7,12 +7,12 @@ declare(strict_types=1);
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Targeting\EventListener;
@@ -46,11 +46,10 @@ class TargetingToolbarListener implements EventSubscriberInterface
         VisitorInfoStorageInterface $visitorInfoStorage,
         SegmentTracker $segmentTracker,
         SegmentManagerInterface $segmentManager
-    )
-    {
+    ) {
         $this->visitorInfoStorage = $visitorInfoStorage;
-        $this->segmentTracker     = $segmentTracker;
-        $this->segmentManager     = $segmentManager;
+        $this->segmentTracker = $segmentTracker;
+        $this->segmentManager = $segmentManager;
     }
 
     public static function getSubscribedEvents()
@@ -69,7 +68,7 @@ class TargetingToolbarListener implements EventSubscriberInterface
         // would be lost
         $event->setData(array_merge($event->getData(), [
             'cmfOriginalTemplate' => $event->getTemplate(),
-            'cmfTrackedSegments'  => $this->getTrackedSegments(),
+            'cmfTrackedSegments' => $this->getTrackedSegments(),
         ]));
 
         $event->setTemplate('@PimcoreCustomerManagementFramework/targeting/toolbar.html.twig');
@@ -81,7 +80,7 @@ class TargetingToolbarListener implements EventSubscriberInterface
             return [];
         }
 
-        $visitorInfo     = $this->visitorInfoStorage->getVisitorInfo();
+        $visitorInfo = $this->visitorInfoStorage->getVisitorInfo();
         $trackedSegments = $this->segmentTracker->getAssignments($visitorInfo);
 
         $result = [];
@@ -92,11 +91,11 @@ class TargetingToolbarListener implements EventSubscriberInterface
             }
 
             $result[] = [
-                'id'         => $segment->getId(),
-                'name'       => $segment->getName(),
-                'group'      => $segment->getGroup() ? $segment->getGroup()->getName() : null,
+                'id' => $segment->getId(),
+                'name' => $segment->getName(),
+                'group' => $segment->getGroup() ? $segment->getGroup()->getName() : null,
                 'calculated' => $segment->getCalculated(),
-                'count'      => $count,
+                'count' => $count,
             ];
         }
 

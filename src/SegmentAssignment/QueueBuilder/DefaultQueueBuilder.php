@@ -1,9 +1,16 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: kzumueller
- * Date: 23.10.2017
- * Time: 16:45
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Commercial License (PCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\SegmentAssignment\QueueBuilder;
@@ -15,8 +22,8 @@ use Throwable;
 /**
  * @inheritdoc
  */
-class DefaultQueueBuilder implements QueueBuilderInterface {
-
+class DefaultQueueBuilder implements QueueBuilderInterface
+{
     /**
      * @var string
      */
@@ -27,7 +34,8 @@ class DefaultQueueBuilder implements QueueBuilderInterface {
      */
     private $db = null;
 
-    public function __construct(string $segmentAssignmentQueueTable, ConnectionInterface $db) {
+    public function __construct(string $segmentAssignmentQueueTable, ConnectionInterface $db)
+    {
         $this->setSegmentAssignmentQueueTable($segmentAssignmentQueueTable);
         $this->setDb($db);
     }
@@ -35,35 +43,40 @@ class DefaultQueueBuilder implements QueueBuilderInterface {
     /**
      * @return string
      */
-    public function getSegmentAssignmentQueueTable(): string {
+    public function getSegmentAssignmentQueueTable(): string
+    {
         return $this->segmentAssignmentQueueTable;
     }
 
     /**
      * @param string $segmentAssignmentQueueTable
      */
-    public function setSegmentAssignmentQueueTable(string $segmentAssignmentQueueTable) {
+    public function setSegmentAssignmentQueueTable(string $segmentAssignmentQueueTable)
+    {
         $this->segmentAssignmentQueueTable = $segmentAssignmentQueueTable;
     }
 
     /**
      * @return ConnectionInterface
      */
-    public function getDb(): ConnectionInterface {
+    public function getDb(): ConnectionInterface
+    {
         return $this->db;
     }
 
     /**
      * @param ConnectionInterface $db
      */
-    public function setDb(ConnectionInterface $db) {
+    public function setDb(ConnectionInterface $db)
+    {
         $this->db = $db;
     }
 
     /**
      * @inheritdoc
      */
-    public function enqueue(string $elementId, string $type): bool {
+    public function enqueue(string $elementId, string $type): bool
+    {
         try {
             $enqueueStatement = sprintf(
                 'INSERT INTO %s (`elementId`, `elementType`) ' .
@@ -74,7 +87,7 @@ class DefaultQueueBuilder implements QueueBuilderInterface {
             $this->getDb()->query($enqueueStatement);
 
             return true;
-        } catch(Throwable $exception) {
+        } catch (Throwable $exception) {
             Logger::error($exception->getMessage());
 
             return false;

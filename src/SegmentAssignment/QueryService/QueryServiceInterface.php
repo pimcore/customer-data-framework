@@ -1,9 +1,16 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: kzumueller
- * Date: 23.10.2017
- * Time: 17:43
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Commercial License (PCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\SegmentAssignment\QueryService;
@@ -16,8 +23,8 @@ use Pimcore\Model\Listing\AbstractListing;
  *
  * @package CustomerManagementFrameworkBundle\SegmentAssignment\QueryServiceInterface
  */
-interface QueryServiceInterface {
-
+interface QueryServiceInterface
+{
     const MODE_CONJUNCTION = 'AND';
     const MODE_DISJUNCTION = 'OR';
 
@@ -28,6 +35,7 @@ interface QueryServiceInterface {
      * @param AbstractListing $listing
      * @param array $segmentIds
      * @param string $concatMode
+     *
      * @return mixed
      */
     public function bySegmentIds(AbstractListing $listing, array $segmentIds, $concatMode = self::MODE_DISJUNCTION);

@@ -1,8 +1,20 @@
 <?php
 
+/**
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Commercial License (PCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
+ */
+
 namespace CustomerManagementFrameworkBundle\ActivityStore;
 
-use CustomerManagementFrameworkBundle\Filter\ExportActivitiesFilterParams;
 use CustomerManagementFrameworkBundle\Model\ActivityExternalIdInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
@@ -34,7 +46,6 @@ abstract class SqlActivityStore
     {
         $this->paginator = $paginator;
     }
-
 
     public function insertActivityIntoStore(ActivityInterface $activity)
     {
@@ -100,7 +111,6 @@ abstract class SqlActivityStore
         $db->beginTransaction();
 
         try {
-
             if ($entry->getId()) {
                 $this->getActivityStoreConnection()->update(
                     self::ACTIVITIES_TABLE,
@@ -119,8 +129,7 @@ abstract class SqlActivityStore
             try {
                 $db->query('delete from ' . self::ACTIVITIES_METADATA_TABLE . ' where activityId = ' . intval($entry->getId()));
 
-                foreach($entry->getMetadata() as $key => $data) {
-
+                foreach ($entry->getMetadata() as $key => $data) {
                     $db->insert(
                         self::ACTIVITIES_METADATA_TABLE,
                         [
@@ -130,14 +139,13 @@ abstract class SqlActivityStore
                         ]
                     );
                 }
-            } catch(TableNotFoundException $ex) {
+            } catch (TableNotFoundException $ex) {
                 $this->getLogger()->error(sprintf('table %s not found - please press the update button of the CMF bundle in the extension manager', self::ACTIVITIES_METADATA_TABLE));
                 $db->rollBack();
             }
 
             $db->commit();
-
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->getLogger()->error(sprintf('save activity (%s) failed: %s', $entry->getId(), $e->getMessage()));
             $db->rollBack();
         }
@@ -158,6 +166,7 @@ abstract class SqlActivityStore
      * @param ActivityStoreEntryInterface|null $entry
      *
      * @return null|ActivityStoreEntryInterface
+     *
      * @throws \Exception
      */
     public function updateActivityInStore(ActivityInterface $activity, ActivityStoreEntryInterface $entry = null)
@@ -207,6 +216,7 @@ abstract class SqlActivityStore
      * @param array $data
      *
      * @return ActivityStoreEntryInterface
+     *
      * @throws \Exception
      */
     public function createEntryInstance(array $data)
@@ -290,6 +300,7 @@ abstract class SqlActivityStore
      * @param ActivityInterface $activity
      *
      * @return bool
+     *
      * @throws \Exception
      */
     public function deleteActivity(ActivityInterface $activity)

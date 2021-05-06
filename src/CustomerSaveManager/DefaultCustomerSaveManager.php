@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\CustomerSaveManager;
@@ -99,8 +99,8 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
             /**
              * @var Concrete $customer
              */
-            if($request && $this->matchesPimcoreContext($request, PimcoreContextResolver::CONTEXT_ADMIN)) {
-                if(!$customer->isAllowed('save') || ($customer->getPublished() && !$customer->isAllowed('publish'))) {
+            if ($request && $this->matchesPimcoreContext($request, PimcoreContextResolver::CONTEXT_ADMIN)) {
+                if (!$customer->isAllowed('save') || ($customer->getPublished() && !$customer->isAllowed('publish'))) {
                     throw new ValidationException(sprintf('No permissions to save customer to folder "%s"', $customer->getParent()));
                 }
             }
@@ -152,7 +152,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
         //$this->setPimcoreContextResolver(\Pimcore::getContainer()->get('pimcore.service.request.pimcore_context_resolver'));
 
-        if(!$request || ($request && !$this->matchesPimcoreContext($request, PimcoreContextResolver::CONTEXT_ADMIN))) {
+        if (!$request || ($request && !$this->matchesPimcoreContext($request, PimcoreContextResolver::CONTEXT_ADMIN))) {
             $this->applyNamingScheme($customer);
         }
     }

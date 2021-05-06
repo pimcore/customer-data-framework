@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Service;
@@ -38,12 +38,14 @@ class ObjectToArray
         return self::$instance;
     }
 
-    protected function loadRawDataFromContainer($container, $fieldName) {
+    protected function loadRawDataFromContainer($container, $fieldName)
+    {
         $data = null;
         $getter = 'get' . ucfirst($fieldName);
         if (method_exists($container, $getter)) {
             $data = $container->$getter();
         }
+
         return $data;
     }
 
@@ -58,7 +60,7 @@ class ObjectToArray
         foreach ($fieldDefintions as $fd) {
             $fieldName = $fd->getName();
             $value = $this->loadRawDataFromContainer($object, $fieldName);
-            if(!empty($value) && $fd instanceof NormalizerInterface) {
+            if (!empty($value) && $fd instanceof NormalizerInterface) {
                 $result[$fieldName] = $fd->normalize($value);
             }
         }

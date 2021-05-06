@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CustomerExporter;
@@ -197,8 +197,7 @@ class BatchExporter extends AbstractExporter
      */
     protected function createBatchDeleteOperation(Batch $batch, NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler)
     {
-        if($mailchimpProviderHandler->doesOtherSubscribedCustomerWithEmailExist($item->getEmail(), $item->getCustomerId())) {
-
+        if ($mailchimpProviderHandler->doesOtherSubscribedCustomerWithEmailExist($item->getEmail(), $item->getCustomerId())) {
             $this->getLogger()->info(
                 sprintf(
                     '[MailChimp][CUSTOMER %s][%s] Deletion skipped as another subscribed customer with the same email exists.',
@@ -208,6 +207,7 @@ class BatchExporter extends AbstractExporter
             );
 
             $item->setSuccessfullyProcessed(true);
+
             return;
         }
 
@@ -374,12 +374,10 @@ class BatchExporter extends AbstractExporter
         /** @var MailchimpAwareCustomerInterface|ElementInterface $customer */
         $customer = $item->getCustomer();
 
-
         $operation = $item->getOverruledOperation() ?: $item->getOperation();
 
         // add note
         if ($operation == NewsletterQueueInterface::OPERATION_UPDATE) {
-
             $entry = $mailchimpProviderHandler->buildEntry($customer);
             $remoteId = $apiClient->subscriberHash($entry['email_address']);
 
@@ -419,13 +417,11 @@ class BatchExporter extends AbstractExporter
             );
         }
 
-        if($customer) {
-
+        if ($customer) {
             $entry = $mailchimpProviderHandler->buildEntry($customer);
 
             $status = isset($entry['status']) ? $entry['status'] : $entry['status_if_new'];
             $mailchimpProviderHandler->updateMailchimpStatus($customer, $status);
-
         }
         $item->setSuccessfullyProcessed(true);
     }
