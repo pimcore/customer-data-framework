@@ -1,10 +1,21 @@
 <?php
 
+/**
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Commercial License (PCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
+ */
+
 namespace CustomerManagementFrameworkBundle\Migrations;
 
 use Doctrine\DBAL\Schema\Schema;
-use Pimcore\AssetMetadataClassDefinitionsBundle\Model\Configuration\Dao;
-use Pimcore\Config;
 use Pimcore\Db;
 use Pimcore\Migrations\Migration\AbstractPimcoreMigration;
 use Pimcore\Model\Tool\SettingsStore;
@@ -28,7 +39,7 @@ class Version20210305134111 extends AbstractPimcoreMigration
             'key' => 'plugin_cmf_perm_activityview'
         ]);
 
-        if($installed) {
+        if ($installed) {
             SettingsStore::set('BUNDLE_INSTALLED__CustomerManagementFrameworkBundle\\PimcoreCustomerManagementFrameworkBundle', true, 'bool', 'pimcore');
         }
     }

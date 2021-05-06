@@ -2,14 +2,15 @@
 
 /**
  * Pimcore
+ *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\CustomerView\Customer;
@@ -45,11 +46,11 @@ class Maintenance
         $this->getLogger()->info('Found temporary customer objects: ' . count($tempCustomers));
 
         // check each customer if it should be deleted
-        foreach($tempCustomers as $customer) {
+        foreach ($tempCustomers as $customer) {
             // fetch modification date
             $date = Carbon::createFromTimestamp($customer->getModificationDate());
             // if contact is unpublished and last modification was more then 1 day ago
-            if(!$customer->isPublished() && $date->diffInDays(Carbon::now()) > 1) {
+            if (!$customer->isPublished() && $date->diffInDays(Carbon::now()) > 1) {
                 // delete the customer
                 $customer->delete();
                 $changedCounter++;

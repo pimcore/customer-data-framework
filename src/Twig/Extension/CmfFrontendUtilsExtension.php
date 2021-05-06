@@ -1,25 +1,24 @@
 <?php
+
 /**
  * Pimcore
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
-
 
 namespace CustomerManagementFrameworkBundle\Twig\Extension;
 
-
 use CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface;
+use CustomerManagementFrameworkBundle\Helper\JsConfigService;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
-use CustomerManagementFrameworkBundle\Helper\JsConfigService;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
 use Pimcore\Model\User;
 use Symfony\Component\Asset\Packages;
@@ -51,6 +50,7 @@ class CmfFrontendUtilsExtension extends AbstractExtension
 
     /**
      * CmfFrontendUtilsExtension constructor.
+     *
      * @param Packages $packages
      * @param JsConfigService $jsConfigService
      * @param SegmentManagerInterface $segmentManager
@@ -63,7 +63,6 @@ class CmfFrontendUtilsExtension extends AbstractExtension
         $this->segmentManager = $segmentManager;
         $this->customerExportManager = $customerExportManager;
     }
-
 
     /**
      * {@inheritdoc}
@@ -118,81 +117,98 @@ class CmfFrontendUtilsExtension extends AbstractExtension
         return $this->packages->getUrl(implode('.', $parts), $packageName);
     }
 
-    public function getJsConfig(): JsConfigService {
+    public function getJsConfig(): JsConfigService
+    {
         return $this->jsConfigService;
     }
 
-    public function inDebug(): bool {
+    public function inDebug(): bool
+    {
         return \Pimcore::inDebugMode();
     }
 
-    public function calculateArrayChunkSize(array $array) {
+    public function calculateArrayChunkSize(array $array)
+    {
         $chunkSize = ceil(sizeof($array) / 2);
+
         return $chunkSize > 0 ? $chunkSize : 1;
     }
 
-    public function getSegmentsForGroup(CustomerSegmentGroup $segmentGroup): array {
+    public function getSegmentsForGroup(CustomerSegmentGroup $segmentGroup): array
+    {
         return $this->segmentManager->getSegmentsFromSegmentGroup($segmentGroup);
     }
 
-    public function getFilteredSegmentGroups($segmentGroups, $showSegments): array {
+    public function getFilteredSegmentGroups($segmentGroups, $showSegments): array
+    {
         $filteredSegmentGroups = [];
         foreach ($segmentGroups as $segmentGroup) {
             if (in_array($segmentGroup->getId(), $showSegments)) {
                 $filteredSegmentGroups[] = $segmentGroup;
             }
         }
+
         return $filteredSegmentGroups;
     }
 
-    public function getUserAllowedToUpdate(FilterDefinition $filterDefinition): bool {
-        return ($filterDefinition->getId() && $filterDefinition->isUserAllowedToUpdate(\Pimcore\Tool\Admin::getCurrentUser()));
+    public function getUserAllowedToUpdate(FilterDefinition $filterDefinition): bool
+    {
+        return $filterDefinition->getId() && $filterDefinition->isUserAllowedToUpdate(\Pimcore\Tool\Admin::getCurrentUser());
     }
 
-    public function getUserAllowedToShare(FilterDefinition $filterDefinition): bool {
-        return ($filterDefinition->getId() && $filterDefinition->isUserAllowedToShare(\Pimcore\Tool\Admin::getCurrentUser()));
+    public function getUserAllowedToShare(FilterDefinition $filterDefinition): bool
+    {
+        return $filterDefinition->getId() && $filterDefinition->isUserAllowedToShare(\Pimcore\Tool\Admin::getCurrentUser());
     }
 
-    public function isCurrentUserFilterSharer(): bool {
+    public function isCurrentUserFilterSharer(): bool
+    {
         return FilterDefinition::isFilterSharer(\Pimcore\Tool\Admin::getCurrentUser());
     }
 
-    public function getUsers(): User\Listing {
+    public function getUsers(): User\Listing
+    {
         $listing = new User\Listing();
         $listing->setCondition('`type` = "user"');
+
         return $listing;
     }
 
-    public function getRoles(): User\Role\Listing {
+    public function getRoles(): User\Role\Listing
+    {
         $listing = new User\Role\Listing();
         $listing->setCondition('`type` = "role"');
+
         return $listing;
     }
 
-    public function getExporterConfigs(): array {
+    public function getExporterConfigs(): array
+    {
         return $this->customerExportManager->getExporterConfig();
     }
 
     /** ===================
      *  Filters
      *  ==================== */
-
-    public function printFieldCombinations($fieldCombinations): string {
-        if($fieldCombinations) {
+    public function printFieldCombinations($fieldCombinations): string
+    {
+        if ($fieldCombinations) {
             foreach ($fieldCombinations as $key => $combination) {
                 $fieldCombinations[$key] = implode(', ', $combination);
             }
 
             return implode('<br>', $fieldCombinations);
         }
+
         return '';
     }
 
-    public function buildCodeList(array $values): string {
+    public function buildCodeList(array $values): string
+    {
         $codeValues = array_map(function ($value) {
             return '<code>' . $value . '</code>';
         }, $values);
+
         return implode(' ', $codeValues);
     }
-
 }

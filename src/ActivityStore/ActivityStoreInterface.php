@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\ActivityStore;
@@ -21,7 +21,6 @@ use CustomerManagementFrameworkBundle\Model\ActivityList\ActivityListInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
-
 
 /**
  * Interface ActivityStoreInterface
@@ -153,6 +152,7 @@ interface ActivityStoreInterface
      * Metadata items of entries are lazy loaded. This method loads the metadata items from the store.
      *
      * @param ActivityStoreEntryInterface $entry
+     *
      * @return void
      */
     public function lazyLoadMetadataOfEntry(ActivityStoreEntryInterface $entry);

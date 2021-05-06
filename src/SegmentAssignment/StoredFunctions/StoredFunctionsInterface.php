@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Commercial License (PCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
+ */
+
 namespace CustomerManagementFrameworkBundle\SegmentAssignment\StoredFunctions;
 
 use CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapperInterface;
@@ -13,8 +26,8 @@ use CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapperInt
  * Date: 23.10.2017
  * Time: 12:48
  */
-interface StoredFunctionsInterface {
-
+interface StoredFunctionsInterface
+{
     const STORED_FUNCTION_DOCUMENT = 'PLUGIN_CMF_COLLECT_DOCUMENT_SEGMENT_ASSIGNMENTS';
     const STORED_FUNCTION_ASSET = 'PLUGIN_CMF_COLLECT_ASSET_SEGMENT_ASSIGNMENTS';
     const STORED_FUNCTION_OBJECT = 'PLUGIN_CMF_COLLECT_OBJECT_SEGMENT_ASSIGNMENTS';
@@ -34,6 +47,7 @@ interface StoredFunctionsInterface {
      *
      * @param string $elementId
      * @param string $elementType
+     *
      * @return string[]
      */
     public function retrieve(string $elementId, string $elementType): array;

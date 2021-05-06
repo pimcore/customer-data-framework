@@ -1,8 +1,19 @@
 <?php
 
+/**
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Commercial License (PCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
+ */
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
-
 
 use CustomerManagementFrameworkBundle\Security\Guard\WebserviceAuthenticator;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
@@ -14,6 +25,7 @@ class SettingsController extends AdminController
 {
     /**
      * @param Request $request
+     *
      * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
      *
      * @Route("/settings/webservice-users", name="_pimcore_customermanagementframework_backend_settings_webservice_users", methods={"GET","POST"})
@@ -44,7 +56,6 @@ class SettingsController extends AdminController
                 $userListing->setOrder($sortingSettings['order']);
             }
 
-
             if ($request->get('filter')) {
                 $filter = '%' . $request->get('filter') . '%';
                 $userListing->addConditionParam('(`name` LIKE ? OR firstname LIKE ? OR lastname LIKE ? OR email LIKE ?)',
@@ -52,13 +63,12 @@ class SettingsController extends AdminController
                 );
             }
 
-
             $userListing->addConditionParam('active = ?', 1);
             $userListing->addConditionParam('type = ?', 'user');
             $userListing->load();
 
             $users = [];
-            foreach($userListing->getUsers() as $user) {
+            foreach ($userListing->getUsers() as $user) {
                 $users[] = [
                     'id' => $user->getId(),
                     'name' => $user->getName(),
@@ -76,11 +86,11 @@ class SettingsController extends AdminController
         return $this->adminJson(['success' => false]);
     }
 
-
-    protected function isAllowed() {
+    protected function isAllowed()
+    {
         $user = $this->getAdminUser();
 
-        if(!$user->isAdmin()) {
+        if (!$user->isAdmin()) {
             throw $this->createAccessDeniedHttpException();
         }
     }

@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Command;
@@ -21,7 +21,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MaintenanceCommand extends AbstractCommand
 {
-
     /**
      * @var MaintenanceWorker
      */
@@ -35,9 +34,6 @@ class MaintenanceCommand extends AbstractCommand
     {
         $this->maintenanceWorker = $maintenanceWorker;
     }
-
-
-
 
     protected function configure()
     {
@@ -58,6 +54,7 @@ class MaintenanceCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->maintenanceWorker->execute();
+
         return 0;
     }
 }

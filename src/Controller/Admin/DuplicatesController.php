@@ -1,15 +1,16 @@
 <?php
+
 /**
  * Pimcore
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
@@ -17,7 +18,6 @@ namespace CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\CustomerList\SearchHelper;
 use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
-use CustomerManagementFrameworkBundle\Factory;
 use Pimcore\Model\DataObject\Listing\Concrete;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,7 +36,9 @@ class DuplicatesController extends Admin
     /**
      * @param Request $request
      * @param DuplicatesIndexInterface $duplicatesIndex
+     *
      * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws \Exception
      * @Route("/list")
      */
@@ -46,7 +48,7 @@ class DuplicatesController extends Admin
         $filters = $request->get('filter', []);
         // check if filters exist
         $customerList = null;
-        if(!empty($filters)) {
+        if (!empty($filters)) {
             // build customer listing
             /** @var Concrete $listing */
             $customerList = $this->getSearchHelper()->getCustomerProvider()->getList();
@@ -57,7 +59,6 @@ class DuplicatesController extends Admin
             /** @noinspection PhpUnhandledExceptionInspection */
             $this->getSearchHelper()->addListingFilters($customerList, $filters, $this->getAdminUser());
         }
-
 
         $paginator = $duplicatesIndex->getPotentialDuplicates(
             $request->get('page', 1),
@@ -82,6 +83,7 @@ class DuplicatesController extends Admin
     /**
      * @param Request $request
      * @Route("/decline/{id}")
+     *
      * @return JsonResponse
      */
     public function declineAction(Request $request)

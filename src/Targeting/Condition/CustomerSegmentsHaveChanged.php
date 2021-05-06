@@ -7,12 +7,12 @@ declare(strict_types=1);
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Targeting\Condition;
@@ -33,7 +33,6 @@ class CustomerSegmentsHaveChanged extends AbstractVariableCondition implements D
     public function __construct()
     {
     }
-
 
     /**
      * @inheritDoc
@@ -71,8 +70,7 @@ class CustomerSegmentsHaveChanged extends AbstractVariableCondition implements D
     {
         $customer = $visitorInfo->get(Customer::PROVIDER_KEY);
 
-        if($customer instanceof CustomerInterface) {
-
+        if ($customer instanceof CustomerInterface) {
             $segments = $visitorInfo->get(CustomerSegments::PROVIDER_KEY);
             $this->setMatchedVariable('segments', $segments);
 
@@ -81,5 +79,4 @@ class CustomerSegmentsHaveChanged extends AbstractVariableCondition implements D
 
         return false;
     }
-
 }

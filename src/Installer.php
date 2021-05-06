@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle;
@@ -216,7 +216,6 @@ class Installer extends SettingsStoreAwareInstaller
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
         );
 
-
         $sqlFiles = [
             __DIR__ . '/Resources/sql/filterDefinition/' => [
                 'datamodel.sql'
@@ -235,7 +234,7 @@ class Installer extends SettingsStoreAwareInstaller
         $db = Db::get();
 
         foreach ($sqlFiles as $folder => $files) {
-            foreach($files as $file) {
+            foreach ($files as $file) {
                 $statement = file_get_contents($folder.$file);
                 $db->query($statement);
             }

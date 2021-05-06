@@ -7,12 +7,12 @@ declare(strict_types=1);
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Event;
@@ -28,8 +28,8 @@ class TargetGroupAssigned extends AbstractSingleCustomerEvent implements RuleEnv
     const EVENT_NAME = 'plugin.cmf.target-group-assigned';
     const STORAGE_KEY = 'target_group_assigned';
 
-    const ASSIGNMENT_TYPE_DOCUMENT = "documents";
-    const ASSIGNMENT_TYPE_TARGETING_RULE = "targetingRules";
+    const ASSIGNMENT_TYPE_DOCUMENT = 'documents';
+    const ASSIGNMENT_TYPE_TARGETING_RULE = 'targetingRules';
 
     /**
      * @var string
@@ -93,7 +93,7 @@ class TargetGroupAssigned extends AbstractSingleCustomerEvent implements RuleEnv
         }
 
         $options = $trigger->getOptions();
-        if($options['assignmentType'] == $this->assignmentType) {
+        if ($options['assignmentType'] == $this->assignmentType) {
             return true;
         }
 
@@ -102,7 +102,7 @@ class TargetGroupAssigned extends AbstractSingleCustomerEvent implements RuleEnv
 
     public function updateEnvironment(TriggerDefinitionInterface $trigger, RuleEnvironmentInterface $environment)
     {
-        if($this->visitorInfo->hasTargetGroupAssignment($this->targetGroup)) {
+        if ($this->visitorInfo->hasTargetGroupAssignment($this->targetGroup)) {
             $assignment = $this->visitorInfo->getTargetGroupAssignment($this->targetGroup);
 
             $environment->set(self::STORAGE_KEY, [
@@ -112,4 +112,3 @@ class TargetGroupAssigned extends AbstractSingleCustomerEvent implements RuleEnv
         }
     }
 }
-

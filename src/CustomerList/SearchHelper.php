@@ -5,30 +5,29 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\CustomerList;
 
-use CustomerManagementFrameworkBundle\CustomerList\Filter\SearchQuery;
 use CustomerManagementFrameworkBundle\CustomerList\Filter\CustomerSegment as CustomerSegmentFilter;
+use CustomerManagementFrameworkBundle\CustomerList\Filter\SearchQuery;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Listing\Filter\BoolCombinator;
-use CustomerManagementFrameworkBundle\Listing\Filter\Permission as PermissionFilter;
 use CustomerManagementFrameworkBundle\Listing\Filter\Equals;
+use CustomerManagementFrameworkBundle\Listing\Filter\Permission as PermissionFilter;
 use CustomerManagementFrameworkBundle\Listing\FilterHandler;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
-use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\Model\DataObject\Listing\Concrete;
 use Pimcore\Model\User;
 
-class SearchHelper {
-
+class SearchHelper
+{
     private $segmentManager;
     private $customerProvider;
 
@@ -73,10 +72,10 @@ class SearchHelper {
         $searchProperties = $filterProperties['search'];
 
         $searchBarFields = [];
-        if(isset($searchProperties['search'])) {
+        if (isset($searchProperties['search'])) {
             $searchProperties = $searchProperties['search'];
 
-            if(is_array($searchProperties) && count($searchProperties) > 0) {
+            if (is_array($searchProperties) && count($searchProperties) > 0) {
                 $searchBarFields = array_values($searchProperties);
             }
         }
@@ -88,6 +87,7 @@ class SearchHelper {
      * @param Concrete $listing
      * @param array $filters
      * @param User $adminUser
+     *
      * @throws \Exception
      */
     public function addListingFilters(Concrete $listing, array $filters, User $adminUser)
@@ -96,10 +96,10 @@ class SearchHelper {
 
         $operatorCustomer = 'AND';
         $operatorSegments = null;
-        if(array_key_exists('operator-customer', $filters)) {
+        if (array_key_exists('operator-customer', $filters)) {
             $operatorCustomer = $filters['operator-customer'];
         }
-        if(array_key_exists('operator-segments', $filters)) {
+        if (array_key_exists('operator-segments', $filters)) {
             $operatorSegments = $filters['operator-segments'];
         }
 
@@ -108,31 +108,31 @@ class SearchHelper {
         $equalsProperties = isset($filterProperties['equals']) ? $filterProperties['equals'] : [];
         $searchProperties = isset($filterProperties['search']) ? $filterProperties['search'] : [];
 
-        foreach($equalsProperties as $property => $databaseField) {
-            if(array_key_exists($property, $filters)) {
+        foreach ($equalsProperties as $property => $databaseField) {
+            if (array_key_exists($property, $filters)) {
                 $handler->addFilter(new Equals($databaseField, $filters[$property]));
             }
         }
 
         $searchFilters = [];
-        foreach($searchProperties as $property => $databaseFields) {
-            if(array_key_exists($property, $filters)
+        foreach ($searchProperties as $property => $databaseFields) {
+            if (array_key_exists($property, $filters)
                 && !empty($filters[$property])
                 && is_string($filters[$property])) {
                 $searchFilters[] = new SearchQuery($databaseFields, $filters[$property]);
             }
         }
-        if(!empty($searchFilters)) {
+        if (!empty($searchFilters)) {
             $handler->addFilter(new BoolCombinator($searchFilters, $operatorCustomer));
         }
 
-        if(array_key_exists('segments', $filters)) {
-            if ($operatorSegments == "ANY") {
+        if (array_key_exists('segments', $filters)) {
+            if ($operatorSegments == 'ANY') {
                 $segments = [];
-                foreach($filters['segments'] as $groupId => $segmentIds) {
-                    foreach($segmentIds as $segmentId) {
+                foreach ($filters['segments'] as $groupId => $segmentIds) {
+                    foreach ($segmentIds as $segmentId) {
                         $segment = $this->getSegmentManager()->getSegmentById($segmentId);
-                        if(!$segment) {
+                        if (!$segment) {
                             throw new \Exception(sprintf('Segment %d was not found', $segmentId));
                         }
                         $segments[] = $segment;
@@ -140,19 +140,19 @@ class SearchHelper {
                 }
                 $handler->addFilter(new CustomerSegmentFilter($segments, null, 'OR'));
             } else {
-                foreach($filters['segments'] as $groupId => $segmentIds) {
+                foreach ($filters['segments'] as $groupId => $segmentIds) {
                     $segmentGroup = null;
-                    if($groupId !== 'default') {
+                    if ($groupId !== 'default') {
                         /** @var \Pimcore\Model\DataObject\CustomerSegmentGroup $segmentGroup */
                         $segmentGroup = $this->getSegmentManager()->getSegmentGroupById($groupId);
-                        if(!$segmentGroup) {
+                        if (!$segmentGroup) {
                             throw new \Exception(sprintf('Segment group %d was not found', $groupId));
                         }
                     }
                     $segments = [];
-                    foreach($segmentIds as $segmentId) {
+                    foreach ($segmentIds as $segmentId) {
                         $segment = $this->getSegmentManager()->getSegmentById($segmentId);
-                        if(!$segment) {
+                        if (!$segment) {
                             throw new \Exception(sprintf('Segment %d was not found', $segmentId));
                         }
                         $segments[] = $segment;
@@ -163,7 +163,7 @@ class SearchHelper {
         }
 
         // add permission filter for non admin
-        if(!$adminUser->isAdmin()) {
+        if (!$adminUser->isAdmin()) {
             // only show customers which the user can access
             $handler->addFilter(new PermissionFilter($adminUser));
         }

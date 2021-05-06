@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\CustomerSaveHandler;
@@ -32,11 +32,11 @@ class AttributeLogic extends AbstractCustomerSaveHandler
      */
     private $fieldMapping;
 
-
     /**
      * AttributeLogic constructor.
+     *
      * @param [][] ...$fieldMapping
-     * 
+     *
      * Example field mapping in yml config:
      * arguments:
      *  - from: profileStreet
@@ -72,15 +72,14 @@ class AttributeLogic extends AbstractCustomerSaveHandler
      */
     public function preSave(CustomerInterface $customer)
     {
-
-        foreach($this->fieldMapping as $item) {
-            if(empty($item['from']) || empty($item['to'])) {
+        foreach ($this->fieldMapping as $item) {
+            if (empty($item['from']) || empty($item['to'])) {
                 continue;
             }
 
             $overwriteIfNotEmpty = isset($item['overwriteIfNotEmpty']) ? (bool) $item['overwriteIfNotEmpty'] : false;
 
-            if(!$this->checkIfOverwriteIsNeeded($customer, $item['from'], $item['to'], $overwriteIfNotEmpty)) {
+            if (!$this->checkIfOverwriteIsNeeded($customer, $item['from'], $item['to'], $overwriteIfNotEmpty)) {
                 continue;
             }
 
@@ -93,6 +92,7 @@ class AttributeLogic extends AbstractCustomerSaveHandler
      * @param string $from
      * @param string $to
      * @param bool $overwriteIfNotEmpty
+     *
      * @return bool
      */
     protected function checkIfOverwriteIsNeeded(CustomerInterface $customer, $from, $to, $overwriteIfNotEmpty = false)
@@ -101,22 +101,22 @@ class AttributeLogic extends AbstractCustomerSaveHandler
         $toGetter = 'get' . ucfirst($to);
 
         // if target field is not empty and overwriteIfNotEmpty is not set => no update needed
-        if(!$overwriteIfNotEmpty && $customer->$toGetter()) {
+        if (!$overwriteIfNotEmpty && $customer->$toGetter()) {
             return false;
         }
 
-        if($originalCustomer = $this->getOriginalCustomer()) {
+        if ($originalCustomer = $this->getOriginalCustomer()) {
 
             // if from field did not change => no update needed
-            if($customer->$fromGetter() == $originalCustomer->$fromGetter()) {
+            if ($customer->$fromGetter() == $originalCustomer->$fromGetter()) {
                 return false;
             }
 
             // if to field changed => no update needed
-            if($originalCustomer->$toGetter() != $customer->$toGetter()) {
+            if ($originalCustomer->$toGetter() != $customer->$toGetter()) {
                 return false;
             }
-        } elseif($customer->$toGetter()) {
+        } elseif ($customer->$toGetter()) {
             return false;
         }
 

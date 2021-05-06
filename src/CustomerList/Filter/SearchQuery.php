@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\CustomerList\Filter;
@@ -53,11 +53,10 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
         $this->parsedQuery = $this->parseQuery($query);
     }
 
-
     public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $queryBuilder)
     {
-        if(sizeof($this->fields) === 1 && preg_match('/AND|OR|!|\(.*\)/', $this->query) === 0) {
-            if(strpos($this->query, '*') !== false) {
+        if (sizeof($this->fields) === 1 && preg_match('/AND|OR|!|\(.*\)/', $this->query) === 0) {
+            if (strpos($this->query, '*') !== false) {
                 $queryBuilder->andWhere(sprintf('%s like %s', $this->fields[0], $listing->quote(str_replace('*', '%', $this->query))));
             } else {
                 $queryBuilder->andWhere(sprintf('%s = %s', $this->fields[0], $listing->quote($this->query)));
@@ -65,7 +64,6 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
 
             return;
         }
-
 
         $parserQueryBuilder = new Doctrine(
             $this->fields,

@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Newsletter\Command;
@@ -58,7 +58,6 @@ class NewsletterSyncCommand extends AbstractCommand
         $this->customerProvider = $customerProvider;
     }
 
-
     protected function configure()
     {
         $this->setName('cmf:newsletter-sync')
@@ -92,7 +91,7 @@ class NewsletterSyncCommand extends AbstractCommand
 
             $this->lock($lockKey);
 
-            if(!$input->getOption('force-segments')) {
+            if (!$input->getOption('force-segments')) {
                 $this->newsletterManager->syncSegments();
             }
 
@@ -108,7 +107,7 @@ class NewsletterSyncCommand extends AbstractCommand
             $this->mailchimpStatusSync();
         }
 
-        if($input->getOption('delete-non-existing-items-in-mailchimp')) {
+        if ($input->getOption('delete-non-existing-items-in-mailchimp')) {
             $this->deleteNonExistingItemsInMailchimp();
         }
 

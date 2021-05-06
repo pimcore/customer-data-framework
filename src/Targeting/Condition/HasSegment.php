@@ -7,12 +7,12 @@ declare(strict_types=1);
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Targeting\Condition;
@@ -57,10 +57,10 @@ class HasSegment extends AbstractVariableCondition implements DataProviderDepend
     private function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'operator'                 => '>=',
-            'value'                    => 1,
+            'operator' => '>=',
+            'value' => 1,
             'considerCustomerSegments' => true,
-            'considerTrackedSegments'  => true
+            'considerTrackedSegments' => true
         ]);
 
         $resolver->setAllowedTypes('operator', 'string');
@@ -94,10 +94,10 @@ class HasSegment extends AbstractVariableCondition implements DataProviderDepend
         return new self(
             $segmentId,
             [
-                'operator'                 => $config['condition_operator'] ?? '>=',
-                'value'                    => $config['value'] ?? 1,
+                'operator' => $config['condition_operator'] ?? '>=',
+                'value' => $config['value'] ?? 1,
                 'considerCustomerSegments' => $config['considerCustomerSegments'] ?? true,
-                'considerTrackedSegments'  => $config['considerTrackedSegments'] ?? true
+                'considerTrackedSegments' => $config['considerTrackedSegments'] ?? true
             ]
         );
     }

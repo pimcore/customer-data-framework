@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Commercial License (PCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
+ */
+
 namespace CustomerManagementFrameworkBundle\ActivityStore;
 
 use CustomerManagementFrameworkBundle\Filter\ExportActivitiesFilterParams;
@@ -16,6 +29,7 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
     protected function getAttributeInsertData(ActivityInterface $activity)
     {
         $activityData = $activity->cmfToArray();
+
         return \json_encode($activityData);
     }
 
@@ -36,6 +50,7 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
      * @param ActivityInterface $activity
      *
      * @return null|ActivityStoreEntryInterface
+     *
      * @throws \Exception
      */
     public function getEntryForActivity(ActivityInterface $activity)
@@ -90,6 +105,7 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
      * @param $id
      *
      * @return null|ActivityStoreEntryInterface
+     *
      * @throws \Exception
      */
     public function getEntryById($id)
@@ -145,7 +161,7 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
      */
     public function lazyLoadMetadataOfEntry(ActivityStoreEntryInterface $entry)
     {
-        if(!$entry->getId()) {
+        if (!$entry->getId()) {
             return;
         }
 
@@ -154,15 +170,14 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
                 self::ACTIVITIES_METADATA_TABLE,
                 $entry->getId()
             ));
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->getLogger()->error('fetching of activity store metadata failed: ' . $e->getMessage());
             $rows = [];
         }
 
-
         $metadata = [];
 
-        foreach($rows as $row) {
+        foreach ($rows as $row) {
             $metadata[$row['key']] = $row['data'];
         }
 

@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Action;
@@ -33,11 +33,10 @@ class AddTrackedSegment extends AbstractAction
         ActionDefinitionInterface $actionDefinition,
         CustomerInterface $customer,
         RuleEnvironmentInterface $environment
-    )
-    {
+    ) {
         $options = $actionDefinition->getOptions();
 
-        if(isset($options[self::OPTION_CONSIDER_PROFILING_CONSENT]) && $options[self::OPTION_CONSIDER_PROFILING_CONSENT] !== false && !$this->consentChecker->hasProfilingConsent($customer)) {
+        if (isset($options[self::OPTION_CONSIDER_PROFILING_CONSENT]) && $options[self::OPTION_CONSIDER_PROFILING_CONSENT] !== false && !$this->consentChecker->hasProfilingConsent($customer)) {
             return;
         }
 
@@ -61,8 +60,7 @@ class AddTrackedSegment extends AbstractAction
         ActionDefinitionInterface $actionDefinition,
         CustomerInterface $customer,
         CustomerSegmentInterface $segment
-    )
-    {
+    ) {
         $options = $actionDefinition->getOptions();
 
         $this->logger->info(
@@ -86,7 +84,7 @@ class AddTrackedSegment extends AbstractAction
 
         $timestamp = null;
         $countApplications = false;
-        if($options[self::OPTION_INCREASE_SEGMENT_APPLICATION_COUNTER]) {
+        if ($options[self::OPTION_INCREASE_SEGMENT_APPLICATION_COUNTER]) {
             $timestamp = time();
             $countApplications = true;
         }

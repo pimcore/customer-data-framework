@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Model\ActivityStoreEntry;
@@ -326,8 +326,6 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
         return $data;
     }
 
-
-
     public function save($updateAttributes = false)
     {
         $relatedItem = $this->getRelatedItem();
@@ -341,6 +339,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     public function getMetadata(): array
     {
         $this->loadMetadata();
+
         return (array) $this->metadata;
     }
 
@@ -352,6 +351,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     public function getMetadataItem($key)
     {
         $this->loadMetadata();
+
         return $this->metadata[$key] ?? null;
     }
 
@@ -364,13 +364,15 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     /**
      * metadata is lazy loaded
      */
-    private function loadMetadata() {
-        if(is_null($this->metadata)) {
+    private function loadMetadata()
+    {
+        if (is_null($this->metadata)) {
             $this->getActivityStore()->lazyLoadMetadataOfEntry($this);
         }
     }
 
-    private function getActivityStore(): ActivityStoreInterface {
+    private function getActivityStore(): ActivityStoreInterface
+    {
         return \Pimcore::getContainer()->get('cmf.activity_store');
     }
 }

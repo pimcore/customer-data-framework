@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\SegmentManager\SegmentExtractor;
@@ -21,7 +21,6 @@ use Pimcore\Model\DataObject\Data\ObjectMetadata;
 
 interface SegmentExtractorInterface
 {
-
     /**
      * @param CustomerInterface $customer
      *
@@ -50,6 +49,7 @@ interface SegmentExtractorInterface
      * returns an array with all segment application counters of all assiged segments of the customer
      *
      * @param CustomerInterface $customer
+     *
      * @return int[] array key = segmentId, array value = segment application counter
      */
     public function getAllSegmentApplicationCounters(CustomerInterface $customer): array;
@@ -57,8 +57,8 @@ interface SegmentExtractorInterface
     /**
      * @param CustomerInterface $customer
      * @param CustomerSegmentInterface $customerSegment
+     *
      * @return int
      */
     public function getSegmentApplicationCounter(CustomerInterface $customer, CustomerSegmentInterface $customerSegment): int;
-
 }

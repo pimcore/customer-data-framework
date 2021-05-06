@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\ActivityView;
@@ -19,9 +19,9 @@ use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\View\Formatter\ViewFormatterInterface;
 use Pimcore\Model\Asset;
-use Pimcore\Model\Document;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\ClassDefinition;
+use Pimcore\Model\Document;
 
 class DefaultActivityView implements ActivityViewInterface
 {
@@ -91,7 +91,6 @@ class DefaultActivityView implements ActivityViewInterface
         return false;
     }
 
-
     /**
      * @param       $implementationClass
      * @param array $attributes
@@ -145,26 +144,26 @@ class DefaultActivityView implements ActivityViewInterface
      * @param $elementType
      * @param string $buttonCssClass
      * @param string $buttonTranslationKey
+     *
      * @return string
      */
     public function createPimcoreElementLink($id, $elementType, $buttonCssClass = 'btn btn-sm btn-default', $buttonTranslationKey = 'cmf_open')
     {
         $elementType = mb_strtolower($elementType);
 
-        if(!in_array($elementType, ['object', 'asset', 'document'])) {
+        if (!in_array($elementType, ['object', 'asset', 'document'])) {
             throw new \RuntimeException(sprintf('"%s" is not valid element type (object, asset + document is allowed)', $elementType));
         }
 
-        if($elementType == 'object' && ($object = AbstractObject::getById($id))) {
+        if ($elementType == 'object' && ($object = AbstractObject::getById($id))) {
             $link = sprintf("window.top.pimcore.helpers.openObject(%s, '%s')", $id, $object->getType());
-
-        } elseif($elementType == 'document' && ($document = Document::getById($id))) {
+        } elseif ($elementType == 'document' && ($document = Document::getById($id))) {
             $link = sprintf("window.top.pimcore.helpers.openDocument(%s, '%s')", $id, $document->getType());
-        } elseif($elementType == 'asset' && ($asset = Asset::getById($id))) {
+        } elseif ($elementType == 'asset' && ($asset = Asset::getById($id))) {
             $link = sprintf("window.top.pimcore.helpers.openAsset(%s, '%s')", $id, $asset->getType());
         }
 
-        if(!$link) {
+        if (!$link) {
             return '';
         }
 

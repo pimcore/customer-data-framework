@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
@@ -69,7 +69,6 @@ class CliSyncProcessor
     {
         foreach ($this->newsletterManager->getNewsletterProviderHandlers() as $newsletterProviderHandler) {
             if ($newsletterProviderHandler instanceof Mailchimp) {
-
                 $exportService = $newsletterProviderHandler->getExportService();
                 $client = $exportService->getApiClient();
 
@@ -79,7 +78,7 @@ class CliSyncProcessor
 
                 $count = 20;
                 $page = 0;
-                while(true) {
+                while (true) {
                     $result = $client->get(
                         $exportService->getListResourceUrl(
                             $newsletterProviderHandler->getListId(),
@@ -89,7 +88,6 @@ class CliSyncProcessor
 
                     if ($client->success() && sizeof($result['members'])) {
                         foreach ($result['members'] as $row) {
-
                             $customer = null;
                             // var_dump($row);
                             /**
@@ -156,24 +154,21 @@ class CliSyncProcessor
 
     public function deleteNonExistingItems()
     {
-
         foreach ($this->newsletterManager->getNewsletterProviderHandlers() as $newsletterProviderHandler) {
             if ($newsletterProviderHandler instanceof Mailchimp) {
-
                 $exportService = $newsletterProviderHandler->getExportService();
                 $client = $exportService->getApiClient();
 
                 $count = 20;
                 $page = 0;
-                while(true) {
-                    $url = $exportService->getListResourceUrl($newsletterProviderHandler->getListId(), 'members/?count=' . $count . '&offset=' . ($page * $count) );
+                while (true) {
+                    $url = $exportService->getListResourceUrl($newsletterProviderHandler->getListId(), 'members/?count=' . $count . '&offset=' . ($page * $count));
                     $result = $client->get(
                         $url
                     );
 
                     if ($client->success() && sizeof($result['members'])) {
                         foreach ($result['members'] as $row) {
-
                             $list = $this->customerProvider->getList();
                             $list->setCondition('email = ?', $row['email_address']);
 
@@ -182,7 +177,7 @@ class CliSyncProcessor
                                 continue;
                             }
 
-                            if($row['status'] === Mailchimp::STATUS_UNSUBSCRIBED || $row['status'] === Mailchimp::STATUS_CLEANED) {
+                            if ($row['status'] === Mailchimp::STATUS_UNSUBSCRIBED || $row['status'] === Mailchimp::STATUS_CLEANED) {
                                 continue;
                             }
 
@@ -223,7 +218,7 @@ class CliSyncProcessor
                         }
                         $page++;
                     } else {
-                        if(!$client->success()) {
+                        if (!$client->success()) {
                             $this->getLogger()->error(
                                 'get members failed: ' . $url
                             );
@@ -231,7 +226,6 @@ class CliSyncProcessor
                         break;
                     }
                 }
-
             }
         }
     }

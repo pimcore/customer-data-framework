@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler;
@@ -34,7 +34,6 @@ use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemI
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\File;
 use Pimcore\Model\DataObject\CustomerSegment;
 use Psr\Log\LoggerInterface;
@@ -235,7 +234,6 @@ class Mailchimp implements NewsletterProviderHandlerInterface
     {
         $updateNeededItems = [];
         foreach ($items as $item) {
-
             $emailValidator = new EmailValidator();
 
             if ($item->getCustomer() && !$emailValidator->isValid($item->getCustomer()->getEmail()) && !$emailValidator->isValid(!$item->getEmail())) {
@@ -317,6 +315,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
      * Fetches customer data via the Mailchimp API.
      *
      * @param NewsletterAwareCustomerInterface $customer
+     *
      * @return array|null
      */
     public function fetchCustomer(NewsletterAwareCustomerInterface $customer)
@@ -328,6 +327,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
      * Directly Subscribes/exports a customer with mailchimp status "subscribed" via the Mailchimp API.
      *
      * @param NewsletterAwareCustomerInterface $customer
+     *
      * @return bool success
      */
     public function subscribeCustomer(NewsletterAwareCustomerInterface $customer)
@@ -339,6 +339,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
      * Directly Subscribes/exports a customer with mailchimp status "pending" via the Mailchimp API.
      *
      * @param NewsletterAwareCustomerInterface $customer
+     *
      * @return bool success
      */
     public function subscribeCustomerPending(NewsletterAwareCustomerInterface $customer)
@@ -346,11 +347,11 @@ class Mailchimp implements NewsletterProviderHandlerInterface
         return $this->subscribeCustomerWithStatus($customer, self::STATUS_PENDING);
     }
 
-
     /**
      * Directly Subscribes/exports a customer with given mailchimp status "subscribed" via the Mailchimp API.
      *
      * @param NewsletterAwareCustomerInterface $customer
+     *
      * @return bool success
      */
     public function subscribeCustomerWithStatus(NewsletterAwareCustomerInterface $customer, string $status)
@@ -552,12 +553,10 @@ class Mailchimp implements NewsletterProviderHandlerInterface
             // Check if this is a multi-value field e.g. ADDRESS and needs
             // merging itself.
             if (isset($mergeFields[$mapping['field']]) && is_array($mergeFields[$mapping['field']])) {
-              $mergeFields[$mapping['field']] += $mapping['value'];
+                $mergeFields[$mapping['field']] += $mapping['value'];
+            } else {
+                $mergeFields[$mapping['field']] = $mapping['value'];
             }
-            else {
-              $mergeFields[$mapping['field']] = $mapping['value'];
-            }
-
         }
 
         $emailCleaner = new Email();
@@ -596,7 +595,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
         foreach ($this->getAllExportableSegments() as $segment) {
             $remoteSegmentId = $this->exportService->getRemoteId($segment, $this->listId);
 
-            if(!$remoteSegmentId) {
+            if (!$remoteSegmentId) {
                 continue;
             }
 
@@ -725,7 +724,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
         $status = $this->getNewsletterStatus($customer);
 
         if (!isset($this->statusMapping[$status])) {
-            $status = \CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp::STATUS_UNSUBSCRIBED;
+            $status = self::STATUS_UNSUBSCRIBED;
         } else {
             $status = $this->statusMapping[$status];
         }
@@ -820,12 +819,12 @@ class Mailchimp implements NewsletterProviderHandlerInterface
     /**
      * @param $email
      * @param int|false $customerId
+     *
      * @return bool
      */
     public function doesOtherSubscribedCustomerWithEmailExist($email, $customerId = false)
     {
-
-        if(!$email) {
+        if (!$email) {
             return false;
         }
 
@@ -833,15 +832,14 @@ class Mailchimp implements NewsletterProviderHandlerInterface
 
         $list = $customerProvider->getList();
         $customerProvider->addActiveCondition($list);
-        if($customerId) {
+        if ($customerId) {
             $list->setCondition('trim(lower(email)) = ? and o_id != ?', [trim(strtolower($email)), $customerId]);
         } else {
             $list->setCondition('trim(lower(email)) = ?', [trim(strtolower($email))]);
         }
 
-
-        foreach($list as $_customer) {
-            if(in_array($this->getMailchimpStatus($_customer), array(self::STATUS_PENDING, self::STATUS_SUBSCRIBED))) {
+        foreach ($list as $_customer) {
+            if (in_array($this->getMailchimpStatus($_customer), [self::STATUS_PENDING, self::STATUS_SUBSCRIBED])) {
                 return true;
             }
         }
@@ -853,6 +851,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
      * Override this method if you have multiple tenants
      *
      * @param string $email
+     *
      * @return NewsletterAwareCustomerInterface
      */
     public function getActiveCustomerByEmail($email)
@@ -861,6 +860,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
          * @var NewsletterAwareCustomerInterface $customer
          */
         $customer = $this->getCustomerProvider()->getActiveCustomerByEmail($email);
+
         return $customer;
     }
 

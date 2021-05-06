@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\Event;
@@ -137,16 +137,15 @@ class PimcoreObjectEventListener
 
     public function onPreSave(DataObjectImportEvent $e)
     {
-
         $data = $e->getAdditionalData();
 
         $customer = $e->getObject();
 
-        if(!$customer instanceof CustomerInterface) {
+        if (!$customer instanceof CustomerInterface) {
             return;
         }
 
-        if($data) {
+        if ($data) {
             /**
              * @var SegmentManagerInterface $segmentManager
              */
@@ -155,12 +154,11 @@ class PimcoreObjectEventListener
             /**
              * check to be compatible with different Pimcore versions
              */
-
-            if(is_array($data)) {
+            if (is_array($data)) {
                 $data = $data['customerSegmentId'];
             }
 
-            if($segment = $segmentManager->getSegmentById($data)) {
+            if ($segment = $segmentManager->getSegmentById($data)) {
                 $segmentManager->mergeSegments($customer, [$segment], [], 'Customer CSV importer');
             }
         }

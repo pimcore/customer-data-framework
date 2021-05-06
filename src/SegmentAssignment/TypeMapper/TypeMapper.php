@@ -5,12 +5,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper;
@@ -67,20 +67,20 @@ class TypeMapper implements TypeMapperInterface
     /**
      * @inheritDoc
      */
-    public function getTypeStringByListing(AbstractListing $listing): string {
-        if($listing instanceof Document\Listing) {
+    public function getTypeStringByListing(AbstractListing $listing): string
+    {
+        if ($listing instanceof Document\Listing) {
             return static::TYPE_DOCUMENT;
         }
 
-        if($listing instanceof Asset\Listing) {
+        if ($listing instanceof Asset\Listing) {
             return static::TYPE_ASSET;
         }
 
-        if($listing instanceof Concrete) {
+        if ($listing instanceof Concrete) {
             return static::TYPE_OBJECT;
         }
 
         return '';
     }
-
 }
