@@ -68,7 +68,7 @@ class DefaultQueue implements QueueInterface
             ->addOrderBy('id', 'asc')
             ->andWhere('actionDate <= ' . time());
 
-        $items = $db->fetchAll($select);
+        $items = $db->fetchAll((string)$select);
 
         foreach ($items as $item) {
             $this->processQueueItem($item);
