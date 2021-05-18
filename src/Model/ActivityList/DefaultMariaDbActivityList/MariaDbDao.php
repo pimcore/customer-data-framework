@@ -106,14 +106,14 @@ class MariaDbDao
         $query->from(MariaDb::ACTIVITIES_TABLE);
         $query->select('count(*) totalCount');
 
-        return Db::get()->fetchOne($query, $this->model->getConditionVariables(), $this->model->getConditionVariableTypes());
+        return Db::get()->fetchOne((string)$query, $this->model->getConditionVariables(), $this->model->getConditionVariableTypes());
     }
 
     public function load()
     {
         $query = $this->getQueryBuilder();
 
-        $result = Db::get()->fetchAll($query, $this->model->getConditionVariables(), $this->model->getConditionVariableTypes());
+        $result = Db::get()->fetchAll((string)$query, $this->model->getConditionVariables(), $this->model->getConditionVariableTypes());
 
         return $result;
     }
