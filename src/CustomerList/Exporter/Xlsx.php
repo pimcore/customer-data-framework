@@ -15,9 +15,9 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerList\Exporter;
 
+use Box\Spout\Common\Entity\Style\Style;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
-use Box\Spout\Common\Entity\Style\Style;
 use Box\Spout\Writer\XLSX\Writer;
 
 class Xlsx extends AbstractExporter
@@ -118,6 +118,7 @@ class Xlsx extends AbstractExporter
 
     /**
      * @param array $row
+     *
      * @return $this
      */
     protected function renderRow(array $row)
