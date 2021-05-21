@@ -15,9 +15,9 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerList\Exporter;
 
+use Box\Spout\Common\Entity\Style\Style;
 use Box\Spout\Common\Type;
-use Box\Spout\Writer\Style\Style;
-use Box\Spout\Writer\WriterFactory;
+use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
 use Box\Spout\Writer\XLSX\Writer;
 
 class Xlsx extends AbstractExporter
@@ -68,12 +68,9 @@ class Xlsx extends AbstractExporter
     public function generateExportFile(array $exportData)
     {
         $this->stream = fopen('php://output', 'w+');
-        $writer = WriterFactory::create(Type::XLSX);
+        $writer = WriterEntityFactory::createXLSXWriter();
         $file = tempnam(PIMCORE_SYSTEM_TEMP_DIRECTORY, 'cmf_customerexport_');
 
-        /**
-         * @var Writer $writer
-         */
         $writer->openToFile($file);
         $this->writer = $writer;
 
@@ -90,7 +87,7 @@ class Xlsx extends AbstractExporter
 
     public function getExtension()
     {
-        return 'xlsx';
+        return Type::XLSX;
     }
 
     protected function render(array $exportData)
@@ -114,19 +111,19 @@ class Xlsx extends AbstractExporter
         $style = new Style();
         $style->setFontBold();
 
-        $this->writer->addRowWithStyle($titles, $style);
+        $this->writer->addRow(WriterEntityFactory::createRowFromArray($titles, $style));
 
         return $this;
     }
 
     /**
-     * @param [] $row
+     * @param array $row
      *
      * @return $this
      */
     protected function renderRow(array $row)
     {
-        $this->writer->addRow($row);
+        $this->writer->addRow(WriterEntityFactory::createRowFromArray($row));
 
         return $this;
     }
