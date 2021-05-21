@@ -165,6 +165,11 @@ interface CustomerInterface extends ElementInterface
     public function setPhone(?string $phone);
 
     /**
+     * @return string|null
+     */
+    public function getCustomerLanguage();
+
+    /**
      * @return CustomerSegmentInterface[]|ObjectMetadata[]
      */
     public function getManualSegments(): array;

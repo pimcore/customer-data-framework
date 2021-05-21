@@ -50,6 +50,7 @@ Following options to prepare the customer class are available:
   * `zip`: input field
   * `city`: input field
   * `countryCode`: country selection
+  * `customerLanguage`: language selection
   * `email`: email field
   * `phone`: input field
   * `manualSegments`: objects relation to `CustomerSegments` or objects with metadata to `CustomerSegments` with 

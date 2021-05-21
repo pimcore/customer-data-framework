@@ -116,4 +116,8 @@ trait CustomerTrait
     {
         return $this->getPublished() && $this->getActive();
     }
+
+    public function getCustomerLanguage() {
+        return null;
+    }
 }
