@@ -143,7 +143,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
             $this->applySaveHandlers($customer, 'preAdd', true);
         }
-        
+
         if ($customer->getPublished()) {
             $this->validateOnSave($customer);
         }
