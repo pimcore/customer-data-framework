@@ -18,6 +18,7 @@ cp app/config/parameters.example.yml app/config/parameters.yml
 composer config minimum-stability "dev"
 composer config prefer-stable true
 composer require pimcore/pimcore:6.9.x-dev --no-update
+composer require symfony/symfony:4.3 --no-update
 composer require codeception/codeception:2.4.5 --no-update
 
 # move that to composer.json when only pimcore X
