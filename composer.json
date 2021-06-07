@@ -29,7 +29,7 @@
       "symfony/security-guard": "^4.3 || ^5.2.0",
       "symfony/security-http": "^4.3 || ^5.2.0",
       "symfony/stopwatch": "^4.3 || ^5.2.0",
-      "symfony/translation-contracts": "^2.2"
+      "symfony/translation-contracts": "^1.1 || ^2.2"
     },
     "require-dev": {
       "codeception/codeception": "~2.4.5 || ^4.1.12"
