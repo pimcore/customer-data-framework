@@ -208,6 +208,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
             return null;
         }
 
+        $email = str_replace('_', '\_', $email);
         $list = $this->getList();
         $list->setUnpublished(false);
         $this->addActiveCondition($list);
