@@ -118,7 +118,7 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
      * save rule config
      *
      * @param Request $request
-     * @Route("/save")
+     * @Route("/save", methods={"PUT"})
      */
     public function saveAction(Request $request)
     {
@@ -198,7 +198,7 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
      * add new rule
      *
      * @param Request $request
-     * @Route("/add")
+     * @Route("/add", methods={"POST"})
      */
     public function addAction(Request $request)
     {
@@ -229,7 +229,7 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
      * delete exiting rule
      *
      * @param Request $request
-     * @Route("/delete")
+     * @Route("/delete", methods={"DELETE"})
      */
     public function deleteAction(Request $request)
     {
