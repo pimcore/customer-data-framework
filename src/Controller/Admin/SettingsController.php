@@ -17,6 +17,7 @@ namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\Security\Guard\WebserviceAuthenticator;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
+use Pimcore\Bundle\AdminBundle\Security\CsrfProtectionHandler;
 use Pimcore\Model\Tool\SettingsStore;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,12 +26,13 @@ class SettingsController extends AdminController
 {
     /**
      * @param Request $request
+     * @param CsrfProtectionHandler $csrfProtectionHandler
      *
      * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
      *
      * @Route("/settings/webservice-users", name="_pimcore_customermanagementframework_backend_settings_webservice_users", methods={"GET","POST"})
      */
-    public function userManagementAction(Request $request)
+    public function userManagementAction(Request $request, CsrfProtectionHandler $csrfProtectionHandler)
     {
         $this->isAllowed();
 
@@ -39,6 +41,7 @@ class SettingsController extends AdminController
 
         if ($request->get('data')) {
             if ($request->get('xaction') == 'update') {
+                $csrfProtectionHandler->checkCsrfToken($request);
                 $data = $this->decodeJson($request->get('data'));
 
                 $apiKeys[$data['id']] = $data['apiKey'];
