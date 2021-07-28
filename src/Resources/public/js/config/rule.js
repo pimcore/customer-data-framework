@@ -552,7 +552,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
                 id: this.rule.id,
                 data: Ext.encode(saveData)
             },
-            method: "post",
+            method: "PUT",
             success: this.saveOnComplete.bind(this)
         });
     },
