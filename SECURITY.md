@@ -7,7 +7,7 @@ don’t use the bug tracker and don’t publish it publicly.
 Instead, all security issues must be reported via [this form](https://pimcorehq.wufoo.com/forms/pimcore-security-report/).
 
 ## Resolving Process
-Every submitted security issue is handled with top priority by the core-team by following these steps: 
+Every submitted security issue is handled with top priority by following these steps: 
 
 1. Confirm the vulnerability
 2. Determine the severity
