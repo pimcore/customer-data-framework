@@ -155,7 +155,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
                 iconCls: 'pimcore_nav_icon_newsletter_enqueue_all_customers',
                 handler: function () {
                     Ext.Ajax.request({
-                        url: "/webservice/cmf/newsletter/enqueue-all-customers",
+                        url: "/__customermanagementframework/webservice/newsletter/enqueue-all-customers",
                         success: function () {
                             setTimeout(function () {
                                 this.checkNewsletterQueueStatus(Ext.get('pimcore_bundle_customerManagementFramework_newsletter_queue_status'));
@@ -244,7 +244,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
 
     checkNewsletterQueueStatus: function (statusIcon, initTimeout) {
         Ext.Ajax.request({
-            url: "/webservice/cmf/newsletter/get-queue-size",
+            url: "/__customermanagementframework/webservice/newsletter/get-queue-size",
             method: "get",
             success: function (response) {
                 var rdata = Ext.decode(response.responseText);
