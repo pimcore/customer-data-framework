@@ -211,7 +211,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
         $list = $this->getList();
         $list->setUnpublished(false);
         $this->addActiveCondition($list);
-        $list->addConditionParam('trim(email) like ?', [trim($email)]);
+        $list->addConditionParam('trim(email) like ?', [$list->escapeLike(trim($email))]);
 
         if ($list->count() > 1) {
             throw new DuplicateCustomersFoundException(sprintf('multiple active and published customers with email %s found', $email));
