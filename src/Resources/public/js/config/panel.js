@@ -250,6 +250,7 @@ pimcore.plugin.cmf.config.panel = Class.create({
         if (button == "ok" && value.length > 0) {
             Ext.Ajax.request({
                 url: "/admin/customermanagementframework/rules/add",
+                method: "POST",
                 params: {
                     name: value,
                     documentId: (this.page ? this.page.id : null)
@@ -283,6 +284,7 @@ pimcore.plugin.cmf.config.panel = Class.create({
     deleteRule: function (tree, record) {
         Ext.Ajax.request({
             url: "/admin/customermanagementframework/rules/delete",
+            method: "DELETE",
             params: {
                 id: record.id
             },

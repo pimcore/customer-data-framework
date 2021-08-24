@@ -37,13 +37,8 @@ class AdminController extends AbstractRestController
     /**
      * @Route("/newsletter/get-queue-size", methods={"GET"})
      */
-    public function getQueueSize()
+    public function getQueueSize(NewsletterQueueInterface $queue)
     {
-        /**
-         * @var NewsletterQueueInterface $queue
-         */
-        $queue = $this->container->get(NewsletterQueueInterface::class);
-
         return new JsonResponse(['size' => $queue->getQueueSize()]);
     }
 }
