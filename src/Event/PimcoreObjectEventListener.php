@@ -44,6 +44,11 @@ class PimcoreObjectEventListener
             return;
         }
 
+        //do not call customerSaveManager on recyclebin restore
+        if ($e->hasArgument('isRecycleBinRestore') && $e->getArgument('isRecycleBinRestore')) {
+            return;
+        }
+
         $object = $e->getObject();
 
         if ($object instanceof CustomerInterface) {
