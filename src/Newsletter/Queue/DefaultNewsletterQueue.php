@@ -240,6 +240,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
         $db = Db::get();
 
         $select = $db->createQueryBuilder();
+        $select->select('*');
         $select->from(self::QUEUE_TABLE);
 
         $rows = $db->fetchAll((string)$select);
