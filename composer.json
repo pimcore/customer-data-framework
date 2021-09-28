@@ -3,7 +3,10 @@
     "license": "GPL-3.0-or-later",
     "type": "pimcore-bundle",
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "preferred-install": {
+          "pimcore/pimcore": "source"
+        }
     },
     "require": {
       "box/spout": "^3.0",
