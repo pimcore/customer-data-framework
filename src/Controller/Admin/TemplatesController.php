@@ -35,9 +35,8 @@ class TemplatesController extends AdminController
      * @throws \Exception
      * @Route("/export")
      */
-    public function exportAction(Request $request)
+    public function exportAction(Request $request, TemplateExporter $templateExporter)
     {
-        $templateExporter = $this->get(TemplateExporter::class);
         $document = PageSnippet::getById($request->get('document_id'));
 
         if ($document) {
