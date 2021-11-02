@@ -61,13 +61,13 @@ trait CustomerTrait
         return [];
     }
 
-    public function getProfilingConsent()
+    public function getProfilingConsent(): ?\Pimcore\Model\DataObject\Data\Consent
     {
         if (is_callable('parent::getProfilingConsent')) {
             return parent::getProfilingConsent();
         }
 
-        return true;
+        return null;
     }
 
     /**
@@ -117,7 +117,7 @@ trait CustomerTrait
         return $this->getPublished() && $this->getActive();
     }
 
-    public function getCustomerLanguage()
+    public function getCustomerLanguage(): ?string
     {
         return null;
     }
