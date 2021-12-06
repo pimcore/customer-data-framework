@@ -60,9 +60,10 @@ Following options to prepare the customer class are available:
   * `idEncoded`: input field
   * `profilingConsent`: consent (optional)
   
-  As starting point this [class definition](https://github.com/pimcore/customer-data-framework/blob/master/install/class_source/optional/class_Customer_export.json) can be used.
+As starting point this [class definition](https://github.com/pimcore/customer-data-framework/blob/master/install/class_source/optional/class_Customer_export.json) can be used.
 
-  Note that the class doesn't need to contain the attributes as field definitions. You can also just add the fields to your specific class implementation interface by adding getters.
+Note that the class doesn't need to contain the attributes as field definitions. You can also just add the fields to your specific class implementation interface by adding getters. You **must** also enable the _Generate Type Declarations_ options on the `Customer` class for the attributes to be compatible with the `Interface`.
+  
 
   Example
   ```php
