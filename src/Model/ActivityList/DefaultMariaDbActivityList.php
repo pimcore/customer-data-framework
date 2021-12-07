@@ -106,17 +106,10 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     }
 
     /**
-     * (PHP 5 &gt;= 5.1.0)<br/>
-     * Count elements of an object
-     *
-     * @link http://php.net/manual/en/countable.count.php
-     *
-     * @return int The custom count as an integer.
-     * </p>
-     * <p>
-     * The return value is cast to an integer.
+     * @return int
      */
-    public function count()
+    #[\ReturnTypeWillChange]
+    public function count()/* : int */
     {
         if ($this->totalCount === null) {
             $this->totalCount = $this->dao->getCount();
@@ -134,77 +127,51 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     }
 
     /**
-     * (PHP 5 &gt;= 5.1.0)<br/>
-     * Return the current element
-     *
-     * @link http://php.net/manual/en/iterator.current.php
-     *
-     * @return mixed Can return any type.
+     * @return ActivityInterface|false
      */
-    public function current()
+    #[\ReturnTypeWillChange]
+    public function current()/* : ActivityInterface|false */
     {
         $this->getActivities();
-        $var = current($this->activities);
 
-        return $var;
+        return current($this->activities);
     }
 
     /**
-     * (PHP 5 &gt;= 5.1.0)<br/>
-     * Move forward to next element
-     *
-     * @link http://php.net/manual/en/iterator.next.php
-     *
-     * @return void Any returned value is ignored.
+     * @return void
      */
-    public function next()
+    #[\ReturnTypeWillChange]
+    public function next()/* : void */
     {
         $this->getActivities();
         next($this->activities);
     }
 
     /**
-     * (PHP 5 &gt;= 5.1.0)<br/>
-     * Return the key of the current element
-     *
-     * @link http://php.net/manual/en/iterator.key.php
-     *
-     * @return \scalar scalar on success, integer
-     * 0 on failure.
+     * @return int|null
      */
-    public function key()
+    #[\ReturnTypeWillChange]
+    public function key()/* : int|null */
     {
         $this->getActivities();
-        $var = key($this->activities);
 
-        return $var;
+        return key($this->activities);
     }
 
     /**
-     * (PHP 5 &gt;= 5.1.0)<br/>
-     * Checks if current position is valid
-     *
-     * @link http://php.net/manual/en/iterator.valid.php
-     *
-     * @return bool The return value will be casted to boolean and then evaluated.
-     * Returns true on success or false on failure.
+     * @return bool
      */
-    public function valid()
+    #[\ReturnTypeWillChange]
+    public function valid()/* : bool */
     {
-        $var = $this->current() !== false;
-
-        return $var;
+        return $this->current() !== false;
     }
 
     /**
-     * (PHP 5 &gt;= 5.1.0)<br/>
-     * Rewind the Iterator to the first element
-     *
-     * @link http://php.net/manual/en/iterator.rewind.php
-     *
-     * @return void Any returned value is ignored.
+     * @return void
      */
-    public function rewind()
+    #[\ReturnTypeWillChange]
+    public function rewind()/* : void */
     {
         $this->getActivities();
         reset($this->activities);

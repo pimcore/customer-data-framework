@@ -49,15 +49,16 @@ class RuleEnvironment implements RuleEnvironmentInterface
     }
 
     /**
-     * @inheritDoc
+     * @return \ArrayIterator
      */
-    public function getIterator()
+    #[\ReturnTypeWillChange]
+    public function getIterator()/* : \ArrayIterator */
     {
         return new \ArrayIterator($this->data);
     }
 
     /**
-     * @inheritDoc
+     * @return bool
      */
     public function offsetExists($offset): bool
     {
@@ -65,27 +66,37 @@ class RuleEnvironment implements RuleEnvironmentInterface
     }
 
     /**
-     * @inheritDoc
+     * @return mixed
      */
-    public function offsetGet($offset)
+    #[\ReturnTypeWillChange]
+    public function offsetGet($offset)/* : mixed */
     {
         if (isset($this->data[$offset])) {
             return $this->data[$offset];
         }
+
+        return null;
     }
 
     /**
-     * @inheritDoc
+     * @param mixed $offset
+     * @param mixed $value
+     *
+     * @return void
      */
-    public function offsetSet($offset, $value)
+    #[\ReturnTypeWillChange]
+    public function offsetSet($offset, $value)/* : void */
     {
         $this->data[$offset] = $value;
     }
 
     /**
-     * @inheritDoc
+     * @param mixed $offset
+     *
+     * @return void
      */
-    public function offsetUnset($offset)
+    #[\ReturnTypeWillChange]
+    public function offsetUnset($offset)/* : void */
     {
         if (isset($this->data[$offset])) {
             unset($this->data[$offset]);
@@ -93,25 +104,30 @@ class RuleEnvironment implements RuleEnvironmentInterface
     }
 
     /**
-     * @inheritDoc
+     * @return string
      */
-    public function serialize()
+    #[\ReturnTypeWillChange]
+    public function serialize()/* : string */
     {
         return serialize($this->data);
     }
 
     /**
-     * @inheritDoc
+     * @param string $serialized
+     *
+     * @return void
      */
-    public function unserialize($serialized)
+    #[\ReturnTypeWillChange]
+    public function unserialize($serialized)/* : void */
     {
         $this->data = unserialize($serialized);
     }
 
     /**
-     * @inheritDoc
+     * @return array
      */
-    public function jsonSerialize()
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()/* : array */
     {
         return $this->data;
     }
