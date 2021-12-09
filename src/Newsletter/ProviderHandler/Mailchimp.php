@@ -117,7 +117,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
      *
      * @throws \Exception
      */
-    public function __construct($shortcut, $listId, array $statusMapping = [], array $reverseStatusMapping = [], array $mergeFieldMapping = [], array $fieldTransformers = [], SegmentExporter $segmentExporter, SegmentManagerInterface $segmentManager, MailChimpExportService $exportService)
+    public function __construct($shortcut, $listId, array $statusMapping, array $reverseStatusMapping, array $mergeFieldMapping, array $fieldTransformers, SegmentExporter $segmentExporter, SegmentManagerInterface $segmentManager, MailChimpExportService $exportService)
     {
         if (!strlen($shortcut) || !File::getValidFilename($shortcut)) {
             throw new \Exception('Please provide a valid newsletter provider handler shortcut.');
