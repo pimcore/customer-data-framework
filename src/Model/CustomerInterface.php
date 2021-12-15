@@ -212,6 +212,7 @@ interface CustomerInterface extends ElementInterface
 
     /**
      * Return type bool is deprecated and will be removed in version 4
+     *
      * @return Consent|bool|null
      */
     public function getProfilingConsent() /* :?Consent */;
