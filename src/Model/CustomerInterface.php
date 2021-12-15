@@ -211,9 +211,10 @@ interface CustomerInterface extends ElementInterface
     public function setIdEncoded(?string $idEncoded);
 
     /**
+     * Return type bool is deprecated and will be removed in version 4
      * @return Consent|bool|null
      */
-    public function getProfilingConsent();
+    public function getProfilingConsent() /* :?Consent */;
 
     /**
      * @return array
