@@ -25,10 +25,8 @@ use CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer;
 use Pimcore\Model\Tool\Targeting\Rule;
 use Pimcore\Model\Tool\Targeting\TargetGroup;
 use Pimcore\Targeting\ActionHandler\AssignTargetGroup;
-use Pimcore\Targeting\ConditionMatcherInterface;
 use Pimcore\Targeting\DataLoaderInterface;
 use Pimcore\Targeting\Model\VisitorInfo;
-use Pimcore\Targeting\Storage\TargetingStorageInterface;
 
 class AssignTargetGroupAndSegment extends AssignTargetGroup
 {
@@ -53,26 +51,34 @@ class AssignTargetGroupAndSegment extends AssignTargetGroup
     protected $consentChecker;
 
     /**
-     * AssignTargetGroupAndSegment constructor.
-     *
-     * @param ConditionMatcherInterface $conditionMatcher
-     * @param TargetingStorageInterface $storage
-     * @param SegmentManagerInterface $segmentManager
-     * @param ActivityManagerInterface $activityManager
+     * @required
      */
-    public function __construct(
-        ConditionMatcherInterface $conditionMatcher,
-        TargetingStorageInterface $storage,
-        SegmentManagerInterface $segmentManager,
-        ActivityManagerInterface $activityManager,
-        DataLoaderInterface $dataLoader,
-        ConsentCheckerInterface $consentChecker
-    ) {
-        parent::__construct($conditionMatcher, $storage);
-
+    public function setSegmentManager(SegmentManagerInterface $segmentManager): void
+    {
         $this->segmentManager = $segmentManager;
+    }
+
+    /**
+     * @required
+     */
+    public function setActivityManager(ActivityManagerInterface $activityManager): void
+    {
         $this->activityManager = $activityManager;
+    }
+
+    /**
+     * @required
+     */
+    public function setDataLoader(DataLoaderInterface $dataLoader): void
+    {
         $this->dataLoader = $dataLoader;
+    }
+
+    /**
+     * @required
+     */
+    public function setConsentChecker(ConsentCheckerInterface $consentChecker): void
+    {
         $this->consentChecker = $consentChecker;
     }
 
@@ -107,16 +113,14 @@ class AssignTargetGroupAndSegment extends AssignTargetGroup
             $this->activityManager->trackActivity(new TargetGroupAssignActivity($customer, $targetGroup, $action['weight'], $totalWeight));
         }
 
-        if ($action['assignSegment'] == 'assign_only' || $action['assignSegment'] == 'assign_consider_weight') {
-
+        if ($action['assignSegment'] === 'assign_only' || $action['assignSegment'] === 'assign_consider_weight') {
             //get segment based on target group
             $segments = $this->segmentManager->getSegments();
             $segments->setCondition('targetGroup = ?', $targetGroupId);
             $segments->load();
 
             if ($segments->getObjects()) {
-                if ($action['assignSegment'] == 'assign_consider_weight') {
-
+                if ($action['assignSegment'] === 'assign_consider_weight') {
                     //loop needed to make sure segment is assigned weight-times
                     //strange things with timestamp are needed in order to make sure assignments have different timestamps so they count correctly
                     $timestamp = time() - $action['weight'];
