@@ -29,11 +29,6 @@ class CliSyncProcessor
     use ApplicationLoggerAware;
 
     /**
-     * @var string|null
-     */
-    protected $pimcoreUserName;
-
-    /**
      * @var CustomerProviderInterface
      */
     protected $customerProvider;
@@ -48,7 +43,7 @@ class CliSyncProcessor
      */
     protected $newsletterManager;
 
-    public function __construct($pimcoreUserName = null, CustomerProviderInterface $customerProvider, UpdateFromMailchimpProcessor $updateFromMailchimpProcessor, NewsletterManagerInterface $newsletterManager)
+    public function __construct($pimcoreUserName, CustomerProviderInterface $customerProvider, UpdateFromMailchimpProcessor $updateFromMailchimpProcessor, NewsletterManagerInterface $newsletterManager)
     {
         $this->setLoggerComponent('NewsletterSync');
 
