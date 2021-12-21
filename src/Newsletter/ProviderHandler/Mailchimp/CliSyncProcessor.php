@@ -48,7 +48,7 @@ class CliSyncProcessor
      */
     protected $newsletterManager;
 
-    public function __construct($pimcoreUserName = null, CustomerProviderInterface $customerProvider, UpdateFromMailchimpProcessor $updateFromMailchimpProcessor, NewsletterManagerInterface $newsletterManager)
+    public function __construct($pimcoreUserName, CustomerProviderInterface $customerProvider, UpdateFromMailchimpProcessor $updateFromMailchimpProcessor, NewsletterManagerInterface $newsletterManager)
     {
         $this->setLoggerComponent('NewsletterSync');
 
