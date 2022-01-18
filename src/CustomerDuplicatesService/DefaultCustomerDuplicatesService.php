@@ -177,8 +177,8 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
 
     /**
      * @param Concrete $list
-     * @param $field
-     * @param $value
+     * @param string $field
+     * @param mixed $value
      *
      * @return void;
      */

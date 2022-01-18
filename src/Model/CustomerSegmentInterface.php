@@ -17,8 +17,9 @@ namespace CustomerManagementFrameworkBundle\Model;
 
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
 use Pimcore\Model\Element\AbstractElement;
+use Pimcore\Model\Element\ElementInterface;
 
-interface CustomerSegmentInterface
+interface CustomerSegmentInterface extends ElementInterface
 {
     /**
      * @return int
@@ -31,7 +32,7 @@ interface CustomerSegmentInterface
     public function getName(): ?string;
 
     /**
-     * @param $name
+     * @param string|null $name
      *
      * @return string
      */
@@ -43,19 +44,19 @@ interface CustomerSegmentInterface
     public function getReference(): ?string;
 
     /**
-     * @param string $reference
+     * @param string|null $reference
      *
      * @return void
      */
     public function setReference(?string $reference);
 
     /**
-     * @return CustomerSegmentGroup
+     * @return CustomerSegmentGroup|null
      */
     public function getGroup(): ?AbstractElement;
 
     /**
-     * @param CustomerSegmentGroup $group
+     * @param CustomerSegmentGroup|null $group
      *
      * @return void
      */
@@ -84,14 +85,14 @@ interface CustomerSegmentInterface
     public function getTargetGroup(): ?string;
 
     /**
-     * @param string $targetGroup
+     * @param string|null $targetGroup
      *
      * @return $this
      */
     public function setTargetGroup(?string $targetGroup);
 
     /**
-     * @return []
+     * @return array
      */
     public function getDataForWebserviceExport();
 

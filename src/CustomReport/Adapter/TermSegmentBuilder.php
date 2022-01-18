@@ -22,9 +22,9 @@ use Pimcore\Model;
 class TermSegmentBuilder extends Model\Tool\CustomReport\Adapter\Sql
 {
     /**
-     * @param $configuration
+     * @param mixed $configuration
      *
-     * @return array|mixed|null
+     * @return mixed
      *
      * @throws \Exception
      */
@@ -42,13 +42,13 @@ class TermSegmentBuilder extends Model\Tool\CustomReport\Adapter\Sql
     }
 
     /**
-     * @param $filters
-     * @param $fields
+     * @param mixed $filters
+     * @param array $fields
      * @param bool $ignoreSelectAndGroupBy
-     * @param null $drillDownFilters
-     * @param null $selectField
+     * @param array|null $drillDownFilters
+     * @param string|null $selectField
      *
-     * @return array
+     * @return array|null
      */
     protected function getBaseQuery(
         $filters,
@@ -99,7 +99,7 @@ class TermSegmentBuilder extends Model\Tool\CustomReport\Adapter\Sql
                 foreach ($filters as $filter) {
                     $value = $filter['value'];
                     $type = $filter['type'];
-                    if ($type == 'date') {
+                    if ($type === 'date') {
                         $value = strtotime($value);
                     }
                     $operator = $filter['operator'];
@@ -142,7 +142,7 @@ class TermSegmentBuilder extends Model\Tool\CustomReport\Adapter\Sql
                 $data = 'SELECT * FROM ('.$sql.') AS somerandxyz WHERE '.$condition;
             }
         } else {
-            return;
+            return null;
         }
 
         return [

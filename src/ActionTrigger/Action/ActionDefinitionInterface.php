@@ -18,7 +18,7 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger\Action;
 interface ActionDefinitionInterface
 {
     /**
-     * @param $id
+     * @param int|null $id
      *
      * @return self
      */

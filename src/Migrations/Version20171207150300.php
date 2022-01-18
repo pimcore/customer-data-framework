@@ -30,7 +30,7 @@ class Version20171207150300 extends AbstractPimcoreMigration
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         // run sql statements
         $sqlPath = __DIR__ . '/../Resources/sql/filterDefinition/';
@@ -70,7 +70,7 @@ class Version20171207150300 extends AbstractPimcoreMigration
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
         // downgrading would result in data loss and is not deemed necessary at the moment
     }

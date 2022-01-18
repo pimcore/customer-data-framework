@@ -27,7 +27,7 @@ class Version20180410085629 extends AbstractPimcoreMigration
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $sqlPath = __DIR__ . '/../Resources/sql/activityMetadata/';
         $sqlFileNames = ['datamodel.sql'];
@@ -42,7 +42,7 @@ class Version20180410085629 extends AbstractPimcoreMigration
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
     }

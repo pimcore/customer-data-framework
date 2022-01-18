@@ -87,8 +87,7 @@ interface CustomerProviderInterface
     /**
      * Get active customer by email
      *
-     * @param int $id
-     * @param bool $foce
+     * @param string $email
      *
      * @return CustomerInterface|null
      *

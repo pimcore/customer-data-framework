@@ -27,7 +27,7 @@ class Version20171113110855 extends AbstractPimcoreMigration
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $sqlPath = __DIR__ . '/../Resources/sql/segmentAssignment/';
         $sqlFileNames = ['datamodel.sql', 'storedFunctionDocument.sql', 'storedFunctionAsset.sql', 'storedFunctionObject.sql'];
@@ -42,7 +42,7 @@ class Version20171113110855 extends AbstractPimcoreMigration
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
         // downgrading would result in data loss and is not deemed necessary at the moment
     }

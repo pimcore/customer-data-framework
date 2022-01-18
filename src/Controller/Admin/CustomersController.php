@@ -225,8 +225,10 @@ class CustomersController extends Admin
         $data['exportData'] = $totalExportData;
         $data['processIds'] = $processIds;
 
-        \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->saveExportTmpData($request->get('jobId'),
-            $data);
+        \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->saveExportTmpData(
+            $request->get('jobId'),
+            $data
+        );
 
         $notProcessedRecordsCount = sizeof($data['processIds']);
         $totalRecordsCount = $notProcessedRecordsCount + sizeof($data['exportData'][AbstractExporter::ROWS]);
@@ -359,11 +361,11 @@ class CustomersController extends Admin
 
     /**
      * @param Listing\Concrete $listing
-     * @param $exporterName
+     * @param string $exporterName
      *
      * @return ExporterInterface
      *
-     * @internal param Request $request
+     * @internal
      */
     protected function getExporter(Listing\Concrete $listing, $exporterName)
     {

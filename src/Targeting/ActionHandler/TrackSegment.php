@@ -26,7 +26,6 @@ use Pimcore\Model\Tool\Targeting\Rule;
 use Pimcore\Targeting\ActionHandler\ActionHandlerInterface;
 use Pimcore\Targeting\DataProviderDependentInterface;
 use Pimcore\Targeting\Model\VisitorInfo;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class TrackSegment implements ActionHandlerInterface, DataProviderDependentInterface
 {
@@ -42,8 +41,7 @@ class TrackSegment implements ActionHandlerInterface, DataProviderDependentInter
 
     public function __construct(
         SegmentManagerInterface $segmentManager,
-        SegmentTracker $segmentTracker,
-        EventDispatcherInterface $eventDispatcher
+        SegmentTracker $segmentTracker
     ) {
         $this->segmentManager = $segmentManager;
         $this->segmentTracker = $segmentTracker;

@@ -26,7 +26,7 @@ class Version20180102103153 extends AbstractPimcoreMigration
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $this->addSql('ALTER TABLE plugin_cmf_actiontrigger_queue ADD environment TEXT NULL;');
     }
@@ -34,7 +34,7 @@ class Version20180102103153 extends AbstractPimcoreMigration
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
         $this->addSql('ALTER TABLE plugin_cmf_actiontrigger_queue DROP environment;');
     }

@@ -22,20 +22,20 @@ use Symfony\Component\HttpFoundation\Request;
 interface ExporterManagerInterface
 {
     /**
-     * @return []
+     * @return array
      */
     public function getExporterConfig();
 
     /**
-     * @param $key
+     * @param string $key
      *
      * @return bool
      */
     public function hasExporter($key);
 
     /**
-     * @param $key
-     * @param Listing\Concrete $listing
+     * @param string $key
+     * @param Listing\Concrete|null $listing
      *
      * @return ExporterInterface
      */
@@ -44,14 +44,14 @@ interface ExporterManagerInterface
     /**
      * @param Request $request
      *
-     * @return []
+     * @return array
      *
      * @throws \Exception
      */
     public function getExportTmpData(Request $request);
 
     /**
-     * @param $jobId
+     * @param string $jobId
      * @param array $data
      *
      * @return void
@@ -59,7 +59,7 @@ interface ExporterManagerInterface
     public function saveExportTmpData($jobId, array $data);
 
     /**
-     * @param $jobId
+     * @param string $jobId
      *
      * @return void
      */

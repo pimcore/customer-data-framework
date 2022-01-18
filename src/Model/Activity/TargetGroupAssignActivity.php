@@ -40,7 +40,7 @@ class TargetGroupAssignActivity extends AbstractActivity
     protected $totalWeight;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $activityDate;
 
@@ -49,9 +49,9 @@ class TargetGroupAssignActivity extends AbstractActivity
      *
      * @param CustomerInterface $customer
      * @param TargetGroup $targetGroup
-     * @param $weight
-     * @param $totalWeight
-     * @param null $activityDate
+     * @param int $weight
+     * @param int $totalWeight
+     * @param int|null $activityDate
      */
     public function __construct(CustomerInterface $customer, TargetGroup $targetGroup, $weight, $totalWeight, $activityDate = null)
     {

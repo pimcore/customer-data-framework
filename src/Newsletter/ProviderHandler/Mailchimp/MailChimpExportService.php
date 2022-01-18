@@ -35,7 +35,6 @@ class MailChimpExportService
 
     /**
      * @param MailChimp $apiClient
-     * @param $listId
      */
     public function __construct(MailChimp $apiClient)
     {
@@ -85,6 +84,8 @@ class MailChimpExportService
                 return $data['mailchimp_id']['data'];
             }
         }
+
+        return null;
     }
 
     public function getObjectByRemoteId($remoteId)
@@ -217,11 +218,14 @@ class MailChimpExportService
         if ($notes) {
             return $notes[0];
         }
+
+        return null;
     }
 
     /**
      * @param ElementInterface $object
-     * @param $listId
+     * @param string $listId
+     * @param array $exportData
      *
      * @return bool
      */
@@ -252,6 +256,8 @@ class MailChimpExportService
         if ($note) {
             return $this->getNoteDateTime($note);
         }
+
+        return null;
     }
 
     public function getMd5($data)

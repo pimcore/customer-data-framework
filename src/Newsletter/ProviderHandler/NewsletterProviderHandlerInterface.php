@@ -31,7 +31,7 @@ interface NewsletterProviderHandlerInterface
      * Update given NewsletterQueueItems in newsletter provider.
      * Needs to set $item->setSuccsessfullyProcessed(true) if it was successfull otherwise the item will never be removed from the newsletter queue.
      *
-     * @param NewsletterQueueItemInterface[] $array
+     * @param NewsletterQueueItemInterface[] $items
      * @param bool $forceUpdate
      *
      * @return void

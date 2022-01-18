@@ -55,7 +55,7 @@ abstract class AbstractExporter implements ExporterInterface
     const SEGMENT_IDS = 'segmentIds';
 
     /**
-     * @param $name
+     * @param string $name
      * @param array $properties
      * @param bool $exportSegmentsAsColumns
      */
@@ -263,7 +263,7 @@ abstract class AbstractExporter implements ExporterInterface
     abstract protected function render(array $exportData);
 
     /**
-     * @param $property
+     * @param string $property
      *
      * @return ClassDefinition\Data
      */

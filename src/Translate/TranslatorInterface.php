@@ -21,7 +21,7 @@ interface TranslatorInterface
      * Translates a message. Optional parameters are passed to sprintf().
      *
      * @param string $messageId
-     * @param array|mixed $parameters
+     * @param mixed $parameters
      *
      * @return string
      */

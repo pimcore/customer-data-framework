@@ -28,7 +28,7 @@ class Version20171019130865 extends AbstractPimcoreMigration
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $permissions = [
             'plugin_customermanagementframework_activityview' => 'plugin_cmf_perm_activityview',
@@ -43,7 +43,7 @@ class Version20171019130865 extends AbstractPimcoreMigration
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
         $permissions = [
             'plugin_cmf_perm_activityview' => 'plugin_customermanagementframework_activityview',

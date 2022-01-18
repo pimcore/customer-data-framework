@@ -26,10 +26,6 @@ use Pimcore\Targeting\Model\VisitorInfo;
 
 class CustomerSegmentsHaveChanged extends AbstractVariableCondition implements DataProviderDependentInterface
 {
-    /**
-     * @param int|null $segmentId
-     * @param array $options
-     */
     public function __construct()
     {
     }

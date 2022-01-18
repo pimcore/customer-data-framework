@@ -19,20 +19,16 @@ namespace CustomerManagementFrameworkBundle\Targeting\ActionHandler;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
-use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer;
-use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
 use Pimcore\Model\Tool\Targeting\Rule;
 use Pimcore\Model\Tool\Targeting\TargetGroup;
 use Pimcore\Targeting\ActionHandler\ActionHandlerInterface;
 use Pimcore\Targeting\ActionHandler\AssignTargetGroup;
-use Pimcore\Targeting\ConditionMatcherInterface;
 use Pimcore\Targeting\DataLoaderInterface;
 use Pimcore\Targeting\DataProviderDependentInterface;
 use Pimcore\Targeting\Model\VisitorInfo;
 use Pimcore\Targeting\Storage\TargetingStorageInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ApplyTargetGroupsFromSegments implements ActionHandlerInterface, DataProviderDependentInterface
 {
@@ -41,14 +37,9 @@ class ApplyTargetGroupsFromSegments implements ActionHandlerInterface, DataProvi
     const APPLY_TYPE_ONLY_MERGE = 'only_merge';
 
     /**
-     * @var SegmentManagerInterface
+     * @var DataLoaderInterface
      */
-    private $segmentManager;
-
-    /**
-     * @var SegmentTracker
-     */
-    private $segmentTracker;
+    protected $dataLoader;
 
     /**
      * @var TargetingStorageInterface
@@ -56,15 +47,9 @@ class ApplyTargetGroupsFromSegments implements ActionHandlerInterface, DataProvi
     protected $storage;
 
     public function __construct(
-        ConditionMatcherInterface $conditionMatcher,
         TargetingStorageInterface $storage,
-        SegmentManagerInterface $segmentManager,
-        SegmentTracker $segmentTracker,
-        EventDispatcherInterface $eventDispatcher,
         DataLoaderInterface $dataLoader
     ) {
-        $this->segmentManager = $segmentManager;
-        $this->segmentTracker = $segmentTracker;
         $this->dataLoader = $dataLoader;
         $this->storage = $storage;
     }
@@ -83,9 +68,7 @@ class ApplyTargetGroupsFromSegments implements ActionHandlerInterface, DataProvi
     public function apply(VisitorInfo $visitorInfo, array $action, Rule $rule = null)
     {
         $this->dataLoader->loadDataFromProviders($visitorInfo, [Customer::PROVIDER_KEY]);
-        /**
-         * @var $customer CustomerInterface
-         */
+        /** @var CustomerInterface|null $customer */
         $customer = $visitorInfo->get(Customer::PROVIDER_KEY);
         if (!$customer) {
             return;

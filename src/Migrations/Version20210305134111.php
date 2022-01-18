@@ -33,7 +33,7 @@ class Version20210305134111 extends AbstractPimcoreMigration
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $installed = Db::get()->fetchOne('SELECT `key` FROM users_permission_definitions WHERE `key` = :key', [
             'key' => 'plugin_cmf_perm_activityview'
@@ -47,7 +47,7 @@ class Version20210305134111 extends AbstractPimcoreMigration
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
     }
 }

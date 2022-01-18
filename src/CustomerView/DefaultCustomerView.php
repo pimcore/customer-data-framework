@@ -132,7 +132,7 @@ class DefaultCustomerView implements CustomerViewInterface
     /**
      * Wrap object in a object implementing a __toString method
      *
-     * @param $object
+     * @param mixed $object
      *
      * @return ObjectWrapper
      */

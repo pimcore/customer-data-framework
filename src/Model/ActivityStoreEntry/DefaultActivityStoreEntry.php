@@ -44,7 +44,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     private $customerId;
 
     /**
-     * @var int
+     * @var Carbon
      */
     private $activityDate;
 
@@ -54,7 +54,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     private $type;
 
     /**
-     * @var ActivityInterface
+     * @var ActivityInterface|false
      */
     private $relatedItem;
 
@@ -69,7 +69,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     private $modificationDate;
 
     /**
-     * @var $md5
+     * @var string $md5
      */
     private $md5;
 
@@ -89,7 +89,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     private $implementationClass;
 
     /**
-     * @var $attributes
+     * @var array
      */
     private $attributes;
 
@@ -200,7 +200,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     }
 
     /**
-     * @return ActivityInterface
+     * @return ActivityInterface|false
      */
     public function getRelatedItem()
     {

@@ -59,7 +59,7 @@ class CustomerSegments implements DataProviderInterface, DataProviderDependentIn
 
     private function loadSegments(VisitorInfo $visitorInfo): array
     {
-        /** @var CustomerInterface $customer */
+        /** @var CustomerInterface|null $customer */
         $customer = $visitorInfo->get(Customer::PROVIDER_KEY);
         if (!$customer) {
             return [];

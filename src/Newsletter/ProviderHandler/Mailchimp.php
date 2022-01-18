@@ -136,7 +136,8 @@ class Mailchimp implements NewsletterProviderHandlerInterface
     /**
      * update customer in mail provider
      *
-     * @param NewsletterQueueItemInterface[] $array
+     * @param NewsletterQueueItemInterface[] $items
+     * @param bool $forceUpdate
      *
      * @return void
      */
@@ -754,9 +755,9 @@ class Mailchimp implements NewsletterProviderHandlerInterface
     /**
      * Map mailchimp status to pimcore object newsletterStatus
      *
-     * @param $mailchimpStatus
+     * @param string $mailchimpStatus
      *
-     * @return mixed|null
+     * @return string|null
      */
     public function reverseMapNewsletterStatus($mailchimpStatus)
     {
@@ -768,7 +769,10 @@ class Mailchimp implements NewsletterProviderHandlerInterface
     }
 
     /**
-     * @return array|false
+     * @param string $field
+     * @param MailchimpAwareCustomerInterface $customer
+     *
+     * @return array|null
      */
     public function mapMergeField($field, MailchimpAwareCustomerInterface $customer)
     {
@@ -787,10 +791,15 @@ class Mailchimp implements NewsletterProviderHandlerInterface
 
             return ['field' => $to, 'value' => $value];
         }
+
+        return null;
     }
 
     /**
-     * @return array|false
+     * @param string $field
+     * @param mixed $value
+     *
+     * @return array|null
      */
     public function reverseMapMergeField($field, $value)
     {
@@ -804,6 +813,8 @@ class Mailchimp implements NewsletterProviderHandlerInterface
                 return ['field' => $from, 'value' => $value];
             }
         }
+
+        return null;
     }
 
     /**
@@ -821,12 +832,12 @@ class Mailchimp implements NewsletterProviderHandlerInterface
     }
 
     /**
-     * @param $email
-     * @param int|false $customerId
+     * @param string $email
+     * @param int|null $customerId
      *
      * @return bool
      */
-    public function doesOtherSubscribedCustomerWithEmailExist($email, $customerId = false)
+    public function doesOtherSubscribedCustomerWithEmailExist($email, $customerId = null)
     {
         if (!$email) {
             return false;
@@ -856,12 +867,12 @@ class Mailchimp implements NewsletterProviderHandlerInterface
      *
      * @param string $email
      *
-     * @return NewsletterAwareCustomerInterface
+     * @return NewsletterAwareCustomerInterface|null
      */
     public function getActiveCustomerByEmail($email)
     {
         /**
-         * @var NewsletterAwareCustomerInterface $customer
+         * @var NewsletterAwareCustomerInterface|null $customer
          */
         $customer = $this->getCustomerProvider()->getActiveCustomerByEmail($email);
 

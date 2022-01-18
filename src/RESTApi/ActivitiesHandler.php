@@ -76,7 +76,6 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
      * GET /activities/{id}
      *
      * @param Request $request
-     * @param array $params
      *
      * @return Response
      */
@@ -117,9 +116,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
         }
 
         try {
-            /**
-             * @var ActivityInterface $activity
-             */
+            /** @var ActivityInterface|false $activity */
             $activity = $implementationClass::cmfCreate($data);
 
             if ($activity && $activity->cmfWebserviceUpdateAllowed()) {
@@ -163,7 +160,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
      *
      * TODO support partial updates as we do now or demand whole object in PUT? Use PATCH for partial requests?
      *
-     * @param array $params
+     * @param Request $request
      *
      * @return Response
      */

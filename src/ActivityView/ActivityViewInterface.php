@@ -52,8 +52,8 @@ interface ActivityViewInterface
     /**
      * Creates a link/button to an object, asset or document.
      *
-     * @param $id
-     * @param $elementType
+     * @param int $id
+     * @param string $elementType
      * @param string $buttonCssClass
      * @param string $buttonTranslationKey
      *

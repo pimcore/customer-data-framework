@@ -74,8 +74,8 @@ class DefaultSegmentManager implements SegmentManagerInterface
     protected $storedFunctions = null;
 
     /**
-     * @param $segmentFolderCalculated
-     * @param $segmentFolderManual
+     * @param string|\Pimcore\Model\DataObject\Folder $segmentFolderCalculated
+     * @param string|\Pimcore\Model\DataObject\Folder $segmentFolderManual
      * @param CustomerSaveManagerInterface $customerSaveManager
      * @param CustomerProviderInterface $customerProvider
      * @param TypeMapperInterface $typeMapper

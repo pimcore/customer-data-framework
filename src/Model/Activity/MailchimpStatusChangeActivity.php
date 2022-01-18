@@ -89,9 +89,10 @@ class MailchimpStatusChangeActivity extends AbstractActivity
      * @param array $data
      * @param bool $fromWebservice
      *
-     * @return bool
+     * @return false
      */
     public static function cmfCreate(array $data, $fromWebservice = false)
     {
+        return false;
     }
 }

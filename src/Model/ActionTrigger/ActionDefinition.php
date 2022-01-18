@@ -58,9 +58,9 @@ class ActionDefinition extends AbstractModel implements ActionDefinitionInterfac
     private $modificationDate;
 
     /**
-     * @param $id
+     * @param int|null $id
      *
-     * @return self
+     * @return self|nul
      *
      * @throws \Exception
      */

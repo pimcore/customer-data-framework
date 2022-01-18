@@ -1,0 +1,11 @@
+parameters:
+    level: 4
+    paths:
+        - src
+    bootstrapFiles:
+        - phpstan-bootstrap.php
+    ignoreErrors:
+        - '~^Method Doctrine\\DBAL(\\.*)?Connection::query\(\) invoked with \d+ parameters?, 0 required\.\z~'
+
+includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon

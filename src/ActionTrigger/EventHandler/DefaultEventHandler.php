@@ -33,6 +33,7 @@ class DefaultEventHandler implements EventHandlerInterface
 {
     use LoggerAware;
 
+    /** @var Rule[]|null */
     private $rulesGroupedByEvents = null;
 
     /**
@@ -96,7 +97,6 @@ class DefaultEventHandler implements EventHandlerInterface
 
     public function handleCustomerListEvent(CustomerListEventInterface $event, RuleEnvironmentInterface $environment)
     {
-        // var_dump($this->getAppliedRules($event, false) );
         foreach ($this->getAppliedRules($event, $environment, false) as $rule) {
             if ($conditions = $rule->getCondition()) {
                 $where = Checker::getDbConditionForRule($rule);
@@ -106,9 +106,7 @@ class DefaultEventHandler implements EventHandlerInterface
                 $listing->setOrderKey('o_id');
                 $listing->setOrder('asc');
 
-                /**
-                 * @var $paginator SlidingPagination
-                 */
+                /** @var SlidingPagination $paginator */
                 $paginator = $this->paginator->paginate($listing, 1, 100);
 
                 $this->getLogger()->info(
@@ -167,9 +165,6 @@ class DefaultEventHandler implements EventHandlerInterface
             $rules = $this->rulesGroupedByEvents[$event->getName()];
 
             foreach ($rules as $rule) {
-                /**
-                 * @var Rule $rule ;
-                 */
                 foreach ($rule->getTrigger() as $trigger) {
                     if ($event->appliesToTrigger($trigger)) {
                         if ($event instanceof RuleEnvironmentAwareEventInterface) {

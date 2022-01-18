@@ -195,7 +195,7 @@ class SegmentTracker
     {
         $this->dataLoader->loadDataFromProviders($visitorInfo, [Customer::PROVIDER_KEY]);
 
-        /** @var CustomerInterface $customer */
+        /** @var CustomerInterface|null $customer */
         $customer = $visitorInfo->get(Customer::PROVIDER_KEY);
         if (null === $customer) {
             return;

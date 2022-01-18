@@ -77,7 +77,7 @@ class Rule extends AbstractModel
     }
 
     /**
-     * @param $id
+     * @param int|null $id
      *
      * @return Rule
      *

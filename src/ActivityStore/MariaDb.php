@@ -184,7 +184,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
     /**
      * @param ActivityInterface $activity
      *
-     * @return bool|ActivityStoreEntryInterface
+     * @return ActivityStoreEntryInterface|null
      */
     public function getEntryForActivity(ActivityInterface $activity)
     {
@@ -198,7 +198,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
             );
         } elseif ($activity instanceof ActivityExternalIdInterface) {
             if (!$activity->getId()) {
-                return false;
+                return null;
             }
 
             $row = $db->fetchRow(
@@ -208,7 +208,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
         }
 
         if (!is_array($row)) {
-            return false;
+            return null;
         }
 
         $entry = $this->createEntryInstance($row);
@@ -248,7 +248,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
     }
 
     /**
-     * @param                              $pageSize
+     * @param int $pageSize
      * @param int $page
      * @param ExportActivitiesFilterParams $params
      *
@@ -292,8 +292,8 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
     }
 
     /**
-     * @param $entityType
-     * @param $deletionsSinceTimestamp
+     * @param string $entityType
+     * @param int $deletionsSinceTimestamp
      *
      * @return array
      */
@@ -376,9 +376,9 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
     }
 
     /**
-     * @param $id
+     * @param int $id
      *
-     * @return ActivityStoreEntryInterface
+     * @return ActivityStoreEntryInterface|null
      */
     public function getEntryById($id)
     {
@@ -391,6 +391,8 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
         ) {
             return $this->createEntryInstance($row);
         }
+
+        return null;
     }
 
     /**

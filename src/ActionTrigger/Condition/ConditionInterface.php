@@ -49,7 +49,7 @@ interface ConditionInterface
     public function getDbCondition(ConditionDefinitionInterface $conditionDefinition);
 
     /**
-     * @param $setting
+     * @param mixed $setting
      *
      * @return ConditionDefinitionInterface
      */

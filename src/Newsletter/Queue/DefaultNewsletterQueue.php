@@ -53,7 +53,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
     /**
      * @param NewsletterAwareCustomerInterface $customer
-     * @param $operation
+     * @param string $operation
      * @param null $email
      * @param bool $immediateAsyncProcessQueueItem
      */

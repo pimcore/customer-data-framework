@@ -62,7 +62,7 @@ interface CustomerInterface extends ElementInterface
     public function getGender(): ?string;
 
     /**
-     * @param $gender
+     * @param string|null $gender
      *
      * @return void
      */
@@ -74,7 +74,7 @@ interface CustomerInterface extends ElementInterface
     public function getFirstname(): ?string;
 
     /**
-     * @param $firstname
+     * @param string|null $firstname
      *
      * @return void
      */
@@ -86,7 +86,7 @@ interface CustomerInterface extends ElementInterface
     public function getLastname(): ?string;
 
     /**
-     * @param $lastname
+     * @param string|null $lastname
      *
      * @return void
      */
@@ -98,7 +98,7 @@ interface CustomerInterface extends ElementInterface
     public function getStreet(): ?string;
 
     /**
-     * @param $street
+     * @param string|null $street
      *
      * @return void
      */
@@ -110,7 +110,7 @@ interface CustomerInterface extends ElementInterface
     public function getZip(): ?string;
 
     /**
-     * @param $zip
+     * @param string|null $zip
      *
      * @return void
      */
@@ -122,7 +122,7 @@ interface CustomerInterface extends ElementInterface
     public function getCity(): ?string;
 
     /**
-     * @param $city
+     * @param string|null $city
      *
      * @return void
      */
@@ -134,7 +134,7 @@ interface CustomerInterface extends ElementInterface
     public function getCountryCode(): ?string;
 
     /**
-     * @param $countryCode
+     * @param string|null $countryCode
      *
      * @return void
      */
@@ -146,7 +146,7 @@ interface CustomerInterface extends ElementInterface
     public function getEmail(): ?string;
 
     /**
-     * @param $email
+     * @param string|null $email
      *
      * @return void
      */
@@ -158,7 +158,7 @@ interface CustomerInterface extends ElementInterface
     public function getPhone(): ?string;
 
     /**
-     * @param $phone
+     * @param string|null $phone
      *
      * @return void
      */
@@ -175,7 +175,7 @@ interface CustomerInterface extends ElementInterface
     public function getManualSegments(): array;
 
     /**
-     * @param array $segments
+     * @param array|null $segments
      *
      * @return void
      */
@@ -187,7 +187,7 @@ interface CustomerInterface extends ElementInterface
     public function getCalculatedSegments(): array;
 
     /**
-     * @param array $segments
+     * @param array|null $segments
      *
      * @return void
      */
@@ -204,7 +204,7 @@ interface CustomerInterface extends ElementInterface
     public function getIdEncoded(): ?string;
 
     /**
-     * @param $idEncoded
+     * @param string|null $idEncoded
      *
      * @return void
      */

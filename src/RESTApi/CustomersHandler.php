@@ -59,16 +59,15 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
         $params = ExportCustomersFilterParams::fromRequest($request);
 
         if ($params->getSegments()) {
+            /** @var Customer\Listing $customers */
             $customers = \Pimcore::getContainer()->get('cmf.segment_manager')->getCustomersBySegmentIds(
                 $params->getSegments()
             );
         } else {
+            /** @var Customer\Listing $customers */
             $customers = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
         }
 
-        /**
-         * @var $customers Customer\Listing
-         */
         $customers->setOrderKey('o_id');
         $customers->setOrder('asc');
         $customers->setUnpublished(false);
