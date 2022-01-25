@@ -232,9 +232,19 @@ class DefaultCustomerProvider implements CustomerProviderInterface
         $this->namingScheme->apply($customer);
     }
 
-    public function getParentParentPath()
+    public function getParentPath()
     {
         return $this->parentPath;
+    }
+
+    /**
+     * @return string
+     *
+     * @deprecated use getParentPath() instead.
+     */
+    public function getParentParentPath()
+    {
+        return $this->getParentPath();
     }
 
     public function setParentPath($parentPath)
