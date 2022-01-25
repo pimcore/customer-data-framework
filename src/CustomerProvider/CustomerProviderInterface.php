@@ -17,6 +17,9 @@ namespace CustomerManagementFrameworkBundle\CustomerProvider;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
+/**
+ * @method string getParentPath()
+ */
 interface CustomerProviderInterface
 {
     /**
@@ -104,6 +107,8 @@ interface CustomerProviderInterface
 
     /**
      * @return string
+     *
+     * @deprecated use getParentPath() instead.
      */
     public function getParentParentPath();
 
