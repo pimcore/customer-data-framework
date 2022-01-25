@@ -244,6 +244,12 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     public function getParentParentPath()
     {
+        trigger_deprecation(
+            'pimcore/customer-data-framework',
+            '3.3.0',
+            'The DefaultCustomerProvider::getParentParentPath() method is deprecated, use DefaultCustomerProvider::getParentPath() instead.'
+        );
+
         return $this->getParentPath();
     }
 
