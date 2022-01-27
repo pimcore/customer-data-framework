@@ -38,7 +38,7 @@ pimcore.plugin.cmf.config.rule = Class.create({
 
         this.tabPanel = new Ext.TabPanel({
             activeTab: 0,
-            title: rule.name,
+            title: Ext.util.Format.htmlEncode(rule.name),
             closable: true,
             deferredRender: false,
             forceLayout: true,
@@ -119,14 +119,16 @@ pimcore.plugin.cmf.config.rule = Class.create({
                 name: "name",
                 fieldLabel: t("name"),
                 width: 350,
-                value: this.rule.name
+                value: this.rule.name,
+                renderer: Ext.util.Format.htmlEncode
             }, {
                 xtype: "textarea",
                 name: "description",
                 fieldLabel: t("description"),
                 width: 500,
                 height: 100,
-                value: this.rule.description
+                value: this.rule.description,
+                renderer: Ext.util.Format.htmlEncode
             }, {
                 xtype: "checkbox",
                 name: "active",

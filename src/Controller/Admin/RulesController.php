@@ -48,11 +48,11 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
             $json[] = [
                 'iconCls' => $icon,
                 'id' => $rule->getId(),
-                'text' => $rule->getName(),
+                'text' => htmlspecialchars($rule->getName()),
                 'leaf' => true,
                 'qtipCfg' => [
-                    'title' => $title,
-                    'text' => $rule->getDescription(),
+                    'title' => htmlspecialchars($title),
+                    'text' => htmlspecialchars($rule->getDescription()),
                 ],
             ];
         }
