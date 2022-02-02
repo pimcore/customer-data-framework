@@ -43,12 +43,12 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      * @var Factory
      */
     protected $modelFactory;
-    
+
     /**
      * @var bool
      */
     protected $usesClassOverride = false;
-    
+
     /**
      * @var null|string
      */
