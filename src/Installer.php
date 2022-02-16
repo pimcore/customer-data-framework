@@ -91,6 +91,7 @@ class Installer extends SettingsStoreAwareInstaller
               `entityType` char(20) NOT NULL,
               `type` varchar(255) NOT NULL,
               `creationDate` bigint(20) unsigned DEFAULT NULL,
+              PRIMARY KEY (`id`, `entityType`, `type`),
               KEY `type` (`entityType`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
         );
