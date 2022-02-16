@@ -33,7 +33,9 @@ class Version20220120215900 extends BundleAwareMigration
         $deletionsTable = $schema->getTable('plugin_cmf_deletions');
 
         if (!$deletionsTable->hasPrimaryKey()) {
+            $this->addSql('SET foreign_key_checks = 0');
             $this->addSql('ALTER TABLE `plugin_cmf_deletions` ADD PRIMARY KEY (`id`, `entityType`, `type`);');
+            $this->addSql('SET foreign_key_checks = 1');
         }
     }
 
@@ -42,6 +44,8 @@ class Version20220120215900 extends BundleAwareMigration
      */
     public function down(Schema $schema): void
     {
+        $this->addSql('SET foreign_key_checks = 0');
         $this->addSql('ALTER TABLE `plugin_cmf_deletions` DROP INDEX `PRIMARY`;');
+        $this->addSql('SET foreign_key_checks = 1');
     }
 }
