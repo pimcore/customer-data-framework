@@ -17,7 +17,7 @@ pimcore.plugin.GDPRDataExtractorBundle.dataproviders.customers = Class.create(pi
 
     title: t("cmf_gdpr_export_customers"),
     iconCls: "pimcore_icon_customers",
-    searchUrl: "/admin/customermanagementframework/gdpr-data/search-data-objects",
-    downloadUrl: "/admin/customermanagementframework/gdpr-data/export?id="
+    searchUrl: Routing.generate('_pimcore_customermanagementframework_gdprdata_searchdataobjects'),
+    downloadUrl: Routing.generate('_pimcore_customermanagementframework_gdprdata_export', {id: ''})
 
 });

@@ -29,7 +29,11 @@ class GDPRDataController extends \Pimcore\Bundle\AdminBundle\Controller\AdminCon
 {
     /**
      * @param Request $request
-     * @Route("/search-data-objects")
+     * @param Customers $service
+     *
+     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
+     *
+     * @Route("/search-data-objects", name="_pimcore_customermanagementframework_gdprdata_searchdataobjects", methods={"GET"})
      */
     public function searchDataObjectsAction(Request $request, Customers $service)
     {
@@ -42,7 +46,7 @@ class GDPRDataController extends \Pimcore\Bundle\AdminBundle\Controller\AdminCon
             strip_tags($allParams['email']),
             intval($allParams['start']),
             intval($allParams['limit']),
-            $allParams['sort']
+            $allParams['sort'] ?? null
         );
 
         return $this->adminJson($result);
@@ -50,7 +54,11 @@ class GDPRDataController extends \Pimcore\Bundle\AdminBundle\Controller\AdminCon
 
     /**
      * @param Request $request
-     * @Route("/export")
+     * @param Customers $service
+     *
+     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
+     *
+     * @Route("/export", name="_pimcore_customermanagementframework_gdprdata_export", methods={"GET"})
      */
     public function exportDataObjectAction(Request $request, Customers $service)
     {
