@@ -42,6 +42,13 @@ class JsConfigService
     protected $config = [];
 
     /**
+     * Check to avoid generating script wrappers
+     *
+     * @var bool
+     */
+    protected $scriptTag = true;
+
+    /**
      * @param array $config
      */
     public function __construct(array $config = [])
@@ -113,11 +120,21 @@ class JsConfigService
         }
     }
 
+    /**
+     * @param bool $scriptTag
+     */
+    public function generateScriptTag(bool $scriptTag): void
+    {
+        $this->scriptTag = $scriptTag;
+    }
+
     public function __toString(): string
     {
-        $config = [
-            '<script>',
-        ];
+        $config = [];
+
+        if ($this->scriptTag) {
+            $config[] = '<script>';
+        }
 
         foreach ($this->variables as $index => $varKey) {
             if (is_array($this->config[$varKey] ?? null) && count($this->config[$varKey]) > 0) {
@@ -129,7 +146,9 @@ class JsConfigService
             $config[] = '    var '.$varKey.' = '.json_encode($values).';';
         }
 
-        $config[] = '</script>';
+        if ($this->scriptTag) {
+            $config[] = '</script>';
+        }
 
         return implode("\n", $config)."\n";
     }
