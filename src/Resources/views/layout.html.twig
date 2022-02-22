@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="{{ app.request.locale }}">
 <head>
@@ -14,27 +13,30 @@
     {% endapply %}
 
     {% block head_stylesheets deferred %}
-        {{ pimcore_head_link() }}
+    {{ pimcore_head_link() }}
     {% endblock %}
 </head>
 <body class="sidebar-collapse">
 
-    <div class="wrapper">
-        <div class="content-wrapper">
-            {{ block('content') }}
-        </div>
+<div class="wrapper">
+    <div class="content-wrapper">
+        {{ block('content') }}
     </div>
+</div>
 
-    {{ cmf_jsConfig() | raw }}
+{% do cmf_jsConfig().generateScriptTag(false) %}
+{% do pimcore_head_script().captureStart() %}
+{{ cmf_jsConfig()|raw }}
+{% do pimcore_head_script().captureEnd() %}
 
-    {% apply spaceless %}
-        {% do pimcore_head_script().prependFile(cmf_minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/js/cmf.js')) %}
-        {% do pimcore_head_script().prependFile(cmf_minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/js/lib.js')) %}
-    {% endapply %}
+{% apply spaceless %}
+    {% do pimcore_head_script().appendFile(cmf_minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/js/cmf.js')) %}
+    {% do pimcore_head_script().prependFile(cmf_minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/js/lib.js')) %}
+{% endapply %}
 
-    {% block headscripts deferred %}
-        {{ pimcore_head_script() }}
-    {% endblock %}
+{% block headscripts deferred %}
+{{ pimcore_head_script() }}
+{% endblock %}
 
 </body>
 </html>
