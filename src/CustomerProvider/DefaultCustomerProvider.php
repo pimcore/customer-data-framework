@@ -45,6 +45,16 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     protected $modelFactory;
 
     /**
+     * @var bool
+     */
+    protected $usesClassOverride = false;
+
+    /**
+     * @var null|string
+     */
+    protected $classNameWithoutNamespace = null;
+
+    /**
      * DefaultCustomerProvider constructor.
      *
      * @param string $pimcoreClass
@@ -58,8 +68,16 @@ class DefaultCustomerProvider implements CustomerProviderInterface
             throw new \RuntimeException('Customer class is not defined');
         }
 
-        if (!class_exists('Pimcore\\Model\\DataObject\\' . $pimcoreClass)) {
-            throw new \RuntimeException(sprintf('Configured CMF customer data object class "%s" does not exist.', $pimcoreClass));
+        if (!class_exists($pimcoreClass)) {
+            if (!class_exists('Pimcore\\Model\\DataObject\\' . $pimcoreClass)) {
+                throw new \RuntimeException(sprintf('Configured CMF customer data object class "%s" does not exist.', $pimcoreClass));
+            }
+        } else {
+            $this->usesClassOverride = true;
+
+            // Get ending of classname for listings.
+            $explodedClassName = explode('\\', $pimcoreClass);
+            $this->classNameWithoutNamespace = end($explodedClassName);
         }
 
         $this->parentPath = $parentPath;
@@ -78,6 +96,10 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     protected function getDiClassName()
     {
+        if ($this->usesClassOverride) {
+            return $this->pimcoreClass;
+        }
+
         return sprintf('Pimcore\Model\DataObject\%s', $this->pimcoreClass);
     }
 
@@ -86,6 +108,11 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     protected function getDiListingClassName()
     {
+        if ($this->usesClassOverride) {
+            // Check if Listing class exists in default namespace
+            return sprintf('Pimcore\Model\DataObject\%s\Listing', $this->classNameWithoutNamespace);
+        }
+
         return sprintf('Pimcore\Model\DataObject\%s\Listing', $this->pimcoreClass);
     }
 

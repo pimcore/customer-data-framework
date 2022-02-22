@@ -23,4 +23,4 @@ composer require pimcore/pimcore:10.x-dev --no-update
 # move that to composer.json when only pimcore X
 composer require codeception/module-symfony:^1.6.0 --no-update
 composer require codeception/phpunit-wrapper:^9 --no-update
-composer require codeception/module-asserts --no-update
+composer require codeception/module-asserts:^2 --no-update
