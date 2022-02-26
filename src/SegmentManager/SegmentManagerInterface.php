@@ -210,8 +210,8 @@ interface SegmentManagerInterface
     /**
      * Creates a segment group.
      *
-     * @param string $segmentGroupName
-     * @param null $segmentGroupReference
+     * @param string|CustomerSegmentGroup $segmentGroupName
+     * @param string|null $segmentGroupReference
      * @param bool $calculated
      * @param array $values
      *
@@ -247,7 +247,7 @@ interface SegmentManagerInterface
     /**
      * Returns the SegmentGroup with the given reference.
      *
-     * @param string $segmentGroupReference
+     * @param string|null $segmentGroupReference
      * @param bool $calculated
      *
      * @return CustomerSegmentGroup|null

@@ -18,7 +18,6 @@ namespace CustomerManagementFrameworkBundle\SegmentBuilder;
 use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 
 class StateSegmentBuilder extends AbstractSegmentBuilder
@@ -42,8 +41,6 @@ class StateSegmentBuilder extends AbstractSegmentBuilder
      * prepare data and configurations which could be reused for all calculateSegments() calls
      *
      * @param SegmentManagerInterface $segmentManager
-     *
-     * @return \Pimcore\Model\DataObject\Listing\Concrete
      */
     public function prepare(SegmentManagerInterface $segmentManager)
     {
@@ -63,8 +60,6 @@ class StateSegmentBuilder extends AbstractSegmentBuilder
      *
      * @param CustomerInterface $customer
      * @param SegmentManagerInterface $segmentManager
-     *
-     * @return CustomerSegmentInterface[]
      */
     public function calculateSegments(CustomerInterface $customer, SegmentManagerInterface $segmentManager)
     {
