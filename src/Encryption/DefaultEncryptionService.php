@@ -26,7 +26,7 @@ class DefaultEncryptionService implements EncryptionServiceInterface
     use LoggerAware;
 
     /**
-     * @var Key
+     * @var Key|null
      */
     protected $defaultKey;
 
@@ -49,7 +49,7 @@ class DefaultEncryptionService implements EncryptionServiceInterface
     {
         if (null === $this->defaultKey) {
             $secret = $this->secret;
-            if (!$secret || empty($secret)) {
+            if (empty($secret)) {
                 throw new \RuntimeException('Need an encryption secret');
             }
 
@@ -117,11 +117,6 @@ class DefaultEncryptionService implements EncryptionServiceInterface
         return Crypto::decrypt($ciphertext, $key, $rawBinary);
     }
 
-    /**
-     * @return array|null
-     *
-     * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.sleep
-     */
     public function __sleep()
     {
         // do not serialize default key

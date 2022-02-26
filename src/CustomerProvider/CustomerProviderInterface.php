@@ -78,7 +78,7 @@ interface CustomerProviderInterface
      * Get customer by ID
      *
      * @param int $id
-     * @param bool $foce
+     * @param bool $force
      *
      * @return CustomerInterface|null
      */

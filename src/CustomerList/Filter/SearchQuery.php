@@ -77,8 +77,6 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
 
     /**
      * @param string $queryString
-     *
-     * @return \SearchQueryParser\Part\Query
      */
     protected function parseQuery($queryString)
     {

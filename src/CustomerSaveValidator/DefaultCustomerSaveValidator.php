@@ -43,6 +43,15 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
         $this->checkForDuplicates = $checkForDuplicates;
     }
 
+    /**
+     * @param CustomerInterface $customer
+     * @param bool $withDuplicatesCheck
+     *
+     * @return bool
+     *
+     * @throws DuplicateCustomerException
+     * @throws ValidationException
+     */
     public function validate(CustomerInterface $customer, $withDuplicatesCheck = true)
     {
         $validRequiredFields = $this->validateRequiredFields($customer);
@@ -55,13 +64,19 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
         return $validRequiredFields && $validDuplicates;
     }
 
+    /**
+     * @param CustomerInterface $customer
+     *
+     * @return bool
+     *
+     * @throws ValidationException
+     */
     protected function validateRequiredFields(CustomerInterface $customer)
     {
         if (!sizeof($this->requiredFields)) {
             return true;
         }
 
-        $valid = false;
         foreach ($this->requiredFields as $requiredFields) {
             if (is_array($requiredFields)) {
                 $valid = true;
@@ -79,24 +94,27 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
             }
         }
 
-        if (!$valid) {
-            $combinations = [];
+        $combinations = [];
 
-            foreach ($this->requiredFields as $requiredFields) {
-                $combinations[] = '['.implode(' + ', $requiredFields).']';
-            }
-
-            throw new ValidationException(
-                'Not all required fields are set. Please fill-up one of the following field combinations: '.implode(
-                    ' or ',
-                    $combinations
-                )
-            );
+        foreach ($this->requiredFields as $requiredFields) {
+            $combinations[] = '['.implode(' + ', $requiredFields).']';
         }
 
-        return true;
+        throw new ValidationException(
+            'Not all required fields are set. Please fill-up one of the following field combinations: '.implode(
+                ' or ',
+                $combinations
+            )
+        );
     }
 
+    /**
+     * @param CustomerInterface $customer
+     *
+     * @return bool
+     *
+     * @throws DuplicateCustomerException
+     */
     protected function validateDuplicates(CustomerInterface $customer)
     {
         if ($this->checkForDuplicates && $customer->getActive() && $customer->getPublished()) {
@@ -118,6 +136,15 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
         return true;
     }
 
+    /**
+     * @param CustomerInterface $customer
+     * @param string $field
+     * @param bool $throwException
+     *
+     * @return bool
+     *
+     * @throws ValidationException
+     */
     protected function validateField(CustomerInterface $customer, $field, $throwException = false)
     {
         $getter = 'get'.ucfirst($field);

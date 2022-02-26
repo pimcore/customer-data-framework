@@ -57,7 +57,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
     /**
      * @param Data $fd
      *
-     * @return array|string
+     * @return string
      */
     public function getLabelByFieldDefinition(Data $fd)
     {

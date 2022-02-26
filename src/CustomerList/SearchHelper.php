@@ -143,7 +143,6 @@ class SearchHelper
                 foreach ($filters['segments'] as $groupId => $segmentIds) {
                     $segmentGroup = null;
                     if ($groupId !== 'default') {
-                        /** @var \Pimcore\Model\DataObject\CustomerSegmentGroup $segmentGroup */
                         $segmentGroup = $this->getSegmentManager()->getSegmentGroupById($groupId);
                         if (!$segmentGroup) {
                             throw new \Exception(sprintf('Segment group %d was not found', $groupId));

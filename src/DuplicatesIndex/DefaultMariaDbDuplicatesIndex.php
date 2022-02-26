@@ -44,6 +44,11 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
     protected $duplicateCheckFields;
 
     /**
+     * @var array
+     */
+    protected $dataTransformers;
+
+    /**
      * @var bool
      */
     protected $enableDuplicatesIndex;
@@ -61,16 +66,21 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
     /**
      * DefaultMariaDbDuplicatesIndex constructor.
      *
+     * @param PaginatorInterface $paginator
      * @param bool $enableDuplicatesIndex
      * @param array $duplicateCheckFields
      * @param array $dataTransformers
      */
-    public function __construct(PaginatorInterface $paginator, $enableDuplicatesIndex = false, array $duplicateCheckFields = [], array $dataTransformers = [])
-    {
+    public function __construct(
+        PaginatorInterface $paginator,
+        $enableDuplicatesIndex = false,
+        array $duplicateCheckFields = [],
+        array $dataTransformers = []
+    ) {
+        $this->paginator = $paginator;
         $this->enableDuplicatesIndex = $enableDuplicatesIndex;
         $this->duplicateCheckFields = $duplicateCheckFields;
         $this->dataTransformers = $dataTransformers;
-        $this->paginator = $paginator;
     }
 
     public function recreateIndex()
@@ -324,7 +334,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
     }
 
     /**
-     * @param bool $analyseFalsePositives
+     * @param bool $analyzeFalsePositives
      */
     public function setAnalyzeFalsePositives($analyzeFalsePositives)
     {
@@ -334,7 +344,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
     /**
      * @param int $id
      *
-     * @return bool
+     * @return void
      */
     public function declinePotentialDuplicate($id)
     {
@@ -761,7 +771,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
     protected function transformDataForDuplicateIndex($data, $field)
     {
-        $class = isset($this->dataTransformers[$field]) ? $this->dataTransformers[$field] : false;
+        $class = $this->dataTransformers[$field] ?? false;
 
         if (!$class) {
             $class = Standard::class;

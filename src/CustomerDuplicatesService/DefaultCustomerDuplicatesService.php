@@ -15,8 +15,6 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerDuplicatesService;
 
-use Carbon\Carbon;
-
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\DataObject\ClassDefinition;
@@ -243,7 +241,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
     /**
      * @param Concrete $list
      * @param string $field
-     * @param Carbon|\Pimcore\Date|\DateTime $value
+     * @param \DateTime $value
      */
     protected function addNormalizedMysqlCompareConditionForDateFields(Concrete &$list, $field, $value)
     {

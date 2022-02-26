@@ -17,6 +17,9 @@ namespace CustomerManagementFrameworkBundle\Model;
 
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
 
+/**
+ * @method \Pimcore\Model\DataObject\Data\BlockElement[][]|null getTerms()
+ */
 abstract class AbstractTermSegmentBuilderDefinition extends \Pimcore\Model\DataObject\Concrete
 {
     /**

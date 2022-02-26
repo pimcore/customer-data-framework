@@ -88,7 +88,7 @@ class ExportCustomersFilterParams
     }
 
     /**
-     * @return int|\int[]
+     * @return int[]
      */
     public function getSegments()
     {
@@ -96,7 +96,7 @@ class ExportCustomersFilterParams
     }
 
     /**
-     * @param int|\int[] $segments
+     * @param int[]|int $segments
      */
     public function setSegments($segments)
     {

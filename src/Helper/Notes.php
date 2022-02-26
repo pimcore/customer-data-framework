@@ -21,9 +21,9 @@ class Notes
 {
     /**
      * @param ElementInterface $element
-     * @param                  $type
-     * @param                  $title
-     * @param null $description
+     * @param string $type
+     * @param string $title
+     * @param string|null $description
      *
      * @return \Pimcore\Model\Element\Note
      */

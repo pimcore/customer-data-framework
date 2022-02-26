@@ -36,11 +36,11 @@ class Factory
     }
 
     /**
-     * @param            $className
-     * @param null $needsToBeSubclassOf
-     * @param array|null $constructorParams
+     * @param string $className
+     * @param string|null $needsToBeSubclassOf
+     * @param array $constructorParams
      *
-     * @return mixed
+     * @return object
      *
      * @throws \Exception
      */

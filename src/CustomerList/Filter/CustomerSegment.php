@@ -148,7 +148,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
     /**
      * Add a single join with a IN() conditions. If any of the segment IDs matches, the row will be returned
      *
-     * @param CoreListing\Concrete|CoreListing\Dao $listing
+     * @param CoreListing\Concrete $listing
      * @param QueryBuilder $queryBuilder
      */
     protected function applyOrQuery(CoreListing\Concrete $listing, QueryBuilder $queryBuilder)
@@ -172,7 +172,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
     /**
      * Add one join per ID we want to search. If any of the joins does not match, the query will fail
      *
-     * @param CoreListing\Concrete|CoreListing\Dao $listing
+     * @param CoreListing\Concrete $listing
      * @param QueryBuilder $queryBuilder
      */
     protected function applyAndQuery(CoreListing\Concrete $listing, QueryBuilder $queryBuilder)

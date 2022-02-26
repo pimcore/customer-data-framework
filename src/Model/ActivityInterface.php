@@ -107,7 +107,7 @@ interface ActivityInterface
      *
      * @param ActivityStoreEntryInterface $entry
      *
-     * @return array
+     * @return array|false
      */
     public static function cmfGetOverviewData(ActivityStoreEntryInterface $entry);
 
