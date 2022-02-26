@@ -65,7 +65,7 @@ interface ActivityInterface
      *
      * @param array $data
      *
-     * @return bool
+     * @throws \Exception
      */
     public function cmfUpdateData(array $data);
 
@@ -89,7 +89,7 @@ interface ActivityInterface
     /**
      * Get the customer of the activity. A customer is required.
      *
-     * @return CustomerInterface
+     * @return CustomerInterface|null
      */
     public function getCustomer();
 

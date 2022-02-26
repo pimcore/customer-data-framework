@@ -21,6 +21,7 @@ use CustomerManagementFrameworkBundle\DataTransformer\Cleanup\Email;
 use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 use CustomerManagementFrameworkBundle\DataValidator\EmailValidator;
 use CustomerManagementFrameworkBundle\Model\Activity\MailchimpStatusChangeActivity;
+use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\MailchimpAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Model\NewsletterAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CustomerExporter\BatchExporter;
@@ -73,7 +74,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
     protected $mergeFieldMapping;
 
     /**
-     * @var DataTransformerInterface[]
+     * @var MailchimpDataTransformerInterface[]
      */
     protected $fieldTransformers;
 
@@ -117,8 +118,17 @@ class Mailchimp implements NewsletterProviderHandlerInterface
      *
      * @throws \Exception
      */
-    public function __construct($shortcut, $listId, array $statusMapping, array $reverseStatusMapping, array $mergeFieldMapping, array $fieldTransformers, SegmentExporter $segmentExporter, SegmentManagerInterface $segmentManager, MailChimpExportService $exportService)
-    {
+    public function __construct(
+        $shortcut,
+        $listId,
+        array $statusMapping,
+        array $reverseStatusMapping,
+        array $mergeFieldMapping,
+        array $fieldTransformers,
+        SegmentExporter $segmentExporter,
+        SegmentManagerInterface $segmentManager,
+        MailChimpExportService $exportService
+    ) {
         if (!strlen($shortcut) || !File::getValidFilename($shortcut)) {
             throw new \Exception('Please provide a valid newsletter provider handler shortcut.');
         }
@@ -227,7 +237,8 @@ class Mailchimp implements NewsletterProviderHandlerInterface
     }
 
     /**
-     * @param NewsletterQueueItemInterface[] $array
+     * @param NewsletterQueueItemInterface[] $items
+     * @param bool $forceUpdate
      *
      * @return NewsletterQueueItemInterface[]
      */
@@ -241,7 +252,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
                 $this->getLogger()->info(
                     sprintf(
                         '[MailChimp][CUSTOMER %s][%s] Export not needed as the customer has no valid email address.',
-                        $item->getCustomer() ? $item->getCustomer()->getId() : '',
+                        $item->getCustomer()->getId(),
                         $this->getShortcut()
                     )
                 );
@@ -867,13 +878,10 @@ class Mailchimp implements NewsletterProviderHandlerInterface
      *
      * @param string $email
      *
-     * @return NewsletterAwareCustomerInterface|null
+     * @return CustomerInterface|null
      */
     public function getActiveCustomerByEmail($email)
     {
-        /**
-         * @var NewsletterAwareCustomerInterface|null $customer
-         */
         $customer = $this->getCustomerProvider()->getActiveCustomerByEmail($email);
 
         return $customer;

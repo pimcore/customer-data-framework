@@ -80,9 +80,6 @@ class Version20171019130865 extends AbstractPimcoreMigration
         $users = new User\Listing;
         $users->setCondition("permissions like '%$permissionSearchKey%");
 
-        /**
-         * @var User $user
-         */
         foreach ($db->fetchCol("select id from users where permissions like '%$permissionSearchKey%'") as $userId) {
             $user = User::getById($userId);
 

@@ -121,5 +121,7 @@ class DefaultEncryptionService implements EncryptionServiceInterface
     {
         // do not serialize default key
         $this->defaultKey = null;
+
+        return array_keys(get_object_vars($this));
     }
 }

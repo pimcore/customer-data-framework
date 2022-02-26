@@ -22,6 +22,7 @@ use CustomerManagementFrameworkBundle\RESTApi\Exception\ResourceNotFoundExceptio
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResourceUrlGenerator;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResponseGenerator;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Customer;
@@ -76,6 +77,7 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
             $customers->addConditionParam('o_modificationDate > ?', $params->getModificationTimestamp());
         }
 
+        /** @var SlidingPaginationInterface $paginator */
         $paginator = $this->handlePaginatorParams($customers, $request);
 
         $timestamp = time();
@@ -113,7 +115,6 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
      * POST /customers
      *
      * @param Request $request
-     * @param array $params
      *
      * @return Response
      */
@@ -163,7 +164,6 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
      * DELETE /customers/{id}
      *
      * @param Request $request
-     * @param array $params
      *
      * @return Response
      */
@@ -185,7 +185,7 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
      *
      * @param int|array $id
      *
-     * @return CustomerInterface|Concrete
+     * @return CustomerInterface
      */
     protected function loadCustomer($id)
     {
@@ -215,7 +215,7 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
      *
      * @param CustomerInterface $customer
      * @param Request $request
-     * @param ExportCustomersFilterParams $params
+     * @param ExportCustomersFilterParams|null $params
      *
      * @return Response
      */
@@ -251,7 +251,7 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
             );
         }
 
-        $links = isset($data['_links']) ? $data['_links'] : [];
+        $links = $data['_links'] ?? [];
 
         if ($selfLink = $this->generateResourceApiUrl($customer->getId())) {
             $links[] = [

@@ -17,6 +17,9 @@ namespace CustomerManagementFrameworkBundle\Model\ActionTrigger\ActionDefinition
 
 use Pimcore\Model;
 
+/**
+ * @property \CustomerManagementFrameworkBundle\Model\ActionTrigger\ActionDefinition $model
+ */
 class Dao extends Model\Dao\AbstractDao
 {
     const TABLE_NAME = 'plugin_cmf_actiontrigger_actions';

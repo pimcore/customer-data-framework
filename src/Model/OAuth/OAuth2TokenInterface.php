@@ -25,14 +25,14 @@ interface OAuth2TokenInterface extends OAuthTokenInterface
     /**
      * Get access token
      *
-     * @return string
+     * @return string|null
      */
     public function getAccessToken(): ?string;
 
     /**
      * Set access token
      *
-     * @param string $accessToken
+     * @param string|null $accessToken
      *
      * @return $this
      */
@@ -41,14 +41,14 @@ interface OAuth2TokenInterface extends OAuthTokenInterface
     /**
      * Get refresh token
      *
-     * @return string
+     * @return string|null
      */
     public function getRefreshToken(): ?string;
 
     /**
      * Set refresh token
      *
-     * @param string $refreshToken
+     * @param string|null $refreshToken
      *
      * @return $this
      */
@@ -57,14 +57,14 @@ interface OAuth2TokenInterface extends OAuthTokenInterface
     /**
      * Get token type
      *
-     * @return string
+     * @return string|null
      */
     public function getTokenType(): ?string;
 
     /**
      * Set token type
      *
-     * @param string $tokenType
+     * @param string|null $tokenType
      *
      * @return $this
      */
@@ -73,14 +73,14 @@ interface OAuth2TokenInterface extends OAuthTokenInterface
     /**
      * Get scope
      *
-     * @return string
+     * @return string|null
      */
     public function getScope(): ?string;
 
     /**
      * Set scope
      *
-     * @param string $scope
+     * @param string|null $scope
      *
      * @return $this
      */
@@ -89,14 +89,14 @@ interface OAuth2TokenInterface extends OAuthTokenInterface
     /**
      * Get expires at
      *
-     * @return string
+     * @return string|null
      */
     public function getExpiresAt(): ?string;
 
     /**
      * Set expires at
      *
-     * @param int $expiresAt
+     * @param string|null $expiresAt
      *
      * @return $this
      */

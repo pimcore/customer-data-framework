@@ -57,7 +57,6 @@ interface NewsletterManagerInterface
     public function syncSingleCustomerQueueItem(NewsletterQueueItemInterface $newsletterQueueItem);
 
     /**
-     * @param string $shortcut
      * @param NewsletterProviderHandlerInterface $newsletterProviderHandler
      *
      * @return void

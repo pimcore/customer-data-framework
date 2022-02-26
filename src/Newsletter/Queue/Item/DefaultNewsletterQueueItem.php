@@ -30,7 +30,7 @@ class DefaultNewsletterQueueItem implements NewsletterQueueItemInterface
     private $customer;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $email;
 

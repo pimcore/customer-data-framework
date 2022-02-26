@@ -23,19 +23,7 @@ use Pimcore\Model\User;
 use Pimcore\Model\User\Role;
 
 /**
- * Class FilterDefinition
- *
- * @package CustomerManagementFrameworkBundle\Model\CustomerView
- *
- * @property int|null $id
- * @property int|null $ownerId
- * @property string $name
- * @property array $definition
- * @property array $allowedUserIds
- * @property bool $readOnly
- * @property bool $shortcutAvailable
- * @property string $creationDate
- * @property string $modificationDate
+ * @method FilterDefinition\Dao getDao()
  */
 class FilterDefinition extends AbstractModel
 {
@@ -279,7 +267,6 @@ class FilterDefinition extends AbstractModel
                 // create object and set id
                 $filterDefinition = (new self())->setId(intval($id));
                 // load filter definition by id
-                /** @noinspection PhpUndefinedMethodInspection */
                 $filterDefinition->getDao()->getById(intval($id));
                 // save found object to cache -> Only if object was found
                 Runtime::set($cacheKey, $filterDefinition);
@@ -306,7 +293,6 @@ class FilterDefinition extends AbstractModel
             // create object and set id
             $filterDefinition = new self();
             // load filter definition by id
-            /** @noinspection PhpUndefinedMethodInspection */
             $filterDefinition->getDao()->getByName($name);
         } catch (\Exception $e) {
             // return null to indicate object not found
@@ -650,15 +636,6 @@ class FilterDefinition extends AbstractModel
         }
 
         return false;
-    }
-
-    /**
-     * @return Dao
-     */
-    public function getDao()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::getDao();
     }
 
     /**

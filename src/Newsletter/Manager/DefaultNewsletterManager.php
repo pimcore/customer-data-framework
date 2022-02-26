@@ -21,24 +21,13 @@ use CustomerManagementFrameworkBundle\Newsletter\Exception\UnsubscribeFailedExce
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProviderHandlerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
-use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 
 class DefaultNewsletterManager implements NewsletterManagerInterface
 {
     /**
-     * @var SegmentManagerInterface
-     */
-    private $segmentManager;
-
-    /**
      * @var NewsletterProviderHandlerInterface[]
      */
     protected $newsletterProviderHandlers = [];
-
-    public function __construct(SegmentManagerInterface $segmentManager)
-    {
-        $this->segmentManager = $segmentManager;
-    }
 
     /**
      * Subscribe customer from newsletter (for example via web form). Returns true if it was successful.
@@ -120,7 +109,6 @@ class DefaultNewsletterManager implements NewsletterManagerInterface
     }
 
     /**
-     * @param string $shortcut
      * @param NewsletterProviderHandlerInterface $newsletterProviderHandler
      *
      * @return void

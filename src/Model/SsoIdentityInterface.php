@@ -15,6 +15,11 @@
 
 namespace CustomerManagementFrameworkBundle\Model;
 
+use Pimcore\Model\DataObject\SsoIdentity\Credentials;
+
+/**
+ * @method Credentials getCredentials()
+ */
 interface SsoIdentityInterface
 {
     /**

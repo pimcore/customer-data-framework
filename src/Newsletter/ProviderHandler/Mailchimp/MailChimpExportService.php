@@ -180,7 +180,7 @@ class MailChimpExportService
      * @param string $listId
      * @param bool $refresh
      *
-     * @return Note[]|Note\Listing|\Pimcore\Model\DataObject\Listing\Dao
+     * @return Note[]
      */
     public function getExportNotes(ElementInterface $object, $listId, $refresh = false)
     {
@@ -188,7 +188,6 @@ class MailChimpExportService
         $notes = Runtime::isRegistered($cacheKey) ? Runtime::get($cacheKey) : [];
 
         if (!isset($notes[$listId][$object->getId()]) || $refresh) {
-            /** @var Note\Listing|\Pimcore\Model\DataObject\Listing\Dao $list */
             $list = new Note\Listing();
             $list->setOrderKey('date');
             $list->setOrder('desc');
@@ -263,7 +262,7 @@ class MailChimpExportService
     public function getMd5($data)
     {
         // ensure that status_if_new and status are handled the same way in the md5 check
-        $status = isset($data['status_if_new']) ? $data['status_if_new'] : $data['status'];
+        $status = $data['status_if_new'] ?? $data['status'];
 
         unset($data['status_if_new']);
         $data['status'] = $status;

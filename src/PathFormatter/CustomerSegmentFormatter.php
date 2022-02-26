@@ -46,7 +46,8 @@ class CustomerSegmentFormatter
                     $newPath = '<strong>' . $targetObject->getName() . '</strong>';
 
                     /** @var CustomerSegmentGroup|null $group */
-                    if ($group = $targetObject->getGroup()) {
+                    $group = $targetObject->getGroup();
+                    if ($group) {
                         $newPath .= ' [' . $group->getName() . ']';
                     }
                 }
