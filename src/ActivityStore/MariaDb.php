@@ -358,7 +358,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
 
             $db->commit();
         } catch (\Exception $e) {
-            $e->rollback();
+            $db->rollback();
 
             throw new $e;
         }
