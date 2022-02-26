@@ -117,14 +117,11 @@ class DefaultEncryptionService implements EncryptionServiceInterface
         return Crypto::decrypt($ciphertext, $key, $rawBinary);
     }
 
-    /**
-     * @return array|null
-     *
-     * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.sleep
-     */
     public function __sleep()
     {
         // do not serialize default key
         $this->defaultKey = null;
+
+        return array_keys(get_object_vars($this));
     }
 }
