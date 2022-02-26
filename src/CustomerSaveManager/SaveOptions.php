@@ -186,7 +186,7 @@ class SaveOptions
      */
     public function enableValidator()
     {
-        $this->enableValidator = true;
+        $this->validatorEnabled = true;
 
         return $this;
     }
