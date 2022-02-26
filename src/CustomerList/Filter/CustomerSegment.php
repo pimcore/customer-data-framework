@@ -132,12 +132,6 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
         return $this;
     }
 
-    /**
-     * Apply filter directly to query
-     *
-     * @param CoreListing\Concrete|CoreListing\Dao $listing
-     * @param QueryBuilder $queryBuilder
-     */
     public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $queryBuilder)
     {
         if (count($this->segments) === 0) {

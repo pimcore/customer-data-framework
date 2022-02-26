@@ -46,7 +46,7 @@ class ConditionDefinition implements ConditionDefinitionInterface
     {
         $this->definitionData = $definitionData;
         $this->implementationClass = $definitionData['implementationClass'];
-        $this->options = isset($definitionData['options']) ? $definitionData['options'] : [];
+        $this->options = $definitionData['options'] ?? [];
         $this->bracketLeft = $definitionData['bracketLeft'];
         $this->bracketRight = $definitionData['bracketRight'];
         $this->operator = $definitionData['operator'];

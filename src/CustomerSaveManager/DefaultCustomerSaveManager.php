@@ -27,7 +27,6 @@ use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Bundle\CoreBundle\EventListener\Traits\PimcoreContextAwareTrait;
 use Pimcore\Db;
 use Pimcore\Http\Request\Resolver\PimcoreContextResolver;
-use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\Element\ValidationException;
 use Pimcore\Model\Version;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -73,13 +72,12 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
      */
     protected $activityStore;
 
-    /**
-     * DefaultCustomerSaveManager constructor.
-     *
-     * @param bool $enableAutomaticObjectNamingScheme
-     */
-    public function __construct(SaveOptions $saveOptions, CustomerProviderInterface $customerProvider, RequestStack $requestStack, ActivityStoreInterface $activityStore)
-    {
+    public function __construct(
+        SaveOptions $saveOptions,
+        CustomerProviderInterface $customerProvider,
+        RequestStack $requestStack,
+        ActivityStoreInterface $activityStore
+    ) {
         $this->saveOptions = $saveOptions;
         $this->defaultSaveOptions = clone $saveOptions;
         $this->customerProvider = $customerProvider;
@@ -96,9 +94,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
             //$this->setPimcoreContextResolver(\Pimcore::getContainer()->get('pimcore.service.request.pimcore_context_resolver'));
 
-            /**
-             * @var Concrete $customer
-             */
             if ($request && $this->matchesPimcoreContext($request, PimcoreContextResolver::CONTEXT_ADMIN)) {
                 if (!$customer->isAllowed('save') || ($customer->getPublished() && !$customer->isAllowed('publish'))) {
                     throw new ValidationException(sprintf('No permissions to save customer to folder "%s"', $customer->getParent()));
@@ -152,7 +147,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
         //$this->setPimcoreContextResolver(\Pimcore::getContainer()->get('pimcore.service.request.pimcore_context_resolver'));
 
-        if (!$request || ($request && !$this->matchesPimcoreContext($request, PimcoreContextResolver::CONTEXT_ADMIN))) {
+        if (!$request || !$this->matchesPimcoreContext($request, PimcoreContextResolver::CONTEXT_ADMIN)) {
             $this->applyNamingScheme($customer);
         }
     }
@@ -328,7 +323,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
      */
     protected function reinitSaveHandlers(array $saveHandlers, CustomerInterface $customer)
     {
-        $originalCustomer = null;
         foreach ($saveHandlers as $handler) {
             if (!$handler->isOriginalCustomerNeeded()) {
                 continue;
@@ -439,7 +433,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     /**
      * Restore options
      *
-     * @param \stdClass $options
+     * @param SaveOptions $options
      */
     protected function applySaveOptions(SaveOptions $options)
     {

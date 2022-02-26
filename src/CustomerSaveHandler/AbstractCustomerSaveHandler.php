@@ -28,9 +28,9 @@ abstract class AbstractCustomerSaveHandler implements CustomerSaveHandlerInterfa
     protected $logger;
 
     /**
-     * @var CustomerInterface
+     * @var CustomerInterface|null
      */
-    protected $orginalCustomer;
+    protected $originalCustomer;
 
     /**
      * If this returns true, the CustomerSaveHandler is provided with an original instance of the customer how it looks like in the database.
@@ -46,11 +46,11 @@ abstract class AbstractCustomerSaveHandler implements CustomerSaveHandlerInterfa
     /**
      * Returns the original customer object from the database. self::isOriginalCustomerNeeded() need to return true if this feature is needed.
      *
-     * @return CustomerInterface
+     * @return CustomerInterface|null
      */
     public function getOriginalCustomer()
     {
-        return $this->orginalCustomer;
+        return $this->originalCustomer;
     }
 
     /**
@@ -62,7 +62,7 @@ abstract class AbstractCustomerSaveHandler implements CustomerSaveHandlerInterfa
      */
     public function setOriginalCustomer(CustomerInterface $originalCustomer = null)
     {
-        $this->orginalCustomer = $originalCustomer;
+        $this->originalCustomer = $originalCustomer;
     }
 
     /**

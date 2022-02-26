@@ -62,10 +62,12 @@ class SaveOptions
      *
      * @param bool $onSaveSegmentBuildersEnabled
      * @param bool $validatorEnabled
-     * @param bool $saveHandlersEnabled
+     * @param bool $saveHandlersExecutionEnabled
      * @param bool $segmentBuilderQueueEnabled
      * @param bool $objectNamingSchemeEnabled
+     * @param bool $duplicatesIndexEnabled
      * @param bool $newsletterQueueEnabled
+     * @param bool $newsletterQueueImmediateAsyncExecutionEnabled
      */
     public function __construct(
         $onSaveSegmentBuildersEnabled = false,
@@ -186,7 +188,7 @@ class SaveOptions
      */
     public function enableValidator()
     {
-        $this->enableValidator = true;
+        $this->validatorEnabled = true;
 
         return $this;
     }

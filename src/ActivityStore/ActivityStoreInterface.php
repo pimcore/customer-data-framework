@@ -38,7 +38,7 @@ interface ActivityStoreInterface
 
     /**
      * @param ActivityInterface $activity
-     * @param ActivityStoreEntryInterface $entry
+     * @param ActivityStoreEntryInterface|null $entry
      *
      * @return ActivityStoreEntryInterface
      */
@@ -47,6 +47,7 @@ interface ActivityStoreInterface
     /**
      *
      * @param ActivityStoreEntryInterface $entry
+     * @param bool $updateAttributes
      *
      * @return void
      */

@@ -109,7 +109,7 @@ class ElementSegmentsListener implements EventSubscriberInterface
 
         $segments = $this->segmentManager->getSegmentsForElement($document);
         $segments = array_filter($segments, function ($segment) {
-            return $segment && $segment instanceof CustomerSegmentInterface;
+            return $segment instanceof CustomerSegmentInterface;
         });
 
         if (count($segments) > 0) {

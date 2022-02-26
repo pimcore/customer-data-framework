@@ -99,13 +99,7 @@ abstract class AbstractFieldBetween extends AbstractFilter implements OnCreateQu
      */
     abstract protected function getToValue();
 
-    /**
-     * Apply filter directly to query
-     *
-     * @param CoreListing\Concrete|CoreListing\Dao $listing
-     * @param QueryBuilder $query
-     */
-    public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $query)
+    public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $queryBuilder)
     {
         $from = $this->getFromValue();
         $to = $this->getToValue();
@@ -127,6 +121,6 @@ abstract class AbstractFieldBetween extends AbstractFilter implements OnCreateQu
             $subSelect->andWhere(sprintf('`%s`.`%s` %s %s', $tableName, $this->field, $operator, $listing->quote($to)));
         }
 
-        $query->andWhere((string) $subSelect->getQueryPart('where'));
+        $queryBuilder->andWhere((string) $subSelect->getQueryPart('where'));
     }
 }

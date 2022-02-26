@@ -99,7 +99,7 @@ class Csv extends AbstractExporter
     }
 
     /**
-     * @param [] $row
+     * @param array $row
      *
      * @return $this
      */

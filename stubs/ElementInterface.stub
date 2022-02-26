@@ -4,5 +4,7 @@ namespace Pimcore\Model\Element;
 
 interface ElementInterface
 {
+    public function setParent(?ElementInterface $parent): static;
+
     public function __toString(): string;
 }

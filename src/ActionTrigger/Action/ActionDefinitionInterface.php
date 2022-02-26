@@ -15,6 +15,9 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Action;
 
+/**
+ * @method void save()
+ */
 interface ActionDefinitionInterface
 {
     /**

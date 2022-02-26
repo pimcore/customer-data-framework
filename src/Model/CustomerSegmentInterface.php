@@ -22,11 +22,6 @@ use Pimcore\Model\Element\ElementInterface;
 interface CustomerSegmentInterface extends ElementInterface
 {
     /**
-     * @return int
-     */
-    public function getId();
-
-    /**
      * @return string
      */
     public function getName(): ?string;
@@ -95,14 +90,4 @@ interface CustomerSegmentInterface extends ElementInterface
      * @return array
      */
     public function getDataForWebserviceExport();
-
-    /**
-     * @return void
-     */
-    public function save();
-
-    /**
-     * @return void
-     */
-    public function delete();
 }

@@ -22,6 +22,11 @@ use Pimcore\Cache\Runtime;
 use Pimcore\Logger;
 use Pimcore\Model\AbstractModel;
 
+/**
+ * @method Rule\Dao getDao()
+ * @method bool save()
+ * @method void delete()
+ */
 class Rule extends AbstractModel
 {
     /**
@@ -32,54 +37,47 @@ class Rule extends AbstractModel
     /**
      * @var string
      */
-    private $name;
+    private $name = '';
 
     /**
      * @var string
      */
-    private $description;
+    private $description = '';
 
     /**
      * @var bool
      */
-    private $active;
+    private $active = false;
 
     /**
-     * @var string
+     * @var TriggerDefinitionInterface[]
      */
-    private $trigger;
+    private $trigger = [];
 
     /**
-     * @var string
+     * @var ConditionDefinitionInterface[]
      */
-    private $condition;
+    private $condition = [];
 
     /**
-     * @var string
+     * @var ActionDefinitionInterface[]
      */
-    private $action;
+    private $action = [];
 
     /**
-     * @var int
+     * @var int|null
      */
     private $creationDate;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modificationDate;
-
-    public function __construct()
-    {
-        $this->trigger = [];
-        $this->condition = [];
-        $this->action = [];
-    }
 
     /**
      * @param int|null $id
      *
-     * @return Rule
+     * @return Rule|null
      *
      * @throws \Exception
      */
@@ -192,7 +190,7 @@ class Rule extends AbstractModel
     }
 
     /**
-     * @return ConditionDefinitionInterface[] $condition
+     * @return ConditionDefinitionInterface[]
      */
     public function getCondition()
     {
@@ -200,7 +198,7 @@ class Rule extends AbstractModel
     }
 
     /**
-     * @param string $condition
+     * @param ConditionDefinitionInterface[] $condition
      */
     public function setCondition($condition)
     {
@@ -216,7 +214,7 @@ class Rule extends AbstractModel
     }
 
     /**
-     * @param string $action
+     * @param ActionDefinitionInterface[] $action
      */
     public function setAction($action)
     {
@@ -224,7 +222,7 @@ class Rule extends AbstractModel
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getModificationDate()
     {
@@ -232,7 +230,7 @@ class Rule extends AbstractModel
     }
 
     /**
-     * @param int $modificationDate
+     * @param int|null $modificationDate
      */
     public function setModificationDate($modificationDate)
     {
@@ -240,7 +238,7 @@ class Rule extends AbstractModel
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getCreationDate()
     {
@@ -248,7 +246,7 @@ class Rule extends AbstractModel
     }
 
     /**
-     * @param int $creationDate
+     * @param int|null $creationDate
      */
     public function setCreationDate($creationDate)
     {

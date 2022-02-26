@@ -33,7 +33,7 @@ class DefaultEventHandler implements EventHandlerInterface
 {
     use LoggerAware;
 
-    /** @var Rule[]|null */
+    /** @var Rule[][]|null */
     private $rulesGroupedByEvents = null;
 
     /**

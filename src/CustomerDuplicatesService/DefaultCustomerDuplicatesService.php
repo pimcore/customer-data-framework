@@ -116,7 +116,8 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
     /**
      * Returns a list of duplicates for the given customer. Duplicates are matched by the fields given in $fields.
      *
-     * @param array $data
+     * @param CustomerInterface $customer
+     * @param array $fields
      * @param int $limit
      *
      * @return \Pimcore\Model\DataObject\Listing\Concrete|null
@@ -203,13 +204,16 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
             return;
         }
 
-        if ($value instanceof Carbon || $value instanceof \Pimcore\Date || $value instanceof \DateTime) {
+        if ($value instanceof \DateTime) {
             $this->addNormalizedMysqlCompareConditionForDateFields($list, $field, $value);
 
             return;
         }
 
-        if (strpos($fd->getQueryColumnType(), 'char') == !false) {
+        if (
+            $fd instanceof ClassDefinition\Data\QueryResourcePersistenceAwareInterface &&
+            str_contains($fd->getQueryColumnType(), 'char')
+        ) {
             $this->addNormalizedMysqlCompareConditionForStringFields($list, $field, $value);
 
             return;

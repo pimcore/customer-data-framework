@@ -41,7 +41,7 @@ interface ActivityViewInterface
     public function getDetailviewTemplate(ActivityStoreEntryInterface $activityEntry);
 
     /**
-     * @param       $implementationClass
+     * @param string $implementationClass
      * @param array $attributes
      * @param array $visibleKeys
      *

@@ -85,7 +85,6 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
             throw new \Exception('updating only allowed for existing activity store entries');
         }
 
-        $activity = null;
         if (!$updateAttributes) {
             $this->saveActivityStoreEntry($entry);
 
@@ -358,7 +357,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
 
             $db->commit();
         } catch (\Exception $e) {
-            $e->rollback();
+            $db->rollback();
 
             throw new $e;
         }
@@ -397,7 +396,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
 
     /**
      * @param CustomerInterface $customer
-     * @param null $activityType
+     * @param string|null $activityType
      *
      * @return int
      */

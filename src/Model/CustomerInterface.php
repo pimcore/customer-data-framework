@@ -22,22 +22,15 @@ use Pimcore\Model\DataObject\Data\Consent;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
 use Pimcore\Model\Element\ElementInterface;
 
+/**
+ * @method \Pimcore\Model\DataObject\ClassDefinition getClass()
+ */
 interface CustomerInterface extends ElementInterface
 {
     /**
      * @return int
      */
-    public function getId();
-
-    /**
-     * @return int
-     */
     public static function classId();
-
-    /**
-     * @return mixed
-     */
-    public function save();
 
     /**
      * @return bool

@@ -57,7 +57,7 @@ interface ConditionDefinitionInterface
     public function getBracketRight();
 
     /**
-     * @return bool
+     * @return string
      */
     public function getOperator();
 

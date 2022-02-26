@@ -6,6 +6,8 @@ parameters:
         - phpstan-bootstrap.php
     ignoreErrors:
         - '~^Method Doctrine\\DBAL(\\.*)?Connection::query\(\) invoked with \d+ parameters?, 0 required\.\z~'
+    stubFiles:
+        - stubs/ElementInterface.stub
 
 includes:
     - vendor/phpstan/phpstan-symfony/extension.neon

@@ -1,4 +1,4 @@
-name: "Static Analysis"
+name: "Static Analysis Pimcore 6.9"
 
 on:
     pull_request:

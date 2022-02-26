@@ -15,7 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerList\Exporter;
 
-use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
+use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\DataObject\Listing\Concrete;
 
@@ -95,7 +95,6 @@ abstract class AbstractExporter implements ExporterInterface
      */
     public function setProperties(array $properties)
     {
-        $this->reset();
         $this->properties = $properties;
     }
 
@@ -112,7 +111,6 @@ abstract class AbstractExporter implements ExporterInterface
      */
     public function setListing(Concrete $listing)
     {
-        $this->reset();
         $this->listing = $listing;
     }
 
@@ -127,9 +125,7 @@ abstract class AbstractExporter implements ExporterInterface
 
         $rows = [];
         $allSegmentIds = [];
-        /**
-         * @var Concrete $customer
-         */
+        /** @var CustomerInterface $customer */
         foreach ($this->listing as $customer) {
             $classDefinition = $customer->getClass();
             $row = [self::COLUMNS => [], self::SEGMENT_IDS => []];
@@ -179,16 +175,6 @@ abstract class AbstractExporter implements ExporterInterface
     }
 
     /**
-     * @return $this
-     */
-    protected function reset()
-    {
-        $this->rendered = false;
-
-        return $this;
-    }
-
-    /**
      * @param array $exportData
      *
      * @return array
@@ -211,9 +197,6 @@ abstract class AbstractExporter implements ExporterInterface
             $list->addConditionParam('o_id in(' . implode(', ', $exportData[self::SEGMENT_IDS]) .')');
             $list->setOrderKey('concat(o_path, o_key)', false);
 
-            /**
-             * @var CustomerSegmentInterface $item;
-             */
             $i = sizeof($titles);
             foreach ($list as $item) {
                 $segmentName = [];
@@ -265,7 +248,7 @@ abstract class AbstractExporter implements ExporterInterface
     /**
      * @param string $property
      *
-     * @return ClassDefinition\Data
+     * @return ClassDefinition\Data|null
      */
     protected function getPropertyDefinition($property)
     {

@@ -83,9 +83,7 @@ interface CustomerSaveManagerInterface
     public function getSaveOptions($clone = false);
 
     /**
-     * @param bool $clone
-     *
-     * @return SaveOptions
+     * @param SaveOptions $saveOptions
      */
     public function setSaveOptions(SaveOptions $saveOptions);
 

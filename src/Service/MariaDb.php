@@ -132,7 +132,7 @@ class MariaDb
 
         $db->query($sql);
 
-        return $db->lastInsertId();
+        return (int) $db->lastInsertId();
     }
 
     /**

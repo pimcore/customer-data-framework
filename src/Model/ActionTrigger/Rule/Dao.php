@@ -15,13 +15,14 @@
 
 namespace CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
 
-use CustomerManagementFrameworkBundle\ActionTrigger\Condition\ConditionDefinitionInterface;
-use CustomerManagementFrameworkBundle\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\ActionDefinition;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\ConditionDefinition;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\TriggerDefinition;
 use Pimcore\Model;
 
+/**
+ * @property \CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule $model
+ */
 class Dao extends Model\Dao\AbstractDao
 {
     const TABLE_NAME = 'plugin_cmf_actiontrigger_rules';
@@ -80,9 +81,6 @@ class Dao extends Model\Dao\AbstractDao
         $triggerData = [];
         if ($triggers = $this->model->getTrigger()) {
             foreach ($triggers as $trigger) {
-                /**
-                 * @var TriggerDefinitionInterface $trigger
-                 */
                 $triggerData[] = $trigger->getDefinitionData();
             }
         }
@@ -90,9 +88,6 @@ class Dao extends Model\Dao\AbstractDao
         $conditionData = [];
         if ($conditions = $this->model->getCondition()) {
             foreach ($conditions as $condition) {
-                /**
-                 * @var ConditionDefinitionInterface $condition
-                 */
                 $conditionData[] = $condition->getDefinitionData();
             }
         }
@@ -121,7 +116,6 @@ class Dao extends Model\Dao\AbstractDao
             }
         } else {
             $data['creationDate'] = time();
-            unset($data['id']);
             $this->db->beginTransaction();
             try {
                 $this->db->insert(self::TABLE_NAME, $data);
