@@ -1,0 +1,8 @@
+<?php
+
+namespace Pimcore\Model\Element;
+
+interface ElementInterface
+{
+    public function __toString(): string;
+}
