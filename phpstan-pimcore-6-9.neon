@@ -5,10 +5,10 @@ parameters:
     bootstrapFiles:
         - phpstan-bootstrap.php
     ignoreErrors:
-        - '#(.*)Symfony\\Contracts\\EventDispatcher\\Event(DispatcherInterface)?(.*)#'
         - '~^Method Doctrine\\DBAL(\\.*)?Connection::query\(\) invoked with \d+ parameters?, 0 required\.\z~'
     stubFiles:
         - stubs/ElementInterface.stub
 
 includes:
     - vendor/phpstan/phpstan-symfony/extension.neon
+    - phpstan-baseline-pimcore-6-9.neon

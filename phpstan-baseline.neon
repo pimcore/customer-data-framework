@@ -1,0 +1,322 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
+			count: 1
+			path: src/ActionTrigger/EventHandler/DefaultEventHandler.php
+
+		-
+			message: "#^Method CustomerManagementFrameworkBundle\\\\ActivityStore\\\\MySQL\\:\\:getActivityStoreConnection\\(\\) should return Doctrine\\\\DBAL\\\\Connection but returns Pimcore\\\\Db\\\\ConnectionInterface\\.$#"
+			count: 1
+			path: src/ActivityStore/MySQL.php
+
+		-
+			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
+			count: 1
+			path: src/Controller/Admin/ActivitiesController.php
+
+		-
+			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\:\\:setParent\\(\\)\\.$#"
+			count: 1
+			path: src/Controller/Admin/CustomersController.php
+
+		-
+			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
+			count: 2
+			path: src/Controller/Admin/CustomersController.php
+
+		-
+			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
+			count: 1
+			path: src/Controller/Admin/DuplicatesController.php
+
+		-
+			message: "#^Call to an undefined method Pimcore\\\\Model\\\\User\\\\Listing\\:\\:getTotalCount\\(\\)\\.$#"
+			count: 1
+			path: src/Controller/Admin/SettingsController.php
+
+		-
+			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\:\\:setParent\\(\\)\\.$#"
+			count: 1
+			path: src/CustomerProvider/ObjectNamingScheme/DefaultObjectNamingScheme.php
+
+		-
+			message: "#^Call to function is_object\\(\\) with string will always evaluate to false\\.$#"
+			count: 1
+			path: src/CustomerView/DefaultCustomerView.php
+
+		-
+			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
+			count: 1
+			path: src/DuplicatesIndex/DefaultMariaDbDuplicatesIndex.php
+
+		-
+			message: "#^Parameter \\$e of method CustomerManagementFrameworkBundle\\\\Event\\\\MaintenanceEventListener\\:\\:onMaintenance\\(\\) has invalid type Pimcore\\\\Event\\\\System\\\\MaintenanceEvent\\.$#"
+			count: 1
+			path: src/Event/MaintenanceEventListener.php
+
+		-
+			message: "#^Result of && is always false\\.$#"
+			count: 1
+			path: src/Factory.php
+
+		-
+			message: "#^Unsafe usage of new static\\(\\)\\.$#"
+			count: 1
+			path: src/Filter/ExportActivitiesFilterParams.php
+
+		-
+			message: "#^Unsafe usage of new static\\(\\)\\.$#"
+			count: 1
+			path: src/Filter/ExportCustomersFilterParams.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\{className\\: string\\|null, data\\: mixed\\}\\.$#"
+			count: 1
+			path: src/GDPR/DataProvider/Customers.php
+
+		-
+			message: "#^Offset 'object' does not exist on array\\{\\}\\.$#"
+			count: 1
+			path: src/GDPR/DataProvider/Customers.php
+
+		-
+			message: "#^Call to an undefined static method Pimcore\\\\Model\\\\DataObject\\\\Concrete\\:\\:getProfilingConsent\\(\\)\\.$#"
+			count: 1
+			path: src/Model/AbstractCustomer.php
+
+		-
+			message: "#^Unsafe usage of new static\\(\\)\\.$#"
+			count: 1
+			path: src/Model/AbstractObjectActivity.php
+
+		-
+			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
+			count: 1
+			path: src/Model/Activity/GenericActivity.php
+
+		-
+			message: "#^Elseif branch is unreachable because previous condition is always true\\.$#"
+			count: 1
+			path: src/Model/Activity/GenericActivity.php
+
+		-
+			message: "#^Unsafe usage of new static\\(\\)\\.$#"
+			count: 1
+			path: src/Model/Activity/GenericActivity.php
+
+		-
+			message: "#^Unsafe usage of new static\\(\\)\\.$#"
+			count: 1
+			path: src/Model/Activity/TrackedUrlActivity.php
+
+		-
+			message: "#^PHPDoc type CustomerManagementFrameworkBundle\\\\Model\\\\ActivityList\\\\DefaultMariaDbActivityList\\\\MariaDbDao of property CustomerManagementFrameworkBundle\\\\Model\\\\ActivityList\\\\DefaultMariaDbActivityList\\:\\:\\$dao is not covariant with PHPDoc type Pimcore\\\\Model\\\\Dao\\\\AbstractDao\\|null of overridden property Pimcore\\\\Model\\\\AbstractModel\\:\\:\\$dao\\.$#"
+			count: 1
+			path: src/Model/ActivityList/DefaultMariaDbActivityList.php
+
+		-
+			message: "#^Property CustomerManagementFrameworkBundle\\\\Model\\\\ActivityList\\\\DefaultMariaDbActivityList\\:\\:\\$dao \\(CustomerManagementFrameworkBundle\\\\Model\\\\ActivityList\\\\DefaultMariaDbActivityList\\\\MariaDbDao\\) does not accept CustomerManagementFrameworkBundle\\\\Model\\\\ActivityList\\\\DefaultMariaDbActivityList\\\\MySqlDao\\.$#"
+			count: 1
+			path: src/Model/ActivityList/MySqlActivityList.php
+
+		-
+			message: "#^PHPDoc type CustomerManagementFrameworkBundle\\\\Model\\\\SegmentAssignmentInterface\\|null of property CustomerManagementFrameworkBundle\\\\Model\\\\SegmentAssignment\\\\SegmentAssignment\\\\Dao\\:\\:\\$model is not covariant with PHPDoc type Pimcore\\\\Model\\\\AbstractModel of overridden property Pimcore\\\\Model\\\\Dao\\\\AbstractDao\\:\\:\\$model\\.$#"
+			count: 1
+			path: src/Model/SegmentAssignment/SegmentAssignment/Dao.php
+
+		-
+			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\:\\:needsExportByNewsletterProviderHandler\\(\\)\\.$#"
+			count: 1
+			path: src/Newsletter/ProviderHandler/Mailchimp.php
+
+		-
+			message: "#^If condition is always true\\.$#"
+			count: 1
+			path: src/Newsletter/ProviderHandler/Mailchimp/CliSyncProcessor.php
+
+		-
+			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\:\\:needsExportByNewsletterProviderHandler\\(\\)\\.$#"
+			count: 1
+			path: src/Newsletter/ProviderHandler/Mailchimp/CustomerExporter/BatchExporter.php
+
+		-
+			message: "#^Elseif condition is always true\\.$#"
+			count: 1
+			path: src/Newsletter/ProviderHandler/Mailchimp/CustomerExporter/BatchExporter.php
+
+		-
+			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
+			count: 2
+			path: src/Newsletter/Queue/DefaultNewsletterQueue.php
+
+		-
+			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
+			count: 1
+			path: src/RESTApi/CustomersHandler.php
+
+		-
+			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
+			count: 1
+			path: src/RESTApi/SegmentGroupsHandler.php
+
+		-
+			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
+			count: 1
+			path: src/RESTApi/SegmentsHandler.php
+
+		-
+			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\RESTApi\\\\SegmentsOfCustomerHandler\\:\\:createRoute\\(\\)\\.$#"
+			count: 1
+			path: src/RESTApi/SegmentsOfCustomerHandler.php
+
+		-
+			message: "#^Cannot call method getUsername\\(\\) on string\\|Stringable\\|Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\.$#"
+			count: 1
+			path: src/Security/Guard/WebserviceAuthenticator.php
+
+		-
+			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\SsoIdentityInterface\\:\\:save\\(\\)\\.$#"
+			count: 1
+			path: src/Security/OAuth/OAuthRegistrationHandler.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\:\\:getId\\(\\)\\.$#"
+			count: 1
+			path: src/Security/OAuth/OAuthRegistrationHandler.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\:\\:save\\(\\)\\.$#"
+			count: 1
+			path: src/Security/OAuth/OAuthRegistrationHandler.php
+
+		-
+			message: "#^Method CustomerManagementFrameworkBundle\\\\Security\\\\OAuth\\\\SessionTokenStorage\\:\\:loadToken\\(\\) should return HWI\\\\Bundle\\\\OAuthBundle\\\\Security\\\\Core\\\\Authentication\\\\Token\\\\OAuthToken\\|null but return statement is missing\\.$#"
+			count: 1
+			path: src/Security/OAuth/SessionTokenStorage.php
+
+		-
+			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\:\\:getSsoIdentities\\(\\)\\.$#"
+			count: 2
+			path: src/Security/SsoIdentity/DefaultSsoIdentityService.php
+
+		-
+			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\:\\:setSsoIdentities\\(\\)\\.$#"
+			count: 1
+			path: src/Security/SsoIdentity/DefaultSsoIdentityService.php
+
+		-
+			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\SsoIdentityInterface\\:\\:getId\\(\\)\\.$#"
+			count: 1
+			path: src/Security/SsoIdentity/DefaultSsoIdentityService.php
+
+		-
+			message: "#^Method CustomerManagementFrameworkBundle\\\\Security\\\\SsoIdentity\\\\DefaultSsoIdentityService\\:\\:addSsoIdentity\\(\\) should return \\$this\\(CustomerManagementFrameworkBundle\\\\Security\\\\SsoIdentity\\\\DefaultSsoIdentityService\\) but return statement is missing\\.$#"
+			count: 1
+			path: src/Security/SsoIdentity/DefaultSsoIdentityService.php
+
+		-
+			message: "#^Method CustomerManagementFrameworkBundle\\\\Security\\\\UserProvider\\\\CustomerObjectUserProvider\\:\\:refreshUser\\(\\) should return Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface but returns CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\|null\\.$#"
+			count: 1
+			path: src/Security/UserProvider/CustomerObjectUserProvider.php
+
+		-
+			message: "#^Negated boolean expression is always false\\.$#"
+			count: 1
+			path: src/Security/UserProvider/CustomerObjectUserProvider.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserProviderInterface\\:\\:loadUserByUsername\\(\\)\\.$#"
+			count: 1
+			path: src/Security/UserProvider/OAuthAwareUserProvider.php
+
+		-
+			message: "#^Method CustomerManagementFrameworkBundle\\\\Security\\\\UserProvider\\\\OAuthAwareUserProvider\\:\\:loadUserByOAuthUserResponse\\(\\) should return Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface but returns CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\.$#"
+			count: 1
+			path: src/Security/UserProvider/OAuthAwareUserProvider.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between null and string will always evaluate to false\\.$#"
+			count: 1
+			path: src/Security/UserProvider/OAuthAwareUserProvider.php
+
+		-
+			message: "#^Call to an undefined method Pimcore\\\\Db\\\\ConnectionInterface\\:\\:isTransactionActive\\(\\)\\.$#"
+			count: 1
+			path: src/SegmentAssignment/SegmentAssigner/SegmentAssigner.php
+
+		-
+			message: "#^Binary operation \"\\|\" between string and 0 results in an error\\.$#"
+			count: 1
+			path: src/SegmentAssignment/StoredFunctions/DefaultStoredFunctions.php
+
+		-
+			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
+			count: 1
+			path: src/SegmentBuilder/AgeSegmentBuilder.php
+
+		-
+			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerSegmentInterface\\:\\:setParent\\(\\)\\.$#"
+			count: 1
+			path: src/SegmentManager/DefaultSegmentManager.php
+
+		-
+			message: "#^Call to an undefined method Pimcore\\\\Model\\\\Tool\\\\Targeting\\\\TargetGroup\\:\\:save\\(\\)\\.$#"
+			count: 1
+			path: src/SegmentManager/DefaultSegmentManager.php
+
+		-
+			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\CustomerSaveManager\\\\CustomerSaveManagerInterface\\:\\:getSegmentBuildingHookEnabled\\(\\)\\.$#"
+			count: 1
+			path: src/SegmentManager/SegmentBuilderExecutor/DefaultSegmentBuilderExecutor.php
+
+		-
+			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\CustomerSaveManager\\\\CustomerSaveManagerInterface\\:\\:setSegmentBuildingHookEnabled\\(\\)\\.$#"
+			count: 2
+			path: src/SegmentManager/SegmentBuilderExecutor/DefaultSegmentBuilderExecutor.php
+
+		-
+			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
+			count: 1
+			path: src/SegmentManager/SegmentBuilderExecutor/DefaultSegmentBuilderExecutor.php
+
+		-
+			message: "#^If condition is always false\\.$#"
+			count: 1
+			path: src/SegmentManager/SegmentBuilderExecutor/DefaultSegmentBuilderExecutor.php
+
+		-
+			message: "#^Negated boolean expression is always true\\.$#"
+			count: 2
+			path: src/SegmentManager/SegmentBuilderExecutor/DefaultSegmentBuilderExecutor.php
+
+		-
+			message: "#^Call to an undefined method Pimcore\\\\Model\\\\DataObject\\\\Data\\\\ObjectMetadata\\:\\:getApplication_counter\\(\\)\\.$#"
+			count: 1
+			path: src/SegmentManager/SegmentExtractor/DefaultSegmentExtractor.php
+
+		-
+			message: "#^Call to an undefined method Pimcore\\\\Model\\\\DataObject\\\\Data\\\\ObjectMetadata\\:\\:getApplication_counter\\(\\)\\.$#"
+			count: 1
+			path: src/SegmentManager/SegmentMerger/DefaultSegmentMerger/MetadataFiller.php
+
+		-
+			message: "#^Call to an undefined method Pimcore\\\\Model\\\\DataObject\\\\Data\\\\ObjectMetadata\\:\\:getCreated_timestamp\\(\\)\\.$#"
+			count: 1
+			path: src/SegmentManager/SegmentMerger/DefaultSegmentMerger/MetadataFiller.php
+
+		-
+			message: "#^Call to an undefined method Pimcore\\\\Model\\\\DataObject\\\\Data\\\\ObjectMetadata\\:\\:setApplication_counter\\(\\)\\.$#"
+			count: 1
+			path: src/SegmentManager/SegmentMerger/DefaultSegmentMerger/MetadataFiller.php
+
+		-
+			message: "#^Call to an undefined method Pimcore\\\\Model\\\\DataObject\\\\Data\\\\ObjectMetadata\\:\\:setCreated_timestamp\\(\\)\\.$#"
+			count: 1
+			path: src/SegmentManager/SegmentMerger/DefaultSegmentMerger/MetadataFiller.php
+
+		-
+			message: "#^Call to an undefined method Pimcore\\\\Model\\\\DataObject\\\\Data\\\\ObjectMetadata\\:\\:getApplication_counter\\(\\)\\.$#"
+			count: 2
+			path: src/Targeting/ActionHandler/ApplyTargetGroupsFromSegments.php
+

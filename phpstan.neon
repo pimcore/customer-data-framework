@@ -6,8 +6,11 @@ parameters:
         - phpstan-bootstrap.php
     ignoreErrors:
         - '~^Method Doctrine\\DBAL(\\.*)?Connection::query\(\) invoked with \d+ parameters?, 0 required\.\z~'
+        - '~^Class Pimcore\\Migrations\\Migration\\AbstractPimcoreMigration not found\.~'
+        - '~^Class Pimcore\\Extension\\Bundle\\Installer\\MigrationInstaller not found\.~'
     stubFiles:
         - stubs/ElementInterface.stub
 
 includes:
     - vendor/phpstan/phpstan-symfony/extension.neon
+    - phpstan-baseline.neon

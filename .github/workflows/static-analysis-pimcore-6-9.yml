@@ -51,5 +51,5 @@ jobs:
               if: ${{ failure() }}
               uses: actions/upload-artifact@v2
               with:
-                  name: phpstan-baseline.neon
-                  path: phpstan-baseline.neon
+                  name: phpstan-baseline-pimcore-6-9.neon
+                  path: phpstan-baseline-pimcore-6-9.neon
