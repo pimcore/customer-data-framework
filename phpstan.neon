@@ -10,6 +10,7 @@ parameters:
         - stubs/ElementInterface.stub
     excludePaths:
         - src/Migrations/*
+        - src/Installer.php
 
 includes:
     - vendor/phpstan/phpstan-symfony/extension.neon
