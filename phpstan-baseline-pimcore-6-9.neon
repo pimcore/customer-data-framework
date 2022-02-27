@@ -81,11 +81,6 @@ parameters:
 			path: src/CustomerView/DefaultCustomerView.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\DBAL\\\\Query\\\\QueryBuilder\\:\\:distinct\\(\\)\\.$#"
-			count: 1
-			path: src/DuplicatesIndex/DefaultMariaDbDuplicatesIndex.php
-
-		-
 			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
 			count: 1
 			path: src/DuplicatesIndex/DefaultMariaDbDuplicatesIndex.php
