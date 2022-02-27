@@ -45,7 +45,7 @@ jobs:
 
             - name: "Generate baseline file"
               if: ${{ failure() }}
-              run: "vendor/bin/phpstan analyse --memory-limit=-1 --generate-baseline"
+              run: "vendor/bin/phpstan analyse -c phpstan-pimcore-6-9.neon --memory-limit=-1 --generate-baseline"
 
             - name: "Upload baseline file"
               if: ${{ failure() }}
