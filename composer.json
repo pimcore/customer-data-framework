@@ -22,7 +22,7 @@
     "knplabs/knp-components": "^2 || ^3",
     "laminas/laminas-zendframework-bridge": "^1.4.0",
     "pear/archive_tar": "^1.4.3",
-    "pimcore/number-sequence-generator": "^1.0.1",
+    "pimcore/number-sequence-generator": "^1.0.5",
     "pimcore/object-merger": "^2.4.5 || ^3.0",
     "pimcore/pimcore": "^6.9 || ^10.1",
     "pimcore/search-query-parser": "^1.3",
