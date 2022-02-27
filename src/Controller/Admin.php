@@ -16,7 +16,7 @@
 namespace CustomerManagementFrameworkBundle\Controller;
 
 use CustomerManagementFrameworkBundle\Helper\JsConfigService;
-use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Controller\KernelControllerEventInterface;
@@ -106,7 +106,7 @@ class Admin extends AdminController implements KernelControllerEventInterface
      * @param mixed $data
      * @param int $defaultPageSize
      *
-     * @return SlidingPaginationInterface
+     * @return PaginationInterface
      */
     protected function buildPaginator(Request $request, $data, $defaultPageSize = null)
     {
@@ -116,7 +116,6 @@ class Admin extends AdminController implements KernelControllerEventInterface
 
         $page = (int)$request->get('page', 1);
         $pageSize = (int)$request->get('perPage', $defaultPageSize);
-        /** @var SlidingPaginationInterface $paginator */
         $paginator = $this->paginator->paginate($data, $page, $pageSize);
 
         return $paginator;

@@ -18,7 +18,6 @@ namespace CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\CustomerList\SearchHelper;
 use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
-use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -59,7 +58,6 @@ class DuplicatesController extends Admin
             $this->getSearchHelper()->addListingFilters($customerList, $filters, $this->getAdminUser());
         }
 
-        /** @var SlidingPaginationInterface $paginator */
         $paginator = $duplicatesIndex->getPotentialDuplicates(
             $request->get('page', 1),
             50,

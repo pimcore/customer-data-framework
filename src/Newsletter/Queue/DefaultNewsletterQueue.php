@@ -22,7 +22,6 @@ use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\NewsletterProvi
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\DefaultNewsletterQueueItem;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
 use CustomerManagementFrameworkBundle\Traits\ApplicationLoggerAware;
-use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Db;
 use Pimcore\Tool\Console;
@@ -211,7 +210,6 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
         $list = $customerProvider->getList();
 
-        /** @var SlidingPaginationInterface $paginator */
         $paginator = $this->paginator->paginate($list, 1, $this->maxItemsPerRound);
         $pageCount = $paginator->getPaginationData()['pageCount'];
 
@@ -248,7 +246,6 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
         $rows = $db->fetchAll((string)$select);
 
-        /** @var SlidingPaginationInterface $paginator */
         $paginator = $this->paginator->paginate($rows, 1, $this->maxItemsPerRound);
         $pageCount = $paginator->getPaginationData()['pageCount'];
 

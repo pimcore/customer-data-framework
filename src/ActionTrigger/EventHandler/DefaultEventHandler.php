@@ -26,7 +26,6 @@ use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Knp\Component\Pager\Pagination\SlidingPagination;
 use Knp\Component\Pager\PaginatorInterface;
 
 class DefaultEventHandler implements EventHandlerInterface
@@ -106,7 +105,6 @@ class DefaultEventHandler implements EventHandlerInterface
                 $listing->setOrderKey('o_id');
                 $listing->setOrder('asc');
 
-                /** @var SlidingPagination $paginator */
                 $paginator = $this->paginator->paginate($listing, 1, 100);
 
                 $this->getLogger()->info(

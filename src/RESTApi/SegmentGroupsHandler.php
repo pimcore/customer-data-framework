@@ -20,7 +20,6 @@ use CustomerManagementFrameworkBundle\RESTApi\Traits\ResourceUrlGenerator;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResponseGenerator;
 use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -45,7 +44,6 @@ class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterfa
         $list->setOrder('asc');
         $list->setUnpublished(false);
 
-        /** @var SlidingPaginationInterface $paginator */
         $paginator = $this->handlePaginatorParams($list, $request);
 
         $timestamp = time();

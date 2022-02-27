@@ -19,7 +19,6 @@ use CustomerManagementFrameworkBundle\DataTransformer\Date\TimestampToAge;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Pimcore\Model\Tool\TmpStore;
 
 class AgeSegmentBuilder extends AbstractSegmentBuilder
@@ -142,7 +141,6 @@ class AgeSegmentBuilder extends AbstractSegmentBuilder
             'DATE_FORMAT(FROM_UNIXTIME('.$this->birthDayField."),'%m-%d') = DATE_FORMAT(NOW(),'%m-%d')"
         );
 
-        /** @var SlidingPaginationInterface $paginator */
         $paginator = $this->paginator->paginate($list, 1, 100);
 
         $pageCount = $paginator->getPaginationData()['pageCount'];

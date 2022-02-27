@@ -22,7 +22,6 @@ use CustomerManagementFrameworkBundle\Model\SsoIdentityInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db;
 use Pimcore\File;
-use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\SsoIdentity;
 
 /**
@@ -110,7 +109,7 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
     }
 
     /**
-     * @param CustomerInterface|SsoAwareCustomerInterface $customer
+     * @param CustomerInterface $customer
      *
      * @return SsoIdentityInterface[]
      */
@@ -144,7 +143,7 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
     }
 
     /**
-     * @param CustomerInterface|SsoAwareCustomerInterface $customer
+     * @param CustomerInterface $customer
      * @param SsoIdentityInterface $ssoIdentity
      */
     public function addSsoIdentity(CustomerInterface $customer, SsoIdentityInterface $ssoIdentity)
@@ -158,7 +157,7 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
     }
 
     /**
-     * @param CustomerInterface|Concrete $customer
+     * @param CustomerInterface $customer
      * @param string $provider
      * @param string $identifier
      * @param mixed $profileData

@@ -21,7 +21,6 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\SegmentBuilder\SegmentBuilderInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\Concrete;
@@ -158,7 +157,6 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
         // note: listing is now constant and may be flushed per iteration
         $pageSize = $desiredPageSize !== null && $desiredPageSize > 0 ? $desiredPageSize : 250;
         $idList = $customerList->loadIdList();
-        /** @var SlidingPaginationInterface $paginator */
         $paginator = $this->paginator->paginate($idList, 1, $pageSize);
 
         $totalAmount = $paginator->getTotalItemCount();

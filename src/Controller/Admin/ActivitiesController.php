@@ -17,7 +17,6 @@ namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\ActivityStore\MariaDb;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
-use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Controller\KernelControllerEventInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -70,7 +69,6 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
                 $list->setCondition((string) $select->getQueryPart('where'));
             }
 
-            /** @var SlidingPaginationInterface $paginator */
             $paginator = $this->paginator->paginate($list, $request->get('page', 1), 25);
 
             return $this->render(

@@ -21,7 +21,6 @@ use CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Standard;
 use CustomerManagementFrameworkBundle\Factory;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Knp\Component\Pager\Pagination\SlidingPagination;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Db;
 use Pimcore\Logger;
@@ -104,7 +103,6 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         $customerProvider->addActiveCondition($customerList);
         $customerList->setOrderKey('o_id');
 
-        /** @var SlidingPagination $paginator */
         $paginator = $this->paginator->paginate($customerList);
         $paginator->setItemNumberPerPage(200);
 

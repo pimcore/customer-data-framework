@@ -17,7 +17,7 @@ $this->extend('Layout/layout.html.php');
 
 $this->headTitle('Secure Area');
 
-/** @var CustomerInterface|\Pimcore\Model\DataObject\Customer $customer */
+/** @var CustomerInterface $customer */
 $customer = $app->getUser();
 
 /** @var SsoIdentity $ssoIdentityHelper */

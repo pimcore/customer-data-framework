@@ -20,7 +20,6 @@ use CustomerManagementFrameworkBundle\RESTApi\Exception\ResourceNotFoundExceptio
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResourceUrlGenerator;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResponseGenerator;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
@@ -47,7 +46,6 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
         $list->setOrder('asc');
         $list->setUnpublished(false);
 
-        /** @var SlidingPaginationInterface $paginator */
         $paginator = $this->handlePaginatorParams($list, $request);
 
         $timestamp = time();

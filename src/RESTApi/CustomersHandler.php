@@ -22,9 +22,7 @@ use CustomerManagementFrameworkBundle\RESTApi\Exception\ResourceNotFoundExceptio
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResourceUrlGenerator;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResponseGenerator;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Customer;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -77,7 +75,6 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
             $customers->addConditionParam('o_modificationDate > ?', $params->getModificationTimestamp());
         }
 
-        /** @var SlidingPaginationInterface $paginator */
         $paginator = $this->handlePaginatorParams($customers, $request);
 
         $timestamp = time();
@@ -123,7 +120,6 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
         $data = $this->getRequestData($request);
 
         try {
-            /** @var CustomerInterface|Concrete $customer */
             $customer = $this->customerProvider->create($data);
             $customer->save();
         } catch (\Exception $e) {
