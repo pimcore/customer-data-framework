@@ -240,4 +240,9 @@ interface CustomerInterface extends ElementInterface
      * @return CustomerSaveManagerInterface
      */
     public function getSaveManager();
+
+    /**
+     * @return string
+     */
+    public function __toString();
 }

@@ -2,9 +2,10 @@
 
 namespace Pimcore\Model\Element;
 
+/**
+ * @method static setParent(?ElementInterface $parent)
+ * @method ElementInterface getParent()
+ */
 interface ElementInterface
 {
-    public function setParent(?ElementInterface $parent): static;
-
-    public function __toString(): string;
 }

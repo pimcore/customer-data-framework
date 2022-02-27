@@ -1,16 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Cannot cast CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface to string\\.$#"
-			count: 1
-			path: src/ActionTrigger/Action/AddTrackedSegment.php
-
-		-
-			message: "#^Cannot cast CustomerManagementFrameworkBundle\\\\Model\\\\CustomerSegmentInterface to string\\.$#"
-			count: 1
-			path: src/ActionTrigger/Action/AddTrackedSegment.php
-
-		-
 			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
 			count: 1
 			path: src/ActionTrigger/EventHandler/DefaultEventHandler.php
@@ -31,11 +21,6 @@ parameters:
 			path: src/Controller/Admin/ActivitiesController.php
 
 		-
-			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\:\\:setParent\\(\\)\\.$#"
-			count: 1
-			path: src/Controller/Admin/CustomersController.php
-
-		-
 			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
 			count: 2
 			path: src/Controller/Admin/CustomersController.php
@@ -49,31 +34,6 @@ parameters:
 			message: "#^Call to an undefined method Pimcore\\\\Model\\\\User\\\\Listing\\:\\:getTotalCount\\(\\)\\.$#"
 			count: 1
 			path: src/Controller/Admin/SettingsController.php
-
-		-
-			message: "#^Binary operation \"\\.\" between 'merge customer ' and CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface results in an error\\.$#"
-			count: 1
-			path: src/CustomerMerger/DefaultCustomerMerger.php
-
-		-
-			message: "#^Binary operation \"\\.\" between non\\-empty\\-string and CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface results in an error\\.$#"
-			count: 1
-			path: src/CustomerMerger/DefaultCustomerMerger.php
-
-		-
-			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\:\\:setParent\\(\\)\\.$#"
-			count: 1
-			path: src/CustomerProvider/ObjectNamingScheme/DefaultObjectNamingScheme.php
-
-		-
-			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\:\\:getParent\\(\\)\\.$#"
-			count: 1
-			path: src/CustomerSaveManager/DefaultCustomerSaveManager.php
-
-		-
-			message: "#^Cannot cast CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface to string\\.$#"
-			count: 1
-			path: src/CustomerSaveManager/DefaultCustomerSaveManager.php
 
 		-
 			message: "#^Call to function is_object\\(\\) with string will always evaluate to false\\.$#"
@@ -201,11 +161,6 @@ parameters:
 			path: src/Newsletter/ProviderHandler/Mailchimp/TemplateExporter.php
 
 		-
-			message: "#^Cannot cast CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface to string\\.$#"
-			count: 1
-			path: src/Newsletter/ProviderHandler/Mailchimp/WebhookProcessor.php
-
-		-
 			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
 			count: 2
 			path: src/Newsletter/Queue/DefaultNewsletterQueue.php
@@ -231,9 +186,9 @@ parameters:
 			path: src/RESTApi/SegmentsOfCustomerHandler.php
 
 		-
-			message: "#^Cannot call method getUsername\\(\\) on object\\|string\\.$#"
+			message: "#^Class CustomerManagementFrameworkBundle\\\\Security\\\\OAuth\\\\Exception\\\\AccountNotLinkedException extends @final class HWI\\\\Bundle\\\\OAuthBundle\\\\Security\\\\Core\\\\Exception\\\\AccountNotLinkedException\\.$#"
 			count: 1
-			path: src/Security/Guard/WebserviceAuthenticator.php
+			path: src/Security/OAuth/Exception/AccountNotLinkedException.php
 
 		-
 			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\SsoIdentityInterface\\:\\:save\\(\\)\\.$#"
@@ -249,6 +204,11 @@ parameters:
 			message: "#^Call to an undefined method Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\:\\:save\\(\\)\\.$#"
 			count: 1
 			path: src/Security/OAuth/OAuthRegistrationHandler.php
+
+		-
+			message: "#^Class CustomerManagementFrameworkBundle\\\\Security\\\\OAuth\\\\OAuthUtils extends @final class HWI\\\\Bundle\\\\OAuthBundle\\\\Security\\\\OAuthUtils\\.$#"
+			count: 1
+			path: src/Security/OAuth/OAuthUtils.php
 
 		-
 			message: "#^Method CustomerManagementFrameworkBundle\\\\Security\\\\OAuth\\\\SessionTokenStorage\\:\\:loadToken\\(\\) should return HWI\\\\Bundle\\\\OAuthBundle\\\\Security\\\\Core\\\\Authentication\\\\Token\\\\OAuthToken\\|null but return statement is missing\\.$#"
@@ -276,17 +236,12 @@ parameters:
 			path: src/Security/SsoIdentity/DefaultSsoIdentityService.php
 
 		-
-			message: "#^Method CustomerManagementFrameworkBundle\\\\Security\\\\UserProvider\\\\CustomerObjectUserProvider\\:\\:loadUserByUsername\\(\\) should return Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface but returns Pimcore\\\\Model\\\\DataObject\\\\Concrete\\.$#"
+			message: "#^Method CustomerManagementFrameworkBundle\\\\Security\\\\UserProvider\\\\CustomerObjectUserProvider\\:\\:loadUserByUsername\\(\\) should return Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface but returns CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\.$#"
 			count: 1
 			path: src/Security/UserProvider/CustomerObjectUserProvider.php
 
 		-
 			message: "#^Method CustomerManagementFrameworkBundle\\\\Security\\\\UserProvider\\\\CustomerObjectUserProvider\\:\\:refreshUser\\(\\) should return Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface but returns CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\|null\\.$#"
-			count: 1
-			path: src/Security/UserProvider/CustomerObjectUserProvider.php
-
-		-
-			message: "#^Negated boolean expression is always false\\.$#"
 			count: 1
 			path: src/Security/UserProvider/CustomerObjectUserProvider.php
 
@@ -316,11 +271,6 @@ parameters:
 			path: src/SegmentBuilder/AgeSegmentBuilder.php
 
 		-
-			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerSegmentInterface\\:\\:setParent\\(\\)\\.$#"
-			count: 1
-			path: src/SegmentManager/DefaultSegmentManager.php
-
-		-
 			message: "#^Call to an undefined method Pimcore\\\\Model\\\\Tool\\\\Targeting\\\\TargetGroup\\:\\:delete\\(\\)\\.$#"
 			count: 1
 			path: src/SegmentManager/DefaultSegmentManager.php
@@ -346,11 +296,6 @@ parameters:
 			path: src/SegmentManager/SegmentBuilderExecutor/DefaultSegmentBuilderExecutor.php
 
 		-
-			message: "#^Cannot cast CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface to string\\.$#"
-			count: 1
-			path: src/SegmentManager/SegmentBuilderExecutor/DefaultSegmentBuilderExecutor.php
-
-		-
 			message: "#^If condition is always false\\.$#"
 			count: 1
 			path: src/SegmentManager/SegmentBuilderExecutor/DefaultSegmentBuilderExecutor.php
@@ -369,11 +314,6 @@ parameters:
 			message: "#^Call to an undefined method Pimcore\\\\Model\\\\DataObject\\\\Data\\\\ObjectMetadata\\:\\:getApplication_counter\\(\\)\\.$#"
 			count: 1
 			path: src/SegmentManager/SegmentExtractor/DefaultSegmentExtractor.php
-
-		-
-			message: "#^Cannot cast CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface to string\\.$#"
-			count: 1
-			path: src/SegmentManager/SegmentMerger/DefaultSegmentMerger.php
 
 		-
 			message: "#^Call to an undefined method Pimcore\\\\Model\\\\DataObject\\\\Data\\\\ObjectMetadata\\:\\:getApplication_counter\\(\\)\\.$#"
@@ -404,4 +344,3 @@ parameters:
 			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
 			count: 1
 			path: src/Targeting/SegmentTracker.php
-

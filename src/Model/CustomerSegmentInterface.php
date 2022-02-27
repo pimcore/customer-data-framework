@@ -90,4 +90,9 @@ interface CustomerSegmentInterface extends ElementInterface
      * @return array
      */
     public function getDataForWebserviceExport();
+
+    /**
+     * @return string
+     */
+    public function __toString();
 }
