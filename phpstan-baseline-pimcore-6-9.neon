@@ -6,11 +6,6 @@ parameters:
 			path: src/ActionTrigger/EventHandler/DefaultEventHandler.php
 
 		-
-			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 2
-			path: src/ActivityManager/DefaultActivityManager.php
-
-		-
 			message: "#^Method CustomerManagementFrameworkBundle\\\\ActivityStore\\\\MySQL\\:\\:getActivityStoreConnection\\(\\) should return Doctrine\\\\DBAL\\\\Connection but returns Pimcore\\\\Db\\\\ConnectionInterface\\.$#"
 			count: 1
 			path: src/ActivityStore/MySQL.php
@@ -44,11 +39,6 @@ parameters:
 			message: "#^Parameter \\$e of method CustomerManagementFrameworkBundle\\\\Event\\\\MaintenanceEventListener\\:\\:onMaintenance\\(\\) has invalid type Pimcore\\\\Event\\\\System\\\\MaintenanceEvent\\.$#"
 			count: 1
 			path: src/Event/MaintenanceEventListener.php
-
-		-
-			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 2
-			path: src/Event/TargetingEventListener.php
 
 		-
 			message: "#^Result of && is always false\\.$#"
@@ -149,11 +139,6 @@ parameters:
 			message: "#^Elseif condition is always true\\.$#"
 			count: 1
 			path: src/Newsletter/ProviderHandler/Mailchimp/CustomerExporter/BatchExporter.php
-
-		-
-			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 1
-			path: src/Newsletter/ProviderHandler/Mailchimp/TemplateExporter.php
 
 		-
 			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
@@ -286,11 +271,6 @@ parameters:
 			path: src/SegmentManager/SegmentBuilderExecutor/DefaultSegmentBuilderExecutor.php
 
 		-
-			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 1
-			path: src/SegmentManager/SegmentBuilderExecutor/DefaultSegmentBuilderExecutor.php
-
-		-
 			message: "#^Negated boolean expression is always true\\.$#"
 			count: 2
 			path: src/SegmentManager/SegmentBuilderExecutor/DefaultSegmentBuilderExecutor.php
@@ -324,8 +304,3 @@ parameters:
 			message: "#^Call to an undefined method Pimcore\\\\Model\\\\DataObject\\\\Data\\\\ObjectMetadata\\:\\:getApplication_counter\\(\\)\\.$#"
 			count: 2
 			path: src/Targeting/ActionHandler/ApplyTargetGroupsFromSegments.php
-
-		-
-			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 1
-			path: src/Targeting/SegmentTracker.php
