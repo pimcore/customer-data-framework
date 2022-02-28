@@ -31,11 +31,6 @@ parameters:
 			path: src/Controller/Admin/DuplicatesController.php
 
 		-
-			message: "#^Call to an undefined method Pimcore\\\\Model\\\\User\\\\Listing\\:\\:getTotalCount\\(\\)\\.$#"
-			count: 1
-			path: src/Controller/Admin/SettingsController.php
-
-		-
 			message: "#^Call to function is_object\\(\\) with string will always evaluate to false\\.$#"
 			count: 1
 			path: src/CustomerView/DefaultCustomerView.php
@@ -269,16 +264,6 @@ parameters:
 			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
 			count: 1
 			path: src/SegmentBuilder/AgeSegmentBuilder.php
-
-		-
-			message: "#^Call to an undefined method Pimcore\\\\Model\\\\Tool\\\\Targeting\\\\TargetGroup\\:\\:delete\\(\\)\\.$#"
-			count: 1
-			path: src/SegmentManager/DefaultSegmentManager.php
-
-		-
-			message: "#^Call to an undefined method Pimcore\\\\Model\\\\Tool\\\\Targeting\\\\TargetGroup\\:\\:save\\(\\)\\.$#"
-			count: 1
-			path: src/SegmentManager/DefaultSegmentManager.php
 
 		-
 			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\CustomerSaveManager\\\\CustomerSaveManagerInterface\\:\\:getSegmentBuildingHookEnabled\\(\\)\\.$#"

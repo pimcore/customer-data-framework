@@ -1,0 +1,11 @@
+<?php
+
+namespace Pimcore\Model\Tool\Targeting;
+
+/**
+ * @method void save()
+ * @method void delete()
+ */
+class TargetGroup
+{
+}

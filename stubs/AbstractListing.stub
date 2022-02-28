@@ -1,0 +1,10 @@
+<?php
+
+namespace Pimcore\Model\User\Listing;
+
+/**
+ * @method int getTotalCount()
+ */
+class AbstractListing
+{
+}

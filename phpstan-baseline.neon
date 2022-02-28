@@ -16,11 +16,6 @@ parameters:
 			path: src/Controller/Admin/ActivitiesController.php
 
 		-
-			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\:\\:setParent\\(\\)\\.$#"
-			count: 1
-			path: src/Controller/Admin/CustomersController.php
-
-		-
 			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
 			count: 2
 			path: src/Controller/Admin/CustomersController.php
@@ -29,16 +24,6 @@ parameters:
 			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
 			count: 1
 			path: src/Controller/Admin/DuplicatesController.php
-
-		-
-			message: "#^Call to an undefined method Pimcore\\\\Model\\\\User\\\\Listing\\:\\:getTotalCount\\(\\)\\.$#"
-			count: 1
-			path: src/Controller/Admin/SettingsController.php
-
-		-
-			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\:\\:setParent\\(\\)\\.$#"
-			count: 1
-			path: src/CustomerProvider/ObjectNamingScheme/DefaultObjectNamingScheme.php
 
 		-
 			message: "#^Call to function is_object\\(\\) with string will always evaluate to false\\.$#"
@@ -171,9 +156,9 @@ parameters:
 			path: src/RESTApi/SegmentsOfCustomerHandler.php
 
 		-
-			message: "#^Cannot call method getUsername\\(\\) on string\\|Stringable\\|Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\.$#"
+			message: "#^Class CustomerManagementFrameworkBundle\\\\Security\\\\OAuth\\\\Exception\\\\AccountNotLinkedException extends @final class HWI\\\\Bundle\\\\OAuthBundle\\\\Security\\\\Core\\\\Exception\\\\AccountNotLinkedException\\.$#"
 			count: 1
-			path: src/Security/Guard/WebserviceAuthenticator.php
+			path: src/Security/OAuth/Exception/AccountNotLinkedException.php
 
 		-
 			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\SsoIdentityInterface\\:\\:save\\(\\)\\.$#"
@@ -189,6 +174,11 @@ parameters:
 			message: "#^Call to an undefined method Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\:\\:save\\(\\)\\.$#"
 			count: 1
 			path: src/Security/OAuth/OAuthRegistrationHandler.php
+
+		-
+			message: "#^Class CustomerManagementFrameworkBundle\\\\Security\\\\OAuth\\\\OAuthUtils extends @final class HWI\\\\Bundle\\\\OAuthBundle\\\\Security\\\\OAuthUtils\\.$#"
+			count: 1
+			path: src/Security/OAuth/OAuthUtils.php
 
 		-
 			message: "#^Method CustomerManagementFrameworkBundle\\\\Security\\\\OAuth\\\\SessionTokenStorage\\:\\:loadToken\\(\\) should return HWI\\\\Bundle\\\\OAuthBundle\\\\Security\\\\Core\\\\Authentication\\\\Token\\\\OAuthToken\\|null but return statement is missing\\.$#"
@@ -216,19 +206,14 @@ parameters:
 			path: src/Security/SsoIdentity/DefaultSsoIdentityService.php
 
 		-
+			message: "#^Method CustomerManagementFrameworkBundle\\\\Security\\\\UserProvider\\\\CustomerObjectUserProvider\\:\\:loadUserByUsername\\(\\) should return Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface but returns CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\.$#"
+			count: 1
+			path: src/Security/UserProvider/CustomerObjectUserProvider.php
+
+		-
 			message: "#^Method CustomerManagementFrameworkBundle\\\\Security\\\\UserProvider\\\\CustomerObjectUserProvider\\:\\:refreshUser\\(\\) should return Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface but returns CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\|null\\.$#"
 			count: 1
 			path: src/Security/UserProvider/CustomerObjectUserProvider.php
-
-		-
-			message: "#^Negated boolean expression is always false\\.$#"
-			count: 1
-			path: src/Security/UserProvider/CustomerObjectUserProvider.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserProviderInterface\\:\\:loadUserByUsername\\(\\)\\.$#"
-			count: 1
-			path: src/Security/UserProvider/OAuthAwareUserProvider.php
 
 		-
 			message: "#^Method CustomerManagementFrameworkBundle\\\\Security\\\\UserProvider\\\\OAuthAwareUserProvider\\:\\:loadUserByOAuthUserResponse\\(\\) should return Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface but returns CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\.$#"
@@ -254,16 +239,6 @@ parameters:
 			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
 			count: 1
 			path: src/SegmentBuilder/AgeSegmentBuilder.php
-
-		-
-			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerSegmentInterface\\:\\:setParent\\(\\)\\.$#"
-			count: 1
-			path: src/SegmentManager/DefaultSegmentManager.php
-
-		-
-			message: "#^Call to an undefined method Pimcore\\\\Model\\\\Tool\\\\Targeting\\\\TargetGroup\\:\\:save\\(\\)\\.$#"
-			count: 1
-			path: src/SegmentManager/DefaultSegmentManager.php
 
 		-
 			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\CustomerSaveManager\\\\CustomerSaveManagerInterface\\:\\:getSegmentBuildingHookEnabled\\(\\)\\.$#"
