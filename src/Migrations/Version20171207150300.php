@@ -85,7 +85,7 @@ class Version20171207150300 extends AbstractPimcoreMigration
      */
     private function addNewDataField(
         ClassDefinition $class,
-        $fieldNameToAddAfter,
+        string $fieldNameToAddAfter,
         ClassDefinition\Data $fieldToAdd,
         ClassDefinition\Layout $layoutComponent = null
     ) {

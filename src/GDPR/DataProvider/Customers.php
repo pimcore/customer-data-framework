@@ -115,7 +115,7 @@ class Customers extends DataObjects
 
                 if ($data['className'] == $this->customerClassName) {
                     $list = $this->activityStore->getActivityList();
-                    $list->setCondition('customerId = ' . intval($data['id']));
+                    $list->setCondition('customerId = ' . intval($data['data']['id']));
 
                     $data['activities'] = [];
                     foreach ($list as $activity) {

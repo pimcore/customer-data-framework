@@ -18,4 +18,4 @@ parameters:
 
 includes:
     - vendor/phpstan/phpstan-symfony/extension.neon
-    - phpstan-baseline-pimcore-6-9.neon
+    - phpstan-baseline.neon

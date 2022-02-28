@@ -56,11 +56,6 @@ parameters:
 			path: src/Filter/ExportCustomersFilterParams.php
 
 		-
-			message: "#^Offset 'id' does not exist on array\\{className\\: string\\|null, data\\: mixed\\}\\.$#"
-			count: 1
-			path: src/GDPR/DataProvider/Customers.php
-
-		-
 			message: "#^Offset 'object' does not exist on array\\{\\}\\.$#"
 			count: 1
 			path: src/GDPR/DataProvider/Customers.php
@@ -294,4 +289,3 @@ parameters:
 			message: "#^Call to an undefined method Pimcore\\\\Model\\\\DataObject\\\\Data\\\\ObjectMetadata\\:\\:getApplication_counter\\(\\)\\.$#"
 			count: 2
 			path: src/Targeting/ActionHandler/ApplyTargetGroupsFromSegments.php
-
