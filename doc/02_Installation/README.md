@@ -87,7 +87,7 @@ Following options to prepare the customer class are available:
 
   Note: When extending the customer class from `DefaultAbstractUserawareCustomer` then either Customer class adds the required attributes for 
  getters/setters defined in the ['CustomerManagementFrameworkBundle\Model\CustomerInterface'](https://github.com/pimcore/customer-data-framework/blob/master/src/Model/CustomerInterface.php)
-    or Use a Trait, that implements these getters/setters, in Pimcore class.
+    or Use a [Trait](https://gist.github.com/dvesh3/ee88f6a7b75ea65f9f1db981b682e7cd), that implements these getters/setters, in Pimcore class.
  
 * When using the provided [SSO functionality](./Single_Sign_On.md): In this case the customer class additionally needs
   to implement the [`CustomerManagementFrameworkBundle\Model\SsoAwareCustomerInterface`](https://github.com/pimcore/customer-data-framework/blob/master/src/Model/SsoAwareCustomerInterface.php)
