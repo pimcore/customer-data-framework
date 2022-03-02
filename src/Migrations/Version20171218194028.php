@@ -51,8 +51,8 @@ class Version20171218194028 extends AbstractPimcoreMigration
         $targetGroup->setVisibleGridView(false);
         $targetGroup->setVisibleSearch(false);
 
-        $segmentDefinition->addNewDataField('calculated', $targetGroup);
-        $segmentDefinition->addNewDataField('calculated', $checkbox);
+        $this->addNewDataField($segmentDefinition, 'calculated', $targetGroup);
+        $this->addNewDataField($segmentDefinition, 'calculated', $checkbox);
 
         $segmentDefinition->save();
     }
@@ -62,18 +62,47 @@ class Version20171218194028 extends AbstractPimcoreMigration
      */
     public function down(Schema $schema)
     {
-        $this->writeMessage("Removing two fields 'useAsTargetGroup' and 'targetGroup' to CustomerSegment class");
+        // downgrading would result in data loss and is not deemed necessary at the moment
+    }
 
-        if ($this->isDryRun()) {
-            // nothing to do
-            return;
+    /**
+     * Adds given data field after existing field with given field name. If existing field is not found, nothing is added.
+     *
+     * @param ClassDefinition $class
+     * @param string $fieldNameToAddAfter
+     * @param ClassDefinition\Data $fieldToAdd
+     * @param ClassDefinition\Layout|null $layoutComponent
+     */
+    private function addNewDataField(
+        ClassDefinition $class,
+        string $fieldNameToAddAfter,
+        ClassDefinition\Data $fieldToAdd,
+        ClassDefinition\Layout $layoutComponent = null
+    ) {
+        $found = false;
+        $index = null;
+        if (null === $layoutComponent) {
+            $layoutComponent = $class->getLayoutDefinitions();
         }
-
-        $segmentDefinition = ClassDefinition::getByName('CustomerSegment');
-
-        $segmentDefinition->removeExistingDataField('useAsTargetGroup');
-        $segmentDefinition->removeExistingDataField('targetGroup');
-
-        $segmentDefinition->save();
+        $children = $layoutComponent->getChildren();
+        //try to find field
+        foreach ($children as $index => $child) {
+            if ($child->getName() == $fieldNameToAddAfter) {
+                $found = true;
+                break;
+            }
+        }
+        if ($found) {
+            //if found, insert toAdd after index
+            array_splice($children, $index + 1, 0, [$fieldToAdd]);
+            $layoutComponent->setChildren($children);
+        } else {
+            //if not found, call recursive
+            foreach ($children as $index => $child) {
+                if ($child instanceof ClassDefinition\Layout && $child->getChildren()) {
+                    $this->addNewDataField($class, $fieldNameToAddAfter, $fieldToAdd, $child);
+                }
+            }
+        }
     }
 }
