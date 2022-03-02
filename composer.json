@@ -20,7 +20,6 @@
     "drewm/mailchimp-api": "^2.2",
     "guzzlehttp/guzzle": "^7.2",
     "knplabs/knp-components": "^3",
-    "laminas/laminas-zendframework-bridge": "^1.4.0",
     "pear/archive_tar": "^1.4.3",
     "pimcore/number-sequence-generator": "^1.0.5",
     "pimcore/object-merger": "^3.0",
