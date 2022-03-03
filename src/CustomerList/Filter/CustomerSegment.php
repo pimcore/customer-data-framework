@@ -210,7 +210,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
         $joinName,
         $conditionValue
     ) {
-        $tableName = $this->getTableName($listing->getClassId());
+        $tableName = $listing->getDao()->getTableName();
         $relationsTableName = $this->getTableName($listing->getClassId(), 'object_relations_');
 
         $dbService = MariaDb::getInstance();
