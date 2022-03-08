@@ -40,7 +40,7 @@ class Version20171102160547 extends AbstractPimcoreMigration
             $installer = \Pimcore::getContainer()->get(Installer::class);
 
             if (!$installer->isInstalled()) {
-                $installer->migrateInstall($schema, $this->version);
+                $installer->install();
             }
 
             if (!$installer->isInstalled()) {
