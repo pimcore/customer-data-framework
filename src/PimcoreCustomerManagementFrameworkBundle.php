@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle;
 
+use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\ContentSecurityPolicyUrlsPass;
 use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\CustomerSaveManagerPass;
 use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\NewsletterManagerPass;
 use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\OAuthUtilsPass;
@@ -67,6 +68,7 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
         $container->addCompilerPass(new CustomerSaveManagerPass());
         $container->addCompilerPass(new SegmentManagerPass());
         $container->addCompilerPass(new NewsletterManagerPass());
+        $container->addCompilerPass(new ContentSecurityPolicyUrlsPass());
     }
 
     public function getInstaller()
