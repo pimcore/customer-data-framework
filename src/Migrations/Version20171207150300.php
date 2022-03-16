@@ -79,16 +79,16 @@ class Version20171207150300 extends AbstractPimcoreMigration
      * Adds given data field after existing field with given field name. If existing field is not found, nothing is added.
      *
      * @param ClassDefinition $class
-     * @param $fieldNameToAddAfter
+     * @param string $fieldNameToAddAfter
      * @param ClassDefinition\Data $fieldToAdd
      * @param ClassDefinition\Layout|null $layoutComponent
      */
     private function addNewDataField(
         ClassDefinition $class,
-        $fieldNameToAddAfter,
+        string $fieldNameToAddAfter,
         ClassDefinition\Data $fieldToAdd,
         ClassDefinition\Layout $layoutComponent = null
-    ) {
+    ): void {
         $found = false;
         $index = null;
         if (null === $layoutComponent) {

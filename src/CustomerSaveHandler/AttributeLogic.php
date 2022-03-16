@@ -137,9 +137,9 @@ class AttributeLogic extends AbstractCustomerSaveHandler
 
         $this->getLogger()->debug(
             sprintf(
-                'overwrite field "%s" with field value from "%s" for customer ID ',
-                $from,
+                'Overwrite field "%s" with field value from "%s" for customer ID %d',
                 $to,
+                $from,
                 $customer->getId()
             )
         );

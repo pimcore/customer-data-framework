@@ -40,7 +40,10 @@ class PimcoreObjectEventListener
 
     public function onPreUpdate(ElementEventInterface $e)
     {
-        if (!$e instanceof DataObjectEvent) {
+        //do not update index when auto save or only saving version or when $e not DataObjectEvent
+        if (($e->hasArgument('isAutoSave') && $e->getArgument('isAutoSave')) ||
+            ($e->hasArgument('saveVersionOnly') && $e->getArgument('saveVersionOnly')) ||
+            !$e instanceof DataObjectEvent) {
             return;
         }
 
