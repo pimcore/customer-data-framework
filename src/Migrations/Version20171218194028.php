@@ -78,7 +78,7 @@ class Version20171218194028 extends AbstractPimcoreMigration
         string $fieldNameToAddAfter,
         ClassDefinition\Data $fieldToAdd,
         ClassDefinition\Layout $layoutComponent = null
-    ) {
+    ): void {
         $found = false;
         $index = null;
         if (null === $layoutComponent) {

@@ -47,10 +47,16 @@ class Objects
         while ($notUnique) {
             $list = new \Pimcore\Model\DataObject\Listing;
             $list->setUnpublished(true);
-            $list->setCondition(
-                'o_path = ? and o_key = ? and o_id != ?',
-                [(string)$object->getParent() . '/', $object->getKey(), $object->getId()]
+            $list->addConditionParam(
+                'o_path = ? and o_key = ?',
+                [(string)$object->getParent() . '/', $object->getKey()]
             );
+            $objectId = $object->getId();
+            if ($objectId !== null) {
+                $list->addConditionParam('o_id != ?', $object->getId());
+            } else {
+                $list->addConditionParam('o_id is not null');
+            }
             $list->setLimit(1);
             $list = $list->load();
 
