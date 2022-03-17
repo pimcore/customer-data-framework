@@ -8,7 +8,9 @@ parameters:
         - '~^Method Doctrine\\DBAL(\\.*)?Connection::query\(\) invoked with \d+ parameters?, 0 required\.\z~'
     stubFiles:
         - stubs/AbstractListing.stub
+        - stubs/AbstractObject.stub
         - stubs/AccountNotLinkedException.stub
+        - stubs/ElementEventInterface.stub
         - stubs/ElementInterface.stub
         - stubs/OAuthUtils.stub
         - stubs/TargetGroup.stub

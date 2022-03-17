@@ -9,7 +9,9 @@ parameters:
         - '~^Method Symfony\\Contracts\\EventDispatcher\\EventDispatcherInterface\:\:dispatch\(\) invoked with 2 parameters, 1 required\.$~'
     stubFiles:
         - stubs/AbstractListing.stub
+        - stubs/AbstractObject.stub
         - stubs/AccountNotLinkedException.stub
+        - stubs/ElementEventInterface.stub
         - stubs/ElementInterface.stub
         - stubs/OAuthUtils.stub
         - stubs/TargetGroup.stub
