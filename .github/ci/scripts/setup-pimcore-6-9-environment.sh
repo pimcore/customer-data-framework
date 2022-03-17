@@ -16,7 +16,7 @@ cp app/config/parameters.example.yml app/config/parameters.yml
 composer require codeception/codeception:2.4.5 --no-update
 composer require php-http/guzzle6-adapter:^2 --no-update
 # Fix: Wrong dependency version myclabs/deep-copy:^1.3 from pimcore 6.9
-composer require myclabs/deep-copy:^1.5
+composer require myclabs/deep-copy:^1.5 --no-update
 
 if [ ${DEPENDENCIES:-lowest} = "highest" ]; then
     composer require pimcore/pimcore:6.9.x-dev --no-update
