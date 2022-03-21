@@ -24,9 +24,10 @@ final class Version20220316141955 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->addSql('SET foreign_key_checks = 0');
-        $this->addSql('ALTER TABLE `plugin_cmf_deletions` DROP INDEX IF EXISTS `PRIMARY`;');
-        $this->addSql('SET foreign_key_checks = 1');
+        $cmfDeletionsTable = $schema->getTable('plugin_cmf_deletions');
+        if ($cmfDeletionsTable->hasPrimaryKey()) {
+            $cmfDeletionsTable->dropPrimaryKey();
+        }
     }
 
     public function down(Schema $schema): void
