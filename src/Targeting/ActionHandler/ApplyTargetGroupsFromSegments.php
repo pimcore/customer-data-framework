@@ -19,16 +19,20 @@ namespace CustomerManagementFrameworkBundle\Targeting\ActionHandler;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer;
+use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
 use Pimcore\Model\Tool\Targeting\Rule;
 use Pimcore\Model\Tool\Targeting\TargetGroup;
 use Pimcore\Targeting\ActionHandler\ActionHandlerInterface;
 use Pimcore\Targeting\ActionHandler\AssignTargetGroup;
+use Pimcore\Targeting\ConditionMatcherInterface;
 use Pimcore\Targeting\DataLoaderInterface;
 use Pimcore\Targeting\DataProviderDependentInterface;
 use Pimcore\Targeting\Model\VisitorInfo;
 use Pimcore\Targeting\Storage\TargetingStorageInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ApplyTargetGroupsFromSegments implements ActionHandlerInterface, DataProviderDependentInterface
 {
@@ -46,8 +50,16 @@ class ApplyTargetGroupsFromSegments implements ActionHandlerInterface, DataProvi
      */
     protected $storage;
 
+    /**
+     * @phpstan-ignore-next-line
+     * TODO: Remove unused parameters
+     */
     public function __construct(
+        ConditionMatcherInterface $conditionMatcher,
         TargetingStorageInterface $storage,
+        SegmentManagerInterface $segmentManager,
+        SegmentTracker $segmentTracker,
+        EventDispatcherInterface $eventDispatcher,
         DataLoaderInterface $dataLoader
     ) {
         $this->dataLoader = $dataLoader;
