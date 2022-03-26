@@ -243,6 +243,8 @@ interface CustomerInterface extends ElementInterface
 
     /**
      * @return string
+     *
+     * TODO: Can be removed when we drop Pimcore 6.9
      */
     public function __toString();
 }
