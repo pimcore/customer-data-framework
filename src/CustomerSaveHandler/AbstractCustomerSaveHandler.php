@@ -29,8 +29,10 @@ abstract class AbstractCustomerSaveHandler implements CustomerSaveHandlerInterfa
 
     /**
      * @var CustomerInterface|null
+     *
+     * TODO: Rename to originalCustomer
      */
-    protected $originalCustomer;
+    protected $orginalCustomer;
 
     /**
      * If this returns true, the CustomerSaveHandler is provided with an original instance of the customer how it looks like in the database.
@@ -50,7 +52,7 @@ abstract class AbstractCustomerSaveHandler implements CustomerSaveHandlerInterfa
      */
     public function getOriginalCustomer()
     {
-        return $this->originalCustomer;
+        return $this->orginalCustomer;
     }
 
     /**
@@ -62,7 +64,7 @@ abstract class AbstractCustomerSaveHandler implements CustomerSaveHandlerInterfa
      */
     public function setOriginalCustomer(CustomerInterface $originalCustomer = null)
     {
-        $this->originalCustomer = $originalCustomer;
+        $this->orginalCustomer = $originalCustomer;
     }
 
     /**
