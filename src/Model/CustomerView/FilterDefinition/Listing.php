@@ -18,6 +18,9 @@ namespace CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use Pimcore\Model;
 
+/**
+ * @method FilterDefinition\Listing\Dao getDao()
+ */
 class Listing extends Model\Listing\AbstractListing
 {
     /**
@@ -62,7 +65,6 @@ class Listing extends Model\Listing\AbstractListing
      */
     public function load()
     {
-        /** @var FilterDefinition\Listing\Dao $dao */
         $dao = $this->getDao();
 
         return $dao->load();

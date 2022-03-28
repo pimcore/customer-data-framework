@@ -268,7 +268,7 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
     {
         $data = $customerSegment->getDataForWebserviceExport();
 
-        $links = isset($data['_links']) ? $data['_links'] : [];
+        $links = $data['_links'] ?? [];
 
         if ($selfLink = $this->generateResourceApiUrl($customerSegment->getId())) {
             $links[] = [

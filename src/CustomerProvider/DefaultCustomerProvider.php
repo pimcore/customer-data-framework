@@ -18,8 +18,6 @@ namespace CustomerManagementFrameworkBundle\CustomerProvider;
 use CustomerManagementFrameworkBundle\CustomerProvider\Exception\DuplicateCustomersFoundException;
 use CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use Pimcore\Model\DataObject\Concrete;
-use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Factory;
 
 class DefaultCustomerProvider implements CustomerProviderInterface
@@ -143,6 +141,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     public function getList()
     {
         $listClass = $this->getDiListingClassName();
+        /** @var \Pimcore\Model\DataObject\Listing\Concrete $listClass */
         $listClass = $this->modelFactory->build($listClass);
 
         return new $listClass();
@@ -157,7 +156,6 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     public function create(array $data = [])
     {
-        /** @var CustomerInterface|ElementInterface|Concrete $customer */
         $customer = $this->createCustomerInstance();
         $customer->setValues($data);
         $customer->setPublished(true);
@@ -175,14 +173,14 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     {
         $className = $this->getDiClassName();
 
-        /** @var CustomerInterface|ElementInterface|Concrete $customer */
+        /** @var CustomerInterface $customer */
         $customer = $this->modelFactory->build($className);
 
         return $customer;
     }
 
     /**
-     * @param CustomerInterface|ElementInterface|Concrete $customer
+     * @param CustomerInterface $customer
      * @param array $data
      *
      * @return CustomerInterface
@@ -196,7 +194,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     }
 
     /**
-     * @param CustomerInterface|ElementInterface|Concrete $customer
+     * @param CustomerInterface $customer
      *
      * @return $this
      */
@@ -244,7 +242,10 @@ class DefaultCustomerProvider implements CustomerProviderInterface
             throw new DuplicateCustomersFoundException(sprintf('multiple active and published customers with email %s found', $email));
         }
 
-        return $list->current();
+        /** @var CustomerInterface $customer */
+        $customer = $list->current();
+
+        return $customer;
     }
 
     /**

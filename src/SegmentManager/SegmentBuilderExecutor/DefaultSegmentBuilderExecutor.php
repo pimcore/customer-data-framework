@@ -244,8 +244,8 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
 
                 $paginator = $this->paginator->paginate($idList, $pageNumber, $pageSize);
 
-                /** @var CustomerInterface $customer */
                 foreach ($paginator as $customerId) {
+                    /** @var CustomerInterface $customer */
                     $customer = Concrete::getById($customerId);
                     if ($itemCount % $progressCount === 0) {
                         $remaining = $totalAmount - $itemCount;

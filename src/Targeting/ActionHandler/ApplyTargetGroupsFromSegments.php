@@ -41,20 +41,19 @@ class ApplyTargetGroupsFromSegments implements ActionHandlerInterface, DataProvi
     const APPLY_TYPE_ONLY_MERGE = 'only_merge';
 
     /**
-     * @var SegmentManagerInterface
+     * @var DataLoaderInterface
      */
-    private $segmentManager;
-
-    /**
-     * @var SegmentTracker
-     */
-    private $segmentTracker;
+    protected $dataLoader;
 
     /**
      * @var TargetingStorageInterface
      */
     protected $storage;
 
+    /**
+     * @phpstan-ignore-next-line
+     * TODO: Remove unused parameters
+     */
     public function __construct(
         ConditionMatcherInterface $conditionMatcher,
         TargetingStorageInterface $storage,
@@ -63,8 +62,6 @@ class ApplyTargetGroupsFromSegments implements ActionHandlerInterface, DataProvi
         EventDispatcherInterface $eventDispatcher,
         DataLoaderInterface $dataLoader
     ) {
-        $this->segmentManager = $segmentManager;
-        $this->segmentTracker = $segmentTracker;
         $this->dataLoader = $dataLoader;
         $this->storage = $storage;
     }
@@ -83,9 +80,7 @@ class ApplyTargetGroupsFromSegments implements ActionHandlerInterface, DataProvi
     public function apply(VisitorInfo $visitorInfo, array $action, Rule $rule = null)
     {
         $this->dataLoader->loadDataFromProviders($visitorInfo, [Customer::PROVIDER_KEY]);
-        /**
-         * @var $customer CustomerInterface
-         */
+        /** @var CustomerInterface|null $customer */
         $customer = $visitorInfo->get(Customer::PROVIDER_KEY);
         if (!$customer) {
             return;

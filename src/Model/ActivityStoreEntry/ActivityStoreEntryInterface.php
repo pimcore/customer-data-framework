@@ -31,7 +31,7 @@ interface ActivityStoreEntryInterface
     public function getId();
 
     /**
-     * @param $id
+     * @param int $id
      *
      * @return void
      */
@@ -79,7 +79,7 @@ interface ActivityStoreEntryInterface
     public function setType($type);
 
     /**
-     * @return ActivityInterface
+     * @return ActivityInterface|false
      */
     public function getRelatedItem();
 

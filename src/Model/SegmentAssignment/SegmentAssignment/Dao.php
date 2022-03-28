@@ -29,12 +29,12 @@ class Dao extends AbstractDao
     const ATTRIBUTE_BREAKS_INHERITANCE = 'breaksInheritance';
 
     /**
-     * @var SegmentAssignmentInterface
+     * @var SegmentAssignmentInterface|null
      */
     protected $model = null;
 
     /**
-     * @return SegmentAssignmentInterface
+     * @return SegmentAssignmentInterface|null
      */
     public function getModel()
     {
@@ -42,15 +42,19 @@ class Dao extends AbstractDao
     }
 
     /**
-     * @param SegmentAssignmentInterface $model
+     * @param SegmentAssignmentInterface|null $model
+     *
+     * @return $this
      */
     public function setModel($model)
     {
         $this->model = $model;
+
+        return $this;
     }
 
     /**
-     * @param SegmentAssignmentInterface $model
+     * @param SegmentAssignmentInterface|null $model
      */
     public function __construct(?SegmentAssignmentInterface $model)
     {

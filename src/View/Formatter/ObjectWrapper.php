@@ -23,7 +23,7 @@ class ObjectWrapper
     protected $object;
 
     /**
-     * @param $object
+     * @param mixed $object
      */
     public function __construct($object)
     {

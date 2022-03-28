@@ -336,7 +336,7 @@ abstract class SqlActivityStore
 
     /**
      * @param CustomerInterface $customer
-     * @param null              $activityType
+     * @param string|null $activityType
      *
      * @return int
      */
@@ -354,4 +354,11 @@ abstract class SqlActivityStore
             $customer->getId()
         );
     }
+
+    /**
+     * @param ActivityInterface $activity
+     *
+     * @return ActivityStoreEntryInterface|null
+     */
+    abstract public function getEntryForActivity(ActivityInterface $activity);
 }

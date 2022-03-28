@@ -18,12 +18,11 @@ namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp
 use CustomerManagementFrameworkBundle\Model\MailchimpAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 use Pimcore\Model\User;
-use Psr\Log\LoggerInterface;
 
 class UpdateFromMailchimpProcessor
 {
     /**
-     * @var User
+     * @var User|null
      */
     private $user;
 
@@ -39,8 +38,8 @@ class UpdateFromMailchimpProcessor
      * Returns true if any status changed during the method.
      *
      * @param Mailchimp $mailchimpHandler
-     * @param MailchimpAwareCustomerInterface $mailchimpAwareCustomer
-     * @param $status
+     * @param MailchimpAwareCustomerInterface $customer
+     * @param string $mailchimpStatus
      *
      * @return bool
      */
@@ -64,7 +63,6 @@ class UpdateFromMailchimpProcessor
      * @param Mailchimp $mailchimpHandler
      * @param MailchimpAwareCustomerInterface $customer
      * @param array $mergeFieldData
-     * @param LoggerInterface $logger
      *
      * @return bool
      */
@@ -108,7 +106,7 @@ class UpdateFromMailchimpProcessor
     }
 
     /**
-     * @return User
+     * @return User|null
      */
     public function getUser()
     {

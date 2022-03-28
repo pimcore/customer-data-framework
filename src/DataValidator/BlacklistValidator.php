@@ -20,7 +20,7 @@ class BlacklistValidator implements DataValidatorInterface
     /**
      * returns false if given email is on the blacklist
      *
-     * @param $item
+     * @param mixed $data
      *
      * @return bool
      */

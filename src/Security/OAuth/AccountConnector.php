@@ -19,8 +19,6 @@ namespace CustomerManagementFrameworkBundle\Security\OAuth;
 
 use CustomerManagementFrameworkBundle\Encryption\EncryptionServiceInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use CustomerManagementFrameworkBundle\Model\OAuth\OAuth1TokenInterface;
-use CustomerManagementFrameworkBundle\Model\OAuth\OAuth2TokenInterface;
 use CustomerManagementFrameworkBundle\Model\OAuth\OAuthTokenInterface;
 use CustomerManagementFrameworkBundle\Model\SsoIdentityInterface;
 use CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface;
@@ -116,15 +114,13 @@ class AccountConnector implements AccountConnectorInterface
     }
 
     /**
-     * @param SsoIdentityInterface|SsoIdentity $ssoIdentity
+     * @param SsoIdentityInterface $ssoIdentity
      * @param UserResponseInterface $response
      */
     protected function applyOAuth1Credentials(SsoIdentityInterface $ssoIdentity, UserResponseInterface $response)
     {
-        /** @var SsoIdentity\Credentials $credentials */
         $credentials = $ssoIdentity->getCredentials();
 
-        /** @var OAuth1TokenInterface $token */
         $token = $credentials->getOAuth1Token();
         if (!$token) {
             $token = new OAuth1Token($ssoIdentity);
@@ -143,15 +139,13 @@ class AccountConnector implements AccountConnectorInterface
     }
 
     /**
-     * @param SsoIdentityInterface|SsoIdentity $ssoIdentity
+     * @param SsoIdentityInterface $ssoIdentity
      * @param UserResponseInterface $response
      */
     protected function applyOAuth2Credentials(SsoIdentityInterface $ssoIdentity, UserResponseInterface $response)
     {
-        /** @var SsoIdentity\Credentials $credentials */
         $credentials = $ssoIdentity->getCredentials();
 
-        /** @var OAuth2TokenInterface $token */
         $token = $credentials->getOAuth2Token();
         if (!$token) {
             $token = new OAuth2Token($ssoIdentity);

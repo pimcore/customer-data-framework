@@ -73,7 +73,7 @@ interface ExporterInterface
     /**
      * Get export data
      *
-     * @return []
+     * @return array
      */
     public function getExportData();
 

@@ -1,0 +1,25 @@
+parameters:
+    level: 4
+    paths:
+        - src
+    bootstrapFiles:
+        - phpstan-bootstrap.php
+    ignoreErrors:
+        - '~^Method Doctrine\\DBAL(\\.*)?Connection::query\(\) invoked with \d+ parameters?, 0 required\.\z~'
+    stubFiles:
+        - stubs/AbstractListing.stub
+        - stubs/AbstractObject.stub
+        - stubs/AccountNotLinkedException.stub
+        - stubs/ElementEventInterface.stub
+        - stubs/ElementInterface.stub
+        - stubs/OAuthUtils.stub
+        - stubs/TargetGroup.stub
+        - stubs/TokenInterface.stub
+        - stubs/UserInterface.stub
+    excludePaths:
+        - src/Migrations/*
+        - src/Installer.php
+
+includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - phpstan-baseline.neon

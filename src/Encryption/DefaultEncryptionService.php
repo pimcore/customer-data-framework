@@ -26,7 +26,7 @@ class DefaultEncryptionService implements EncryptionServiceInterface
     use LoggerAware;
 
     /**
-     * @var Key
+     * @var Key|null
      */
     protected $defaultKey;
 
@@ -49,7 +49,7 @@ class DefaultEncryptionService implements EncryptionServiceInterface
     {
         if (null === $this->defaultKey) {
             $secret = $this->secret;
-            if (!$secret || empty($secret)) {
+            if (empty($secret)) {
                 throw new \RuntimeException('Need an encryption secret');
             }
 

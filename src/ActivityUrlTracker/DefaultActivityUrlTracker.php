@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\ActivityUrlTracker;
 use CustomerManagementFrameworkBundle\ActivityManager\ActivityManagerInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Model\Activity\TrackedUrlActivity;
+use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Model\DataObject\LinkActivityDefinition;
 
@@ -42,8 +43,8 @@ class DefaultActivityUrlTracker implements ActivityUrlTrackerInterface
     }
 
     /**
-     * @param $customerIdEncoded
-     * @param $activityCode
+     * @param string $customerIdEncoded
+     * @param string $activityCode
      * @param array $params
      *
      * @return void
@@ -51,13 +52,13 @@ class DefaultActivityUrlTracker implements ActivityUrlTrackerInterface
     public function trackActivity($customerIdEncoded, $activityCode, array $params)
     {
         $class = $this->customerProvider->getCustomerClassName();
+        /** @var CustomerInterface|null $customer */
+        $customer = $class::getByIdEncoded($customerIdEncoded, 1);
 
-        if ($customer = $class::getByIdEncoded($customerIdEncoded, 1)) {
-
-            /**
-             * @var LinkActivityDefinition $activityDefinition
-             */
-            if ($activityDefinition = LinkActivityDefinition::getByCode($activityCode, 1)) {
+        if ($customer) {
+            /** @var LinkActivityDefinition|null $activityDefinition */
+            $activityDefinition = LinkActivityDefinition::getByCode($activityCode, 1);
+            if ($activityDefinition) {
                 if (!$activityDefinition->getActive()) {
                     return;
                 }

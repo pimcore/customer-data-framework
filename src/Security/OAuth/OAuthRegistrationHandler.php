@@ -23,7 +23,6 @@ use CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInt
 use HWI\Bundle\OAuthBundle\OAuth\ResourceOwnerInterface;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
-use Pimcore\Model\User\AbstractUser;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -124,10 +123,10 @@ class OAuthRegistrationHandler
     /**
      * Adds OAuth response data to customer object and creates SsoIdentity
      *
-     * @param CustomerInterface|UserInterface|AbstractUser $user
+     * @param UserInterface $user
      * @param UserResponseInterface $userInformation
      *
-     * @return \CustomerManagementFrameworkBundle\Model\SsoIdentityInterface
+     * @return SsoIdentityInterface
      */
     public function connectSsoIdentity(UserInterface $user, UserResponseInterface $userInformation): SsoIdentityInterface
     {

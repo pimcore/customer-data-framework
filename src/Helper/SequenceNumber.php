@@ -32,8 +32,7 @@ class SequenceNumber
     /**
      * Get current number of sequence.
      *
-     * @param $sequenceName
-     * @param int $startingNumber
+     * @param string $sequenceName
      *
      * @return int
      */
@@ -45,7 +44,7 @@ class SequenceNumber
     /**
      * Sets current number of sequence to $sequenceValue
      *
-     * @param $sequenceName
+     * @param string $sequenceName
      * @param int $sequenceValue
      *
      * @return int
@@ -58,7 +57,7 @@ class SequenceNumber
     /**
      * Incremets sequence number by 1 and returns the new generated number. If the sequence didn't exist before, the sequence will be set to $startingNumber.
      *
-     * @param $sequenceName
+     * @param string $sequenceName
      * @param int $startingNumber
      *
      * @return int

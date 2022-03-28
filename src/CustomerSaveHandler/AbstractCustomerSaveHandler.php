@@ -28,7 +28,9 @@ abstract class AbstractCustomerSaveHandler implements CustomerSaveHandlerInterfa
     protected $logger;
 
     /**
-     * @var CustomerInterface
+     * @var CustomerInterface|null
+     *
+     * TODO: Rename to originalCustomer
      */
     protected $orginalCustomer;
 
@@ -46,7 +48,7 @@ abstract class AbstractCustomerSaveHandler implements CustomerSaveHandlerInterfa
     /**
      * Returns the original customer object from the database. self::isOriginalCustomerNeeded() need to return true if this feature is needed.
      *
-     * @return CustomerInterface
+     * @return CustomerInterface|null
      */
     public function getOriginalCustomer()
     {

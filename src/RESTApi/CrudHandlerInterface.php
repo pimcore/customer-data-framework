@@ -32,7 +32,6 @@ interface CrudHandlerInterface
      * GET /{id}
      *
      * @param Request $request
-     * @param array $params
      *
      * @return Response
      */
@@ -53,7 +52,6 @@ interface CrudHandlerInterface
      * TODO support partial updates as we do now or demand whole object in PUT? Use PATCH for partial requests?
      *
      * @param Request $request
-     * @param array $params
      *
      * @return Response
      */

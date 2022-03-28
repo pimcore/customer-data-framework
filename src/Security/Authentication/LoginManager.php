@@ -148,5 +148,7 @@ class LoginManager implements LoginManagerInterface
                 return $rememberMeService;
             }
         }
+
+        return null;
     }
 }

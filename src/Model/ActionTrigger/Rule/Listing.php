@@ -18,6 +18,9 @@ namespace CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
 use Pimcore\Model\Listing\AbstractListing;
 
+/**
+ * @method Listing\Dao getDao()
+ */
 class Listing extends AbstractListing
 {
     public function isValidOrderKey($key)

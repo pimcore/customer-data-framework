@@ -29,6 +29,7 @@ jobs:
         strategy:
             matrix:
                 include:
+                    - { php-version: 7.3, database: "mariadb:10.5", dependencies: lowest, experimental: false }
                     - { php-version: 7.4, database: "mariadb:10.5", dependencies: highest, experimental: false }
 #                    - { php-version: 8.0, database: "mariadb:10.3", dependencies: lowest, experimental: false }
 #                    - { php-version: 8.0, database: "mysql:5.7", dependencies: lowest, experimental: false }
@@ -67,9 +68,10 @@ jobs:
                   done
 
             - name: "Setup Pimcore environment"
+              env:
+                  DEPENDENCIES: "${{ matrix.dependencies }}"
               run: |
                   mysql -e "CREATE DATABASE pimcore_test CHARSET=utf8mb4;"
-                  chmod 755 .github/ci/scripts/setup-pimcore-6-9-environment.sh
                   .github/ci/scripts/setup-pimcore-6-9-environment.sh
 
             - name: "Install dependencies with Composer"

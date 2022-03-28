@@ -117,8 +117,7 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
             array_filter(
                 array_map(
                     function ($customer) {
-                        /* @var $customer CustomerInterface */
-                        if (! $customer instanceof CustomerInterface) {
+                        if (!$customer instanceof CustomerInterface) {
                             return null;
                         }
 

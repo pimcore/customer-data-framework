@@ -53,7 +53,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
     /**
      * @param NewsletterAwareCustomerInterface $customer
-     * @param $operation
+     * @param string $operation
      * @param null $email
      * @param bool $immediateAsyncProcessQueueItem
      */
@@ -107,8 +107,9 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
     }
 
     /**
-     * @param NewsletterProviderHandlerInterface[] $newsletterProviderHandler
+     * @param NewsletterProviderHandlerInterface[] $newsletterProviderHandlers
      * @param bool $forceAllCustomers
+     * @param bool $forceUpdate
      *
      * @return void
      */
@@ -197,7 +198,8 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
     }
 
     /**
-     * @param NewsletterProviderHandlerInterface[] $newsletterProviderHandler
+     * @param NewsletterProviderHandlerInterface[] $newsletterProviderHandlers
+     * @param bool $forceUpdate
      */
     protected function processAllItems(array $newsletterProviderHandlers, $forceUpdate)
     {
@@ -232,8 +234,6 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
     /**
      * @param NewsletterProviderHandlerInterface[] $newsletterProviderHandlers
-     *
-     * @return NewsletterQueueItemInterface[]
      */
     protected function processItemsFromQueue(array $newsletterProviderHandlers, $forceUpdate)
     {

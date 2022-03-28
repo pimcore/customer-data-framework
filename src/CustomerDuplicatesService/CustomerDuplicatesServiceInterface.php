@@ -33,7 +33,8 @@ interface CustomerDuplicatesServiceInterface
     /**
      * Returns a list of duplicates for the given customer. Duplicates are matched by the fields given in $fields.
      *
-     * @param array $data
+     * @param CustomerInterface $customer
+     * @param array $fields
      * @param int $limit
      *
      * @return \Pimcore\Model\DataObject\Listing\Concrete|null

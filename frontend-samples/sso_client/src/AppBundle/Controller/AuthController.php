@@ -135,13 +135,12 @@ class AuthController extends FrontendController
         }
 
         // create a new, empty customer instance
-        /** @var CustomerInterface|\Pimcore\Model\DataObject\Customer $customer */
         $customer = $customerProvider->create();
 
-        /** @var OAuthToken $oAuthToken */
+        /** @var OAuthToken|null $oAuthToken */
         $oAuthToken = null;
 
-        /** @var UserResponseInterface $oAuthUserInfo */
+        /** @var UserResponseInterface|null $oAuthUserInfo */
         $oAuthUserInfo = null;
 
         // load previously stored token from the session and try to load user profile
@@ -208,6 +207,8 @@ class AuthController extends FrontendController
         $this->view->customer = $customer;
         $this->view->form     = $form->createView();
         $this->view->errors   = $errors;
+
+        return null;
     }
 
     /**

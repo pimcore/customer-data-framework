@@ -40,11 +40,6 @@ class TemplateExporter
     private $eventDispatcher;
 
     /**
-     * @var MailChimpExportService
-     */
-    private $exportService;
-
-    /**
      * TemplateExporter constructor.
      */
     public function __construct(NewsletterManagerInterface $newsletterManager, EventDispatcherInterface $eventDispatcher)

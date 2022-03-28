@@ -18,17 +18,17 @@ namespace CustomerManagementFrameworkBundle\DataSimilarityMatcher;
 interface DataSimilarityMatcherInterface
 {
     /**
-     * @param $value1
-     * @param $value2
+     * @param mixed $value1
+     * @param mixed $value2
      *
      * @return int
      */
     public function calculateSimilarity($value1, $value2);
 
     /**
-     * @param $value1
-     * @param $value2
-     * @param int $threshold
+     * @param mixed $value1
+     * @param mixed $value2
+     * @param int|null $threshold
      *
      * @return bool
      */

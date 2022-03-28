@@ -82,7 +82,7 @@ class SegmentTracker
             if (!$segment instanceof CustomerSegmentInterface) {
                 throw new \InvalidArgumentException(sprintf(
                     'Segments is expected to be an array of CustomerSegmentInterface instances, but got a %s',
-                    is_object($segment) ? get_class($segment) : gettype($segment)
+                    get_debug_type($segment)
                 ));
             }
 
@@ -195,7 +195,7 @@ class SegmentTracker
     {
         $this->dataLoader->loadDataFromProviders($visitorInfo, [Customer::PROVIDER_KEY]);
 
-        /** @var CustomerInterface $customer */
+        /** @var CustomerInterface|null $customer */
         $customer = $visitorInfo->get(Customer::PROVIDER_KEY);
         if (null === $customer) {
             return;

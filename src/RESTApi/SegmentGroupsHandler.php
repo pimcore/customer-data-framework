@@ -247,7 +247,7 @@ class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterfa
     {
         $data = ObjectToArray::getInstance()->toArray($customerSegmentGroup);
 
-        $links = isset($data['_links']) ? $data['_links'] : [];
+        $links = $data['_links'] ?? [];
 
         if ($selfLink = $this->generateResourceApiUrl($customerSegmentGroup->getId())) {
             $links[] = [

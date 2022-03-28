@@ -26,7 +26,7 @@ interface NewsletterQueueInterface
 
     /**
      * @param NewsletterAwareCustomerInterface $customer
-     * @param $operation
+     * @param string $operation
      * @param string|null $email
      * @param bool $immediateAsyncProcessQueueItem
      *

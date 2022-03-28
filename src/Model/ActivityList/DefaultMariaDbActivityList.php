@@ -68,6 +68,8 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
             $this->dao->setQuery(null);
         }
         $this->limit = $limit;
+
+        return $this;
     }
 
     public function getLimit()
@@ -82,6 +84,8 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
             $this->dao->setQuery(null);
         }
         $this->offset = $offset;
+
+        return $this;
     }
 
     public function getOffset()

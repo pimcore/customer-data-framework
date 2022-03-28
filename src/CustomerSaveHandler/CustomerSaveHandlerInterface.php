@@ -30,7 +30,7 @@ interface CustomerSaveHandlerInterface
     /**
      * Returns the original customer object from the database. self::isOriginalCustomerNeeded() need to return true if this feature is needed.
      *
-     * @return CustomerInterface
+     * @return CustomerInterface|null
      */
     public function getOriginalCustomer();
 

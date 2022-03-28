@@ -92,7 +92,7 @@ class DefaultActivityView implements ActivityViewInterface
     }
 
     /**
-     * @param       $implementationClass
+     * @param string $implementationClass
      * @param array $attributes
      * @param array $visibleKeys
      *
@@ -108,10 +108,10 @@ class DefaultActivityView implements ActivityViewInterface
         }
 
         $attributes = $this->extractVisibleAttributes($attributes, $visibleKeys);
+        $dataTypes = [];
         if (method_exists($implementationClass, 'cmfGetAttributeDataTypes')) {
             $dataTypes = (array)$implementationClass::cmfGetAttributeDataTypes();
         }
-        $dataTypes = is_array($dataTypes) ? $dataTypes : [];
 
         $result = [];
         $vf = $this->viewFormatter;
@@ -140,8 +140,8 @@ class DefaultActivityView implements ActivityViewInterface
     /**
      * Creates a link/button to an object, asset or document.
      *
-     * @param $id
-     * @param $elementType
+     * @param int $id
+     * @param string $elementType
      * @param string $buttonCssClass
      * @param string $buttonTranslationKey
      *
@@ -155,6 +155,7 @@ class DefaultActivityView implements ActivityViewInterface
             throw new \RuntimeException(sprintf('"%s" is not valid element type (object, asset + document is allowed)', $elementType));
         }
 
+        $link = null;
         if ($elementType == 'object' && ($object = AbstractObject::getById($id))) {
             $link = sprintf("window.top.pimcore.helpers.openObject(%s, '%s')", $id, $object->getType());
         } elseif ($elementType == 'document' && ($document = Document::getById($id))) {
@@ -191,7 +192,12 @@ class DefaultActivityView implements ActivityViewInterface
     }
 
     /**
-     * @inheritDoc
+     * Translates a message. Optional parameters are passed to sprintf().
+     *
+     * @param string $messageId
+     * @param mixed $parameters
+     *
+     * @return string
      */
     public function translate($messageId, $parameters = [])
     {

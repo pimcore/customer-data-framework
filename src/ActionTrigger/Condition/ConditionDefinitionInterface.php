@@ -25,7 +25,7 @@ interface ConditionDefinitionInterface
     public function getImplementationClass();
 
     /**
-     * @return ConditionInterface
+     * @return ConditionInterface|false
      */
     public function getImplementationObject();
 
@@ -57,7 +57,7 @@ interface ConditionDefinitionInterface
     public function getBracketRight();
 
     /**
-     * @return bool
+     * @return string
      */
     public function getOperator();
 

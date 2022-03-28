@@ -24,8 +24,8 @@ interface OnCreateQueryFilterInterface extends FilterInterface
     /**
      * Apply filter directly to query
      *
-     * @param CoreListing\Concrete|CoreListing\Dao $listing
-     * @param QueryBuilder $query
+     * @param CoreListing\Concrete $listing
+     * @param QueryBuilder $queryBuilder
      */
-    public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $query);
+    public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $queryBuilder);
 }

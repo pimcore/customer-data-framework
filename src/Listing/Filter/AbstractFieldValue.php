@@ -69,12 +69,6 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
         return $value;
     }
 
-    /**
-     * Apply filter directly to query
-     *
-     * @param CoreListing\Concrete|CoreListing\Dao $listing
-     * @param QueryBuilder $queryBuilder
-     */
     public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $queryBuilder)
     {
         if (empty($this->value)) {
@@ -103,8 +97,8 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
     /**
      * Apply field condition to query/sub-query
      *
-     * @param $field
-     * @param $value
+     * @param string $field
+     * @param mixed $value
      * @param CoreListing\Concrete $listing
      * @param QueryBuilder $queryBuilder
      * @param string $operator

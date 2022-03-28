@@ -132,15 +132,15 @@ class MariaDb
 
         $db->query($sql);
 
-        return $db->lastInsertId();
+        return (int) $db->lastInsertId();
     }
 
     /**
      * Updates table $tableName with $data for rows which are matching $where.
      *
-     * @param $tableName
-     * @param $data
-     * @param $where
+     * @param string $tableName
+     * @param array $data
+     * @param string $where
      *
      * @return void
      */

@@ -78,8 +78,7 @@ class SegmentExporter
                     '[MailChimp][GROUP %s][%s] Creating group %s',
                     $group->getId(),
                     $listId,
-                    $group->getName(),
-                    $remoteGroupId
+                    $group->getName()
                 ),
                 [
                     'relatedObject' => $group
@@ -235,8 +234,7 @@ class SegmentExporter
                     '[MailChimp][SEGMENT %s][%s] Creating segment %s',
                     $segment->getId(),
                     $listId,
-                    $segment->getName(),
-                    $remoteSegmentId
+                    $segment->getName()
                 ),
                 [
                     'relatedObject' => $segment
@@ -350,7 +348,7 @@ class SegmentExporter
     /**
      * deletes all segments from given $remoteGroupId in mailchimp which are not within the given $existingSegmentIds array
      *
-     * @param array $existingGroupIds
+     * @param array $existingSegmentIds
      * @param Newsletter\ProviderHandler\Mailchimp $mailchimpProviderHandler
      * @param string $remoteGroupId
      */

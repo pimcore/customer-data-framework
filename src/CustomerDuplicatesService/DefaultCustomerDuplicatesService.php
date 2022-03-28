@@ -15,8 +15,6 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerDuplicatesService;
 
-use Carbon\Carbon;
-
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\DataObject\ClassDefinition;
@@ -116,7 +114,8 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
     /**
      * Returns a list of duplicates for the given customer. Duplicates are matched by the fields given in $fields.
      *
-     * @param array $data
+     * @param CustomerInterface $customer
+     * @param array $fields
      * @param int $limit
      *
      * @return \Pimcore\Model\DataObject\Listing\Concrete|null
@@ -177,8 +176,8 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
 
     /**
      * @param Concrete $list
-     * @param $field
-     * @param $value
+     * @param string $field
+     * @param mixed $value
      *
      * @return void;
      */
@@ -203,13 +202,16 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
             return;
         }
 
-        if ($value instanceof Carbon || $value instanceof \Pimcore\Date || $value instanceof \DateTime) {
+        if ($value instanceof \DateTime) {
             $this->addNormalizedMysqlCompareConditionForDateFields($list, $field, $value);
 
             return;
         }
 
-        if (strpos($fd->getQueryColumnType(), 'char') == !false) {
+        if (
+            $fd instanceof ClassDefinition\Data\QueryResourcePersistenceAwareInterface &&
+            str_contains($fd->getQueryColumnType(), 'char')
+        ) {
             $this->addNormalizedMysqlCompareConditionForStringFields($list, $field, $value);
 
             return;
@@ -239,7 +241,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
     /**
      * @param Concrete $list
      * @param string $field
-     * @param Carbon|\Pimcore\Date|\DateTime $value
+     * @param \DateTime $value
      */
     protected function addNormalizedMysqlCompareConditionForDateFields(Concrete &$list, $field, $value)
     {

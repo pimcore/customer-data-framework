@@ -35,7 +35,6 @@ class MailChimpExportService
 
     /**
      * @param MailChimp $apiClient
-     * @param $listId
      */
     public function __construct(MailChimp $apiClient)
     {
@@ -85,6 +84,8 @@ class MailChimpExportService
                 return $data['mailchimp_id']['data'];
             }
         }
+
+        return null;
     }
 
     public function getObjectByRemoteId($remoteId)
@@ -179,7 +180,7 @@ class MailChimpExportService
      * @param string $listId
      * @param bool $refresh
      *
-     * @return Note[]|Note\Listing|\Pimcore\Model\DataObject\Listing\Dao
+     * @return Note[]
      */
     public function getExportNotes(ElementInterface $object, $listId, $refresh = false)
     {
@@ -187,7 +188,6 @@ class MailChimpExportService
         $notes = Runtime::isRegistered($cacheKey) ? Runtime::get($cacheKey) : [];
 
         if (!isset($notes[$listId][$object->getId()]) || $refresh) {
-            /** @var Note\Listing|\Pimcore\Model\DataObject\Listing\Dao $list */
             $list = new Note\Listing();
             $list->setOrderKey('date');
             $list->setOrder('desc');
@@ -217,11 +217,14 @@ class MailChimpExportService
         if ($notes) {
             return $notes[0];
         }
+
+        return null;
     }
 
     /**
      * @param ElementInterface $object
-     * @param $listId
+     * @param string $listId
+     * @param array $exportData
      *
      * @return bool
      */
@@ -252,12 +255,14 @@ class MailChimpExportService
         if ($note) {
             return $this->getNoteDateTime($note);
         }
+
+        return null;
     }
 
     public function getMd5($data)
     {
         // ensure that status_if_new and status are handled the same way in the md5 check
-        $status = isset($data['status_if_new']) ? $data['status_if_new'] : $data['status'];
+        $status = $data['status_if_new'] ?? $data['status'];
 
         unset($data['status_if_new']);
         $data['status'] = $status;

@@ -57,8 +57,6 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
 
     /**
      * @param CustomerInterface $customer
-     * @param string $parentPath
-     * @param string $namingScheme
      *
      * @return void
      */
@@ -138,7 +136,7 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
 
     /**
      * @param CustomerInterface $customer
-     * @param $namingScheme
+     * @param string $namingScheme
      *
      * @return array
      */

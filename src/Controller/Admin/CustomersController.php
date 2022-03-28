@@ -30,8 +30,6 @@ use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\Concrete;
-use Pimcore\Model\DataObject\Customer;
-use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
 use Pimcore\Model\DataObject\Folder;
 use Pimcore\Model\DataObject\Listing;
@@ -225,8 +223,10 @@ class CustomersController extends Admin
         $data['exportData'] = $totalExportData;
         $data['processIds'] = $processIds;
 
-        \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->saveExportTmpData($request->get('jobId'),
-            $data);
+        \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->saveExportTmpData(
+            $request->get('jobId'),
+            $data
+        );
 
         $notProcessedRecordsCount = sizeof($data['processIds']);
         $totalRecordsCount = $notProcessedRecordsCount + sizeof($data['exportData'][AbstractExporter::ROWS]);
@@ -315,7 +315,7 @@ class CustomersController extends Admin
             throw new ValidationException(sprintf('No permissions to save customer to folder "%s"',
                 $this->getTemporaryCustomerFolder()->getParent()));
         }
-        /** @var Concrete|Customer $customer */
+
         $customer = $customerProvider->createCustomerInstance();
         $customer->setParent($this->getTemporaryCustomerFolder());
         $customer->setKey('New Customer');
@@ -341,7 +341,6 @@ class CustomersController extends Admin
         // fetch customer temp directory
         $tempDirectory = $this->getParameter('pimcore_customer_management_framework.customer_provider.newCustomersTempDir');
 
-        /** @var Folder $folder */
         return Service::createFolderByPath($tempDirectory);
     }
 
@@ -359,11 +358,11 @@ class CustomersController extends Admin
 
     /**
      * @param Listing\Concrete $listing
-     * @param $exporterName
+     * @param string $exporterName
      *
      * @return ExporterInterface
      *
-     * @internal param Request $request
+     * @internal
      */
     protected function getExporter(Listing\Concrete $listing, $exporterName)
     {
@@ -387,7 +386,6 @@ class CustomersController extends Admin
     public function loadSegmentGroups()
     {
         if (is_null($this->segmentGroups)) {
-            /** @var CustomerSegmentGroup\Listing $segmentGroups */
             $segmentGroups = $this->getSearchHelper()->getSegmentManager()->getSegmentGroups();
             $segmentGroups->addConditionParam('showAsFilter = 1');
             // sort by filterSortOrder high to low
@@ -406,12 +404,11 @@ class CustomersController extends Admin
      */
     protected function buildListing(array $filters = [], array $orders = [])
     {
-        /** @var Listing|Listing\Concrete $listing */
         $listing = $this->getSearchHelper()->getCustomerProvider()->getList();
         if (count($orders) > 0) {
             $listing
                 ->setOrderKey(array_keys($orders), false)
-                ->setOrder(array_values($orders), false);
+                ->setOrder(array_values($orders));
         } else {
             $listing
                 ->setOrderKey('o_id')
@@ -504,8 +501,6 @@ class CustomersController extends Admin
         $segmentId = $request->get('segmentId');
 
         if ($segmentId) {
-            /** @var CustomerSegment $segment */
-            /** @noinspection MissingService */
             $segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId);
             if (!$segment) {
                 throw new \InvalidArgumentException(sprintf('Segment %d was not found', $segmentId));
@@ -605,11 +600,6 @@ class CustomersController extends Admin
         if ($filterDefinition->isReadOnly()) {
             // overwrite filters with FilterDefinition definition
             $filters = array_merge($filters, $filterDefinitionCustomer);
-            // lock read only filters
-            foreach ($filterDefinitionCustomer as $key => $value) {
-                /** @noinspection PhpUndefinedFieldInspection */
-                $this->readonlyFilterFields[] = $key;
-            }
         } else {
             // filter of user more important than filter definition
             $filters = array_merge($filterDefinitionCustomer, $filters);

@@ -18,14 +18,11 @@ namespace CustomerManagementFrameworkBundle\DuplicatesIndex;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Pimcore\Model\DataObject\Listing\Concrete;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 interface DuplicatesIndexInterface
 {
     /**
-     * @param LoggerInterface $logger
-     *
      * @return void
      */
     public function recreateIndex();
@@ -84,7 +81,7 @@ interface DuplicatesIndexInterface
      * @param int $page
      * @param int $pageSize
      *
-     * @return Paginator
+     * @return PaginationInterface
      */
     public function getFalsePositives($page, $pageSize = 100);
 

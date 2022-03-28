@@ -30,7 +30,7 @@ interface NewsletterQueueItemInterface
     public function getCustomer();
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getEmail();
 

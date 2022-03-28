@@ -18,7 +18,6 @@ namespace CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\CustomerList\SearchHelper;
 use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
-use Pimcore\Model\DataObject\Listing\Concrete;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -50,7 +49,6 @@ class DuplicatesController extends Admin
         $customerList = null;
         if (!empty($filters)) {
             // build customer listing
-            /** @var Concrete $listing */
             $customerList = $this->getSearchHelper()->getCustomerProvider()->getList();
             $customerList
                 ->setOrderKey('o_id')
@@ -89,7 +87,6 @@ class DuplicatesController extends Admin
     public function declineAction(Request $request)
     {
         try {
-            /** @noinspection MissingService */
             \Pimcore::getContainer()->get('cmf.customer_duplicates_index')->declinePotentialDuplicate(
                 $request->get('id')
             );

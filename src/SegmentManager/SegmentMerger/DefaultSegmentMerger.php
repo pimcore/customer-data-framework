@@ -38,7 +38,7 @@ class DefaultSegmentMerger implements SegmentMergerInterface
     protected $customerSaveManager;
 
     /**
-     * @var
+     * @var SegmentManagerInterface
      */
     protected $segmentManager;
 
@@ -123,7 +123,7 @@ class DefaultSegmentMerger implements SegmentMergerInterface
      * @param array $addSegments
      * @param array $deleteSegments
      * @param bool $calculated
-     * @param $hintForNotes
+     * @param string $hintForNotes
      * @param int|true|null $segmentCreatedTimestamp
      * @param int|true|null $segmentApplicationCounter
      */
@@ -184,8 +184,8 @@ class DefaultSegmentMerger implements SegmentMergerInterface
     }
 
     /**
-     * @param $segments
-     * @param $addSegments
+     * @param array $segments
+     * @param array $addSegments
      *
      * @return CustomerSegmentInterface[]|false
      */
@@ -255,8 +255,8 @@ class DefaultSegmentMerger implements SegmentMergerInterface
     }
 
     /**
-     * @param $segments
-     * @param $addSegments
+     * @param array $segments
+     * @param array $removeSegments
      *
      * @return CustomerSegmentInterface[]|false
      */
@@ -356,9 +356,9 @@ class DefaultSegmentMerger implements SegmentMergerInterface
 
     /**
      * @param CustomerInterface $customer
-     * @param $segments
-     * @param $title
-     * @param $hintForNotes
+     * @param array $segments
+     * @param string $title
+     * @param string $hintForNotes
      *
      * @return array
      */

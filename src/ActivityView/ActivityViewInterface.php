@@ -41,7 +41,7 @@ interface ActivityViewInterface
     public function getDetailviewTemplate(ActivityStoreEntryInterface $activityEntry);
 
     /**
-     * @param       $implementationClass
+     * @param string $implementationClass
      * @param array $attributes
      * @param array $visibleKeys
      *
@@ -52,8 +52,8 @@ interface ActivityViewInterface
     /**
      * Creates a link/button to an object, asset or document.
      *
-     * @param $id
-     * @param $elementType
+     * @param int $id
+     * @param string $elementType
      * @param string $buttonCssClass
      * @param string $buttonTranslationKey
      *

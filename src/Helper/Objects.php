@@ -182,7 +182,7 @@ class Objects
      * Returns true if the given object or (object with metadata item) is contained in the $addSegments array.
      * Objects with metdata are only matched by object IDs (not by metadata or concrete instances).
      *
-     * @param $object
+     * @param mixed $object
      * @param array $objects
      *
      * @return bool;

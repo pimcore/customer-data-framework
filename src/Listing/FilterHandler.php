@@ -25,7 +25,7 @@ use Pimcore\Model\DataObject\Listing as CoreListing;
 class FilterHandler
 {
     /**
-     * @var CoreListing\Concrete|CoreListing\Dao
+     * @var CoreListing\Concrete
      */
     protected $listing;
 
@@ -34,16 +34,13 @@ class FilterHandler
      */
     protected $filters = [];
 
-    /**
-     * @param CoreListing\Concrete|CoreListing\Dao $listing
-     */
     public function __construct(CoreListing\Concrete $listing)
     {
         $this->listing = $listing;
     }
 
     /**
-     * @return CoreListing\Concrete|CoreListing\Dao
+     * @return CoreListing\Concrete
      */
     public function getListing()
     {

@@ -63,7 +63,7 @@ class TemplateExportResolveProviderHandlerEvent extends Event
     }
 
     /**
-     * @param Mailchimp|null $providerHandler
+     * @param Mailchimp $providerHandler
      */
     public function setProviderHandler(Mailchimp $providerHandler)
     {

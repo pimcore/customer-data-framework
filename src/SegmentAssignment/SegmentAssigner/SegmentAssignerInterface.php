@@ -32,7 +32,7 @@ interface SegmentAssignerInterface
      *
      * @param ElementInterface $element
      * @param bool $breaksInheritance
-     * @param CustomerSegmentInterface[] $segments
+     * @param CustomerSegmentInterface[]|int[] $segments
      *
      * @return bool true on success, false on failure
      */

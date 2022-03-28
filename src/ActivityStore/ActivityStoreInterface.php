@@ -38,7 +38,7 @@ interface ActivityStoreInterface
 
     /**
      * @param ActivityInterface $activity
-     * @param ActivityStoreEntryInterface $entry
+     * @param ActivityStoreEntryInterface|null $entry
      *
      * @return ActivityStoreEntryInterface
      */
@@ -47,6 +47,7 @@ interface ActivityStoreInterface
     /**
      *
      * @param ActivityStoreEntryInterface $entry
+     * @param bool $updateAttributes
      *
      * @return void
      */
@@ -55,7 +56,7 @@ interface ActivityStoreInterface
     /**
      * @param ActivityInterface $activity
      *
-     * @return ActivityStoreEntryInterface
+     * @return ActivityStoreEntryInterface|null
      */
     public function getEntryForActivity(ActivityInterface $activity);
 
@@ -79,9 +80,9 @@ interface ActivityStoreInterface
     public function deleteActivity(ActivityInterface $activity);
 
     /**
-     * @param $id
+     * @param int $id
      *
-     * @return ActivityStoreEntryInterface
+     * @return ActivityStoreEntryInterface|null
      */
     public function getEntryById($id);
 
@@ -102,7 +103,7 @@ interface ActivityStoreInterface
     public function deleteCustomer(CustomerInterface $customer);
 
     /**
-     * @param                              $pageSize
+     * @param int $pageSize
      * @param int $page
      * @param ExportActivitiesFilterParams $params
      *
@@ -111,10 +112,10 @@ interface ActivityStoreInterface
     public function getActivitiesDataForWebservice($pageSize, $page, ExportActivitiesFilterParams $params);
 
     /**
-     * @param $type
-     * @param $deletionsSinceTimestamp
+     * @param string $type
+     * @param int $deletionsSinceTimestamp
      *
-     * @return mixed
+     * @return array
      */
     public function getDeletionsData($type, $deletionsSinceTimestamp);
 

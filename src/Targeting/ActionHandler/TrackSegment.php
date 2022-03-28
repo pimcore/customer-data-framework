@@ -40,6 +40,10 @@ class TrackSegment implements ActionHandlerInterface, DataProviderDependentInter
      */
     private $segmentTracker;
 
+    /**
+     * @phpstan-ignore-next-line
+     * TODO: Remove unused parameter
+     */
     public function __construct(
         SegmentManagerInterface $segmentManager,
         SegmentTracker $segmentTracker,

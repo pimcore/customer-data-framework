@@ -20,6 +20,10 @@ use Pimcore\Cache\Runtime;
 use Pimcore\Logger;
 use Pimcore\Model\AbstractModel;
 
+/**
+ * @method ActionDefinition\Dao getDao()
+ * @method void save()
+ */
 class ActionDefinition extends AbstractModel implements ActionDefinitionInterface
 {
     /**
@@ -58,9 +62,9 @@ class ActionDefinition extends AbstractModel implements ActionDefinitionInterfac
     private $modificationDate;
 
     /**
-     * @param $id
+     * @param int|null $id
      *
-     * @return self
+     * @return self|null
      *
      * @throws \Exception
      */

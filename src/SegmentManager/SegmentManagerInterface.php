@@ -43,7 +43,7 @@ interface SegmentManagerInterface
      *
      * @param int $id
      *
-     * @return CustomerSegmentInterface
+     * @return CustomerSegmentInterface|null
      */
     public function getSegmentById($id);
 
@@ -52,7 +52,7 @@ interface SegmentManagerInterface
      *
      * @param int $id
      *
-     * @return CustomerSegmentGroup
+     * @return CustomerSegmentGroup|null
      */
     public function getSegmentGroupById($id);
 
@@ -200,18 +200,18 @@ interface SegmentManagerInterface
      * If no CustomerSegmentGroup is given it will search globally.
      *
      * @param string $segmentReference
-     * @param CustomerSegmentGroup $segmentGroup
+     * @param CustomerSegmentGroup|null $segmentGroup
      * @param bool $calculated
      *
-     * @return CustomerSegmentInterface
+     * @return CustomerSegmentInterface|null
      */
     public function getSegmentByReference($segmentReference, CustomerSegmentGroup $segmentGroup = null, $calculated = false);
 
     /**
      * Creates a segment group.
      *
-     * @param string $segmentGroupName
-     * @param null $segmentGroupReference
+     * @param string|CustomerSegmentGroup $segmentGroupName
+     * @param string|null $segmentGroupReference
      * @param bool $calculated
      * @param array $values
      *
@@ -247,10 +247,10 @@ interface SegmentManagerInterface
     /**
      * Returns the SegmentGroup with the given reference.
      *
-     * @param $segmentGroupReference
-     * @param $calculated
+     * @param string|null $segmentGroupReference
+     * @param bool $calculated
      *
-     * @return CustomerSegmentGroup
+     * @return CustomerSegmentGroup|null
      */
     public function getSegmentGroupByReference($segmentGroupReference, $calculated);
 

@@ -33,7 +33,7 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
     protected $fields;
 
     /**
-     * @var string
+     * @var \SearchQueryParser\Part\Query
      */
     protected $parsedQuery;
 
@@ -77,8 +77,6 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
 
     /**
      * @param string $queryString
-     *
-     * @return \SearchQueryParser\Part\Query
      */
     protected function parseQuery($queryString)
     {

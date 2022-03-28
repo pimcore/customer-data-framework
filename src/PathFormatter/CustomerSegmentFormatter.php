@@ -15,7 +15,6 @@
 
 namespace CustomerManagementFrameworkBundle\PathFormatter;
 
-use Pimcore\Model\DataObject\ClassDefinition\Data;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
@@ -24,17 +23,15 @@ use Pimcore\Model\Element\ElementInterface;
 class CustomerSegmentFormatter
 {
     /**
-     * @param $result array containing the nice path info. Modify it or leave it as it is. Pass it out afterwards!
+     * @param array $result containing the nice path info. Modify it or leave it as it is. Pass it out afterwards!
      * @param ElementInterface $source the source object
-     * @param $targets list of nodes describing the target elements
-     * @param $params optional parameters. may contain additional context information in the future. to be defined.
+     * @param array $targets list of nodes describing the target elements
+     * @param array $params optional parameters. may contain additional context information in the future. to be defined.
      *
      * @return mixed list of display names.
      */
     public static function formatPath($result, ElementInterface $source, $targets, $params)
     {
-        /** @var $fd Data */
-        $fd = $params['fd'];
         $context = $params['context'];
 
         foreach ($targets as $key => $item) {
@@ -43,15 +40,14 @@ class CustomerSegmentFormatter
                 $newPath .= ' ' . $context['language'];
             }
 
-            if ($item['type'] == 'object') {
+            if ($item['type'] === 'object') {
                 $targetObject = Concrete::getById($item['id']);
                 if ($targetObject instanceof CustomerSegment) {
                     $newPath = '<strong>' . $targetObject->getName() . '</strong>';
 
-                    /**
-                     * @var CustomerSegmentGroup $group
-                     */
-                    if ($group = $targetObject->getGroup()) {
+                    /** @var CustomerSegmentGroup|null $group */
+                    $group = $targetObject->getGroup();
+                    if ($group) {
                         $newPath .= ' [' . $group->getName() . ']';
                     }
                 }

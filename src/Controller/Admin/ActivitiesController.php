@@ -49,11 +49,6 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
      */
     public function listAction(Request $request, CustomerProviderInterface $customerProvider)
     {
-        $types = null;
-        $type = null;
-        $activities = null;
-        $paginator = null;
-
         if ($customer = $customerProvider->getById($request->get('customerId'))) {
             $list = \Pimcore::getContainer()->get('cmf.activity_store')->getActivityList();
             $list->setCondition('customerId = ' . $customer->getId());
@@ -75,19 +70,21 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
             }
 
             $paginator = $this->paginator->paginate($list, $request->get('page', 1), 25);
+
+            return $this->render(
+                '@PimcoreCustomerManagementFramework/admin/activities/list.html.twig',
+                [
+                    'types' => $types,
+                    'selectedType' => $type,
+                    'activities' => $paginator,
+                    'paginationVariables' => $paginator->getPaginationData(),
+                    'customer' => $customer,
+                    'activityView' => \Pimcore::getContainer()->get('cmf.activity_view'),
+                ]
+            );
         }
 
-        return $this->render(
-            '@PimcoreCustomerManagementFramework/admin/activities/list.html.twig',
-            [
-                'types' => $types,
-                'selectedType' => $type,
-                'activities' => $paginator,
-                'paginationVariables' => $paginator->getPaginationData(),
-                'customer' => $customer,
-                'activityView' => \Pimcore::getContainer()->get('cmf.activity_view'),
-            ]
-        );
+        throw $this->createNotFoundException();
     }
 
     /**

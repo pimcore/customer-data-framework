@@ -37,7 +37,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
 
     /**
      * @param string $messageId
-     * @param array $parameters
+     * @param mixed $parameters
      *
      * @return string
      */
@@ -57,7 +57,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
     /**
      * @param Data $fd
      *
-     * @return array|string
+     * @return string
      */
     public function getLabelByFieldDefinition(Data $fd)
     {
@@ -77,7 +77,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
 
     /**
      * @param Data $fd
-     * @param $value
+     * @param mixed $value
      *
      * @return string
      */
@@ -122,7 +122,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      *
      * @return string
      */
@@ -132,7 +132,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      *
      * @return string
      */

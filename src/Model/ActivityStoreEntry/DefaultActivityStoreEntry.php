@@ -29,47 +29,47 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     private $data;
 
     /**
-     * @var int;
+     * @var int|null
      */
     private $id;
 
     /**
-     * @var CustomerInterface
+     * @var CustomerInterface|null
      */
     private $customer;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $customerId;
 
     /**
-     * @var int
+     * @var Carbon|null
      */
     private $activityDate;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $type;
 
     /**
-     * @var ActivityInterface
+     * @var ActivityInterface|false|null
      */
     private $relatedItem;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $creationDate;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modificationDate;
 
     /**
-     * @var $md5
+     * @var string|null
      */
     private $md5;
 
@@ -84,12 +84,12 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     private $a_id;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $implementationClass;
 
     /**
-     * @var $attributes
+     * @var array|null
      */
     private $attributes;
 
@@ -123,7 +123,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getId()
     {
@@ -139,7 +139,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     }
 
     /**
-     * @return CustomerInterface
+     * @return CustomerInterface|null
      */
     public function getCustomer()
     {
@@ -151,7 +151,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getCustomerId()
     {
@@ -168,7 +168,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     }
 
     /**
-     * @return Carbon
+     * @return Carbon|null
      */
     public function getActivityDate()
     {
@@ -184,7 +184,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getType()
     {
@@ -200,12 +200,13 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     }
 
     /**
-     * @return ActivityInterface
+     * @return ActivityInterface|false
      */
     public function getRelatedItem()
     {
         if (empty($this->relatedItem)) {
             $implementationClass = self::getImplementationClass();
+            /** @var ActivityInterface $implementationClass */
             $implementationClass = \Pimcore::getContainer()->has($implementationClass) ? \Pimcore::getContainer()->has(
                 $implementationClass
             ) : $implementationClass;
@@ -229,7 +230,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getCreationDate()
     {
@@ -245,7 +246,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getModificationDate()
     {
@@ -261,7 +262,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getMd5()
     {
@@ -277,7 +278,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getImplementationClass()
     {
@@ -293,7 +294,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
     }
 
     /**
-     * @return array
+     * @return array|null
      */
     public function getAttributes()
     {

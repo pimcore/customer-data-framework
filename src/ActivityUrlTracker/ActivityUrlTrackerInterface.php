@@ -18,8 +18,8 @@ namespace CustomerManagementFrameworkBundle\ActivityUrlTracker;
 interface ActivityUrlTrackerInterface
 {
     /**
-     * @param $customerIdEncoded
-     * @param $activityCode
+     * @param string $customerIdEncoded
+     * @param string $activityCode
      * @param array $params
      *
      * @return void

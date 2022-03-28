@@ -22,7 +22,6 @@ use CustomerManagementFrameworkBundle\Model\SsoIdentityInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Db;
 use Pimcore\File;
-use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\SsoIdentity;
 
 /**
@@ -54,13 +53,15 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
         if ($ssoIdentity) {
             return $this->findCustomerBySsoIdentity($ssoIdentity);
         }
+
+        return null;
     }
 
     /**
-     * @param $provider
-     * @param $identifier
+     * @param string $provider
+     * @param string $identifier
      *
-     * @return SsoIdentityInterface
+     * @return SsoIdentityInterface|null
      */
     protected function findSsoIdentity($provider, $identifier)
     {
@@ -80,6 +81,8 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
 
             throw $exception;
         }
+
+        return null;
     }
 
     /**
@@ -101,10 +104,12 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
         if (count($result) === 1) {
             return $this->customerProvider->getById((int)$result[0]['src_id']);
         }
+
+        return null;
     }
 
     /**
-     * @param CustomerInterface|SsoAwareCustomerInterface $customer
+     * @param CustomerInterface $customer
      *
      * @return SsoIdentityInterface[]
      */
@@ -133,13 +138,13 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
                 return $ssoIdentity;
             }
         }
+
+        return null;
     }
 
     /**
-     * @param CustomerInterface|SsoAwareCustomerInterface $customer
+     * @param CustomerInterface $customer
      * @param SsoIdentityInterface $ssoIdentity
-     *
-     * @return $this
      */
     public function addSsoIdentity(CustomerInterface $customer, SsoIdentityInterface $ssoIdentity)
     {
@@ -152,7 +157,7 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
     }
 
     /**
-     * @param CustomerInterface|Concrete $customer
+     * @param CustomerInterface $customer
      * @param string $provider
      * @param string $identifier
      * @param mixed $profileData

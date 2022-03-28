@@ -78,7 +78,7 @@ interface CustomerProviderInterface
      * Get customer by ID
      *
      * @param int $id
-     * @param bool $foce
+     * @param bool $force
      *
      * @return CustomerInterface|null
      */
@@ -87,8 +87,7 @@ interface CustomerProviderInterface
     /**
      * Get active customer by email
      *
-     * @param int $id
-     * @param bool $foce
+     * @param string $email
      *
      * @return CustomerInterface|null
      *

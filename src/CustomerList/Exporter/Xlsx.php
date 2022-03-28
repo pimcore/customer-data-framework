@@ -97,6 +97,8 @@ class Xlsx extends AbstractExporter
         foreach ($this->getExportRows($exportData) as $exportRow) {
             $this->renderRow($this->getColumnValuesFromExportRow($exportRow));
         }
+
+        return $this;
     }
 
     /**

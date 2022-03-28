@@ -1,0 +1,10 @@
+<?php
+
+namespace HWI\Bundle\OAuthBundle\Security\Core\Exception;
+
+/**
+ * @final
+ */
+class AccountNotLinkedException
+{
+}

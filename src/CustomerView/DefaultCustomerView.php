@@ -18,8 +18,6 @@ namespace CustomerManagementFrameworkBundle\CustomerView;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\View\Formatter\ObjectWrapper;
 use CustomerManagementFrameworkBundle\View\Formatter\ViewFormatterInterface;
-use Pimcore\Model\DataObject\Concrete;
-use Pimcore\Model\Element\ElementInterface;
 
 class DefaultCustomerView implements CustomerViewInterface
 {
@@ -100,7 +98,7 @@ class DefaultCustomerView implements CustomerViewInterface
     }
 
     /**
-     * @param CustomerInterface|ElementInterface|Concrete $customer
+     * @param CustomerInterface $customer
      *
      * @return array
      */
@@ -132,7 +130,7 @@ class DefaultCustomerView implements CustomerViewInterface
     /**
      * Wrap object in a object implementing a __toString method
      *
-     * @param $object
+     * @param mixed $object
      *
      * @return ObjectWrapper
      */

@@ -15,10 +15,13 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Action;
 
+/**
+ * @method void save()
+ */
 interface ActionDefinitionInterface
 {
     /**
-     * @param $id
+     * @param int|null $id
      *
      * @return self
      */

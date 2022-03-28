@@ -76,6 +76,12 @@ class GenericActivity implements ActivityExternalIdInterface
         $this->data = array_merge($this->data, $data);
     }
 
+    /**
+     * @param array $data
+     * @param bool $fromWebservice
+     *
+     * @return static
+     */
     public static function cmfCreate(array $data, $fromWebservice = false)
     {
         return new static($data);

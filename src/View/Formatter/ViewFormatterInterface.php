@@ -51,7 +51,7 @@ interface ViewFormatterInterface extends TranslatorInterface
     public function formatBooleanValue($value);
 
     /**
-     * @param $value
+     * @param mixed $value
      *
      * @return string
      */
@@ -59,7 +59,7 @@ interface ViewFormatterInterface extends TranslatorInterface
 
     /**
      * @param Data $fd
-     * @param $value
+     * @param mixed $value
      *
      * @return string
      */

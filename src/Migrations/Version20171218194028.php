@@ -27,7 +27,7 @@ class Version20171218194028 extends AbstractPimcoreMigration
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $this->writeMessage("Adding two additional fields 'useAsTargetGroup' and 'targetGroup' to CustomerSegment class");
 
@@ -60,7 +60,7 @@ class Version20171218194028 extends AbstractPimcoreMigration
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
         // downgrading would result in data loss and is not deemed necessary at the moment
     }

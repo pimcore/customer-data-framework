@@ -35,7 +35,7 @@ class AttributeLogic extends AbstractCustomerSaveHandler
     /**
      * AttributeLogic constructor.
      *
-     * @param [][] ...$fieldMapping
+     * @param array ...$fieldMapping
      *
      * Example field mapping in yml config:
      * arguments:

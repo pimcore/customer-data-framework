@@ -1,0 +1,11 @@
+<?php
+
+namespace Pimcore\Model\Element;
+
+/**
+ * @method static setParent(?ElementInterface $parent)
+ * @method ElementInterface getParent()
+ */
+interface ElementInterface
+{
+}

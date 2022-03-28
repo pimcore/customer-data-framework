@@ -110,9 +110,9 @@ class CmfUrlUtilsExtension extends AbstractExtension
 
         $currentOrder = ($request->get('order') ? $request->get('order')[$param] ?? null : null);
         $nextOrder = '';
-        if ($currentOrder == null || empty($currentOrder)) {
+        if (empty($currentOrder)) {
             $nextOrder = 'ASC';
-        } elseif (strtoupper($currentOrder) == 'ASC') {
+        } elseif (strtoupper($currentOrder) === 'ASC') {
             $nextOrder = 'DESC';
         }
 

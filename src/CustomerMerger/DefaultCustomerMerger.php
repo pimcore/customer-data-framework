@@ -100,7 +100,7 @@ class DefaultCustomerMerger implements CustomerMergerInterface
     /**
      * @param CustomerInterface $sourceCustomer
      * @param CustomerInterface $targetCustomer
-     * @param $mergeAttributes
+     * @param bool $mergeAttributes
      */
     private function mergeCustomerValues(
         CustomerInterface $sourceCustomer,

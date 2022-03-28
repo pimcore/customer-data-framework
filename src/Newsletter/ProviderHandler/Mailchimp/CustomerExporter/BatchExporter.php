@@ -16,12 +16,10 @@
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CustomerExporter;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use CustomerManagementFrameworkBundle\Model\MailchimpAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use DrewM\MailChimp\Batch;
-use Pimcore\Model\Element\ElementInterface;
 
 class BatchExporter extends AbstractExporter
 {
@@ -54,7 +52,7 @@ class BatchExporter extends AbstractExporter
     /**
      * Run the actual export
      *
-     * @param NewsletterQueueItemInterface[] = $items
+     * @param NewsletterQueueItemInterface[] $items
      * @param Mailchimp $mailchimpProviderHandler
      *
      */
@@ -142,7 +140,7 @@ class BatchExporter extends AbstractExporter
 
     /**
      * @param Batch $batch
-     * @param CustomerInterface|ElementInterface $customer
+     * @param CustomerInterface $customer
      * @param array $entry
      * @param Mailchimp $mailchimpProviderHandler
      */
@@ -191,8 +189,7 @@ class BatchExporter extends AbstractExporter
 
     /**
      * @param Batch $batch
-     * @param CustomerInterface|ElementInterface $customer
-     * @param array $entry
+     * @param NewsletterQueueItemInterface $item
      * @param Mailchimp $mailchimpProviderHandler
      */
     protected function createBatchDeleteOperation(Batch $batch, NewsletterQueueItemInterface $item, Mailchimp $mailchimpProviderHandler)
@@ -371,7 +368,6 @@ class BatchExporter extends AbstractExporter
         $exportService = $mailchimpProviderHandler->getExportService();
         $apiClient = $this->getApiClientFromExportService($exportService);
 
-        /** @var MailchimpAwareCustomerInterface|ElementInterface $customer */
         $customer = $item->getCustomer();
 
         $operation = $item->getOverruledOperation() ?: $item->getOperation();
@@ -431,7 +427,6 @@ class BatchExporter extends AbstractExporter
         $exportService = $mailchimpProviderHandler->getExportService();
         $apiClient = $this->getApiClientFromExportService($exportService);
 
-        /** @var MailchimpAwareCustomerInterface|ElementInterface $customer */
         $customer = $item->getCustomer();
 
         if (!$customer) {

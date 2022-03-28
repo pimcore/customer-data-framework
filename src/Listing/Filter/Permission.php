@@ -34,12 +34,6 @@ class Permission extends AbstractFilter implements OnCreateQueryFilterInterface
         $this->user = $user;
     }
 
-    /**
-     * Apply filter directly to query
-     *
-     * @param CoreListing\Concrete|CoreListing\Dao $listing
-     * @param QueryBuilder $queryBuilder
-     */
     public function applyOnCreateQuery(CoreListing\Concrete $listing, QueryBuilder $queryBuilder)
     {
         // add permission conditions

@@ -49,7 +49,7 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
     /**
      * @param ActivityInterface $activity
      *
-     * @return null|ActivityStoreEntryInterface
+     * @return ActivityStoreEntryInterface|null
      *
      * @throws \Exception
      */
@@ -102,9 +102,9 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
     }
 
     /**
-     * @param $id
+     * @param int $id
      *
-     * @return null|ActivityStoreEntryInterface
+     * @return ActivityStoreEntryInterface|null
      *
      * @throws \Exception
      */

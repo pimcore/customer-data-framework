@@ -23,36 +23,42 @@ use Pimcore\Model\User;
 use Pimcore\Model\User\Role;
 
 /**
- * Class FilterDefinition
- *
- * @package CustomerManagementFrameworkBundle\Model\CustomerView
- *
- * @property int|null $id
- * @property int|null $ownerId
- * @property string $name
- * @property array $definition
- * @property array $allowedUserIds
- * @property bool $readOnly
- * @property bool $shortcutAvailable
- * @property string $creationDate
- * @property string $modificationDate
+ * @method FilterDefinition\Dao getDao()
  */
 class FilterDefinition extends AbstractModel
 {
+    /** @var int|null */
     private $id = null;
+
+    /** @var int|null */
     private $ownerId = null;
+
+    /** @var string */
     private $name = '';
+
+    /** @var array */
     private $definition = [];
+
+    /** @var array */
     private $allowedUserIds = [];
+
+    /** @var bool */
     private $readOnly = false;
+
+    /** @var bool */
     private $shortcutAvailable = false;
+
+    /** @var int|null */
     private $creationDate = null;
+
+    /** @var int|null */
     private $modificationDate = null;
 
+    /** @var bool */
     private $isDirty = false;
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getId()
     {
@@ -60,7 +66,7 @@ class FilterDefinition extends AbstractModel
     }
 
     /**
-     * @param null $id
+     * @param int|null $id
      *
      * @return $this
      */
@@ -72,7 +78,7 @@ class FilterDefinition extends AbstractModel
     }
 
     /**
-     * @return int|null
+     * @return int
      */
     public function getOwnerId(): int
     {
@@ -80,7 +86,7 @@ class FilterDefinition extends AbstractModel
     }
 
     /**
-     * @param int|null $ownerId
+     * @param int $ownerId
      */
     public function setOwnerId(int $ownerId)
     {
@@ -96,9 +102,9 @@ class FilterDefinition extends AbstractModel
     }
 
     /**
-     * @param $name
+     * @param string $name
      *
-     * @return FilterDefinition
+     * @return $this
      */
     public function setName($name): self
     {
@@ -116,9 +122,9 @@ class FilterDefinition extends AbstractModel
     }
 
     /**
-     * @param $definition
+     * @param array $definition
      *
-     * @return FilterDefinition
+     * @return $this
      */
     public function setDefinition(array $definition): self
     {
@@ -192,7 +198,7 @@ class FilterDefinition extends AbstractModel
     /**
      * @param array $showSegments
      *
-     * @return self
+     * @return $this
      */
     public function setShowSegments(array $showSegments)
     {
@@ -210,9 +216,9 @@ class FilterDefinition extends AbstractModel
     }
 
     /**
-     * @param $readOnly
+     * @param bool $readOnly
      *
-     * @return self
+     * @return $this
      */
     public function setReadOnly(bool $readOnly): self
     {
@@ -230,9 +236,9 @@ class FilterDefinition extends AbstractModel
     }
 
     /**
-     * @param $shortcutAvailable
+     * @param bool $shortcutAvailable
      *
-     * @return self
+     * @return $this
      */
     public function setShortcutAvailable(bool $shortcutAvailable): self
     {
@@ -246,7 +252,7 @@ class FilterDefinition extends AbstractModel
      *
      * @param int $id
      *
-     * @return self
+     * @return self|null
      */
     public static function getById($id)
     {
@@ -261,7 +267,6 @@ class FilterDefinition extends AbstractModel
                 // create object and set id
                 $filterDefinition = (new self())->setId(intval($id));
                 // load filter definition by id
-                /** @noinspection PhpUndefinedMethodInspection */
                 $filterDefinition->getDao()->getById(intval($id));
                 // save found object to cache -> Only if object was found
                 Runtime::set($cacheKey, $filterDefinition);
@@ -280,7 +285,7 @@ class FilterDefinition extends AbstractModel
      *
      * @param string $name
      *
-     * @return self
+     * @return self|null
      */
     public static function getByName(string $name)
     {
@@ -288,7 +293,6 @@ class FilterDefinition extends AbstractModel
             // create object and set id
             $filterDefinition = new self();
             // load filter definition by id
-            /** @noinspection PhpUndefinedMethodInspection */
             $filterDefinition->getDao()->getByName($name);
         } catch (\Exception $e) {
             // return null to indicate object not found
@@ -300,7 +304,7 @@ class FilterDefinition extends AbstractModel
     }
 
     /**
-     * @return mixed
+     * @return int|null
      */
     public function getCreationDate()
     {
@@ -308,7 +312,7 @@ class FilterDefinition extends AbstractModel
     }
 
     /**
-     * @param mixed $creationDate
+     * @param int|null $creationDate
      *
      * @return self
      */
@@ -320,7 +324,7 @@ class FilterDefinition extends AbstractModel
     }
 
     /**
-     * @return mixed
+     * @return int|null
      */
     public function getModificationDate()
     {
@@ -328,9 +332,9 @@ class FilterDefinition extends AbstractModel
     }
 
     /**
-     * @param mixed $modificationDate
+     * @param int|null $modificationDate
      *
-     * @return self
+     * @return $this
      */
     public function setModificationDate($modificationDate)
     {
@@ -422,7 +426,7 @@ class FilterDefinition extends AbstractModel
     /**
      * Check if a field should locked
      *
-     * @param $fieldName
+     * @param string $fieldName
      *
      * @return bool
      */
@@ -438,7 +442,7 @@ class FilterDefinition extends AbstractModel
     /**
      * Check if a segment id is locked
      *
-     * @param $segmentId
+     * @param string $segmentId
      *
      * @return bool
      */
@@ -454,7 +458,7 @@ class FilterDefinition extends AbstractModel
     /**
      * Check if segment is visible
      *
-     * @param $segmentId
+     * @param string $segmentId
      *
      * @return bool
      */
@@ -632,15 +636,6 @@ class FilterDefinition extends AbstractModel
         }
 
         return false;
-    }
-
-    /**
-     * @return Dao
-     */
-    public function getDao()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::getDao();
     }
 
     /**

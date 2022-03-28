@@ -20,7 +20,6 @@ use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\MailC
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use CustomerManagementFrameworkBundle\Traits\ApplicationLoggerAware;
 use DrewM\MailChimp\MailChimp;
-use Pimcore\Model\Element\ElementInterface;
 
 abstract class AbstractExporter
 {
@@ -63,7 +62,7 @@ abstract class AbstractExporter
     /**
      * @param int $id
      *
-     * @return CustomerInterface|ElementInterface|null
+     * @return CustomerInterface|null
      */
     protected function getCustomer($id)
     {

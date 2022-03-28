@@ -23,7 +23,6 @@ use CustomerManagementFrameworkBundle\RESTApi\Traits\ResourceUrlGenerator;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResponseGenerator;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Knp\Component\Pager\PaginatorInterface;
-use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Customer;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -59,16 +58,15 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
         $params = ExportCustomersFilterParams::fromRequest($request);
 
         if ($params->getSegments()) {
+            /** @var Customer\Listing $customers */
             $customers = \Pimcore::getContainer()->get('cmf.segment_manager')->getCustomersBySegmentIds(
                 $params->getSegments()
             );
         } else {
+            /** @var Customer\Listing $customers */
             $customers = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
         }
 
-        /**
-         * @var $customers Customer\Listing
-         */
         $customers->setOrderKey('o_id');
         $customers->setOrder('asc');
         $customers->setUnpublished(false);
@@ -114,7 +112,6 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
      * POST /customers
      *
      * @param Request $request
-     * @param array $params
      *
      * @return Response
      */
@@ -123,7 +120,6 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
         $data = $this->getRequestData($request);
 
         try {
-            /** @var CustomerInterface|Concrete $customer */
             $customer = $this->customerProvider->create($data);
             $customer->save();
         } catch (\Exception $e) {
@@ -164,7 +160,6 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
      * DELETE /customers/{id}
      *
      * @param Request $request
-     * @param array $params
      *
      * @return Response
      */
@@ -186,7 +181,7 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
      *
      * @param int|array $id
      *
-     * @return CustomerInterface|Concrete
+     * @return CustomerInterface
      */
     protected function loadCustomer($id)
     {
@@ -216,7 +211,7 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
      *
      * @param CustomerInterface $customer
      * @param Request $request
-     * @param ExportCustomersFilterParams $params
+     * @param ExportCustomersFilterParams|null $params
      *
      * @return Response
      */
@@ -252,7 +247,7 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
             );
         }
 
-        $links = isset($data['_links']) ? $data['_links'] : [];
+        $links = $data['_links'] ?? [];
 
         if ($selfLink = $this->generateResourceApiUrl($customer->getId())) {
             $links[] = [

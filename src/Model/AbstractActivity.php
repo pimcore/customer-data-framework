@@ -54,14 +54,9 @@ abstract class AbstractActivity implements ActivityInterface
         return !($this instanceof PersistentActivityInterface);
     }
 
-    /**
-     * @param array $data
-     *
-     * @return bool
-     */
     public function cmfUpdateData(array $data)
     {
-        return false;
+        // TODO: Throw exception
     }
 
     /**
@@ -80,11 +75,6 @@ abstract class AbstractActivity implements ActivityInterface
         return false;
     }
 
-    /**
-     * @param ActivityStoreEntryInterface $entry
-     *
-     * @return bool
-     */
     public static function cmfGetOverviewData(ActivityStoreEntryInterface $entry)
     {
         return false;
@@ -111,7 +101,7 @@ abstract class AbstractActivity implements ActivityInterface
     }
 
     /**
-     * @return CustomerInterface
+     * @return CustomerInterface|null
      */
     public function getCustomer()
     {
