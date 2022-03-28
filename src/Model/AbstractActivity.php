@@ -56,6 +56,7 @@ abstract class AbstractActivity implements ActivityInterface
 
     public function cmfUpdateData(array $data)
     {
+        // TODO: Throw exception
     }
 
     /**
