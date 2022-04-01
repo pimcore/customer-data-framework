@@ -24,10 +24,20 @@ services:
     # handling to be able to work with the password field, we use the UserAwareEncoderFactory to buiild a dedicated
     # encoder per user. This service is configured in pimcore.security.encoder_factories to handle our user model.
     cmf.security.user_password_encoder_factory:
+        deprecated: 'The "%service_id%" service is deprecated. Use "cmf.security.user_password_hasher_factory" instead'
         class: Pimcore\Security\Encoder\Factory\UserAwareEncoderFactory
         arguments:
             - Pimcore\Security\Encoder\PasswordFieldEncoder
             - ['password']
+
+    # The hasher factory is responsible for verifying the password hash for a given user. As we need some special
+    # handling to be able to work with the password field, we use the UserAwareEncoderFactory to build a dedicated
+    # hasher per user. This service is configured in pimcore.security.hasher_factories to handle our user model.
+    cmf.security.user_password_hasher_factory:
+        class: Pimcore\Security\Hasher\Factory\UserAwarePasswordHasherFactory
+        arguments:
+            - Pimcore\Security\Hasher\PasswordFieldHasher
+            - [ 'password' ]
 
     cmf.security.sso.identity_service: '@CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface'
     CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface: '@CustomerManagementFrameworkBundle\Security\SsoIdentity\DefaultSsoIdentityService'
