@@ -6,6 +6,10 @@ pimcore:
         encoder_factories:
             Pimcore\Model\DataObject\Customer: cmf.security.user_password_encoder_factory
 
+        # The hasher factory as defined in services.yml
+        password_hasher_factories:
+            Pimcore\Model\DataObject\Customer: cmf.security.user_password_hasher_factory
+
 security:
     # The user provider is responsible for loading users from the DB. We use the OAuth aware user
     # provider here as we want to use OAuth logins.
