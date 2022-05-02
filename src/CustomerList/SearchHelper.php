@@ -138,6 +138,7 @@ class SearchHelper
                         $segments[] = $segment;
                     }
                 }
+                $handler->getListing()->setGroupBy('o_id',true);
                 $handler->addFilter(new CustomerSegmentFilter($segments, null, 'OR'));
             } else {
                 foreach ($filters['segments'] as $groupId => $segmentIds) {
