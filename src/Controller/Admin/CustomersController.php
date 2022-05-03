@@ -408,6 +408,13 @@ class CustomersController extends Admin
     {
         /** @var Listing|Listing\Concrete $listing */
         $listing = $this->getSearchHelper()->getCustomerProvider()->getList();
+
+        if (array_key_exists('operator-segments', $filters)) {
+            if ($filters['operator-segments'] == 'ANY') {
+                $listing->setGroupBy('o_id', true);
+            }
+        }
+
         if (count($orders) > 0) {
             $listing
                 ->setOrderKey(array_keys($orders), false)
