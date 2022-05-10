@@ -6,11 +6,6 @@ parameters:
 			path: src/ActionTrigger/EventHandler/DefaultEventHandler.php
 
 		-
-			message: "#^Method CustomerManagementFrameworkBundle\\\\ActivityStore\\\\MySQL\\:\\:getActivityStoreConnection\\(\\) should return Doctrine\\\\DBAL\\\\Connection but returns Pimcore\\\\Db\\\\ConnectionInterface\\.$#"
-			count: 1
-			path: src/ActivityStore/MySQL.php
-
-		-
 			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
 			count: 1
 			path: src/Controller/Admin/ActivitiesController.php
