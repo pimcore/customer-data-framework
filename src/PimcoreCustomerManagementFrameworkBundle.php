@@ -32,7 +32,7 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
         return 'pimcore/customer-management-framework-bundle';
     }
 
-    public function getJsPaths()
+    public function getJsPaths(): array
     {
         return [
             '/admin/customermanagementframework/helper/settings-json',
@@ -54,14 +54,14 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
         ];
     }
 
-    public function getCssPaths()
+    public function getCssPaths(): array
     {
         return [
             '/bundles/pimcorecustomermanagementframework/css/pimcore.css',
         ];
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new OAuthUtilsPass());
         $container->addCompilerPass(new CustomerSaveManagerPass());
@@ -69,7 +69,7 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
         $container->addCompilerPass(new NewsletterManagerPass());
     }
 
-    public function getInstaller()
+    public function getInstaller(): Installer
     {
         return $this->container->get(Installer::class);
     }
