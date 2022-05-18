@@ -281,16 +281,13 @@ class CustomersController extends Admin
             $exporter->getExtension()
         );
 
-        $content = $exporter->generateExportFile($exportData);
-        $contentSize = strlen($content);
-
         $response = new Response();
         $response
-            ->setContent($content)
+            ->setContent($exporter->generateExportFile($exportData))
             ->headers->add(
                 [
                     'Content-Type' => $exporter->getMimeType(),
-                    'Content-Length' => $contentSize,
+                    'Content-Length' => $exporter->getFilesize(),
                     'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
                 ]
             );
