@@ -72,7 +72,6 @@ class OAuthAwareUserProvider implements UserProviderInterface, OAuthAwareUserPro
                 $exception->setUserIdentifier($username);
             }
 
-
             throw $exception;
         }
 
