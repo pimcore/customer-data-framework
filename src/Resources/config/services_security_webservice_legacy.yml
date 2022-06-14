@@ -10,8 +10,7 @@ services:
             - [ setLogger, [ '@logger' ] ]
         tags:
             - { name: monolog.logger, channel: security }
-        deprecated:
-            message: 'The "%service_id%" service is deprecated, use Authenticator\WebserviceAuthenticator instead.'
+        deprecated: 'The "%service_id%" service is deprecated, use Authenticator\WebserviceAuthenticator instead.'
 
 parameters:
     customer_management_framework.firewall_settings:
