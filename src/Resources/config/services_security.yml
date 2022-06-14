@@ -55,3 +55,12 @@ services:
             - [setLogger, ['@logger']]
         tags:
             - { name: monolog.logger, channel: security }
+        deprecated:
+            message: 'The "%service_id%" service is deprecated, use Authenticator\WebserviceAuthenticator instead.'
+
+    CustomerManagementFrameworkBundle\Security\Authenticator\WebserviceAuthenticator:
+        public: false
+        calls:
+            - [ setLogger, [ '@logger' ] ]
+        tags:
+            - { name: monolog.logger, channel: security }

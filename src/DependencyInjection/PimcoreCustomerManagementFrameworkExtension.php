@@ -39,13 +39,20 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension 
      */
     public function prepend(ContainerBuilder $container)
     {
-        if ($container->hasExtension('doctrine_migrations')) {
-            $loader = new YamlFileLoader(
-                $container,
-                new FileLocator(__DIR__ . '/../Resources/config')
-            );
+        $loader = new YamlFileLoader(
+            $container,
+            new FileLocator(__DIR__ . '/../Resources/config')
+        );
 
+        if ($container->hasExtension('doctrine_migrations')) {
             $loader->load('doctrine_migrations.yml');
+        }
+
+        // Load correct portal_engine firewall settings based on authentication system user
+        if ($container->getExtensionConfig('security')[1]['enable_authenticator_manager'] ?? false) {
+            $loader->load('services_security_parameters.yml');
+        } else {
+            $loader->load('services_security_parameters_legacy.yml');
         }
     }
 
