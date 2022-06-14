@@ -48,7 +48,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension 
             $loader->load('doctrine_migrations.yml');
         }
 
-        // Load correct portal_engine firewall settings based on authentication system user
+        // Load correct cmf webservice firewall settings based on authentication system user
         if ($container->getExtensionConfig('security')[1]['enable_authenticator_manager'] ?? false) {
             $loader->load('services_security_parameters.yml');
         } else {

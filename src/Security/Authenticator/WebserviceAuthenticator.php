@@ -63,18 +63,17 @@ class WebserviceAuthenticator extends AbstractAuthenticator implements Interacti
         if ($apiKey = $request->headers->get('x_api-key') ?? $request->get('apikey')) {
             $credentials['apiKey'] = $apiKey;
         } elseif (null !== $pimcoreUser = Authentication::authenticateSession()) { // check for existing session user
-            $credentials = [
-                'user' => $pimcoreUser,
-            ];
+            $credentials['user'] = $pimcoreUser;
         } else {
             throw $this->createAccessDeniedException();
         }
 
+        $user = null;
         if (isset($credentials['user']) && $credentials['user'] instanceof User) {
             $user = new UserProxy($credentials['user']);
         } elseif (isset($credentials['apiKey'])) {
             $pimcoreUser = $this->loadUserForApiKey($credentials['apiKey']);
-            if ($pimcoreUser) {
+            if ($pimcoreUser instanceof User) {
                 $user = new UserProxy($pimcoreUser);
             }
         }
@@ -84,7 +83,7 @@ class WebserviceAuthenticator extends AbstractAuthenticator implements Interacti
         }
 
         return new SelfValidatingPassport(
-            new UserBadge($pimcoreUser->getUsername()),
+            new UserBadge($user->getUserIdentifier()),
             [new PreAuthenticatedUserBadge()]
         );
     }
