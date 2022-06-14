@@ -3,5 +3,6 @@ parameters:
         pattern: ^/__customermanagementframework/webservice(/.*)?$
         stateless: true
         provider: pimcore_admin
-        custom_authenticators:
-            - CustomerManagementFrameworkBundle\Security\Authenticator\WebserviceAuthenticator
+        guard:
+            authenticators:
+                - CustomerManagementFrameworkBundle\Security\Guard\WebserviceAuthenticator
