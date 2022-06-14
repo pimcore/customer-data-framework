@@ -8,7 +8,7 @@ parameters:
         - '~^Method Doctrine\\DBAL(\\.*)?Connection::query\(\) invoked with \d+ parameters?, 0 required\.\z~'
         - '~^Method Symfony\\Contracts\\EventDispatcher\\EventDispatcherInterface\:\:dispatch\(\) invoked with 2 parameters, 1 required\.$~'
     excludePaths:
-        - '**/Security/Authenticator/WebserviceAuthenticator.php
+        - '**/Security/Authenticator/WebserviceAuthenticator.php'
     stubFiles:
         - stubs/AbstractListing.stub
         - stubs/AbstractObject.stub
