@@ -50,9 +50,9 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension 
 
         // Load correct cmf webservice firewall settings based on authentication system user
         if ($container->getExtensionConfig('security')[1]['enable_authenticator_manager'] ?? false) {
-            $loader->load('services_security_parameters.yml');
+            $loader->load('services_security_webservice.yml');
         } else {
-            $loader->load('services_security_parameters_legacy.yml');
+            $loader->load('services_security_webservice_legacy.yml');
         }
     }
 

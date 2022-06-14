@@ -1,0 +1,23 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    # Custom Authenticator for handling webservice login
+    CustomerManagementFrameworkBundle\Security\Guard\WebserviceAuthenticator:
+        public: false
+        calls:
+            - [ setLogger, [ '@logger' ] ]
+        tags:
+            - { name: monolog.logger, channel: security }
+        deprecated:
+            message: 'The "%service_id%" service is deprecated, use Authenticator\WebserviceAuthenticator instead.'
+
+parameters:
+    customer_management_framework.firewall_settings:
+        pattern: ^/__customermanagementframework/webservice(/.*)?$
+        stateless: true
+        provider: pimcore_admin
+        guard:
+            authenticators:
+                - CustomerManagementFrameworkBundle\Security\Guard\WebserviceAuthenticator

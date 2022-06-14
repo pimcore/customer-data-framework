@@ -45,22 +45,3 @@ services:
         arguments: ['@cmf.customer_provider']
         calls:
              - [setLogger, ['@cmf.logger']]
-
-
-
-    # guard implementation handling webservice login
-    CustomerManagementFrameworkBundle\Security\Guard\WebserviceAuthenticator:
-        public: false
-        calls:
-            - [setLogger, ['@logger']]
-        tags:
-            - { name: monolog.logger, channel: security }
-        deprecated:
-            message: 'The "%service_id%" service is deprecated, use Authenticator\WebserviceAuthenticator instead.'
-
-    CustomerManagementFrameworkBundle\Security\Authenticator\WebserviceAuthenticator:
-        public: false
-        calls:
-            - [ setLogger, [ '@logger' ] ]
-        tags:
-            - { name: monolog.logger, channel: security }

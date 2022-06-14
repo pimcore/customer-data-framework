@@ -1,8 +1,0 @@
-parameters:
-    customer_management_framework.firewall_settings:
-        pattern: ^/__customermanagementframework/webservice(/.*)?$
-        stateless: true
-        provider: pimcore_admin
-        guard:
-            authenticators:
-                - CustomerManagementFrameworkBundle\Security\Guard\WebserviceAuthenticator

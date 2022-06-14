@@ -7,6 +7,7 @@ parameters:
     ignoreErrors:
         - '~^Method Doctrine\\DBAL(\\.*)?Connection::query\(\) invoked with \d+ parameters?, 0 required\.\z~'
         - '~^Method Symfony\\Contracts\\EventDispatcher\\EventDispatcherInterface\:\:dispatch\(\) invoked with 2 parameters, 1 required\.$~'
+        - '~^Class Symfony\\Component\\Security\\Http\\Authenticator\\AbstractAuthenticator not found\.$~'
     stubFiles:
         - stubs/AbstractListing.stub
         - stubs/AbstractObject.stub
