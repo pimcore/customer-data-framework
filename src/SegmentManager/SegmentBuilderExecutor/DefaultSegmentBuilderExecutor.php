@@ -162,7 +162,7 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
         $totalAmount = $paginator->getTotalItemCount();
         $totalPages = $paginator->getPaginationData()['pageCount'];
 
-        if($totalPages == 0) {
+        if ($totalPages == 0) {
             return;
         }
         $startPage = $desiredStartPage !== null && $desiredStartPage > 0 ? min($totalPages, $desiredStartPage) : 1;
