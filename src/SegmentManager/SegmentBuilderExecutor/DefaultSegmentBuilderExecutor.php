@@ -157,14 +157,14 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
         // note: listing is now constant and may be flushed per iteration
         $pageSize = $desiredPageSize !== null && $desiredPageSize > 0 ? $desiredPageSize : 250;
         $idList = $customerList->loadIdList();
+        if(count($idList) == 0) {
+            return;
+        }
         $paginator = $this->paginator->paginate($idList, 1, $pageSize);
 
         $totalAmount = $paginator->getTotalItemCount();
         $totalPages = $paginator->getPaginationData()['pageCount'];
 
-        if ($totalPages == 0) {
-            return;
-        }
         $startPage = $desiredStartPage !== null && $desiredStartPage > 0 ? min($totalPages, $desiredStartPage) : 1;
         $endPage = $totalPages;
         if ($desiredPages !== null && $desiredPages >= 0) {
