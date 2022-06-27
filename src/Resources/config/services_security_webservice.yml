@@ -3,7 +3,7 @@ services:
         autowire: true
         autoconfigure: true
 
-    # guard implementation handling webservice login
+    # Custom Authenticator for handling webservice login
     CustomerManagementFrameworkBundle\Security\Authenticator\WebserviceAuthenticator:
         public: false
         calls:
