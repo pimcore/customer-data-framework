@@ -1,0 +1,20 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    # Custom Authenticator for handling webservice login
+    CustomerManagementFrameworkBundle\Security\Authenticator\WebserviceAuthenticator:
+        public: false
+        calls:
+            - [ setLogger, [ '@logger' ] ]
+        tags:
+            - { name: monolog.logger, channel: security }
+
+parameters:
+    customer_management_framework.firewall_settings:
+        pattern: ^/__customermanagementframework/webservice(/.*)?$
+        stateless: true
+        provider: pimcore_admin
+        custom_authenticators:
+            - CustomerManagementFrameworkBundle\Security\Authenticator\WebserviceAuthenticator
