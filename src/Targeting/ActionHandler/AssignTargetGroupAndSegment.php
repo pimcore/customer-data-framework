@@ -100,8 +100,13 @@ class AssignTargetGroupAndSegment extends AssignTargetGroup
             return;
         }
 
-        $targetGroup = $action['targetGroup'] ?? null;
-        $targetGroupId = $targetGroup->getId();
+        $targetGroupId = $action['targetGroup'] ?? null;
+        if ($targetGroupId instanceof TargetGroup) {
+            $targetGroup = $action['targetGroup'] ?? null;
+            $targetGroupId = $targetGroup->getId();
+        } else {
+            $targetGroup = TargetGroup::getById($targetGroupId);
+        }
 
         if (isset($action['trackActivity']) && $action['trackActivity'] && $targetGroup) {
             $totalWeight = $action['weight'];
