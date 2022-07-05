@@ -95,9 +95,14 @@ class AssignTargetGroupAndSegment extends AssignTargetGroup
         }
 
         $targetGroupId = $action['targetGroup'] ?? null;
-        $targetGroup = TargetGroup::getById($targetGroupId);
+        if ($targetGroupId instanceof TargetGroup) {
+            $targetGroup = $action['targetGroup'] ?? null;
+            $targetGroupId = $targetGroup->getId();
+        } else {
+            $targetGroup = TargetGroup::getById($targetGroupId);
+        }
 
-        if ($action['trackActivity'] && $targetGroup) {
+        if (isset($action['trackActivity']) && $action['trackActivity'] && $targetGroup) {
             $totalWeight = $action['weight'];
             if ($visitorInfo->hasTargetGroupAssignment($targetGroup)) {
                 $assignedTargetGroup = $visitorInfo->getTargetGroupAssignment($targetGroup);
@@ -107,7 +112,7 @@ class AssignTargetGroupAndSegment extends AssignTargetGroup
             $this->activityManager->trackActivity(new TargetGroupAssignActivity($customer, $targetGroup, $action['weight'], $totalWeight));
         }
 
-        if ($action['assignSegment'] == 'assign_only' || $action['assignSegment'] == 'assign_consider_weight') {
+        if (isset($action['assignSegment']) && ($action['assignSegment'] == 'assign_only' || $action['assignSegment'] == 'assign_consider_weight')) {
 
             //get segment based on target group
             $segments = $this->segmentManager->getSegments();
