@@ -96,7 +96,7 @@ class AssignTargetGroupAndSegment extends AssignTargetGroup
 
         $targetGroupId = $action['targetGroup'] ?? null;
         if ($targetGroupId instanceof TargetGroup) {
-            $targetGroup = $action['targetGroup'] ?? null;
+            $targetGroup = $targetGroupId;
             $targetGroupId = $targetGroup->getId();
         } else {
             $targetGroup = TargetGroup::getById($targetGroupId);
