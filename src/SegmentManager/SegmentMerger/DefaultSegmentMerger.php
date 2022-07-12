@@ -23,7 +23,7 @@ use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\DefaultSegmentMerger\MetadataFiller;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Pimcore\Cache;
+use Pimcore\Cache\RuntimeCache;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
 use Pimcore\Model\Element\Note;
@@ -240,15 +240,15 @@ class DefaultSegmentMerger implements SegmentMergerInterface
 
         $fieldname = $calculated ? 'calculatedSegments' : 'manualSegments';
 
-        if (!Cache\Runtime::isRegistered($cacheKey)) {
+        if (!RuntimeCache::isRegistered($cacheKey)) {
             $classDefinition = ClassDefinition::getById($classId);
             $fd = $classDefinition->getFieldDefinition($fieldname);
 
             $hasObjectMetdataSegmentsField = $fd instanceof ClassDefinition\Data\AdvancedManyToManyObjectRelation;
 
-            Cache\Runtime::save($hasObjectMetdataSegmentsField, $cacheKey);
+            RuntimeCache::save($hasObjectMetdataSegmentsField, $cacheKey);
         } else {
-            $hasObjectMetdataSegmentsField = Cache\Runtime::load($cacheKey);
+            $hasObjectMetdataSegmentsField = RuntimeCache::load($cacheKey);
         }
 
         return $hasObjectMetdataSegmentsField;
