@@ -267,7 +267,9 @@ pimcore.plugin.customermanagementframework.segmentAssignmentTab = Class.create({
     openSearchEditor: function () {
         pimcore.helpers.itemselector(true, this.addDataFromSelector.bind(this), {
             type: ['object'],
-            subtype: ['object'],
+            subtype: {
+                object: ['object']
+            },
             specific: {
                 classes: ['CustomerSegment']
             }
