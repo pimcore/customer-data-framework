@@ -32,6 +32,14 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SegmentAssignmentController extends AdminController
 {
+    public static function getSubscribedServices()
+    {
+        $services = parent::getSubscribedServices();
+        $services[SegmentAssignerInterface::class] = SegmentAssignerInterface::class;
+
+        return $services;
+    }
+
     /**
      * @Route("/inheritable-segments")
      *
@@ -97,7 +105,7 @@ class SegmentAssignmentController extends AdminController
         $type = $request->get('type') ?? '';
         $breaksInheritance = $request->get('breaksInheritance') === 'true';
         $segmentIds = json_decode($request->get('segmentIds'), true) ?? [];
-
+        //@TODO inject the service, when BC break allowed
         $assigner = $this->get(SegmentAssignerInterface::class);
         $success = $assigner->assignById($id, $type, $breaksInheritance, $segmentIds);
 
