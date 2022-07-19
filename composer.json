@@ -7,12 +7,11 @@
     "preferred-install": {
       "pimcore/pimcore": "source"
     },
-    "allow-plugins": {
-      "ocramius/package-versions": true
-    }
-  },
-  "require": {
-    "php": "^8.0",
+      "allow-plugins": {
+        "ocramius/package-versions": true
+      }
+    },
+    "require": {"php": "^8.0",
     "box/spout": "^3.0",
     "doctrine/dbal": "^2.13.1",
     "doctrine/migrations": "^3.0.2",
