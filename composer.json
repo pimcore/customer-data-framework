@@ -6,7 +6,10 @@
         "sort-packages": true,
         "preferred-install": {
           "pimcore/pimcore": "source"
-        }
+        },
+      "allow-plugins": {
+        "ocramius/package-versions": true
+      }
     },
     "require": {
       "box/spout": "^3.0",
