@@ -19,7 +19,7 @@ use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\DataObject\AbstractObject;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
@@ -46,20 +46,30 @@ class CustomerObjectUserProvider implements UserProviderInterface
     /**
      * @inheritdoc
      */
-    public function loadUserByUsername($username)
+    public function loadUserByIdentifier(string $identifier)
     {
         $list = $this->customerProvider->getList();
-        $list->setCondition(sprintf('%s = ?', $this->usernameField), $username);
+        $list->setCondition(sprintf('%s = ?', $this->usernameField), $identifier);
         $this->customerProvider->addActiveCondition($list);
 
         /** @var CustomerInterface|false $customer */
         $customer = $list->current();
 
         if (!$customer) {
-            throw new UsernameNotFoundException(sprintf('Customer "%s" was not found', $username));
+            throw new UserNotFoundException(sprintf('Customer "%s" was not found', $identifier));
         }
 
         return $customer;
+    }
+
+    /**
+     * @deprecated use loadUserByIdentifier() instead.
+     *
+     * @inheritdoc
+     */
+    public function loadUserByUsername($username)
+    {
+        return $this->loadUserByIdentifier($username);
     }
 
     /**
