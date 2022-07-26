@@ -90,11 +90,4 @@ interface CustomerSegmentInterface extends ElementInterface
      * @return array
      */
     public function getDataForWebserviceExport();
-
-    /**
-     * @return string
-     *
-     * TODO: Can be removed when we drop Pimcore 6.9
-     */
-    public function __toString();
 }

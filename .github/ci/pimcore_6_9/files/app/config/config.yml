@@ -1,4 +1,0 @@
-imports:
-    - { resource: parameters.yml }
-    - { resource: services.yml }
-    - { resource: system.yml }
