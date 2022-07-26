@@ -196,11 +196,6 @@ parameters:
 			path: src/Security/SsoIdentity/DefaultSsoIdentityService.php
 
 		-
-			message: "#^Method CustomerManagementFrameworkBundle\\\\Security\\\\UserProvider\\\\CustomerObjectUserProvider\\:\\:loadUserByUsername\\(\\) should return Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface but returns CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\.$#"
-			count: 1
-			path: src/Security/UserProvider/CustomerObjectUserProvider.php
-
-		-
 			message: "#^Method CustomerManagementFrameworkBundle\\\\Security\\\\UserProvider\\\\CustomerObjectUserProvider\\:\\:refreshUser\\(\\) should return Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface but returns CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\|null\\.$#"
 			count: 1
 			path: src/Security/UserProvider/CustomerObjectUserProvider.php
