@@ -21,12 +21,15 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
 interface ActivityStoreEntryInterface
 {
+    /**
+     * @param array $data
+     */
     public function setData($data);
 
     public function save($updateAttributes = false);
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getId();
 

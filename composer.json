@@ -47,8 +47,8 @@
     "codeception/module-asserts": "^2",
     "php-http/guzzle7-adapter": "^0.1.1",
     "hwi/oauth-bundle": "^1.3.0",
-    "phpstan/phpstan": "^1.4",
-    "phpstan/phpstan-symfony": "^1.1"
+    "phpstan/phpstan": "^1.8.2",
+    "phpstan/phpstan-symfony": "^1.2.8"
   },
   "suggest": {
     "hwi/oauth-bundle": "^1.3.0",

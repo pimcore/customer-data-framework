@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\Traits;
 
+use Doctrine\DBAL\Connection;
 use Pimcore\Db;
 use Pimcore\Log\ApplicationLogger;
 use Pimcore\Log\Handler\ApplicationLoggerDb;
@@ -40,7 +41,9 @@ trait ApplicationLoggerAware
         if (null === $this->logger) {
             $logger = new ApplicationLogger();
 
-            $dbWriter = new ApplicationLoggerDb(Db::get(), 'notice');
+            /** @var Connection $db */
+            $db = Db::get();
+            $dbWriter = new ApplicationLoggerDb($db, 'notice');
             $logger->addWriter($dbWriter);
 
             if ($this->loggerComponent) {

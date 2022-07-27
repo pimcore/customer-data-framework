@@ -157,12 +157,7 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
     }
 
     /**
-     * @param CustomerInterface $customer
-     * @param string $provider
-     * @param string $identifier
-     * @param mixed $profileData
-     *
-     * @return SsoIdentityInterface
+     * @inheritDoc
      */
     public function createSsoIdentity(CustomerInterface $customer, $provider, $identifier, $profileData)
     {

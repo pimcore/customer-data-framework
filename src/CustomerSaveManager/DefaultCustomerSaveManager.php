@@ -21,6 +21,7 @@ use CustomerManagementFrameworkBundle\CustomerSaveHandler\CustomerSaveHandlerInt
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface;
 use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\Model\NewsletterAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
@@ -152,6 +153,9 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         }
     }
 
+    /**
+     * @param CustomerInterface&NewsletterAwareCustomerInterface $customer
+     */
     public function postAdd(CustomerInterface $customer)
     {
         if ($this->saveOptions->isOnSaveSegmentBuildersEnabled()) {
@@ -180,7 +184,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         $this->rememberOriginalCustomer($customer);
 
         if (!$customer->getIdEncoded()) {
-            $customer->setIdEncoded(md5($customer->getId()));
+            $customer->setIdEncoded(md5((string) $customer->getId()));
         }
 
         if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
@@ -190,6 +194,9 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         $this->applyNamingScheme($customer);
     }
 
+    /**
+     * @param CustomerInterface&NewsletterAwareCustomerInterface $customer
+     */
     public function postUpdate(CustomerInterface $customer)
     {
         if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
@@ -222,6 +229,9 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         }
     }
 
+    /**
+     * @param CustomerInterface&NewsletterAwareCustomerInterface $customer
+     */
     public function postDelete(CustomerInterface $customer)
     {
         if (!$this->saveOptions->isSaveHandlersExecutionEnabled()) {
@@ -255,6 +265,10 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         return $validator->validate($customer, $withDuplicatesCheck);
     }
 
+    /**
+     * @param CustomerInterface&NewsletterAwareCustomerInterface $customer
+     * @param string $operation
+     */
     protected function handleNewsletterQueue(CustomerInterface $customer, $operation)
     {
         if ($this->saveOptions->isNewsletterQueueEnabled()) {

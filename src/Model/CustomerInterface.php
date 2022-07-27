@@ -29,7 +29,7 @@ use Pimcore\Model\Element\ElementInterface;
 interface CustomerInterface extends ElementInterface
 {
     /**
-     * @return int
+     * @return string
      */
     public static function classId();
 
@@ -39,122 +39,122 @@ interface CustomerInterface extends ElementInterface
     public function getPublished();
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getActive(): ?bool;
 
     /**
      * @param bool $active
      *
-     * @return void
+     * @return $this
      */
     public function setActive(?bool $active);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getGender(): ?string;
 
     /**
      * @param string|null $gender
      *
-     * @return void
+     * @return $this
      */
     public function setGender(?string $gender);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getFirstname(): ?string;
 
     /**
      * @param string|null $firstname
      *
-     * @return void
+     * @return $this
      */
     public function setFirstname(?string $firstname);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getLastname(): ?string;
 
     /**
      * @param string|null $lastname
      *
-     * @return void
+     * @return $this
      */
     public function setLastname(?string $lastname);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getStreet(): ?string;
 
     /**
      * @param string|null $street
      *
-     * @return void
+     * @return $this
      */
     public function setStreet(?string $street);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getZip(): ?string;
 
     /**
      * @param string|null $zip
      *
-     * @return void
+     * @return $this
      */
     public function setZip(?string $zip);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCity(): ?string;
 
     /**
      * @param string|null $city
      *
-     * @return void
+     * @return $this
      */
     public function setCity(?string $city);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCountryCode(): ?string;
 
     /**
      * @param string|null $countryCode
      *
-     * @return void
+     * @return $this
      */
     public function setCountryCode(?string $countryCode);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getEmail(): ?string;
 
     /**
      * @param string|null $email
      *
-     * @return void
+     * @return $this
      */
     public function setEmail(?string $email);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getPhone(): ?string;
 
     /**
      * @param string|null $phone
      *
-     * @return void
+     * @return $this
      */
     public function setPhone(?string $phone);
 
@@ -171,7 +171,7 @@ interface CustomerInterface extends ElementInterface
     /**
      * @param array|null $segments
      *
-     * @return void
+     * @return $this
      */
     public function setManualSegments(?array $segments);
 
@@ -183,7 +183,7 @@ interface CustomerInterface extends ElementInterface
     /**
      * @param array|null $segments
      *
-     * @return void
+     * @return $this
      */
     public function setCalculatedSegments(?array $segments);
 
@@ -193,7 +193,7 @@ interface CustomerInterface extends ElementInterface
     public function getAllSegments();
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getIdEncoded(): ?string;
 

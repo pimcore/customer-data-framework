@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\CustomerExporter;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use CustomerManagementFrameworkBundle\Model\MailchimpAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\Item\NewsletterQueueItemInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
@@ -62,11 +63,12 @@ class BatchExporter extends AbstractExporter
         $batch = $apiClient->new_batch();
 
         foreach ($items as $item) {
+            /** @var MailchimpAwareCustomerInterface|null $customer */
             $customer = $item->getCustomer();
 
             // schedule batch operation
             if ($item->getOperation() == NewsletterQueueInterface::OPERATION_UPDATE) {
-                if ($item->getCustomer()->needsExportByNewsletterProviderHandler($mailchimpProviderHandler)) {
+                if ($customer && $customer->needsExportByNewsletterProviderHandler($mailchimpProviderHandler)) {
                     // entry to send to API
                     $entry = $mailchimpProviderHandler->buildEntry($customer);
                     $this->createBatchUpdateOperation($batch, $customer, $entry, $mailchimpProviderHandler);
@@ -337,6 +339,7 @@ class BatchExporter extends AbstractExporter
 
                 foreach ($v_list as $item) {
                     if (strpos($item['filename'], '.json') !== false) {
+                        /** @var string|null $contents */
                         $contents = $tar_object->extractInString($item['filename']);
                     }
                 }
@@ -368,12 +371,13 @@ class BatchExporter extends AbstractExporter
         $exportService = $mailchimpProviderHandler->getExportService();
         $apiClient = $this->getApiClientFromExportService($exportService);
 
+        /** @var MailchimpAwareCustomerInterface|null $customer */
         $customer = $item->getCustomer();
 
         $operation = $item->getOverruledOperation() ?: $item->getOperation();
 
         // add note
-        if ($operation == NewsletterQueueInterface::OPERATION_UPDATE) {
+        if ($customer && $operation == NewsletterQueueInterface::OPERATION_UPDATE) {
             $entry = $mailchimpProviderHandler->buildEntry($customer);
             $remoteId = $apiClient->subscriberHash($entry['email_address']);
 
@@ -427,6 +431,7 @@ class BatchExporter extends AbstractExporter
         $exportService = $mailchimpProviderHandler->getExportService();
         $apiClient = $this->getApiClientFromExportService($exportService);
 
+        /** @var MailchimpAwareCustomerInterface|null $customer */
         $customer = $item->getCustomer();
 
         if (!$customer) {

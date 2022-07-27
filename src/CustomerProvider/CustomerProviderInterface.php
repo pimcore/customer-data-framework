@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\CustomerProvider;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use Pimcore\Model\DataObject\Concrete;
 
 /**
  * @method string getParentPath()
@@ -23,7 +24,7 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 interface CustomerProviderInterface
 {
     /**
-     * @return int
+     * @return string
      */
     public function getCustomerClassId();
 
@@ -51,7 +52,7 @@ interface CustomerProviderInterface
     /**
      * Create a customer instance
      *
-     * @return CustomerInterface
+     * @return Concrete&CustomerInterface
      */
     public function createCustomerInstance();
 

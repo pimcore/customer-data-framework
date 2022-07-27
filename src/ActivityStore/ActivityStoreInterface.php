@@ -121,7 +121,7 @@ interface ActivityStoreInterface
 
     /**
      * @param CustomerInterface $customer
-     * @param null $activityType
+     * @param string|null $activityType
      *
      * @return int
      */

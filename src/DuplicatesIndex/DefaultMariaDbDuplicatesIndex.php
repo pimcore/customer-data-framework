@@ -220,7 +220,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
                 $id = Db::get()->lastInsertId();
             }
 
-            $totalIds[] = $id;
+            $totalIds[] = (int) $id;
         }
 
         $this->getLogger()->notice('delete potential duplicates which are not valid anymore');

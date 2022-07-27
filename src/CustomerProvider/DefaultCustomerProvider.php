@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\CustomerProvider;
 use CustomerManagementFrameworkBundle\CustomerProvider\Exception\DuplicateCustomersFoundException;
 use CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\Factory;
 
 class DefaultCustomerProvider implements CustomerProviderInterface
@@ -115,7 +116,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getCustomerClassId()
     {
@@ -167,13 +168,13 @@ class DefaultCustomerProvider implements CustomerProviderInterface
     /**
      * Create a customer instance
      *
-     * @return CustomerInterface
+     * @return Concrete&CustomerInterface
      */
     public function createCustomerInstance()
     {
         $className = $this->getDiClassName();
 
-        /** @var CustomerInterface $customer */
+        /** @var Concrete&CustomerInterface $customer */
         $customer = $this->modelFactory->build($className);
 
         return $customer;

@@ -86,6 +86,6 @@ class PimcoreElementRemovalListener implements PimcoreElementRemovalListenerInte
         $id = $event->getElement()->getId();
         $type = $this->getTypeMapper()->getTypeStringByObject($event->getElement());
 
-        $this->getSegmentAssigner()->removeElementById($id, $type);
+        $this->getSegmentAssigner()->removeElementById((string) $id, $type);
     }
 }

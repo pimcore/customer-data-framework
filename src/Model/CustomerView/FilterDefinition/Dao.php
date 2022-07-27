@@ -51,13 +51,12 @@ class Dao extends AbstractDao
     const ATTRIBUTE_MODIFICATION_DATE = 'modificationDate';
 
     /**
-     * @param null $id
+     * @param int|null $id
      *
      * @throws \Exception
      */
     public function getById($id = null)
     {
-        /** @noinspection SqlNoDataSourceInspection */
         $data = $this->db->fetchAssoc('SELECT * FROM '. self::TABLE_NAME . ' WHERE ' . self::ATTRIBUTE_ID . '='.intval($id));
         $this->assignVariablesToModel($data);
     }
@@ -126,7 +125,7 @@ class Dao extends AbstractDao
 
         if (!$this->model->getId()) {
             // TODO insecure, could be another id
-            $this->model->setId($this->db->lastInsertId());
+            $this->model->setId((int) $this->db->lastInsertId());
         }
     }
 

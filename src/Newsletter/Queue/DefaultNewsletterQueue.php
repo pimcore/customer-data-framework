@@ -54,7 +54,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
     /**
      * @param NewsletterAwareCustomerInterface $customer
      * @param string $operation
-     * @param null $email
+     * @param string|null $email
      * @param bool $immediateAsyncProcessQueueItem
      */
     public function enqueueCustomer(NewsletterAwareCustomerInterface $customer, $operation, $email = null, $immediateAsyncProcessQueueItem = false)

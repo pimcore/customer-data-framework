@@ -145,11 +145,11 @@ class SegmentAssigner implements SegmentAssignerInterface
      */
     public function assign(ElementInterface $element, bool $breaksInheritance, array $segments): bool
     {
-        $segmentIds = array_map(function ($segment) {
-            return $segment instanceof CustomerSegmentInterface ? $segment->getId() : $segment;
+        $segmentIds = array_map(static function ($segment) {
+            return $segment instanceof CustomerSegmentInterface ? (string) $segment->getId() : $segment;
         }, $segments);
 
-        return $this->assignById($element->getId(), $this->getTypeMapper()->getTypeStringByObject($element), $breaksInheritance, $segmentIds);
+        return $this->assignById((string) $element->getId(), $this->getTypeMapper()->getTypeStringByObject($element), $breaksInheritance, $segmentIds);
     }
 
     /**

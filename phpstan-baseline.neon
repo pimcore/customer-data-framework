@@ -21,6 +21,11 @@ parameters:
 			path: src/Controller/Admin/DuplicatesController.php
 
 		-
+			message: "#^Parameter \\#1 \\$segments of class CustomerManagementFrameworkBundle\\\\CustomerList\\\\Filter\\\\CustomerSegment constructor expects array\\<Pimcore\\\\Model\\\\DataObject\\\\CustomerSegment\\>, array\\<int, CustomerManagementFrameworkBundle\\\\Model\\\\CustomerSegmentInterface\\> given\\.$#"
+			count: 2
+			path: src/CustomerList/SearchHelper.php
+
+		-
 			message: "#^Call to function is_object\\(\\) with string will always evaluate to false\\.$#"
 			count: 1
 			path: src/CustomerView/DefaultCustomerView.php
@@ -101,19 +106,9 @@ parameters:
 			path: src/Model/SegmentAssignment/SegmentAssignment/Dao.php
 
 		-
-			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\:\\:needsExportByNewsletterProviderHandler\\(\\)\\.$#"
-			count: 1
-			path: src/Newsletter/ProviderHandler/Mailchimp.php
-
-		-
 			message: "#^If condition is always true\\.$#"
 			count: 1
 			path: src/Newsletter/ProviderHandler/Mailchimp/CliSyncProcessor.php
-
-		-
-			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\:\\:needsExportByNewsletterProviderHandler\\(\\)\\.$#"
-			count: 1
-			path: src/Newsletter/ProviderHandler/Mailchimp/CustomerExporter/BatchExporter.php
 
 		-
 			message: "#^Elseif condition is always true\\.$#"

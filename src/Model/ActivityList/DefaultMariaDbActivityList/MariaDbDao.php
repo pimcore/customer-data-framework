@@ -100,7 +100,7 @@ class MariaDbDao
     public function getCount()
     {
         $query = $this->getQueryBuilder();
-        $query->setFirstResult(null);
+        $query->setFirstResult(0);
         $query->setMaxResults(null);
         $query->resetQueryPart('from');
         $query->from(MariaDb::ACTIVITIES_TABLE);

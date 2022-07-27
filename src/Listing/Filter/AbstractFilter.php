@@ -18,12 +18,12 @@ namespace CustomerManagementFrameworkBundle\Listing\Filter;
 abstract class AbstractFilter
 {
     /**
-     * @var string
+     * @var string|null
      */
     protected $tableName;
 
     /**
-     * @param int $classId
+     * @param string $classId
      * @param string $prefix
      *
      * @return string

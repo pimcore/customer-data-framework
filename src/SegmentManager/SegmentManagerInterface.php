@@ -19,6 +19,7 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentBuilder\SegmentBuilderInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentExtractor\SegmentExtractorInterface;
+use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
 use Pimcore\Model\Element\ElementInterface;
@@ -130,7 +131,7 @@ interface SegmentManagerInterface
      *    Therefore it's not a good idea to rely on the execution timestamp (time()) here.
      *    It's necessary to do this based on other criterias (for example activities).
      *  - If null was passed the timestamp will be set to null
-     * @param int|true|null $segmentApplicationCounter
+     * @param int|bool|null $segmentApplicationCounter
      *  Optional. Can be used to store a counter how often the segment applies or how often the segment has been added.
      *  This feature will only work if you use an object with metadata field to store the segment relations.
      *  Take a look at the docs for more information.
@@ -237,7 +238,7 @@ interface SegmentManagerInterface
     /**
      * Updates a segment.
      *
-     * @param CustomerSegmentInterface $segment
+     * @param Concrete&CustomerSegmentInterface $segment
      * @param array $values
      *
      * @return mixed

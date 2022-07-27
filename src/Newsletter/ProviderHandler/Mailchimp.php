@@ -247,27 +247,29 @@ class Mailchimp implements NewsletterProviderHandlerInterface
         $updateNeededItems = [];
         foreach ($items as $item) {
             $emailValidator = new EmailValidator();
+            /** @var MailchimpAwareCustomerInterface|null $customer */
+            $customer = $item->getCustomer();
 
-            if ($item->getCustomer() && !$emailValidator->isValid($item->getCustomer()->getEmail()) && !$emailValidator->isValid(!$item->getEmail())) {
+            if ($customer && !$emailValidator->isValid($customer->getEmail()) && !$emailValidator->isValid(!$item->getEmail())) {
                 $this->getLogger()->info(
                     sprintf(
                         '[MailChimp][CUSTOMER %s][%s] Export not needed as the customer has no valid email address.',
-                        $item->getCustomer()->getId(),
+                        $customer->getId(),
                         $this->getShortcut()
                     )
                 );
 
                 $item->setSuccessfullyProcessed(true);
-            } elseif (!$item->getCustomer()) {
+            } elseif (!$customer) {
                 $updateNeededItems[] = $item;
             } elseif ($item->getOperation() == NewsletterQueueInterface::OPERATION_UPDATE) {
-                if (!$item->getCustomer()->needsExportByNewsletterProviderHandler($this)) {
+                if (!$customer->needsExportByNewsletterProviderHandler($this)) {
                     /* Update item only if a mailchimp status is set in the customer.
                        Otherwise the customer should not exist in the mailchimp list and therefore no deletion should be needed.
                        Cleaned customers will be ignored as the email adress is invalid
                     */
 
-                    $mailchimpStatus = $this->getMailchimpStatus($item->getCustomer());
+                    $mailchimpStatus = $this->getMailchimpStatus($customer);
 
                     if ($mailchimpStatus && ($mailchimpStatus != self::STATUS_CLEANED)) {
                         $updateNeededItems[] = $item;
@@ -275,17 +277,17 @@ class Mailchimp implements NewsletterProviderHandlerInterface
                         $this->getLogger()->info(
                             sprintf(
                                 '[MailChimp][CUSTOMER %s][%s] Export not needed as the export data did not change (customer is not in export list).',
-                                $item->getCustomer()->getId(),
+                                $customer->getId(),
                                 $this->getShortcut()
                             )
                         );
 
                         $item->setSuccessfullyProcessed(true);
                     }
-                } elseif ($forceUpdate || $this->exportService->didExportDataChangeSinceLastExport($item->getCustomer(), $this->getListId(), $this->buildEntry($item->getCustomer()))) {
-                    $mailchimpStatus = $this->getMailchimpStatus($item->getCustomer());
+                } elseif ($forceUpdate || $this->exportService->didExportDataChangeSinceLastExport($customer, $this->getListId(), $this->buildEntry($customer))) {
+                    $mailchimpStatus = $this->getMailchimpStatus($customer);
                     if (!$mailchimpStatus) {
-                        $entry = $this->buildEntry($item->getCustomer());
+                        $entry = $this->buildEntry($customer);
 
                         $setStatus = isset($entry['status_if_new']) ?: $entry['status'];
 
@@ -293,7 +295,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
                             $this->getLogger()->info(
                                 sprintf(
                                     '[MailChimp][CUSTOMER %s][%s] Export not needed as the customer is unsubscribed and was not exported yet.',
-                                    $item->getCustomer()->getId(),
+                                    $customer->getId(),
                                     $this->getShortcut()
                                 )
                             );
@@ -308,7 +310,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
                     $this->getLogger()->info(
                         sprintf(
                             '[MailChimp][CUSTOMER %s][%s] Export not needed as the export data did not change.',
-                            $item->getCustomer()->getId(),
+                            $customer->getId(),
                             $this->getShortcut()
                         )
                     );
@@ -326,7 +328,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
     /**
      * Fetches customer data via the Mailchimp API.
      *
-     * @param NewsletterAwareCustomerInterface $customer
+     * @param NewsletterAwareCustomerInterface&MailchimpAwareCustomerInterface $customer
      *
      * @return array|null
      */
@@ -864,6 +866,7 @@ class Mailchimp implements NewsletterProviderHandlerInterface
             $list->setCondition('trim(lower(email)) = ?', [trim(strtolower($email))]);
         }
 
+        /** @var MailchimpAwareCustomerInterface $_customer */
         foreach ($list as $_customer) {
             if (in_array($this->getMailchimpStatus($_customer), [self::STATUS_PENDING, self::STATUS_SUBSCRIBED])) {
                 return true;

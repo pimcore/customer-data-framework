@@ -44,12 +44,12 @@ class DefaultNewsletterQueueItem implements NewsletterQueueItemInterface
      * If an update item is in the queue but the related customer is excluded by $customer->needsExportByNewsletterProviderHandler($providerHandler)
      * the customer needs to be deleted allthough it is an update operation in the queue.
      *
-     * @var string
+     * @var string|null
      */
     private $overruledOperation;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $modificationDate;
 
@@ -127,7 +127,7 @@ class DefaultNewsletterQueueItem implements NewsletterQueueItemInterface
      * If an update item is in the queue but the related customer is excluded by $customer->needsExportByNewsletterProviderHandler($providerHandler)
      * the customer needs to be deleted allthough it is an update operation in the queue.
      *
-     * @param string $overruledOperation
+     * @param string|null $overruledOperation
      */
     public function setOverruledOperation($overruledOperation)
     {
