@@ -119,7 +119,7 @@ class SearchHelper
             if (array_key_exists($property, $filters)
                 && !empty($filters[$property])
                 && is_string($filters[$property])) {
-                $searchFilters[] = new SearchQuery($databaseFields, $filters[$property] . "*");
+                $searchFilters[] = new SearchQuery($databaseFields, $filters[$property] . '*');
             }
         }
         if (!empty($searchFilters)) {
