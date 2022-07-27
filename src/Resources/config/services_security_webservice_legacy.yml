@@ -10,7 +10,10 @@ services:
             - [ setLogger, [ '@logger' ] ]
         tags:
             - { name: monolog.logger, channel: security }
-        deprecated: 'The "%service_id%" service is deprecated, use Authenticator\WebserviceAuthenticator instead.'
+        deprecated:
+            message: 'The "%service_id%" service is deprecated, use Authenticator\WebserviceAuthenticator instead.'
+            package: pimcore/customer-management-framework-bundle
+            version: 3.3
 
 parameters:
     customer_management_framework.firewall_settings:
