@@ -37,7 +37,10 @@ services:
 
     cmf.event_listener.action_trigger:
         class: CustomerManagementFrameworkBundle\ActionTrigger\EventHandler\DefaultEventHandler
-        deprecated: 'The "%service_id%" service is deprecated. Use "CustomerManagementFrameworkBundle\ActionTrigger\Queue\QueueInterface" instead'
+        deprecated:
+            message: 'The "%service_id%" service is deprecated. Use "CustomerManagementFrameworkBundle\ActionTrigger\Queue\QueueInterface" instead'
+            package: pimcore/customer-management-framework-bundle
+            version: 3.0
         tags:
             - { name: kernel.event_listener, event: plugin.cmf.new-activity, method: handleEvent }
             - { name: kernel.event_listener, event: plugin.cmf.execute-segment-builders, method: handleEvent }

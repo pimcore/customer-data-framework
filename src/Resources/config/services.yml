@@ -156,7 +156,10 @@ services:
 
     cmf.link-activity-definition.linkgenerator:
         class: CustomerManagementFrameworkBundle\LinkGenerator\LinkActivityDefinitionLinkGenerator
-        deprecated: 'The "%service_id%" service is deprecated. Use "CustomerManagementFrameworkBundle\LinkGenerator\LinkActivityDefinitionLinkGenerator" instead'
+        deprecated:
+            message: 'The "%service_id%" service is deprecated. Use "CustomerManagementFrameworkBundle\LinkGenerator\LinkActivityDefinitionLinkGenerator" instead'
+            package: pimcore/customer-management-framework-bundle
+            version: 3.0
         arguments:
           - '%pimcore_customer_management_framework.url_activity_tracker.linkCmfcPlaceholder%'
 
@@ -195,7 +198,10 @@ services:
 
     cmf.customer_exporter_manager:
          class: CustomerManagementFrameworkBundle\CustomerList\ExporterManager
-         deprecated: 'The "%service_id%" service is deprecated. Use "CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface" instead'
+         deprecated:
+             message: 'The "%service_id%" service is deprecated. Use "CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface" instead'
+             package: pimcore/customer-management-framework-bundle
+             version: 3.0
          arguments:
               - '%pimcore_customer_management_framework.customer_list.exporters%'
 
@@ -205,7 +211,10 @@ services:
 
     cmf.action_trigger.queue:
         class: CustomerManagementFrameworkBundle\ActionTrigger\Queue\DefaultQueue
-        deprecated: 'The "%service_id%" service is deprecated. Use "CustomerManagementFrameworkBundle\ActionTrigger\Queue\QueueInterface" instead'
+        deprecated:
+            message: 'The "%service_id%" service is deprecated. Use "CustomerManagementFrameworkBundle\ActionTrigger\Queue\QueueInterface" instead'
+            package: pimcore/customer-management-framework-bundle
+            version: 3.0
 
 
     cmf.action_trigger.action_manager:
