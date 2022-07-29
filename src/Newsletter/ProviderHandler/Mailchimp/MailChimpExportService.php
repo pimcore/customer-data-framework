@@ -17,7 +17,7 @@ namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp
 
 use Carbon\Carbon;
 use DrewM\MailChimp\MailChimp;
-use Pimcore\Cache\Runtime;
+use Pimcore\Cache\RuntimeCache;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\Concrete;
@@ -185,7 +185,7 @@ class MailChimpExportService
     public function getExportNotes(ElementInterface $object, $listId, $refresh = false)
     {
         $cacheKey = 'cmf-mailchimp-export-notes';
-        $notes = Runtime::isRegistered($cacheKey) ? Runtime::get($cacheKey) : [];
+        $notes = RuntimeCache::isRegistered($cacheKey) ? RuntimeCache::get($cacheKey) : [];
 
         if (!isset($notes[$listId][$object->getId()]) || $refresh) {
             $list = new Note\Listing();
@@ -198,7 +198,7 @@ class MailChimpExportService
             $notes[$listId][$object->getId()] = $list->load();
         }
 
-        Runtime::set($cacheKey, $notes);
+        RuntimeCache::set($cacheKey, $notes);
 
         return $notes[$listId][$object->getId()];
     }
