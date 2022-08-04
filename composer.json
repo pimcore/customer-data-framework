@@ -5,7 +5,8 @@
   "config": {
     "sort-packages": true,
     "preferred-install": {
-      "pimcore/pimcore": "source"
+      "pimcore/pimcore": "source",
+      "*": "dist"
     },
       "allow-plugins": {
         "ocramius/package-versions": true
