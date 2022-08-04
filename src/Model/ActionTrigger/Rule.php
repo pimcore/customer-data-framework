@@ -18,7 +18,7 @@ namespace CustomerManagementFrameworkBundle\Model\ActionTrigger;
 use CustomerManagementFrameworkBundle\ActionTrigger\Action\ActionDefinitionInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\Condition\ConditionDefinitionInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\Trigger\TriggerDefinitionInterface;
-use Pimcore\Cache\Runtime;
+use Pimcore\Cache\RuntimeCache;
 use Pimcore\Logger;
 use Pimcore\Model\AbstractModel;
 
@@ -90,7 +90,7 @@ class Rule extends AbstractModel
         $cacheKey = 'cmf_plugin_actiontrigger_rule'.$id;
 
         try {
-            $rule = Runtime::load($cacheKey);
+            $rule = RuntimeCache::load($cacheKey);
             if (!$rule) {
                 throw new \Exception('Action trigger rule in runtime cache is null');
             }
@@ -98,7 +98,7 @@ class Rule extends AbstractModel
             try {
                 $rule = new self();
                 $rule->getDao()->getById($id);
-                Runtime::save($rule, $cacheKey);
+                RuntimeCache::save($rule, $cacheKey);
             } catch (\Exception $e) {
                 Logger::error($e->getMessage());
 

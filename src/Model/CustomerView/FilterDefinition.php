@@ -17,7 +17,7 @@ namespace CustomerManagementFrameworkBundle\Model\CustomerView;
 
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition\Dao;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition\Listing;
-use Pimcore\Cache\Runtime;
+use Pimcore\Cache\RuntimeCache;
 use Pimcore\Model\AbstractModel;
 use Pimcore\Model\User;
 use Pimcore\Model\User\Role;
@@ -258,7 +258,7 @@ class FilterDefinition extends AbstractModel
     {
         $cacheKey = 'cmf_customerlist_filterdefinition_'.$id;
         try {
-            $filterDefinition = Runtime::get($cacheKey);
+            $filterDefinition = RuntimeCache::get($cacheKey);
             if (!$filterDefinition) {
                 throw new \Exception('FilterDefinition with id '.$id.' not found in cache');
             }
@@ -269,7 +269,7 @@ class FilterDefinition extends AbstractModel
                 // load filter definition by id
                 $filterDefinition->getDao()->getById(intval($id));
                 // save found object to cache -> Only if object was found
-                Runtime::set($cacheKey, $filterDefinition);
+                RuntimeCache::set($cacheKey, $filterDefinition);
             } catch (\Exception $e) {
                 // return null to indicate object not found
                 return null;
