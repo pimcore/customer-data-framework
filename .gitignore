@@ -2,7 +2,6 @@
 Thumbs.db
 *.log
 
-/app
 /bin
 /config
 /kernel
