@@ -88,7 +88,7 @@ class CmfUrlUtilsExtension extends AbstractExtension
             $formActionParams['perPage'] = $paginator->getItemNumberPerPage();
         }
 
-        $request = $this->requestStack->getMasterRequest();
+        $request = $this->requestStack->getMainRequest();
 
         return $this->router->generate($request->get('_route'), $formActionParams);
     }

@@ -91,7 +91,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         if ($this->saveOptions->isObjectNamingSchemeEnabled()) {
             $this->customerProvider->applyObjectNamingScheme($customer);
 
-            $request = $this->requestStack->getMasterRequest();
+            $request = $this->requestStack->getMainRequest();
 
             //$this->setPimcoreContextResolver(\Pimcore::getContainer()->get('pimcore.service.request.pimcore_context_resolver'));
 
@@ -144,7 +144,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
             $this->validateOnSave($customer);
         }
 
-        $request = $this->requestStack->getMasterRequest();
+        $request = $this->requestStack->getMainRequest();
 
         //$this->setPimcoreContextResolver(\Pimcore::getContainer()->get('pimcore.service.request.pimcore_context_resolver'));
 
