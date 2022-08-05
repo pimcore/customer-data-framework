@@ -153,9 +153,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         }
     }
 
-    /**
-     * @param CustomerInterface&NewsletterAwareCustomerInterface $customer
-     */
     public function postAdd(CustomerInterface $customer)
     {
         if ($this->saveOptions->isOnSaveSegmentBuildersEnabled()) {
@@ -194,9 +191,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         $this->applyNamingScheme($customer);
     }
 
-    /**
-     * @param CustomerInterface&NewsletterAwareCustomerInterface $customer
-     */
     public function postUpdate(CustomerInterface $customer)
     {
         if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
@@ -229,9 +223,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         }
     }
 
-    /**
-     * @param CustomerInterface&NewsletterAwareCustomerInterface $customer
-     */
     public function postDelete(CustomerInterface $customer)
     {
         if (!$this->saveOptions->isSaveHandlersExecutionEnabled()) {
@@ -266,15 +257,13 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     }
 
     /**
-     * @param CustomerInterface&NewsletterAwareCustomerInterface $customer
+     * @param CustomerInterface $customer
      * @param string $operation
      */
     protected function handleNewsletterQueue(CustomerInterface $customer, $operation)
     {
-        if ($this->saveOptions->isNewsletterQueueEnabled()) {
-            /**
-             * @var NewsletterQueueInterface $newsletterQueue
-             */
+        if ($customer instanceof NewsletterAwareCustomerInterface && $this->saveOptions->isNewsletterQueueEnabled()) {
+            /** @var NewsletterQueueInterface $newsletterQueue */
             $newsletterQueue = \Pimcore::getContainer()->get('cmf.newsletter.queue');
             $newsletterQueue->enqueueCustomer($customer, $operation, $this->originalCustomer ? $this->originalCustomer->getEmail() : $customer->getEmail(), $this->saveOptions->isNewsletterQueueImmediateAsyncExecutionEnabled());
         }
