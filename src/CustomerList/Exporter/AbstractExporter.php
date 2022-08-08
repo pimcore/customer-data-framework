@@ -125,7 +125,7 @@ abstract class AbstractExporter implements ExporterInterface
 
         $rows = [];
         $allSegmentIds = [];
-        /** @var CustomerInterface $customer */
+        /** @var \Pimcore\Model\DataObject\Concrete&CustomerInterface $customer */
         foreach ($this->listing as $customer) {
             $classDefinition = $customer->getClass();
             $row = [self::COLUMNS => [], self::SEGMENT_IDS => []];

@@ -113,7 +113,7 @@ class LoginManager implements LoginManagerInterface
 
     private function createToken(string $firewallName, UserInterface $user): TokenInterface
     {
-        return new UsernamePasswordToken($user, null, $firewallName, $user->getRoles());
+        return new UsernamePasswordToken($user, $firewallName, $user->getRoles());
     }
 
     private function getUserChecker(FirewallConfig $config): UserCheckerInterface

@@ -73,8 +73,8 @@ class SegmentAssignmentController extends AdminController
         $assignmentTable = $this->getParameter('cmf.segmentAssignment.table.raw');
         $segmentIds = \Pimcore\Db::get()->fetchOne("SELECT `segments` FROM $assignmentTable WHERE `elementId` = ? AND `elementType` = ?", [$id, $type]);
 
-        $data = array_map(function ($id) {
-            $segment = CustomerSegment::getById($id);
+        $data = array_map(function (string $id) {
+            $segment = CustomerSegment::getById((int) $id);
 
             return $this->dehydrateSegment($segment);
         }, array_filter(explode(',', $segmentIds)));

@@ -146,7 +146,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     public function getSegmentsForElement(ElementInterface $element): array
     {
-        $id = $element->getId();
+        $id = (string) $element->getId();
         $type = $this->getTypeMapper()->getTypeStringByObject($element);
 
         return $this->getSegmentsForElementId($id, $type);
@@ -159,8 +159,8 @@ class DefaultSegmentManager implements SegmentManagerInterface
     {
         $segmentIds = $this->getStoredFunctions()->retrieve($id, $type);
 
-        $segments = array_map(function (string $id) {
-            return CustomerSegment::getById($id);
+        $segments = array_map(static function (string $id) {
+            return CustomerSegment::getById((int) $id);
         }, $segmentIds);
 
         return array_filter($segments);
@@ -484,13 +484,13 @@ class DefaultSegmentManager implements SegmentManagerInterface
     protected function checkAndUpdateTargetGroupConnection(CustomerSegmentInterface $segment)
     {
         //check connection to target groups
-        if ($segment->getUseAsTargetGroup() && (empty($segment->getTargetGroup()) || empty(TargetGroup::getById($segment->getTargetGroup())))) {
+        if ($segment->getUseAsTargetGroup() && (empty($segment->getTargetGroup()) || empty(TargetGroup::getById((int) $segment->getTargetGroup())))) {
             $targetGroup = new TargetGroup();
             $targetGroup->setName($segment->getName());
             $targetGroup->setActive(true);
             $targetGroup->save();
 
-            $segment->setTargetGroup($targetGroup->getId());
+            $segment->setTargetGroup((string) $targetGroup->getId());
         }
     }
 
@@ -499,9 +499,8 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     public function postSegmentDelete(CustomerSegmentInterface $segment)
     {
-        if ($segment->getUseAsTargetGroup() && !empty($segment->getTargetGroup()) && !empty(TargetGroup::getById($segment->getTargetGroup()))) {
-            $targetGroup = TargetGroup::getById($segment->getTargetGroup());
-            $targetGroup->delete();
+        if ($segment->getUseAsTargetGroup() && ($targetGroupId = $segment->getTargetGroup())) {
+            TargetGroup::getById((int) $targetGroupId)?->delete();
         }
     }
 

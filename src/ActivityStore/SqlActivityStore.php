@@ -114,7 +114,7 @@ abstract class SqlActivityStore
                 $this->getActivityStoreConnection()->update(
                     self::ACTIVITIES_TABLE,
                     $data,
-                    'id = '.$entry->getId()
+                    ['id' => $entry->getId()]
                 );
             } else {
                 $data['creationDate'] = $time;
@@ -122,7 +122,7 @@ abstract class SqlActivityStore
                     self::ACTIVITIES_TABLE,
                     $data
                 );
-                $entry->setId($db->lastInsertId());
+                $entry->setId((int) $db->lastInsertId());
             }
 
             try {

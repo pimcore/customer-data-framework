@@ -26,9 +26,9 @@ use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\GenericOAuth1ResourceOwner;
 use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\GenericOAuth2ResourceOwner;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
+use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Objectbrick\Data\OAuth1Token;
 use Pimcore\Model\DataObject\Objectbrick\Data\OAuth2Token;
-use Pimcore\Model\DataObject\SsoIdentity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class AccountConnector implements AccountConnectorInterface
@@ -51,6 +51,12 @@ class AccountConnector implements AccountConnectorInterface
         $this->encryptionService = $encryptionService;
     }
 
+    /**
+     * @param Concrete&UserInterface $user
+     * @param UserResponseInterface $response
+     *
+     * @return SsoIdentityInterface
+     */
     public function connectToSsoIdentity(UserInterface $user, UserResponseInterface $response): SsoIdentityInterface
     {
         if (!$user instanceof CustomerInterface) {
@@ -91,13 +97,17 @@ class AccountConnector implements AccountConnectorInterface
         return $ssoIdentity;
     }
 
+    /**
+     * @param Concrete&UserInterface $user
+     * @param UserResponseInterface $response
+     */
     public function connect(UserInterface $user, UserResponseInterface $response)
     {
         $this->connectToSsoIdentity($user, $response);
     }
 
     /**
-     * @param SsoIdentityInterface|SsoIdentity $ssoIdentity
+     * @param Concrete&SsoIdentityInterface $ssoIdentity
      * @param UserResponseInterface $response
      */
     protected function applyCredentialsToSsoIdentity(SsoIdentityInterface $ssoIdentity, UserResponseInterface $response)
@@ -114,7 +124,7 @@ class AccountConnector implements AccountConnectorInterface
     }
 
     /**
-     * @param SsoIdentityInterface $ssoIdentity
+     * @param Concrete&SsoIdentityInterface $ssoIdentity
      * @param UserResponseInterface $response
      */
     protected function applyOAuth1Credentials(SsoIdentityInterface $ssoIdentity, UserResponseInterface $response)
@@ -139,7 +149,7 @@ class AccountConnector implements AccountConnectorInterface
     }
 
     /**
-     * @param SsoIdentityInterface $ssoIdentity
+     * @param Concrete&SsoIdentityInterface $ssoIdentity
      * @param UserResponseInterface $response
      */
     protected function applyOAuth2Credentials(SsoIdentityInterface $ssoIdentity, UserResponseInterface $response)

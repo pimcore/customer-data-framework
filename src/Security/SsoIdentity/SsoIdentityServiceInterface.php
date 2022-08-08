@@ -17,6 +17,7 @@ namespace CustomerManagementFrameworkBundle\Security\SsoIdentity;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\SsoIdentityInterface;
+use Pimcore\Model\DataObject\Concrete;
 
 interface SsoIdentityServiceInterface
 {
@@ -53,12 +54,12 @@ interface SsoIdentityServiceInterface
     public function addSsoIdentity(CustomerInterface $customer, SsoIdentityInterface $ssoIdentity);
 
     /**
-     * @param CustomerInterface $customer
+     * @param Concrete&CustomerInterface $customer
      * @param string $provider
      * @param string $identifier
      * @param mixed $profileData
      *
-     * @return SsoIdentityInterface
+     * @return Concrete&SsoIdentityInterface
      */
     public function createSsoIdentity(CustomerInterface $customer, $provider, $identifier, $profileData);
 }

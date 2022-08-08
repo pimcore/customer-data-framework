@@ -84,10 +84,6 @@ class CliSyncProcessor
                     if ($client->success() && sizeof($result['members'])) {
                         foreach ($result['members'] as $row) {
                             $customer = null;
-                            // var_dump($row);
-                            /**
-                             * @var MailchimpAwareCustomerInterface $customer
-                             */
                             try {
                                 if (!$customer = $newsletterProviderHandler->getActiveCustomerByEmail(
                                     $row['email_address']
@@ -106,7 +102,7 @@ class CliSyncProcessor
                                 continue;
                             }
 
-                            if (!$customer) {
+                            if (!$customer instanceof MailchimpAwareCustomerInterface) {
                                 continue;
                             }
 

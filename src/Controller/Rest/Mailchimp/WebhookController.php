@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\Controller\Rest\Mailchimp;
 use CustomerManagementFrameworkBundle\Controller\Rest\AbstractRestController;
 use CustomerManagementFrameworkBundle\Newsletter\Manager\NewsletterManagerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
+use Doctrine\DBAL\Connection;
 use DrewM\MailChimp\Webhook;
 use Monolog\Handler\StreamHandler;
 use Pimcore\Db;
@@ -60,7 +61,9 @@ class WebhookController extends AbstractRestController
     {
         $logger = new ApplicationLogger();
         $logger->setComponent('Mailchimp');
-        $dbWriter = new ApplicationLoggerDb(Db::get(), 'notice');
+        /** @var Connection $db */
+        $db = Db::get();
+        $dbWriter = new ApplicationLoggerDb($db, 'notice');
         $logger->addWriter($dbWriter);
 
         $fileWriter = new StreamHandler(PIMCORE_LOG_DIRECTORY . '/cmf/mailchimp-webhook.log');

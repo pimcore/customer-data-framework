@@ -148,6 +148,6 @@ class SegmentAssignment implements SegmentAssignmentInterface
      */
     public function __construct(array $segmentIds = [], int $elementId = 0, string $elementType = '', bool $breaksInheritance = false)
     {
-        $this->setSegmentIds($segmentIds)->setElementId($elementId)->setElementType($elementType)->setBreaksInheritance($breaksInheritance);
+        $this->setSegmentIds($segmentIds)->setElementId((string) $elementId)->setElementType($elementType)->setBreaksInheritance($breaksInheritance);
     }
 }

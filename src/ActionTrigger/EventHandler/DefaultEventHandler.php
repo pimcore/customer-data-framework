@@ -169,7 +169,7 @@ class DefaultEventHandler implements EventHandlerInterface
                             $event->updateEnvironment($trigger, $environment);
                         }
 
-                        if ($checkConditions) {
+                        if ($checkConditions && $event instanceof SingleCustomerEventInterface) {
                             if ($this->checkConditions($rule, $event, $environment)) {
                                 $appliedRules[] = $rule;
                             }

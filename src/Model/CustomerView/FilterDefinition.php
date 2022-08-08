@@ -48,10 +48,10 @@ class FilterDefinition extends AbstractModel
     /** @var bool */
     private $shortcutAvailable = false;
 
-    /** @var int|null */
+    /** @var string|null */
     private $creationDate = null;
 
-    /** @var int|null */
+    /** @var string|null */
     private $modificationDate = null;
 
     /** @var bool */
@@ -304,7 +304,7 @@ class FilterDefinition extends AbstractModel
     }
 
     /**
-     * @return int|null
+     * @return string|null
      */
     public function getCreationDate()
     {
@@ -312,7 +312,7 @@ class FilterDefinition extends AbstractModel
     }
 
     /**
-     * @param int|null $creationDate
+     * @param string|null $creationDate
      *
      * @return self
      */
@@ -324,7 +324,7 @@ class FilterDefinition extends AbstractModel
     }
 
     /**
-     * @return int|null
+     * @return string|null
      */
     public function getModificationDate()
     {
@@ -332,7 +332,7 @@ class FilterDefinition extends AbstractModel
     }
 
     /**
-     * @param int|null $modificationDate
+     * @param string|null $modificationDate
      *
      * @return $this
      */

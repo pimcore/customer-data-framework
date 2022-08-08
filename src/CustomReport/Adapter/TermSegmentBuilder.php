@@ -78,7 +78,7 @@ class TermSegmentBuilder extends Model\Tool\CustomReport\Adapter\Sql
         $allTerms = false;
         if (sizeof($allMatchingTerms)) {
             foreach ($allMatchingTerms as $term) {
-                if (@preg_match($term, null) !== false) {
+                if (@preg_match($term, '') !== false) {
                     if ($allTerms === false) {
                         //MySQL regexp function doesn't work the same way like PHP regex matching => therfore we need to fetch all distinct terms and match them with PHP
                         $allTerms = $db->fetchCol($sql);

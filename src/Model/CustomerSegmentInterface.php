@@ -22,26 +22,26 @@ use Pimcore\Model\Element\ElementInterface;
 interface CustomerSegmentInterface extends ElementInterface
 {
     /**
-     * @return string
+     * @return string|null
      */
     public function getName(): ?string;
 
     /**
      * @param string|null $name
      *
-     * @return string
+     * @return $this
      */
     public function setName(?string $name);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getReference(): ?string;
 
     /**
      * @param string|null $reference
      *
-     * @return void
+     * @return $this
      */
     public function setReference(?string $reference);
 
@@ -53,29 +53,29 @@ interface CustomerSegmentInterface extends ElementInterface
     /**
      * @param CustomerSegmentGroup|null $group
      *
-     * @return void
+     * @return $this
      */
     public function setGroup(?AbstractElement $group);
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getCalculated(): ?bool;
 
     /**
      * @param bool $calculated
      *
-     * @return void
+     * @return $this
      */
     public function setCalculated(bool $calculated);
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getUseAsTargetGroup(): ?bool;
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getTargetGroup(): ?string;
 

@@ -58,13 +58,13 @@ class BuildSegmentsCommand extends AbstractCommand
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Use custom page-size',
-                500
+                '500'
             )->addOption(
                 'p-start',
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Start processing at page',
-                1
+                '1'
             )->addOption(
                 'p-end',
                 null,
@@ -86,13 +86,13 @@ class BuildSegmentsCommand extends AbstractCommand
     {
         $customQueue = null;
         if ($input->getOption('customer')) {
-            $customQueue = [trim($input->getOption('customer'))];
+            $customQueue = [(int)trim($input->getOption('customer'))];
         }
 
         $activeState = null;
-        if ((bool)$this->input->getOption('active-only')) {
+        if ($this->input->getOption('active-only')) {
             $activeState = true;
-        } elseif ((bool)$this->input->getOption('inactive-only')) {
+        } elseif ($this->input->getOption('inactive-only')) {
             $activeState = false;
         }
 

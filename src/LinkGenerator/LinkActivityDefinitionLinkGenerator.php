@@ -43,7 +43,7 @@ class LinkActivityDefinitionLinkGenerator implements LinkGeneratorInterface
         // workarround to let it work in cross site links
         if (!Site::isSiteRequest()) {
             $site = new Site();
-            $site->setRootDocument(Document::getById(1));
+            $site->setRootDocument(Document\Page::getById(1));
             Site::setCurrentSite($site);
         }
 

@@ -103,7 +103,7 @@ class MySqlDao
     {
         $query = $this->getQueryBuilder()
             ->setMaxResults(null)
-            ->setFirstResult(null)
+            ->setFirstResult(0)
             ->resetQueryPart('from');
 
         $query
