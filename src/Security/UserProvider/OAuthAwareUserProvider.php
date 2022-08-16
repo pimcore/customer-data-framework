@@ -67,7 +67,7 @@ class OAuthAwareUserProvider implements UserProviderInterface, OAuthAwareUserPro
             ));
 
             if (method_exists($exception, 'setUsername')) {
-                $exception->setUsername($username);
+                $exception->setUsername((string)$username);
             }
 
             throw $exception;
