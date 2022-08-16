@@ -59,7 +59,7 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
             if (strpos($this->query, '*') !== false) {
                 $queryBuilder->andWhere(sprintf('%s like %s', $this->fields[0], $listing->quote(str_replace('*', '%', $this->query))));
             } else {
-                $queryBuilder->andWhere (sprintf ('%s = %s', $this->fields[0], $listing->quote (preg_replace ('/^"(.*)"$/', '$1', $this->query))));
+                $queryBuilder->andWhere(sprintf('%s = %s', $this->fields[0], $listing->quote(preg_replace('/^"(.*)"$/', '$1', $this->query))));
             }
 
             return;
