@@ -50,14 +50,14 @@ class OAuthAwareUserProvider implements UserProviderInterface, OAuthAwareUserPro
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
         $provider = $response->getResourceOwner()->getName();
-        $username = $response->getUsername();
+        $username = (string)$response->getUsername();
 
         $user = $this->ssoIdentityService->getCustomerBySsoIdentity(
             $provider,
             $username
         );
 
-        if (null === $user || null === $username) {
+        if (null === $user || '' === $username) {
             // the AccountNotLinkedException will allow the frontend to proceed to registration
             // and to fetch user data from the OAuth account
             $exception = new AccountNotLinkedException(sprintf(
@@ -67,7 +67,7 @@ class OAuthAwareUserProvider implements UserProviderInterface, OAuthAwareUserPro
             ));
 
             if (method_exists($exception, 'setUsername')) {
-                $exception->setUsername((string)$username);
+                $exception->setUsername($username);
             }
 
             throw $exception;
