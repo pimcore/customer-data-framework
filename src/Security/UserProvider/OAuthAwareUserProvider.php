@@ -57,7 +57,7 @@ class OAuthAwareUserProvider implements UserProviderInterface, OAuthAwareUserPro
             $username
         );
 
-        if (null === $user || '' === $username) {
+        if (is_null($user) || '' === $username) {
             // the AccountNotLinkedException will allow the frontend to proceed to registration
             // and to fetch user data from the OAuth account
             $exception = new AccountNotLinkedException(sprintf(
