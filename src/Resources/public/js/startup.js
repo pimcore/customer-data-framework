@@ -193,7 +193,14 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
         }
 
         this.navEl.on('mousedown', toolbar.showSubMenu.bind(toolbar.cmfMenu));
-        pimcore.plugin.broker.fireEvent("cmfMenuReady", toolbar.cmfMenu);
+
+        const cmfMenuReady = new CustomEvent(pimcore.events.cmf.cmfMenuReady, {
+            detail: {
+                cmfMenu: toolbar.cmfMenu
+            }
+        });
+
+        document.dispatchEvent(cmfMenuReady);
     },
 
     postOpenObject: function (object, type) {
