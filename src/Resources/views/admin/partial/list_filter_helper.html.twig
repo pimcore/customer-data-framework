@@ -1,5 +1,7 @@
 
 {% set exampleQueries = [
+    'fo* OR bar',
+    '*a* AND foo',
     'foo',
     'foo AND bar',
     'foo OR bar',
@@ -10,6 +12,9 @@
 %}
 
 {% set modifiers = {
+    'Wildcard search (searched pattern should match the field/subpart of the field))': [
+        '<term>*',
+    ],
     'Exact search (field must match exactly)': [
         '"<term>"',
     ],
