@@ -345,7 +345,8 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
     public function addCustomerToChangesQueue(CustomerInterface $customer)
     {
         Db::get()->executeQuery(
-            sprintf('insert ignore into %s set customerId = %d', self::CHANGES_QUEUE_TABLE, $customer->getId())
+            sprintf('INSERT IGNORE INTO %s SET customerId = ?', self::CHANGES_QUEUE_TABLE),
+            [$customer->getId()]
         );
     }
 

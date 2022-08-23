@@ -377,11 +377,11 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         foreach ($duplicateIds as $duplicateId) {
             $customerIds = $db->fetchFirstColumn(
                 'select customer_id from '.self::DUPLICATESINDEX_CUSTOMERS_TABLE.' where duplicate_id = ? order by customer_id',
-                $duplicateId
+                [$duplicateId]
             );
             $fieldCombination = $db->fetchOne(
                 'select fieldCombination from '.self::DUPLICATESINDEX_TABLE.' where id = ?',
-                $duplicateId
+                [$duplicateId]
             );
 
             $clusters = $this->getCombinations($customerIds, 2);
