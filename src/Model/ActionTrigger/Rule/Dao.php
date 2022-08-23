@@ -31,36 +31,36 @@ class Dao extends Model\Dao\AbstractDao
     {
         $raw = $this->db->fetchAssociative('SELECT * FROM '.self::TABLE_NAME.' WHERE id = ?', [$id]);
 
-        if (!empty($raw['trigger'])) {
-            $triggers = [];
-            $triggerData = json_decode($raw['trigger'], true);
-            foreach ($triggerData as $triggerDefinitionData) {
-                $triggers[] = new TriggerDefinition($triggerDefinitionData);
-            }
-
-            $raw['trigger'] = $triggers;
-        } else {
-            $raw['trigger'] = [];
-        }
-
-        if (!empty($raw['condition'])) {
-            $conditions = [];
-            $conditionData = json_decode($raw['condition'], true);
-            foreach ($conditionData as $conditionDefinitionData) {
-                $conditions[] = new ConditionDefinition($conditionDefinitionData);
-            }
-
-            $raw['condition'] = $conditions;
-        } else {
-            $raw['condition'] = [];
-        }
-
         if (!empty($raw['id'])) {
+            if (!empty($raw['trigger'])) {
+                $triggers = [];
+                $triggerData = json_decode($raw['trigger'], true);
+                foreach ($triggerData as $triggerDefinitionData) {
+                    $triggers[] = new TriggerDefinition($triggerDefinitionData);
+                }
+
+                $raw['trigger'] = $triggers;
+            } else {
+                $raw['trigger'] = [];
+            }
+
+            if (!empty($raw['condition'])) {
+                $conditions = [];
+                $conditionData = json_decode($raw['condition'], true);
+                foreach ($conditionData as $conditionDefinitionData) {
+                    $conditions[] = new ConditionDefinition($conditionDefinitionData);
+                }
+
+                $raw['condition'] = $conditions;
+            } else {
+                $raw['condition'] = [];
+            }
+
             $this->assignVariablesToModel($raw);
 
             $actionIds = $this->db->fetchFirstColumn(
-                'select id from '.ActionDefinition\Dao::TABLE_NAME.' where ruleId = ?',
-                $raw['id']
+                'SELECT id FROM '.ActionDefinition\Dao::TABLE_NAME.' WHERE ruleId = ?',
+                [$raw['id']]
             );
 
             $actions = [];
