@@ -59,16 +59,16 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
 
         $row = false;
         if ($activity instanceof Concrete) {
-            $row = $db->fetchRow(
+            $row = $db->fetchAssociative(
                 'select * from '.self::ACTIVITIES_TABLE.' where o_id = ? order by id desc LIMIT 1 ',
-                $activity->getId()
+                [$activity->getId()]
             );
         } elseif ($activity instanceof ActivityExternalIdInterface) {
             if (!$activity->getId()) {
                 return null;
             }
 
-            $row = $db->fetchRow(
+            $row = $db->fetchAssociative(
                 'select * from '.self::ACTIVITIES_TABLE.' where a_id = ? AND type = ? order by id desc LIMIT 1 ',
                 [$activity->getId(), $activity->cmfGetType()]
             );
@@ -112,9 +112,9 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
     {
         $db = Db::get();
 
-        if ($row = $db->fetchRow(
+        if ($row = $db->fetchAssociative(
             sprintf('select * from %s where id = ?', self::ACTIVITIES_TABLE),
-            $id
+            [$id]
         )) {
             return $this->createEntryInstance($row);
         }

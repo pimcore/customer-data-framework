@@ -26,6 +26,7 @@ use CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\Segm
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Bundle\CoreBundle\EventListener\Traits\PimcoreContextAwareTrait;
 use Pimcore\Db;
+use Pimcore\Db\Helper;
 use Pimcore\Http\Request\Resolver\PimcoreContextResolver;
 use Pimcore\Model\Element\ValidationException;
 use Pimcore\Model\Version;
@@ -269,7 +270,8 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     protected function addToDeletionsTable(CustomerInterface $customer)
     {
         $db = Db::get();
-        $db->insertOrUpdate(
+        Helper::insertOrUpdate(
+            $db,
             'plugin_cmf_deletions',
             [
                 'id' => $customer->getId(),

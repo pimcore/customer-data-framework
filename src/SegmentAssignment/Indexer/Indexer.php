@@ -18,7 +18,7 @@ namespace CustomerManagementFrameworkBundle\SegmentAssignment\Indexer;
 use CustomerManagementFrameworkBundle\SegmentAssignment\QueueBuilder\QueueBuilderInterface;
 use CustomerManagementFrameworkBundle\SegmentAssignment\StoredFunctions\StoredFunctionsInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
-use Pimcore\Db\ConnectionInterface;
+use Doctrine\DBAL\Connection;
 
 class Indexer implements IndexerInterface
 {
@@ -52,7 +52,7 @@ class Indexer implements IndexerInterface
     private $queueBuilder = null;
 
     /**
-     * @var ConnectionInterface
+     * @var Connection
      */
     private $db = null;
 
@@ -153,7 +153,7 @@ class Indexer implements IndexerInterface
     }
 
     /**
-     * @return ConnectionInterface
+     * @return Connection
      */
     public function getDb()
     {
@@ -165,7 +165,7 @@ class Indexer implements IndexerInterface
     }
 
     /**
-     * @param ConnectionInterface $db
+     * @param Connection $db
      */
     public function setDb($db)
     {

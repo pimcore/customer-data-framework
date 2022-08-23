@@ -23,6 +23,7 @@ use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Db;
+use Pimcore\Db\Helper;
 use Pimcore\Model\DataObject\Concrete;
 
 abstract class SqlActivityStore
@@ -126,7 +127,7 @@ abstract class SqlActivityStore
             }
 
             try {
-                $db->query('delete from ' . self::ACTIVITIES_METADATA_TABLE . ' where activityId = ' . intval($entry->getId()));
+                $db->executeQuery('delete from ' . self::ACTIVITIES_METADATA_TABLE . ' where activityId = ' . intval($entry->getId()));
 
                 foreach ($entry->getMetadata() as $key => $data) {
                     $db->insert(
@@ -157,7 +158,7 @@ abstract class SqlActivityStore
     {
         $sql = 'select distinct type from '.self::ACTIVITIES_TABLE;
 
-        return Db::get()->fetchCol($sql);
+        return Db::get()->fetchFirstColumn($sql);
     }
 
     /**
@@ -253,7 +254,7 @@ abstract class SqlActivityStore
 
         $sql = 'select customerId from '.self::ACTIVITIES_TABLE.$where.' group by customerId having count(*) '.$operator.(int)$count;
 
-        return $db->fetchCol($sql);
+        return $db->fetchFirstColumn($sql);
     }
 
     /**
@@ -275,9 +276,10 @@ abstract class SqlActivityStore
         $db->beginTransaction();
 
         try {
-            $db->query('delete from '.self::ACTIVITIES_TABLE.' where id = '.$entry->getId());
+            $db->executeQuery('delete from '.self::ACTIVITIES_TABLE.' where id = '.$entry->getId());
 
-            $db->insertOrUpdate(
+            Helper::insertOrUpdate(
+                $db,
                 self::DELETIONS_TABLE,
                 [
                     'id' => $entry->getId(),

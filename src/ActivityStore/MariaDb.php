@@ -24,6 +24,7 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Pimcore\Db;
+use Pimcore\Db\Helper;
 use Pimcore\Model\DataObject\Concrete;
 
 class MariaDb extends SqlActivityStore implements ActivityStoreInterface
@@ -156,7 +157,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
             }
 
             try {
-                $db->query('delete from ' . self::ACTIVITIES_METADATA_TABLE . ' where activityId = ' . intval($entry->getId()));
+                $db->executeQuery('delete from ' . self::ACTIVITIES_METADATA_TABLE . ' where activityId = ' . intval($entry->getId()));
 
                 foreach ($entry->getMetadata() as $key => $data) {
                     $db->insert(
@@ -191,16 +192,16 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
 
         $row = false;
         if ($activity instanceof Concrete) {
-            $row = $db->fetchRow(
+            $row = $db->fetchAssociative(
                 'select *, column_json(attributes) as attributes from '.self::ACTIVITIES_TABLE.' where o_id = ? order by id desc LIMIT 1 ',
-                $activity->getId()
+                [$activity->getId()]
             );
         } elseif ($activity instanceof ActivityExternalIdInterface) {
             if (!$activity->getId()) {
                 return null;
             }
 
-            $row = $db->fetchRow(
+            $row = $db->fetchAssociative(
                 'select *, column_json(attributes) as attributes from '.self::ACTIVITIES_TABLE.' where a_id = ? AND type = ? order by id desc LIMIT 1 ',
                 [$activity->getId(), $activity->cmfGetType()]
             );
@@ -343,9 +344,10 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
         $db->beginTransaction();
 
         try {
-            $db->query('delete from '.self::ACTIVITIES_TABLE.' where id = '.$entry->getId());
+            $db->executeQuery('delete from '.self::ACTIVITIES_TABLE.' where id = '.$entry->getId());
 
-            $db->insertOrUpdate(
+            Helper::insertOrUpdate(
+                $db,
                 self::DELETIONS_TABLE,
                 [
                     'id' => $entry->getId(),
@@ -383,9 +385,9 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
     {
         $db = Db::get();
 
-        if ($row = $db->fetchRow(
+        if ($row = $db->fetchAssociative(
             sprintf('select *, column_json(attributes) as attributes from %s where id = ?', self::ACTIVITIES_TABLE),
-            $id
+            [$id]
         )
         ) {
             return $this->createEntryInstance($row);
@@ -437,7 +439,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
                 $count
             );
 
-        return $db->fetchCol($sql);
+        return $db->fetchFirstColumn($sql);
     }
 
     /**
@@ -447,7 +449,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
     {
         $sql = 'select distinct type from '.self::ACTIVITIES_TABLE;
 
-        return Db::get()->fetchCol($sql);
+        return Db::get()->fetchFirstColumn($sql);
     }
 
     protected function getAttributeInsertData(ActivityInterface $activity)

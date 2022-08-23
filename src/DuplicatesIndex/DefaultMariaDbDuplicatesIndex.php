@@ -87,12 +87,12 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         $logger = $this->getLogger();
 
         $db = Db::get();
-        $db->query('truncate table '.self::DUPLICATESINDEX_TABLE);
-        $db->query('truncate table '.self::DUPLICATESINDEX_CUSTOMERS_TABLE);
+        $db->executeQuery('truncate table '.self::DUPLICATESINDEX_TABLE);
+        $db->executeQuery('truncate table '.self::DUPLICATESINDEX_CUSTOMERS_TABLE);
 
         if ($this->analyzeFalsePositives) {
             $db = Db::get();
-            $db->query('truncate table '.self::FALSE_POSITIVES_TABLE);
+            $db->executeQuery('truncate table '.self::FALSE_POSITIVES_TABLE);
         }
 
         $logger->notice('tables truncated');
@@ -161,11 +161,11 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         }
 
         $db = Db::get();
-        $db->query(
+        $db->executeQuery(
             sprintf('delete from %s where customer_id = ?', self::DUPLICATESINDEX_CUSTOMERS_TABLE),
             [$customer->getId()]
         );
-        $db->query(
+        $db->executeQuery(
             sprintf('delete from %s where FIND_IN_SET(?, duplicateCustomerIds)', self::POTENTIAL_DUPLICATES_TABLE),
             [$customer->getId()]
         );
@@ -175,7 +175,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
     {
         if ($this->analyzeFalsePositives) {
             $db = Db::get();
-            $db->query('truncate table '.self::FALSE_POSITIVES_TABLE);
+            $db->executeQuery('truncate table '.self::FALSE_POSITIVES_TABLE);
         }
 
         $this->cleanupDuplicatesIndex();
@@ -224,7 +224,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         }
 
         $this->getLogger()->notice('delete potential duplicates which are not valid anymore');
-        Db::get()->query(
+        Db::get()->executeQuery(
             'delete from '.self::POTENTIAL_DUPLICATES_TABLE.' where id not in('.implode(',', $totalIds).')'
         );
     }
@@ -347,7 +347,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
     public function declinePotentialDuplicate($id)
     {
         $db = Db::get();
-        $db->query(sprintf('update %s set declined = 1 where id = ?', self::POTENTIAL_DUPLICATES_TABLE), [$id]);
+        $db->executeQuery(sprintf('update %s set declined = 1 where id = ?', self::POTENTIAL_DUPLICATES_TABLE), [$id]);
     }
 
     protected function cleanupDuplicatesIndex()
@@ -355,26 +355,27 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         $this->getLogger()->notice('cleanup duplicates index');
         $db = Db::get();
 
-        $db->exec(
+        $db->executeQuery(
             sprintf(
                 'delete from %s where id not in(select distinct duplicate_id from %s )',
                 self::DUPLICATESINDEX_TABLE,
                 self::DUPLICATESINDEX_CUSTOMERS_TABLE
-        ));
+            )
+        );
     }
 
     protected function calculateExactDuplicateMatches()
     {
         $db = Db::get();
 
-        $duplicateIds = $db->fetchCol(
+        $duplicateIds = $db->fetchFirstColumn(
             'select duplicate_id from '.self::DUPLICATESINDEX_CUSTOMERS_TABLE.' group by duplicate_id having count(*) > 1 order by count(*) desc'
         );
 
         $result = [];
 
         foreach ($duplicateIds as $duplicateId) {
-            $customerIds = $db->fetchCol(
+            $customerIds = $db->fetchFirstColumn(
                 'select customer_id from '.self::DUPLICATESINDEX_CUSTOMERS_TABLE.' where duplicate_id = ? order by customer_id',
                 $duplicateId
             );
@@ -416,7 +417,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
     {
         $db = Db::get();
 
-        $phoneticDuplicates = $db->fetchCol(
+        $phoneticDuplicates = $db->fetchFirstColumn(
             'select `'.$algorithm.'` from '.self::DUPLICATESINDEX_TABLE.' where `'.$algorithm.'` is not null and `'.$algorithm."` != '' group by `".$algorithm.'` having count(*) > 1'
         );
 
@@ -678,7 +679,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         $db = Db::get();
         $db->beginTransaction();
         try {
-            $db->query('delete from '.self::DUPLICATESINDEX_CUSTOMERS_TABLE.' where customer_id = ?', [$customerId]);
+            $db->executeQuery('delete from '.self::DUPLICATESINDEX_CUSTOMERS_TABLE.' where customer_id = ?', [$customerId]);
 
             foreach ($duplicateDataRows as $index => $duplicateDataRow) {
                 $valid = true;

@@ -29,7 +29,7 @@ class Dao extends Model\Dao\AbstractDao
 
     public function getById($id)
     {
-        $raw = $this->db->fetchRow('SELECT * FROM '.self::TABLE_NAME.' WHERE id = ?', $id);
+        $raw = $this->db->fetchAssociative('SELECT * FROM '.self::TABLE_NAME.' WHERE id = ?', [$id]);
 
         if ($raw['trigger']) {
             $triggers = [];
@@ -58,7 +58,7 @@ class Dao extends Model\Dao\AbstractDao
         if ($raw['id']) {
             $this->assignVariablesToModel($raw);
 
-            $actionIds = $this->db->fetchCol(
+            $actionIds = $this->db->fetchFirstColumn(
                 'select id from '.ActionDefinition\Dao::TABLE_NAME.' where ruleId = ?',
                 $raw['id']
             );
@@ -146,9 +146,9 @@ class Dao extends Model\Dao\AbstractDao
             }
         }
 
-        $this->db->deleteWhere(
-            ActionDefinition\Dao::TABLE_NAME,
-            'ruleId = '.$this->model->getId().' and id not in('.implode(',', $savedActionIds).')'
+        $this->db->executeQuery(
+            'DELETE FROM ' . ActionDefinition\Dao::TABLE_NAME . ' WHERE ruleId = ? AND id NOT IN('.implode(',', $savedActionIds).')',
+            [$this->model->getId()]
         );
     }
 
@@ -156,7 +156,7 @@ class Dao extends Model\Dao\AbstractDao
     {
         $this->db->beginTransaction();
         try {
-            $this->db->deleteWhere(self::TABLE_NAME, $this->db->quoteInto('id = ?', $this->model->getId()));
+            $this->db->executeQuery('DELETE FROM ' . self::TABLE_NAME . ' WHERE id = ?', [$this->model->getId()]);
 
             $this->db->commit();
         } catch (\Exception $e) {

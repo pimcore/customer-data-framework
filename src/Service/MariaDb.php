@@ -130,7 +130,7 @@ class MariaDb
             implode(',', array_values($data))
         );
 
-        $db->query($sql);
+        $db->executeQuery($sql);
 
         return (int) $db->lastInsertId();
     }
@@ -162,7 +162,7 @@ class MariaDb
         $sql .= implode(', ', $set);
         $sql .= ' WHERE '.$where;
 
-        $db->query($sql);
+        $db->executeQuery($sql);
     }
 
     /**
