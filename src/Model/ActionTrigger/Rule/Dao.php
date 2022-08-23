@@ -31,7 +31,7 @@ class Dao extends Model\Dao\AbstractDao
     {
         $raw = $this->db->fetchAssociative('SELECT * FROM '.self::TABLE_NAME.' WHERE id = ?', [$id]);
 
-        if ($raw['trigger']) {
+        if (!empty($raw['trigger'])) {
             $triggers = [];
             $triggerData = json_decode($raw['trigger'], true);
             foreach ($triggerData as $triggerDefinitionData) {
@@ -43,7 +43,7 @@ class Dao extends Model\Dao\AbstractDao
             $raw['trigger'] = [];
         }
 
-        if ($raw['condition']) {
+        if (!empty($raw['condition'])) {
             $conditions = [];
             $conditionData = json_decode($raw['condition'], true);
             foreach ($conditionData as $conditionDefinitionData) {
