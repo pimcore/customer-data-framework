@@ -127,7 +127,7 @@ abstract class SqlActivityStore
             }
 
             try {
-                $db->executeQuery('delete from ' . self::ACTIVITIES_METADATA_TABLE . ' where activityId = ' . intval($entry->getId()));
+                $db->executeQuery('DELETE FROM ' . self::ACTIVITIES_METADATA_TABLE . ' WHERE activityId = ?', [(int)$entry->getId()]);
 
                 foreach ($entry->getMetadata() as $key => $data) {
                     $db->insert(
@@ -276,7 +276,7 @@ abstract class SqlActivityStore
         $db->beginTransaction();
 
         try {
-            $db->executeQuery('delete from '.self::ACTIVITIES_TABLE.' where id = '.$entry->getId());
+            $db->executeQuery('DELETE FROM '.self::ACTIVITIES_TABLE.' WHERE id = ?', [$entry->getId()]);
 
             Helper::insertOrUpdate(
                 $db,
