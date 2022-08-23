@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Security\UserProvider;
 
+use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Security\OAuth\Exception\AccountNotLinkedException;
 use CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
@@ -52,6 +53,7 @@ class OAuthAwareUserProvider implements UserProviderInterface, OAuthAwareUserPro
         $provider = $response->getResourceOwner()->getName();
         $username = (string)$response->getUsername();
 
+        /** @var CustomerInterface|UserInterface|null $user */
         $user = $this->ssoIdentityService->getCustomerBySsoIdentity(
             $provider,
             $username
