@@ -72,7 +72,7 @@ class SegmentAssigner implements SegmentAssignerInterface
     /**
      * @param ConnectionInterface|Connection $db
      */
-    public function setDb(ConnectionInterface|Connection $db)
+    public function setDb(ConnectionInterface | Connection $db)
     {
         $this->db = $db;
     }
