@@ -35,7 +35,7 @@ class DefaultQueueBuilder implements QueueBuilderInterface
      */
     private $db = null;
 
-    public function __construct(string $segmentAssignmentQueueTable, Connection $db)
+    public function __construct(string $segmentAssignmentQueueTable, ConnectionInterface | Connection $db)
     {
         $this->setSegmentAssignmentQueueTable($segmentAssignmentQueueTable);
         $this->setDb($db);

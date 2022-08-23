@@ -52,7 +52,7 @@ class SegmentAssigner implements SegmentAssignerInterface
     /**
      * @inheritDoc
      */
-    public function __construct(string $segmentAssignmentTable, string $segmentAssignmentQueueTable, string $segmentAssignmentIndexTable, Connection $db, TypeMapperInterface $typeMapper)
+    public function __construct(string $segmentAssignmentTable, string $segmentAssignmentQueueTable, string $segmentAssignmentIndexTable, ConnectionInterface | Connection $db, TypeMapperInterface $typeMapper)
     {
         $this->setSegmentAssignmentTable($segmentAssignmentTable);
         $this->setSegmentAssignmentQueueTable($segmentAssignmentQueueTable);
