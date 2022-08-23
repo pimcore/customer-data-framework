@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\SegmentAssignment\QueueBuilder;
 
 use Doctrine\DBAL\Connection;
+use Pimcore\Db\ConnectionInterface;
 use Pimcore\Logger;
 use Throwable;
 
@@ -30,7 +31,7 @@ class DefaultQueueBuilder implements QueueBuilderInterface
     private $segmentAssignmentQueueTable = '';
 
     /**
-     * @var Connection
+     * @var ConnectionInterface|Connection
      */
     private $db = null;
 
@@ -57,17 +58,17 @@ class DefaultQueueBuilder implements QueueBuilderInterface
     }
 
     /**
-     * @return Connection
+     * @return ConnectionInterface|Connection
      */
-    public function getDb(): Connection
+    public function getDb(): ConnectionInterface|Connection
     {
         return $this->db;
     }
 
     /**
-     * @param Connection $db
+     * @param ConnectionInterface|Connection $db
      */
-    public function setDb(Connection $db)
+    public function setDb(ConnectionInterface|Connection $db)
     {
         $this->db = $db;
     }

@@ -55,7 +55,7 @@ class Dao extends Model\Dao\AbstractDao
             $raw['condition'] = [];
         }
 
-        if ($raw['id']) {
+        if (!empty($raw['id'])) {
             $this->assignVariablesToModel($raw);
 
             $actionIds = $this->db->fetchFirstColumn(

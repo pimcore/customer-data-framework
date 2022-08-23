@@ -28,7 +28,7 @@ class Dao extends Model\Dao\AbstractDao
     {
         $raw = $this->db->fetchAssociative('SELECT * FROM '.self::TABLE_NAME.' WHERE id = ?', [$id]);
 
-        if ($raw['id']) {
+        if (!empty($raw['id'])) {
             $raw['options'] = json_decode($raw['options'], true);
             $this->assignVariablesToModel($raw);
         } else {
