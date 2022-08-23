@@ -60,7 +60,7 @@ class DefaultQueueBuilder implements QueueBuilderInterface
     /**
      * @return ConnectionInterface|Connection
      */
-    public function getDb(): ConnectionInterface|Connection
+    public function getDb(): ConnectionInterface | Connection
     {
         return $this->db;
     }
@@ -68,7 +68,7 @@ class DefaultQueueBuilder implements QueueBuilderInterface
     /**
      * @param ConnectionInterface|Connection $db
      */
-    public function setDb(ConnectionInterface|Connection $db)
+    public function setDb(ConnectionInterface | Connection $db)
     {
         $this->db = $db;
     }

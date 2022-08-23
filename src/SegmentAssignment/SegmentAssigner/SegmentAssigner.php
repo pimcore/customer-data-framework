@@ -64,7 +64,7 @@ class SegmentAssigner implements SegmentAssignerInterface
     /**
      * @return ConnectionInterface|Connection
      */
-    public function getDb(): ConnectionInterface|Connection
+    public function getDb(): ConnectionInterface | Connection
     {
         return $this->db;
     }
