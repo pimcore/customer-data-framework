@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Security\UserProvider;
 
+use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Security\OAuth\Exception\AccountNotLinkedException;
 use CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
@@ -50,14 +51,15 @@ class OAuthAwareUserProvider implements UserProviderInterface, OAuthAwareUserPro
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
         $provider = $response->getResourceOwner()->getName();
-        $username = $response->getUsername();
+        $username = (string)$response->getUsername();
 
+        /** @var CustomerInterface|UserInterface|null $user */
         $user = $this->ssoIdentityService->getCustomerBySsoIdentity(
             $provider,
             $username
         );
 
-        if (null === $user || null === $username) {
+        if (is_null($user) || '' === $username) {
             // the AccountNotLinkedException will allow the frontend to proceed to registration
             // and to fetch user data from the OAuth account
             $exception = new AccountNotLinkedException(sprintf(
