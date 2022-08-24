@@ -18,14 +18,13 @@ namespace CustomerManagementFrameworkBundle\SegmentAssignment\SegmentAssigner;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapperInterface;
 use Doctrine\DBAL\Connection;
-use Pimcore\Db\ConnectionInterface;
 use Pimcore\Logger;
 use Pimcore\Model\Element\ElementInterface;
 
 class SegmentAssigner implements SegmentAssignerInterface
 {
     /**
-     * @var ConnectionInterface|Connection
+     * @var Connection
      */
     private $db = null;
 
@@ -52,7 +51,7 @@ class SegmentAssigner implements SegmentAssignerInterface
     /**
      * @inheritDoc
      */
-    public function __construct(string $segmentAssignmentTable, string $segmentAssignmentQueueTable, string $segmentAssignmentIndexTable, ConnectionInterface | Connection $db, TypeMapperInterface $typeMapper)
+    public function __construct(string $segmentAssignmentTable, string $segmentAssignmentQueueTable, string $segmentAssignmentIndexTable, Connection $db, TypeMapperInterface $typeMapper)
     {
         $this->setSegmentAssignmentTable($segmentAssignmentTable);
         $this->setSegmentAssignmentQueueTable($segmentAssignmentQueueTable);
@@ -62,17 +61,17 @@ class SegmentAssigner implements SegmentAssignerInterface
     }
 
     /**
-     * @return ConnectionInterface|Connection
+     * @return Connection
      */
-    public function getDb(): ConnectionInterface | Connection
+    public function getDb(): Connection
     {
         return $this->db;
     }
 
     /**
-     * @param ConnectionInterface|Connection $db
+     * @param Connection $db
      */
-    public function setDb(ConnectionInterface | Connection $db)
+    public function setDb(Connection $db)
     {
         $this->db = $db;
     }
