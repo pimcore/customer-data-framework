@@ -20,6 +20,7 @@ use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Db;
@@ -73,7 +74,7 @@ abstract class SqlActivityStore
     abstract protected function getAttributeInsertData(ActivityInterface $activity);
 
     /**
-     * @return Db\ConnectionInterface
+     * @return Connection
      */
     abstract protected function getActivityStoreConnection();
 
@@ -239,7 +240,7 @@ abstract class SqlActivityStore
      * @param string $type
      * @param int    $count
      *
-     * @return array|mixed
+     * @return array
      */
     public function getCustomerIdsMatchingActivitiesCount($operator, $type, $count)
     {
