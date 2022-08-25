@@ -279,7 +279,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
                 'md5',
                 'creationDate',
                 'modificationDate',
-                'COLUMN_JSON(attributes) attributes'
+                'COLUMN_JSON(attributes) as attributes'
             )
             ->addOrderBy('activityDate', 'asc');
 

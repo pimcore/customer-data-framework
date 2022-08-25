@@ -59,7 +59,7 @@ class MariaDbDao
                     'implementationClass',
                     'o_id',
                     'a_id',
-                    'COLUMN_JSON(attributes) attributes',
+                    'COLUMN_JSON(attributes) as attributes',
                     'md5',
                     'creationDate',
                     'modificationDate'
