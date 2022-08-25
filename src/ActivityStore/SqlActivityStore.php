@@ -75,6 +75,8 @@ abstract class SqlActivityStore
 
     /**
      * @return Connection
+     *
+     * @deprecated
      */
     abstract protected function getActivityStoreConnection();
 
@@ -113,10 +115,10 @@ abstract class SqlActivityStore
 
         try {
             if ($entry->getId()) {
-                $this->getActivityStoreConnection()->update(
+                $db->update(
                     self::ACTIVITIES_TABLE,
                     $data,
-                    'id = '.$entry->getId()
+                    ['id' => $entry->getId()]
                 );
             } else {
                 $data['creationDate'] = $time;

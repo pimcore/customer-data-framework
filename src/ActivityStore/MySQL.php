@@ -21,6 +21,7 @@ use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityList\MySqlActivityList;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use Doctrine\DBAL\Connection;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\Concrete;
 
@@ -35,7 +36,15 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
 
     protected function getActivityStoreConnection()
     {
-        return Db::get();
+        trigger_deprecation(
+            'pimcore/customer-data-framework',
+            '3.3.2',
+            'The SqlActivityStore::getActivityStoreConnection() method is deprecated, use Db::get() instead.'
+        );
+        /** @var Connection $db */
+        $db = Db::get();
+
+        return $db;
     }
 
     /**

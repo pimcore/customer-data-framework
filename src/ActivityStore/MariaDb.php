@@ -31,6 +31,12 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
 {
     protected function getActivityStoreConnection()
     {
+        trigger_deprecation(
+            'pimcore/customer-data-framework',
+            '3.3.2',
+            'The SqlActivityStore::getActivityStoreConnection() method is deprecated, use Db::get() instead.'
+        );
+
         return \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance();
     }
 
@@ -142,17 +148,18 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
 
         try {
             if ($entry->getId()) {
-                \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->update(
+                $db->update(
                     self::ACTIVITIES_TABLE,
                     $data,
-                    'id = '.$entry->getId()
+                    ['id' => $entry->getId()]
                 );
             } else {
                 $data['creationDate'] = $time;
-                $id = \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->insert(
+                $db->insert(
                     self::ACTIVITIES_TABLE,
                     $data
                 );
+                $id = (int) $db->lastInsertId();
                 $entry->setId($id);
             }
 
@@ -474,7 +481,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
             }
         }
 
-        return \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->createDynamicColumnInsert(
+        return \CustomerManagementFrameworkBundle\Service\MariaDb::createDynamicColumnInsert(
             $attributes,
             $dataTypes
         );
