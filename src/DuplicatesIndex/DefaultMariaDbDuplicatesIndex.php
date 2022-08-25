@@ -434,7 +434,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         foreach ($phoneticDuplicates as $phoneticDuplicate) {
             $progress->advance();
 
-            $rows = $db->fetchAll(
+            $rows = $db->fetchAllAssociative(
                 'select * from '.self::DUPLICATESINDEX_CUSTOMERS_TABLE.' c, '.self::DUPLICATESINDEX_TABLE.' i where i.id = c.duplicate_id and `'.$algorithm.'` = ?  order by customer_id',
                 [$phoneticDuplicate]
             );

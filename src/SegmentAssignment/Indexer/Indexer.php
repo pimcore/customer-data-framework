@@ -184,14 +184,14 @@ class Indexer implements IndexerInterface
 
         $chunkStatement = sprintf('SELECT * FROM `%s` LIMIT %s', $this->getSegmentAssignmentQueueTable(), static::PAGE_SIZE);
         $round = 0;
-        $queuedElements = $this->getDb()->fetchAll($chunkStatement);
+        $queuedElements = $this->getDb()->fetchAllAssociative($chunkStatement);
 
         while (sizeof($queuedElements) > 0) {
             foreach ($queuedElements as $element) {
                 $this->processElement($element);
             }
 
-            $queuedElements = $this->getDb()->fetchAll($chunkStatement);
+            $queuedElements = $this->getDb()->fetchAllAssociative($chunkStatement);
             \Pimcore::collectGarbage();
 
             $this->getLogger()->info('### round: ' . ++$round);
@@ -257,7 +257,7 @@ class Indexer implements IndexerInterface
      */
     private function buildQueue()
     {
-        $parentElements = $this->getDb()->fetchAll("SELECT * FROM `{$this->getSegmentAssignmentTable()}` WHERE `inPreparation` = 1");
+        $parentElements = $this->getDb()->fetchAllAssociative("SELECT * FROM `{$this->getSegmentAssignmentTable()}` WHERE `inPreparation` = 1");
 
         foreach ($parentElements as $element) {
             $id = $element['elementId'] ?? '';

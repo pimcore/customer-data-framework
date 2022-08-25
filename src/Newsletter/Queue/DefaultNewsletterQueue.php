@@ -244,7 +244,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
             ->select('*')
             ->from(self::QUEUE_TABLE);
 
-        $rows = $db->fetchAll((string)$select);
+        $rows = $db->fetchAllAssociative((string)$select);
 
         $paginator = $this->paginator->paginate($rows, 1, $this->maxItemsPerRound);
         $pageCount = $paginator->getPaginationData()['pageCount'];

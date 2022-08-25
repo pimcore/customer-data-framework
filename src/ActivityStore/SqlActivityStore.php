@@ -326,7 +326,7 @@ abstract class SqlActivityStore
                 $entityType
             ).' and creationDate >= '.$db->quote($deletionsSinceTimestamp);
 
-        $data = $db->fetchAll($sql);
+        $data = $db->fetchAllAssociative($sql);
 
         foreach ($data as $key => $value) {
             $data[$key]['id'] = (int)$data[$key]['id'];

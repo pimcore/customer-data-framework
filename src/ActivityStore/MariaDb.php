@@ -232,7 +232,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
     {
         $db = Db::get();
 
-        $result = $db->fetchAll(
+        $result = $db->fetchAllAssociative(
             'select id,activityDate,type,o_id,a_id,md5,creationDate,modificationDate,COLUMN_JSON(attributes) as attributes from '.self::ACTIVITIES_TABLE.' where customerId = ? order by activityDate asc',
             [$customer->getId()]
         );
@@ -312,7 +312,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
                 $entityType
             ).' and creationDate >= '.$db->quote($deletionsSinceTimestamp);
 
-        $data = $db->fetchAll($sql);
+        $data = $db->fetchAllAssociative($sql);
 
         foreach ($data as $key => $value) {
             $data[$key]['id'] = intval($data[$key]['id']);
@@ -517,7 +517,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
         }
 
         try {
-            $rows = Db::get()->fetchAll(sprintf('select * from %s where activityId = %s',
+            $rows = Db::get()->fetchAllAssociative(sprintf('select * from %s where activityId = %s',
                 self::ACTIVITIES_METADATA_TABLE,
                 $entry->getId()
             ));
