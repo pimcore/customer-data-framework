@@ -148,18 +148,17 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
 
         try {
             if ($entry->getId()) {
-                $db->update(
+                \CustomerManagementFrameworkBundle\Service\MariaDb::update(
                     self::ACTIVITIES_TABLE,
                     $data,
-                    ['id' => $entry->getId()]
+                    'id = '.$entry->getId()
                 );
             } else {
                 $data['creationDate'] = $time;
-                $db->insert(
+                $id = \CustomerManagementFrameworkBundle\Service\MariaDb::insert(
                     self::ACTIVITIES_TABLE,
                     $data
                 );
-                $id = (int) $db->lastInsertId();
                 $entry->setId($id);
             }
 

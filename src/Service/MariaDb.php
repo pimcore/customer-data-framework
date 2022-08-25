@@ -120,10 +120,8 @@ class MariaDb
      * @param array $data
      *
      * @return int
-     *
-     * @deprecated
      */
-    public function insert($tableName, array $data)
+    public static function insert($tableName, array $data)
     {
         $db = Db::get();
 
@@ -153,10 +151,8 @@ class MariaDb
      * @param string $where
      *
      * @return void
-     *
-     * @deprecated
      */
-    public function update($tableName, $data, $where)
+    public static function update($tableName, $data, $where)
     {
         $db = Db::get();
 
