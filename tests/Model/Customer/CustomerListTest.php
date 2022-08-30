@@ -580,7 +580,7 @@ class CustomerListTest extends ModelTestCase
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $searchFilter = new SearchQuery(['firstname'], '"jan" OR "sam"');
+        $searchFilter = new SearchQuery(['firstname'], '"jane" OR "sam"');
         $handler->addFilter ($searchFilter);
 
         $modifiedListing = $handler->getListing ();
@@ -589,7 +589,7 @@ class CustomerListTest extends ModelTestCase
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $searchFilter = new SearchQuery(['firstname', 'lastname'], '"jan" OR "sam"');
+        $searchFilter = new SearchQuery(['firstname', 'lastname'], '"jane" OR "sam"');
         $handler->addFilter ($searchFilter);
 
         $modifiedListing = $handler->getListing ();
@@ -796,7 +796,7 @@ class CustomerListTest extends ModelTestCase
 
         $modifiedListing = $handler->getListing ();
         $this->assertEquals (0, $modifiedListing->getCount ());
-        
+
         // --------------------
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
