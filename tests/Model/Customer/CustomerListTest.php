@@ -632,7 +632,7 @@ class CustomerListTest extends ModelTestCase
         $handler->addFilter ($searchFilter);
 
         $modifiedListing = $handler->getListing ();
-        $this->assertEquals (4, $modifiedListing->getCount ());
+        $this->assertEquals (1, $modifiedListing->getCount ());
 
 
         $listing = new Customer\Listing();
@@ -642,7 +642,7 @@ class CustomerListTest extends ModelTestCase
         $handler->addFilter ($searchFilter);
 
         $modifiedListing = $handler->getListing ();
-        $this->assertEquals (4, $modifiedListing->getCount ());
+        $this->assertEquals (1, $modifiedListing->getCount ());
 
         // ------------
 
@@ -653,7 +653,7 @@ class CustomerListTest extends ModelTestCase
         $handler->addFilter ($searchFilter);
 
         $modifiedListing = $handler->getListing ();
-        $this->assertEquals (5, $modifiedListing->getCount ());
+        $this->assertEquals (2, $modifiedListing->getCount ());
 
 
         $listing = new Customer\Listing();
@@ -663,7 +663,7 @@ class CustomerListTest extends ModelTestCase
         $handler->addFilter ($searchFilter);
 
         $modifiedListing = $handler->getListing ();
-        $this->assertEquals (5, $modifiedListing->getCount ());
+        $this->assertEquals (2, $modifiedListing->getCount ());
 
         // ------------
 
