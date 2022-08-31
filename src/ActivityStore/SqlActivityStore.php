@@ -20,9 +20,11 @@ use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Db;
+use Pimcore\Db\Helper;
 use Pimcore\Model\DataObject\Concrete;
 
 abstract class SqlActivityStore
@@ -72,7 +74,9 @@ abstract class SqlActivityStore
     abstract protected function getAttributeInsertData(ActivityInterface $activity);
 
     /**
-     * @return Db\ConnectionInterface
+     * @return Connection
+     *
+     * @deprecated
      */
     abstract protected function getActivityStoreConnection();
 
@@ -111,10 +115,10 @@ abstract class SqlActivityStore
 
         try {
             if ($entry->getId()) {
-                $this->getActivityStoreConnection()->update(
+                $db->update(
                     self::ACTIVITIES_TABLE,
                     $data,
-                    'id = '.$entry->getId()
+                    ['id' => $entry->getId()]
                 );
             } else {
                 $data['creationDate'] = $time;
@@ -126,7 +130,7 @@ abstract class SqlActivityStore
             }
 
             try {
-                $db->query('delete from ' . self::ACTIVITIES_METADATA_TABLE . ' where activityId = ' . intval($entry->getId()));
+                $db->executeQuery('DELETE FROM ' . self::ACTIVITIES_METADATA_TABLE . ' WHERE activityId = ?', [(int)$entry->getId()]);
 
                 foreach ($entry->getMetadata() as $key => $data) {
                     $db->insert(
@@ -157,7 +161,7 @@ abstract class SqlActivityStore
     {
         $sql = 'select distinct type from '.self::ACTIVITIES_TABLE;
 
-        return Db::get()->fetchCol($sql);
+        return Db::get()->fetchFirstColumn($sql);
     }
 
     /**
@@ -238,7 +242,7 @@ abstract class SqlActivityStore
      * @param string $type
      * @param int    $count
      *
-     * @return array|mixed
+     * @return array
      */
     public function getCustomerIdsMatchingActivitiesCount($operator, $type, $count)
     {
@@ -253,7 +257,7 @@ abstract class SqlActivityStore
 
         $sql = 'select customerId from '.self::ACTIVITIES_TABLE.$where.' group by customerId having count(*) '.$operator.(int)$count;
 
-        return $db->fetchCol($sql);
+        return $db->fetchFirstColumn($sql);
     }
 
     /**
@@ -275,9 +279,10 @@ abstract class SqlActivityStore
         $db->beginTransaction();
 
         try {
-            $db->query('delete from '.self::ACTIVITIES_TABLE.' where id = '.$entry->getId());
+            $db->executeQuery('DELETE FROM '.self::ACTIVITIES_TABLE.' WHERE id = ?', [$entry->getId()]);
 
-            $db->insertOrUpdate(
+            Helper::insertOrUpdate(
+                $db,
                 self::DELETIONS_TABLE,
                 [
                     'id' => $entry->getId(),
@@ -321,7 +326,7 @@ abstract class SqlActivityStore
                 $entityType
             ).' and creationDate >= '.$db->quote($deletionsSinceTimestamp);
 
-        $data = $db->fetchAll($sql);
+        $data = $db->fetchAllAssociative($sql);
 
         foreach ($data as $key => $value) {
             $data[$key]['id'] = (int)$data[$key]['id'];

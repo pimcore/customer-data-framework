@@ -63,7 +63,7 @@ class Dao extends AbstractDao
 
     public function getByIdAndType(string $elementId, string $elementType): SegmentAssignmentInterface
     {
-        $row = $this->db->fetchRow('SELECT * FROM '. static::TABLE_NAME .' WHERE '. static::ATTRIBUTE_ELEMENT_ID .' = ? AND '. static::ATTRIBUTE_ELEMENT_TYPE .' = ?', [$elementId, $elementType]);
+        $row = $this->db->fetchAssociative('SELECT * FROM '. static::TABLE_NAME .' WHERE '. static::ATTRIBUTE_ELEMENT_ID .' = ? AND '. static::ATTRIBUTE_ELEMENT_TYPE .' = ?', [$elementId, $elementType]);
         $segmentIds = explode(',', $row[static::ATTRIBUTE_SEGMENT_IDS]);
 
         return new SegmentAssignment($segmentIds, $row[static::ATTRIBUTE_ELEMENT_ID], $row[static::ATTRIBUTE_ELEMENT_TYPE], $row[static::ATTRIBUTE_BREAKS_INHERITANCE]);

@@ -24,12 +24,19 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Pimcore\Db;
+use Pimcore\Db\Helper;
 use Pimcore\Model\DataObject\Concrete;
 
 class MariaDb extends SqlActivityStore implements ActivityStoreInterface
 {
     protected function getActivityStoreConnection()
     {
+        trigger_deprecation(
+            'pimcore/customer-data-framework',
+            '3.3.2',
+            'The SqlActivityStore::getActivityStoreConnection() method is deprecated, use Db::get() instead.'
+        );
+
         return \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance();
     }
 
@@ -141,14 +148,14 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
 
         try {
             if ($entry->getId()) {
-                \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->update(
+                \CustomerManagementFrameworkBundle\Service\MariaDb::update(
                     self::ACTIVITIES_TABLE,
                     $data,
                     'id = '.$entry->getId()
                 );
             } else {
                 $data['creationDate'] = $time;
-                $id = \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->insert(
+                $id = \CustomerManagementFrameworkBundle\Service\MariaDb::insert(
                     self::ACTIVITIES_TABLE,
                     $data
                 );
@@ -156,7 +163,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
             }
 
             try {
-                $db->query('delete from ' . self::ACTIVITIES_METADATA_TABLE . ' where activityId = ' . intval($entry->getId()));
+                $db->executeQuery('DELETE FROM ' . self::ACTIVITIES_METADATA_TABLE . ' WHERE activityId = ?', [(int)$entry->getId()]);
 
                 foreach ($entry->getMetadata() as $key => $data) {
                     $db->insert(
@@ -191,16 +198,16 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
 
         $row = false;
         if ($activity instanceof Concrete) {
-            $row = $db->fetchRow(
+            $row = $db->fetchAssociative(
                 'select *, column_json(attributes) as attributes from '.self::ACTIVITIES_TABLE.' where o_id = ? order by id desc LIMIT 1 ',
-                $activity->getId()
+                [$activity->getId()]
             );
         } elseif ($activity instanceof ActivityExternalIdInterface) {
             if (!$activity->getId()) {
                 return null;
             }
 
-            $row = $db->fetchRow(
+            $row = $db->fetchAssociative(
                 'select *, column_json(attributes) as attributes from '.self::ACTIVITIES_TABLE.' where a_id = ? AND type = ? order by id desc LIMIT 1 ',
                 [$activity->getId(), $activity->cmfGetType()]
             );
@@ -224,7 +231,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
     {
         $db = Db::get();
 
-        $result = $db->fetchAll(
+        $result = $db->fetchAllAssociative(
             'select id,activityDate,type,o_id,a_id,md5,creationDate,modificationDate,COLUMN_JSON(attributes) as attributes from '.self::ACTIVITIES_TABLE.' where customerId = ? order by activityDate asc',
             [$customer->getId()]
         );
@@ -271,7 +278,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
                 'md5',
                 'creationDate',
                 'modificationDate',
-                'COLUMN_JSON(attributes) attributes'
+                'COLUMN_JSON(attributes) as attributes'
             )
             ->addOrderBy('activityDate', 'asc');
 
@@ -304,7 +311,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
                 $entityType
             ).' and creationDate >= '.$db->quote($deletionsSinceTimestamp);
 
-        $data = $db->fetchAll($sql);
+        $data = $db->fetchAllAssociative($sql);
 
         foreach ($data as $key => $value) {
             $data[$key]['id'] = intval($data[$key]['id']);
@@ -343,9 +350,10 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
         $db->beginTransaction();
 
         try {
-            $db->query('delete from '.self::ACTIVITIES_TABLE.' where id = '.$entry->getId());
+            $db->executeQuery('DELETE FROM '.self::ACTIVITIES_TABLE.' WHERE id = ?', [$entry->getId()]);
 
-            $db->insertOrUpdate(
+            Helper::insertOrUpdate(
+                $db,
                 self::DELETIONS_TABLE,
                 [
                     'id' => $entry->getId(),
@@ -383,9 +391,9 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
     {
         $db = Db::get();
 
-        if ($row = $db->fetchRow(
+        if ($row = $db->fetchAssociative(
             sprintf('select *, column_json(attributes) as attributes from %s where id = ?', self::ACTIVITIES_TABLE),
-            $id
+            [$id]
         )
         ) {
             return $this->createEntryInstance($row);
@@ -437,7 +445,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
                 $count
             );
 
-        return $db->fetchCol($sql);
+        return $db->fetchFirstColumn($sql);
     }
 
     /**
@@ -447,7 +455,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
     {
         $sql = 'select distinct type from '.self::ACTIVITIES_TABLE;
 
-        return Db::get()->fetchCol($sql);
+        return Db::get()->fetchFirstColumn($sql);
     }
 
     protected function getAttributeInsertData(ActivityInterface $activity)
@@ -472,7 +480,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
             }
         }
 
-        return \CustomerManagementFrameworkBundle\Service\MariaDb::getInstance()->createDynamicColumnInsert(
+        return \CustomerManagementFrameworkBundle\Service\MariaDb::createDynamicColumnInsert(
             $attributes,
             $dataTypes
         );
@@ -508,7 +516,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
         }
 
         try {
-            $rows = Db::get()->fetchAll(sprintf('select * from %s where activityId = %s',
+            $rows = Db::get()->fetchAllAssociative(sprintf('select * from %s where activityId = %s',
                 self::ACTIVITIES_METADATA_TABLE,
                 $entry->getId()
             ));

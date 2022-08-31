@@ -16,7 +16,8 @@
 namespace CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
-use Pimcore\Db\ConnectionInterface;
+use Doctrine\DBAL\Connection;
+use Pimcore\Db\Helper;
 use Pimcore\Logger;
 use Pimcore\Model\Dao\AbstractDao;
 use Pimcore\Model\Dao\DaoTrait;
@@ -27,7 +28,7 @@ use Pimcore\Model\Dao\DaoTrait;
  * @package CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition
  *
  * @property FilterDefinition $model
- * @property ConnectionInterface $db
+ * @property Connection $db
  */
 class Dao extends AbstractDao
 {
@@ -119,7 +120,7 @@ class Dao extends AbstractDao
                 self::ATTRIBUTE_CREATION_DATE => $this->model->getCreationDate(),
                 self::ATTRIBUTE_MODIFICATION_DATE => $this->model->getModificationDate(),
             ]);
-            $this->db->insertOrUpdate(self::TABLE_NAME, $data);
+            Helper::insertOrUpdate($this->db, self::TABLE_NAME, $data);
         } catch (\Exception $e) {
             throw $e;
         }

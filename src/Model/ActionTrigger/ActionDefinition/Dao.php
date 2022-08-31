@@ -26,9 +26,9 @@ class Dao extends Model\Dao\AbstractDao
 
     public function getById($id)
     {
-        $raw = $this->db->fetchRow('SELECT * FROM '.self::TABLE_NAME.' WHERE id = ?', $id);
+        $raw = $this->db->fetchAssociative('SELECT * FROM '.self::TABLE_NAME.' WHERE id = ?', [$id]);
 
-        if ($raw['id']) {
+        if (!empty($raw['id'])) {
             $raw['options'] = json_decode($raw['options'], true);
             $this->assignVariablesToModel($raw);
         } else {
@@ -67,7 +67,7 @@ class Dao extends Model\Dao\AbstractDao
     {
         $this->db->beginTransaction();
         try {
-            $this->db->deleteWhere(self::TABLE_NAME, $this->db->quoteInto('id = ?', $this->model->getId()));
+            $this->db->executeQuery('DELETE FROM ' . self::TABLE_NAME . ' WHERE id = ?', [$this->model->getId()]);
 
             $this->db->commit();
         } catch (\Exception $e) {

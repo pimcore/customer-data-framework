@@ -161,7 +161,7 @@ class CustomersController extends Admin
         $query = $listing->getQueryBuilder()
             ->resetQueryPart('select')
             ->select('o_id');
-        $ids = Db::get()->fetchCol((string)$query);
+        $ids = Db::get()->fetchFirstColumn((string)$query);
 
         $jobId = uniqid();
         \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->saveExportTmpData($jobId, [

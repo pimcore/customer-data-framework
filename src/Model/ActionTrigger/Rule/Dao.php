@@ -29,38 +29,38 @@ class Dao extends Model\Dao\AbstractDao
 
     public function getById($id)
     {
-        $raw = $this->db->fetchRow('SELECT * FROM '.self::TABLE_NAME.' WHERE id = ?', $id);
+        $raw = $this->db->fetchAssociative('SELECT * FROM '.self::TABLE_NAME.' WHERE id = ?', [$id]);
 
-        if ($raw['trigger']) {
-            $triggers = [];
-            $triggerData = json_decode($raw['trigger'], true);
-            foreach ($triggerData as $triggerDefinitionData) {
-                $triggers[] = new TriggerDefinition($triggerDefinitionData);
+        if (!empty($raw['id'])) {
+            if (!empty($raw['trigger'])) {
+                $triggers = [];
+                $triggerData = json_decode($raw['trigger'], true);
+                foreach ($triggerData as $triggerDefinitionData) {
+                    $triggers[] = new TriggerDefinition($triggerDefinitionData);
+                }
+
+                $raw['trigger'] = $triggers;
+            } else {
+                $raw['trigger'] = [];
             }
 
-            $raw['trigger'] = $triggers;
-        } else {
-            $raw['trigger'] = [];
-        }
+            if (!empty($raw['condition'])) {
+                $conditions = [];
+                $conditionData = json_decode($raw['condition'], true);
+                foreach ($conditionData as $conditionDefinitionData) {
+                    $conditions[] = new ConditionDefinition($conditionDefinitionData);
+                }
 
-        if ($raw['condition']) {
-            $conditions = [];
-            $conditionData = json_decode($raw['condition'], true);
-            foreach ($conditionData as $conditionDefinitionData) {
-                $conditions[] = new ConditionDefinition($conditionDefinitionData);
+                $raw['condition'] = $conditions;
+            } else {
+                $raw['condition'] = [];
             }
 
-            $raw['condition'] = $conditions;
-        } else {
-            $raw['condition'] = [];
-        }
-
-        if ($raw['id']) {
             $this->assignVariablesToModel($raw);
 
-            $actionIds = $this->db->fetchCol(
-                'select id from '.ActionDefinition\Dao::TABLE_NAME.' where ruleId = ?',
-                $raw['id']
+            $actionIds = $this->db->fetchFirstColumn(
+                'SELECT id FROM '.ActionDefinition\Dao::TABLE_NAME.' WHERE ruleId = ?',
+                [$raw['id']]
             );
 
             $actions = [];
@@ -146,9 +146,9 @@ class Dao extends Model\Dao\AbstractDao
             }
         }
 
-        $this->db->deleteWhere(
-            ActionDefinition\Dao::TABLE_NAME,
-            'ruleId = '.$this->model->getId().' and id not in('.implode(',', $savedActionIds).')'
+        $this->db->executeQuery(
+            'DELETE FROM ' . ActionDefinition\Dao::TABLE_NAME . ' WHERE ruleId = ? AND id NOT IN('.implode(',', $savedActionIds).')',
+            [$this->model->getId()]
         );
     }
 
@@ -156,7 +156,7 @@ class Dao extends Model\Dao\AbstractDao
     {
         $this->db->beginTransaction();
         try {
-            $this->db->deleteWhere(self::TABLE_NAME, $this->db->quoteInto('id = ?', $this->model->getId()));
+            $this->db->executeQuery('DELETE FROM ' . self::TABLE_NAME . ' WHERE id = ?', [$this->model->getId()]);
 
             $this->db->commit();
         } catch (\Exception $e) {
