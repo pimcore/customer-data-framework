@@ -29,7 +29,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     /**
      * @var int
      */
-    protected $offset;
+    protected $offset = 0;
 
     /**
      * @var null|int
@@ -77,6 +77,11 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         return $this->limit;
     }
 
+    /**
+     * @param int $offset
+     *
+     * @return $this
+     */
     public function setOffset($offset)
     {
         if ($this->offset != $offset) {
@@ -88,6 +93,9 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getOffset()
     {
         return $this->offset;
