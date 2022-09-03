@@ -52,14 +52,16 @@ class Dao extends AbstractDao
     const ATTRIBUTE_MODIFICATION_DATE = 'modificationDate';
 
     /**
-     * @param null $id
+     * @param int|null $id
      *
      * @throws \Exception
      */
     public function getById($id = null)
     {
-        /** @noinspection SqlNoDataSourceInspection */
-        $data = $this->db->fetchAssoc('SELECT * FROM '. self::TABLE_NAME . ' WHERE ' . self::ATTRIBUTE_ID . '='.intval($id));
+        $data = $this->db->fetchAssociative(
+            'SELECT * FROM '. self::TABLE_NAME . ' WHERE ' . self::ATTRIBUTE_ID . ' = ?',
+            [(int) $id]
+        );
         $this->assignVariablesToModel($data);
     }
 
@@ -70,8 +72,10 @@ class Dao extends AbstractDao
      */
     public function getByName(string $name)
     {
-        /** @noinspection SqlNoDataSourceInspection */
-        $data = $this->db->fetchAssoc('SELECT * FROM '. self::TABLE_NAME . ' WHERE ' . self::ATTRIBUTE_NAME . "='". $name . "'");
+        $data = $this->db->fetchAssociative(
+            'SELECT * FROM '. self::TABLE_NAME . ' WHERE ' . self::ATTRIBUTE_NAME . ' = ?',
+            [$name]
+        );
         $this->assignVariablesToModel($data);
     }
 
@@ -104,26 +108,22 @@ class Dao extends AbstractDao
         }
         $this->model->setModificationDate($datetime);
 
-        try {
-            if (!is_null($this->model->getId())) {
-                $data['id'] = $this->model->getId();
-            } else {
-                $data = [];
-            }
-            $data = array_merge($data, [
-                self::ATTRIBUTE_OWNER_ID => $this->model->getOwnerId(),
-                self::ATTRIBUTE_NAME => $this->model->getName(),
-                self::ATTRIBUTE_DEFINITION => json_encode($this->model->getDefinition()),
-                self::ATTRIBUTE_ALLOWED_USER_IDS => implode(',', $this->model->getAllowedUserIds()),
-                self::ATTRIBUTE_READ_ONLY => $this->model->isReadOnly(),
-                self::ATTRIBUTE_SHORTCUT_AVAILABLE => $this->model->isShortcutAvailable(),
-                self::ATTRIBUTE_CREATION_DATE => $this->model->getCreationDate(),
-                self::ATTRIBUTE_MODIFICATION_DATE => $this->model->getModificationDate(),
-            ]);
-            Helper::insertOrUpdate($this->db, self::TABLE_NAME, $data);
-        } catch (\Exception $e) {
-            throw $e;
+        if (!is_null($this->model->getId())) {
+            $data['id'] = $this->model->getId();
+        } else {
+            $data = [];
         }
+        $data = array_merge($data, [
+            self::ATTRIBUTE_OWNER_ID => $this->model->getOwnerId(),
+            self::ATTRIBUTE_NAME => $this->model->getName(),
+            self::ATTRIBUTE_DEFINITION => json_encode($this->model->getDefinition()),
+            self::ATTRIBUTE_ALLOWED_USER_IDS => implode(',', $this->model->getAllowedUserIds()),
+            self::ATTRIBUTE_READ_ONLY => $this->model->isReadOnly(),
+            self::ATTRIBUTE_SHORTCUT_AVAILABLE => $this->model->isShortcutAvailable(),
+            self::ATTRIBUTE_CREATION_DATE => $this->model->getCreationDate(),
+            self::ATTRIBUTE_MODIFICATION_DATE => $this->model->getModificationDate(),
+        ]);
+        Helper::insertOrUpdate($this->db, self::TABLE_NAME, $data);
 
         if (!$this->model->getId()) {
             // TODO insecure, could be another id
