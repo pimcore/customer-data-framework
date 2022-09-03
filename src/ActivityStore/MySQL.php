@@ -122,7 +122,7 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
         $db = Db::get();
 
         if ($row = $db->fetchAssociative(
-            sprintf('select * from %s where id = ?', self::ACTIVITIES_TABLE),
+            'SELECT * FROM ' . self::ACTIVITIES_TABLE . ' WHERE id = ?',
             [$id]
         )) {
             return $this->createEntryInstance($row);
@@ -175,10 +175,10 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
         }
 
         try {
-            $rows = Db::get()->fetchAllAssociative(sprintf('select * from %s where activityId = %s',
-                self::ACTIVITIES_METADATA_TABLE,
-                $entry->getId()
-            ));
+            $rows = Db::get()->fetchAllAssociative(
+                'SELECT * FROM ' . self::ACTIVITIES_METADATA_TABLE . ' WHERE activityId = ?',
+                [$entry->getId()]
+            );
         } catch (\Exception $e) {
             $this->getLogger()->error('fetching of activity store metadata failed: ' . $e->getMessage());
             $rows = [];

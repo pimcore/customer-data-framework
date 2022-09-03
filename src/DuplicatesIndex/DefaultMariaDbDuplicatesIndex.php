@@ -205,7 +205,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         foreach ($total as $duplicateIds => $fieldCombinations) {
             if (!$id = Db::get()->fetchOne(
                 'select id from '.self::POTENTIAL_DUPLICATES_TABLE.' where duplicateCustomerIds = ?',
-                $duplicateIds
+                [$duplicateIds]
             )
             ) {
                 Db::get()->insert(

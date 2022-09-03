@@ -355,7 +355,7 @@ abstract class SqlActivityStore
 
         return (int) $db->fetchOne(
             'select count(id) from '.self::ACTIVITIES_TABLE." where customerId = ? $and",
-            $customer->getId()
+            [$customer->getId()]
         );
     }
 
