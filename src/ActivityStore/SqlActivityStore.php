@@ -262,15 +262,11 @@ abstract class SqlActivityStore
 
     /**
      * @param CustomerInterface $customer
-     *
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function deleteCustomer(CustomerInterface $customer)
     {
         $db = Db::get();
-        $db->exec(
-            sprintf('delete from %s where customerId = %d', self::ACTIVITIES_TABLE, $customer->getId())
-        );
+        $db->delete(self::ACTIVITIES_TABLE, ['customerId' => $customer->getId()]);
     }
 
     public function deleteEntry(ActivityStoreEntryInterface $entry)
@@ -355,7 +351,7 @@ abstract class SqlActivityStore
 
         return (int) $db->fetchOne(
             'select count(id) from '.self::ACTIVITIES_TABLE." where customerId = ? $and",
-            $customer->getId()
+            [$customer->getId()]
         );
     }
 

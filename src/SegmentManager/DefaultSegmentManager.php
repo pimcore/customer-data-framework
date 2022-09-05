@@ -28,6 +28,7 @@ use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
+use Pimcore\Model\DataObject\Folder;
 use Pimcore\Model\DataObject\Service;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Tool\Targeting\TargetGroup;
@@ -221,7 +222,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
     {
         $folder = $calculated ? $this->segmentFolderCalculated : $this->segmentFolderManual;
 
-        if (is_object($folder)) {
+        if ($folder instanceof Folder) {
             return $folder;
         }
 
@@ -234,6 +235,21 @@ class DefaultSegmentManager implements SegmentManagerInterface
         }
 
         return $folder;
+    }
+
+    /**
+     * Needed for resetting the segments folder between tests
+     *
+     * @internal
+     */
+    public function resetSegmentsFolder(): void
+    {
+        if ($this->segmentFolderCalculated instanceof Folder) {
+            $this->segmentFolderCalculated = $this->segmentFolderCalculated->getFullPath();
+        }
+        if ($this->segmentFolderManual instanceof Folder) {
+            $this->segmentFolderManual = $this->segmentFolderManual->getFullPath();
+        }
     }
 
     /**

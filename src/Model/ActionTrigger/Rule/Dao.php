@@ -106,7 +106,7 @@ class Dao extends Model\Dao\AbstractDao
             try {
                 $this->saveActions();
 
-                $this->db->updateWhere(self::TABLE_NAME, $data, $this->db->quoteInto('id = ?', $this->model->getId()));
+                $this->db->update(self::TABLE_NAME, $data, ['id' => $this->model->getId()]);
                 $this->db->commit();
             } catch (\Exception $e) {
                 $this->db->rollBack();

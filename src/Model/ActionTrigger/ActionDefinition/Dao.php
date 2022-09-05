@@ -49,7 +49,7 @@ class Dao extends Model\Dao\AbstractDao
         ];
 
         if ($this->model->getId()) {
-            $this->db->updateWhere(self::TABLE_NAME, $data, $this->db->quoteInto('id = ?', $this->model->getId()));
+            $this->db->update(self::TABLE_NAME, $data, ['id' => $this->model->getId()]);
         } else {
             $data['creationDate'] = time();
             unset($data['id']);

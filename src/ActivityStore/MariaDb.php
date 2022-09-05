@@ -419,7 +419,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
 
         return (int) $db->fetchOne(
             'select count(id) from '.self::ACTIVITIES_TABLE." where customerId = ? $and",
-            $customer->getId()
+            [$customer->getId()]
         );
     }
 
@@ -516,10 +516,10 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
         }
 
         try {
-            $rows = Db::get()->fetchAllAssociative(sprintf('select * from %s where activityId = %s',
-                self::ACTIVITIES_METADATA_TABLE,
-                $entry->getId()
-            ));
+            $rows = Db::get()->fetchAllAssociative(
+                'SELECT * FROM ' . self::ACTIVITIES_METADATA_TABLE . ' WHERE activityId = ?',
+                [$entry->getId()]
+            );
         } catch (\Exception $e) {
             $this->getLogger()->error('fetching of activity store metadata failed: ' . $e->getMessage());
             $rows = [];
