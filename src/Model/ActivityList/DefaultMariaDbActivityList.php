@@ -22,7 +22,7 @@ use Pimcore\Model\Listing\AbstractListing;
 class DefaultMariaDbActivityList extends AbstractListing implements ActivityListInterface
 {
     /**
-     * @var int
+     * @var int|null
      */
     protected $limit;
 
@@ -61,6 +61,11 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         return $this->activities;
     }
 
+    /**
+     * @param int|null $limit
+     *
+     * @return $this
+     */
     public function setLimit($limit)
     {
         if ($this->limit != $limit) {
@@ -72,6 +77,9 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         return $this;
     }
 
+    /**
+     * @return int|null
+     */
     public function getLimit()
     {
         return $this->limit;
