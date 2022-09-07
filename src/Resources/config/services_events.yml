@@ -1,50 +1,50 @@
 services:
     _defaults:
-            public: true
-            autowire: true
-            autoconfigure: true
+        public: true
+        autowire: true
+        autoconfigure: true
 
     pimcore.event_listener.frontend.activity_url_tracker:
-            class: CustomerManagementFrameworkBundle\Event\Frontend\UrlActivityTracker
-            tags:
-                - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: -200 }
+        class: CustomerManagementFrameworkBundle\Event\Frontend\UrlActivityTracker
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: -200 }
 
 
     cmf.event_listener.pimcore_object:
-       class: CustomerManagementFrameworkBundle\Event\PimcoreObjectEventListener
-       tags:
-           - { name: kernel.event_listener, event: pimcore.dataobject.preUpdate, method: onPreUpdate }
-           - { name: kernel.event_listener, event: pimcore.dataobject.postUpdate, method: onPostUpdate }
-           - { name: kernel.event_listener, event: pimcore.dataobject.preAdd, method: onPreAdd }
-           - { name: kernel.event_listener, event: pimcore.dataobject.postAdd, method: onPostAdd }
-           - { name: kernel.event_listener, event: pimcore.dataobject.preDelete, method: onPreDelete }
-           - { name: kernel.event_listener, event: pimcore.dataobject.postDelete, method: onPostDelete }
-           - { name: kernel.event_listener, event: pimcore.dataobject.import.preSave, method: onPreSave }
+        class: CustomerManagementFrameworkBundle\Event\PimcoreObjectEventListener
+        tags:
+            - { name: kernel.event_listener, event: pimcore.dataobject.preUpdate, method: onPreUpdate }
+            - { name: kernel.event_listener, event: pimcore.dataobject.postUpdate, method: onPostUpdate }
+            - { name: kernel.event_listener, event: pimcore.dataobject.preAdd, method: onPreAdd }
+            - { name: kernel.event_listener, event: pimcore.dataobject.postAdd, method: onPostAdd }
+            - { name: kernel.event_listener, event: pimcore.dataobject.preDelete, method: onPreDelete }
+            - { name: kernel.event_listener, event: pimcore.dataobject.postDelete, method: onPostDelete }
+            - { name: kernel.event_listener, event: pimcore.dataobject.import.preSave, method: onPreSave }
 
     cmf.event_listener.object_merger:
-           class: CustomerManagementFrameworkBundle\Event\CustomerMergerEventListener
-           tags:
-               - { name: kernel.event_listener, event: plugin.ObjectMerger.postMerge, method: onPostMerge }
-               - { name: kernel.event_listener, event: plugin.ObjectMerger.preMerge, method: onPreMerge }
+        class: CustomerManagementFrameworkBundle\Event\CustomerMergerEventListener
+        tags:
+            - { name: kernel.event_listener, event: plugin.ObjectMerger.postMerge, method: onPostMerge }
+            - { name: kernel.event_listener, event: plugin.ObjectMerger.preMerge, method: onPreMerge }
 
     CustomerManagementFrameworkBundle\ActionTrigger\EventHandler\EventHandlerInterface:
-        alias: cmf.event_listener.action_trigger
-
-    cmf.event_listener.action_trigger:
         class: CustomerManagementFrameworkBundle\ActionTrigger\EventHandler\DefaultEventHandler
-        deprecated:
-            message: 'The "%service_id%" service is deprecated. Use "CustomerManagementFrameworkBundle\ActionTrigger\Queue\QueueInterface" instead'
-            package: pimcore/customer-management-framework-bundle
-            version: 3.0
         tags:
             - { name: kernel.event_listener, event: plugin.cmf.new-activity, method: handleEvent }
             - { name: kernel.event_listener, event: plugin.cmf.execute-segment-builders, method: handleEvent }
             - { name: kernel.event_listener, event: plugin.cmf.after-track-activity, method: handleEvent }
             - { name: kernel.event_listener, event: plugin.cmf.segment-tracked, method: handleEvent }
             - { name: kernel.event_listener, event: plugin.cmf.target-group-assigned, method: handleEvent }
-
         calls:
             - [setLogger, ['@cmf.logger']]
+
+    cmf.event_listener.action_trigger:
+        alias: CustomerManagementFrameworkBundle\ActionTrigger\EventHandler\EventHandlerInterface
+        deprecated:
+            message: 'The "%alias_id%" alias is deprecated. Use "CustomerManagementFrameworkBundle\ActionTrigger\EventHandler\EventHandlerInterface" instead'
+            package: pimcore/customer-management-framework-bundle
+            version: 3.0
+
 
     CustomerManagementFrameworkBundle\Event\PimcoreElementRemovalListenerInterface:
         class: CustomerManagementFrameworkBundle\Event\PimcoreElementRemovalListener
