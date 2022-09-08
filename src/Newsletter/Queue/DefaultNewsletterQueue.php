@@ -63,7 +63,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
         $email = !is_null($email) ? $email : $customer->getEmail();
 
         $db = Db::get();
-        $db->query(
+        $db->executeQuery(
             'insert into ' . self::QUEUE_TABLE . ' (customerId, email, operation, modificationDate) values (:customerId,:email,:operation,:modificationDate) on duplicate key update operation = :operation, modificationDate = :modificationDate',
             [
                 'customerId' => $customer->getId(),
@@ -143,11 +143,11 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
         $db = Db::get();
 
         if (!is_null($item->getEmail())) {
-            $db->query('delete from ' . self::QUEUE_TABLE . ' where customerId = ? and email = ? and operation = ? and modificationDate = ?', [
+            $db->executeQuery('delete from ' . self::QUEUE_TABLE . ' where customerId = ? and email = ? and operation = ? and modificationDate = ?', [
                 $item->getCustomerId(), $item->getEmail(), $item->getOperation(), $item->getModificationDate()
             ]);
         } else {
-            $db->query('delete from ' . self::QUEUE_TABLE . ' where customerId = ? and email is null and operation = ? and modificationDate = ?', [
+            $db->executeQuery('delete from ' . self::QUEUE_TABLE . ' where customerId = ? and email is null and operation = ? and modificationDate = ?', [
                 $item->getCustomerId(), $item->getOperation(), $item->getModificationDate()
             ]);
         }
@@ -179,9 +179,9 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
             self::QUEUE_TABLE,
             $customerClassId,
             self::QUEUE_TABLE
-            );
+        );
 
-        Db::get()->query($sql);
+        Db::get()->executeQuery($sql);
     }
 
     /**
@@ -244,7 +244,7 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
             ->select('*')
             ->from(self::QUEUE_TABLE);
 
-        $rows = $db->fetchAll((string)$select);
+        $rows = $db->fetchAllAssociative((string)$select);
 
         $paginator = $this->paginator->paginate($rows, 1, $this->maxItemsPerRound);
         $pageCount = $paginator->getPaginationData()['pageCount'];

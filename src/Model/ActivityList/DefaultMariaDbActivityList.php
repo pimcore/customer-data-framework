@@ -22,14 +22,14 @@ use Pimcore\Model\Listing\AbstractListing;
 class DefaultMariaDbActivityList extends AbstractListing implements ActivityListInterface
 {
     /**
-     * @var int
+     * @var int|null
      */
     protected $limit;
 
     /**
      * @var int
      */
-    protected $offset;
+    protected $offset = 0;
 
     /**
      * @var null|int
@@ -61,6 +61,11 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         return $this->activities;
     }
 
+    /**
+     * @param int|null $limit
+     *
+     * @return $this
+     */
     public function setLimit($limit)
     {
         if ($this->limit != $limit) {
@@ -72,11 +77,19 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         return $this;
     }
 
+    /**
+     * @return int|null
+     */
     public function getLimit()
     {
         return $this->limit;
     }
 
+    /**
+     * @param int $offset
+     *
+     * @return $this
+     */
     public function setOffset($offset)
     {
         if ($this->offset != $offset) {
@@ -88,6 +101,9 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getOffset()
     {
         return $this->offset;

@@ -24,7 +24,7 @@ class Dao extends Model\Listing\Dao\AbstractDao
     {
         $rules = [];
 
-        $ids = $this->db->fetchCol(
+        $ids = $this->db->fetchFirstColumn(
             'SELECT id FROM '.Rule\Dao::TABLE_NAME.' '.$this->getCondition().$this->getOrder().$this->getOffsetLimit(),
             $this->model->getConditionVariables()
         );

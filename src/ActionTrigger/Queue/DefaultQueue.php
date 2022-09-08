@@ -68,7 +68,7 @@ class DefaultQueue implements QueueInterface
             ->addOrderBy('id', 'asc')
             ->andWhere('actionDate <= ' . time());
 
-        $items = $db->fetchAll((string)$select);
+        $items = $db->fetchAllAssociative((string)$select);
 
         foreach ($items as $item) {
             $this->processQueueItem($item);
@@ -95,6 +95,6 @@ class DefaultQueue implements QueueInterface
         }
 
         $db = Db::get();
-        $db->deleteWhere(self::QUEUE_TABLE, 'id='.intval($item['id']));
+        $db->executeQuery('DELETE FROM ' . self::QUEUE_TABLE . ' WHERE id = ?', [(int)$item['id']]);
     }
 }

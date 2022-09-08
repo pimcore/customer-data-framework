@@ -88,11 +88,16 @@ class MailChimpExportService
         return null;
     }
 
+    /**
+     * @param string $remoteId
+     *
+     * @return AbstractObject|null
+     */
     public function getObjectByRemoteId($remoteId)
     {
         $db = Db::get();
 
-        return AbstractObject::getById($db->fetchOne("select cid from notes, notes_data where notes.id = notes_data.id and notes.ctype='object' and name='mailchimp_id' and notes_data.type='text' and data = ? limit 1", $remoteId));
+        return AbstractObject::getById($db->fetchOne("select cid from notes, notes_data where notes.id = notes_data.id and notes.ctype='object' and name='mailchimp_id' and notes_data.type='text' and data = ? limit 1", [$remoteId]));
     }
 
     /**

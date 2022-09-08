@@ -117,7 +117,7 @@ class MySqlDao
     {
         $query = $this->getQueryBuilder();
 
-        $result = Db::get()->fetchAll((string)$query, $this->model->getConditionVariables(), $this->model->getConditionVariableTypes());
+        $result = Db::get()->fetchAllAssociative((string)$query, $this->model->getConditionVariables(), $this->model->getConditionVariableTypes());
 
         return $result;
     }

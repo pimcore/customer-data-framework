@@ -33,8 +33,16 @@ class MariaDb
      */
     private static $instance;
 
+    /**
+     * @deprecated
+     */
     public static function getInstance()
     {
+        trigger_deprecation(
+            'pimcore/customer-data-framework',
+            '3.3.2',
+            'The MariaDb::getInstance() method is deprecated, use Db::get() instead.'
+        );
         if (is_null(self::$instance)) {
             self::$instance = new self;
         }
@@ -49,7 +57,7 @@ class MariaDb
      *
      * @return string
      */
-    public function createDynamicColumnInsert(array $data, array $dataTypes = [])
+    public static function createDynamicColumnInsert(array $data, array $dataTypes = [])
     {
         $insert = '';
         $i = 0;
@@ -58,15 +66,15 @@ class MariaDb
             if (!is_array($value)) {
                 $dataType = isset($dataTypes[$key]) ? $dataTypes[$key] : false;
 
-                $insert .= "'".$key."'".','.$this->convertDynamicColumnValueAccordingToDataType($value, $dataType);
+                $insert .= "'".$key."'".','.self::convertDynamicColumnValueAccordingToDataType($value, $dataType);
 
-                $dataType = $this->castDynamicColumnDatatype($dataType);
+                $dataType = self::castDynamicColumnDatatype($dataType);
 
                 if ($dataType) {
                     $insert .= ' as '.$dataType;
                 }
             } else {
-                $insert .= "'".$key."'".','.$this->createDynamicColumnInsert($value, $dataTypes);
+                $insert .= "'".$key."'".','.self::createDynamicColumnInsert($value, $dataTypes);
             }
 
             if ($i < sizeof($data)) {
@@ -81,7 +89,7 @@ class MariaDb
         }
     }
 
-    private function castDynamicColumnDatatype($dataType)
+    private static function castDynamicColumnDatatype($dataType)
     {
         if ($dataType == self::DYNAMIC_COLUMN_DATA_TYPE_BOOLEAN) {
             return self::DYNAMIC_COLUMN_DATA_TYPE_INTEGER;
@@ -90,7 +98,7 @@ class MariaDb
         return $dataType;
     }
 
-    private function convertDynamicColumnValueAccordingToDataType($value, $dataType)
+    private static function convertDynamicColumnValueAccordingToDataType($value, $dataType)
     {
         $db = Db::get();
 
@@ -113,7 +121,7 @@ class MariaDb
      *
      * @return int
      */
-    public function insert($tableName, array $data)
+    public static function insert($tableName, array $data)
     {
         $db = Db::get();
 
@@ -130,7 +138,7 @@ class MariaDb
             implode(',', array_values($data))
         );
 
-        $db->query($sql);
+        $db->executeQuery($sql);
 
         return (int) $db->lastInsertId();
     }
@@ -144,7 +152,7 @@ class MariaDb
      *
      * @return void
      */
-    public function update($tableName, $data, $where)
+    public static function update($tableName, $data, $where)
     {
         $db = Db::get();
 
@@ -162,7 +170,7 @@ class MariaDb
         $sql .= implode(', ', $set);
         $sql .= ' WHERE '.$where;
 
-        $db->query($sql);
+        $db->executeQuery($sql);
     }
 
     /**
@@ -172,7 +180,7 @@ class MariaDb
      *
      * @return array
      */
-    public function quoteArray(array $data)
+    public static function quoteArray(array $data)
     {
         $db = Db::get();
         foreach ($data as $key => $value) {

@@ -207,13 +207,11 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
         $tableName = $listing->getDao()->getTableName();
         $relationsTableName = $this->getTableName($listing->getClassId(), 'object_relations_');
 
-        $dbService = MariaDb::getInstance();
-
         if (is_array($conditionValue)) {
-            $conditionValue = $dbService->quoteArray($conditionValue);
+            $conditionValue = MariaDb::quoteArray($conditionValue);
         }
 
-        $relationNames = implode(',', $dbService->quoteArray($this->relationNames));
+        $relationNames = implode(',', MariaDb::quoteArray($this->relationNames));
 
         // relation matches one of our field names and relates to our current object
         $baseCondition = sprintf(
