@@ -20,8 +20,6 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
     },
 
     initialize: function () {
-        pimcore.plugin.broker.registerPlugin(this);
-
         this.navEl = Ext.get('pimcore_menu_search').insertSibling('<li id="pimcore_menu_cmf" data-menu-tooltip="'
             + t('plugin_cmf_mainmenu') +
             '" class="pimcore_menu_item pimcore_menu_needs_children"><img src="/bundles/pimcorecustomermanagementframework/icons/outline-group-24px.svg"></li>', 'before');
@@ -194,7 +192,7 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
 
         this.navEl.on('mousedown', toolbar.showSubMenu.bind(toolbar.cmfMenu));
 
-        const cmfMenuReady = new CustomEvent(pimcore.events.cmf.cmfMenuReady, {
+        const cmfMenuReady = new CustomEvent(pimcore.events.cmfMenuReady, {
             detail: {
                 cmfMenu: toolbar.cmfMenu
             }

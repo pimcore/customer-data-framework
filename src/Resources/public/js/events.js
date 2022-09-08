@@ -11,6 +11,4 @@
  * @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
-pimcore.events.cmf = {
-    cmfMenuReady: 'cmfMenuReady'
-};
+pimcore.events.cmfMenuReady = 'cmfMenuReady';
