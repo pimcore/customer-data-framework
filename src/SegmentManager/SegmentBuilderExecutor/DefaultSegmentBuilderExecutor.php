@@ -189,7 +189,7 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
 
                 foreach (array_chunk($queue, 50) as $nextChunk) {
                     try {
-                        $removedAmount = Db::get()->executeQuery(
+                        $removedAmount = Db::get()->executeStatement(
                             'DELETE FROM ' . self::CHANGES_QUEUE_TABLE . ' WHERE customerId IN (' . implode(',', $nextChunk) . ')'
                         );
 
