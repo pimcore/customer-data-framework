@@ -99,7 +99,7 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
             ->andWhere('fieldname = ' . Db::get()->quote('ssoIdentities'))
             ->andWhere('dest_id = ' . Db::get()->quote($ssoIdentity->getId()));
 
-        $result = Db::get()->fetchAll($select->getSQL());
+        $result = Db::get()->fetchAllAssociative($select->getSQL());
 
         if (count($result) === 1) {
             return $this->customerProvider->getById((int)$result[0]['src_id']);

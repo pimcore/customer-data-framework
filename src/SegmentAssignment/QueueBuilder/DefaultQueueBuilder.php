@@ -15,7 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\SegmentAssignment\QueueBuilder;
 
-use Pimcore\Db\ConnectionInterface;
+use Doctrine\DBAL\Connection;
 use Pimcore\Logger;
 use Throwable;
 
@@ -30,11 +30,11 @@ class DefaultQueueBuilder implements QueueBuilderInterface
     private $segmentAssignmentQueueTable = '';
 
     /**
-     * @var ConnectionInterface
+     * @var Connection
      */
     private $db = null;
 
-    public function __construct(string $segmentAssignmentQueueTable, ConnectionInterface $db)
+    public function __construct(string $segmentAssignmentQueueTable, Connection $db)
     {
         $this->setSegmentAssignmentQueueTable($segmentAssignmentQueueTable);
         $this->setDb($db);
@@ -57,17 +57,17 @@ class DefaultQueueBuilder implements QueueBuilderInterface
     }
 
     /**
-     * @return ConnectionInterface
+     * @return Connection
      */
-    public function getDb(): ConnectionInterface
+    public function getDb(): Connection
     {
         return $this->db;
     }
 
     /**
-     * @param ConnectionInterface $db
+     * @param Connection $db
      */
-    public function setDb(ConnectionInterface $db)
+    public function setDb(Connection $db)
     {
         $this->db = $db;
     }
@@ -84,7 +84,7 @@ class DefaultQueueBuilder implements QueueBuilderInterface
                 'ON DUPLICATE KEY UPDATE `elementId` = `elementId`',
                 $this->getSegmentAssignmentQueueTable(), $elementId, $type);
 
-            $this->getDb()->query($enqueueStatement);
+            $this->getDb()->executeQuery($enqueueStatement);
 
             return true;
         } catch (Throwable $exception) {
@@ -118,7 +118,7 @@ class DefaultQueueBuilder implements QueueBuilderInterface
 
             $this->getDb()->beginTransaction();
 
-            $this->getDb()->query($enqueueStatement,
+            $this->getDb()->executeQuery($enqueueStatement,
                 [
                     'elementType' => $type,
                     'elementId' => (int) $elementId

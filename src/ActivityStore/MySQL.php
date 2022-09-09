@@ -21,6 +21,7 @@ use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityList\MySqlActivityList;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use Doctrine\DBAL\Connection;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\Concrete;
 
@@ -35,7 +36,15 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
 
     protected function getActivityStoreConnection()
     {
-        return Db::get();
+        trigger_deprecation(
+            'pimcore/customer-data-framework',
+            '3.3.2',
+            'The SqlActivityStore::getActivityStoreConnection() method is deprecated, use Db::get() instead.'
+        );
+        /** @var Connection $db */
+        $db = Db::get();
+
+        return $db;
     }
 
     /**
@@ -59,16 +68,16 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
 
         $row = false;
         if ($activity instanceof Concrete) {
-            $row = $db->fetchRow(
+            $row = $db->fetchAssociative(
                 'select * from '.self::ACTIVITIES_TABLE.' where o_id = ? order by id desc LIMIT 1 ',
-                $activity->getId()
+                [$activity->getId()]
             );
         } elseif ($activity instanceof ActivityExternalIdInterface) {
             if (!$activity->getId()) {
                 return null;
             }
 
-            $row = $db->fetchRow(
+            $row = $db->fetchAssociative(
                 'select * from '.self::ACTIVITIES_TABLE.' where a_id = ? AND type = ? order by id desc LIMIT 1 ',
                 [$activity->getId(), $activity->cmfGetType()]
             );
@@ -87,7 +96,7 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
     {
         $db = Db::get();
 
-        $result = $db->fetchAll(
+        $result = $db->fetchAllAssociative(
             'select id,activityDate,type,o_id,a_id,md5,creationDate,modificationDate,attributes from '.self::ACTIVITIES_TABLE.' where customerId = ? order by activityDate asc',
             [$customer->getId()]
         );
@@ -112,9 +121,9 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
     {
         $db = Db::get();
 
-        if ($row = $db->fetchRow(
-            sprintf('select * from %s where id = ?', self::ACTIVITIES_TABLE),
-            $id
+        if ($row = $db->fetchAssociative(
+            'SELECT * FROM ' . self::ACTIVITIES_TABLE . ' WHERE id = ?',
+            [$id]
         )) {
             return $this->createEntryInstance($row);
         }
@@ -166,10 +175,10 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
         }
 
         try {
-            $rows = Db::get()->fetchAll(sprintf('select * from %s where activityId = %s',
-                self::ACTIVITIES_METADATA_TABLE,
-                $entry->getId()
-            ));
+            $rows = Db::get()->fetchAllAssociative(
+                'SELECT * FROM ' . self::ACTIVITIES_METADATA_TABLE . ' WHERE activityId = ?',
+                [$entry->getId()]
+            );
         } catch (\Exception $e) {
             $this->getLogger()->error('fetching of activity store metadata failed: ' . $e->getMessage());
             $rows = [];

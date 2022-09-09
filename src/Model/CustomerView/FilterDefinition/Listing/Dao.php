@@ -16,12 +16,12 @@
 namespace CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition\Listing;
 
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
-use Pimcore\Db\ConnectionInterface;
+use Doctrine\DBAL\Connection;
 use Pimcore\Model;
 
 /**
  * @property FilterDefinition\Listing $model
- * @property ConnectionInterface $db
+ * @property Connection $db
  */
 class Dao extends Model\Listing\Dao\AbstractDao
 {
@@ -33,7 +33,7 @@ class Dao extends Model\Listing\Dao\AbstractDao
     public function load()
     {
         // fetch ids with conditions, order and offset
-        $filterDefinitionsData = $this->db->fetchCol('SELECT id FROM ' . FilterDefinition\Dao::TABLE_NAME . $this->getCondition() . $this->getOrder() . $this->getOffsetLimit(), $this->model->getConditionVariables());
+        $filterDefinitionsData = $this->db->fetchFirstColumn('SELECT id FROM ' . FilterDefinition\Dao::TABLE_NAME . $this->getCondition() . $this->getOrder() . $this->getOffsetLimit(), $this->model->getConditionVariables());
         // prepare filter definitions object array
         $filterDefinitions = [];
         // go through found ids

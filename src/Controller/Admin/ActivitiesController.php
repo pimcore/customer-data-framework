@@ -61,7 +61,7 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
                 ->select('type')
                 ->distinct();
 
-            $types = \Pimcore\Db::get()->fetchCol((string)$select);
+            $types = \Pimcore\Db::get()->fetchFirstColumn((string)$select);
 
             if ($type = $request->get('type')) {
                 $select = $list->getQueryBuilder(false);

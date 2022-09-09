@@ -4,8 +4,6 @@ parameters:
         - src
     bootstrapFiles:
         - phpstan-bootstrap.php
-    ignoreErrors:
-        - '~^Method Doctrine\\DBAL(\\.*)?Connection::query\(\) invoked with \d+ parameters?, 0 required\.\z~'
     stubFiles:
         - stubs/AccountNotLinkedException.stub
         - stubs/OAuthUtils.stub

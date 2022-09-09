@@ -113,6 +113,7 @@ class CustomerListTest extends ModelTestCase
     protected function createSegments()
     {
         $segmentManager = \Pimcore::getContainer()->get(SegmentManagerInterface::class);
+        $segmentManager->resetSegmentsFolder();
         foreach ($this->segmentDummyData as $segment) {
             $segmentManager->createSegment($segment['name'], $segment['group'], $segment['name']);
         }

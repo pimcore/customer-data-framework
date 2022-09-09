@@ -59,7 +59,7 @@ class MariaDbDao
                     'implementationClass',
                     'o_id',
                     'a_id',
-                    'COLUMN_JSON(attributes) attributes',
+                    'COLUMN_JSON(attributes) as attributes',
                     'md5',
                     'creationDate',
                     'modificationDate'
@@ -113,7 +113,7 @@ class MariaDbDao
     {
         $query = $this->getQueryBuilder();
 
-        $result = Db::get()->fetchAll((string)$query, $this->model->getConditionVariables(), $this->model->getConditionVariableTypes());
+        $result = Db::get()->fetchAllAssociative((string)$query, $this->model->getConditionVariables(), $this->model->getConditionVariableTypes());
 
         return $result;
     }

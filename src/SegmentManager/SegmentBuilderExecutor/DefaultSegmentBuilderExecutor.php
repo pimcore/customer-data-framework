@@ -189,9 +189,8 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
 
                 foreach (array_chunk($queue, 50) as $nextChunk) {
                     try {
-                        $removedAmount = Db::get()->deleteWhere(
-                            self::CHANGES_QUEUE_TABLE,
-                            sprintf('customerId IN (%s)', implode(',', $nextChunk))
+                        $removedAmount = Db::get()->executeStatement(
+                            'DELETE FROM ' . self::CHANGES_QUEUE_TABLE . ' WHERE customerId IN (' . implode(',', $nextChunk) . ')'
                         );
 
                         $this->getLogger()->notice(
@@ -345,8 +344,9 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
      */
     public function addCustomerToChangesQueue(CustomerInterface $customer)
     {
-        Db::get()->query(
-            sprintf('insert ignore into %s set customerId = %d', self::CHANGES_QUEUE_TABLE, $customer->getId())
+        Db::get()->executeQuery(
+            sprintf('INSERT IGNORE INTO %s SET customerId = ?', self::CHANGES_QUEUE_TABLE),
+            [$customer->getId()]
         );
     }
 
