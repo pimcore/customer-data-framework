@@ -554,7 +554,7 @@ class CustomerListTest extends ModelTestCase
         $modifiedListing = $handler->getListing();
         $this->assertEquals(5, $modifiedListing->getCount());
 
-        // -- Tests for Exact Search (Field should must match exactly)
+        // -- Tests for Exact Search (Field should match exactly)
 
         // ------------
         $listing = new Customer\Listing();
@@ -685,7 +685,52 @@ class CustomerListTest extends ModelTestCase
         $modifiedListing = $handler->getListing();
         $this->assertEquals(4, $modifiedListing->getCount());
 
-        // -- Tests for Exact Search(Field should must match exactly)
+        // -- Tests for Exact Search(Field should match exactly)
+
+        // -- Tests for Exact Search(Field should match exactly) with *
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['email'], '*pimcore* AND !"sam.jackman@pimcore.fun"');
+        $handler->addFilter ($searchFilter);
+
+        $modifiedListing = $handler->getListing ();
+        $this->assertEquals (4, $modifiedListing->getCount ());
+
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['firstname', 'lastname', 'email'], '*pimcore* AND !"sam.jackman@pimcore.fun"');
+        $handler->addFilter ($searchFilter);
+
+        $modifiedListing = $handler->getListing ();
+        $this->assertEquals (4, $modifiedListing->getCount ());
+
+
+        // ------------
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['email'], '(*pimcore* AND !"sam.jackman@pimcore.fun") OR *fun');
+        $handler->addFilter ($searchFilter);
+
+        $modifiedListing = $handler->getListing ();
+        $this->assertEquals (5, $modifiedListing->getCount ());
+
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['firstname', 'lastname', 'email'], '(*pimcore* AND !"sam.jackman@pimcore.fun") OR *fun');
+        $handler->addFilter ($searchFilter);
+
+        $modifiedListing = $handler->getListing ();
+        $this->assertEquals (5, $modifiedListing->getCount ());
+
+        // -- Tests for Exact Search(Field should match exactly) with *
+
     }
 
     public function testBoolCombinatorFilter() {
@@ -774,7 +819,7 @@ class CustomerListTest extends ModelTestCase
         $modifiedListing = $handler->getListing();
         $this->assertEquals(1, $modifiedListing->getCount());
 
-        // -- Tests for Exact Search (Field should must match exactly)
+        // -- Tests for Exact Search (Field should match exactly)
 
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
