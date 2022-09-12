@@ -12,3 +12,12 @@
  */
 
 pimcore.events.cmfMenuReady = 'cmfMenuReady';
+
+
+if(typeof addEventListenerCompatibilityForPlugins === "function") {
+    let eventMappings = [];
+    eventMappings["cmfMenuReady"] = pimcore.events.cmfMenuReady;
+    addEventListenerCompatibilityForPlugins(eventMappings);
+} else {
+    console.error("Delete addEventListenerCompatibilityForPlugins in the customer-management-framework-bundle");
+}

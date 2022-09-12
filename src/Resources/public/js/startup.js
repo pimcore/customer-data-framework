@@ -210,6 +210,12 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
         }
 
         this.addSegmentAssignmentTab(object, 'object', type);
+        document.dispatchEvent(new CustomEvent(pimcore.events.postOpenObject, {
+            detail: {
+                object: object,
+                type: type
+            }
+        }))
     },
 
     startCustomerImport: function(customerSegmentId) {
@@ -322,10 +328,23 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
         }
 
         this.addSegmentAssignmentTab(document, 'document', type);
+
+        document.fireEvent(new CustomEvent(pimcore.events.postOpenDocument, {
+            detail: {
+                object: document,
+                type: type
+            }
+        }));
     },
 
     postOpenAsset: function (asset, type) {
         this.addSegmentAssignmentTab(asset, 'asset', type);
+        document.fireEvent(new CustomEvent(pimcore.events.postOpenAsset, {
+            detail: {
+                object: asset,
+                type: type
+            }
+        }));
     },
 
     addSegmentAssignmentTab: function (element, type, subType) {
