@@ -11,8 +11,7 @@
  * @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
-pimcore.events.cmfMenuReady = 'cmfMenuReady';
-
+pimcore.events.cmfMenuReady = 'pimcore.cmf.menu.ready';
 
 if(typeof addEventListenerCompatibilityForPlugins === "function") {
     let eventMappings = [];
