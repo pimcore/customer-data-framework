@@ -317,7 +317,7 @@ class DefaultSegmentMerger implements SegmentMergerInterface
         if (isset($this->mergedSegmentsCustomerSaveQueue[$customer->getId()])) {
             $queueEntry = $this->mergedSegmentsCustomerSaveQueue[$customer->getId()];
 
-            $this->customerSaveManager->saveDirty($customer, false);
+            $this->customerSaveManager->saveDirty($customer);
 
             /**
              * @var Note $note

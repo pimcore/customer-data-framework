@@ -67,6 +67,13 @@ class PimcoreObjectEventListener
             return;
         }
 
+        //do not update index when auto save or only saving version or when $e not DataObjectEvent
+        if (($e->hasArgument('isAutoSave') && $e->getArgument('isAutoSave')) ||
+            ($e->hasArgument('saveVersionOnly') && $e->getArgument('saveVersionOnly')) ||
+            !$e instanceof DataObjectEvent) {
+            return;
+        }
+
         $object = $e->getObject();
 
         if ($object instanceof CustomerInterface) {
