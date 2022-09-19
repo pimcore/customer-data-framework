@@ -63,7 +63,10 @@ class PimcoreObjectEventListener
 
     public function onPostUpdate(ElementEventInterface $e)
     {
-        if (!$e instanceof DataObjectEvent) {
+        // Do not process the event any further in either cases of autoSave, save version only or the event not being an instance of DataObject
+        if (($e->hasArgument('isAutoSave') && $e->getArgument('isAutoSave')) ||
+            ($e->hasArgument('saveVersionOnly') && $e->getArgument('saveVersionOnly')) ||
+            !$e instanceof DataObjectEvent) {
             return;
         }
 
