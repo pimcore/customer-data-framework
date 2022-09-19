@@ -297,7 +297,7 @@ pimcore.plugin.customermanagementframework = Class.create({
         this.checkNewsletterQueueStatus(statusIcon);
     },
     postOpenDocument: function (event) {
-        var document = event.detail.object;
+        var document = event.detail.document;
         var type = event.detail.type;
 
         if (pimcore.settings.cmf.newsletterSyncEnabled && type === 'email') {
