@@ -334,7 +334,7 @@ pimcore.plugin.customermanagementframework = Class.create({
     },
 
     postOpenAsset: function (event) {
-        var asset = event.detail.object;
+        var asset = event.detail.asset;
         var type = event.detail.type;
         this.addSegmentAssignmentTab(asset, 'asset', type);
     },
