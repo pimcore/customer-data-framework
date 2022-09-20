@@ -160,16 +160,15 @@ services:
         class: CustomerManagementFrameworkBundle\ActivityUrlTracker\DefaultActivityUrlTracker
 
     CustomerManagementFrameworkBundle\LinkGenerator\LinkActivityDefinitionLinkGenerator:
-        alias: cmf.link-activity-definition.linkgenerator
+        arguments:
+            - '%pimcore_customer_management_framework.url_activity_tracker.linkCmfcPlaceholder%'
 
     cmf.link-activity-definition.linkgenerator:
-        class: CustomerManagementFrameworkBundle\LinkGenerator\LinkActivityDefinitionLinkGenerator
+        alias: CustomerManagementFrameworkBundle\LinkGenerator\LinkActivityDefinitionLinkGenerator
         deprecated:
-            message: 'The "%service_id%" service is deprecated. Use "CustomerManagementFrameworkBundle\LinkGenerator\LinkActivityDefinitionLinkGenerator" instead'
+            message: 'The "%alias_id%" alias is deprecated. Use "CustomerManagementFrameworkBundle\LinkGenerator\LinkActivityDefinitionLinkGenerator" instead'
             package: pimcore/customer-management-framework-bundle
             version: 3.0
-        arguments:
-          - '%pimcore_customer_management_framework.url_activity_tracker.linkCmfcPlaceholder%'
 
     cmf.segment_manager.segment_merger:
         class: CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\DefaultSegmentMerger
@@ -202,25 +201,25 @@ services:
 
 
     CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface:
-        alias: cmf.customer_exporter_manager
+        class: CustomerManagementFrameworkBundle\CustomerList\ExporterManager
+        arguments:
+            - '%pimcore_customer_management_framework.customer_list.exporters%'
 
     cmf.customer_exporter_manager:
-         class: CustomerManagementFrameworkBundle\CustomerList\ExporterManager
+         alias: CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface
          deprecated:
-             message: 'The "%service_id%" service is deprecated. Use "CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface" instead'
+             message: 'The "%alias_id%" alias is deprecated. Use "CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface" instead'
              package: pimcore/customer-management-framework-bundle
              version: 3.0
-         arguments:
-              - '%pimcore_customer_management_framework.customer_list.exporters%'
 
 
     CustomerManagementFrameworkBundle\ActionTrigger\Queue\QueueInterface:
-        alias: cmf.action_trigger.queue
+        class: CustomerManagementFrameworkBundle\ActionTrigger\Queue\DefaultQueue
 
     cmf.action_trigger.queue:
-        class: CustomerManagementFrameworkBundle\ActionTrigger\Queue\DefaultQueue
+        alias: CustomerManagementFrameworkBundle\ActionTrigger\Queue\QueueInterface
         deprecated:
-            message: 'The "%service_id%" service is deprecated. Use "CustomerManagementFrameworkBundle\ActionTrigger\Queue\QueueInterface" instead'
+            message: 'The "%alias_id%" alias is deprecated. Use "CustomerManagementFrameworkBundle\ActionTrigger\Queue\QueueInterface" instead'
             package: pimcore/customer-management-framework-bundle
             version: 3.0
 

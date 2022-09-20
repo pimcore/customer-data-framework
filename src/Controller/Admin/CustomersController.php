@@ -50,11 +50,21 @@ class CustomersController extends Admin
      */
     private $segmentGroups = null;
 
+    private ExporterManagerInterface $exporterManager;
+
     public function onKernelControllerEvent(ControllerEvent $event)
     {
         parent::onKernelControllerEvent($event);
         $this->checkPermission('plugin_cmf_perm_customerview');
         AbstractObject::setHideUnpublished(true);
+    }
+
+    /**
+     * @required
+     */
+    public function setExporterManager(ExporterManagerInterface $exporterManager): void
+    {
+        $this->exporterManager = $exporterManager;
     }
 
     /**
@@ -164,7 +174,7 @@ class CustomersController extends Admin
         $ids = Db::get()->fetchFirstColumn((string)$query);
 
         $jobId = uniqid();
-        \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->saveExportTmpData($jobId, [
+        $this->exporterManager->saveExportTmpData($jobId, [
             'processIds' => $ids,
             'exporter' => $request->get('exporter'),
         ]);
@@ -185,11 +195,13 @@ class CustomersController extends Admin
      */
     public function exportStepAction(Request $request)
     {
-        $perRequest = $request->get('perRequest',
-            \Pimcore::getContainer()->getParameter('cmf.customer_export.items_per_request'));
+        $perRequest = $request->get(
+            'perRequest',
+            $this->getParameter('cmf.customer_export.items_per_request')
+        );
 
         try {
-            $data = \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->getExportTmpData($request);
+            $data = $this->exporterManager->getExportTmpData($request);
         } catch (\Exception $e) {
             return $this->adminJson([
                 'error' => true,
@@ -223,7 +235,7 @@ class CustomersController extends Admin
         $data['exportData'] = $totalExportData;
         $data['processIds'] = $processIds;
 
-        \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->saveExportTmpData(
+        $this->exporterManager->saveExportTmpData(
             $request->get('jobId'),
             $data
         );
@@ -254,7 +266,7 @@ class CustomersController extends Admin
     public function downloadFinishedExportAction(Request $request)
     {
         try {
-            $data = \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->getExportTmpData($request);
+            $data = $this->exporterManager->getExportTmpData($request);
         } catch (\Exception $e) {
             return $this->adminJson([
                 'error' => true,
@@ -295,7 +307,7 @@ class CustomersController extends Admin
                 ]
             );
 
-        \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->deleteExportTmpData($request->get('jobId'));
+        $this->exporterManager->deleteExportTmpData($request->get('jobId'));
 
         return $response;
     }
@@ -369,16 +381,11 @@ class CustomersController extends Admin
      */
     protected function getExporter(Listing\Concrete $listing, $exporterName)
     {
-        /**
-         * @var ExporterManagerInterface $exporterManager
-         */
-        $exporterManager = \Pimcore::getContainer()->get('cmf.customer_exporter_manager');
-
-        if (!$exporterManager->hasExporter($exporterName)) {
+        if (!$this->exporterManager->hasExporter($exporterName)) {
             throw new \InvalidArgumentException('Exporter does not exist');
         }
 
-        return $exporterManager->buildExporter($exporterName, $listing);
+        return $this->exporterManager->buildExporter($exporterName, $listing);
     }
 
     /**

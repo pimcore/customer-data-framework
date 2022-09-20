@@ -15,12 +15,17 @@
 
 namespace CustomerManagementFrameworkBundle\Maintenance\Tasks;
 
+use CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface;
 use Pimcore\Maintenance\TaskInterface;
 
 class CleanupExportTmpDataTask implements TaskInterface
 {
+    public function __construct(private ExporterManagerInterface $exporterManager)
+    {
+    }
+
     public function execute(): void
     {
-        \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->cleanupExportTmpData();
+        $this->exporterManager->cleanupExportTmpData();
     }
 }
