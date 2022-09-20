@@ -27,11 +27,6 @@ services:
                - { name: kernel.event_listener, event: plugin.ObjectMerger.postMerge, method: onPostMerge }
                - { name: kernel.event_listener, event: plugin.ObjectMerger.preMerge, method: onPreMerge }
 
-    cmf.event_listener.maintenance:
-          class: CustomerManagementFrameworkBundle\Event\MaintenanceEventListener
-          tags:
-              - { name: kernel.event_listener, event: pimcore.system.maintenance, method: onMaintenance }
-
     CustomerManagementFrameworkBundle\ActionTrigger\EventHandler\EventHandlerInterface:
         alias: cmf.event_listener.action_trigger
 
