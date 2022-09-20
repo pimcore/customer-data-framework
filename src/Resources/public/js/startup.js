@@ -32,7 +32,7 @@ pimcore.plugin.customermanagementframework = Class.create({
         document.addEventListener(pimcore.events.postOpenObject, this.postOpenObject.bind(this));
     },
 
-    pimcoreReady: function (viewport) {
+    pimcoreReady: function (e) {
         this.initToolbar();
         this.initNewsletterQueueInfo();
     },
