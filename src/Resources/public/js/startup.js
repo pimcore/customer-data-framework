@@ -14,23 +14,25 @@
 
 pimcore.registerNS("pimcore.plugin.customermanagementframework");
 
-pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, {
+pimcore.plugin.customermanagementframework = Class.create({
     getClassName: function () {
         return "pimcore.plugin.customermanagementframework";
     },
 
     initialize: function () {
-        pimcore.plugin.broker.registerPlugin(this);
-
         this.navEl = Ext.get('pimcore_menu_search').insertSibling('<li id="pimcore_menu_cmf" data-menu-tooltip="'
             + t('plugin_cmf_mainmenu') +
             '" class="pimcore_menu_item pimcore_menu_needs_children"><img src="/bundles/pimcorecustomermanagementframework/icons/outline-group-24px.svg"></li>', 'before');
         this.menu = new Ext.menu.Menu({cls: 'pimcore_navigation_flyout'});
 
         pimcore.layout.toolbar.prototype.cmfMenu = this.menu;
+        document.addEventListener(pimcore.events.pimcoreReady, this.pimcoreReady.bind(this));
+        document.addEventListener(pimcore.events.postOpenDocument, this.postOpenDocument.bind(this));
+        document.addEventListener(pimcore.events.postOpenAsset, this.postOpenAsset.bind(this));
+        document.addEventListener(pimcore.events.postOpenObject, this.postOpenObject.bind(this));
     },
 
-    pimcoreReady: function (params, broker) {
+    pimcoreReady: function (e) {
         this.initToolbar();
         this.initNewsletterQueueInfo();
     },
@@ -193,10 +195,20 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
         }
 
         this.navEl.on('mousedown', toolbar.showSubMenu.bind(toolbar.cmfMenu));
-        pimcore.plugin.broker.fireEvent("cmfMenuReady", toolbar.cmfMenu);
+
+        const cmfMenuReady = new CustomEvent(pimcore.events.cmfMenuReady, {
+            detail: {
+                cmfMenu: toolbar.cmfMenu
+            }
+        });
+
+        document.dispatchEvent(cmfMenuReady);
     },
 
-    postOpenObject: function (object, type) {
+    postOpenObject: function (event) {
+        var object = event.detail.object;
+        var type = event.detail.type;
+
         if ("object" === type && object.data.general.o_className === pimcore.settings.cmf.customerClassName && pimcore.globalmanager.get("user").isAllowed(ActivityView.config.PERMISSION)) {
             var panel = new ActivityView.ActivityTab(object, type).getPanel();
 
@@ -284,7 +296,9 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
 
         this.checkNewsletterQueueStatus(statusIcon);
     },
-    postOpenDocument: function (document, type) {
+    postOpenDocument: function (event) {
+        var document = event.detail.document;
+        var type = event.detail.type;
 
         if (pimcore.settings.cmf.newsletterSyncEnabled && type === 'email') {
             document.tab.items.items[0].add({
@@ -319,7 +333,9 @@ pimcore.plugin.customermanagementframework = Class.create(pimcore.plugin.admin, 
         this.addSegmentAssignmentTab(document, 'document', type);
     },
 
-    postOpenAsset: function (asset, type) {
+    postOpenAsset: function (event) {
+        var asset = event.detail.asset;
+        var type = event.detail.type;
         this.addSegmentAssignmentTab(asset, 'asset', type);
     },
 

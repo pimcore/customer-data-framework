@@ -36,6 +36,7 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
     {
         return [
             '/admin/customermanagementframework/helper/settings-json',
+            '/bundles/pimcorecustomermanagementframework/js/events.js',
             '/bundles/pimcorecustomermanagementframework/js/startup.js',
             '/bundles/pimcorecustomermanagementframework/js/ActivityView.js',
             '/bundles/pimcorecustomermanagementframework/js/CustomerView.js',
