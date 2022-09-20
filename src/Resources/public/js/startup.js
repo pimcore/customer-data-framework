@@ -297,7 +297,7 @@ pimcore.plugin.customermanagementframework = Class.create({
         this.checkNewsletterQueueStatus(statusIcon);
     },
     postOpenDocument: function (event) {
-        var document = event.detail.object;
+        var document = event.detail.document;
         var type = event.detail.type;
 
         if (pimcore.settings.cmf.newsletterSyncEnabled && type === 'email') {
@@ -334,7 +334,7 @@ pimcore.plugin.customermanagementframework = Class.create({
     },
 
     postOpenAsset: function (event) {
-        var asset = event.detail.object;
+        var asset = event.detail.asset;
         var type = event.detail.type;
         this.addSegmentAssignmentTab(asset, 'asset', type);
     },
