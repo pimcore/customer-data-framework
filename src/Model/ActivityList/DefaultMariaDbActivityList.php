@@ -197,7 +197,10 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         reset($this->activities);
     }
 
-    public function load()
+    /**
+     * @return array
+     */
+    public function load()//: array
     {
         $raw = $this->dao->load();
 
@@ -214,7 +217,12 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         return $activities;
     }
 
-    public function isValidOrderKey($key)
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function isValidOrderKey(/* string */ $key)//: bool
     {
         return true;
     }

@@ -20,7 +20,10 @@ use Pimcore\Model;
 
 class Dao extends Model\Listing\Dao\AbstractDao
 {
-    public function load()
+    /**
+     * @return array
+     */
+    public function load()//: array
     {
         $rules = [];
 
@@ -39,7 +42,7 @@ class Dao extends Model\Listing\Dao\AbstractDao
     /**
      * @return int
      */
-    public function getTotalCount()
+    public function getTotalCount()//: int
     {
         return (int)$this->db->fetchOne(
             'SELECT COUNT(*) as amount FROM '.Rule\Dao::TABLE_NAME.' '.$this->getCondition(),
