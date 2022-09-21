@@ -49,15 +49,15 @@ class TypeMapper implements TypeMapperInterface
      */
     public function getTypeStringBySubType(string $subType): string
     {
-        if (in_array($subType, Document::$types)) {
+        if (in_array($subType, Document::getTypes())) {
             return static::TYPE_DOCUMENT;
         }
 
-        if (in_array($subType, Asset::$types)) {
+        if (in_array($subType, Asset::getTypes())) {
             return static::TYPE_ASSET;
         }
 
-        if (in_array($subType, AbstractObject::$types)) {
+        if (in_array($subType, AbstractObject::getTypes())) {
             return static::TYPE_OBJECT;
         }
 
