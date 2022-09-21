@@ -204,7 +204,7 @@ interface CustomerInterface extends ElementInterface
      */
     public function setIdEncoded(?string $idEncoded);
 
-    public function getProfilingConsent() :?Consent;
+    public function getProfilingConsent(): ?Consent;
 
     /**
      * @return array
