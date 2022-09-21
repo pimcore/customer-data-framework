@@ -36,11 +36,6 @@ parameters:
 			path: src/DuplicatesIndex/DefaultMariaDbDuplicatesIndex.php
 
 		-
-			message: "#^Parameter \\$e of method CustomerManagementFrameworkBundle\\\\Event\\\\MaintenanceEventListener\\:\\:onMaintenance\\(\\) has invalid type Pimcore\\\\Event\\\\System\\\\MaintenanceEvent\\.$#"
-			count: 1
-			path: src/Event/MaintenanceEventListener.php
-
-		-
 			message: "#^Result of && is always false\\.$#"
 			count: 1
 			path: src/Factory.php

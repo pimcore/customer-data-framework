@@ -13,13 +13,14 @@
  *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
-namespace CustomerManagementFrameworkBundle\Event;
+namespace CustomerManagementFrameworkBundle\Maintenance\Tasks;
 
-class MaintenanceEventListener
+use Pimcore\Maintenance\TaskInterface;
+
+class CleanupExportTmpDataTask implements TaskInterface
 {
-    public function onMaintenance(\Pimcore\Event\System\MaintenanceEvent $e)
+    public function execute(): void
     {
         \Pimcore::getContainer()->get('cmf.customer_exporter_manager')->cleanupExportTmpData();
-        \Pimcore::getContainer()->get('cmf.customer_provider.object_naming_scheme')->cleanupEmptyFolders();
     }
 }

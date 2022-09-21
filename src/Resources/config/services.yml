@@ -124,6 +124,14 @@ services:
                 'cleanUpFilterDefinitions': '@CustomerManagementFrameworkBundle\CustomerView\FilterDefinition\Maintenance'
                 'cleanUpTemporaryCustomers': '@CustomerManagementFrameworkBundle\CustomerView\Customer\Maintenance'
 
+    CustomerManagementFrameworkBundle\Maintenance\Tasks\CleanupEmptyFoldersTask:
+        tags:
+            - { name: pimcore.maintenance.task, type: cmf_cleanup_empty_folders }
+
+    CustomerManagementFrameworkBundle\Maintenance\Tasks\CleanupExportTmpDataTask:
+        tags:
+            - { name: pimcore.maintenance.task, type: cmf_cleanup_export_tmp_data }
+
     cmf.logger:
         alias: monolog.logger.cmf
 

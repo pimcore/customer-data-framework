@@ -555,8 +555,184 @@ class CustomerListTest extends ModelTestCase
         $modifiedListing = $handler->getListing();
         $this->assertEquals(5, $modifiedListing->getCount());
 
-    }
+        // -- Tests for Exact Search (Field should match exactly)
 
+        // ------------
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['firstname'], '"jane"');
+        $handler->addFilter($searchFilter);
+
+        $modifiedListing = $handler->getListing();
+        $this->assertEquals(1, $modifiedListing->getCount());
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['firstname', 'lastname'], '"jane"');
+        $handler->addFilter($searchFilter);
+
+        $modifiedListing = $handler->getListing();
+        $this->assertEquals(1, $modifiedListing->getCount());
+
+        // ------------
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['firstname'], '"jane" OR "sam"');
+        $handler->addFilter($searchFilter);
+
+        $modifiedListing = $handler->getListing();
+        $this->assertEquals(2, $modifiedListing->getCount());
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['firstname', 'lastname'], '"jane" OR "sam"');
+        $handler->addFilter($searchFilter);
+
+        $modifiedListing = $handler->getListing();
+        $this->assertEquals(2, $modifiedListing->getCount());
+
+        // ------------
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['firstname'], '"jane" AND "sam"');
+        $handler->addFilter($searchFilter);
+
+        $modifiedListing = $handler->getListing();
+        $this->assertEquals(0, $modifiedListing->getCount());
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['firstname', 'lastname'], '"peter" AND "john"');
+        $handler->addFilter($searchFilter);
+
+        $modifiedListing = $handler->getListing();
+        $this->assertEquals(0, $modifiedListing->getCount());
+
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['firstname', 'lastname'], '"peter" AND "hugo"');
+        $handler->addFilter($searchFilter);
+
+        $modifiedListing = $handler->getListing();
+        $this->assertEquals(1, $modifiedListing->getCount());
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['email'], '"jane.doe@pimcore.fun" AND !"john.doe@pimcore.fun"');
+        $handler->addFilter($searchFilter);
+
+        $modifiedListing = $handler->getListing();
+        $this->assertEquals(1, $modifiedListing->getCount());
+
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['firstname', 'lastname', 'email'], '"jane.doe@pimcore.fun" AND !"john.doe@pimcore.fun"');
+        $handler->addFilter($searchFilter);
+
+        $modifiedListing = $handler->getListing();
+        $this->assertEquals(1, $modifiedListing->getCount());
+
+        // ------------
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['email'], '("jane.doe@pimcore.fun" AND !"john.doe@pimcore.fun") OR "sophie.fischer@pimcore.fun"');
+        $handler->addFilter($searchFilter);
+
+        $modifiedListing = $handler->getListing();
+        $this->assertEquals(2, $modifiedListing->getCount());
+
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['firstname', 'lastname', 'email'], '("jane.doe@pimcore.fun" AND !"john.doe@pimcore.fun") OR "sophie.fischer@pimcore.fun"');
+        $handler->addFilter($searchFilter);
+
+        $modifiedListing = $handler->getListing();
+        $this->assertEquals(2, $modifiedListing->getCount());
+
+        // ------------
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['firstname'], '"jan"');
+        $handler->addFilter($searchFilter);
+
+        $modifiedListing = $handler->getListing();
+        $this->assertEquals(0, $modifiedListing->getCount());
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['firstname'], '!"jane"');
+        $handler->addFilter($searchFilter);
+
+        $modifiedListing = $handler->getListing();
+        $this->assertEquals(4, $modifiedListing->getCount());
+
+        // -- Tests for Exact Search(Field should match exactly)
+
+        // -- Tests for Exact Search(Field should match exactly) with *
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['email'], '*pimcore* AND !"sam.jackman@pimcore.fun"');
+        $handler->addFilter ($searchFilter);
+
+        $modifiedListing = $handler->getListing ();
+        $this->assertEquals (4, $modifiedListing->getCount ());
+
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['firstname', 'lastname', 'email'], '*pimcore* AND !"sam.jackman@pimcore.fun"');
+        $handler->addFilter ($searchFilter);
+
+        $modifiedListing = $handler->getListing ();
+        $this->assertEquals (4, $modifiedListing->getCount ());
+
+
+        // ------------
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['email'], '(*pimcore* AND !"sam.jackman@pimcore.fun") OR *fun');
+        $handler->addFilter ($searchFilter);
+
+        $modifiedListing = $handler->getListing ();
+        $this->assertEquals (5, $modifiedListing->getCount ());
+
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter = new SearchQuery(['firstname', 'lastname', 'email'], '(*pimcore* AND !"sam.jackman@pimcore.fun") OR *fun');
+        $handler->addFilter ($searchFilter);
+
+        $modifiedListing = $handler->getListing ();
+        $this->assertEquals (5, $modifiedListing->getCount ());
+
+        // -- Tests for Exact Search(Field should match exactly) with *
+
+    }
 
     public function testBoolCombinatorFilter() {
         //test one filter
@@ -644,16 +820,50 @@ class CustomerListTest extends ModelTestCase
         $modifiedListing = $handler->getListing();
         $this->assertEquals(1, $modifiedListing->getCount());
 
+        // -- Tests for Exact Search (Field should match exactly)
+
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter1 = new SearchQuery(['firstname'], '"jane"');
+        $searchFilter2 = new SearchQuery(['firstname'], '"john"');
+        $handler->addFilter(new BoolCombinator([$searchFilter1, $searchFilter2], 'OR'));
+
+        $modifiedListing = $handler->getListing();
+        $this->assertEquals(2, $modifiedListing->getCount());
+
         // --------------------
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $searchFilter1 = new SearchQuery(['lastname'], '*hugo*');
-        $searchFilter2 = new SearchQuery(['firstname'], 'pet*');
+        $searchFilter1 = new SearchQuery(['firstname'], '"jane"');
+        $searchFilter2 = new SearchQuery(['firstname'], '"john"');
         $handler->addFilter(new BoolCombinator([$searchFilter1, $searchFilter2], 'AND'));
+
+        $modifiedListing = $handler->getListing();
+        $this->assertEquals(0, $modifiedListing->getCount());
+
+        // --------------------
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter1 = new SearchQuery(['lastname'], '"hugo"');
+        $searchFilter2 = new SearchQuery(['firstname'], '"peter"');
+        $handler->addFilter(new BoolCombinator([$searchFilter1, $searchFilter2], 'OR'));
+
 
         $modifiedListing = $handler->getListing();
         $this->assertEquals(1, $modifiedListing->getCount());
 
+        // --------------------
+        $listing = new Customer\Listing();
+        $handler = new FilterHandler($listing);
+
+        $searchFilter1 = new SearchQuery(['lastname'], '"hugo"');
+        $searchFilter2 = new SearchQuery(['firstname'], '"peter"');
+        $handler->addFilter(new BoolCombinator([$searchFilter1, $searchFilter2], 'AND'));
+
+        $modifiedListing = $handler->getListing();
+        $this->assertEquals(1, $modifiedListing->getCount());
     }
 }
