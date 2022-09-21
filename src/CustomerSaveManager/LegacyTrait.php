@@ -19,16 +19,22 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 
 /**
  * @property SaveOptions $saveOptions
+ *
+ * @deprecated
  */
 trait LegacyTrait
 {
     /**
      * @return bool
-     *
-     * @deprecated
      */
     public function getSegmentBuildingHookEnabled()
     {
+        trigger_deprecation(
+            'pimcore/customer-data-framework',
+            '1.3.17',
+            sprintf('%s is deprecated.', __METHOD__)
+        );
+
         return $this->saveOptions->isOnSaveSegmentBuildersEnabled();
     }
 
@@ -36,11 +42,15 @@ trait LegacyTrait
      * @param bool $segmentBuildingHookEnabled
      *
      * @return $this
-     *
-     * @deprecated
      */
     public function setSegmentBuildingHookEnabled($segmentBuildingHookEnabled)
     {
+        trigger_deprecation(
+            'pimcore/customer-data-framework',
+            '1.3.17',
+            sprintf('%s is deprecated.', __METHOD__)
+        );
+
         if ($segmentBuildingHookEnabled) {
             $this->saveOptions->enableOnSaveSegmentBuilders();
         } else {
@@ -52,11 +62,15 @@ trait LegacyTrait
 
     /**
      * @return bool
-     *
-     * @deprecated
      */
     public function getCustomerSaveValidatorEnabled()
     {
+        trigger_deprecation(
+            'pimcore/customer-data-framework',
+            '1.3.17',
+            sprintf('%s is deprecated.', __METHOD__)
+        );
+
         return $this->saveOptions->isValidatorEnabled();
     }
 
@@ -64,11 +78,15 @@ trait LegacyTrait
      * @param bool $customerSaveValidatorEnabled
      *
      * @return $this
-     *
-     * @deprecated
      */
     public function setCustomerSaveValidatorEnabled($customerSaveValidatorEnabled)
     {
+        trigger_deprecation(
+            'pimcore/customer-data-framework',
+            '1.3.17',
+            sprintf('%s is deprecated.', __METHOD__)
+        );
+
         if ($customerSaveValidatorEnabled) {
             $this->saveOptions->enableValidator();
         } else {
@@ -80,11 +98,15 @@ trait LegacyTrait
 
     /**
      * @return bool
-     *
-     * @deprecated
      */
     public function isDisableSaveHandlers()
     {
+        trigger_deprecation(
+            'pimcore/customer-data-framework',
+            '1.3.17',
+            sprintf('%s is deprecated.', __METHOD__)
+        );
+
         return !$this->saveOptions->isSaveHandlersExecutionEnabled();
     }
 
@@ -92,11 +114,15 @@ trait LegacyTrait
      * @param bool $disableSaveHandlers
      *
      * @return $this
-     *
-     * @deprecated
      */
     public function setDisableSaveHandlers($disableSaveHandlers)
     {
+        trigger_deprecation(
+            'pimcore/customer-data-framework',
+            '1.3.17',
+            sprintf('%s is deprecated.', __METHOD__)
+        );
+
         if ($disableSaveHandlers) {
             $this->saveOptions->disableSaveHandlers();
         } else {
@@ -108,11 +134,15 @@ trait LegacyTrait
 
     /**
      * @return bool
-     *
-     * @deprecated
      */
     public function isDisableDuplicateIndex()
     {
+        trigger_deprecation(
+            'pimcore/customer-data-framework',
+            '1.3.17',
+            sprintf('%s is deprecated.', __METHOD__)
+        );
+
         return !$this->saveOptions->isDuplicatesIndexEnabled();
     }
 
@@ -120,11 +150,15 @@ trait LegacyTrait
      * @param bool $disableDuplicateIndex
      *
      * @return $this
-     *
-     * @deprecated
      */
     public function setDisableDuplicateIndex($disableDuplicateIndex)
     {
+        trigger_deprecation(
+            'pimcore/customer-data-framework',
+            '1.3.17',
+            sprintf('%s is deprecated.', __METHOD__)
+        );
+
         if ($disableDuplicateIndex) {
             $this->saveOptions->disableDuplicatesIndex();
         } else {
@@ -136,11 +170,15 @@ trait LegacyTrait
 
     /**
      * @return bool
-     *
-     * @deprecated
      */
     public function isDisableQueue()
     {
+        trigger_deprecation(
+            'pimcore/customer-data-framework',
+            '1.3.17',
+            sprintf('%s is deprecated.', __METHOD__)
+        );
+
         return !$this->saveOptions->isSegmentBuilderQueueEnabled();
     }
 
@@ -148,11 +186,15 @@ trait LegacyTrait
      * @param bool $disableQueue
      *
      * @return $this
-     *
-     * @deprecated
      */
     public function setDisableQueue($disableQueue)
     {
+        trigger_deprecation(
+            'pimcore/customer-data-framework',
+            '1.3.17',
+            sprintf('%s is deprecated.', __METHOD__)
+        );
+
         if ($disableQueue) {
             $this->saveOptions->disableSegmentBuilderQueue();
         } else {
@@ -167,14 +209,15 @@ trait LegacyTrait
      * @param bool $disableVersions
      *
      * @return mixed
-     *
-     * @deprecated
      */
     public function saveWithDisabledHooks(CustomerInterface $customer, $disableVersions = false)
     {
-        /**
-         * @var SaveOptions $options
-         */
+        trigger_deprecation(
+            'pimcore/customer-data-framework',
+            '1.3.17',
+            sprintf('%s is deprecated.', __METHOD__)
+        );
+
         $options = $this->getSaveOptions(true);
         $options
             ->disableValidator()
