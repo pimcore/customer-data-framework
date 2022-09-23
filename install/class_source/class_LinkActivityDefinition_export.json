@@ -25,7 +25,7 @@
         "bodyStyle": null,
         "datatype": "layout",
         "permissions": null,
-        "childs": [
+        "children": [
             {
                 "fieldtype": "panel",
                 "labelWidth": 100,
@@ -42,7 +42,7 @@
                 "bodyStyle": null,
                 "datatype": "layout",
                 "permissions": null,
-                "childs": [
+                "children": [
                     {
                         "fieldtype": "panel",
                         "labelWidth": 100,
@@ -59,7 +59,7 @@
                         "bodyStyle": null,
                         "datatype": "layout",
                         "permissions": null,
-                        "childs": [
+                        "children": [
                             {
                                 "fieldtype": "input",
                                 "width": null,
@@ -104,7 +104,7 @@
                         "bodyStyle": "",
                         "datatype": "layout",
                         "permissions": null,
-                        "childs": [
+                        "children": [
                             {
                                 "fieldtype": "panel",
                                 "labelWidth": 150,
@@ -121,7 +121,7 @@
                                 "bodyStyle": "",
                                 "datatype": "layout",
                                 "permissions": null,
-                                "childs": [
+                                "children": [
                                     {
                                         "fieldtype": "input",
                                         "width": 320,
@@ -253,7 +253,7 @@
                                 "bodyStyle": "",
                                 "datatype": "layout",
                                 "permissions": null,
-                                "childs": [
+                                "children": [
                                     {
                                         "fieldtype": "input",
                                         "width": null,
@@ -408,7 +408,7 @@
                         "columnType": "longtext",
                         "styleElement": "",
                         "phpdocType": "\\Pimcore\\Model\\DataObject\\Data\\BlockElement[][]",
-                        "childs": [
+                        "children": [
                             {
                                 "fieldtype": "panel",
                                 "labelWidth": 80,
@@ -425,7 +425,7 @@
                                 "bodyStyle": "",
                                 "datatype": "layout",
                                 "permissions": null,
-                                "childs": [
+                                "children": [
                                     {
                                         "fieldtype": "input",
                                         "width": null,

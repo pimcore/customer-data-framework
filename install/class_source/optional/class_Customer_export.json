@@ -24,7 +24,7 @@
         "bodyStyle": null,
         "datatype": "layout",
         "permissions": null,
-        "childs": [
+        "children": [
             {
                 "fieldtype": "panel",
                 "labelWidth": 100,
@@ -41,7 +41,7 @@
                 "bodyStyle": "",
                 "datatype": "layout",
                 "permissions": null,
-                "childs": [
+                "children": [
                     {
                         "fieldtype": "tabpanel",
                         "border": false,
@@ -57,7 +57,7 @@
                         "bodyStyle": "",
                         "datatype": "layout",
                         "permissions": null,
-                        "childs": [
+                        "children": [
                             {
                                 "fieldtype": "panel",
                                 "labelWidth": 140,
@@ -74,7 +74,7 @@
                                 "bodyStyle": "",
                                 "datatype": "layout",
                                 "permissions": null,
-                                "childs": [
+                                "children": [
                                     {
                                         "fieldtype": "checkbox",
                                         "defaultValue": 1,
@@ -109,7 +109,7 @@
                                         "bodyStyle": "",
                                         "datatype": "layout",
                                         "permissions": null,
-                                        "childs": [
+                                        "children": [
                                             {
                                                 "fieldtype": "firstname",
                                                 "width": null,
@@ -262,7 +262,7 @@
                                         "bodyStyle": "",
                                         "datatype": "layout",
                                         "permissions": null,
-                                        "childs": [
+                                        "children": [
                                             {
                                                 "fieldtype": "input",
                                                 "width": null,
@@ -1423,7 +1423,7 @@
                                         "bodyStyle": "",
                                         "datatype": "layout",
                                         "permissions": null,
-                                        "childs": [
+                                        "children": [
                                             {
                                                 "fieldtype": "email",
                                                 "width": null,
@@ -1517,7 +1517,7 @@
                                 "bodyStyle": "",
                                 "datatype": "layout",
                                 "permissions": null,
-                                "childs": [
+                                "children": [
                                     {
                                         "fieldtype": "manyToManyObjectRelation",
                                         "width": "",
@@ -1625,7 +1625,7 @@
                                 "bodyStyle": "",
                                 "datatype": "layout",
                                 "permissions": null,
-                                "childs": [
+                                "children": [
                                     {
                                         "fieldtype": "password",
                                         "width": "",
@@ -1699,7 +1699,7 @@
                                 "bodyStyle": "",
                                 "datatype": "layout",
                                 "permissions": null,
-                                "childs": [
+                                "children": [
                                     {
                                         "fieldtype": "input",
                                         "width": null,
