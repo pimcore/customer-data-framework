@@ -21,7 +21,7 @@
         "bodyStyle": null,
         "datatype": "layout",
         "permissions": null,
-        "childs": [
+        "children": [
             {
                 "fieldtype": "panel",
                 "labelWidth": 200,
@@ -37,7 +37,7 @@
                 "bodyStyle": "",
                 "datatype": "layout",
                 "permissions": null,
-                "childs": [
+                "children": [
                     {
                         "fieldtype": "input",
                         "width": null,
@@ -70,7 +70,7 @@
                         "queryColumnType": "longtext",
                         "columnType": "longtext",
                         "phpdocType": "\\Pimcore\\Model\\DataObject\\Data\\Block",
-                        "childs": [
+                        "children": [
                             {
                                 "fieldtype": "input",
                                 "width": null,
