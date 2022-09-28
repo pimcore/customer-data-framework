@@ -514,7 +514,7 @@
     "previewUrl": "\/__customermanagementframework\/object-preview\/link-activity-definition-preview",
     "group": "CustomerManagement",
     "showAppLoggerTab": false,
-    "linkGeneratorReference": "@cmf.link-activity-definition.linkgenerator",
+    "linkGeneratorReference": "@CustomerManagementFrameworkBundle\\LinkGenerator\\LinkActivityDefinitionLinkGenerator",
     "compositeIndices": [],
     "showFieldLookup": false,
     "propertyVisibility": {

@@ -201,16 +201,6 @@ parameters:
 			path: src/SegmentBuilder/AgeSegmentBuilder.php
 
 		-
-			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\CustomerSaveManager\\\\CustomerSaveManagerInterface\\:\\:getSegmentBuildingHookEnabled\\(\\)\\.$#"
-			count: 1
-			path: src/SegmentManager/SegmentBuilderExecutor/DefaultSegmentBuilderExecutor.php
-
-		-
-			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\CustomerSaveManager\\\\CustomerSaveManagerInterface\\:\\:setSegmentBuildingHookEnabled\\(\\)\\.$#"
-			count: 2
-			path: src/SegmentManager/SegmentBuilderExecutor/DefaultSegmentBuilderExecutor.php
-
-		-
 			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
 			count: 1
 			path: src/SegmentManager/SegmentBuilderExecutor/DefaultSegmentBuilderExecutor.php
