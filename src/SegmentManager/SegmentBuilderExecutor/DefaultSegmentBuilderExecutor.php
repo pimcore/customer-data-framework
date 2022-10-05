@@ -97,8 +97,9 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
         $logger = $this->getLogger();
         $logger->notice('start segment building');
 
-        $backup = $this->customerSaveManager->getSegmentBuildingHookEnabled();
-        $this->customerSaveManager->setSegmentBuildingHookEnabled(false);
+        $saveOptions = $this->customerSaveManager->getSaveOptions();
+        $backup = $saveOptions->isOnSaveSegmentBuildersEnabled();
+        $saveOptions->disableOnSaveSegmentBuilders();
 
         if (!is_null($segmentBuilderServiceId)) {
             $segmentBuilders = [\Pimcore::getContainer()->get($segmentBuilderServiceId)];
@@ -330,7 +331,11 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
             $flushQueue($customerQueueRemoval);
         }
 
-        $this->customerSaveManager->setSegmentBuildingHookEnabled($backup);
+        if ($backup) {
+            $saveOptions->enableOnSaveSegmentBuilders();
+        } else {
+            $saveOptions->disableOnSaveSegmentBuilders();
+        }
     }
 
     protected function getIntOption(array $options, $option)
