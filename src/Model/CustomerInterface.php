@@ -39,19 +39,19 @@ interface CustomerInterface extends ElementInterface
     public function getPublished();
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getActive(): ?bool;
 
     /**
-     * @param bool $active
+     * @param bool|null $active
      *
      * @return void
      */
     public function setActive(?bool $active);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getGender(): ?string;
 
@@ -63,7 +63,7 @@ interface CustomerInterface extends ElementInterface
     public function setGender(?string $gender);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getFirstname(): ?string;
 
@@ -75,7 +75,7 @@ interface CustomerInterface extends ElementInterface
     public function setFirstname(?string $firstname);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getLastname(): ?string;
 
@@ -87,7 +87,7 @@ interface CustomerInterface extends ElementInterface
     public function setLastname(?string $lastname);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getStreet(): ?string;
 
@@ -99,7 +99,7 @@ interface CustomerInterface extends ElementInterface
     public function setStreet(?string $street);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getZip(): ?string;
 
@@ -111,7 +111,7 @@ interface CustomerInterface extends ElementInterface
     public function setZip(?string $zip);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCity(): ?string;
 
@@ -123,7 +123,7 @@ interface CustomerInterface extends ElementInterface
     public function setCity(?string $city);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCountryCode(): ?string;
 
@@ -135,7 +135,7 @@ interface CustomerInterface extends ElementInterface
     public function setCountryCode(?string $countryCode);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getEmail(): ?string;
 
@@ -147,7 +147,7 @@ interface CustomerInterface extends ElementInterface
     public function setEmail(?string $email);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getPhone(): ?string;
 
@@ -193,7 +193,7 @@ interface CustomerInterface extends ElementInterface
     public function getAllSegments();
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getIdEncoded(): ?string;
 

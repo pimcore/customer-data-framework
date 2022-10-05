@@ -46,9 +46,9 @@ class CustomerObjectUserProvider implements UserProviderInterface
     /**
      * @inheritdoc
      *
-     * @return CustomerInterface
+     * @return UserInterface
      */
-    public function loadUserByIdentifier(string $identifier)//: CustomerInterface
+    public function loadUserByIdentifier(string $identifier)//: UserInterface
     {
         $list = $this->customerProvider->getList();
         $list->setCondition(sprintf('%s = ?', $this->usernameField), $identifier);
@@ -57,7 +57,7 @@ class CustomerObjectUserProvider implements UserProviderInterface
         /** @var CustomerInterface|false $customer */
         $customer = $list->current();
 
-        if (!$customer) {
+        if (!$customer instanceof UserInterface) {
             throw new UserNotFoundException(sprintf('Customer "%s" was not found', $identifier));
         }
 
@@ -77,16 +77,22 @@ class CustomerObjectUserProvider implements UserProviderInterface
     /**
      * @inheritdoc
      *
-     * @return CustomerInterface
+     * @return UserInterface
      */
-    public function refreshUser(UserInterface $user)//: CustomerInterface
+    public function refreshUser(UserInterface $user)//: UserInterface
     {
         $class = $this->customerProvider->getCustomerClassName();
         if (!$user instanceof $class || !$user instanceof AbstractObject) {
             throw new UnsupportedUserException();
         }
 
-        return $this->customerProvider->getById($user->getId(), true);
+        $customer = $this->customerProvider->getById($user->getId(), true);
+
+        if (!$customer instanceof UserInterface) {
+            throw new UserNotFoundException(sprintf('Customer "%s" was not found', $user->getId()));
+        }
+
+        return $customer;
     }
 
     /**
@@ -96,10 +102,6 @@ class CustomerObjectUserProvider implements UserProviderInterface
      */
     public function supportsClass($class)//: bool
     {
-        if ($class === $this->customerProvider->getCustomerClassName()) {
-            return true;
-        }
-
-        return false;
+        return $class === $this->customerProvider->getCustomerClassName();
     }
 }
