@@ -45,8 +45,10 @@ class CustomerObjectUserProvider implements UserProviderInterface
 
     /**
      * @inheritdoc
+     *
+     * @return CustomerInterface
      */
-    public function loadUserByIdentifier(string $identifier)
+    public function loadUserByIdentifier(string $identifier)//: CustomerInterface
     {
         $list = $this->customerProvider->getList();
         $list->setCondition(sprintf('%s = ?', $this->usernameField), $identifier);
@@ -74,8 +76,10 @@ class CustomerObjectUserProvider implements UserProviderInterface
 
     /**
      * @inheritdoc
+     *
+     * @return CustomerInterface
      */
-    public function refreshUser(UserInterface $user)
+    public function refreshUser(UserInterface $user)//: CustomerInterface
     {
         $class = $this->customerProvider->getCustomerClassName();
         if (!$user instanceof $class || !$user instanceof AbstractObject) {
@@ -87,8 +91,10 @@ class CustomerObjectUserProvider implements UserProviderInterface
 
     /**
      * @inheritdoc
+     *
+     * @return bool
      */
-    public function supportsClass($class)
+    public function supportsClass($class)//: bool
     {
         if ($class === $this->customerProvider->getCustomerClassName()) {
             return true;

@@ -61,8 +61,10 @@ class ElementSegmentsListener implements EventSubscriberInterface
 
     /**
      * @inheritDoc
+     *
+     * @return array<string, string>
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents()//: array
     {
         return [
             TargetingEvents::PRE_RESOLVE => 'onTargetingPreResolve'
