@@ -21,7 +21,7 @@ use Pimcore\Model;
 class Dao extends Model\Listing\Dao\AbstractDao
 {
     /**
-     * @return array
+     * @return Rule[]
      */
     public function load()//: array
     {

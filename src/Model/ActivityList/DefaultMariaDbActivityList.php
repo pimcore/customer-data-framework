@@ -17,6 +17,7 @@ namespace CustomerManagementFrameworkBundle\Model\ActivityList;
 
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList\MariaDbDao;
+use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use Pimcore\Model\Listing\AbstractListing;
 
 class DefaultMariaDbActivityList extends AbstractListing implements ActivityListInterface
@@ -198,7 +199,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     }
 
     /**
-     * @return array
+     * @return ActivityStoreEntryInterface[]
      */
     public function load()//: array
     {
