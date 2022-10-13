@@ -15,7 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
-use CustomerManagementFrameworkBundle\Security\Guard\WebserviceAuthenticator;
+use CustomerManagementFrameworkBundle\Security\Authenticator\WebserviceAuthenticator;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Bundle\AdminBundle\Security\CsrfProtectionHandler;
 use Pimcore\Model\Tool\SettingsStore;

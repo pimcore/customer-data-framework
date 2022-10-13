@@ -39,27 +39,13 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension 
      */
     public function prepend(ContainerBuilder $container)
     {
-        $loader = new YamlFileLoader(
-            $container,
-            new FileLocator(__DIR__ . '/../Resources/config')
-        );
-
         if ($container->hasExtension('doctrine_migrations')) {
+            $loader = new YamlFileLoader(
+                $container,
+                new FileLocator(__DIR__ . '/../Resources/config')
+            );
+
             $loader->load('doctrine_migrations.yml');
-        }
-
-        // Load correct cmf webservice firewall settings based on authentication system user
-        $isAuthenticatorManagerEnabled = false;
-        foreach ($container->getExtensionConfig('security') as $config) {
-            if (isset($config['enable_authenticator_manager'])) {
-                $isAuthenticatorManagerEnabled = $config['enable_authenticator_manager'];
-            }
-        }
-
-        if ($isAuthenticatorManagerEnabled) {
-            $loader->load('services_security_webservice.yml');
-        } else {
-            $loader->load('services_security_webservice_legacy.yml');
         }
     }
 
