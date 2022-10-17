@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\ActionDefinition;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\ConditionDefinition;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\TriggerDefinition;
+use Pimcore\Db\Helper;
 use Pimcore\Model;
 
 /**
@@ -106,7 +107,7 @@ class Dao extends Model\Dao\AbstractDao
             try {
                 $this->saveActions();
 
-                $this->db->update(self::TABLE_NAME, $data, ['id' => $this->model->getId()]);
+                $this->db->update(self::TABLE_NAME, Helper::quoteDataIdentifiers($this->db, $data), ['id' => $this->model->getId()]);
                 $this->db->commit();
             } catch (\Exception $e) {
                 $this->db->rollBack();
@@ -118,7 +119,7 @@ class Dao extends Model\Dao\AbstractDao
             $data['creationDate'] = time();
             $this->db->beginTransaction();
             try {
-                $this->db->insert(self::TABLE_NAME, $data);
+                $this->db->insert(self::TABLE_NAME, Helper::quoteDataIdentifiers($this->db, $data));
                 $this->model->setId($this->db->fetchOne('SELECT LAST_INSERT_ID();'));
                 $this->model->setCreationDate($data['creationDate']);
                 $this->saveActions();
