@@ -79,7 +79,7 @@ class CustomerObjectUserProvider implements UserProviderInterface
      *
      * @return UserInterface
      */
-    public function refreshUser(UserInterface $user)//: UserInterface
+    public function refreshUser(UserInterface $user)
     {
         $class = $this->customerProvider->getCustomerClassName();
         if (!$user instanceof $class || !$user instanceof AbstractObject) {
@@ -100,7 +100,7 @@ class CustomerObjectUserProvider implements UserProviderInterface
      *
      * @return bool
      */
-    public function supportsClass($class)//: bool
+    public function supportsClass($class)
     {
         return $class === $this->customerProvider->getCustomerClassName();
     }
