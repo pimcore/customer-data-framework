@@ -34,8 +34,10 @@ abstract class AbstractRestController extends AdminController
 
     /**
      * @inheritDoc
+     *
+     * @return bool
      */
-    public function needsSessionDoubleAuthenticationCheck()
+    public function needsSessionDoubleAuthenticationCheck()//: bool
     {
         // do not double-check session as api key auth is possible
         return false;

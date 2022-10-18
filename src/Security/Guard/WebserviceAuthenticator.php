@@ -21,10 +21,10 @@ use Pimcore\Bundle\AdminBundle\Security\User\User as UserProxy;
 use Pimcore\Model\Tool\SettingsStore;
 use Pimcore\Model\User;
 use Pimcore\Tool\Authentication;
-use Pimcore\Tool\Session;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -41,24 +41,30 @@ class WebserviceAuthenticator extends AbstractGuardAuthenticator implements Logg
 
     /**
      * {@inheritdoc}
+     *
+     * @return bool
      */
-    public function supports(Request $request)
+    public function supports(Request $request)//: bool
     {
         return true;
     }
 
     /**
      * @inheritDoc
+     *
+     * @return Response
      */
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function start(Request $request, AuthenticationException $authException = null)//: Response
     {
         throw $this->createAccessDeniedException($authException);
     }
 
     /**
      * @inheritDoc
+     *
+     * @return array
      */
-    public function getCredentials(Request $request)
+    public function getCredentials(Request $request)//: array
     {
         if ($apiKey = $request->headers->get('x_api-key')) {
             // check for API key header
@@ -89,8 +95,10 @@ class WebserviceAuthenticator extends AbstractGuardAuthenticator implements Logg
 
     /**
      * @inheritDoc
+     *
+     * @return UserInterface|null
      */
-    public function getUser($credentials, UserProviderInterface $userProvider)
+    public function getUser($credentials, UserProviderInterface $userProvider)//: ?UserInterface
     {
         /** @var UserProxy|null $user */
         $user = null;
@@ -139,8 +147,10 @@ class WebserviceAuthenticator extends AbstractGuardAuthenticator implements Logg
 
     /**
      * @inheritDoc
+     *
+     * @return bool
      */
-    public function checkCredentials($credentials, UserInterface $user)
+    public function checkCredentials($credentials, UserInterface $user)//: bool
     {
         // we rely on getUser returning a valid user
         if ($user instanceof UserProxy) {
@@ -152,8 +162,10 @@ class WebserviceAuthenticator extends AbstractGuardAuthenticator implements Logg
 
     /**
      * @inheritDoc
+     *
+     * @return Response|null
      */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)//: ?Response
     {
         $this->logger->warning('Failed to authenticate for webservice request {path}', [
             'path' => $request->getPathInfo(),
@@ -164,8 +176,10 @@ class WebserviceAuthenticator extends AbstractGuardAuthenticator implements Logg
 
     /**
      * @inheritDoc
+     *
+     * @return Response|null
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)//: ?Response
     {
         $this->logger->debug('Successfully authenticated user {user} for webservice request {path}', [
             'user' => $token->getUser()->getUsername(),
@@ -177,8 +191,10 @@ class WebserviceAuthenticator extends AbstractGuardAuthenticator implements Logg
 
     /**
      * @inheritDoc
+     *
+     * @return bool
      */
-    public function supportsRememberMe()
+    public function supportsRememberMe()//: bool
     {
         return false;
     }

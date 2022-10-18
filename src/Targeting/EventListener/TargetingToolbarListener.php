@@ -52,7 +52,10 @@ class TargetingToolbarListener implements EventSubscriberInterface
         $this->segmentManager = $segmentManager;
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, string>
+     */
+    public static function getSubscribedEvents()//: array
     {
         return [
             TargetingEvents::RENDER_TOOLBAR => 'onRenderToolbar'
