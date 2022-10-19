@@ -216,7 +216,7 @@ class DefaultCustomerProvider implements CustomerProviderInterface
      */
     public function getById($id, $force = false)
     {
-        return $this->callStatic('getById', [$id, $force]);
+        return $this->callStatic('getById', [$id, ['force' => $force]]);
     }
 
     /**
