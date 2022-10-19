@@ -64,7 +64,10 @@ class CmfUrlUtilsExtension extends AbstractExtension
         $this->linkActivityUrlGenerator = $linkActivityUrlGenerator;
     }
 
-    public function getFunctions()
+    /**
+     * @return TwigFunction[]
+     */
+    public function getFunctions()//: array
     {
         return [
             new TwigFunction('cmf_filterFormAction', [$this, 'getFilterFormAction']),
