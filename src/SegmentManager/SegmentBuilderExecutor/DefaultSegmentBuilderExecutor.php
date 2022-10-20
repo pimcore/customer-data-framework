@@ -64,7 +64,7 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
      */
     public function buildCalculatedSegmentsOnCustomerSave(CustomerInterface $customer)
     {
-        self::prepareSegmentBuilders($this->segmentManager->getSegmentBuilders(), true);
+        $this->prepareSegmentBuilders($this->segmentManager->getSegmentBuilders(), true);
 
         foreach ($this->segmentManager->getSegmentBuilders() as $segmentBuilder) {
             if (!$segmentBuilder->executeOnCustomerSave()) {
@@ -107,7 +107,7 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
             $segmentBuilders = $this->segmentManager->getSegmentBuilders();
         }
 
-        self::prepareSegmentBuilders($segmentBuilders);
+        $this->prepareSegmentBuilders($segmentBuilders);
 
         $customerList = $this->customerProvider->getList();
         // don't modify queue
