@@ -29,6 +29,5 @@ parameters:
         pattern: ^/__customermanagementframework/webservice(/.*)?$
         stateless: true
         provider: pimcore_admin
-        login_throttling: ~
         custom_authenticators:
             - CustomerManagementFrameworkBundle\Security\Authenticator\WebserviceAuthenticator
