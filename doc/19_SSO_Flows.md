@@ -17,7 +17,7 @@ Following you find the three flows the implementation follows for login, registr
     3) can continue to a registration action on `/auth/register`.
    
 3) If he submits the login form, the normal Symfony `form_login` authenticator does its work and tries to authenticate
-   the user by fetching a user by username from the user provider and matching the given password with the password encoder.
+   the user by fetching a user by username from the user provider and matching the given password with the password hasher.
    
 4) For authentication via social login the user ... 
     1) clicks on one of the social login buttons, the link points to `/auth/oauth/login/google` (or `twitter`), depending
