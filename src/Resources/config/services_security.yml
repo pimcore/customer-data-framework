@@ -22,7 +22,7 @@ services:
 
     # The hasher factory is responsible for verifying the password hash for a given user. As we need some special
     # handling to be able to work with the password field, we use the UserAwarePasswordHasherFactory to build a dedicated
-    # hasher per user. This service is configured in pimcore.security.hasher_factories to handle our user model.
+    # hasher per user. This service is configured in pimcore.security.password_hasher_factories to handle our user model.
     cmf.security.user_password_hasher_factory:
         class: Pimcore\Security\Hasher\Factory\UserAwarePasswordHasherFactory
         arguments:
