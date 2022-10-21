@@ -135,11 +135,14 @@ abstract class SqlActivityStore
                 foreach ($entry->getMetadata() as $key => $data) {
                     $db->insert(
                         self::ACTIVITIES_METADATA_TABLE,
-                        [
-                            'activityId' => $entry->getId(),
-                            'key' => $key,
-                            'data' => $data
-                        ]
+                        Helper::quoteDataIdentifiers(
+                            $this->db,
+                            [
+                                'activityId' => $entry->getId(),
+                                'key' => $key,
+                                'data' => $data
+                            ]
+                        )
                     );
                 }
             } catch (TableNotFoundException $ex) {
