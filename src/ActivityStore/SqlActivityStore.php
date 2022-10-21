@@ -136,7 +136,7 @@ abstract class SqlActivityStore
                     $db->insert(
                         self::ACTIVITIES_METADATA_TABLE,
                         Helper::quoteDataIdentifiers(
-                            $this->db,
+                            $db,
                             [
                                 'activityId' => $entry->getId(),
                                 'key' => $key,
