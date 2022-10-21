@@ -28,6 +28,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\TooManyLoginAttemptsAuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\InteractiveAuthenticatorInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\PreAuthenticatedUserBadge;
@@ -118,6 +119,10 @@ class WebserviceAuthenticator extends AbstractAuthenticator implements Interacti
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
+        if ($exception instanceof TooManyLoginAttemptsAuthenticationException) {
+            throw new AccessDeniedHttpException(strtr($exception->getMessageKey(), $exception->getMessageData()));
+        }
+
         $this->logger->warning('Failed to authenticate for webservice request {path}', [
             'path' => $request->getPathInfo(),
         ]);
