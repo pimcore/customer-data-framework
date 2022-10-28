@@ -46,7 +46,7 @@ class CustomerObjectUserProvider implements UserProviderInterface
     /**
      * @inheritdoc
      */
-    public function loadUserByIdentifier(string $identifier)
+    public function loadUserByIdentifier(string $identifier): UserInterface
     {
         $list = $this->customerProvider->getList();
         $list->setCondition(sprintf('%s = ?', $this->usernameField), $identifier);
@@ -55,21 +55,11 @@ class CustomerObjectUserProvider implements UserProviderInterface
         /** @var CustomerInterface|false $customer */
         $customer = $list->current();
 
-        if (!$customer) {
+        if (!$customer instanceof UserInterface) {
             throw new UserNotFoundException(sprintf('Customer "%s" was not found', $identifier));
         }
 
         return $customer;
-    }
-
-    /**
-     * @deprecated use loadUserByIdentifier() instead.
-     *
-     * @inheritdoc
-     */
-    public function loadUserByUsername($username)
-    {
-        return $this->loadUserByIdentifier($username);
     }
 
     /**
@@ -82,7 +72,7 @@ class CustomerObjectUserProvider implements UserProviderInterface
             throw new UnsupportedUserException();
         }
 
-        return $this->customerProvider->getById($user->getId(), true);
+        return $this->customerProvider->getById($user->getId(), ['force' => true]);
     }
 
     /**

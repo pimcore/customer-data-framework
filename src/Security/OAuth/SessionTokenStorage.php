@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CustomerManagementFrameworkBundle\Security\OAuth;
 
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class SessionTokenStorage implements TokenStorageInterface
@@ -27,9 +28,9 @@ class SessionTokenStorage implements TokenStorageInterface
      */
     private $session;
 
-    public function __construct(SessionInterface $session)
+    public function __construct(RequestStack $requestStack)
     {
-        $this->session = $session;
+        $this->session = $requestStack->getSession();
     }
 
     /**

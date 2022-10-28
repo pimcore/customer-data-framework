@@ -19,19 +19,19 @@ use Pimcore\Model\DataObject\ClassDefinition\Data\Password;
 
 trait DefaultUserawareCustomerTrait
 {
-    public function getRoles()
+    public function getRoles(): array
     {
         return ['ROLE_USER'];
     }
 
     /**
-     * @inheritDoc
+     * By default email is used as username
+     *
+     * @return string
      */
-    public function getSalt()
+    public function getUserIdentifier(): string
     {
-        // user has no salt as we use password_hash
-        // which handles the salt by itself
-        return null;
+        return $this->getEmail();
     }
 
     /**
@@ -41,7 +41,7 @@ trait DefaultUserawareCustomerTrait
      */
     public function getUsername()
     {
-        return $this->getEmail();
+        return $this->getUserIdentifier();
     }
 
     /**
