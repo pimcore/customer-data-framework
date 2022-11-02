@@ -117,14 +117,14 @@ abstract class SqlActivityStore
             if ($entry->getId()) {
                 $db->update(
                     self::ACTIVITIES_TABLE,
-                    $data,
+                    Helper::quoteDataIdentifiers($db, $data),
                     ['id' => $entry->getId()]
                 );
             } else {
                 $data['creationDate'] = $time;
                 $db->insert(
                     self::ACTIVITIES_TABLE,
-                    $data
+                    Helper::quoteDataIdentifiers($db, $data)
                 );
                 $entry->setId((int) $db->lastInsertId());
             }

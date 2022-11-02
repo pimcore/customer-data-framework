@@ -168,11 +168,14 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
                 foreach ($entry->getMetadata() as $key => $data) {
                     $db->insert(
                         self::ACTIVITIES_METADATA_TABLE,
-                        [
-                            'activityId' => $entry->getId(),
-                            'key' => $key,
-                            'data' => $data
-                        ]
+                        Helper::quoteDataIdentifiers(
+                            $db,
+                            [
+                                'activityId' => $entry->getId(),
+                                'key' => $key,
+                                'data' => $data
+                            ]
+                        )
                     );
                 }
             } catch (TableNotFoundException $ex) {
