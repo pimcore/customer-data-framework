@@ -23,7 +23,6 @@ use Pimcore\Http\RequestHelper;
 use Pimcore\Logger;
 use Symfony\Bundle\SecurityBundle\Security\FirewallConfig;
 use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -66,7 +65,6 @@ class LoginManager implements LoginManagerInterface
      * @var UserCheckerInterface
      */
     private $defaultUserChecker;
-
 
     public function __construct(
         RequestHelper $requestHelper,
