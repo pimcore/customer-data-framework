@@ -17,7 +17,10 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Security\Authentication;
 
+use CustomerManagementFrameworkBundle\Model\ClassDefinition\Helper\RememberMeServiceResolver;
+use CustomerManagementFrameworkBundle\Model\ClassDefinition\Helper\UserCheckerClassResolver;
 use Pimcore\Http\RequestHelper;
+use Pimcore\Logger;
 use Symfony\Bundle\SecurityBundle\Security\FirewallConfig;
 use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -64,25 +67,19 @@ class LoginManager implements LoginManagerInterface
      */
     private $defaultUserChecker;
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
 
     public function __construct(
         RequestHelper $requestHelper,
         FirewallMap $firewallMap,
         SessionAuthenticationStrategyInterface $sessionStrategy,
         TokenStorageInterface $tokenStorage,
-        UserCheckerInterface $defaultUserChecker,
-        ContainerInterface $container
+        UserCheckerInterface $defaultUserChecker
     ) {
         $this->firewallMap = $firewallMap;
         $this->requestHelper = $requestHelper;
         $this->sessionStrategy = $sessionStrategy;
         $this->tokenStorage = $tokenStorage;
         $this->defaultUserChecker = $defaultUserChecker;
-        $this->container = $container;
     }
 
     /**
@@ -118,11 +115,10 @@ class LoginManager implements LoginManagerInterface
 
     private function getUserChecker(FirewallConfig $config): UserCheckerInterface
     {
-        if ($this->container->has($config->getUserChecker())) {
-            /** @var UserCheckerInterface $userChecker */
-            $userChecker = $this->container->get($config->getUserChecker());
-
-            return $userChecker;
+        try {
+            return UserCheckerClassResolver::resolveUserChecker($config->getUserChecker());
+        } catch (\Throwable $e) {
+            Logger::error($e->getMessage());
         }
 
         return $this->defaultUserChecker;
@@ -140,15 +136,6 @@ class LoginManager implements LoginManagerInterface
             'security.authentication.rememberme.services.simplehash.' . $config->getName()
         ];
 
-        foreach ($definitions as $definition) {
-            if ($this->container->has($definition)) {
-                /** @var RememberMeServicesInterface $rememberMeService */
-                $rememberMeService = $this->container->get($definition);
-
-                return $rememberMeService;
-            }
-        }
-
-        return null;
+        return RememberMeServiceResolver::resolveRememberMeService($definitions);
     }
 }
