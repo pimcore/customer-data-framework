@@ -178,7 +178,10 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
 
         $customerQueueRemoval = [];
 
-        $flushQueue = function ($queue) {
+        /**
+         * @param int[] $queue
+         */
+        $flushQueue = function (array $queue): void {
             $queueSize = count($queue);
             if ($queueSize > 0) {
                 $this->getLogger()->notice(
@@ -207,8 +210,6 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
                     }
                 }
             }
-
-            return [];
         };
 
         $stopFurtherProcessing = false;
@@ -230,7 +231,7 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
         }
 
         $progressCount = max((int)($pageSize / 10), 1);
-        $progressTime = $startTime = time();
+        $progressTime = time();
         $itemCount = 1;
         try {
             for ($pageNumber = $startPage; $pageNumber <= $endPage && $pageNumber <= $totalPages && !$stopFurtherProcessing; $pageNumber++) {
@@ -323,7 +324,8 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
                 }
 
                 if (!$stopFurtherProcessing) {
-                    $customerQueueRemoval = $flushQueue($customerQueueRemoval);
+                    $flushQueue($customerQueueRemoval);
+                    $customerQueueRemoval = [];
                     \Pimcore::collectGarbage();
                 }
             }
