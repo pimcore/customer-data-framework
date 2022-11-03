@@ -21,7 +21,7 @@ interface DataSimilarityMatcherInterface
      * @param mixed $value1
      * @param mixed $value2
      *
-     * @return int
+     * @return int|float
      */
     public function calculateSimilarity($value1, $value2);
 
