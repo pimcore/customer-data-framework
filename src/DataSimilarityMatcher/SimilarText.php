@@ -19,9 +19,14 @@ class SimilarText extends AbstractSimilarityMatcher
 {
     protected $defaultThreshold = 80;
 
+    /**
+     * @param string $value1
+     * @param string $value2
+     *
+     * @return float
+     */
     public function calculateSimilarity($value1, $value2)
     {
-        $percent = 0;
         similar_text($value1, $value2, $percent);
 
         return $percent;

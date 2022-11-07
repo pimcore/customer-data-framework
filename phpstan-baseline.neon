@@ -186,16 +186,6 @@ parameters:
 			path: src/Security/SsoIdentity/DefaultSsoIdentityService.php
 
 		-
-			message: "#^Method CustomerManagementFrameworkBundle\\\\Security\\\\SsoIdentity\\\\DefaultSsoIdentityService\\:\\:addSsoIdentity\\(\\) should return \\$this\\(CustomerManagementFrameworkBundle\\\\Security\\\\SsoIdentity\\\\DefaultSsoIdentityService\\) but return statement is missing\\.$#"
-			count: 1
-			path: src/Security/SsoIdentity/DefaultSsoIdentityService.php
-
-		-
-			message: "#^Binary operation \"\\|\" between string and 0 results in an error\\.$#"
-			count: 1
-			path: src/SegmentAssignment/StoredFunctions/DefaultStoredFunctions.php
-
-		-
 			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
 			count: 1
 			path: src/SegmentBuilder/AgeSegmentBuilder.php
