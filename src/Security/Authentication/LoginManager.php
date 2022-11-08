@@ -118,6 +118,7 @@ class LoginManager implements LoginManagerInterface
         } catch (\Throwable $e) {
             Logger::error($e->getMessage());
         }
+
         return $this->defaultUserChecker;
     }
 
