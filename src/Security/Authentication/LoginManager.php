@@ -26,7 +26,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategyInterface;
 
@@ -58,23 +57,16 @@ class LoginManager implements LoginManagerInterface
      */
     private $tokenStorage;
 
-    /**
-     * @var UserCheckerInterface
-     */
-    private $defaultUserChecker;
-
     public function __construct(
         RequestHelper $requestHelper,
         FirewallMap $firewallMap,
         SessionAuthenticationStrategyInterface $sessionStrategy,
-        TokenStorageInterface $tokenStorage,
-        UserCheckerInterface $defaultUserChecker
+        TokenStorageInterface $tokenStorage
     ) {
         $this->firewallMap = $firewallMap;
         $this->requestHelper = $requestHelper;
         $this->sessionStrategy = $sessionStrategy;
         $this->tokenStorage = $tokenStorage;
-        $this->defaultUserChecker = $defaultUserChecker;
     }
 
     /**
@@ -104,6 +96,6 @@ class LoginManager implements LoginManagerInterface
 
     private function getUserChecker(FirewallConfig $config): UserCheckerInterface
     {
-        return UserCheckerClassResolver::resolveUserChecker($config->getUserChecker()) ?? $this->defaultUserChecker;
+        return UserCheckerClassResolver::resolveUserChecker($config->getUserChecker());
     }
 }
