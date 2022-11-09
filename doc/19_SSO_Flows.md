@@ -1,5 +1,4 @@
-# Flows for the Single Sign On Sample Implementation 
-
+# Flows for the Single Sign On Sample Implementation (Deprecated Feature)
 The sample SSO implementation does not use any of `HWIOAuthBundle`'s routing definitions and the registration/connect 
 functionality provided by the `ConnectController` is not used as the registration flow in the bundle lacks flexibility 
 and does not work properly with Pimcore data objects (especially the registration handler expecting a user object to 
