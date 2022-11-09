@@ -17,10 +17,8 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Security\Authentication;
 
-use CustomerManagementFrameworkBundle\Model\ClassDefinition\Helper\RememberMeServiceResolver;
 use CustomerManagementFrameworkBundle\Model\ClassDefinition\Helper\UserCheckerClassResolver;
 use Pimcore\Http\RequestHelper;
-use Pimcore\Logger;
 use Symfony\Bundle\SecurityBundle\Security\FirewallConfig;
 use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,7 +28,6 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Http\RememberMe\RememberMeServicesInterface;
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategyInterface;
 
 /**
@@ -100,6 +97,6 @@ class LoginManager implements LoginManagerInterface
 
     private function getUserChecker(FirewallConfig $config): UserCheckerInterface
     {
-            return UserCheckerClassResolver::resolveUserChecker($config->getUserChecker());
+        return UserCheckerClassResolver::resolveUserChecker($config->getUserChecker());
     }
 }
