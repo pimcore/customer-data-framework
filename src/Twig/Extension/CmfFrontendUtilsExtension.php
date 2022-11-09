@@ -85,7 +85,10 @@ class CmfFrontendUtilsExtension extends AbstractExtension
         ];
     }
 
-    public function getFilters()
+    /**
+     * @return TwigFilter[]
+     */
+    public function getFilters()//: array
     {
         return [
             new TwigFilter('cmf_printFieldCombinations', [$this, 'printFieldCombinations']),

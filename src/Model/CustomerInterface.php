@@ -44,7 +44,7 @@ interface CustomerInterface extends ElementInterface
     public function getActive(): ?bool;
 
     /**
-     * @param bool $active
+     * @param bool|null $active
      *
      * @return $this
      */
