@@ -136,21 +136,6 @@ parameters:
 			path: src/RESTApi/SegmentsOfCustomerHandler.php
 
 		-
-			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\:\\:getSsoIdentities\\(\\)\\.$#"
-			count: 2
-			path: src/Security/SsoIdentity/DefaultSsoIdentityService.php
-
-		-
-			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\:\\:setSsoIdentities\\(\\)\\.$#"
-			count: 1
-			path: src/Security/SsoIdentity/DefaultSsoIdentityService.php
-
-		-
-			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\SsoIdentityInterface\\:\\:getId\\(\\)\\.$#"
-			count: 1
-			path: src/Security/SsoIdentity/DefaultSsoIdentityService.php
-
-		-
 			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
 			count: 1
 			path: src/SegmentBuilder/AgeSegmentBuilder.php
