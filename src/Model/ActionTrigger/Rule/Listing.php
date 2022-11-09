@@ -23,7 +23,12 @@ use Pimcore\Model\Listing\AbstractListing;
  */
 class Listing extends AbstractListing
 {
-    public function isValidOrderKey($key)
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function isValidOrderKey(/* string */ $key)//: bool
     {
         return true;
     }
@@ -31,7 +36,7 @@ class Listing extends AbstractListing
     /**
      * @return Rule[]
      */
-    public function load()
+    public function load()//: array
     {
         return $this->getDao()->load();
     }

@@ -55,7 +55,12 @@ class Listing extends Model\Listing\AbstractListing
         return $this;
     }
 
-    public function isValidOrderKey($key)
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function isValidOrderKey(/* string */ $key)//: bool
     {
         return $key != 'definition';
     }
