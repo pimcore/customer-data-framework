@@ -61,23 +61,16 @@ class LoginManager implements LoginManagerInterface
      */
     private $tokenStorage;
 
-    /**
-     * @var UserCheckerInterface
-     */
-    private $defaultUserChecker;
-
     public function __construct(
         RequestHelper $requestHelper,
         FirewallMap $firewallMap,
         SessionAuthenticationStrategyInterface $sessionStrategy,
-        TokenStorageInterface $tokenStorage,
-        UserCheckerInterface $defaultUserChecker
+        TokenStorageInterface $tokenStorage
     ) {
         $this->firewallMap = $firewallMap;
         $this->requestHelper = $requestHelper;
         $this->sessionStrategy = $sessionStrategy;
         $this->tokenStorage = $tokenStorage;
-        $this->defaultUserChecker = $defaultUserChecker;
     }
 
     /**
@@ -91,17 +84,11 @@ class LoginManager implements LoginManagerInterface
 
         $firewallConfig = $this->firewallMap->getFirewallConfig($request);
         $userChecker = $this->getUserChecker($firewallConfig);
-        $rememberMeService = $this->getRememberMeService($firewallConfig);
-
         $userChecker->checkPreAuth($user);
 
         $token = $this->createToken($firewallConfig->getName(), $user);
 
         $this->sessionStrategy->onAuthentication($request, $token);
-
-        if (null !== $response && null !== $rememberMeService) {
-            $rememberMeService->loginSuccess($request, $response, $token);
-        }
 
         $this->tokenStorage->setToken($token);
     }
@@ -113,27 +100,6 @@ class LoginManager implements LoginManagerInterface
 
     private function getUserChecker(FirewallConfig $config): UserCheckerInterface
     {
-        try {
             return UserCheckerClassResolver::resolveUserChecker($config->getUserChecker());
-        } catch (\Throwable $e) {
-            Logger::error($e->getMessage());
-        }
-
-        return $this->defaultUserChecker;
-    }
-
-    /**
-     * @param FirewallConfig $config
-     *
-     * @return RememberMeServicesInterface|null
-     */
-    private function getRememberMeService(FirewallConfig $config)
-    {
-        $definitions = [
-            'security.authentication.rememberme.services.persistent.' . $config->getName(),
-            'security.authentication.rememberme.services.simplehash.' . $config->getName()
-        ];
-
-        return RememberMeServiceResolver::resolveRememberMeService($definitions);
     }
 }

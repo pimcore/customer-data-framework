@@ -25,7 +25,7 @@ class UserCheckerClassResolver extends ClassResolver
     public static function resolveUserChecker(string $serviceName): UserCheckerInterface
     {
         /** @var UserCheckerInterface $userChecker */
-        $userChecker = self::resolve('@' . $serviceName, static function ($serviceObject) {
+        $userChecker = self::resolve($serviceName, static function ($serviceObject) {
             return $serviceObject instanceof UserCheckerInterface;
         });
 
