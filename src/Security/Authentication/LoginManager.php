@@ -74,7 +74,7 @@ class LoginManager implements LoginManagerInterface
         $this->requestHelper = $requestHelper;
         $this->sessionStrategy = $sessionStrategy;
         $this->tokenStorage = $tokenStorage;
-        $this->defaultUserChecker = $defaultUserChecker
+        $this->defaultUserChecker = $defaultUserChecker;
     }
 
     /**
