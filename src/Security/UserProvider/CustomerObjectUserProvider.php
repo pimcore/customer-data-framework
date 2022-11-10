@@ -76,7 +76,7 @@ class CustomerObjectUserProvider implements UserProviderInterface
             throw new UnsupportedUserException();
         }
 
-        $customer = $this->customerProvider->getById($user->getId(), ['force' => true]);
+        $customer = $this->customerProvider->getById($user->getId(), true);
 
         if (!$customer instanceof UserInterface) {
             throw new UserNotFoundException(sprintf('Customer "%s" was not found', $user->getId()));
