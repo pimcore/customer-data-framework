@@ -22,7 +22,6 @@ use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
 /**
  * @deprecated
  */
-
 interface TokenStorageInterface
 {
     /**
