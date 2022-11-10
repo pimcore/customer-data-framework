@@ -1,5 +1,9 @@
 # Update Notices
 
+## Update to Version 4
+- Removed the package "hwi/oauth-bundle".
+- Removed the support of  Single Sign On (SSO) implementation.
+
 ## Update to Version 3
 - Activate `Generate Type Declarations` for all classes generated/used by the Customer Management Framework:
   - `Customer`
