@@ -88,17 +88,17 @@ class SegmentAssignmentController extends AdminController
      * @Route("/assign")
      *
      * @param Request $request
+     * @param SegmentAssignerInterface $assigner
      *
      * @return JsonResponse
      */
-    public function assign(Request $request)
+    public function assign(Request $request, SegmentAssignerInterface $assigner)
     {
         $id = $request->get('id') ?? '';
         $type = $request->get('type') ?? '';
         $breaksInheritance = $request->get('breaksInheritance') === 'true';
         $segmentIds = json_decode($request->get('segmentIds'), true) ?? [];
 
-        $assigner = $this->get(SegmentAssignerInterface::class);
         $success = $assigner->assignById($id, $type, $breaksInheritance, $segmentIds);
 
         return $this->adminJson($success);
