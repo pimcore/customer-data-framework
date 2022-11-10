@@ -17,10 +17,10 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Security\Authentication;
 
+use CustomerManagementFrameworkBundle\Model\ClassDefinition\Helper\UserCheckerClassResolver;
 use Pimcore\Http\RequestHelper;
 use Symfony\Bundle\SecurityBundle\Security\FirewallConfig;
 use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -28,7 +28,6 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Http\RememberMe\RememberMeServicesInterface;
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategyInterface;
 
 /**
@@ -59,30 +58,16 @@ class LoginManager implements LoginManagerInterface
      */
     private $tokenStorage;
 
-    /**
-     * @var UserCheckerInterface
-     */
-    private $defaultUserChecker;
-
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
     public function __construct(
         RequestHelper $requestHelper,
         FirewallMap $firewallMap,
         SessionAuthenticationStrategyInterface $sessionStrategy,
-        TokenStorageInterface $tokenStorage,
-        UserCheckerInterface $defaultUserChecker,
-        ContainerInterface $container
+        TokenStorageInterface $tokenStorage
     ) {
         $this->firewallMap = $firewallMap;
         $this->requestHelper = $requestHelper;
         $this->sessionStrategy = $sessionStrategy;
         $this->tokenStorage = $tokenStorage;
-        $this->defaultUserChecker = $defaultUserChecker;
-        $this->container = $container;
     }
 
     /**
@@ -96,17 +81,11 @@ class LoginManager implements LoginManagerInterface
 
         $firewallConfig = $this->firewallMap->getFirewallConfig($request);
         $userChecker = $this->getUserChecker($firewallConfig);
-        $rememberMeService = $this->getRememberMeService($firewallConfig);
-
         $userChecker->checkPreAuth($user);
 
         $token = $this->createToken($firewallConfig->getName(), $user);
 
         $this->sessionStrategy->onAuthentication($request, $token);
-
-        if (null !== $response && null !== $rememberMeService) {
-            $rememberMeService->loginSuccess($request, $response, $token);
-        }
 
         $this->tokenStorage->setToken($token);
     }
@@ -118,37 +97,6 @@ class LoginManager implements LoginManagerInterface
 
     private function getUserChecker(FirewallConfig $config): UserCheckerInterface
     {
-        if ($this->container->has($config->getUserChecker())) {
-            /** @var UserCheckerInterface $userChecker */
-            $userChecker = $this->container->get($config->getUserChecker());
-
-            return $userChecker;
-        }
-
-        return $this->defaultUserChecker;
-    }
-
-    /**
-     * @param FirewallConfig $config
-     *
-     * @return RememberMeServicesInterface|null
-     */
-    private function getRememberMeService(FirewallConfig $config)
-    {
-        $definitions = [
-            'security.authentication.rememberme.services.persistent.' . $config->getName(),
-            'security.authentication.rememberme.services.simplehash.' . $config->getName()
-        ];
-
-        foreach ($definitions as $definition) {
-            if ($this->container->has($definition)) {
-                /** @var RememberMeServicesInterface $rememberMeService */
-                $rememberMeService = $this->container->get($definition);
-
-                return $rememberMeService;
-            }
-        }
-
-        return null;
+        return UserCheckerClassResolver::resolveUserChecker($config->getUserChecker());
     }
 }
