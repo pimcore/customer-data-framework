@@ -131,7 +131,7 @@ class WebserviceAuthenticator extends AbstractAuthenticator implements Interacti
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         $this->logger->debug('Successfully authenticated user {user} for webservice request {path}', [
-            'user' => $token->getUser()->getUsername(),
+            'user' => $token->getUser()->getUserIdentifier(),
             'path' => $request->getPathInfo(),
         ]);
 

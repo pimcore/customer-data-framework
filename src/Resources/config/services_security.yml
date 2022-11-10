@@ -8,7 +8,6 @@ services:
         arguments:
             $firewallMap: '@security.firewall.map'
             $sessionStrategy: '@security.authentication.session_strategy'
-            $defaultUserChecker: '@security.user_checker'
 
     # The user provider loads users by Username.
     # Pimcore provides a simple ObjectUserProvider which is able to load users from a specified class by a configured
@@ -28,13 +27,6 @@ services:
         arguments:
             - Pimcore\Security\Hasher\PasswordFieldHasher
             - [ 'password' ]
-
-    cmf.security.sso.identity_service: '@CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface'
-    CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface: '@CustomerManagementFrameworkBundle\Security\SsoIdentity\DefaultSsoIdentityService'
-    CustomerManagementFrameworkBundle\Security\SsoIdentity\DefaultSsoIdentityService:
-        arguments: ['@cmf.customer_provider']
-        calls:
-             - [setLogger, ['@cmf.logger']]
 
     # Custom Authenticator for handling webservice login
     CustomerManagementFrameworkBundle\Security\Authenticator\WebserviceAuthenticator:

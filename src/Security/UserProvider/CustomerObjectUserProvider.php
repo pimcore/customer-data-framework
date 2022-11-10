@@ -48,7 +48,7 @@ class CustomerObjectUserProvider implements UserProviderInterface
      *
      * @return UserInterface
      */
-    public function loadUserByIdentifier(string $identifier)//: UserInterface
+    public function loadUserByIdentifier(string $identifier): UserInterface
     {
         $list = $this->customerProvider->getList();
         $list->setCondition(sprintf('%s = ?', $this->usernameField), $identifier);
@@ -62,16 +62,6 @@ class CustomerObjectUserProvider implements UserProviderInterface
         }
 
         return $customer;
-    }
-
-    /**
-     * @deprecated use loadUserByIdentifier() instead.
-     *
-     * @inheritdoc
-     */
-    public function loadUserByUsername($username)
-    {
-        return $this->loadUserByIdentifier($username);
     }
 
     /**
