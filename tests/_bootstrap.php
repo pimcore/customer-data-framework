@@ -1,22 +1,27 @@
 <?php
 
-use Pimcore\Tests\Util\Autoloader;
+use Pimcore\Tests\Support\Util\Autoloader;
 
 $pimcoreTestsSupportDir = '';
 
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     include __DIR__ . '/../vendor/autoload.php';
-    $pimcoreTestsSupportDir = __DIR__ . '/../vendor/pimcore/pimcore/tests/_support';
+    $pimcoreTestsSupportDir = __DIR__ . '/../vendor/pimcore/pimcore/tests/Support';
 } elseif (file_exists(__DIR__ . '/../../../../vendor/autoload.php')) {
     include __DIR__ . '/../../../../vendor/autoload.php';
-    $pimcoreTestsSupportDir = __DIR__ . '/../../../../vendor/pimcore/pimcore/tests/_support';
+    $pimcoreTestsSupportDir = __DIR__ . '/../../../../vendor/pimcore/pimcore/tests/Support';
 } elseif (getenv('PIMCORE_PROJECT_ROOT') != '' && file_exists(getenv('PIMCORE_PROJECT_ROOT') . '/vendor/autoload.php')) {
     include getenv('PIMCORE_PROJECT_ROOT') . '/vendor/autoload.php';
-    $pimcoreTestsSupportDir = getenv('PIMCORE_PROJECT_ROOT') . '/vendor/pimcore/pimcore/tests/_support';
+    $pimcoreTestsSupportDir = getenv('PIMCORE_PROJECT_ROOT') . '/vendor/pimcore/pimcore/tests/Support';
 } elseif (getenv('PIMCORE_PROJECT_ROOT') != '') {
     throw new \Exception('Invalid Pimcore project root "' . getenv('PIMCORE_PROJECT_ROOT') . '"');
 } else {
     throw new \Exception('Unknown configuration! Pimcore project root not found, please set env variable PIMCORE_PROJECT_ROOT.');
+}
+
+//Pimcore 10 BC layer
+if (!file_exists($pimcoreTestsSupportDir)) {
+    $pimcoreTestsSupportDir = str_replace('/tests/Support', '/tests/_support', $pimcoreTestsSupportDir);
 }
 
 include $pimcoreTestsSupportDir . '/Util/Autoloader.php';
