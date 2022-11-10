@@ -29,13 +29,6 @@ services:
             - Pimcore\Security\Hasher\PasswordFieldHasher
             - [ 'password' ]
 
-    cmf.security.sso.identity_service: '@CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface'
-    CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface: '@CustomerManagementFrameworkBundle\Security\SsoIdentity\DefaultSsoIdentityService'
-    CustomerManagementFrameworkBundle\Security\SsoIdentity\DefaultSsoIdentityService:
-        arguments: ['@cmf.customer_provider']
-        calls:
-             - [setLogger, ['@cmf.logger']]
-
     # Custom Authenticator for handling webservice login
     CustomerManagementFrameworkBundle\Security\Authenticator\WebserviceAuthenticator:
         public: false
