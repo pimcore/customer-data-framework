@@ -1,5 +1,5 @@
 class_name: UnitTester
 modules:
     enabled:
-        - \CustomerManagementFrameworkBundle\Tests\Helper\Unit
+        - \CustomerManagementFrameworkBundle\Tests\Support\Helper\Unit
         - Asserts

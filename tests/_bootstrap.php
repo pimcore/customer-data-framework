@@ -19,11 +19,6 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     throw new \Exception('Unknown configuration! Pimcore project root not found, please set env variable PIMCORE_PROJECT_ROOT.');
 }
 
-//Pimcore 10 BC layer
-if (!file_exists($pimcoreTestsSupportDir)) {
-    $pimcoreTestsSupportDir = str_replace('/tests/Support', '/tests/_support', $pimcoreTestsSupportDir);
-}
-
 include $pimcoreTestsSupportDir . '/Util/Autoloader.php';
 
 \Pimcore\Bootstrap::setProjectRoot();

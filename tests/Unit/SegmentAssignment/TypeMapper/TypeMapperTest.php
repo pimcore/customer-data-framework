@@ -6,7 +6,7 @@
  * Time: 10:42 AM
  */
 
-namespace CustomerManagementFrameworkBundle\Tests\Unit\SegmentAssignment\TypeMapper;
+namespace CustomerManagementFrameworkBundle\Tests\Support\Unit\SegmentAssignment\TypeMapper;
 
 use CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapper;
 use PHPUnit\Framework\TestCase;

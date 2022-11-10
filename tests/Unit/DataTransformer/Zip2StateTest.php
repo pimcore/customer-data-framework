@@ -9,7 +9,7 @@
  * @license    GPLv3
  */
 
-namespace CustomerManagementFrameworkBundle\Tests\Unit\DataTransformer;
+namespace CustomerManagementFrameworkBundle\Tests\Support\Unit\DataTransformer;
 
 class Zip2StateTest extends \PHPUnit_Framework_TestCase
 {

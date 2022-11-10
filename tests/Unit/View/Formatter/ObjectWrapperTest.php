@@ -9,10 +9,10 @@
  * @license    GPLv3
  */
 
-namespace CustomerManagementFrameworkBundle\Tests\Unit\View\Formatter;
+namespace CustomerManagementFrameworkBundle\Tests\Support\Unit\View\Formatter;
 
-use CustomerManagementFrameworkBundle\Tests\Fixtures\View\Formatter\NoToStringObject;
-use CustomerManagementFrameworkBundle\Tests\Fixtures\View\Formatter\ToStringObject;
+use CustomerManagementFrameworkBundle\Tests\Support\Fixtures\View\Formatter\NoToStringObject;
+use CustomerManagementFrameworkBundle\Tests\Support\Fixtures\View\Formatter\ToStringObject;
 use CustomerManagementFrameworkBundle\View\Formatter\ObjectWrapper;
 
 class ObjectWrapperTest extends \PHPUnit_Framework_TestCase

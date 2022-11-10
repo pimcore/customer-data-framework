@@ -1,8 +1,8 @@
 actor: ModelTester
 modules:
     enabled:
-        - \CustomerManagementFrameworkBundle\Tests\Helper\Model
-        - \Pimcore\Tests\Helper\Pimcore:
+        - \CustomerManagementFrameworkBundle\Tests\Support\Helper\Model
+        - \Pimcore\Tests\Support\Helper\Pimcore:
             connect_db: true
             cache_router: false
-        - \Pimcore\Tests\Helper\ClassManager
+        - \Pimcore\Tests\Support\Helper\ClassManager
