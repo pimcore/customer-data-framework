@@ -143,8 +143,7 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
     }
 
     /**
-     * @param CustomerInterface $customer
-     * @param SsoIdentityInterface $ssoIdentity
+     * @inheritDoc
      */
     public function addSsoIdentity(CustomerInterface $customer, SsoIdentityInterface $ssoIdentity)
     {
@@ -154,6 +153,8 @@ class DefaultSsoIdentityService implements SsoIdentityServiceInterface
         $ssoIdentities[] = $ssoIdentity;
 
         $customer->setSsoIdentities(array_unique($ssoIdentities));
+
+        return $this;
     }
 
     /**

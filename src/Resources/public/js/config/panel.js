@@ -263,7 +263,7 @@ pimcore.plugin.cmf.config.panel = Class.create({
                     });
 
                     if(!data || !data.success) {
-                        Ext.Msg.alert(t('add_target'), t('problem_creating_new_target'));
+                        Ext.Msg.alert(t('plugin_cmf_actiontriggerrule_add_rule_error'), t('plugin_cmf_actiontriggerrule_problem_creating_new_rule'));
                     } else {
                         this.openRule(this.tree, intval(data.id));
                     }
@@ -273,7 +273,7 @@ pimcore.plugin.cmf.config.panel = Class.create({
             return;
         }
         else {
-            Ext.Msg.alert(t('add_target'), t('problem_creating_new_target'));
+            Ext.Msg.alert(t('plugin_cmf_actiontriggerrule_add_rule_error'), t('plugin_cmf_actiontriggerrule_problem_creating_new_rule'));
         }
     },
 

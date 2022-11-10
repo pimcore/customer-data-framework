@@ -17,6 +17,7 @@ namespace CustomerManagementFrameworkBundle\Model\ActivityList;
 
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList\MariaDbDao;
+use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use Pimcore\Model\Listing\AbstractListing;
 
 class DefaultMariaDbActivityList extends AbstractListing implements ActivityListInterface
@@ -197,7 +198,10 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         reset($this->activities);
     }
 
-    public function load()
+    /**
+     * @return ActivityStoreEntryInterface[]
+     */
+    public function load()//: array
     {
         $raw = $this->dao->load();
 
@@ -214,7 +218,12 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         return $activities;
     }
 
-    public function isValidOrderKey($key)
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function isValidOrderKey(/* string */ $key)//: bool
     {
         return true;
     }

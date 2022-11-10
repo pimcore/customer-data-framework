@@ -45,6 +45,8 @@ class CustomerObjectUserProvider implements UserProviderInterface
 
     /**
      * @inheritdoc
+     *
+     * @return UserInterface
      */
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
@@ -64,6 +66,8 @@ class CustomerObjectUserProvider implements UserProviderInterface
 
     /**
      * @inheritdoc
+     *
+     * @return UserInterface
      */
     public function refreshUser(UserInterface $user)
     {
@@ -72,18 +76,23 @@ class CustomerObjectUserProvider implements UserProviderInterface
             throw new UnsupportedUserException();
         }
 
-        return $this->customerProvider->getById($user->getId(), ['force' => true]);
+
+        $customer = $this->customerProvider->getById($user->getId(), ['force' => true]);
+
+        if (!$customer instanceof UserInterface) {
+            throw new UserNotFoundException(sprintf('Customer "%s" was not found', $user->getId()));
+        }
+
+        return $customer;
     }
 
     /**
      * @inheritdoc
+     *
+     * @return bool
      */
     public function supportsClass($class)
     {
-        if ($class === $this->customerProvider->getCustomerClassName()) {
-            return true;
-        }
-
-        return false;
+        return $class === $this->customerProvider->getCustomerClassName();
     }
 }

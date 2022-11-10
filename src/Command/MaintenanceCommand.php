@@ -51,7 +51,7 @@ class MaintenanceCommand extends AbstractCommand
      *
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)//: int
     {
         $this->maintenanceWorker->execute();
 

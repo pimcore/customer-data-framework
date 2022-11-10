@@ -29,6 +29,6 @@ class DefaultStoredFunctions implements StoredFunctionsInterface
     {
         $storedFunction = static::STORED_FUNCTIONS_MAPPING[$elementType];
 
-        return explode(',', Db::get()->fetchOne("SELECT $storedFunction(:elementId)", ['elementId' => $elementId | 0]));
+        return explode(',', Db::get()->fetchOne("SELECT $storedFunction(:elementId)", ['elementId' => $elementId ?: 0]));
     }
 }

@@ -203,9 +203,6 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
      */
     protected function processAllItems(array $newsletterProviderHandlers, $forceUpdate)
     {
-        /**
-         * @var CustomerProviderInterface
-         */
         $customerProvider = \Pimcore::getContainer()->get('cmf.customer_provider');
 
         $list = $customerProvider->getList();
@@ -346,9 +343,6 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
      */
     protected function createItemFromData(array $data)
     {
-        /**
-         * @var CustomerProviderInterface
-         */
         $customerProvider = \Pimcore::getContainer()->get('cmf.customer_provider');
 
         $customer = $customerProvider->getById($data['customerId']);
