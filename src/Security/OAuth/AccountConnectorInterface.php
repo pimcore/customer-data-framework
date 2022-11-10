@@ -22,6 +22,10 @@ use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use Pimcore\Model\DataObject\SsoIdentity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ *
+ * @deprecated
+ */
 interface AccountConnectorInterface extends \HWI\Bundle\OAuthBundle\Connect\AccountConnectorInterface
 {
     /**

@@ -1,4 +1,4 @@
-# SSO Client Sample
+# SSO Client Sample (Deprecated)
 
 This sample expects the following:
 

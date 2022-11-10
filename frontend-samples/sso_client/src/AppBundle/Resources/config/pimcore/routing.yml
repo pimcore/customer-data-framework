@@ -5,6 +5,7 @@ app:
 app_auth_logout:
     path: /auth/logout
 
+#deprecated
 app_auth_oauth_login:
     path: /auth/oauth/login/{service}
     defaults:

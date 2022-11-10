@@ -19,6 +19,10 @@ namespace CustomerManagementFrameworkBundle\Security\OAuth;
 
 use HWI\Bundle\OAuthBundle\OAuth\ResourceOwnerInterface;
 
+/**
+ * @deprecated
+ */
+
 class OAuthUtils extends \HWI\Bundle\OAuthBundle\Security\OAuthUtils
 {
     /**

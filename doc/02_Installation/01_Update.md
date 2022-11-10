@@ -17,6 +17,7 @@ security:
 ``` 
 - Webservices URLs changed to ` /__customermanagementframework/webservice/*`
 - Execute all migrations of Customer Management Framework.
+- The Single Sign On (SSO) functionality is deprecated and will be removed in version 4.
 
 ### Additional code changes (that might affect your application)
 - Migrated `SearchQueryParser\QueryBuilder\ZendCompatibility` to `Doctrine\DBAL\Query\QueryBuilder`.

@@ -17,5 +17,5 @@ For Details for the components see additional documentation pages like:
 * [Action Trigger Service](./22_ActionTrigger.md)
 * [List Views](./28_ListViews.md)
 * [Integration with Pimcore Personalization](./30_Personalization.md)
-* [SSO and Social Logins](./18_Single_Sign_On.md)
+* [SSO and Social Logins](./18_Single_Sign_On.md) (Deprecated)
 * [MailChimp Integration](./24_NewsletterSync/README.md)

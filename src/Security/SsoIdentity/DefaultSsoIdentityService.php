@@ -25,6 +25,7 @@ use Pimcore\File;
 use Pimcore\Model\DataObject\SsoIdentity;
 
 /**
+ * @deprecated
  * SSO identity service handling SsoIdentities as objects on a SsoAwareCustomerInterface
  */
 class DefaultSsoIdentityService implements SsoIdentityServiceInterface

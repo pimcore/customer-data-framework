@@ -26,6 +26,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 /**
+ * @deprecated
+ *
  * Decorates a user provider and adds OAUth provider capabilities
  */
 class OAuthAwareUserProvider implements UserProviderInterface, OAuthAwareUserProviderInterface

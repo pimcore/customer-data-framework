@@ -15,6 +15,10 @@ services:
 
     # OAuth user provider
     cmf.security.user_provider.oauth:
+        deprecated:
+            message: 'The "%service_id%" service is deprecated.'
+            package: pimcore/customer-management-framework-bundle
+            version: 3.4
         class: CustomerManagementFrameworkBundle\Security\UserProvider\OAuthAwareUserProvider
         arguments:
             - '@cmf.security.user_provider'
