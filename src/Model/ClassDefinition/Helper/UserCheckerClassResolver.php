@@ -22,9 +22,9 @@ use Symfony\Component\Security\Core\User\UserCheckerInterface;
 
 class UserCheckerClassResolver extends ClassResolver
 {
-    public static function resolveUserChecker(string $serviceName): UserCheckerInterface
+    public static function resolveUserChecker(string $serviceName): ?UserCheckerInterface
     {
-        /** @var UserCheckerInterface $userChecker */
+        /** @var UserCheckerInterface|null $userChecker */
         $userChecker = self::resolve($serviceName, static function ($serviceObject) {
             return $serviceObject instanceof UserCheckerInterface;
         });
