@@ -27,9 +27,9 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 abstract class AbstractRestController extends AdminController
 {
-    public function __construct(protected LoggerInterface $pimcoreApiLogger)
-    {
-    }
+//    public function __construct(protected LoggerInterface $pimcoreApiLogger)
+//    {
+//    }
 
     /**
      * @var Stopwatch
@@ -222,7 +222,10 @@ abstract class AbstractRestController extends AdminController
 
     protected function getLogger(): LoggerInterface
     {
-        return $this->pimcoreApiLogger;
+        return \Pimcore::getContainer()->get('monolog.logger.pimcore_api');
+
+        //@TODO: change to constructor injection as soon as monolog updated version ^3.5
+        //return $this->pimcoreApiLogger;
     }
 
     /**
