@@ -27,11 +27,11 @@ include $pimcoreTestsSupportDir . '/Util/Autoloader.php';
 //error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_WARNING);
 
 //Codeception\Util\Autoload::addNamespace();
-Autoloader::addNamespace('Pimcore\Tests', $pimcoreTestsSupportDir);
+Autoloader::addNamespace('Pimcore\Tests\Support', $pimcoreTestsSupportDir);
 //Autoloader::addNamespace('Pimcore\Model\DataObject', __DIR__ . '/_output/var/classes/DataObject');
 Autoloader::addNamespace('Pimcore\Model\DataObject', PIMCORE_CLASS_DIRECTORY . '/DataObject');
 Autoloader::addNamespace('CustomerManagementFrameworkBundle\Tests', __DIR__);
-Autoloader::addNamespace('CustomerManagementFrameworkBundle\Tests', __DIR__ . '/Support');
+Autoloader::addNamespace('CustomerManagementFrameworkBundle\Tests\Support', __DIR__ . '/Support');
 
 
 echo __DIR__ . '/Support';
