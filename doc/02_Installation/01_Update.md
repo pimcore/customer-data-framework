@@ -3,6 +3,8 @@
 ## Update to Version 4
 - Removed the package "hwi/oauth-bundle".
 - Removed the support of  Single Sign On (SSO) implementation.
+- Bumped `codeception/codeception` version to ^5.0. So, cmf is using a new directory structure for tests (
+  Codeception 5 directory structure). For details, please see [#360](https://github.com/pimcore/customer-data-framework/pull/360)
 
 ## Update to Version 3
 - Activate `Generate Type Declarations` for all classes generated/used by the Customer Management Framework:
