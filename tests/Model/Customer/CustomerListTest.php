@@ -1,6 +1,6 @@
 <?php
 
-namespace CustomerManagementFrameworkBundle\Tests\Model\Customer;
+namespace CustomerManagementFrameworkBundle\Tests\Support\Model\Customer;
 
 
 use Carbon\Carbon;
@@ -15,8 +15,8 @@ use CustomerManagementFrameworkBundle\Listing\FilterHandler;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Model\DataObject\Customer;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
-use Pimcore\Tests\Test\ModelTestCase;
-use Pimcore\Tests\Util\TestHelper;
+use Pimcore\Tests\Support\Test\ModelTestCase;
+use Pimcore\Tests\Support\Util\TestHelper;
 
 class CustomerListTest extends ModelTestCase
 {

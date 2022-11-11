@@ -6,16 +6,15 @@
  * Time: 10:42 AM
  */
 
-namespace CustomerManagementFrameworkBundle\Tests\Unit\SegmentAssignment\TypeMapper;
+namespace CustomerManagementFrameworkBundle\Tests\Support\Unit\SegmentAssignment\TypeMapper;
 
+use Codeception\Test\Unit;
 use CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapper;
-use PHPUnit\Framework\TestCase;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Document;
-use Pimcore\Model\DataObject\AbstractObject;
 
-class TypeMapperTest extends TestCase {
+class TypeMapperTest extends Unit {
 
     /**
      * @var TypeMapper

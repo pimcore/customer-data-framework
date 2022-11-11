@@ -9,8 +9,11 @@
  * @license    GPLv3
  */
 
-namespace CustomerManagementFrameworkBundle\Tests\Fixtures\View\Formatter;
+namespace CustomerManagementFrameworkBundle\Tests\Support\Helper;
 
-class NoToStringObject
+// here you can define custom actions
+// all public methods declared in helper class will be available in $I
+
+class Unit extends \Codeception\Module
 {
 }

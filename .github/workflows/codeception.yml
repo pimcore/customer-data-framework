@@ -90,4 +90,4 @@ jobs:
                 bin/console doctrine:migrations:sync-metadata-storage -vvv
 
             - name: "Run Codeception"
-              run: "vendor/bin/codecept run -c . -vvv --json"
+              run: "vendor/bin/codecept run -c . -vvv --xml"

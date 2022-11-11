@@ -1,5 +1,5 @@
 <?php
-namespace CustomerManagementFrameworkBundle\Tests;
+namespace CustomerManagementFrameworkBundle\Tests\Support;
 
 /**
  * Inherited Methods

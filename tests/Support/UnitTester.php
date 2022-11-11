@@ -9,7 +9,7 @@
  * @license    GPLv3
  */
 
-namespace CustomerManagementFrameworkBundle\Tests;
+namespace CustomerManagementFrameworkBundle\Tests\Support;
 
 /**
  * Inherited Methods
