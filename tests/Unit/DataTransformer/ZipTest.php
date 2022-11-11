@@ -11,7 +11,9 @@
 
 namespace CustomerManagementFrameworkBundle\Tests\Support\Unit\DataTransformer;
 
-class ZipTest extends \PHPUnit_Framework_TestCase
+use Codeception\Test\Unit;
+
+class ZipTest extends Unit
 {
     public function testCorrectTransformationsDe()
     {
