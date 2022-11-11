@@ -32,6 +32,10 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SegmentAssignmentController extends AdminController
 {
+    public function __construct(protected SegmentAssignerInterface $segmentAssigner)
+    {
+    }
+
     /**
      * @Route("/inheritable-segments")
      *
@@ -98,8 +102,7 @@ class SegmentAssignmentController extends AdminController
         $breaksInheritance = $request->get('breaksInheritance') === 'true';
         $segmentIds = json_decode($request->get('segmentIds'), true) ?? [];
 
-        $assigner = $this->get(SegmentAssignerInterface::class);
-        $success = $assigner->assignById($id, $type, $breaksInheritance, $segmentIds);
+        $success = $this->segmentAssigner->assignById($id, $type, $breaksInheritance, $segmentIds);
 
         return $this->adminJson($success);
     }
