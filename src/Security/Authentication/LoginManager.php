@@ -105,6 +105,7 @@ class LoginManager implements LoginManagerInterface
     private function getUserChecker(FirewallConfig $config): UserCheckerInterface
     {
         $userChecker = UserCheckerClassResolver::resolveUserChecker($config->getUserChecker());
+
         return $userChecker ?? $this->defaultUserChecker;
     }
 }
