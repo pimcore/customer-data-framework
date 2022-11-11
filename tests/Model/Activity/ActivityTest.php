@@ -1,11 +1,11 @@
 <?php
 
-namespace CustomerManagementFrameworkBundle\Tests\Support\Model\Activity;
+namespace CustomerManagementFrameworkBundle\Tests\Model\Activity;
 use CustomerManagementFrameworkBundle\ActivityManager\ActivityManagerInterface;
 use CustomerManagementFrameworkBundle\Model\Activity\GenericActivity;
 use Pimcore\Model\DataObject\Customer;
-use Pimcore\Tests\Support\Test\ModelTestCase;
-use Pimcore\Tests\Support\Util\TestHelper;
+use Pimcore\Tests\Test\ModelTestCase;
+use Pimcore\Tests\Util\TestHelper;
 
 class ActivityTest extends ModelTestCase
 {

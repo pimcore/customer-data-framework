@@ -9,14 +9,13 @@
  * @license    GPLv3
  */
 
-namespace CustomerManagementFrameworkBundle\Tests\Support\Unit\View\Formatter;
+namespace CustomerManagementFrameworkBundle\Tests\Unit\View\Formatter;
 
-use Codeception\Test\Unit;
-use CustomerManagementFrameworkBundle\Tests\Support\Fixtures\View\Formatter\NoToStringObject;
-use CustomerManagementFrameworkBundle\Tests\Support\Fixtures\View\Formatter\ToStringObject;
+use CustomerManagementFrameworkBundle\Tests\Fixtures\View\Formatter\NoToStringObject;
+use CustomerManagementFrameworkBundle\Tests\Fixtures\View\Formatter\ToStringObject;
 use CustomerManagementFrameworkBundle\View\Formatter\ObjectWrapper;
 
-class ObjectWrapperTest extends Unit
+class ObjectWrapperTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider scalarDataProvider
