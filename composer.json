@@ -44,6 +44,7 @@
     "phpunit/phpunit": "^9.5",
     "codeception/codeception": "^5.0.3",
     "codeception/phpunit-wrapper": "^9",
+    "codeception/module-asserts": "^3",
     "php-http/guzzle7-adapter": "^0.1.1",
     "phpstan/phpstan": "^1.9",
     "phpstan/phpstan-symfony": "^1.2.14"
