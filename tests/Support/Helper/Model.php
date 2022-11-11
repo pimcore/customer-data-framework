@@ -6,11 +6,11 @@ namespace CustomerManagementFrameworkBundle\Tests\Support\Helper;
 
 use CustomerManagementFrameworkBundle\Installer;
 use Pimcore\Model\DataObject\Customer;
-use Pimcore\Tests\Helper\Model as PimcoreModel;
+use Pimcore\Tests\Support\Helper\AbstractDefinitionHelper;
 use Pimcore\Tests\Support\Helper\Pimcore;
 use Pimcore\Tests\Support\Util\Autoloader;
 
-class Model extends PimcoreModel
+class Model extends AbstractDefinitionHelper
 {
 
     public function _beforeSuite($settings = [])
