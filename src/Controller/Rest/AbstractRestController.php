@@ -220,7 +220,6 @@ abstract class AbstractRestController extends AdminController
         throw new ResponseException($this->createErrorResponse('Missing ID'));
     }
 
-
     protected function getLogger(): LoggerInterface
     {
         return $this->pimcoreApiLogger;
