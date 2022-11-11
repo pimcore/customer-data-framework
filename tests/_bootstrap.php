@@ -31,10 +31,10 @@ Autoloader::addNamespace('Pimcore\Tests', $pimcoreTestsSupportDir);
 //Autoloader::addNamespace('Pimcore\Model\DataObject', __DIR__ . '/_output/var/classes/DataObject');
 Autoloader::addNamespace('Pimcore\Model\DataObject', PIMCORE_CLASS_DIRECTORY . '/DataObject');
 Autoloader::addNamespace('CustomerManagementFrameworkBundle\Tests', __DIR__);
-Autoloader::addNamespace('CustomerManagementFrameworkBundle\Tests', __DIR__ . '/_support');
+Autoloader::addNamespace('CustomerManagementFrameworkBundle\Tests', __DIR__ . '/Support');
 
 
-echo __DIR__ . '/_support';
+echo __DIR__ . '/Support';
 
 if (!defined('TESTS_PATH')) {
     define('TESTS_PATH', __DIR__);
