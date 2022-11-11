@@ -1,14 +1,14 @@
 <?php
-namespace CustomerManagementFrameworkBundle\Tests\Support\Helper;
+namespace CustomerManagementFrameworkBundle\Tests\Helper;
 
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
 
 use CustomerManagementFrameworkBundle\Installer;
 use Pimcore\Model\DataObject\Customer;
-use Pimcore\Tests\Support\Helper\AbstractDefinitionHelper;
-use Pimcore\Tests\Support\Helper\Pimcore;
-use Pimcore\Tests\Support\Util\Autoloader;
+use Pimcore\Tests\Helper\AbstractDefinitionHelper;
+use Pimcore\Tests\Helper\Pimcore;
+use Pimcore\Tests\Util\Autoloader;
 
 class Model extends AbstractDefinitionHelper
 {

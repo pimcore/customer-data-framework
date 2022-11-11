@@ -9,11 +9,9 @@
  * @license    GPLv3
  */
 
-namespace CustomerManagementFrameworkBundle\Tests\Support\Unit\DataTransformer;
+namespace CustomerManagementFrameworkBundle\Tests\Unit\DataTransformer;
 
-use Codeception\Test\Unit;
-
-class ZipTest extends Unit
+class ZipTest extends \PHPUnit_Framework_TestCase
 {
     public function testCorrectTransformationsDe()
     {

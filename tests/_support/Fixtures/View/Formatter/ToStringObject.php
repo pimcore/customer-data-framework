@@ -9,7 +9,7 @@
  * @license    GPLv3
  */
 
-namespace CustomerManagementFrameworkBundle\Tests\Support\Fixtures\View\Formatter;
+namespace CustomerManagementFrameworkBundle\Tests\Fixtures\View\Formatter;
 
 class ToStringObject
 {

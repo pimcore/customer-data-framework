@@ -1,12 +1,11 @@
 namespace: CustomerManagementFrameworkBundle\Tests
-support_namespace: Support
-actor_suffix: Tester
+actor: Tester
 bootstrap: _bootstrap.php
 paths:
     tests: tests
-    output: tests/_output
-    data: tests/Support/Data
-    support: tests/Support
+    log: tests/_output
+    data: tests/_data
+    support: tests/_support
     envs: tests/_envs
 settings:
     colors: true
