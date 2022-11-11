@@ -1,6 +1,6 @@
 <?php
 
-use Pimcore\Tests\Util\Autoloader;
+use Pimcore\Tests\Support\Util\Autoloader;
 
 $pimcoreTestsSupportDir = '';
 
@@ -19,6 +19,11 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     throw new \Exception('Unknown configuration! Pimcore project root not found, please set env variable PIMCORE_PROJECT_ROOT.');
 }
 
+//Pimcore 10 BC layer
+if (!file_exists($pimcoreTestsSupportDir)) {
+    $pimcoreTestsSupportDir = str_replace('/tests/Support', '/tests/_support', $pimcoreTestsSupportDir);
+}
+
 include $pimcoreTestsSupportDir . '/Util/Autoloader.php';
 
 \Pimcore\Bootstrap::setProjectRoot();
@@ -27,7 +32,7 @@ include $pimcoreTestsSupportDir . '/Util/Autoloader.php';
 //error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_WARNING);
 
 //Codeception\Util\Autoload::addNamespace();
-Autoloader::addNamespace('Pimcore\Tests', $pimcoreTestsSupportDir);
+Autoloader::addNamespace('Pimcore\Tests\Support', $pimcoreTestsSupportDir);
 //Autoloader::addNamespace('Pimcore\Model\DataObject', __DIR__ . '/_output/var/classes/DataObject');
 Autoloader::addNamespace('Pimcore\Model\DataObject', PIMCORE_CLASS_DIRECTORY . '/DataObject');
 Autoloader::addNamespace('CustomerManagementFrameworkBundle\Tests', __DIR__);
