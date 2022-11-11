@@ -38,7 +38,6 @@ Following aspects are short cuts into the documentation for start working with t
 * [Working with Activities (ActivityManager, ActivityStore, ActivityView)](./doc/09_Activities/README.md)
 * [Working with Customer Segments](./doc/11_CustomerSegments.md)
 * [Customer Duplicates Service](./doc/15_CustomerDuplicatesService.md)
-* [Working with integrated Single Sign On](./doc/18_Single_Sign_On.md)
 * [Built-In Marketing Automation Engine](./doc/22_ActionTrigger.md)
 * [Newsletter System Integration](./doc/24_NewsletterSync/README.md)
 * [Rest API Webservice](./doc/26_Webservice.md)
