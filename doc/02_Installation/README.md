@@ -132,7 +132,7 @@ There are several cron jobs needed by the CMF. These need to be configured and s
 See [CronJob Docs](./04_Cronjobs.md) for details. 
 
 
-## (Optional) Prerequisites for SSO (SSO functionality is deprecated)
+## (Optional) Prerequisites for SSO (Deprecated)
 
 If SSO functionality of CMF should be integrated, please follow the steps for [Integration of Single Sign On](./18_Single_Sign_On.md). 
 
