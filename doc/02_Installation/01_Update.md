@@ -1,5 +1,8 @@
 # Update Notices
 
+## Update to Version 3.4
+- The Single Sign On (SSO) functionality is deprecated and will be removed in version 4.
+
 ## Update to Version 3
 - Activate `Generate Type Declarations` for all classes generated/used by the Customer Management Framework:
   - `Customer`
@@ -17,7 +20,6 @@ security:
 ``` 
 - Webservices URLs changed to ` /__customermanagementframework/webservice/*`
 - Execute all migrations of Customer Management Framework.
-- The Single Sign On (SSO) functionality is deprecated and will be removed in version 4.
 
 ### Additional code changes (that might affect your application)
 - Migrated `SearchQueryParser\QueryBuilder\ZendCompatibility` to `Doctrine\DBAL\Query\QueryBuilder`.
