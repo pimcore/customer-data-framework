@@ -23,7 +23,6 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 /**
  * @deprecated
  */
-
 class SessionTokenStorage implements TokenStorageInterface
 {
     /**
