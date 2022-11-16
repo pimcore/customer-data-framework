@@ -107,7 +107,7 @@ class Dao extends Model\Dao\AbstractDao
             try {
                 $this->saveActions();
 
-                //TODO: Remove this if block when dropping Pimcore 10 support
+                //TODO: Remove this if expression when dropping Pimcore 10 support
                 if (!class_exists('\Pimcore\Db\Connection')) {
                     $data = Helper::quoteDataIdentifiers($this->db, $data);
                 }
@@ -124,7 +124,7 @@ class Dao extends Model\Dao\AbstractDao
             $data['creationDate'] = time();
             $this->db->beginTransaction();
             try {
-                //TODO: Remove this if block when dropping Pimcore 10 support
+                //TODO: Remove this if expression when dropping Pimcore 10 support
                 if (!class_exists('\Pimcore\Db\Connection')) {
                     $data = Helper::quoteDataIdentifiers($this->db, $data);
                 }
