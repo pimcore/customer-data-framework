@@ -173,7 +173,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
                     ];
 
                     //TODO: Remove this if block when dropping Pimcore 10 support
-                    if (!class_exists('Pimcore\Db\Connection')) {
+                    if (!class_exists('\Pimcore\Db\Connection')) {
                         $insertData = Helper::quoteDataIdentifiers($db, $insertData);
                     }
 
