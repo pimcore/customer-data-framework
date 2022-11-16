@@ -20,6 +20,9 @@ namespace CustomerManagementFrameworkBundle\Security\OAuth;
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
+/**
+ * @deprecated
+ */
 class SessionTokenStorage implements TokenStorageInterface
 {
     /**

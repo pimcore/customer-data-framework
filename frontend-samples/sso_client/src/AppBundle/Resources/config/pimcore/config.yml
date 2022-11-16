@@ -2,9 +2,11 @@ imports:
     - { resource: security.yml }
 
 pimcore_customer_management_framework:
+    # deprecated
     oauth_client:
         enabled: true
 
+# deprecated
 # Configure the HWIOAuth bundle
 hwi_oauth:
     firewall_names: [main]

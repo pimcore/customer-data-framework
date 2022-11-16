@@ -45,6 +45,10 @@ services:
     cmf.security.sso.identity_service: '@CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface'
     CustomerManagementFrameworkBundle\Security\SsoIdentity\SsoIdentityServiceInterface: '@CustomerManagementFrameworkBundle\Security\SsoIdentity\DefaultSsoIdentityService'
     CustomerManagementFrameworkBundle\Security\SsoIdentity\DefaultSsoIdentityService:
+        deprecated:
+            message: 'The "%service_id%" service is deprecated.'
+            package: pimcore/customer-management-framework-bundle
+            version: 3.4
         arguments: ['@cmf.customer_provider']
         calls:
              - [setLogger, ['@cmf.logger']]

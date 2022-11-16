@@ -29,6 +29,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * Utility class supporting registration process from OAuth responses. This is mostly a facade piping
  * requests to other services.
+ *
+ * @deprecated
  */
 class OAuthRegistrationHandler
 {

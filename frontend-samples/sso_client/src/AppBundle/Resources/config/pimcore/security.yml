@@ -32,6 +32,7 @@ security:
                 check_path: app_auth_login
                 default_target_path: app_index
 
+            # deprecated
             # configure the OAuth authenticator (HWIOAuthBundle)
             oauth:
                 resource_owners:

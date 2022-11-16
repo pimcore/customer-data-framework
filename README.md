@@ -19,7 +19,7 @@ solutions and is tightly integrated into Pimcore core functionality.
 - Storage of Customer Activities from different data feeds
 - Customer Segmentation based on data, activities and other criteria
 - Duplicates detection and merging
-- SSO and connection to social profiles like Google, Facebook, Twitter, etc. 
+- SSO and connection to social profiles like Google, Facebook, Twitter, etc. (Deprecated)
 - Enhancement of Pimcore's on-site personalization
 - Marketing Automation with built-in rule engine and triggers
 - Default integration to external newsletter systems like MailChimp

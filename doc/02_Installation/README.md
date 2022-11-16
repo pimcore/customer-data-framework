@@ -90,7 +90,7 @@ Note that the class doesn't need to contain the attributes as field definitions.
  getters/setters defined in the ['CustomerManagementFrameworkBundle\Model\CustomerInterface'](https://github.com/pimcore/customer-data-framework/blob/master/src/Model/CustomerInterface.php)
     or Use a [Trait](https://gist.github.com/dvesh3/ee88f6a7b75ea65f9f1db981b682e7cd), that implements these getters/setters, in Pimcore class.
  
-* When using the provided [SSO functionality](./Single_Sign_On.md): In this case the customer class additionally needs
+* When using the provided [SSO functionality (deprecated) ](./Single_Sign_On.md): In this case the customer class additionally needs
   to implement the [`CustomerManagementFrameworkBundle\Model\SsoAwareCustomerInterface`](https://github.com/pimcore/customer-data-framework/blob/master/src/Model/SsoAwareCustomerInterface.php)
   interface and also need to have one additional data attribute:   
   * `ssoIdentities`: objects relation to `SsoIdentity`
@@ -132,7 +132,7 @@ There are several cron jobs needed by the CMF. These need to be configured and s
 See [CronJob Docs](./04_Cronjobs.md) for details. 
 
 
-## (Optional) Prerequisites for SSO
+## (Optional) Prerequisites for SSO (Deprecated)
 
 If SSO functionality of CMF should be integrated, please follow the steps for [Integration of Single Sign On](./18_Single_Sign_On.md). 
 

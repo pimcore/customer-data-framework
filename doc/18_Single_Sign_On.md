@@ -1,4 +1,4 @@
-# Single Sign On (SSO)
+# Single Sign On (SSO) (Deprecated Feature)
 
 The customer management framework supports integration with third-party services for single sign on. Thus, services 
 like Google, Twitter, Facebook, etc. can be integrated and used as SSO providers for user registration and user login

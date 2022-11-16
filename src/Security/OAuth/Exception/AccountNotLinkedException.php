@@ -17,6 +17,9 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Security\OAuth\Exception;
 
+/**
+ * @deprecated
+ */
 class AccountNotLinkedException extends \HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException
 {
 }

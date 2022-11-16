@@ -115,6 +115,7 @@ e.g. in `config.yml`:
 
 ```yaml
 pimcore_customer_management_framework:
+    # SSO is deprecated
     # Enable/Disable SSO oauth client. If enabled additional steps are necessary, see SSO docs for details. 
     oauth_client:
         enabled:              false

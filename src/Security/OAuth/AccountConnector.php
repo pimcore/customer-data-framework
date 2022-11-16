@@ -31,6 +31,9 @@ use Pimcore\Model\DataObject\Objectbrick\Data\OAuth2Token;
 use Pimcore\Model\DataObject\SsoIdentity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * @deprecated
+ */
 class AccountConnector implements AccountConnectorInterface
 {
     /**
