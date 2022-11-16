@@ -109,7 +109,7 @@ class Dao extends Model\Dao\AbstractDao
 
                 //TODO: Remove this if block when dropping Pimcore 10 support
                 if (!class_exists("\Pimcore\Db\Connection")) {
-                    $data = Helper::quoteDataIdentifiers($db, $data);
+                    $data = Helper::quoteDataIdentifiers($this->db, $data);
                 }
 
                 $this->db->update(self::TABLE_NAME, $data, ['id' => $this->model->getId()]);
@@ -126,7 +126,7 @@ class Dao extends Model\Dao\AbstractDao
             try {
                 //TODO: Remove this if block when dropping Pimcore 10 support
                 if (!class_exists("\Pimcore\Db\Connection")) {
-                    $data = Helper::quoteDataIdentifiers($db, $data);
+                    $data = Helper::quoteDataIdentifiers($this->db, $data);
                 }
 
                 $this->db->insert(self::TABLE_NAME, $data);
