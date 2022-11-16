@@ -65,6 +65,16 @@ class CustomerObjectUserProvider implements UserProviderInterface
     }
 
     /**
+     * @deprecated use loadUserByIdentifier() instead.
+     *
+     * @inheritdoc
+     */
+    public function loadUserByUsername($username)
+    {
+        return $this->loadUserByIdentifier($username);
+    }
+
+    /**
      * @inheritdoc
      *
      * @return UserInterface
