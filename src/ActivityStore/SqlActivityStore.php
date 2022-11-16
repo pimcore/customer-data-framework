@@ -145,8 +145,6 @@ abstract class SqlActivityStore
                     }
 
                     $db->insert(self::ACTIVITIES_METADATA_TABLE, $insertData);
-
-
                 }
             } catch (TableNotFoundException $ex) {
                 $this->getLogger()->error(sprintf('table %s not found - please press the update button of the CMF bundle in the extension manager', self::ACTIVITIES_METADATA_TABLE));
