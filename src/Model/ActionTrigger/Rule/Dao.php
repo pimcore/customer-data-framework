@@ -107,7 +107,12 @@ class Dao extends Model\Dao\AbstractDao
             try {
                 $this->saveActions();
 
-                $this->db->update(self::TABLE_NAME, Helper::quoteDataIdentifiers($this->db, $data), ['id' => $this->model->getId()]);
+                //TODO: Remove this if block when dropping Pimcore 10 support
+                if (!class_exists("\Pimcore\Db\Connection")) {
+                    $data = Helper::quoteDataIdentifiers($db, $data);
+                }
+
+                $this->db->update(self::TABLE_NAME, $data, ['id' => $this->model->getId()]);
                 $this->db->commit();
             } catch (\Exception $e) {
                 $this->db->rollBack();
@@ -119,7 +124,12 @@ class Dao extends Model\Dao\AbstractDao
             $data['creationDate'] = time();
             $this->db->beginTransaction();
             try {
-                $this->db->insert(self::TABLE_NAME, Helper::quoteDataIdentifiers($this->db, $data));
+                //TODO: Remove this if block when dropping Pimcore 10 support
+                if (!class_exists("\Pimcore\Db\Connection")) {
+                    $data = Helper::quoteDataIdentifiers($db, $data);
+                }
+
+                $this->db->insert(self::TABLE_NAME, $data);
                 $this->model->setId($this->db->fetchOne('SELECT LAST_INSERT_ID();'));
                 $this->model->setCreationDate($data['creationDate']);
                 $this->saveActions();
