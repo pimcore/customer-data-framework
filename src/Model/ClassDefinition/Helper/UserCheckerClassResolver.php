@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Model\ClassDefinition\Helper;
 
+use Pimcore;
 use Pimcore\Model\DataObject\ClassDefinition\Helper\ClassResolver;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 
@@ -24,10 +25,13 @@ class UserCheckerClassResolver extends ClassResolver
 {
     public static function resolveUserChecker(string $serviceName): ?UserCheckerInterface
     {
-        /** @var UserCheckerInterface|null $userChecker */
-        $userChecker = self::resolve($serviceName, static function ($serviceObject) {
-            return $serviceObject instanceof UserCheckerInterface;
-        });
+        $container = Pimcore::getKernel()->getContainer();
+
+        $userChecker = $container->get($serviceName);
+
+        if (!$userChecker instanceof UserCheckerInterface) {
+            return null;
+        }
 
         return $userChecker;
     }
