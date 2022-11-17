@@ -5,9 +5,9 @@ namespace CustomerManagementFrameworkBundle\Tests\Model\Customer;
 
 use CustomerManagementFrameworkBundle\Listing\FilterHandler;
 use Pimcore\Model\DataObject\Customer;
-use Pimcore\Tests\Test\ModelTestCase;
-use Pimcore\Tests\Util\Autoloader;
-use Pimcore\Tests\Util\TestHelper;
+use Pimcore\Tests\Support\Test\ModelTestCase;
+use Pimcore\Tests\Support\Util\Autoloader;
+use Pimcore\Tests\Support\Util\TestHelper;
 
 class CustomerTest extends ModelTestCase
 {

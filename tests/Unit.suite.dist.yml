@@ -2,4 +2,3 @@ class_name: UnitTester
 modules:
     enabled:
         - \CustomerManagementFrameworkBundle\Tests\Helper\Unit
-        - Asserts

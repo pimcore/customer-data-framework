@@ -6,9 +6,10 @@ namespace CustomerManagementFrameworkBundle\Tests\Helper;
 
 use CustomerManagementFrameworkBundle\Installer;
 use Pimcore\Model\DataObject\Customer;
-use Pimcore\Tests\Helper\AbstractDefinitionHelper;
-use Pimcore\Tests\Helper\Pimcore;
-use Pimcore\Tests\Util\Autoloader;
+use Pimcore\Tests\Support\Helper\AbstractDefinitionHelper;
+use Pimcore\Tests\Support\Helper\ClassManager;
+use Pimcore\Tests\Support\Helper\Pimcore;
+use Pimcore\Tests\Support\Util\Autoloader;
 
 class Model extends AbstractDefinitionHelper
 {
@@ -44,7 +45,7 @@ collate=utf8_unicode_ci;
 
     public function initializeDefinitions()
     {
-        $cm = $this->getClassManager();
+        $cm = $this->getModule('\\' . ClassManager::class);
         $cm->setupClass('Customer', __DIR__ . '/../../../install/class_source/optional/class_Customer_export.json');
     }
 }

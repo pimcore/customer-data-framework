@@ -166,14 +166,18 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
                 $db->executeQuery('DELETE FROM ' . self::ACTIVITIES_METADATA_TABLE . ' WHERE activityId = ?', [(int)$entry->getId()]);
 
                 foreach ($entry->getMetadata() as $key => $data) {
-                    $db->insert(
-                        self::ACTIVITIES_METADATA_TABLE,
-                        [
-                            'activityId' => $entry->getId(),
-                            'key' => $key,
-                            'data' => $data
-                        ]
-                    );
+                    $insertData = [
+                        'activityId' => $entry->getId(),
+                        'key' => $key,
+                        'data' => $data
+                    ];
+
+                    //TODO: Remove this if expression when dropping Pimcore 10 support
+                    if (!class_exists('\Pimcore\Db\Connection')) {
+                        $insertData = Helper::quoteDataIdentifiers($db, $insertData);
+                    }
+
+                    $db->insert(self::ACTIVITIES_METADATA_TABLE, $insertData);
                 }
             } catch (TableNotFoundException $ex) {
                 $this->getLogger()->error(sprintf('table %s not found - please press the update button of the CMF bundle in the extension manager', self::ACTIVITIES_METADATA_TABLE));

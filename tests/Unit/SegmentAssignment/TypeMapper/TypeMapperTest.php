@@ -9,13 +9,13 @@
 namespace CustomerManagementFrameworkBundle\Tests\Unit\SegmentAssignment\TypeMapper;
 
 use CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapper;
-use PHPUnit\Framework\TestCase;
+use Codeception\Test\Unit;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Document;
 use Pimcore\Model\DataObject\AbstractObject;
 
-class TypeMapperTest extends TestCase {
+class TypeMapperTest extends Unit {
 
     /**
      * @var TypeMapper
