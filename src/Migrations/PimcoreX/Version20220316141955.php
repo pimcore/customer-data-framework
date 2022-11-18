@@ -30,7 +30,7 @@ final class Version20220316141955 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $cmfDeletionsTable = $schema->getTable('plugin_cmf_deletions');
-        if ($cmfDeletionsTable->hasPrimaryKey()) {
+        if ($cmfDeletionsTable->getPrimaryKey()) {
             $cmfDeletionsTable->dropPrimaryKey();
         }
     }
