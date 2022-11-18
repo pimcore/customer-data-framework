@@ -47,7 +47,7 @@ class Installer extends SettingsStoreAwareInstaller
      *
      * @return bool
      */
-    public function needsReloadAfterInstall()//: bool
+    public function needsReloadAfterInstall(): bool
     {
         return true;
     }
