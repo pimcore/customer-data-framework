@@ -25,13 +25,10 @@ class UserCheckerClassResolver extends ClassResolver
 {
     public static function resolveUserChecker(string $serviceName): ?UserCheckerInterface
     {
-        $container = Pimcore::getKernel()->getContainer();
-
-        $userChecker = $container->get($serviceName);
-
-        if (!$userChecker instanceof UserCheckerInterface) {
-            return null;
-        }
+        /** @var UserCheckerInterface|null $userChecker */
+        $userChecker = self::resolve($serviceName, static function ($serviceObject) {
+            return $serviceObject instanceof UserCheckerInterface;
+        });
 
         return $userChecker;
     }
