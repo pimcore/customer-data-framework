@@ -223,7 +223,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
      *
      * @return bool
      */
-    public function isValidOrderKey(/* string */ $key)//: bool
+    public function isValidOrderKey(/* string */ $key): bool
     {
         return true;
     }
