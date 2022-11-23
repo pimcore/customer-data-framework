@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Model\ClassDefinition\Helper;
 
-use Pimcore;
 use Pimcore\Model\DataObject\ClassDefinition\Helper\ClassResolver;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 
