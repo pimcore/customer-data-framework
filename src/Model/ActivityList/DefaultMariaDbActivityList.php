@@ -22,15 +22,6 @@ use Pimcore\Model\Listing\AbstractListing;
 
 class DefaultMariaDbActivityList extends AbstractListing implements ActivityListInterface
 {
-    /**
-     * @var int|null
-     */
-    protected $limit;
-
-    /**
-     * @var int
-     */
-    protected $offset = 0;
 
     /**
      * @var null|int
@@ -41,11 +32,6 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
      * @var null|ActivityInterface[]
      */
     protected $activities = null;
-
-    /**
-     * @var MariaDbDao;
-     */
-    protected $dao;
 
     public function __construct()
     {
@@ -67,7 +53,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
      *
      * @return $this
      */
-    public function setLimit($limit)
+    public function setLimit($limit): static
     {
         if ($this->limit != $limit) {
             $this->activities = null;
@@ -79,19 +65,11 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     }
 
     /**
-     * @return int|null
-     */
-    public function getLimit()
-    {
-        return $this->limit;
-    }
-
-    /**
      * @param int $offset
      *
      * @return $this
      */
-    public function setOffset($offset)
+    public function setOffset($offset): static
     {
         if ($this->offset != $offset) {
             $this->activities = null;
@@ -103,22 +81,13 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     }
 
     /**
-     * @return int
-     */
-    public function getOffset()
-    {
-        return $this->offset;
-    }
-
-    /**
      * Returns an collection of items for a page.
      *
      * @param  int $offset Page offset
      * @param  int $itemCountPerPage Number of items per page
      *
-     * @return array
      */
-    public function getItems($offset, $itemCountPerPage)
+    public function getItems($offset, $itemCountPerPage): array
     {
         $this->setOffset($offset);
         $this->setLimit($itemCountPerPage);
@@ -126,11 +95,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         return $this->getActivities();
     }
 
-    /**
-     * @return int
-     */
-    #[\ReturnTypeWillChange]
-    public function count()/* : int */
+    public function count(): int
     {
         if ($this->totalCount === null) {
             $this->totalCount = $this->dao->getCount();
@@ -147,52 +112,37 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         throw new \Exception('Not implemented anymore.');
     }
 
-    /**
-     * @return ActivityInterface|false
-     */
-    #[\ReturnTypeWillChange]
-    public function current()/* : ActivityInterface|false */
+
+    public function current(): ActivityInterface|false
     {
         $this->getActivities();
 
         return current($this->activities);
     }
 
-    /**
-     * @return void
-     */
-    #[\ReturnTypeWillChange]
-    public function next()/* : void */
+
+    public function next(): void
     {
         $this->getActivities();
         next($this->activities);
     }
 
-    /**
-     * @return int|null
-     */
-    #[\ReturnTypeWillChange]
-    public function key()/* : int|null */
+
+    public function key(): int|null
     {
         $this->getActivities();
 
         return key($this->activities);
     }
 
-    /**
-     * @return bool
-     */
-    #[\ReturnTypeWillChange]
-    public function valid()/* : bool */
+
+    public function valid(): bool
     {
         return $this->current() !== false;
     }
 
-    /**
-     * @return void
-     */
-    #[\ReturnTypeWillChange]
-    public function rewind()/* : void */
+
+    public function rewind(): void
     {
         $this->getActivities();
         reset($this->activities);
@@ -201,7 +151,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     /**
      * @return ActivityStoreEntryInterface[]
      */
-    public function load()//: array
+    public function load(): array
     {
         $raw = $this->dao->load();
 

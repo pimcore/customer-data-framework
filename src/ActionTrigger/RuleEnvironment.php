@@ -19,14 +19,9 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger;
 
 class RuleEnvironment implements RuleEnvironmentInterface
 {
-    /**
-     * @var array
-     */
-    private $data = [];
 
-    public function __construct(array $data = [])
+    public function __construct(private array $data = [])
     {
-        $this->data = $data;
     }
 
     public function has($name): bool
@@ -48,11 +43,8 @@ class RuleEnvironment implements RuleEnvironmentInterface
         return $default;
     }
 
-    /**
-     * @return \ArrayIterator
-     */
-    #[\ReturnTypeWillChange]
-    public function getIterator()/* : \ArrayIterator */
+
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->data);
     }
@@ -66,10 +58,9 @@ class RuleEnvironment implements RuleEnvironmentInterface
     }
 
     /**
-     * @return mixed
+     * @param string $offset
      */
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)/* : mixed */
+    public function offsetGet($offset): mixed
     {
         if (isset($this->data[$offset])) {
             return $this->data[$offset];
@@ -82,10 +73,8 @@ class RuleEnvironment implements RuleEnvironmentInterface
      * @param mixed $offset
      * @param mixed $value
      *
-     * @return void
      */
-    #[\ReturnTypeWillChange]
-    public function offsetSet($offset, $value)/* : void */
+    public function offsetSet($offset, $value): void
     {
         $this->data[$offset] = $value;
     }
@@ -93,41 +82,29 @@ class RuleEnvironment implements RuleEnvironmentInterface
     /**
      * @param mixed $offset
      *
-     * @return void
      */
-    #[\ReturnTypeWillChange]
-    public function offsetUnset($offset)/* : void */
+    public function offsetUnset($offset): void
     {
         if (isset($this->data[$offset])) {
             unset($this->data[$offset]);
         }
     }
 
-    /**
-     * @return string
-     */
-    #[\ReturnTypeWillChange]
-    public function serialize()/* : string */
+    public function serialize(): string
     {
         return serialize($this->data);
     }
 
     /**
      * @param string $serialized
-     *
-     * @return void
      */
-    #[\ReturnTypeWillChange]
-    public function unserialize($serialized)/* : void */
+    public function unserialize($serialized): void
     {
         $this->data = unserialize($serialized);
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()/* : array */
+
+    public function jsonSerialize(): array
     {
         return $this->data;
     }
