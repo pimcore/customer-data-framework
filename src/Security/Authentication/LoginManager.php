@@ -114,6 +114,7 @@ class LoginManager implements LoginManagerInterface
         } else {
             $userChecker = new $firewallUserChecker;
         }
+
         return $userChecker;
 
         return $userChecker ?? $this->defaultUserChecker;
