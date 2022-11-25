@@ -116,6 +116,5 @@ class LoginManager implements LoginManagerInterface
         }
 
         return $userChecker;
-
     }
 }
