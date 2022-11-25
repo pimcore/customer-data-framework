@@ -22,7 +22,6 @@ use Pimcore\Model\Listing\AbstractListing;
 
 class DefaultMariaDbActivityList extends AbstractListing implements ActivityListInterface
 {
-
     /**
      * @var null|int
      */
@@ -32,6 +31,11 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
      * @var null|ActivityInterface[]
      */
     protected $activities = null;
+
+    /**
+     * @var MariaDbDao;
+     */
+    protected $dao;
 
     public function __construct()
     {
@@ -112,14 +116,12 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         throw new \Exception('Not implemented anymore.');
     }
 
-
-    public function current(): ActivityInterface|false
+    public function current(): ActivityInterface | false
     {
         $this->getActivities();
 
         return current($this->activities);
     }
-
 
     public function next(): void
     {
@@ -127,20 +129,17 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         next($this->activities);
     }
 
-
-    public function key(): int|null
+    public function key(): int | null
     {
         $this->getActivities();
 
         return key($this->activities);
     }
 
-
     public function valid(): bool
     {
         return $this->current() !== false;
     }
-
 
     public function rewind(): void
     {

@@ -19,7 +19,6 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger;
 
 class RuleEnvironment implements RuleEnvironmentInterface
 {
-
     public function __construct(private array $data = [])
     {
     }
@@ -42,7 +41,6 @@ class RuleEnvironment implements RuleEnvironmentInterface
 
         return $default;
     }
-
 
     public function getIterator(): \ArrayIterator
     {
@@ -102,7 +100,6 @@ class RuleEnvironment implements RuleEnvironmentInterface
     {
         $this->data = unserialize($serialized);
     }
-
 
     public function jsonSerialize(): array
     {

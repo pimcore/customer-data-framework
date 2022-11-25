@@ -56,7 +56,7 @@ class Dao extends AbstractDao
      *
      * @throws \Exception
      */
-    public function getById($id = null): ?int
+    public function getById($id = null): void
     {
         $data = $this->db->fetchAssociative(
             'SELECT * FROM '. self::TABLE_NAME . ' WHERE ' . self::ATTRIBUTE_ID . ' = ?',

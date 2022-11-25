@@ -27,7 +27,7 @@ class CustomerIsLoggedIn extends AbstractVariableCondition implements DataProvid
     /**
      * @inheritDoc
      */
-    public static function fromConfig(array $config)
+    public static function fromConfig(array $config): self
     {
         return new self();
     }
