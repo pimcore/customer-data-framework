@@ -117,6 +117,5 @@ class LoginManager implements LoginManagerInterface
 
         return $userChecker;
 
-        return $userChecker ?? $this->defaultUserChecker;
     }
 }
