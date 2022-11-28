@@ -56,7 +56,7 @@ class Dao extends AbstractDao
      *
      * @throws \Exception
      */
-    public function getById($id = null)
+    public function getById($id = null): void
     {
         $data = $this->db->fetchAssociative(
             'SELECT * FROM '. self::TABLE_NAME . ' WHERE ' . self::ATTRIBUTE_ID . ' = ?',
@@ -86,7 +86,7 @@ class Dao extends AbstractDao
      *
      * @throws \Exception Throws exception if object with id not found
      */
-    protected function assignVariablesToModel($data)
+    protected function assignVariablesToModel($data): void
     {
         if (isset($data[self::ATTRIBUTE_ID])) {
             $data[self::ATTRIBUTE_DEFINITION] = json_decode($data[self::ATTRIBUTE_DEFINITION], true);
@@ -138,7 +138,7 @@ class Dao extends AbstractDao
      *
      * @throws \Exception Throws exception if object not found in database
      */
-    public function delete()
+    public function delete(): bool
     {
         try {
             $this->db->delete(self::TABLE_NAME, [

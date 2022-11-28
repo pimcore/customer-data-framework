@@ -16,14 +16,17 @@
 namespace CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule\Listing;
 
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
+use Doctrine\DBAL\Exception;
 use Pimcore\Model;
 
 class Dao extends Model\Listing\Dao\AbstractDao
 {
     /**
      * @return Rule[]
+     *
+     * @throws Exception
      */
-    public function load()//: array
+    public function load(): array
     {
         $rules = [];
 
@@ -41,8 +44,10 @@ class Dao extends Model\Listing\Dao\AbstractDao
 
     /**
      * @return int
+     *
+     * @throws Exception
      */
-    public function getTotalCount()//: int
+    public function getTotalCount(): int
     {
         return (int)$this->db->fetchOne(
             'SELECT COUNT(*) as amount FROM '.Rule\Dao::TABLE_NAME.' '.$this->getCondition(),

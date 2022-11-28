@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
 
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
+use Doctrine\DBAL\Exception;
 use Pimcore\Model\Listing\AbstractListing;
 
 /**
@@ -28,15 +29,17 @@ class Listing extends AbstractListing
      *
      * @return bool
      */
-    public function isValidOrderKey(/* string */ $key)//: bool
+    public function isValidOrderKey(/* string */ $key): bool
     {
         return true;
     }
 
     /**
      * @return Rule[]
+     *
+     * @throws Exception
      */
-    public function load()//: array
+    public function load(): array
     {
         return $this->getDao()->load();
     }

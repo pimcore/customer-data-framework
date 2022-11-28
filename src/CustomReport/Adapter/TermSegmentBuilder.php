@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\CustomReport\Adapter;
 
 use CustomerManagementFrameworkBundle\Model\AbstractTermSegmentBuilderDefinition;
+use Doctrine\DBAL\Exception;
 use Pimcore\Db;
 use Pimcore\Model;
 
@@ -24,11 +25,9 @@ class TermSegmentBuilder extends Model\Tool\CustomReport\Adapter\Sql
     /**
      * @param mixed $configuration
      *
-     * @return mixed
-     *
      * @throws \Exception
      */
-    public function getColumns($configuration)
+    public function getColumns($configuration): array
     {
         $columns = parent::getColumns($configuration);
 
@@ -48,7 +47,7 @@ class TermSegmentBuilder extends Model\Tool\CustomReport\Adapter\Sql
      * @param array|null $drillDownFilters
      * @param string|null $selectField
      *
-     * @return array|null
+     * @throws Exception
      */
     protected function getBaseQuery(
         $filters,
@@ -56,7 +55,7 @@ class TermSegmentBuilder extends Model\Tool\CustomReport\Adapter\Sql
         $ignoreSelectAndGroupBy = false,
         $drillDownFilters = null,
         $selectField = null
-    ) {
+    ): ?array {
         $db = Db::get();
         $condition = ['1 = 1'];
 

@@ -30,7 +30,7 @@ class Dao extends Model\Listing\Dao\AbstractDao
      *
      * @return FilterDefinition[]
      */
-    public function load()
+    public function load(): array
     {
         // fetch ids with conditions, order and offset
         $filterDefinitionsData = $this->db->fetchFirstColumn('SELECT id FROM ' . FilterDefinition\Dao::TABLE_NAME . $this->getCondition() . $this->getOrder() . $this->getOffsetLimit(), $this->model->getConditionVariables());
@@ -46,7 +46,7 @@ class Dao extends Model\Listing\Dao\AbstractDao
         return $filterDefinitions;
     }
 
-    public function getTotalCount()
+    public function getTotalCount(): int
     {
         return $this->db->fetchOne('SELECT count(*) FROM ' . FilterDefinition\Dao::TABLE_NAME . $this->getCondition() . $this->getOrder() . $this->getOffsetLimit(), $this->model->getConditionVariables());
     }
