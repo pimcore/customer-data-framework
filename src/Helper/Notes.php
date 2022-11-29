@@ -34,7 +34,7 @@ class Notes
         $note->setDate(time());
         $note->setType($type);
         $note->setTitle($title);
-        $note->setDescription($description);
+        $note->setDescription((string) $description);
 
         return $note;
     }
