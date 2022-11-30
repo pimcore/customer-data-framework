@@ -94,7 +94,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
         $customerProvider->addActiveCondition($list);
 
         $list
-            ->addConditionParam('o_published = ?', 1);
+            ->addConditionParam('published = ?', 1);
 
         foreach ($data as $field => $value) {
             if (is_null($value) || $value === '') {
@@ -141,7 +141,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
         $duplicates = $this->getDuplicatesByData($data, $limit);
 
         if ($customer->getId()) {
-            $duplicates->addConditionParam('o_id != ?', $customer->getId());
+            $duplicates->addConditionParam('id != ?', $customer->getId());
         }
 
         if (!is_null($duplicates) && $duplicates->getCount()) {

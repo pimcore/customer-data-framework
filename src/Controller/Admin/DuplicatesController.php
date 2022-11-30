@@ -51,7 +51,7 @@ class DuplicatesController extends Admin
             // build customer listing
             $customerList = $this->getSearchHelper()->getCustomerProvider()->getList();
             $customerList
-                ->setOrderKey('o_id')
+                ->setOrderKey('id')
                 ->setOrder('ASC');
 
             /** @noinspection PhpUnhandledExceptionInspection */

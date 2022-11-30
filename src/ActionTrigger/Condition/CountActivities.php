@@ -69,6 +69,6 @@ class CountActivities extends AbstractMatchCondition
             return '-1';
         }
 
-        return 'o_id in ('.implode(',', $ids).')';
+        return 'id in ('.implode(',', $ids).')';
     }
 }

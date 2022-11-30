@@ -120,7 +120,7 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
             // restrict to given customer
             $customerIds = array_filter($customQueue, 'is_numeric');
             if (!empty($customerIds)) {
-                $conditionParts[] = sprintf('o_id in (%s)', implode(',', $customQueue));
+                $conditionParts[] = sprintf('id in (%s)', implode(',', $customQueue));
             } else {
                 // capture empty
                 $conditionParts[] = '0 = 1';
@@ -128,7 +128,7 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
             // don't modify queue
             $removeCustomerFromQueue = false;
         } elseif ($changesQueueOnly) {
-            $conditionParts[] = sprintf('o_id in (select customerId from %s)', self::CHANGES_QUEUE_TABLE);
+            $conditionParts[] = sprintf('id in (select customerId from %s)', self::CHANGES_QUEUE_TABLE);
         }
 
         if (!empty($conditionParts)) {
@@ -145,7 +145,7 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
             }
         }
 
-        $customerList->setOrderKey('o_id');
+        $customerList->setOrderKey('id');
 
         // parse options
         $desiredPageSize = $this->getIntOption($options, 'pageSize');

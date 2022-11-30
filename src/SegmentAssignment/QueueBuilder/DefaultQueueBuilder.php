@@ -102,10 +102,10 @@ class DefaultQueueBuilder implements QueueBuilderInterface
         try {
             $formatArguments = [
                 1 => $this->getSegmentAssignmentQueueTable(),
-                2 => $type === 'object' ? 'o_id' : 'id',
+                2 => $type === 'id',
                 3 => $type . 's',
-                4 => $type === 'object' ? 'o_path' : 'path',
-                5 => $type === 'object' ? 'o_key' : ($type === 'asset' ? 'filename' : 'key'),
+                4 => $type === 'path',
+                5 => $type === 'asset' ? 'filename' : 'key',
             ];
 
             $enqueueStatement = vsprintf(

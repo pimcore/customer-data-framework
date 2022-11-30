@@ -101,7 +101,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         $customerList = $customerProvider->getList();
 
         $customerProvider->addActiveCondition($customerList);
-        $customerList->setOrderKey('o_id');
+        $customerList->setOrderKey('id');
 
         $paginator = $this->paginator->paginate($customerList);
         $paginator->setItemNumberPerPage(200);
@@ -250,12 +250,12 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         if (!is_null($filterCustomerList)) {
             $query = $filterCustomerList->getQueryBuilder()
                 ->resetQueryPart('select')
-                ->select('o_id');
+                ->select('id');
             $joinTable = 'object_' . $filterCustomerList->getClassId();
             $select
                 ->distinct()
-                ->innerJoin(self::POTENTIAL_DUPLICATES_TABLE, $joinTable, $joinTable, 'FIND_IN_SET(o_id, duplicateCustomerIds)')
-                ->andWhere('o_id in (' . $query . ')');
+                ->innerJoin(self::POTENTIAL_DUPLICATES_TABLE, $joinTable, $joinTable, 'FIND_IN_SET(id, duplicateCustomerIds)')
+                ->andWhere('id in (' . $query . ')');
         }
 
         if ($declined) {

@@ -48,14 +48,14 @@ class Objects
             $list = new \Pimcore\Model\DataObject\Listing;
             $list->setUnpublished(true);
             $list->addConditionParam(
-                'o_path = ? and o_key = ?',
+                'path = ? and key = ?',
                 [(string)$object->getParent() . '/', $object->getKey()]
             );
             $objectId = $object->getId();
             if ($objectId !== null) {
-                $list->addConditionParam('o_id != ?', $object->getId());
+                $list->addConditionParam('id != ?', $object->getId());
             } else {
-                $list->addConditionParam('o_id is not null');
+                $list->addConditionParam('id is not null');
             }
             $list->setLimit(1);
             $list = $list->load();

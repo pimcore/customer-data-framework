@@ -81,7 +81,7 @@ class DefaultQueryService implements QueryServiceInterface
         }
 
         $elementType = $this->getTypeMapper()->getTypeStringByListing($listing);
-        $idColumn = TypeMapperInterface::TYPE_OBJECT === $elementType ? '`o_id`' : '`id`';
+        $idColumn = '`id`';
 
         $existsStatements = array_map(function (string $segmentId) use ($elementType, $idColumn) {
             return "(EXISTS( SELECT `elementId` FROM {$this->getSegmentAssignmentIndexTable()} WHERE `elementId` = $idColumn AND `elementType` = '$elementType' AND `segmentId` = $segmentId ))";

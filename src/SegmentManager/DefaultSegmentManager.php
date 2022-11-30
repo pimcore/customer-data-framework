@@ -177,7 +177,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
         $conditions = [];
         foreach ($segmentIds as $segmentId) {
-            $conditions[] = '(o_id in (select distinct src_id from object_relations_' . $this->customerProvider->getCustomerClassId() . ' where (fieldname = "manualSegments" or fieldname = "calculatedSegments") and dest_id = ' . intval($segmentId) . '))';
+            $conditions[] = '(id in (select distinct src_id from object_relations_' . $this->customerProvider->getCustomerClassId() . ' where (fieldname = "manualSegments" or fieldname = "calculatedSegments") and dest_id = ' . intval($segmentId) . '))';
         }
 
         if (sizeof($conditions)) {
@@ -477,7 +477,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
         $ignoreIds = Objects::getIdsFromArray($ignoreSegments);
 
         if (sizeof($ignoreIds)) {
-            $list->addConditionParam('o_id not in(' . implode(',', $ignoreIds) . ')');
+            $list->addConditionParam('id not in(' . implode(',', $ignoreIds) . ')');
         }
 
         $result = $list->load();

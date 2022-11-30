@@ -194,8 +194,8 @@ abstract class AbstractExporter implements ExporterInterface
         if ($this->getExportSegmentsAsColumns() && sizeof($exportData[self::SEGMENT_IDS])) {
             $list = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegments();
             array_walk($exportData[self::SEGMENT_IDS], 'intval');
-            $list->addConditionParam('o_id in(' . implode(', ', $exportData[self::SEGMENT_IDS]) .')');
-            $list->setOrderKey('concat(o_path, o_key)', false);
+            $list->addConditionParam('id in(' . implode(', ', $exportData[self::SEGMENT_IDS]) .')');
+            $list->setOrderKey('concat(path, key)', false);
 
             $i = sizeof($titles);
             foreach ($list as $item) {

@@ -40,7 +40,7 @@ class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterfa
     {
         $list = new CustomerSegmentGroup\Listing();
 
-        $list->setOrderKey('o_id');
+        $list->setOrderKey('id');
         $list->setOrder('asc');
         $list->setUnpublished(false);
 

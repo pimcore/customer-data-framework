@@ -102,7 +102,7 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
         $archiveDir = $this->archiveDir ?: $this->parentPath;
 
         $folders->setCondition(
-            "o_id in (select o_id from (select o_id, o_path, o_key, o_type, (select count(*) from objects where o_parentId = o.o_id) as counter from objects o) as temp where counter=0 and o_type = 'folder' and (o_path like ? or o_path like ?) and o_creationDate < ?)",
+            "id in (select id from (select id, path, key, type, (select count(*) from objects where parentId = o.id) as counter from objects o) as temp where counter=0 and type = 'folder' and (path like ? or path like ?) and creationDate < ?)",
             [
                 str_replace('//', '/', $this->parentPath.'/%'),
                 str_replace('//', '/', $archiveDir .'/%'),

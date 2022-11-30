@@ -275,7 +275,7 @@ class Configuration implements ConfigurationInterface
         ];
 
         $defaultFilterPropertiesEquals = [
-            'id' => 'o_id',
+            'id' => 'id',
             'active' => 'active',
         ];
 
@@ -290,7 +290,7 @@ class Configuration implements ConfigurationInterface
                 'lastname'
             ],
             'search' => [
-                'o_id',
+                'id',
                 'idEncoded',
                 'firstname',
                 'lastname',

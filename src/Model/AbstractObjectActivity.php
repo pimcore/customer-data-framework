@@ -52,9 +52,9 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\DataObject\Concrete
         $result = ObjectToArray::getInstance()->toArray($this);
         unset($result['customer']);
 
-        $result['o_id'] = $this->getId();
-        $result['o_key'] = $this->getKey();
-        $result['o_path'] = $this->getRealFullPath();
+        $result['id'] = $this->getId();
+        $result['key'] = $this->getKey();
+        $result['path'] = $this->getRealFullPath();
 
         return $result;
     }
@@ -72,8 +72,8 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\DataObject\Concrete
     public static function cmfCreate(array $data, $fromWebservice = false)
     {
         $object = null;
-        if (!empty($data['o_id'])) {
-            $object = self::getById($data['o_id']);
+        if (!empty($data['id'])) {
+            $object = self::getById($data['id']);
         }
 
         if (is_null($object)) {

@@ -50,7 +50,7 @@ class SegmentAssignmentController extends AdminController
         $type = $request->get('type') ?? '';
 
         $db = \Pimcore\Db::get();
-        $parentIdStatement = sprintf('SELECT `%s` FROM `%s` WHERE `%s` = :value', $type === 'object' ? 'o_parentId' : 'parentId', $type.'s', $type === 'object' ? 'o_id' : 'id');
+        $parentIdStatement = sprintf('SELECT `%s` FROM `%s` WHERE `%s` = :value', 'parentId', $type.'s', 'id');
         $parentId = $db->fetchOne($parentIdStatement, [
             'value' => $id
         ]);

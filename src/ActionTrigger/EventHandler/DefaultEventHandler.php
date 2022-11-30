@@ -102,7 +102,7 @@ class DefaultEventHandler implements EventHandlerInterface
 
                 $listing = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
                 $listing->setCondition($where);
-                $listing->setOrderKey('o_id');
+                $listing->setOrderKey('id');
                 $listing->setOrder('asc');
 
                 $paginator = $this->paginator->paginate($listing, 1, 100);
