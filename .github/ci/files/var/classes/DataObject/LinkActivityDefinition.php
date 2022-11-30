@@ -41,8 +41,8 @@ use Pimcore\Model\DataObject\PreGetValueHookInterface;
 
 class LinkActivityDefinition extends Concrete
 {
-protected $o_classId = "5";
-protected $o_className = "LinkActivityDefinition";
+protected $classId = "5";
+protected $className = "LinkActivityDefinition";
 protected $code;
 protected $attributeType;
 protected $label;

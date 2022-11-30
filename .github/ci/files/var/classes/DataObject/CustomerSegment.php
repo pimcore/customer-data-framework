@@ -31,8 +31,8 @@ use Pimcore\Model\DataObject\PreGetValueHookInterface;
 
 class CustomerSegment extends \CustomerManagementFrameworkBundle\Model\AbstractCustomerSegment
 {
-protected $o_classId = "2";
-protected $o_className = "CustomerSegment";
+protected $classId = "2";
+protected $className = "CustomerSegment";
 protected $name;
 protected $group;
 protected $reference;

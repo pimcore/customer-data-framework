@@ -31,8 +31,8 @@ use Pimcore\Model\DataObject\PreGetValueHookInterface;
 
 class CustomerSegmentGroup extends Concrete
 {
-protected $o_classId = "1";
-protected $o_className = "CustomerSegmentGroup";
+protected $classId = "1";
+protected $className = "CustomerSegmentGroup";
 protected $name;
 protected $reference;
 protected $calculated;

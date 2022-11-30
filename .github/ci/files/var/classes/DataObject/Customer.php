@@ -62,8 +62,8 @@ use Pimcore\Model\DataObject\PreGetValueHookInterface;
 
 class Customer extends \CustomerManagementFrameworkBundle\Model\AbstractCustomer\DefaultAbstractUserawareCustomer
 {
-protected $o_classId = "CU";
-protected $o_className = "Customer";
+protected $classId = "CU";
+protected $className = "Customer";
 protected $active;
 protected $gender;
 protected $firstname;

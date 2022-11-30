@@ -249,8 +249,8 @@ pimcore_customer_management_framework:
         filter_properties:
             # Filter fields which must match exactly.
             equals:
-                # ?filter[id]=8 will result in a SQL condition of "WHERE o_id=8"
-                id:                  o_id
+                # ?filter[id]=8 will result in a SQL condition of "WHERE id=8"
+                id:                  id
                 active:              active
                 
             # Searched fields in customer view search filters
@@ -272,7 +272,7 @@ pimcore_customer_management_framework:
                   
                 # main search filter
                 search:
-                  - o_id
+                  - id
                   - idEncoded
                   - firstname
                   - lastname

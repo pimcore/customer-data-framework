@@ -150,7 +150,7 @@ class CustomerListTest extends ModelTestCase
 
             $customer->save();
 
-            $customerData['o_id'] = $customer->getId();
+            $customerData['id'] = $customer->getId();
         }
 
     }
@@ -237,7 +237,7 @@ class CustomerListTest extends ModelTestCase
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $betweenFilter = new FloatBetween('o_id', $this->customerDummyData[0]['o_id'], 10000);
+        $betweenFilter = new FloatBetween('id', $this->customerDummyData[0]['id'], 10000);
         $handler->addFilter($betweenFilter);
 
         $modifiedListing = $handler->getListing();
@@ -247,7 +247,7 @@ class CustomerListTest extends ModelTestCase
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $betweenFilter = new FloatBetween('o_id', $this->customerDummyData[0]['o_id'], $this->customerDummyData[1]['o_id']);
+        $betweenFilter = new FloatBetween('id', $this->customerDummyData[0]['id'], $this->customerDummyData[1]['id']);
         $betweenFilter->setInclusive(true);
         $handler->addFilter($betweenFilter);
 
@@ -257,7 +257,7 @@ class CustomerListTest extends ModelTestCase
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $betweenFilter = new FloatBetween('o_id', $this->customerDummyData[0]['o_id'], $this->customerDummyData[1]['o_id']);
+        $betweenFilter = new FloatBetween('id', $this->customerDummyData[0]['id'], $this->customerDummyData[1]['id']);
         $betweenFilter->setInclusive(false);
         $handler->addFilter($betweenFilter);
 
@@ -268,10 +268,10 @@ class CustomerListTest extends ModelTestCase
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $betweenFilter = new FloatBetween('o_id', $this->customerDummyData[0]['o_id'], $this->customerDummyData[1]['o_id']);
+        $betweenFilter = new FloatBetween('id', $this->customerDummyData[0]['id'], $this->customerDummyData[1]['id']);
         $handler->addFilter($betweenFilter);
 
-        $betweenFilter = new FloatBetween('o_id', $this->customerDummyData[0]['o_id'], $this->customerDummyData[3]['o_id']);
+        $betweenFilter = new FloatBetween('id', $this->customerDummyData[0]['id'], $this->customerDummyData[3]['id']);
         $handler->addFilter($betweenFilter);
 
         $modifiedListing = $handler->getListing();
@@ -281,10 +281,10 @@ class CustomerListTest extends ModelTestCase
 //        $listing = new Customer\Listing();
 //        $handler = new FilterHandler($listing);
 //
-//        $betweenFilter = new FloatBetween('o_id', $this->customerDummyData[0]['o_id'], $this->customerDummyData[1]['o_id']);
+//        $betweenFilter = new FloatBetween('id', $this->customerDummyData[0]['id'], $this->customerDummyData[1]['id']);
 //        $handler->addFilter($betweenFilter);
 //
-//        $betweenFilter = new FloatBetween('o_id', $this->customerDummyData[1]['o_id'], $this->customerDummyData[2]['o_id']);
+//        $betweenFilter = new FloatBetween('id', $this->customerDummyData[1]['id'], $this->customerDummyData[2]['id']);
 //        $handler->addFilter($betweenFilter);
 //
 //        $modifiedListing = $handler->getListing();
@@ -296,8 +296,8 @@ class CustomerListTest extends ModelTestCase
 //        $handler = new FilterHandler($listing);
 //
 //        $betweenFilter = [];
-//        $betweenFilter[] = new FloatBetween('o_id', $this->customerDummyData[0]['o_id'], $this->customerDummyData[1]['o_id']);
-//        $betweenFilter[] = new FloatBetween('o_id', $this->customerDummyData[1]['o_id'], $this->customerDummyData[2]['o_id']);
+//        $betweenFilter[] = new FloatBetween('id', $this->customerDummyData[0]['id'], $this->customerDummyData[1]['id']);
+//        $betweenFilter[] = new FloatBetween('id', $this->customerDummyData[1]['id'], $this->customerDummyData[2]['id']);
 //
 //        $handler->addFilters($betweenFilter);
 //
