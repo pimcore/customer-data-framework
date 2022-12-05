@@ -90,14 +90,14 @@ class Permission extends AbstractFilter implements OnCreateQueryFilterInterface
                 $cPath = $workspace->getCpath();
                 $cPath = $cPath === '/' ? '' : $cPath;
                 // prepare condition to allow sub paths (with wildcard) and path itself (with equation)
-                $condition = sprintf("(CONCAT(".$pathField.",".$keyField.") LIKE '%s/%%' OR CONCAT(".$pathField.",". $keyField.") = '%s')",
+                $condition = sprintf('(CONCAT('.$pathField.','.$keyField.") LIKE '%s/%%' OR CONCAT(".$pathField.','. $keyField.") = '%s')",
                     $cPath, $cPath);
                 // add allow condition
                 $allowConditions[] = $condition;
             } // if user is not allowed to list content -> add to deny conditions
             else {
                 // prepare condition to allow sub paths (with wildcard) and path itself (with equation)
-                $condition = sprintf("(CONCAT(".$pathField.",".$keyField.") NOT LIKE '%s/%%' AND CONCAT(".$pathField.",".$keyField.") <> '%s')",
+                $condition = sprintf('(CONCAT('.$pathField.','.$keyField.") NOT LIKE '%s/%%' AND CONCAT(".$pathField.','.$keyField.") <> '%s')",
                     $workspace->getCpath(),
                     $workspace->getCpath());
                 // add allow condition

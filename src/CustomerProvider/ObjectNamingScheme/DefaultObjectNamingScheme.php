@@ -109,9 +109,9 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
         $creationDateField = Service::getVersionDependentDatabaseColumnName('creationDate');
 
         $folders->setCondition(
-            $idField . " in (
-                select ". $idField ." from (
-                    select `". $idField ."`, `". $pathField ."`, `". $keyField ."`, `". $typeField ."`, (select count(*) from objects where `" . $parentIdField . "` = `o`. `". $idField ."`) as counter from objects o) as temp where counter=0 and type = 'folder' and (". $pathField ." like ? or ". $pathField ." like ?) and ". $creationDateField ." < ?)",
+            $idField . ' in (
+                select '. $idField .' from (
+                    select `'. $idField .'`, `'. $pathField .'`, `'. $keyField .'`, `'. $typeField .'`, (select count(*) from objects where `' . $parentIdField . '` = `o`. `'. $idField ."`) as counter from objects o) as temp where counter=0 and type = 'folder' and (". $pathField .' like ? or '. $pathField .' like ?) and '. $creationDateField .' < ?)',
             [
                 str_replace('//', '/', $this->parentPath.'/%'),
                 str_replace('//', '/', $archiveDir .'/%'),
