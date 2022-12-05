@@ -27,6 +27,8 @@ use CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Knp\Component\Pager\PaginatorInterface;
+use Pimcore;
+use Pimcore\Model\DataObject\Service;
 
 class DefaultEventHandler implements EventHandlerInterface
 {
@@ -100,9 +102,10 @@ class DefaultEventHandler implements EventHandlerInterface
             if ($conditions = $rule->getCondition()) {
                 $where = Checker::getDbConditionForRule($rule);
 
-                $listing = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
+                $listing = Pimcore::getContainer()->get('cmf.customer_provider')->getList();
                 $listing->setCondition($where);
-                $listing->setOrderKey('id');
+                $idField = Service::getVersionDependentDatabaseColumnName('id');
+                $listing->setOrderKey($idField);
                 $listing->setOrder('asc');
 
                 $paginator = $this->paginator->paginate($listing, 1, 100);
@@ -119,7 +122,7 @@ class DefaultEventHandler implements EventHandlerInterface
                         $this->handleActionsForCustomer($rule, $customer, $environment);
                     }
 
-                    \Pimcore::collectGarbage();
+                    Pimcore::collectGarbage();
                 }
             }
         }
@@ -136,7 +139,7 @@ class DefaultEventHandler implements EventHandlerInterface
                         $environment
                     );
                 } else {
-                    \Pimcore::getContainer()->get('cmf.action_trigger.action_manager')->processAction(
+                    Pimcore::getContainer()->get('cmf.action_trigger.action_manager')->processAction(
                         $action,
                         $customer,
                         $environment

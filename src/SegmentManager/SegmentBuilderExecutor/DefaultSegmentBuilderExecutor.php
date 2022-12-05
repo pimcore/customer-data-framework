@@ -24,6 +24,7 @@ use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\DataObject\Service;
 
 class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
 {
@@ -116,11 +117,12 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
         $conditionParts = [];
         $conditionVariables = null;
 
+        $idField = Service::getVersionDependentDatabaseColumnName('id');
         if (!empty($customQueue)) {
             // restrict to given customer
             $customerIds = array_filter($customQueue, 'is_numeric');
             if (!empty($customerIds)) {
-                $conditionParts[] = sprintf('id in (%s)', implode(',', $customQueue));
+                $conditionParts[] = sprintf('%s in (%s)', $idField, implode(',', $customQueue));
             } else {
                 // capture empty
                 $conditionParts[] = '0 = 1';
@@ -128,7 +130,7 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
             // don't modify queue
             $removeCustomerFromQueue = false;
         } elseif ($changesQueueOnly) {
-            $conditionParts[] = sprintf('id in (select customerId from %s)', self::CHANGES_QUEUE_TABLE);
+            $conditionParts[] = sprintf('%s in (select customerId from %s)', $idField, self::CHANGES_QUEUE_TABLE);
         }
 
         if (!empty($conditionParts)) {
@@ -145,7 +147,7 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
             }
         }
 
-        $customerList->setOrderKey('id');
+        $customerList->setOrderKey($idField);
 
         // parse options
         $desiredPageSize = $this->getIntOption($options, 'pageSize');

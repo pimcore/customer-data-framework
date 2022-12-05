@@ -101,8 +101,17 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
 
         $archiveDir = $this->archiveDir ?: $this->parentPath;
 
+        $idField = Service::getVersionDependentDatabaseColumnName('id');
+        $pathField = Service::getVersionDependentDatabaseColumnName('path');
+        $keyField = Service::getVersionDependentDatabaseColumnName('key');
+        $typeField = Service::getVersionDependentDatabaseColumnName('type');
+        $parentIdField = Service::getVersionDependentDatabaseColumnName('parentId');
+        $creationDateField = Service::getVersionDependentDatabaseColumnName('creationDate');
+
         $folders->setCondition(
-            "id in (select id from (select id, path, key, type, (select count(*) from objects where parentId = o.id) as counter from objects o) as temp where counter=0 and type = 'folder' and (path like ? or path like ?) and creationDate < ?)",
+            $idField . " in (
+                select ". $idField ." from (
+                    select `". $idField ."`, `". $pathField ."`, `". $keyField ."`, `". $typeField ."`, (select count(*) from objects where `" . $parentIdField . "` = `o`. `". $idField ."`) as counter from objects o) as temp where counter=0 and type = 'folder' and (". $pathField ." like ? or ". $pathField ." like ?) and ". $creationDateField ." < ?)",
             [
                 str_replace('//', '/', $this->parentPath.'/%'),
                 str_replace('//', '/', $archiveDir .'/%'),

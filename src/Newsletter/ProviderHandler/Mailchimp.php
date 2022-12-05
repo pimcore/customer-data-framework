@@ -37,6 +37,7 @@ use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\File;
 use Pimcore\Model\DataObject\CustomerSegment;
+use Pimcore\Model\DataObject\Service;
 use Psr\Log\LoggerInterface;
 
 class Mailchimp implements NewsletterProviderHandlerInterface
@@ -491,9 +492,10 @@ class Mailchimp implements NewsletterProviderHandlerInterface
     protected function getAllExportableSegments()
     {
         $groups = $this->getExportableSegmentGroups();
+        $idField = Service::getVersionDependentDatabaseColumnName('id');
         $select = $groups->getQueryBuilder()
             ->resetQueryPart('select')
-            ->select('id');
+            ->select($idField);
 
         $segments = $this->segmentManager->getSegments();
         $segments->addConditionParam('group__id in (' . $select . ')');
@@ -860,8 +862,9 @@ class Mailchimp implements NewsletterProviderHandlerInterface
 
         $list = $customerProvider->getList();
         $customerProvider->addActiveCondition($list);
+        $idField = Service::getVersionDependentDatabaseColumnName('id');
         if ($customerId) {
-            $list->setCondition('trim(lower(email)) = ? and id != ?', [trim(strtolower($email)), $customerId]);
+            $list->setCondition('trim(lower(email)) = ? and ' . $idField .' != ?', [trim(strtolower($email)), $customerId]);
         } else {
             $list->setCondition('trim(lower(email)) = ?', [trim(strtolower($email))]);
         }

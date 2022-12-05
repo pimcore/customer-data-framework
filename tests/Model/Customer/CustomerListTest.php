@@ -15,6 +15,7 @@ use CustomerManagementFrameworkBundle\Listing\FilterHandler;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Model\DataObject\Customer;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
+use Pimcore\Model\DataObject\Service;
 use Pimcore\Tests\Support\Test\ModelTestCase;
 use Pimcore\Tests\Support\Util\TestHelper;
 
@@ -150,7 +151,8 @@ class CustomerListTest extends ModelTestCase
 
             $customer->save();
 
-            $customerData['id'] = $customer->getId();
+            $idField = Service::getVersionDependentDatabaseColumnName('id');
+            $customerData[$idField] = $customer->getId();
         }
 
     }
@@ -237,7 +239,8 @@ class CustomerListTest extends ModelTestCase
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $betweenFilter = new FloatBetween('id', $this->customerDummyData[0]['id'], 10000);
+        $idField = Service::getVersionDependentDatabaseColumnName('id');
+        $betweenFilter = new FloatBetween($idField, $this->customerDummyData[0][$idField], 10000);
         $handler->addFilter($betweenFilter);
 
         $modifiedListing = $handler->getListing();
@@ -247,7 +250,7 @@ class CustomerListTest extends ModelTestCase
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $betweenFilter = new FloatBetween('id', $this->customerDummyData[0]['id'], $this->customerDummyData[1]['id']);
+        $betweenFilter = new FloatBetween($idField, $this->customerDummyData[0][$idField], $this->customerDummyData[1][$idField]);
         $betweenFilter->setInclusive(true);
         $handler->addFilter($betweenFilter);
 
@@ -257,7 +260,7 @@ class CustomerListTest extends ModelTestCase
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $betweenFilter = new FloatBetween('id', $this->customerDummyData[0]['id'], $this->customerDummyData[1]['id']);
+        $betweenFilter = new FloatBetween($idField, $this->customerDummyData[0][$idField], $this->customerDummyData[1][$idField]);
         $betweenFilter->setInclusive(false);
         $handler->addFilter($betweenFilter);
 
@@ -268,10 +271,10 @@ class CustomerListTest extends ModelTestCase
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $betweenFilter = new FloatBetween('id', $this->customerDummyData[0]['id'], $this->customerDummyData[1]['id']);
+        $betweenFilter = new FloatBetween($idField, $this->customerDummyData[0][$idField], $this->customerDummyData[1][$idField]);
         $handler->addFilter($betweenFilter);
 
-        $betweenFilter = new FloatBetween('id', $this->customerDummyData[0]['id'], $this->customerDummyData[3]['id']);
+        $betweenFilter = new FloatBetween($idField, $this->customerDummyData[0][$idField], $this->customerDummyData[3][$idField]);
         $handler->addFilter($betweenFilter);
 
         $modifiedListing = $handler->getListing();
@@ -281,10 +284,10 @@ class CustomerListTest extends ModelTestCase
 //        $listing = new Customer\Listing();
 //        $handler = new FilterHandler($listing);
 //
-//        $betweenFilter = new FloatBetween('id', $this->customerDummyData[0]['id'], $this->customerDummyData[1]['id']);
+//        $betweenFilter = new FloatBetween($idField, $this->customerDummyData[0][$idField], $this->customerDummyData[1][$idField]);
 //        $handler->addFilter($betweenFilter);
 //
-//        $betweenFilter = new FloatBetween('id', $this->customerDummyData[1]['id'], $this->customerDummyData[2]['id']);
+//        $betweenFilter = new FloatBetween($idField, $this->customerDummyData[1][$idField], $this->customerDummyData[2][$idField]);
 //        $handler->addFilter($betweenFilter);
 //
 //        $modifiedListing = $handler->getListing();
@@ -296,8 +299,8 @@ class CustomerListTest extends ModelTestCase
 //        $handler = new FilterHandler($listing);
 //
 //        $betweenFilter = [];
-//        $betweenFilter[] = new FloatBetween('id', $this->customerDummyData[0]['id'], $this->customerDummyData[1]['id']);
-//        $betweenFilter[] = new FloatBetween('id', $this->customerDummyData[1]['id'], $this->customerDummyData[2]['id']);
+//        $betweenFilter[] = new FloatBetween($idField, $this->customerDummyData[0][$idField], $this->customerDummyData[1][$idField]);
+//        $betweenFilter[] = new FloatBetween($idField, $this->customerDummyData[1][$idField], $this->customerDummyData[2][$idField]);
 //
 //        $handler->addFilters($betweenFilter);
 //

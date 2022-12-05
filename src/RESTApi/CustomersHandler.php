@@ -24,6 +24,7 @@ use CustomerManagementFrameworkBundle\RESTApi\Traits\ResponseGenerator;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Model\DataObject\Customer;
+use Pimcore\Model\DataObject\Service;
 use Symfony\Component\HttpFoundation\Request;
 
 class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
@@ -66,13 +67,14 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
             /** @var Customer\Listing $customers */
             $customers = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
         }
-
-        $customers->setOrderKey('id');
+        $idField = Service::getVersionDependentDatabaseColumnName('id');
+        $modificationDateField = Service::getVersionDependentDatabaseColumnName('modificationDate');
+        $customers->setOrderKey($idField);
         $customers->setOrder('asc');
         $customers->setUnpublished(false);
 
         if ($params->getModificationTimestamp()) {
-            $customers->addConditionParam('modificationDate > ?', $params->getModificationTimestamp());
+            $customers->addConditionParam($modificationDateField . ' > ?', $params->getModificationTimestamp());
         }
 
         $paginator = $this->handlePaginatorParams($customers, $request);

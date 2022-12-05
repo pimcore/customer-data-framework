@@ -208,8 +208,8 @@ pimcore.plugin.customermanagementframework = Class.create({
     postOpenObject: function (event) {
         var object = event.detail.object;
         var type = event.detail.type;
-
-        if ("object" === type && object.data.general.className === pimcore.settings.cmf.customerClassName && pimcore.globalmanager.get("user").isAllowed(ActivityView.config.PERMISSION)) {
+        let className = typeof object.data.general.o_className == "undefined" ? object.data.general.className : object.data.general.o_className;
+        if ("object" === type && className === pimcore.settings.cmf.customerClassName && pimcore.globalmanager.get("user").isAllowed(ActivityView.config.PERMISSION)) {
             var panel = new ActivityView.ActivityTab(object, type).getPanel();
 
             object.tab.items.items[1].insert(1, panel);
@@ -343,7 +343,8 @@ pimcore.plugin.customermanagementframework = Class.create({
         var addTab = Boolean(pimcore.settings.cmf.segmentAssignment[type][subType]);
 
         if('object' === type && 'folder' !== subType) {
-            addTab &= pimcore.settings.cmf.segmentAssignment[type][subType][element.data.general.className];
+            let className = typeof element.data.general.o_className == "undefined" ? element.data.general.className : element.data.general.o_className;
+            addTab &= pimcore.settings.cmf.segmentAssignment[type][subType][className];
         }
 
         if (!addTab) {

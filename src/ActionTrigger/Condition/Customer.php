@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger\Condition;
 use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\DataObject\AbstractObject;
+use Pimcore\Model\DataObject\Service;
 
 class Customer extends AbstractCondition
 {
@@ -57,7 +58,8 @@ class Customer extends AbstractCondition
 
         $customerId = intval($options[self::OPTION_CUSTOMER_ID]);
 
-        $condition = sprintf('id = %s', $customerId);
+        $idField = Service::getVersionDependentDatabaseColumnName('id');
+        $condition = sprintf($idField . ' = %s', $customerId);
 
         $not = $options[self::OPTION_NOT];
 
