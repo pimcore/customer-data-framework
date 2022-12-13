@@ -117,6 +117,7 @@ class CustomersController extends Admin
                     'filterDefinition' => $this->getFilterDefinition($request),
                     'accessToTempCustomerFolder' => boolval($this->hasUserAccessToTempCustomerFolder()),
                     'hideAdvancedFilterSettings' => boolval($request->get('segmentId')),
+                    'idField' => Service::getVersionDependentDatabaseColumnName('id')
                 ]
             );
         }
