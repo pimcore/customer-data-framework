@@ -51,7 +51,7 @@ class Objects
             $list = new \Pimcore\Model\DataObject\Listing;
             $list->setUnpublished(true);
             $list->addConditionParam(
-                $pathField . ' = ? and ' . $keyField . ' = ?',
+                $pathField . ' = ? and `' . $keyField . '` = ?',
                 [(string)$object->getParent() . '/', $object->getKey()]
             );
             $objectId = $object->getId();
