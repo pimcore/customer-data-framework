@@ -45,6 +45,7 @@ class Objects
         $origKey = is_null($origKey) ? self::getValidKey($object->getKey()) : $origKey;
         $pathField = DataObjectService::getVersionDependentDatabaseColumnName('path');
         $keyField = DataObjectService::getVersionDependentDatabaseColumnName('key');
+        $idField = DataObjectService::getVersionDependentDatabaseColumnName('id');
         $notUnique = true;
         while ($notUnique) {
             $list = new \Pimcore\Model\DataObject\Listing;
@@ -55,9 +56,9 @@ class Objects
             );
             $objectId = $object->getId();
             if ($objectId !== null) {
-                $list->addConditionParam('id != ?', $object->getId());
+                $list->addConditionParam($idField . ' != ?', $object->getId());
             } else {
-                $list->addConditionParam('id is not null');
+                $list->addConditionParam($idField . ' is not null');
             }
             $list->setLimit(1);
             $list = $list->load();
