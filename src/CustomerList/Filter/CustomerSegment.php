@@ -216,7 +216,6 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
         // relation matches one of our field names and relates to our current object
         $idField = DataObject\Service::getVersionDependentDatabaseColumnName('id');
         $baseCondition = sprintf(
-            '`%1$s`.fieldname IN (%2$s) AND `%1$s`.src_id = ' . $idField,
             $joinName,
             $relationNames
         );
