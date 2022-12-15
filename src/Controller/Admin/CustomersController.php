@@ -117,6 +117,7 @@ class CustomersController extends Admin
                     'filterDefinition' => $this->getFilterDefinition($request),
                     'accessToTempCustomerFolder' => boolval($this->hasUserAccessToTempCustomerFolder()),
                     'hideAdvancedFilterSettings' => boolval($request->get('segmentId')),
+                    'idField' => Service::getVersionDependentDatabaseColumnName('id')
                 ]
             );
         }
@@ -168,9 +169,10 @@ class CustomersController extends Admin
         $filters = $this->fetchListFilters($request);
         $listing = $this->buildListing($filters);
 
+        $idField = Service::getVersionDependentDatabaseColumnName('id');
         $query = $listing->getQueryBuilder()
             ->resetQueryPart('select')
-            ->select('o_id');
+            ->select($idField);
         $ids = Db::get()->fetchFirstColumn((string)$query);
 
         $jobId = uniqid();
@@ -223,8 +225,9 @@ class CustomersController extends Admin
         $ids = array_slice($data['processIds'], 0, $perRequest);
         $processIds = array_slice($data['processIds'], $perRequest);
 
+        $idField = Service::getVersionDependentDatabaseColumnName('id');
         $listing = $this->buildListing();
-        $listing->addConditionParam('o_id in ('.implode(', ', $ids).')');
+        $listing->addConditionParam($idField . ' in ('.implode(', ', $ids).')');
 
         $exporter = $this->getExporter($listing, $data['exporter']);
         $exportData = $exporter->getExportData();
@@ -415,10 +418,11 @@ class CustomersController extends Admin
     protected function buildListing(array $filters = [], array $orders = [])
     {
         $listing = $this->getSearchHelper()->getCustomerProvider()->getList();
+        $idField = Service::getVersionDependentDatabaseColumnName('id');
 
         if (array_key_exists('operator-segments', $filters)) {
             if ($filters['operator-segments'] == 'ANY') {
-                $listing->setGroupBy('o_id', true);
+                $listing->setGroupBy($idField, true);
             }
         }
 
@@ -428,7 +432,7 @@ class CustomersController extends Admin
                 ->setOrder(array_values($orders));
         } else {
             $listing
-                ->setOrderKey('o_id')
+                ->setOrderKey($idField)
                 ->setOrder('ASC');
         }
 

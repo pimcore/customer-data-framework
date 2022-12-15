@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\Helper;
 use Pimcore\File;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
+use Pimcore\Model\DataObject\Service as DataObjectService;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Element\Service;
 
@@ -42,20 +43,22 @@ class Objects
     private static function checkObjectKeyHelper(Concrete $object, $origKey = null, $keyCounter = 1)
     {
         $origKey = is_null($origKey) ? self::getValidKey($object->getKey()) : $origKey;
-
+        $pathField = DataObjectService::getVersionDependentDatabaseColumnName('path');
+        $keyField = DataObjectService::getVersionDependentDatabaseColumnName('key');
+        $idField = DataObjectService::getVersionDependentDatabaseColumnName('id');
         $notUnique = true;
         while ($notUnique) {
             $list = new \Pimcore\Model\DataObject\Listing;
             $list->setUnpublished(true);
             $list->addConditionParam(
-                'o_path = ? and o_key = ?',
+                $pathField . ' = ? and `' . $keyField . '` = ?',
                 [(string)$object->getParent() . '/', $object->getKey()]
             );
             $objectId = $object->getId();
             if ($objectId !== null) {
-                $list->addConditionParam('o_id != ?', $object->getId());
+                $list->addConditionParam($idField . ' != ?', $object->getId());
             } else {
-                $list->addConditionParam('o_id is not null');
+                $list->addConditionParam($idField . ' is not null');
             }
             $list->setLimit(1);
             $list = $list->load();

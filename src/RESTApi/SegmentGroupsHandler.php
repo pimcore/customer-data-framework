@@ -21,6 +21,7 @@ use CustomerManagementFrameworkBundle\RESTApi\Traits\ResponseGenerator;
 use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
+use Pimcore\Model\DataObject\Service;
 use Symfony\Component\HttpFoundation\Request;
 
 class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterface
@@ -40,7 +41,7 @@ class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterfa
     {
         $list = new CustomerSegmentGroup\Listing();
 
-        $list->setOrderKey('o_id');
+        $list->setOrderKey(Service::getVersionDependentDatabaseColumnName('id'));
         $list->setOrder('asc');
         $list->setUnpublished(false);
 

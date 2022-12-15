@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\CustomerList\SearchHelper;
 use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
+use Pimcore\Model\DataObject\Service;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -50,8 +51,9 @@ class DuplicatesController extends Admin
         if (!empty($filters)) {
             // build customer listing
             $customerList = $this->getSearchHelper()->getCustomerProvider()->getList();
+            $idField = Service::getVersionDependentDatabaseColumnName('id');
             $customerList
-                ->setOrderKey('o_id')
+                ->setOrderKey($idField)
                 ->setOrder('ASC');
 
             /** @noinspection PhpUnhandledExceptionInspection */

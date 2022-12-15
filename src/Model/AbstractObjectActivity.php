@@ -18,8 +18,12 @@ namespace CustomerManagementFrameworkBundle\Model;
 use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Service\ObjectToArray;
+use Exception;
+use Pimcore;
+use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\DataObject\Service;
 
-abstract class AbstractObjectActivity extends \Pimcore\Model\DataObject\Concrete implements PersistentActivityInterface
+abstract class AbstractObjectActivity extends Concrete implements PersistentActivityInterface
 {
     public function cmfIsActive()
     {
@@ -52,9 +56,12 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\DataObject\Concrete
         $result = ObjectToArray::getInstance()->toArray($this);
         unset($result['customer']);
 
-        $result['o_id'] = $this->getId();
-        $result['o_key'] = $this->getKey();
-        $result['o_path'] = $this->getRealFullPath();
+        $idField = Service::getVersionDependentDatabaseColumnName('id');
+        $pathField = Service::getVersionDependentDatabaseColumnName('path');
+        $keyField = Service::getVersionDependentDatabaseColumnName('key');
+        $result[$idField] = $this->getId();
+        $result[$pathField] = $this->getKey();
+        $result[$keyField] = $this->getRealFullPath();
 
         return $result;
     }
@@ -66,14 +73,15 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\DataObject\Concrete
 
     public function cmfUpdateData(array $data)
     {
-        throw new \Exception('update of pimcore object activities not allowed');
+        throw new Exception('update of pimcore object activities not allowed');
     }
 
     public static function cmfCreate(array $data, $fromWebservice = false)
     {
         $object = null;
-        if (!empty($data['o_id'])) {
-            $object = self::getById($data['o_id']);
+        $idField = Service::getVersionDependentDatabaseColumnName('id');
+        if (!empty($data[$idField])) {
+            $object = self::getById($data[$idField]);
         }
 
         if (is_null($object)) {
@@ -103,7 +111,7 @@ abstract class AbstractObjectActivity extends \Pimcore\Model\DataObject\Concrete
     {
         $attributes = $entry->getAttributes();
 
-        return \Pimcore::getContainer()->get('cmf.activity_view')->formatAttributes(
+        return Pimcore::getContainer()->get('cmf.activity_view')->formatAttributes(
             $entry->getImplementationClass(),
             $attributes
         );
