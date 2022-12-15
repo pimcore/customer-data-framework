@@ -33,7 +33,7 @@
                 <!-- /.box-header -->
 
                 <div class="customer-table-content">
-                    {% include customerView.overviewWrapperTemplate with {'paginator': paginator, 'customerView': customerView, 'paginationVariables': paginationVariables} only %}
+                    {% include customerView.overviewWrapperTemplate with {'paginator': paginator, 'customerView': customerView, 'paginationVariables': paginationVariables, 'idField': idField} only %}
                     <!-- /.box-body -->
                 </div>
 

@@ -17,6 +17,7 @@ namespace CustomerManagementFrameworkBundle\Listing\Filter;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use Pimcore\Model\DataObject\Listing as CoreListing;
+use Pimcore\Model\DataObject\Service;
 use Pimcore\Model\User;
 use Pimcore\Model\User\Workspace\DataObject;
 
@@ -81,20 +82,22 @@ class Permission extends AbstractFilter implements OnCreateQueryFilterInterface
         $allowConditions = [];
         // initialize deny conditions array
         $denyConditions = [];
+        $pathField = Service::getVersionDependentDatabaseColumnName('path');
+        $keyField = Service::getVersionDependentDatabaseColumnName('key');
         foreach ($workspaces as $workspace) {
             // if user is allowed to list content -> add to allow conditions
             if ($workspace->getList()) {
                 $cPath = $workspace->getCpath();
                 $cPath = $cPath === '/' ? '' : $cPath;
                 // prepare condition to allow sub paths (with wildcard) and path itself (with equation)
-                $condition = sprintf("(CONCAT(o_path,o_key) LIKE '%s/%%' OR CONCAT(o_path,o_key) = '%s')",
+                $condition = sprintf('(CONCAT('.$pathField.','.$keyField.") LIKE '%s/%%' OR CONCAT(".$pathField.','. $keyField.") = '%s')",
                     $cPath, $cPath);
                 // add allow condition
                 $allowConditions[] = $condition;
             } // if user is not allowed to list content -> add to deny conditions
             else {
                 // prepare condition to allow sub paths (with wildcard) and path itself (with equation)
-                $condition = sprintf("(CONCAT(o_path,o_key) NOT LIKE '%s/%%' AND CONCAT(o_path,o_key) <> '%s')",
+                $condition = sprintf('(CONCAT('.$pathField.','.$keyField.") NOT LIKE '%s/%%' AND CONCAT(".$pathField.','.$keyField.") <> '%s')",
                     $workspace->getCpath(),
                     $workspace->getCpath());
                 // add allow condition

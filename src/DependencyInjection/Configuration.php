@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CustomerManagementFrameworkBundle\DependencyInjection;
 
 use Pimcore\Model\DataObject\AbstractObject;
+use Pimcore\Model\DataObject\Service;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -275,7 +276,7 @@ class Configuration implements ConfigurationInterface
         ];
 
         $defaultFilterPropertiesEquals = [
-            'id' => 'o_id',
+            'id' => Service::getVersionDependentDatabaseColumnName('id'),
             'active' => 'active',
         ];
 
@@ -290,7 +291,7 @@ class Configuration implements ConfigurationInterface
                 'lastname'
             ],
             'search' => [
-                'o_id',
+                Service::getVersionDependentDatabaseColumnName('id'),
                 'idEncoded',
                 'firstname',
                 'lastname',

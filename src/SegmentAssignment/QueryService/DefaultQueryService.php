@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\SegmentAssignment\QueryService;
 
 use CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapperInterface;
+use Pimcore\Model\DataObject\Service;
 use Pimcore\Model\Listing\AbstractListing;
 
 /**
@@ -81,7 +82,7 @@ class DefaultQueryService implements QueryServiceInterface
         }
 
         $elementType = $this->getTypeMapper()->getTypeStringByListing($listing);
-        $idColumn = TypeMapperInterface::TYPE_OBJECT === $elementType ? '`o_id`' : '`id`';
+        $idColumn = sprintf('`%s`', Service::getVersionDependentDatabaseColumnName('id'))  ;
 
         $existsStatements = array_map(function (string $segmentId) use ($elementType, $idColumn) {
             return "(EXISTS( SELECT `elementId` FROM {$this->getSegmentAssignmentIndexTable()} WHERE `elementId` = $idColumn AND `elementType` = '$elementType' AND `segmentId` = $segmentId ))";

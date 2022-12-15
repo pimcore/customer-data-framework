@@ -17,6 +17,8 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger\Condition;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
+use Pimcore;
+use Pimcore\Model\DataObject\Service;
 
 class CountActivities extends AbstractMatchCondition
 {
@@ -31,7 +33,7 @@ class CountActivities extends AbstractMatchCondition
     ) {
         $options = $conditionDefinition->getOptions();
 
-        $countActivities = \Pimcore::getContainer()->get('cmf.activity_store')->countActivitiesOfCustomer(
+        $countActivities = Pimcore::getContainer()->get('cmf.activity_store')->countActivitiesOfCustomer(
             $customer,
             $options[self::OPTION_TYPE]
         );
@@ -59,7 +61,7 @@ class CountActivities extends AbstractMatchCondition
         $type = $options[self::OPTION_TYPE];
         $count = intval($options[self::OPTION_COUNT]);
 
-        $ids = \Pimcore::getContainer()->get('cmf.activity_store')->getCustomerIdsMatchingActivitiesCount(
+        $ids = Pimcore::getContainer()->get('cmf.activity_store')->getCustomerIdsMatchingActivitiesCount(
             $operator,
             $type,
             $count
@@ -68,7 +70,8 @@ class CountActivities extends AbstractMatchCondition
         if (!sizeof($ids)) {
             return '-1';
         }
+        $idField = Service::getVersionDependentDatabaseColumnName('id');
 
-        return 'o_id in ('.implode(',', $ids).')';
+        return $idField . ' in ('.implode(',', $ids).')';
     }
 }

@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\CustomerList\Exporter;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\DataObject\Listing\Concrete;
+use Pimcore\Model\DataObject\Service;
 
 abstract class AbstractExporter implements ExporterInterface
 {
@@ -194,8 +195,11 @@ abstract class AbstractExporter implements ExporterInterface
         if ($this->getExportSegmentsAsColumns() && sizeof($exportData[self::SEGMENT_IDS])) {
             $list = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegments();
             array_walk($exportData[self::SEGMENT_IDS], 'intval');
-            $list->addConditionParam('o_id in(' . implode(', ', $exportData[self::SEGMENT_IDS]) .')');
-            $list->setOrderKey('concat(o_path, o_key)', false);
+            $idField = Service::getVersionDependentDatabaseColumnName('id');
+            $pathField = Service::getVersionDependentDatabaseColumnName('path');
+            $keyField = Service::getVersionDependentDatabaseColumnName('key');
+            $list->addConditionParam($idField . ' in(' . implode(', ', $exportData[self::SEGMENT_IDS]) .')');
+            $list->setOrderKey('concat('. $pathField .', '. $keyField . ')', false);
 
             $i = sizeof($titles);
             foreach ($list as $item) {

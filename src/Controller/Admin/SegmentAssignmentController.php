@@ -20,6 +20,7 @@ use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse;
 use Pimcore\Model\DataObject\CustomerSegment;
+use Pimcore\Model\DataObject\Service;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -50,7 +51,10 @@ class SegmentAssignmentController extends AdminController
         $type = $request->get('type') ?? '';
 
         $db = \Pimcore\Db::get();
-        $parentIdStatement = sprintf('SELECT `%s` FROM `%s` WHERE `%s` = :value', $type === 'object' ? 'o_parentId' : 'parentId', $type.'s', $type === 'object' ? 'o_id' : 'id');
+        $idField = Service::getVersionDependentDatabaseColumnName('id');
+        $parentIdField = Service::getVersionDependentDatabaseColumnName('parentId');
+
+        $parentIdStatement = sprintf('SELECT `%s` FROM `%s` WHERE `%s` = :value', $parentIdField, $type.'s', $idField);
         $parentId = $db->fetchOne($parentIdStatement, [
             'value' => $id
         ]);

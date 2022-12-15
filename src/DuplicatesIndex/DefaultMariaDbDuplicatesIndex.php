@@ -25,6 +25,7 @@ use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Db;
 use Pimcore\Logger;
 use Pimcore\Model\DataObject\Listing\Concrete;
+use Pimcore\Model\DataObject\Service;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -101,7 +102,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         $customerList = $customerProvider->getList();
 
         $customerProvider->addActiveCondition($customerList);
-        $customerList->setOrderKey('o_id');
+        $customerList->setOrderKey(Service::getVersionDependentDatabaseColumnName('id'));
 
         $paginator = $this->paginator->paginate($customerList);
         $paginator->setItemNumberPerPage(200);
@@ -247,15 +248,16 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
             )
             ->addOrderBy('id', 'asc');
 
+        $idField = Service::getVersionDependentDatabaseColumnName('id');
         if (!is_null($filterCustomerList)) {
             $query = $filterCustomerList->getQueryBuilder()
                 ->resetQueryPart('select')
-                ->select('o_id');
+                ->select($idField);
             $joinTable = 'object_' . $filterCustomerList->getClassId();
             $select
                 ->distinct()
-                ->innerJoin(self::POTENTIAL_DUPLICATES_TABLE, $joinTable, $joinTable, 'FIND_IN_SET(o_id, duplicateCustomerIds)')
-                ->andWhere('o_id in (' . $query . ')');
+                ->innerJoin(self::POTENTIAL_DUPLICATES_TABLE, $joinTable, $joinTable, 'FIND_IN_SET('. $idField .', duplicateCustomerIds)')
+                ->andWhere($idField . ' in (' . $query . ')');
         }
 
         if ($declined) {
