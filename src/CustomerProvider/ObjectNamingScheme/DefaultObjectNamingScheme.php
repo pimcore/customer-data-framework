@@ -101,8 +101,17 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
 
         $archiveDir = $this->archiveDir ?: $this->parentPath;
 
+        $idField = Service::getVersionDependentDatabaseColumnName('id');
+        $pathField = Service::getVersionDependentDatabaseColumnName('path');
+        $keyField = Service::getVersionDependentDatabaseColumnName('key');
+        $typeField = Service::getVersionDependentDatabaseColumnName('type');
+        $parentIdField = Service::getVersionDependentDatabaseColumnName('parentId');
+        $creationDateField = Service::getVersionDependentDatabaseColumnName('creationDate');
+
         $folders->setCondition(
-            "o_id in (select o_id from (select o_id, o_path, o_key, o_type, (select count(*) from objects where o_parentId = o.o_id) as counter from objects o) as temp where counter=0 and o_type = 'folder' and (o_path like ? or o_path like ?) and o_creationDate < ?)",
+            $idField . ' in (
+                select '. $idField .' from (
+                    select `'. $idField .'`, `'. $pathField .'`, `'. $keyField .'`, `'. $typeField .'`, (select count(*) from objects where `' . $parentIdField . '` = `o`. `'. $idField ."`) as counter from objects o) as temp where counter=0 and type = 'folder' and (". $pathField .' like ? or '. $pathField .' like ?) and '. $creationDateField .' < ?)',
             [
                 str_replace('//', '/', $this->parentPath.'/%'),
                 str_replace('//', '/', $archiveDir .'/%'),

@@ -26,8 +26,8 @@ use Pimcore\Model\DataObject\PreGetValueHookInterface;
 
 class SsoIdentity extends \CustomerManagementFrameworkBundle\Model\AbstractSsoIdentity
 {
-protected $o_classId = "3";
-protected $o_className = "SsoIdentity";
+protected $classId = "3";
+protected $className = "SsoIdentity";
 protected $provider;
 protected $identifier;
 protected $profileData;
