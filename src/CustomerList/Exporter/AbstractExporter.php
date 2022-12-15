@@ -199,7 +199,7 @@ abstract class AbstractExporter implements ExporterInterface
             $pathField = Service::getVersionDependentDatabaseColumnName('path');
             $keyField = Service::getVersionDependentDatabaseColumnName('key');
             $list->addConditionParam($idField . ' in(' . implode(', ', $exportData[self::SEGMENT_IDS]) .')');
-            $list->setOrderKey('concat('. $pathField .', '. $keyField . ')', false);
+            $list->setOrderKey('concat(' . $list->quoteIdentifier($pathField) .', '. $list->quoteIdentifier($keyField) . ')', false);
 
             $i = sizeof($titles);
             foreach ($list as $item) {
