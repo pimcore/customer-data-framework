@@ -234,7 +234,7 @@ class Installer extends SettingsStoreAwareInstaller
         ];
 
         //BC layer to support Pimcore 10
-        if (str_starts_with(Version::getVersion(), '11.')) {
+        if (str_starts_with(Version::getVersion(), '11.') || str_starts_with(Version::getVersion(), 'v11.')) {
             $sqlFiles[__DIR__ . '/Resources/sql/segmentAssignment/'][] = 'storedFunctionObject_Pimcore11.sql';
         } else {
             $sqlFiles[__DIR__ . '/Resources/sql/segmentAssignment/'][] = 'storedFunctionObject.sql';
