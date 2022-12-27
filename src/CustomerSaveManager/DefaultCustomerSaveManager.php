@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\CustomerSaveManager;
 
 use CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface;
+use CustomerManagementFrameworkBundle\CustomerDuplicatesService\CustomerDuplicatesServiceInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveHandler\CustomerSaveHandlerInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface;
@@ -36,13 +37,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 {
     use LoggerAware;
-    use LegacyTrait;
     use PimcoreContextAwareTrait;
-
-    /**
-     * @var SaveOptions
-     */
-    private $saveOptions;
 
     /**
      * @var SaveOptions
@@ -55,36 +50,21 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     protected $saveHandlers = [];
 
     /**
-     * @var CustomerProviderInterface
-     */
-    private $customerProvider;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
      * @var CustomerInterface|null
      */
     private $originalCustomer;
 
-    /**
-     * @var ActivityStoreInterface
-     */
-    protected $activityStore;
-
     public function __construct(
-        SaveOptions $saveOptions,
-        CustomerProviderInterface $customerProvider,
-        RequestStack $requestStack,
-        ActivityStoreInterface $activityStore
+        private SaveOptions $saveOptions,
+        private CustomerProviderInterface $customerProvider,
+        private RequestStack $requestStack,
+        protected ActivityStoreInterface $activityStore,
+        protected SegmentBuilderExecutorInterface $segmentBuilderExecutor,
+        protected CustomerDuplicatesServiceInterface $customerDuplicatesService,
+        protected DuplicatesIndexInterface $duplicatesIndex,
+        protected CustomerSaveValidatorInterface $customerSaveValidator
     ) {
-        $this->saveOptions = $saveOptions;
         $this->defaultSaveOptions = clone $saveOptions;
-        $this->customerProvider = $customerProvider;
-        $this->requestStack = $requestStack;
-        $this->activityStore = $activityStore;
     }
 
     protected function applyNamingScheme(CustomerInterface $customer)
@@ -157,7 +137,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     public function postAdd(CustomerInterface $customer)
     {
         if ($this->saveOptions->isOnSaveSegmentBuildersEnabled()) {
-            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class)->buildCalculatedSegmentsOnCustomerSave($customer);
+            $this->segmentBuilderExecutor->buildCalculatedSegmentsOnCustomerSave($customer);
         }
 
         if ($this->saveOptions->isSaveHandlersExecutionEnabled()) {
@@ -165,11 +145,11 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         }
 
         if ($this->saveOptions->isSegmentBuilderQueueEnabled()) {
-            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class)->addCustomerToChangesQueue($customer);
+            $this->segmentBuilderExecutor->addCustomerToChangesQueue($customer);
         }
 
         if ($this->saveOptions->isDuplicatesIndexEnabled()) {
-            \Pimcore::getContainer()->get('cmf.customer_duplicates_service')->updateDuplicateIndexForCustomer(
+            $this->customerDuplicatesService->updateDuplicateIndexForCustomer(
                 $customer
             );
         }
@@ -199,15 +179,15 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
         }
 
         if ($this->saveOptions->isOnSaveSegmentBuildersEnabled()) {
-            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class)->buildCalculatedSegmentsOnCustomerSave($customer);
+            $this->segmentBuilderExecutor->buildCalculatedSegmentsOnCustomerSave($customer);
         }
 
         if ($this->saveOptions->isSegmentBuilderQueueEnabled()) {
-            \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class)->addCustomerToChangesQueue($customer);
+            $this->segmentBuilderExecutor->addCustomerToChangesQueue($customer);
         }
 
         if ($this->saveOptions->isDuplicatesIndexEnabled()) {
-            \Pimcore::getContainer()->get('cmf.customer_duplicates_service')->updateDuplicateIndexForCustomer(
+            $this->customerDuplicatesService->updateDuplicateIndexForCustomer(
                 $customer
             );
         }
@@ -234,11 +214,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
 
         $this->handleNewsletterQueue($customer, NewsletterQueueInterface::OPERATION_DELETE);
 
-        /**
-         * @var DuplicatesIndexInterface $duplicatesIndex
-         */
-        $duplicatesIndex = \Pimcore::getContainer()->get(DuplicatesIndexInterface::class);
-        $duplicatesIndex->deleteCustomerFromDuplicateIndex($customer);
+        $this->duplicatesIndex->deleteCustomerFromDuplicateIndex($customer);
 
         $this->activityStore->deleteCustomer($customer);
     }
@@ -249,12 +225,8 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
             return false;
         }
 
-        /**
-         * @var CustomerSaveValidatorInterface $validator
-         */
-        $validator = \Pimcore::getContainer()->get('cmf.customer_save_validator');
 
-        return $validator->validate($customer, $withDuplicatesCheck);
+        return $this->customerSaveValidator->validate($customer, $withDuplicatesCheck);
     }
 
     /**

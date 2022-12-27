@@ -15,32 +15,24 @@
 
 namespace CustomerManagementFrameworkBundle\CustomerSaveValidator;
 
+use CustomerManagementFrameworkBundle\CustomerDuplicatesService\CustomerDuplicatesServiceInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\Exception\DuplicateCustomerException;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\Element\ValidationException;
 
 class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
 {
-    /**
-     * @var array
-     */
-    private $requiredFields;
-
-    /**
-     * @var bool
-     */
-    private $checkForDuplicates;
 
     /**
      * DefaultCustomerSaveValidator constructor.
      *
-     * @param array $requiredFields
-     * @param bool $checkForDuplicates
      */
-    public function __construct(array $requiredFields, $checkForDuplicates)
+    public function __construct(
+        private array $requiredFields,
+        private bool $checkForDuplicates,
+        protected CustomerDuplicatesServiceInterface $customerDuplicatesService
+    )
     {
-        $this->requiredFields = $requiredFields;
-        $this->checkForDuplicates = $checkForDuplicates;
     }
 
     /**
@@ -118,7 +110,7 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
     protected function validateDuplicates(CustomerInterface $customer)
     {
         if ($this->checkForDuplicates && $customer->getActive() && $customer->getPublished()) {
-            $duplicates = \Pimcore::getContainer()->get('cmf.customer_duplicates_service')->getDuplicatesOfCustomer(
+            $duplicates = $this->customerDuplicatesService->getDuplicatesOfCustomer(
                 $customer
             );
             if (!is_null($duplicates) && $duplicates->getCount()) {
@@ -126,7 +118,7 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
 
                 $ex->setDuplicateCustomer($duplicates->current());
                 $ex->setMatchedDuplicateFields(
-                    \Pimcore::getContainer()->get('cmf.customer_duplicates_service')->getMatchedDuplicateFields()
+                    $this->customerDuplicatesService->getMatchedDuplicateFields()
                 );
 
                 throw $ex;

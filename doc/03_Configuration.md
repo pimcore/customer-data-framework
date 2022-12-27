@@ -15,19 +15,16 @@ e.g. in `services.yml`:
 
 services:
     # example customer save handler config
-    appbundle.cmf.customer_save_handler.normalize_zip:
-       class: CustomerManagementFrameworkBundle\CustomerSaveHandler\NormalizeZip
+    CustomerManagementFrameworkBundle\CustomerSaveHandler\NormalizeZip:
        tags: [cmf.customer_save_handler]
 
     # example segment builder config
-    appbundle.cmf.segment_builder.state:
-         class: CustomerManagementFrameworkBundle\SegmentBuilder\StateSegmentBuilder
+    CustomerManagementFrameworkBundle\SegmentBuilder\StateSegmentBuilder:
          tags: [cmf.segment_builder]
 
 
     # example newsletter provider handler (mailchimp sync) config for one Mailchimp receiver list
-    appbundle.cmf.mailchimp.birthdate-transformer:
-          class: CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\DataTransformer\Date
+    CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\DataTransformer\Date:
           arguments:
             - m/d/Y
             - Y-m-d

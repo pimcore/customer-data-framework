@@ -15,6 +15,8 @@
 
 namespace CustomerManagementFrameworkBundle\Event;
 
+use CustomerManagementFrameworkBundle\ActivityManager\ActivityManagerInterface;
+use CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\Model\AbstractObjectActivity;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
@@ -28,14 +30,13 @@ use Pimcore\Model\DataObject\LinkActivityDefinition;
 
 class PimcoreObjectEventListener
 {
-    /**
-     * @var CustomerSaveManagerInterface
-     */
-    protected $customerSaveManager;
-
-    public function __construct(CustomerSaveManagerInterface $customerSaveManager)
+    public function __construct(
+        protected CustomerSaveManagerInterface $customerSaveManager,
+        protected SegmentManagerInterface $segmentManager,
+        protected ActivityManagerInterface $activityManager,
+        protected ActivityStoreInterface $activityStore
+    )
     {
-        $this->customerSaveManager = $customerSaveManager;
     }
 
     public function onPreUpdate(ElementEventInterface $e)
@@ -57,7 +58,7 @@ class PimcoreObjectEventListener
         if ($object instanceof CustomerInterface) {
             $this->customerSaveManager->preUpdate($object);
         } elseif ($object instanceof CustomerSegmentInterface) {
-            \Pimcore::getContainer()->get(SegmentManagerInterface::class)->preSegmentUpdate($object);
+            $this->segmentManager->preSegmentUpdate($object);
         }
     }
 
@@ -73,17 +74,17 @@ class PimcoreObjectEventListener
         $object = $e->getObject();
 
         if ($object instanceof CustomerInterface) {
-            \Pimcore::getContainer()->get(CustomerSaveManagerInterface::class)->postUpdate($object);
+            $this->customerSaveManager->postUpdate($object);
         } elseif ($object instanceof AbstractObjectActivity) {
             $trackIt = true;
             if (!$object->cmfUpdateOnSave()) {
-                if (\Pimcore::getContainer()->get('cmf.activity_store')->getEntryForActivity($object)) {
+                if ($this->activityStore->getEntryForActivity($object)) {
                     $trackIt = false;
                 }
             }
 
             if ($trackIt) {
-                \Pimcore::getContainer()->get('cmf.activity_manager')->trackActivity($object);
+                $this->activityManager->trackActivity($object);
             }
         }
     }
@@ -140,9 +141,9 @@ class PimcoreObjectEventListener
         if ($object instanceof CustomerInterface) {
             $this->customerSaveManager->postDelete($object);
         } elseif ($object instanceof ActivityInterface) {
-            \Pimcore::getContainer()->get('cmf.activity_manager')->deleteActivity($object);
+            $this->activityManager->deleteActivity($object);
         } elseif ($object instanceof CustomerSegmentInterface) {
-            \Pimcore::getContainer()->get(SegmentManagerInterface::class)->postSegmentDelete($object);
+            $this->segmentManager->postSegmentDelete($object);
         }
     }
 
@@ -158,19 +159,14 @@ class PimcoreObjectEventListener
 
         if ($data) {
             /**
-             * @var SegmentManagerInterface $segmentManager
-             */
-            $segmentManager = \Pimcore::getContainer()->get(SegmentManagerInterface::class);
-
-            /**
              * check to be compatible with different Pimcore versions
              */
             if (is_array($data)) {
                 $data = $data['customerSegmentId'];
             }
 
-            if ($segment = $segmentManager->getSegmentById($data)) {
-                $segmentManager->mergeSegments($customer, [$segment], [], 'Customer CSV importer');
+            if ($segment = $this->segmentManager->getSegmentById($data)) {
+                $this->segmentManager->mergeSegments($customer, [$segment], [], 'Customer CSV importer');
             }
         }
     }

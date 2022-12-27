@@ -23,10 +23,12 @@ use CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface;
 use CustomerManagementFrameworkBundle\CustomerList\Filter\Exception\SearchQueryException;
 use CustomerManagementFrameworkBundle\CustomerList\SearchHelper;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
+use CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface;
 use CustomerManagementFrameworkBundle\Helper\Objects;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\Concrete;
@@ -45,6 +47,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CustomersController extends Admin
 {
+    protected SearchHelper $searchHelper;
+
     /**
      * @var CustomerSegmentGroup[]|null
      */
@@ -52,11 +56,21 @@ class CustomersController extends Admin
 
     private ExporterManagerInterface $exporterManager;
 
+    private SegmentManagerInterface $segmentManager;
+
     public function onKernelControllerEvent(ControllerEvent $event)
     {
         parent::onKernelControllerEvent($event);
         $this->checkPermission('plugin_cmf_perm_customerview');
         AbstractObject::setHideUnpublished(true);
+    }
+
+    /**
+     * @required
+     */
+    public function setSegmentManager(SegmentManagerInterface $segmentManager): void
+    {
+        $this->segmentManager = $segmentManager;
     }
 
     /**
@@ -73,13 +87,12 @@ class CustomersController extends Admin
      *
      * @return Response
      */
-    public function listAction(Request $request)
+    public function listAction(Request $request, CustomerViewInterface $customerView)
     {
         $filters = $this->fetchListFilters($request);
         $orders = $this->fetchListOrder($request);
         $errors = $request->get('errors', []);
         $paginator = null;
-        $customerView = \Pimcore::getContainer()->get('cmf.customer_view');
 
         try {
             $listing = $this->buildListing($filters, $orders);
@@ -129,11 +142,10 @@ class CustomersController extends Admin
      *
      * @return Response
      */
-    public function detailAction(Request $request)
+    public function detailAction(Request $request, CustomerViewInterface $customerView)
     {
         $customer = $this->getSearchHelper()->getCustomerProvider()->getById((int)$request->get('id'));
         if ($customer && $customer instanceof CustomerInterface) {
-            $customerView = \Pimcore::getContainer()->get('cmf.customer_view');
             if (!$customerView->hasDetailView($customer)) {
                 throw new \RuntimeException(sprintf('Customer %d has no detail view to show', $customer->getId()));
             }
@@ -522,7 +534,7 @@ class CustomersController extends Admin
         $segmentId = $request->get('segmentId');
 
         if ($segmentId) {
-            $segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId);
+            $segment = $this->segmentManager->getSegmentById($segmentId);
             if (!$segment) {
                 throw new \InvalidArgumentException(sprintf('Segment %d was not found', $segmentId));
             }
@@ -674,6 +686,14 @@ class CustomersController extends Admin
      */
     protected function getSearchHelper()
     {
-        return \Pimcore::getContainer()->get(SearchHelper::class);
+        return $this->searchHelper;
+    }
+
+    /**
+     * @required
+     */
+    public function setSearchHelper(SearchHelper $searchHelper)
+    {
+        return $this->searchHelper = $searchHelper;
     }
 }

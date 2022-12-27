@@ -141,9 +141,6 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension 
 
     private function registerCustomerDuplicatesServicesConfiguration(ContainerBuilder $container, array $config)
     {
-        $container->setAlias('cmf.customer_duplicates_service', CustomerDuplicatesServiceInterface::class)->setPublic(true);
-        $container->setAlias('cmf.customer_duplicates_index', DuplicatesIndexInterface::class)->setPublic(true);
-
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicateCheckFields', $config['duplicateCheckFields']);
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicateCheckTrimmedFields', (array) $config['duplicateCheckTrimmedFields']);
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.listFields', $config['duplicates_view']['listFields'] ?: []);
@@ -160,8 +157,6 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension 
         $container->setParameter('pimcore_customer_management_framework.newsletter.newsletterQueueImmediateAsyncExecutionEnabled', (bool) $config['newsletterQueueImmediateAsyncExecutionEnabled']);
 
         if ($config['newsletterSyncEnabled']) {
-            $container->setAlias('cmf.newsletter.queue', NewsletterQueueInterface::class)->setPublic(true);
-
             $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.apiKey', $config['mailchimp']['apiKey']);
             $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.cliUpdatesPimcoreUserName', $config['mailchimp']['cliUpdatesPimcoreUserName']);
         }

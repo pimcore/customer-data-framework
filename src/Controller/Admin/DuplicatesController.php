@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\Controller\Admin;
+use CustomerManagementFrameworkBundle\CustomerDuplicatesView\DefaultCustomerDuplicatesView;
 use CustomerManagementFrameworkBundle\CustomerList\SearchHelper;
 use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
 use Pimcore\Model\DataObject\Service;
@@ -28,6 +29,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class DuplicatesController extends Admin
 {
+    protected SearchHelper $searchHelper;
+
     public function init()
     {
         \Pimcore\Model\DataObject\AbstractObject::setHideUnpublished(true);
@@ -42,7 +45,11 @@ class DuplicatesController extends Admin
      * @throws \Exception
      * @Route("/list")
      */
-    public function listAction(Request $request, DuplicatesIndexInterface $duplicatesIndex)
+    public function listAction(
+        Request $request,
+        DuplicatesIndexInterface $duplicatesIndex,
+        DefaultCustomerDuplicatesView $duplicatesView
+    )
     {
         // fetch all filters
         $filters = $request->get('filter', []);
@@ -73,7 +80,7 @@ class DuplicatesController extends Admin
                 'paginator' => $paginator,
                 'paginationVariables' => $paginator->getPaginationData(),
                 'duplicates' => $paginator->getItems(),
-                'duplicatesView' => \Pimcore::getContainer()->get('cmf.customer_duplicates_view'),
+                'duplicatesView' => $duplicatesView,
                 'searchBarFields' => $this->getSearchHelper()->getConfiguredSearchBarFields(),
                 'filters' => $filters,
             ]
@@ -86,10 +93,10 @@ class DuplicatesController extends Admin
      *
      * @return JsonResponse
      */
-    public function declineAction(Request $request)
+    public function declineAction(Request $request, DuplicatesIndexInterface $duplicatesIndex)
     {
         try {
-            \Pimcore::getContainer()->get('cmf.customer_duplicates_index')->declinePotentialDuplicate(
+            $duplicatesIndex->declinePotentialDuplicate(
                 $request->get('id')
             );
 
@@ -104,6 +111,12 @@ class DuplicatesController extends Admin
      */
     protected function getSearchHelper()
     {
-        return \Pimcore::getContainer()->get(SearchHelper::class);
+        return $this->searchHelper;
+    }
+
+    #[Required]
+    public function setSearchHelper(SearchHelper $searchHelper)
+    {
+        return $this->searchHelper = $searchHelper;
     }
 }

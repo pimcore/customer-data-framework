@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin\Customers;
 
+use CustomerManagementFrameworkBundle\ActivityView\DefaultActivityView;
 use CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
@@ -33,10 +34,8 @@ class FilterDefinitionController extends Admin
      *
      * @return RedirectResponse
      */
-    public function deleteAction(Request $request)
+    public function deleteAction(Request $request, DefaultActivityView $defaultActivityView)
     {
-        // fetch CustomerView object
-        $customerView = \Pimcore::getContainer()->get('cmf.customer_view');
         // fetch object parameters from request
         $id = $this->getIdFromRequest($request);
         // check if FilterDefinition id provided
@@ -52,7 +51,7 @@ class FilterDefinitionController extends Admin
         // check if user is allowed to change FilterDefinition object (must be owner or filter admin)
         if (!$filterDefinition->isUserAllowedToUpdate($this->getAdminUser())) {
             // add error message for user not allowed to access FilterDefinition object
-            $errors[] = $customerView->translate('cmf_filter_definition_errors_access');
+            $errors[] = $defaultActivityView->translate('cmf_filter_definition_errors_access');
 
             return $this->getRedirectToFilter($filterDefinition->getId());
         }
@@ -61,7 +60,7 @@ class FilterDefinitionController extends Admin
             $filterDefinition->delete();
         } catch (\Exception $e) {
             // add error message for deletion failed
-            $errors[] = $customerView->translate('cmf_filter_definition_errors_deletion_failed', $e->getMessage());
+            $errors[] = $defaultActivityView->translate('cmf_filter_definition_errors_deletion_failed', $e->getMessage());
         }
 
         // redirect to filter view with no FilterDefinition selected

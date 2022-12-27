@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\ActivityStore;
 use CustomerManagementFrameworkBundle\Model\ActivityExternalIdInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
+use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\DefaultActivityStoreEntry;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Doctrine\DBAL\Connection;
@@ -35,17 +36,15 @@ abstract class SqlActivityStore
     const ACTIVITIES_METADATA_TABLE = 'plugin_cmf_activities_metadata';
     const DELETIONS_TABLE = 'plugin_cmf_deletions';
 
-    /**
-     * @var PaginatorInterface
-     */
-    protected $paginator;
 
     /**
      * @param PaginatorInterface $paginator
      */
-    public function __construct(PaginatorInterface $paginator)
+    public function __construct(
+        protected PaginatorInterface $paginator,
+        protected ActivityStoreEntryInterface $activityStoreEntry
+    )
     {
-        $this->paginator = $paginator;
     }
 
     public function insertActivityIntoStore(ActivityInterface $activity)
@@ -228,17 +227,13 @@ abstract class SqlActivityStore
      */
     public function createEntryInstance(array $data)
     {
-        /**
-         * @var ActivityStoreEntryInterface $entry
-         */
-        $entry = \Pimcore::getContainer()->get('cmf.activity_store_entry');
-        $entry->setData($data);
+        $this->activityStoreEntry->setData($data);
 
-        if (!$entry instanceof ActivityStoreEntryInterface) {
+        if (!$this->activityStoreEntry instanceof ActivityStoreEntryInterface) {
             throw new \Exception('Activity store entry needs to implement ActivityStoreEntryInterface');
         }
 
-        return $entry;
+        return $this->activityStoreEntry;
     }
 
     /**
