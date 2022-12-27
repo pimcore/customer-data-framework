@@ -18,7 +18,6 @@ namespace CustomerManagementFrameworkBundle\ActivityStore;
 use CustomerManagementFrameworkBundle\Model\ActivityExternalIdInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
-use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\DefaultActivityStoreEntry;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Doctrine\DBAL\Connection;
@@ -36,15 +35,13 @@ abstract class SqlActivityStore
     const ACTIVITIES_METADATA_TABLE = 'plugin_cmf_activities_metadata';
     const DELETIONS_TABLE = 'plugin_cmf_deletions';
 
-
     /**
      * @param PaginatorInterface $paginator
      */
     public function __construct(
         protected PaginatorInterface $paginator,
         protected ActivityStoreEntryInterface $activityStoreEntry
-    )
-    {
+    ) {
     }
 
     public function insertActivityIntoStore(ActivityInterface $activity)

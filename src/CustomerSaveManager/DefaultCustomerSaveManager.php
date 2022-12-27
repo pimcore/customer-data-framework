@@ -225,7 +225,6 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
             return false;
         }
 
-
         return $this->customerSaveValidator->validate($customer, $withDuplicatesCheck);
     }
 

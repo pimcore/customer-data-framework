@@ -44,8 +44,7 @@ class DefaultEventHandler implements EventHandlerInterface
         protected PaginatorInterface $paginator,
         protected CustomerProviderInterface $customerProvider,
         protected ActionManagerInterface $actionManager
-    )
-    {
+    ) {
     }
 
     protected function getRulesGroupedByEvents()

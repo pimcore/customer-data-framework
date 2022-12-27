@@ -49,8 +49,7 @@ class DuplicatesController extends Admin
         Request $request,
         DuplicatesIndexInterface $duplicatesIndex,
         DefaultCustomerDuplicatesView $duplicatesView
-    )
-    {
+    ) {
         // fetch all filters
         $filters = $request->get('filter', []);
         // check if filters exist

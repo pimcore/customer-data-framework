@@ -31,8 +31,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
         private array $duplicateCheckFields = [],
         protected array $duplicateCheckTrimmedFields = [],
         protected array $matchedDuplicateFields = [],
-    )
-    {
+    ) {
     }
 
     /**

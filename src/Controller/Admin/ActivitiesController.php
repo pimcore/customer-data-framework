@@ -55,8 +55,7 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
         CustomerProviderInterface $customerProvider,
         ActivityStoreInterface $activityStore,
         DefaultActivityView $defaultActivityView
-    )
-    {
+    ) {
         if ($customer = $customerProvider->getById($request->get('customerId'))) {
             $list = $activityStore->getActivityList();
             $list->setCondition('customerId = ' . $customer->getId());
@@ -103,8 +102,7 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
         Request $request,
         ActivityViewInterface $activityView,
         ActivityStoreInterface $activityStore
-    )
-    {
+    ) {
         $activity = $activityStore->getEntryById($request->get('activityId'));
 
         return $this->render(

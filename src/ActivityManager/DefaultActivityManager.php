@@ -23,7 +23,6 @@ use CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\Segm
 
 class DefaultActivityManager implements ActivityManagerInterface
 {
-
     /**
      * @var bool
      */

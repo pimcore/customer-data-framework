@@ -22,7 +22,6 @@ use Pimcore\Model\Element\ValidationException;
 
 class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
 {
-
     /**
      * DefaultCustomerSaveValidator constructor.
      *
@@ -31,8 +30,7 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
         private array $requiredFields,
         private bool $checkForDuplicates,
         protected CustomerDuplicatesServiceInterface $customerDuplicatesService
-    )
-    {
+    ) {
     }
 
     /**

@@ -35,8 +35,7 @@ class PimcoreObjectEventListener
         protected SegmentManagerInterface $segmentManager,
         protected ActivityManagerInterface $activityManager,
         protected ActivityStoreInterface $activityStore
-    )
-    {
+    ) {
     }
 
     public function onPreUpdate(ElementEventInterface $e)
