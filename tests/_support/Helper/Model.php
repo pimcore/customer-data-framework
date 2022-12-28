@@ -48,4 +48,14 @@ collate=utf8_unicode_ci;
         $cm = $this->getModule('\\' . ClassManager::class);
         $cm->setupClass('Customer', __DIR__ . '/../../../install/class_source/optional/class_Customer_export.json');
     }
+
+    /**
+     * @throws \Codeception\Exception\ModuleException
+     */
+    public function grabService(string $serviceId): mixed
+    {
+        $pimcoreHelper = $this->getModule('\\' . Pimcore::class);
+
+        return $pimcoreHelper->grabService($serviceId);
+    }
 }

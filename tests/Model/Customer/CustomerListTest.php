@@ -113,7 +113,7 @@ class CustomerListTest extends ModelTestCase
 
     protected function createSegments()
     {
-        $segmentManager = \Pimcore::getContainer()->get(SegmentManagerInterface::class);
+        $segmentManager = $this->tester->grabService(SegmentManagerInterface::class);
         $segmentManager->resetSegmentsFolder();
         foreach ($this->segmentDummyData as $segment) {
             $segmentManager->createSegment($segment['name'], $segment['group'], $segment['name']);
@@ -122,7 +122,7 @@ class CustomerListTest extends ModelTestCase
 
     protected function createCustomers()
     {
-        $segmentManager = \Pimcore::getContainer()->get(SegmentManagerInterface::class);
+        $segmentManager = $this->tester->grabService(SegmentManagerInterface::class);
 
         foreach ($this->customerDummyData as &$customerData) {
 
@@ -351,7 +351,7 @@ class CustomerListTest extends ModelTestCase
 
     public function testCustomerSegmentFilter()
     {
-        $segmentManager = \Pimcore::getContainer()->get(SegmentManagerInterface::class);
+        $segmentManager = $this->tester->grabService(SegmentManagerInterface::class);
 
         //test one filter
         $listing = new Customer\Listing();

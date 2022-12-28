@@ -2,6 +2,7 @@
 
 namespace CustomerManagementFrameworkBundle\Tests\Model\Activity;
 use CustomerManagementFrameworkBundle\ActivityManager\ActivityManagerInterface;
+use CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface;
 use CustomerManagementFrameworkBundle\Model\Activity\GenericActivity;
 use Pimcore\Model\DataObject\Customer;
 use Pimcore\Tests\Support\Test\ModelTestCase;
@@ -36,8 +37,8 @@ class ActivityTest extends ModelTestCase
 
     public function testTrackActivity() {
 
-        $activityManager = \Pimcore::getContainer()->get(ActivityManagerInterface::class);
-        $activityStore = \Pimcore::getContainer()->get('cmf.activity_store');
+        $activityManager = $this->tester->grabService(ActivityManagerInterface::class);
+        $activityStore = $this->tester->grabService(ActivityStoreInterface::class);
 
         $customer = $this->createCustomer();
 
