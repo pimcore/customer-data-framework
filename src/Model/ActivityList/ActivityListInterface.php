@@ -18,8 +18,10 @@ namespace CustomerManagementFrameworkBundle\Model\ActivityList;
 use Pimcore\Model\Paginator\PaginateListingInterface;
 use Pimcore\Version;
 
-//BC layer to support Pimcore 10
-//TODO remove when remove support for Pimcore 10
+/**
+ * @TODO remove when remove support for Pimcore 10
+ * @phpstan-ignore-next-line
+ */
 if (Version::MAJOR_VERSION >= 11) {
     interface ActivityListInterface extends PaginateListingInterface
     {
