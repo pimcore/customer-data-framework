@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CustomerManagementFrameworkBundle\Security\Authentication;
 
 use Pimcore\Http\RequestHelper;
+use Psr\Container\ContainerInterface;
 use Symfony\Bundle\SecurityBundle\Security\FirewallConfig;
 use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,7 +29,6 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategyInterface;
-use Psr\Container\ContainerInterface;
 
 /**
  * Handles manual user logins (e.g. from registration). The logic implemented here basically
@@ -115,6 +115,7 @@ class LoginManager implements LoginManagerInterface
         if (!$firewallUserChecker) {
             return $this->defaultUserChecker;
         }
+
         return $this->container->get($firewallUserChecker);
     }
 }
