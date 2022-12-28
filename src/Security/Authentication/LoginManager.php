@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Security\Authentication;
 
-use CustomerManagementFrameworkBundle\Model\ClassDefinition\Helper\UserCheckerClassResolver;
 use Pimcore\Http\RequestHelper;
 use Symfony\Bundle\SecurityBundle\Security\FirewallConfig;
 use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
@@ -29,6 +28,7 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategyInterface;
+use Psr\Container\ContainerInterface;
 
 /**
  * Handles manual user logins (e.g. from registration). The logic implemented here basically
@@ -63,18 +63,25 @@ class LoginManager implements LoginManagerInterface
      */
     private $defaultUserChecker;
 
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
     public function __construct(
         RequestHelper $requestHelper,
         FirewallMap $firewallMap,
         SessionAuthenticationStrategyInterface $sessionStrategy,
         TokenStorageInterface $tokenStorage,
-        UserCheckerInterface $defaultUserChecker
+        UserCheckerInterface $defaultUserChecker,
+        ContainerInterface $container
     ) {
         $this->firewallMap = $firewallMap;
         $this->requestHelper = $requestHelper;
         $this->sessionStrategy = $sessionStrategy;
         $this->tokenStorage = $tokenStorage;
         $this->defaultUserChecker = $defaultUserChecker;
+        $this->container = $container;
     }
 
     /**
@@ -108,13 +115,6 @@ class LoginManager implements LoginManagerInterface
         if (!$firewallUserChecker) {
             return $this->defaultUserChecker;
         }
-        if (!class_exists($firewallUserChecker)) {
-            $firewallUserChecker = '@' . $firewallUserChecker;
-            $userChecker = UserCheckerClassResolver::resolveUserChecker($firewallUserChecker);
-        } else {
-            $userChecker = new $firewallUserChecker;
-        }
-
-        return $userChecker;
+        return $this->container->get($firewallUserChecker);
     }
 }
