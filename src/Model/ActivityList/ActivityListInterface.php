@@ -18,9 +18,10 @@ namespace CustomerManagementFrameworkBundle\Model\ActivityList;
 use Pimcore\Model\Paginator\PaginateListingInterface;
 use Pimcore\Version;
 
-//BC layer to support Pimcore 10
-//@TODO Change if condition to: version_compare(Version::getVersion(), '11.0', '>=')
-if (str_starts_with(Version::getVersion(), '11.') || str_starts_with(Version::getVersion(), 'v11.')) {
+/**
+ * @TODO remove when remove support for Pimcore 10
+ */
+if (Version::MAJOR_VERSION >= 11) {
     interface ActivityListInterface extends PaginateListingInterface
     {
         public function setCondition(string $condition, float | array | bool | int | string $conditionVariables = null): static;

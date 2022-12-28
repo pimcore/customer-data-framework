@@ -3,11 +3,17 @@ services:
         autowire: true
         autoconfigure: true
 
+    security.user_checker:
+        class: Symfony\Component\Security\Core\User\InMemoryUserChecker
+        public: true
+
     CustomerManagementFrameworkBundle\Security\Authentication\LoginManagerInterface: '@CustomerManagementFrameworkBundle\Security\Authentication\LoginManager'
     CustomerManagementFrameworkBundle\Security\Authentication\LoginManager:
         arguments:
             $firewallMap: '@security.firewall.map'
             $sessionStrategy: '@security.authentication.session_strategy'
+            $defaultUserChecker: '@security.user_checker'
+            $container: '@service_container'
 
     # The user provider loads users by Username.
     # Pimcore provides a simple ObjectUserProvider which is able to load users from a specified class by a configured
