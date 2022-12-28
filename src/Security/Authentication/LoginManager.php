@@ -17,8 +17,8 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Security\Authentication;
 
-use CustomerManagementFrameworkBundle\Model\ClassDefinition\Helper\UserCheckerClassResolver;
 use Pimcore\Http\RequestHelper;
+use Psr\Container\ContainerInterface;
 use Symfony\Bundle\SecurityBundle\Security\FirewallConfig;
 use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,16 +58,30 @@ class LoginManager implements LoginManagerInterface
      */
     private $tokenStorage;
 
+    /**
+     * @var UserCheckerInterface
+     */
+    private $defaultUserChecker;
+
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
     public function __construct(
         RequestHelper $requestHelper,
         FirewallMap $firewallMap,
         SessionAuthenticationStrategyInterface $sessionStrategy,
-        TokenStorageInterface $tokenStorage
+        TokenStorageInterface $tokenStorage,
+        UserCheckerInterface $defaultUserChecker,
+        ContainerInterface $container
     ) {
         $this->firewallMap = $firewallMap;
         $this->requestHelper = $requestHelper;
         $this->sessionStrategy = $sessionStrategy;
         $this->tokenStorage = $tokenStorage;
+        $this->defaultUserChecker = $defaultUserChecker;
+        $this->container = $container;
     }
 
     /**
@@ -97,6 +111,11 @@ class LoginManager implements LoginManagerInterface
 
     private function getUserChecker(FirewallConfig $config): UserCheckerInterface
     {
-        return UserCheckerClassResolver::resolveUserChecker($config->getUserChecker());
+        $firewallUserChecker = $config->getUserChecker();
+        if (!$firewallUserChecker) {
+            return $this->defaultUserChecker;
+        }
+
+        return $this->container->get($firewallUserChecker);
     }
 }
