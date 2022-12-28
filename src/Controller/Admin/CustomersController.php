@@ -635,7 +635,7 @@ class CustomersController extends Admin
      */
     protected function addFilterDefinitionSegments(Request $request, array $filters)
     {
-        $filters['showSegments'] = @$filters['showSegments'] ?: [];
+        $filters['showSegments'] ??= [];
 
         // merge filters with filters of filter definition
         $filterDefinition = $this->getFilterDefinition($request);
@@ -648,14 +648,14 @@ class CustomersController extends Admin
         // fetch definitions for segments / only segments array
         $filterDefinition->cleanUp(false);
 
-        $filterDefinitionSegments = @$filterDefinition->getDefinition()['segments'] ?: [];
+        $filterDefinitionSegments = $filterDefinition->getDefinition()['segments'] ?? [];
 
         if ($filterDefinition->isReadOnly()) {
             // overwrite filters with FilterDefinition definition
             $filters['segments'] = $filterDefinitionSegments;
         } else {
             // filter of user more important than filter definition
-            $filters['segments'] = array_replace_recursive($filterDefinitionSegments, @$filters['segments'] ?: []);
+            $filters['segments'] = array_replace_recursive($filterDefinitionSegments, $filters['segments'] ?? []);
         }
 
         // set to filter which segments to show
