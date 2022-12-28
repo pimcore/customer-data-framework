@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\Controller\Rest\Api;
 
 use CustomerManagementFrameworkBundle\Controller\Rest\CrudHandlerController;
+use CustomerManagementFrameworkBundle\RESTApi\ActivitiesHandler;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -23,11 +24,12 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ActivitiesController extends CrudHandlerController
 {
-    /**
-     * @return \CustomerManagementFrameworkBundle\RESTApi\ActivitiesHandler
-     */
-    protected function getHandler()
+    public function __construct(protected ActivitiesHandler $handler)
     {
-        return \Pimcore::getContainer()->get('cmf.rest.activities_handler');
+    }
+
+    protected function getHandler(): ActivitiesHandler
+    {
+        return $this->handler;
     }
 }

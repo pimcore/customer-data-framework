@@ -51,10 +51,7 @@ class SegmentsOfCustomersController extends RestHandlerController
         return $response;
     }
 
-    /**
-     * @return SegmentsOfCustomerHandler
-     */
-    protected function getHandler()
+    protected function getHandler(): SegmentsOfCustomerHandler
     {
         return $this->handler;
     }

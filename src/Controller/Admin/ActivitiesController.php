@@ -73,7 +73,7 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
             $types = \Pimcore\Db::get()->fetchFirstColumn((string)$select);
 
             if ($type = $request->get('type')) {
-                $select = $list->getQueryBuilder(false);
+                $select = $list->getQueryBuilder();
                 $select->andWhere('type = ' . $list->quote($type));
                 $list->setCondition((string) $select->getQueryPart('where'));
             }
