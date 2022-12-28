@@ -16,3 +16,12 @@ parameters:
 			message: "#Call to an undefined static method Pimcore\\\\Db\\\\Helper\\:\\:quoteDataIdentifiers\\(\\)\\.#"
 			count: 2
 			path: src/Model/ActionTrigger/Rule/Dao.php
+		-
+			message: "#^Comparison operation \"\\>\\=\" between 10 and 11 is always false\\.$#"
+			count: 1
+			path: dev/pimcore/customer-management-framework-bundle/src/Installer.php
+		-
+			message: "#^Comparison operation \"\\>\\=\" between 10 and 11 is always false\\.$#"
+			count: 1
+			path: dev/pimcore/customer-management-framework-bundle/src/Model/ActivityList/ActivityListInterface.php
+

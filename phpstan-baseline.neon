@@ -1,7 +1,7 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Comparison operation \"\\>\\=\" between 10 and 11 is always false\\.$#"
+			message: "#^Comparison operation \"\\>\\=\" between 10 and 11 is always true\\.$#"
 			count: 1
 			path: dev/pimcore/customer-management-framework-bundle/src/Installer.php
 
@@ -11,7 +11,7 @@ parameters:
 			path: dev/pimcore/customer-management-framework-bundle/src/Installer.php
 
 		-
-			message: "#^Comparison operation \"\\>\\=\" between 10 and 11 is always false\\.$#"
+			message: "#^Comparison operation \"\\>\\=\" between 10 and 11 is always true\\.$#"
 			count: 1
 			path: dev/pimcore/customer-management-framework-bundle/src/Model/ActivityList/ActivityListInterface.php
 
