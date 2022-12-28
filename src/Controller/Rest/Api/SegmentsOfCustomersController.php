@@ -20,14 +20,15 @@ use CustomerManagementFrameworkBundle\RESTApi\Exception\ExceptionInterface;
 use CustomerManagementFrameworkBundle\RESTApi\SegmentsOfCustomerHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @Route("/segments-of-customers")
  */
 class SegmentsOfCustomersController extends RestHandlerController
 {
-    protected SegmentsOfCustomerHandler $handler;
+    public function __construct(protected SegmentsOfCustomerHandler $handler)
+    {
+    }
 
     /**
      * @param Request $request
@@ -56,11 +57,5 @@ class SegmentsOfCustomersController extends RestHandlerController
     protected function getHandler()
     {
         return $this->handler;
-    }
-
-    #[Required]
-    protected function setHandler(SegmentsOfCustomerHandler $handler)
-    {
-        $this->handler = $handler;
     }
 }
