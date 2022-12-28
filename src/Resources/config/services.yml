@@ -173,12 +173,13 @@ services:
             package: pimcore/customer-management-framework-bundle
             version: 3.0
 
-    cmf.segment_manager.segment_merger:
+    CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\SegmentMergerInterface:
         class: CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\DefaultSegmentMerger
+        lazy: true
 
     CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\DefaultSegmentMerger\MetadataFiller: ~
 
-    cmf.customer_duplicates_view:
+    CustomerManagementFrameworkBundle\CustomerDuplicatesView\CustomerDuplicatesViewInterface:
         class: CustomerManagementFrameworkBundle\CustomerDuplicatesView\DefaultCustomerDuplicatesView
         arguments:
             - '%pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.listFields%'
@@ -191,6 +192,7 @@ services:
 
     cmf.customer_view:
         alias: 'CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface'
+        public: true
 
     CustomerManagementFrameworkBundle\CustomerView\FilterDefinition\Maintenance: ~
 
@@ -198,7 +200,7 @@ services:
 
     CustomerManagementFrameworkBundle\CustomerList\SearchHelper: ~
 
-    cmf.potential_duplicate_item:
+    CustomerManagementFrameworkBundle\Model\CustomerDuplicates\PotentialDuplicateItemInterface:
         class: CustomerManagementFrameworkBundle\Model\CustomerDuplicates\PotentialDuplicateItem
         shared: false
 
@@ -207,14 +209,6 @@ services:
         class: CustomerManagementFrameworkBundle\CustomerList\ExporterManager
         arguments:
             - '%pimcore_customer_management_framework.customer_list.exporters%'
-
-    cmf.customer_exporter_manager:
-         alias: CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface
-         deprecated:
-             message: 'The "%alias_id%" alias is deprecated. Use "CustomerManagementFrameworkBundle\CustomerList\ExporterManagerInterface" instead'
-             package: pimcore/customer-management-framework-bundle
-             version: 3.0
-
 
     CustomerManagementFrameworkBundle\ActionTrigger\Queue\QueueInterface:
         class: CustomerManagementFrameworkBundle\ActionTrigger\Queue\DefaultQueue
@@ -230,11 +224,9 @@ services:
         calls:
             - [setApiResourceRoute, ['customermanagementframework_rest_api_customers_readrecord']]
 
-    cmf.rest.segments_of_customer_handler:
-        class: CustomerManagementFrameworkBundle\RESTApi\SegmentsOfCustomerHandler
+    CustomerManagementFrameworkBundle\RESTApi\SegmentsOfCustomerHandler: ~
 
-    cmf.rest.segments_handler:
-        class: CustomerManagementFrameworkBundle\RESTApi\SegmentsHandler
+    CustomerManagementFrameworkBundle\RESTApi\SegmentsHandler:
         calls:
             - [setApiResourceRoute, ['customermanagementframework_rest_api_segments_readrecord']]
 
@@ -242,8 +234,7 @@ services:
         calls:
             - [setApiResourceRoute, ['customermanagementframework_rest_api_segmentgroups_readrecord']]
 
-    cmf.rest.deletions_handler:
-        class: CustomerManagementFrameworkBundle\RESTApi\DeletionsHandler
+    CustomerManagementFrameworkBundle\RESTApi\DeletionsHandler: ~
 
     cmf.encryption_service: '@CustomerManagementFrameworkBundle\Encryption\EncryptionServiceInterface'
     CustomerManagementFrameworkBundle\Encryption\EncryptionServiceInterface: '@CustomerManagementFrameworkBundle\Encryption\DefaultEncryptionService'
@@ -275,6 +266,6 @@ services:
         class: Pimcore\Document\Newsletter\DefaultAddressSourceAdapterFactory
         arguments:
             - 'CustomerManagementFrameworkBundle\Newsletter\AddressSource\SegmentAddressSource'
-
+    public: true
 
     CustomerManagementFrameworkBundle\Helper\JsConfigService: ~

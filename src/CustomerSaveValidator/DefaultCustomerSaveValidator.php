@@ -17,6 +17,7 @@ namespace CustomerManagementFrameworkBundle\CustomerSaveValidator;
 
 use CustomerManagementFrameworkBundle\CustomerDuplicatesService\CustomerDuplicatesServiceInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\Exception\DuplicateCustomerException;
+use CustomerManagementFrameworkBundle\Model\AbstractCustomer;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\Element\ValidationException;
 
@@ -113,8 +114,9 @@ class DefaultCustomerSaveValidator implements CustomerSaveValidatorInterface
             );
             if (!is_null($duplicates) && $duplicates->getCount()) {
                 $ex = new DuplicateCustomerException('Duplicate customer found: ID '.$duplicates->current());
-
-                $ex->setDuplicateCustomer($duplicates->current());
+                /** @var AbstractCustomer $duplicate */
+                $duplicate = $duplicates->current();
+                $ex->setDuplicateCustomer($duplicate);
                 $ex->setMatchedDuplicateFields(
                     $this->customerDuplicatesService->getMatchedDuplicateFields()
                 );

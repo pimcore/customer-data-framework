@@ -23,6 +23,7 @@ use Pimcore\Model\DataObject\Service;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @Route("/duplicates")

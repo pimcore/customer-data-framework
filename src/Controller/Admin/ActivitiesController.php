@@ -22,6 +22,7 @@ use CustomerManagementFrameworkBundle\ActivityView\DefaultActivityView;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Controller\KernelControllerEventInterface;
+use Pimcore\Model\Listing\AbstractListing;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Routing\Annotation\Route;
@@ -57,6 +58,7 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
         DefaultActivityView $defaultActivityView
     ) {
         if ($customer = $customerProvider->getById($request->get('customerId'))) {
+            /** @var AbstractListing $list */
             $list = $activityStore->getActivityList();
             $list->setCondition('customerId = ' . $customer->getId());
             $list->setOrderKey('activityDate');
