@@ -1,7 +1,7 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Comparison operation \"\\>\\=\" between 10 and 11 is always true\\.$#"
+			message: "#^Comparison operation \"\\>\\=\" between 11 and 11 is always true\\.$#"
 			count: 1
 			path: src/Installer.php
 
@@ -11,7 +11,7 @@ parameters:
 			path: src/Installer.php
 
 		-
-			message: "#^Comparison operation \"\\>\\=\" between 10 and 11 is always true\\.$#"
+			message: "#^Comparison operation \"\\>\\=\" between 11 and 11 is always true\\.$#"
 			count: 1
 			path: src/Model/ActivityList/ActivityListInterface.php
 
