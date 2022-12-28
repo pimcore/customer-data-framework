@@ -121,7 +121,8 @@ class Dao extends Model\Dao\AbstractDao
                 return false;
             }
         } else {
-            $data['creationDate'] = time();
+            $creationDate = time();
+            $data['creationDate'] = $creationDate;
             $this->db->beginTransaction();
             try {
                 //TODO: Remove this if expression when dropping Pimcore 10 support
@@ -131,7 +132,7 @@ class Dao extends Model\Dao\AbstractDao
 
                 $this->db->insert(self::TABLE_NAME, $data);
                 $this->model->setId($this->db->fetchOne('SELECT LAST_INSERT_ID();'));
-                $this->model->setCreationDate($data['creationDate']);
+                $this->model->setCreationDate($creationDate);
                 $this->saveActions();
                 $this->db->commit();
             } catch (\Exception $e) {
