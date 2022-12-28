@@ -20,7 +20,6 @@ use Pimcore\Version;
 
 /**
  * @TODO remove when remove support for Pimcore 10
- * @phpstan-ignore-next-line
  */
 if (Version::MAJOR_VERSION >= 11) {
     interface ActivityListInterface extends PaginateListingInterface
