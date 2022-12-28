@@ -48,15 +48,14 @@ class DefaultSegmentManager implements SegmentManagerInterface
      * to type strings used with db tables
      */
     public function __construct(
-        protected string|Folder $segmentFolderCalculated,
-        protected string|Folder $segmentFolderManual,
+        protected string | Folder $segmentFolderCalculated,
+        protected string | Folder $segmentFolderManual,
         protected CustomerSaveManagerInterface $customerSaveManager,
         protected CustomerProviderInterface $customerProvider,
         protected TypeMapperInterface $typeMapper,
         protected StoredFunctionsInterface $storedFunctions,
         protected SegmentMergerInterface $segmentMerger
-    )
-    {
+    ) {
         $this->setTypeMapper($typeMapper);
         $this->setStoredFunctions($storedFunctions);
     }
