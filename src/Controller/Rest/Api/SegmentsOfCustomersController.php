@@ -28,6 +28,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 class SegmentsOfCustomersController extends RestHandlerController
 {
     protected SegmentsOfCustomerHandler $handler;
+
     /**
      * @param Request $request
      * @Route("", methods={"PUT", "POST"})

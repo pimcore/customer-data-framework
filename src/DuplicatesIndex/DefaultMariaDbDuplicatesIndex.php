@@ -240,7 +240,6 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
         $items = $paginator->getItems();
         foreach ($items as &$row) {
-
             $item = $this->potentialDuplicateItem;
 
             $customers = [];
