@@ -24,7 +24,7 @@ use Pimcore\Model\Element\ElementInterface;
 
 /**
  * @method \Pimcore\Model\DataObject\ClassDefinition getClass()
- * @method static setPublished(bool $o_published)
+ * @method static setPublished(bool $published)
  */
 interface CustomerInterface extends ElementInterface
 {

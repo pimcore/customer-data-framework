@@ -24,8 +24,8 @@ use Pimcore\Model\DataObject\PreGetValueHookInterface;
 
 class TermSegmentBuilderDefinition extends \CustomerManagementFrameworkBundle\Model\AbstractTermSegmentBuilderDefinition
 {
-protected $o_classId = "4";
-protected $o_className = "TermSegmentBuilderDefinition";
+protected $classId = "4";
+protected $className = "TermSegmentBuilderDefinition";
 protected $name;
 protected $terms;
 

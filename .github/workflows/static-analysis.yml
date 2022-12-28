@@ -14,11 +14,13 @@ jobs:
     static-analysis-phpstan:
         name: "Static Analysis with PHPStan"
         runs-on: "ubuntu-20.04"
+        continue-on-error: ${{ matrix.experimental }}
         strategy:
             matrix:
                 include:
-                    - { php-version: "8.1", dependencies: "lowest" }
-                    - { php-version: "8.1", dependencies: "highest" }
+                    - { php-version: "8.0", dependencies: "lowest", experimental: false  }
+                    - { php-version: "8.1", dependencies: "highest", experimental: false  }
+                    - { php-version: "8.1", dependencies: "highest", pimcore_version: "11.x-dev as 11.0.0", experimental: true }
         steps:
             - name: "Checkout code"
               uses: "actions/checkout@v2"
@@ -34,6 +36,14 @@ jobs:
                   DEPENDENCIES: "${{ matrix.dependencies }}"
               run: |
                   .github/ci/scripts/setup-environment.sh
+
+            - name: "Update Pimcore version"
+              env:
+                PIMCORE_VERSION: "${{ matrix.pimcore_version }}"
+              run: |
+                if [ ! -z "$PIMCORE_VERSION" ]; then
+                      composer require --no-update pimcore/pimcore:"${PIMCORE_VERSION}"
+                fi    
 
             - name: "Install dependencies with Composer"
               uses: "ramsey/composer-install@v2"

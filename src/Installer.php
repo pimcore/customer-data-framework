@@ -19,6 +19,7 @@ use CustomerManagementFrameworkBundle\Migrations\PimcoreX\Version20210305134111;
 use Pimcore\Db;
 use Pimcore\Extension\Bundle\Installer\SettingsStoreAwareInstaller;
 use Pimcore\Logger;
+use Pimcore\Version;
 
 class Installer extends SettingsStoreAwareInstaller
 {
@@ -47,7 +48,7 @@ class Installer extends SettingsStoreAwareInstaller
      *
      * @return bool
      */
-    public function needsReloadAfterInstall()//: bool
+    public function needsReloadAfterInstall(): bool
     {
         return true;
     }
@@ -226,12 +227,18 @@ class Installer extends SettingsStoreAwareInstaller
                 'datamodel.sql',
                 'storedFunctionDocument.sql',
                 'storedFunctionAsset.sql',
-                'storedFunctionObject.sql',
             ],
             __DIR__ . '/Resources/sql/activityMetadata/' => [
                 'datamodel.sql'
             ]
         ];
+
+        //BC layer to support Pimcore 10
+        if (str_starts_with(Version::getVersion(), '11.') || str_starts_with(Version::getVersion(), 'v11.')) {
+            $sqlFiles[__DIR__ . '/Resources/sql/segmentAssignment/'][] = 'storedFunctionObject_Pimcore11.sql';
+        } else {
+            $sqlFiles[__DIR__ . '/Resources/sql/segmentAssignment/'][] = 'storedFunctionObject.sql';
+        }
 
         $db = Db::get();
 

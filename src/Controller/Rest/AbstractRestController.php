@@ -41,7 +41,7 @@ abstract class AbstractRestController extends AdminController
      *
      * @return bool
      */
-    public function needsSessionDoubleAuthenticationCheck()//: bool
+    public function needsSessionDoubleAuthenticationCheck(): bool
     {
         // do not double-check session as api key auth is possible
         return false;
@@ -317,24 +317,24 @@ abstract class AbstractRestController extends AdminController
 
         // Examples:
         //
-        //q={"o_modificationDate" : {"$gt" : "1000"}}
-        //where ((`o_modificationDate` > '1000') )
+        //q={"modificationDate" : {"$gt" : "1000"}}
+        //where ((`modificationDate` > '1000') )
         //
         //
         //
         //
-        //q=[{"o_modificationDate" : {"$gt" : "1000"}}, {"o_modificationDate" : {"$lt" : "9999"}}]
-        //where ( ((`o_modificationDate` > '1000') )  AND  ((`o_modificationDate` < '9999') )  )
+        //q=[{"modificationDate" : {"$gt" : "1000"}}, {"modificationDate" : {"$lt" : "9999"}}]
+        //where ( ((`modificationDate` > '1000') )  AND  ((`modificationDate` < '9999') )  )
         //
         //
         //
         //
-        //q={"o_modificationDate" : {"$gt" : "1000"}, "$or": [{"o_id": "3", "o_key": {"$like" :"%lorem-ipsum%"}}]}
-        //where ((`o_modificationDate` > '1000') AND  ((`o_id` = '3') OR  ((`o_key` LIKE '%lorem-ipsum%') )  )  )
+        //q={"modificationDate" : {"$gt" : "1000"}, "$or": [{"id": "3", "key": {"$like" :"%lorem-ipsum%"}}]}
+        //where ((`modificationDate` > '1000') AND  ((`id` = '3') OR  ((`key` LIKE '%lorem-ipsum%') )  )  )
         //
-        // q={"$and" : [{"o_published": "0"}, {"o_modificationDate" : {"$gt" : "1000"}, "$or": [{"o_id": "3", "o_key": {"$like" :"%lorem-ipsum%"}}]}]}
+        // q={"$and" : [{"published": "0"}, {"modificationDate" : {"$gt" : "1000"}, "$or": [{"id": "3", "key": {"$like" :"%lorem-ipsum%"}}]}]}
         //
-        // where ( ((`o_published` = '0') )  AND  ((`o_modificationDate` > '1000') AND  ((`o_id` = '3') OR (`o_key` LIKE '%lorem-ipsum%') )  )  )
+        // where ( ((`published` = '0') )  AND  ((`modificationDate` > '1000') AND  ((`id` = '3') OR (`key` LIKE '%lorem-ipsum%') )  )  )
 
         if (!$op) {
             $op = 'AND';

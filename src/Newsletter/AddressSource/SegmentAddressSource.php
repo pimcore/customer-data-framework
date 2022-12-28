@@ -52,7 +52,7 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
     /**
      * @inheritDoc
      */
-    public function getMailAddressesForBatchSending()
+    public function getMailAddressesForBatchSending(): array
     {
         return $this->sendingParamContainers;
     }
@@ -60,7 +60,7 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
     /**
      * @inheritDoc
      */
-    public function getParamsForTestSending($emailAddress)
+    public function getParamsForTestSending($emailAddress): SendingParamContainer
     {
         return new SendingParamContainer($emailAddress, ['emailAddress' => $emailAddress]);
     }
@@ -68,7 +68,7 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
     /**
      * @inheritDoc
      */
-    public function getTotalRecordCount()
+    public function getTotalRecordCount(): int
     {
         return count($this->sendingParamContainers);
     }
@@ -76,7 +76,7 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
     /**
      * @inheritDoc
      */
-    public function getParamsForSingleSending($limit, $offset)
+    public function getParamsForSingleSending($limit, $offset): array
     {
         return array_slice($this->sendingParamContainers, $offset, $limit);
     }

@@ -56,7 +56,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
 
         $result = [
             'page' => $page,
-            'totalPages' => $paginator->getPages()->pageCount,
+            'totalPages' => $paginator->getPaginationData()['pageCount'],
             'timestamp' => $timestamp,
             'data' => [],
         ];

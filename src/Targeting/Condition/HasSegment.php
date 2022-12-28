@@ -78,7 +78,7 @@ class HasSegment extends AbstractVariableCondition implements DataProviderDepend
     /**
      * @inheritDoc
      */
-    public static function fromConfig(array $config)
+    public static function fromConfig(array $config): self
     {
         $segmentId = null;
         if (is_numeric($config['segment'])) {
