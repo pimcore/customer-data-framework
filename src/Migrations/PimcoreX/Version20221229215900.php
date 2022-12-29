@@ -18,7 +18,7 @@ namespace CustomerManagementFrameworkBundle\Migrations\PimcoreX;
 use Doctrine\DBAL\Schema\Schema;
 use Pimcore\Migrations\BundleAwareMigration;
 
-class Version20220120215900 extends BundleAwareMigration
+class Version20221229215900 extends BundleAwareMigration
 {
     protected function getBundleName(): string
     {
@@ -32,11 +32,13 @@ class Version20220120215900 extends BundleAwareMigration
     {
         $deletionsTable = $schema->getTable('plugin_cmf_deletions');
 
-        if (!$deletionsTable->hasPrimaryKey()) {
-            $this->addSql('SET foreign_key_checks = 0');
-            $this->addSql('ALTER TABLE `plugin_cmf_deletions` ADD PRIMARY KEY (`id`, `entityType`, `type`);');
-            $this->addSql('SET foreign_key_checks = 1');
+        if ($deletionsTable->getPrimaryKey()) {
+            $deletionsTable->dropPrimaryKey();
         }
+
+        $this->addSql('SET foreign_key_checks = 0');
+        $this->addSql('ALTER TABLE `plugin_cmf_deletions` ADD PRIMARY KEY (`id`, `entityType`, `type`);');
+        $this->addSql('SET foreign_key_checks = 1');
     }
 
     /**
@@ -44,8 +46,10 @@ class Version20220120215900 extends BundleAwareMigration
      */
     public function down(Schema $schema): void
     {
-        $this->addSql('SET foreign_key_checks = 0');
-        $this->addSql('ALTER TABLE `plugin_cmf_deletions` DROP INDEX `PRIMARY`;');
-        $this->addSql('SET foreign_key_checks = 1');
+        $deletionsTable = $schema->getTable('plugin_cmf_deletions');
+
+        if ($deletionsTable->getPrimaryKey()) {
+            $deletionsTable->dropPrimaryKey();
+        }
     }
 }
