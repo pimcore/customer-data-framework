@@ -39,8 +39,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
         PaginatorInterface $paginator,
         protected ActivityStoreInterface $activityStore,
         protected CustomerProviderInterface $customerProvider
-    )
-    {
+    ) {
         parent::__construct($paginator);
     }
 

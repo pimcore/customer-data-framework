@@ -35,8 +35,7 @@ class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterfa
     public function __construct(
         PaginatorInterface $paginator,
         protected SegmentManagerInterface $segmentManager
-    )
-    {
+    ) {
         parent::__construct($paginator);
     }
 

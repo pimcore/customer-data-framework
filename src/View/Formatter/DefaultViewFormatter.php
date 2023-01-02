@@ -29,8 +29,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
     public function __construct(
         protected TranslatorInterface $translator,
         protected LocaleServiceInterface $localeService
-    )
-    {
+    ) {
     }
 
     /**

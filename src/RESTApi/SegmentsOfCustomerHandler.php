@@ -30,8 +30,7 @@ class SegmentsOfCustomerHandler extends AbstractHandler
         PaginatorInterface $paginator,
         protected CustomerProviderInterface $customerProvider,
         protected SegmentManagerInterface $segmentManager
-    )
-    {
+    ) {
         parent::__construct($paginator);
     }
 

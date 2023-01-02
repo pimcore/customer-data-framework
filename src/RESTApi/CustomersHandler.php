@@ -43,8 +43,7 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
         protected CustomerProviderInterface $customerProvider,
         protected SegmentManagerInterface $segmentManager,
         protected ActivityStoreInterface $activityStore
-    )
-    {
+    ) {
         parent::__construct($paginator);
     }
 
