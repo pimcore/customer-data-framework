@@ -15,12 +15,14 @@
 
 namespace CustomerManagementFrameworkBundle\RESTApi;
 
+use CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Filter\ExportCustomersFilterParams;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\RESTApi\Exception\ResourceNotFoundException;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResourceUrlGenerator;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResponseGenerator;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Model\DataObject\Customer;
@@ -34,17 +36,16 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
     use ResourceUrlGenerator;
 
     /**
-     * @var CustomerProviderInterface
-     */
-    protected $customerProvider;
-
-    /**
      * @param CustomerProviderInterface $customerProvider
      */
-    public function __construct(PaginatorInterface $paginator, CustomerProviderInterface $customerProvider)
+    public function __construct(
+        PaginatorInterface $paginator,
+        protected CustomerProviderInterface $customerProvider,
+        protected SegmentManagerInterface $segmentManager,
+        protected ActivityStoreInterface $activityStore
+    )
     {
         parent::__construct($paginator);
-        $this->customerProvider = $customerProvider;
     }
 
     /**
@@ -60,12 +61,12 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
 
         if ($params->getSegments()) {
             /** @var Customer\Listing $customers */
-            $customers = \Pimcore::getContainer()->get('cmf.segment_manager')->getCustomersBySegmentIds(
+            $customers = $this->segmentManager->getCustomersBySegmentIds(
                 $params->getSegments()
             );
         } else {
             /** @var Customer\Listing $customers */
-            $customers = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
+            $customers = $this->customerProvider->getList();
         }
         $idField = Service::getVersionDependentDatabaseColumnName('id');
         $modificationDateField = Service::getVersionDependentDatabaseColumnName('modificationDate');
@@ -244,7 +245,7 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
         $data = $customer->cmfToArray();
 
         if ($params->getIncludeActivities()) {
-            $data['activities'] = \Pimcore::getContainer()->get('cmf.activity_store')->getActivityDataForCustomer(
+            $data['activities'] = $this->activityStore->getActivityDataForCustomer(
                 $customer
             );
         }

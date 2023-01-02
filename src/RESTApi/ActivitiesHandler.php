@@ -15,6 +15,8 @@
 
 namespace CustomerManagementFrameworkBundle\RESTApi;
 
+use CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface;
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Filter\ExportActivitiesFilterParams;
 use CustomerManagementFrameworkBundle\Model\Activity\GenericActivity;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
@@ -24,6 +26,7 @@ use CustomerManagementFrameworkBundle\RESTApi\Exception\ResourceNotFoundExceptio
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResourceUrlGenerator;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResponseGenerator;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
@@ -31,6 +34,15 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
     use LoggerAware;
     use ResponseGenerator;
     use ResourceUrlGenerator;
+
+    public function __construct(
+        PaginatorInterface $paginator,
+        protected ActivityStoreInterface $activityStore,
+        protected CustomerProviderInterface $customerProvider
+    )
+    {
+        parent::__construct($paginator);
+    }
 
     /**
      * GET /activities
@@ -48,7 +60,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
         $pageSize = intval($request->get('pageSize', 100));
         $page = intval($request->get('page', 1));
 
-        $paginator = \Pimcore::getContainer()->get('cmf.activity_store')->getActivitiesDataForWebservice(
+        $paginator = $this->activityStore->getActivitiesDataForWebservice(
             $pageSize,
             $page,
             $param
@@ -121,7 +133,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
 
             if ($activity && $activity->cmfWebserviceUpdateAllowed()) {
                 if (!$activity->getCustomer()) {
-                    if (!$customer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById(
+                    if (!$customer = $this->customerProvider->getById(
                         $data['customerId']
                     )
                     ) {
@@ -135,8 +147,8 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
                     $activity->save();
                 }
 
-                $entry = \Pimcore::getContainer()->get('cmf.activity_store')->insertActivityIntoStore($activity);
-                $entry = \Pimcore::getContainer()->get('cmf.activity_store')->getEntryById($entry->getId());
+                $entry = $this->activityStore->insertActivityIntoStore($activity);
+                $entry = $this->activityStore->getEntryById($entry->getId());
             } else {
                 return $this->createErrorResponse(
                     sprintf(
@@ -182,7 +194,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
                     $activity->save();
                 }
 
-                \Pimcore::getContainer()->get('cmf.activity_store')->updateActivityInStore($activity, $entry);
+                $this->activityStore->updateActivityInStore($activity, $entry);
                 $entry = $this->loadActivityStoreEntry($request->get('id'));
             } else {
                 return $this->createErrorResponse(
@@ -218,7 +230,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
                     $activity->delete();
                 }
 
-                \Pimcore::getContainer()->get('cmf.activity_store')->deleteEntry($entry);
+                $this->activityStore->deleteEntry($entry);
             } else {
                 return $this->createErrorResponse(
                     sprintf(
@@ -256,7 +268,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
             $id = (int)$id;
         }
 
-        $entry = \Pimcore::getContainer()->get('cmf.activity_store')->getEntryById($id);
+        $entry = $this->activityStore->getEntryById($id);
         if (!$entry) {
             throw new ResourceNotFoundException(sprintf('Activity with ID %d was not found', $id));
         }

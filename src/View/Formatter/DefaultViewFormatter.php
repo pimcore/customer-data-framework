@@ -17,23 +17,21 @@ namespace CustomerManagementFrameworkBundle\View\Formatter;
 
 use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
+use Pimcore\Localization\LocaleServiceInterface;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\DataObject\ClassDefinition\Data;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DefaultViewFormatter implements ViewFormatterInterface
 {
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
-
     protected $locale;
+
+    public function __construct(
+        protected TranslatorInterface $translator,
+        protected LocaleServiceInterface $localeService
+    )
+    {
+    }
 
     /**
      * @param string $messageId
@@ -189,7 +187,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
      */
     protected function applyLocale()
     {
-        $locale = $this->getLocale() ?: \Pimcore::getContainer()->get('pimcore.locale')->getLocale();
+        $locale = $this->getLocale() ?: $this->localeService->getLocale();
 
         $dateLocaleMap = [
             'de' => 'de_AT',
