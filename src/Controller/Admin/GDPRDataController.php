@@ -53,16 +53,13 @@ class GDPRDataController extends \Pimcore\Bundle\AdminBundle\Controller\AdminCon
     }
 
     /**
-     * @param Request $request
-     * @param Customers $service
-     *
      * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
      *
      * @Route("/export", name="_pimcore_customermanagementframework_gdprdata_export", methods={"GET"})
      */
     public function exportDataObjectAction(Request $request, Customers $service)
     {
-        $object = AbstractObject::getById($request->get('id'));
+        $object = AbstractObject::getById((int) $request->get('id'));
         $exportResult = $service->doExportData($object);
         $jsonResponse = $this->adminJson($exportResult);
         $jsonResponse->headers->set('Content-Disposition', 'attachment; filename="export-data-object-' . $object->getId() . '.json"');
