@@ -19,6 +19,7 @@ use CustomerManagementFrameworkBundle\DataSimilarityMatcher\DataSimilarityMatche
 use CustomerManagementFrameworkBundle\DataTransformer\DataTransformerInterface;
 use CustomerManagementFrameworkBundle\DataTransformer\DuplicateIndex\Standard;
 use CustomerManagementFrameworkBundle\Factory;
+use CustomerManagementFrameworkBundle\Model\CustomerDuplicates\PotentialDuplicateItemInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Knp\Component\Pager\PaginatorInterface;
@@ -39,48 +40,17 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
     const FALSE_POSITIVES_TABLE = 'plugin_cmf_duplicates_false_positives';
 
     /**
-     * @var array
-     */
-    protected $duplicateCheckFields;
-
-    /**
-     * @var array
-     */
-    protected $dataTransformers;
-
-    /**
-     * @var bool
-     */
-    protected $enableDuplicatesIndex;
-
-    /**
      * @var bool
      */
     protected $analyzeFalsePositives = false;
 
-    /**
-     * @var PaginatorInterface
-     */
-    protected $paginator;
-
-    /**
-     * DefaultMariaDbDuplicatesIndex constructor.
-     *
-     * @param PaginatorInterface $paginator
-     * @param bool $enableDuplicatesIndex
-     * @param array $duplicateCheckFields
-     * @param array $dataTransformers
-     */
     public function __construct(
-        PaginatorInterface $paginator,
-        $enableDuplicatesIndex = false,
-        array $duplicateCheckFields = [],
-        array $dataTransformers = []
+        protected PaginatorInterface $paginator,
+        protected PotentialDuplicateItemInterface $potentialDuplicateItem,
+        protected bool $enableDuplicatesIndex = false,
+        protected array $duplicateCheckFields = [],
+        protected array $dataTransformers = []
     ) {
-        $this->paginator = $paginator;
-        $this->enableDuplicatesIndex = $enableDuplicatesIndex;
-        $this->duplicateCheckFields = $duplicateCheckFields;
-        $this->dataTransformers = $dataTransformers;
     }
 
     public function recreateIndex()
@@ -270,11 +240,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
         $items = $paginator->getItems();
         foreach ($items as &$row) {
-
-            /**
-             * @var \CustomerManagementFrameworkBundle\Model\CustomerDuplicates\PotentialDuplicateItemInterface $item
-             */
-            $item = \Pimcore::getContainer()->get('cmf.potential_duplicate_item');
+            $item = $this->potentialDuplicateItem;
 
             $customers = [];
             foreach (explode(',', $row['duplicateCustomerIds']) as $customerId) {

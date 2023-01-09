@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
+use CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
@@ -35,9 +36,9 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
      * @param Request $request
      * @Route("/customer-field-list")
      */
-    public function customerFieldListAction(Request $request)
+    public function customerFieldListAction(Request $request, CustomerProviderInterface $customerProvider)
     {
-        $class = ClassDefinition::getById(\Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassId());
+        $class = ClassDefinition::getById($customerProvider->getCustomerClassId());
 
         $result = [];
 
@@ -75,9 +76,9 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
      * @param Request $request
      * @Route("/activity-types")
      */
-    public function activityTypesAction(Request $request)
+    public function activityTypesAction(Request $request, ActivityStoreInterface $activityStore)
     {
-        $types = \Pimcore::getContainer()->get('cmf.activity_store')->getAvailableActivityTypes();
+        $types = $activityStore->getAvailableActivityTypes();
 
         $result = [];
         foreach ($types as $type) {

@@ -15,10 +15,14 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
+use CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface;
 use CustomerManagementFrameworkBundle\ActivityStore\MariaDb;
+use CustomerManagementFrameworkBundle\ActivityView\ActivityViewInterface;
+use CustomerManagementFrameworkBundle\ActivityView\DefaultActivityView;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Controller\KernelControllerEventInterface;
+use Pimcore\Model\Listing\AbstractListing;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Routing\Annotation\Route;
@@ -47,10 +51,15 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
      * @param Request $request
      * @Route("/list")
      */
-    public function listAction(Request $request, CustomerProviderInterface $customerProvider)
-    {
+    public function listAction(
+        Request $request,
+        CustomerProviderInterface $customerProvider,
+        ActivityStoreInterface $activityStore,
+        DefaultActivityView $defaultActivityView
+    ) {
         if ($customer = $customerProvider->getById($request->get('customerId'))) {
-            $list = \Pimcore::getContainer()->get('cmf.activity_store')->getActivityList();
+            /** @var AbstractListing $list */
+            $list = $activityStore->getActivityList();
             $list->setCondition('customerId = ' . $customer->getId());
             $list->setOrderKey('activityDate');
             $list->setOrder('desc');
@@ -64,7 +73,7 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
             $types = \Pimcore\Db::get()->fetchFirstColumn((string)$select);
 
             if ($type = $request->get('type')) {
-                $select = $list->getQueryBuilder(false);
+                $select = $list->getQueryBuilder();
                 $select->andWhere('type = ' . $list->quote($type));
                 $list->setCondition((string) $select->getQueryPart('where'));
             }
@@ -79,7 +88,7 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
                     'activities' => $paginator,
                     'paginationVariables' => $paginator->getPaginationData(),
                     'customer' => $customer,
-                    'activityView' => \Pimcore::getContainer()->get('cmf.activity_view'),
+                    'activityView' => $defaultActivityView,
                 ]
             );
         }
@@ -91,15 +100,18 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
      * @param Request $request
      * @Route("/detail")
      */
-    public function detailAction(Request $request)
-    {
-        $activity = \Pimcore::getContainer()->get('cmf.activity_store')->getEntryById($request->get('activityId'));
+    public function detailAction(
+        Request $request,
+        ActivityViewInterface $activityView,
+        ActivityStoreInterface $activityStore
+    ) {
+        $activity = $activityStore->getEntryById($request->get('activityId'));
 
         return $this->render(
             '@PimcoreCustomerManagementFramework/admin/activities/detail.html.twig',
             [
                 'activity' => $activity,
-                'activityView' => \Pimcore::getContainer()->get('cmf.activity_view'),
+                'activityView' => $activityView,
             ]
         );
     }

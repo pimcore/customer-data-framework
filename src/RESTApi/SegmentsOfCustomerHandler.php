@@ -15,13 +15,24 @@
 
 namespace CustomerManagementFrameworkBundle\RESTApi;
 
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouteCollection;
 
 class SegmentsOfCustomerHandler extends AbstractHandler
 {
     use LoggerAware;
+
+    public function __construct(
+        PaginatorInterface $paginator,
+        protected CustomerProviderInterface $customerProvider,
+        protected SegmentManagerInterface $segmentManager
+    ) {
+        parent::__construct($paginator);
+    }
 
     protected function getRoutes()
     {
@@ -54,7 +65,7 @@ class SegmentsOfCustomerHandler extends AbstractHandler
             );
         }
 
-        if (!$customer = \Pimcore::getContainer()->get('cmf.customer_provider')->getById($data['customerId'])) {
+        if (!$customer = $this->customerProvider->getById($data['customerId'])) {
             return new Response(
                 [
                     'success' => false,
@@ -67,7 +78,7 @@ class SegmentsOfCustomerHandler extends AbstractHandler
         $addSegments = [];
         if (is_array($data['addSegments'])) {
             foreach ($data['addSegments'] as $segmentId) {
-                if ($segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId)) {
+                if ($segment = $this->segmentManager->getSegmentById($segmentId)) {
                     $addSegments[] = $segment;
                 }
             }
@@ -76,19 +87,19 @@ class SegmentsOfCustomerHandler extends AbstractHandler
         $deleteSegments = [];
         if (is_array($data['removeSegments'])) {
             foreach ($data['removeSegments'] as $segmentId) {
-                if ($segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId)) {
+                if ($segment = $this->segmentManager->getSegmentById($segmentId)) {
                     $deleteSegments[] = $segment;
                 }
             }
         }
 
-        \Pimcore::getContainer()->get('cmf.segment_manager')->mergeSegments(
+        $this->segmentManager->mergeSegments(
             $customer,
             $addSegments,
             $deleteSegments,
             'REST update API: segments-of-customer action'
         );
-        \Pimcore::getContainer()->get('cmf.segment_manager')->saveMergedSegments($customer);
+        $this->segmentManager->saveMergedSegments($customer);
 
         return new Response(['success' => true], Response::RESPONSE_CODE_OK);
     }

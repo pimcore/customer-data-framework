@@ -24,18 +24,14 @@ use CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\Segm
 class DefaultActivityManager implements ActivityManagerInterface
 {
     /**
-     * @var ActivityStoreInterface
-     */
-    protected $activityStore;
-
-    /**
      * @var bool
      */
     protected $disableEvents = false;
 
-    public function __construct(ActivityStoreInterface $activityStore)
+    public function __construct(
+        protected ActivityStoreInterface $activityStore,
+        protected SegmentBuilderExecutorInterface $segmentBuilderExecutor)
     {
-        $this->activityStore = $activityStore;
     }
 
     /**
@@ -86,7 +82,7 @@ class DefaultActivityManager implements ActivityManagerInterface
             return;
         }
 
-        \Pimcore::getContainer()->get(SegmentBuilderExecutorInterface::class)->addCustomerToChangesQueue($activity->getCustomer());
+        $this->segmentBuilderExecutor->addCustomerToChangesQueue($activity->getCustomer());
 
         if (!$activity->cmfIsActive()) {
             $store->deleteActivity($activity);

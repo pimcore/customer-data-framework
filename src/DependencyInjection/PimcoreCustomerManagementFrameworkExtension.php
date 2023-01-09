@@ -17,14 +17,11 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\DependencyInjection;
 
-use CustomerManagementFrameworkBundle\CustomerDuplicatesService\CustomerDuplicatesServiceInterface;
 use CustomerManagementFrameworkBundle\CustomerMerger\CustomerMergerInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\ObjectNamingScheme\ObjectNamingSchemeInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveManager\CustomerSaveManagerInterface;
 use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidatorInterface;
-use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
-use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -141,14 +138,11 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension 
 
     private function registerCustomerDuplicatesServicesConfiguration(ContainerBuilder $container, array $config)
     {
-        $container->setAlias('cmf.customer_duplicates_service', CustomerDuplicatesServiceInterface::class)->setPublic(true);
-        $container->setAlias('cmf.customer_duplicates_index', DuplicatesIndexInterface::class)->setPublic(true);
-
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicateCheckFields', $config['duplicateCheckFields']);
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicateCheckTrimmedFields', (array) $config['duplicateCheckTrimmedFields']);
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.listFields', $config['duplicates_view']['listFields'] ?: []);
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.enabled', (bool) $config['duplicates_view']['enabled']);
-        $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.enableDuplicatesIndex', $config['duplicates_index']['enableDuplicatesIndex'] ?: []);
+        $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.enableDuplicatesIndex', $config['duplicates_index']['enableDuplicatesIndex'] ?: false);
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.duplicateCheckFields', $config['duplicates_index']['duplicateCheckFields'] ?: []);
         $container->setParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_index.dataTransformers', $config['duplicates_index']['dataTransformers'] ?: []);
     }
@@ -160,8 +154,6 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension 
         $container->setParameter('pimcore_customer_management_framework.newsletter.newsletterQueueImmediateAsyncExecutionEnabled', (bool) $config['newsletterQueueImmediateAsyncExecutionEnabled']);
 
         if ($config['newsletterSyncEnabled']) {
-            $container->setAlias('cmf.newsletter.queue', NewsletterQueueInterface::class)->setPublic(true);
-
             $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.apiKey', $config['mailchimp']['apiKey']);
             $container->setParameter('pimcore_customer_management_framework.newsletter.mailchimp.cliUpdatesPimcoreUserName', $config['mailchimp']['cliUpdatesPimcoreUserName']);
         }

@@ -29,22 +29,16 @@ trait LoggerAware
      */
     public function getLogger()
     {
-        if (null === $this->logger) {
-            return \Pimcore::getContainer()->get('cmf.logger');
-        }
-
         return $this->logger;
     }
 
     /**
      * @param LoggerInterface $logger
      *
-     * @return $this
+     * @required
      */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
-
-        return $this;
     }
 }

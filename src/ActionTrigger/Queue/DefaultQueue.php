@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\ActionTrigger\Queue;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\Action\ActionDefinitionInterface;
+use CustomerManagementFrameworkBundle\ActionTrigger\ActionManager\ActionManagerInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\ActionDefinition;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
@@ -28,6 +29,10 @@ class DefaultQueue implements QueueInterface
     use LoggerAware;
 
     const QUEUE_TABLE = 'plugin_cmf_actiontrigger_queue';
+
+    public function __construct(protected ActionManagerInterface $actionManager)
+    {
+    }
 
     public function addToQueue(
         ActionDefinitionInterface $action,
@@ -87,7 +92,7 @@ class DefaultQueue implements QueueInterface
         $environment = unserialize($item['environment']);
 
         if ($action && $customer instanceof CustomerInterface) {
-            \Pimcore::getContainer()->get('cmf.action_trigger.action_manager')->processAction(
+            $this->actionManager->processAction(
                 $action,
                 $customer,
                 $environment

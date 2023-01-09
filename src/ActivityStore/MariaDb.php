@@ -497,17 +497,13 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
      */
     public function createEntryInstance(array $data)
     {
-        /**
-         * @var ActivityStoreEntryInterface $entry
-         */
-        $entry = \Pimcore::getContainer()->get('cmf.activity_store_entry');
-        $entry->setData($data);
+        $this->activityStoreEntry->setData($data);
 
-        if (!$entry instanceof ActivityStoreEntryInterface) {
+        if (!$this->activityStoreEntry instanceof ActivityStoreEntryInterface) {
             throw new \Exception('Activity store entry needs to implement ActivityStoreEntryInterface');
         }
 
-        return $entry;
+        return $this->activityStoreEntry;
     }
 
     /**

@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\ActionTrigger\EventHandler;
 
+use CustomerManagementFrameworkBundle\ActionTrigger\ActionManager\ActionManagerInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\Condition\Checker;
 use CustomerManagementFrameworkBundle\ActionTrigger\Event\CustomerListEventInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\Event\EventInterface;
@@ -23,6 +24,7 @@ use CustomerManagementFrameworkBundle\ActionTrigger\Event\SingleCustomerEventInt
 use CustomerManagementFrameworkBundle\ActionTrigger\Queue\QueueInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironment;
 use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
+use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
@@ -37,20 +39,12 @@ class DefaultEventHandler implements EventHandlerInterface
     /** @var Rule[][]|null */
     private $rulesGroupedByEvents = null;
 
-    /**
-     * @var QueueInterface
-     */
-    protected $actionTriggerQueue;
-
-    /**
-     * @var PaginatorInterface
-     */
-    protected $paginator;
-
-    public function __construct(QueueInterface $actionTriggerQueue, PaginatorInterface $paginator)
-    {
-        $this->actionTriggerQueue = $actionTriggerQueue;
-        $this->paginator = $paginator;
+    public function __construct(
+        protected QueueInterface $actionTriggerQueue,
+        protected PaginatorInterface $paginator,
+        protected CustomerProviderInterface $customerProvider,
+        protected ActionManagerInterface $actionManager
+    ) {
     }
 
     protected function getRulesGroupedByEvents()
@@ -102,7 +96,7 @@ class DefaultEventHandler implements EventHandlerInterface
             if ($conditions = $rule->getCondition()) {
                 $where = Checker::getDbConditionForRule($rule);
 
-                $listing = Pimcore::getContainer()->get('cmf.customer_provider')->getList();
+                $listing = $this->customerProvider->getList();
                 $listing->setCondition($where);
                 $idField = Service::getVersionDependentDatabaseColumnName('id');
                 $listing->setOrderKey($idField);
@@ -139,7 +133,7 @@ class DefaultEventHandler implements EventHandlerInterface
                         $environment
                     );
                 } else {
-                    Pimcore::getContainer()->get('cmf.action_trigger.action_manager')->processAction(
+                    $this->actionManager->processAction(
                         $action,
                         $customer,
                         $environment

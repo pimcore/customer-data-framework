@@ -17,6 +17,7 @@ namespace CustomerManagementFrameworkBundle\Controller\Rest\Api;
 
 use CustomerManagementFrameworkBundle\Controller\Rest\RestHandlerController;
 use CustomerManagementFrameworkBundle\RESTApi\Exception\ExceptionInterface;
+use CustomerManagementFrameworkBundle\RESTApi\SegmentsOfCustomerHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -25,6 +26,10 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SegmentsOfCustomersController extends RestHandlerController
 {
+    public function __construct(protected SegmentsOfCustomerHandler $handler)
+    {
+    }
+
     /**
      * @param Request $request
      * @Route("", methods={"PUT", "POST"})
@@ -46,11 +51,8 @@ class SegmentsOfCustomersController extends RestHandlerController
         return $response;
     }
 
-    /**
-     * @return \CustomerManagementFrameworkBundle\RESTApi\SegmentsOfCustomerHandler
-     */
-    protected function getHandler()
+    protected function getHandler(): SegmentsOfCustomerHandler
     {
-        return \Pimcore::getContainer()->get('cmf.rest.segments_of_customer_handler');
+        return $this->handler;
     }
 }

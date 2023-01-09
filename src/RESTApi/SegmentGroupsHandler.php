@@ -18,8 +18,10 @@ namespace CustomerManagementFrameworkBundle\RESTApi;
 use CustomerManagementFrameworkBundle\RESTApi\Exception\ResourceNotFoundException;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResourceUrlGenerator;
 use CustomerManagementFrameworkBundle\RESTApi\Traits\ResponseGenerator;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
 use Pimcore\Model\DataObject\Service;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,6 +31,13 @@ class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterfa
     use LoggerAware;
     use ResponseGenerator;
     use ResourceUrlGenerator;
+
+    public function __construct(
+        PaginatorInterface $paginator,
+        protected SegmentManagerInterface $segmentManager
+    ) {
+        parent::__construct($paginator);
+    }
 
     /**
      * GET /segment-groups
@@ -99,7 +108,7 @@ class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterfa
             );
         }
 
-        if ($data['reference'] && \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentGroupByReference(
+        if ($data['reference'] && $this->segmentManager->getSegmentGroupByReference(
                 $data['reference'],
                 (bool)$data['calculated']
             )
@@ -116,7 +125,7 @@ class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterfa
             );
         }
 
-        $segmentGroup = \Pimcore::getContainer()->get('cmf.segment_manager')->createSegmentGroup(
+        $segmentGroup = $this->segmentManager->createSegmentGroup(
             $data['name'],
             $data['reference'],
             isset($data['calculated']) ? (bool)$data['calculated'] : false,
@@ -152,7 +161,7 @@ class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterfa
             );
         }
 
-        if (!$segmentGroup = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentGroupById(
+        if (!$segmentGroup = $this->segmentManager->getSegmentGroupById(
             $request->get('id')
         )
         ) {
@@ -165,7 +174,7 @@ class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterfa
             );
         }
 
-        \Pimcore::getContainer()->get('cmf.segment_manager')->updateSegmentGroup($segmentGroup, $data);
+        $this->segmentManager->updateSegmentGroup($segmentGroup, $data);
 
         $result = $this->hydrateSegmentGroup($segmentGroup);
         $result['success'] = true;

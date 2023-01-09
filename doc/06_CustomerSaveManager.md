@@ -22,8 +22,7 @@ got changed.
 ```yaml
 services:
   
-   appbundle.cmf.customer_save_handler.normalize_zip:
-       class: CustomerManagementFrameworkBundle\CustomerSaveHandler\NormalizeZip
+   CustomerManagementFrameworkBundle\CustomerSaveHandler\NormalizeZip:
        tags: [cmf.customer_save_handler]
 ```
 
@@ -55,8 +54,7 @@ Allows to setup a logic for overwriting field values based on other field values
 
 ##### Example:
 ```yaml
-appbundle.cmf.customer_save_handler.attribute_logic:
-   class: CustomerManagementFrameworkBundle\CustomerSaveHandler\AttributeLogic
+CustomerManagementFrameworkBundle\CustomerSaveHandler\AttributeLogic:
    arguments:
       - from: profileStreet
         to: street

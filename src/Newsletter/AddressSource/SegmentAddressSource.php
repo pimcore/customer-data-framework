@@ -41,12 +41,20 @@ class SegmentAddressSource implements AddressSourceAdapterInterface
         } else {
             $operator = SegmentManagerInterface::CONDITION_OR;
         }
-        $this->segmentManager = \Pimcore::getContainer()->get(SegmentManagerInterface::class);
+
         $this->sendingParamContainers = $this->setUpSendingParamContainers(
             array_filter($arguments['segmentIds']),
             $operator,
             $arguments['filterFlags']
         );
+    }
+
+    /**
+     * @required
+     */
+    public function setSegmentManager(SegmentManagerInterface $segmentManager): void
+    {
+        $this->segmentManager = $segmentManager;
     }
 
     /**

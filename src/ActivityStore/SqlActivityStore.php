@@ -36,16 +36,12 @@ abstract class SqlActivityStore
     const DELETIONS_TABLE = 'plugin_cmf_deletions';
 
     /**
-     * @var PaginatorInterface
-     */
-    protected $paginator;
-
-    /**
      * @param PaginatorInterface $paginator
      */
-    public function __construct(PaginatorInterface $paginator)
-    {
-        $this->paginator = $paginator;
+    public function __construct(
+        protected PaginatorInterface $paginator,
+        protected ActivityStoreEntryInterface $activityStoreEntry
+    ) {
     }
 
     public function insertActivityIntoStore(ActivityInterface $activity)
@@ -228,17 +224,13 @@ abstract class SqlActivityStore
      */
     public function createEntryInstance(array $data)
     {
-        /**
-         * @var ActivityStoreEntryInterface $entry
-         */
-        $entry = \Pimcore::getContainer()->get('cmf.activity_store_entry');
-        $entry->setData($data);
+        $this->activityStoreEntry->setData($data);
 
-        if (!$entry instanceof ActivityStoreEntryInterface) {
+        if (!$this->activityStoreEntry instanceof ActivityStoreEntryInterface) {
             throw new \Exception('Activity store entry needs to implement ActivityStoreEntryInterface');
         }
 
-        return $entry;
+        return $this->activityStoreEntry;
     }
 
     /**

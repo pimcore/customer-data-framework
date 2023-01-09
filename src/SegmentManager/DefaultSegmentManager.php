@@ -24,6 +24,7 @@ use CustomerManagementFrameworkBundle\SegmentAssignment\StoredFunctions\StoredFu
 use CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapperInterface;
 use CustomerManagementFrameworkBundle\SegmentBuilder\SegmentBuilderInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentExtractor\SegmentExtractorInterface;
+use CustomerManagementFrameworkBundle\SegmentManager\SegmentMerger\SegmentMergerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\CustomerSegment;
@@ -38,58 +39,23 @@ class DefaultSegmentManager implements SegmentManagerInterface
     use LoggerAware;
 
     /**
-     * @var string|\Pimcore\Model\DataObject\Folder
-     */
-    protected $segmentFolderCalculated;
-
-    /**
-     * @var string|\Pimcore\Model\DataObject\Folder
-     */
-    protected $segmentFolderManual;
-
-    /**
-     * @var CustomerSaveManagerInterface
-     */
-    protected $customerSaveManager;
-
-    /**
      * @var SegmentBuilderInterface[]
      */
     protected $segmentBuilders = [];
 
     /**
-     * @var CustomerProviderInterface
+     * @param TypeMapperInterface $typeMapper maps actual types of elements implementing ElementInterface
+     * to type strings used with db tables
      */
-    protected $customerProvider;
-
-    /**
-     * maps actual types of elements implementing ElementInterface to type strings used with db tables
-     *
-     * @var TypeMapperInterface
-     */
-    protected $typeMapper = null;
-
-    /**
-     * @var StoredFunctionsInterface
-     */
-    protected $storedFunctions = null;
-
-    /**
-     * @param string|\Pimcore\Model\DataObject\Folder $segmentFolderCalculated
-     * @param string|\Pimcore\Model\DataObject\Folder $segmentFolderManual
-     * @param CustomerSaveManagerInterface $customerSaveManager
-     * @param CustomerProviderInterface $customerProvider
-     * @param TypeMapperInterface $typeMapper
-     * @param StoredFunctionsInterface $storedFunctions
-     */
-    public function __construct($segmentFolderCalculated, $segmentFolderManual, CustomerSaveManagerInterface $customerSaveManager, CustomerProviderInterface $customerProvider, TypeMapperInterface $typeMapper, StoredFunctionsInterface $storedFunctions)
-    {
-        $this->segmentFolderCalculated = $segmentFolderCalculated;
-        $this->segmentFolderManual = $segmentFolderManual;
-
-        $this->customerSaveManager = $customerSaveManager;
-        $this->customerProvider = $customerProvider;
-
+    public function __construct(
+        protected string | Folder $segmentFolderCalculated,
+        protected string | Folder $segmentFolderManual,
+        protected CustomerSaveManagerInterface $customerSaveManager,
+        protected CustomerProviderInterface $customerProvider,
+        protected TypeMapperInterface $typeMapper,
+        protected StoredFunctionsInterface $storedFunctions,
+        protected SegmentMergerInterface $segmentMerger
+    ) {
         $this->setTypeMapper($typeMapper);
         $this->setStoredFunctions($storedFunctions);
     }
@@ -619,7 +585,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
         $segmentCreatedTimestamp = null,
         $segmentApplicationCounter = null
     ) {
-        \Pimcore::getContainer()->get('cmf.segment_manager.segment_merger')->mergeSegments(
+        $this->segmentMerger->mergeSegments(
             $customer,
             $addSegments,
             $deleteSegments,
@@ -634,7 +600,7 @@ class DefaultSegmentManager implements SegmentManagerInterface
      */
     public function saveMergedSegments(CustomerInterface $customer)
     {
-        \Pimcore::getContainer()->get('cmf.segment_manager.segment_merger')->saveMergedSegments($customer);
+        $this->segmentMerger->saveMergedSegments($customer);
     }
 
     public function addSegmentBuilder(SegmentBuilderInterface $segmentBuilder)

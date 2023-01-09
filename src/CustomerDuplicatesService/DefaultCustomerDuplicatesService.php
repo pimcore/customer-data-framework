@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\CustomerDuplicatesService;
 
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
+use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\DataObject\Listing\Concrete;
@@ -24,25 +25,13 @@ use Pimcore\Model\Element\ElementInterface;
 
 class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInterface
 {
-    /**
-     * @var array
-     */
-    private $duplicateCheckFields;
-
-    /**
-     * @var array
-     */
-    private $duplicateCheckTrimmedFields;
-
-    /**
-     * @var array
-     */
-    protected $matchedDuplicateFields;
-
-    public function __construct(array $duplicateCheckFields = [], array $duplicateCheckTrimmedFields = [])
-    {
-        $this->duplicateCheckFields = $duplicateCheckFields;
-        $this->duplicateCheckTrimmedFields = $duplicateCheckTrimmedFields;
+    public function __construct(
+        protected CustomerProviderInterface $customerProvider,
+        protected DuplicatesIndexInterface $duplicatesIndex,
+        private array $duplicateCheckFields = [],
+        protected array $duplicateCheckTrimmedFields = [],
+        protected array $matchedDuplicateFields = [],
+    ) {
     }
 
     /**
@@ -86,13 +75,8 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
             return null;
         }
 
-        /**
-         * @var CustomerProviderInterface $customerProvider;
-         */
-        $customerProvider = \Pimcore::getContainer()->get('cmf.customer_provider');
-
-        $list = $customerProvider->getList();
-        $customerProvider->addActiveCondition($list);
+        $list = $this->customerProvider->getList();
+        $this->customerProvider->addActiveCondition($list);
 
         $publishedKey = Service::getVersionDependentDatabaseColumnName('published');
         $list
@@ -173,8 +157,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
      */
     public function updateDuplicateIndexForCustomer(CustomerInterface $customer)
     {
-        $duplicatesIndex = \Pimcore::getContainer()->get('cmf.customer_duplicates_index');
-        $duplicatesIndex->updateDuplicateIndexForCustomer($customer);
+        $this->duplicatesIndex->updateDuplicateIndexForCustomer($customer);
     }
 
     /**
@@ -186,7 +169,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
      */
     protected function addNormalizedMysqlCompareCondition(Concrete &$list, $field, $value)
     {
-        $class = ClassDefinition::getById(\Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassId());
+        $class = ClassDefinition::getById($this->customerProvider->getCustomerClassId());
         $fd = $class->getFieldDefinition($field);
 
         if (!$fd) {

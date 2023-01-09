@@ -24,11 +24,12 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CustomersController extends CrudHandlerController
 {
-    /**
-     * @return CustomersHandler
-     */
-    protected function getHandler()
+    public function __construct(protected CustomersHandler $handler)
     {
-        return \Pimcore::getContainer()->get('cmf.rest.customers_handler');
+    }
+
+    protected function getHandler(): CustomersHandler
+    {
+        return $this->handler;
     }
 }
