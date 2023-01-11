@@ -50,7 +50,7 @@ abstract class AbstractRestController extends AdminController
     /**
      * @inheritDoc
      */
-    protected function checkPermission($permission)
+    protected function checkPermission(string $permission): void
     {
         try {
             parent::checkPermission($permission);
