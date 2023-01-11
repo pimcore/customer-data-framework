@@ -34,10 +34,10 @@ use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface
 use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 use Pimcore\Bundle\AdminBundle\GDPR\DataProvider\DataObjects;
 use Pimcore\Bundle\AdminBundle\Helper\QueryParams;
+use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\DataObject\Concrete;
-use Pimcore\Model\DataObject;
 
 class Customers extends DataObjects
 {
@@ -156,19 +156,19 @@ class Customers extends DataObjects
     {
         $listing = $this->customerProvider->getList();
 
-        if(!empty($id)){
+        if (!empty($id)) {
             $listing->setCondition('id = :id', ['id' => $id]);
         }
 
-        if(!empty($firstname)){
+        if (!empty($firstname)) {
             $listing->setCondition('firstname = :firstname', ['firstname' => $firstname]);
         }
 
-        if(!empty($lastname)){
+        if (!empty($lastname)) {
             $listing->setCondition('lastname = :lastname', ['lastname' => $lastname]);
         }
 
-        if(!empty($email)){
+        if (!empty($email)) {
             $listing->setCondition('email = :email', ['email' => $email]);
         }
 
@@ -194,8 +194,8 @@ class Customers extends DataObjects
         $listing->setLimit($limit);
 
         $elements = [];
-        if($listing->count()){
-            foreach ($listing->getData() as $customer){
+        if ($listing->count()) {
+            foreach ($listing->getData() as $customer) {
                 $data = DataObject\Service::gridObjectData($customer);
                 $data['__gdprIsDeletable'] = $this->config['classes'][$customer->getClassName()]['allowDelete'] ?? false;
                 $elements[] = $data;
