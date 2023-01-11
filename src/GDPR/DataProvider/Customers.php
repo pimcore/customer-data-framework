@@ -33,9 +33,11 @@ use CustomerManagementFrameworkBundle\ActivityStore\ActivityStoreInterface;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 use Pimcore\Bundle\AdminBundle\GDPR\DataProvider\DataObjects;
+use Pimcore\Bundle\AdminBundle\Helper\QueryParams;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\DataObject;
 
 class Customers extends DataObjects
 {
@@ -49,8 +51,14 @@ class Customers extends DataObjects
      */
     protected $activityStore = null;
 
+    /**
+     * @var CustomerProviderInterface
+     */
+    protected $customerProvider = null;
+
     public function __construct(CustomerProviderInterface $customerProvider, ActivityStoreInterface $activityStore, array $config)
     {
+        $this->customerProvider = $customerProvider;
         $customerClassId = $customerProvider->getCustomerClassId();
         $this->customerClassName = ClassDefinition::getById($customerClassId)->getName();
 
@@ -131,5 +139,69 @@ class Customers extends DataObjects
         }
 
         return $exportResult;
+    }
+
+    /**
+     * @param int $id
+     * @param string $firstname
+     * @param string $lastname
+     * @param string $email
+     * @param int $start
+     * @param int $limit
+     * @param string|null $sort
+     *
+     * @return array
+     */
+    public function searchData(int $id, string $firstname, string $lastname, string $email, int $start, int $limit, string $sort = null): array
+    {
+        $listing = $this->customerProvider->getList();
+
+        if(!empty($id)){
+            $listing->setCondition('id = :id', ['id' => $id]);
+        }
+
+        if(!empty($firstname)){
+            $listing->setCondition('firstname = :firstname', ['firstname' => $firstname]);
+        }
+
+        if(!empty($lastname)){
+            $listing->setCondition('lastname = :lastname', ['lastname' => $lastname]);
+        }
+
+        if(!empty($email)){
+            $listing->setCondition('email = :email', ['email' => $email]);
+        }
+
+        $sortingSettings = QueryParams::extractSortingSettings(['sort' => $sort]);
+        if ($sortingSettings['orderKey']) {
+            // we need a special mapping for classname as this is stored in subtype column
+            $sortMapping = [
+                'classname' => 'subtype',
+            ];
+
+            $sort = $sortingSettings['orderKey'];
+            if (array_key_exists($sortingSettings['orderKey'], $sortMapping)) {
+                $sort = $sortMapping[$sortingSettings['orderKey']];
+            }
+
+            $order = $sortingSettings['order'] ?? null;
+
+            $listing->setOrderKey($sort);
+            $listing->setOrder($order);
+        }
+
+        $listing->setOffset($start);
+        $listing->setLimit($limit);
+
+        $elements = [];
+        if($listing->count()){
+            foreach ($listing->getData() as $customer){
+                $data = DataObject\Service::gridObjectData($customer);
+                $data['__gdprIsDeletable'] = $this->config['classes'][$customer->getClassName()]['allowDelete'] ?? false;
+                $elements[] = $data;
+            }
+        }
+
+        return ['data' => $elements, 'success' => true, 'total' => $listing->count()];
     }
 }
