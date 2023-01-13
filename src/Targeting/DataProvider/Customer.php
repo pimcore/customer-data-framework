@@ -39,7 +39,7 @@ class Customer implements DataProviderInterface
     /**
      * @inheritDoc
      */
-    public function load(VisitorInfo $visitorInfo)
+    public function load(VisitorInfo $visitorInfo): void
     {
         if ($visitorInfo->has(self::PROVIDER_KEY)) {
             return;

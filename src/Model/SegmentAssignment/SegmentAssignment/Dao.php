@@ -46,7 +46,7 @@ class Dao extends AbstractDao
      *
      * @return $this
      */
-    public function setModel($model)
+    public function setModel($model): static
     {
         $this->model = $model;
 

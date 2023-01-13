@@ -64,7 +64,7 @@ class TrackSegment implements ActionHandlerInterface, DataProviderDependentInter
     /**
      * @inheritDoc
      */
-    public function apply(VisitorInfo $visitorInfo, array $action, Rule $rule = null)
+    public function apply(VisitorInfo $visitorInfo, array $action, Rule $rule = null): void
     {
         $segmentOption = $action['segment'];
         if (empty($segmentOption)) {

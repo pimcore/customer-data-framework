@@ -38,7 +38,7 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
         $this->paginator = $paginator;
     }
 
-    public function onKernelControllerEvent(ControllerEvent $event)
+    public function onKernelControllerEvent(ControllerEvent $event): void
     {
         $this->checkPermission('plugin_cmf_perm_activityview');
     }

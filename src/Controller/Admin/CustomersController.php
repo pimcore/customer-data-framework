@@ -52,7 +52,7 @@ class CustomersController extends Admin
 
     private ExporterManagerInterface $exporterManager;
 
-    public function onKernelControllerEvent(ControllerEvent $event)
+    public function onKernelControllerEvent(ControllerEvent $event): void
     {
         parent::onKernelControllerEvent($event);
         $this->checkPermission('plugin_cmf_perm_customerview');

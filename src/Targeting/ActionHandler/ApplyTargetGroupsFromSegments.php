@@ -77,7 +77,7 @@ class ApplyTargetGroupsFromSegments implements ActionHandlerInterface, DataProvi
     /**
      * @inheritDoc
      */
-    public function apply(VisitorInfo $visitorInfo, array $action, Rule $rule = null)
+    public function apply(VisitorInfo $visitorInfo, array $action, Rule $rule = null): void
     {
         $this->dataLoader->loadDataFromProviders($visitorInfo, [Customer::PROVIDER_KEY]);
         /** @var CustomerInterface|null $customer */
