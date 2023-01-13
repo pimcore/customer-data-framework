@@ -105,30 +105,33 @@ class Customers extends DataObjects
 
         $objectToArrayHelper = ObjectToArray::getInstance();
 
-        foreach (array_keys($this->exportIds['object']) as $id) {
-            $object = Concrete::getById($id);
-            if (!empty($object)) {
-                $data = [
-                    'className' => $object->getClass()->getName()
-                ];
-                $data['data'] = $objectToArrayHelper->toArray($object);
+        if(array_key_exists('object', $this->exportIds)) {
+            foreach (array_keys($this->exportIds['object']) as $id) {
+                $object = Concrete::getById($id);
+                if (!empty($object)) {
+                    $data = [
+                        'className' => $object->getClass()->getName()
+                    ];
+                    $data['data'] = $objectToArrayHelper->toArray($object);
 
-                if ($data['className'] == $this->customerClassName) {
-                    $list = $this->activityStore->getActivityList();
-                    $list->setCondition('customerId = ' . intval($data['data']['id']));
+                    if ($data['className'] == $this->customerClassName) {
+                        $list = $this->activityStore->getActivityList();
+                        $list->setCondition('customerId = ' . intval($data['data']['id']));
 
-                    $data['activities'] = [];
-                    foreach ($list as $activity) {
-                        $activityData = $activity->getData();
-                        $activityData['attributes'] = $activity->getAttributes();
-                        unset($activityData['implementationClass']);
-                        $data['activities'][] = $activityData;
+                        $data['activities'] = [];
+                        foreach ($list as $activity) {
+                            $activityData = $activity->getData();
+                            $activityData['attributes'] = $activity->getAttributes();
+                            unset($activityData['implementationClass']);
+                            $data['activities'][] = $activityData;
+                        }
                     }
-                }
 
-                $exportResult[] = $data;
+                    $exportResult[] = $data;
+                }
             }
         }
+
 
         return $exportResult;
     }
