@@ -31,7 +31,7 @@ class Installer extends SettingsStoreAwareInstaller
         'plugin_cmf_perm_newsletter_enqueue_all_customers',
     ];
 
-    public function install()
+    public function install(): void
     {
         $this->installPermissions();
         $this->installDatabaseTables();
@@ -39,8 +39,6 @@ class Installer extends SettingsStoreAwareInstaller
         $this->installBricks();
 
         parent::install();
-
-        return true;
     }
 
     /**

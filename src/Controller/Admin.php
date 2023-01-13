@@ -49,7 +49,7 @@ class Admin extends AdminController implements KernelControllerEventInterface
     /**
      * @param ControllerEvent $event
      */
-    public function onKernelControllerEvent(ControllerEvent $event)
+    public function onKernelControllerEvent(ControllerEvent $event): void
     {
         $this->initJsConfig();
     }

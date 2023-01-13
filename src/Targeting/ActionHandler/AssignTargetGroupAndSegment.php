@@ -85,7 +85,7 @@ class AssignTargetGroupAndSegment extends AssignTargetGroup
     /**
      * @inheritdoc
      */
-    public function apply(VisitorInfo $visitorInfo, array $action, Rule $rule = null)
+    public function apply(VisitorInfo $visitorInfo, array $action, Rule $rule = null): void
     {
         parent::apply($visitorInfo, $action, $rule);
 
