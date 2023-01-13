@@ -105,7 +105,7 @@ class Customers extends DataObjects
 
         $objectToArrayHelper = ObjectToArray::getInstance();
 
-        if(array_key_exists('object', $this->exportIds)) {
+        if (array_key_exists('object', $this->exportIds)) {
             foreach (array_keys($this->exportIds['object']) as $id) {
                 $object = Concrete::getById($id);
                 if (!empty($object)) {
@@ -131,7 +131,6 @@ class Customers extends DataObjects
                 }
             }
         }
-
 
         return $exportResult;
     }
