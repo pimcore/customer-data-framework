@@ -235,7 +235,7 @@ class Installer extends SettingsStoreAwareInstaller
         /**
          * @TODO remove when remove support for Pimcore 10
          */
-        if (Version::MAJOR_VERSION >= 11) {
+        if (Version::getMajorVersion() >= 11) {
             $sqlFiles[__DIR__ . '/Resources/sql/segmentAssignment/'][] = 'storedFunctionObject_Pimcore11.sql';
         } else {
             $sqlFiles[__DIR__ . '/Resources/sql/segmentAssignment/'][] = 'storedFunctionObject.sql';
