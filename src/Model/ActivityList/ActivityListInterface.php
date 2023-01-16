@@ -21,7 +21,7 @@ use Pimcore\Version;
 /**
  * @TODO remove when remove support for Pimcore 10
  */
-if (Version::MAJOR_VERSION >= 11) {
+if (Version::getMajorVersion() >= 11) {
     interface ActivityListInterface extends PaginateListingInterface
     {
         public function setCondition(string $condition, float | array | bool | int | string $conditionVariables = null): static;
