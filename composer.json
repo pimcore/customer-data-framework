@@ -24,7 +24,7 @@
     "guzzlehttp/guzzle": "^7.2",
     "knplabs/knp-components": "^3.5 || ^4.0",
     "pear/archive_tar": "^1.4.3",
-    "pimcore/number-sequence-generator": "^1.0.5",
+    "pimcore/number-sequence-generator": "2.x-dev as 2.99",
     "pimcore/object-merger": "^3.0 || ^4.0",
     "pimcore/pimcore": "^10.6 || 11.x-dev as 11.99.9",
     "pimcore/search-query-parser": "^1.3",
