@@ -143,7 +143,6 @@ class Customers extends DataObjects
         return $exportResult;
     }
 
-
     /**
      * @param int $id
      * @param string $firstname
