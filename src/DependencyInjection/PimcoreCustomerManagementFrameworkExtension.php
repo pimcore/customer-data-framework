@@ -39,13 +39,17 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension 
      */
     public function prepend(ContainerBuilder $container)
     {
-        if ($container->hasExtension('doctrine_migrations')) {
-            $loader = new YamlFileLoader(
-                $container,
-                new FileLocator(__DIR__ . '/../Resources/config')
-            );
+        $loader = new YamlFileLoader(
+            $container,
+            new FileLocator(__DIR__ . '/../Resources/config')
+        );
 
+        if ($container->hasExtension('doctrine_migrations')) {
             $loader->load('doctrine_migrations.yml');
+        }
+
+        if ($container->hasExtension('pimcore_custom_reports')) {
+            $loader->load('custom_reports.yml');
         }
     }
 

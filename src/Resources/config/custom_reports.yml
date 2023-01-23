@@ -1,0 +1,3 @@
+pimcore_custom_reports:
+    adapters:
+        termSegmentBuilder: cmf.custom_report.adapter.term_segment_builder
