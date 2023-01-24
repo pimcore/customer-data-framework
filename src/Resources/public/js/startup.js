@@ -45,7 +45,6 @@ pimcore.plugin.customermanagementframework = Class.create({
             priority: 45,
             items: this.items,
             shadow: false,
-            listeners: true,
             cls: "pimcore_navigation_flyout"
         };
 

@@ -1,7 +1,7 @@
 pimcore:
-    custom_report:
-        adapters:
-            termSegmentBuilder: cmf.custom_report.adapter.term_segment_builder
+    #custom_report:
+      #  adapters:
+       #     termSegmentBuilder: cmf.custom_report.adapter.term_segment_builder
 
     newsletter:
         source_adapters:
