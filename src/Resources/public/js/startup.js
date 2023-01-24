@@ -21,7 +21,7 @@ pimcore.plugin.customermanagementframework = Class.create({
 
     initialize: function () {
         // if the new event exists, we use this
-        if (pimcore.events.preMenuBuild) {
+        if (!pimcore.events.preMenuBuild) {
             document.addEventListener(pimcore.events.preMenuBuild, this.preMenuBuild.bind(this));
         } else {
             document.addEventListener(pimcore.events.pimcoreReady, this.pimcoreReady.bind(this));
@@ -220,6 +220,11 @@ pimcore.plugin.customermanagementframework = Class.create({
     },
 
     pimcoreReady: function (e) {
+        this.navEl = Ext.get('pimcore_menu_search').insertSibling('<li id="pimcore_menu_cmf" data-menu-tooltip="'
+            + t('plugin_cmf_mainmenu') +
+            '" class="pimcore_menu_item pimcore_menu_needs_children"><img src="/bundles/pimcorecustomermanagementframework/icons/outline-group-24px.svg"></li>', 'before');
+        this.menu = new Ext.menu.Menu({cls: 'pimcore_navigation_flyout'});
+
         this.initToolbar();
         this.initNewsletterQueueInfo();
     },
