@@ -21,7 +21,7 @@ pimcore.plugin.customermanagementframework = Class.create({
 
     initialize: function () {
         // if the new event exists, we use this
-        if (!pimcore.events.preMenuBuild) {
+        if (pimcore.events.preMenuBuild) {
             document.addEventListener(pimcore.events.preMenuBuild, this.preMenuBuild.bind(this));
         } else {
             document.addEventListener(pimcore.events.pimcoreReady, this.pimcoreReady.bind(this));
@@ -53,7 +53,6 @@ pimcore.plugin.customermanagementframework = Class.create({
     },
 
     initMenu: function () {
-        var toolbar = pimcore.globalmanager.get('layout_toolbar');
         var user = pimcore.globalmanager.get('user');
 
         // customer view
@@ -201,22 +200,6 @@ pimcore.plugin.customermanagementframework = Class.create({
 
             this.items.push(item);
         }
-
-        // remove main menu
-        if (this.items.length === 0) {
-            Ext.get('pimcore_menu_cmf').remove();
-            return;
-        }
-
-        //this.navEl.on('mousedown', toolbar.showSubMenu.bind(toolbar.cmfMenu));
-
-        const cmfMenuReady = new CustomEvent(pimcore.events.cmfMenuReady, {
-            detail: {
-                cmfMenu: toolbar.cmfMenu
-            }
-        });
-
-        document.dispatchEvent(cmfMenuReady);
     },
 
     pimcoreReady: function (e) {
@@ -225,6 +208,7 @@ pimcore.plugin.customermanagementframework = Class.create({
             '" class="pimcore_menu_item pimcore_menu_needs_children"><img src="/bundles/pimcorecustomermanagementframework/icons/outline-group-24px.svg"></li>', 'before');
         this.menu = new Ext.menu.Menu({cls: 'pimcore_navigation_flyout'});
 
+        pimcore.layout.toolbar.prototype.cmfMenu = this.menu;
         this.initToolbar();
         this.initNewsletterQueueInfo();
     },
