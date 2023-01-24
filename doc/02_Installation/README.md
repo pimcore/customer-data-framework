@@ -2,7 +2,7 @@
 
 This section describes the installation of the Customer Management Framework and the first steps of configuration.
 
-> Please note that Customer Management Framework requires MariaDB as database. It will not work with default MySQL. MariaDB is used to save [activities](./09_Activities/README.md) with the MariaDB Dynamic Columns feature: https://mariadb.com/kb/en/library/dynamic-columns/
+> Please note that Customer Management Framework requires MariaDB as database. It will not work with default MySQL. MariaDB is used to save [activities](../09_Activities/README.md) with the MariaDB Dynamic Columns feature: https://mariadb.com/kb/en/library/dynamic-columns/
 
 ## Installation
 
@@ -20,7 +20,7 @@ This section describes the installation of the Customer Management Framework and
 2) Open Pimcore Admin UI, navigate to `Tools` > `Bundles` and activate and install 
 `PimcoreCustomerManagementFrameworkBundle` and `ObjectMergerBundle`. 
 
-![Extension Manager](./img/install.jpg)
+![Extension Manager](../img/install.jpg)
 
 The installer does following tasks:
 * Install several data object classes.
@@ -90,7 +90,7 @@ Note that the class doesn't need to contain the attributes as field definitions.
  getters/setters defined in the ['CustomerManagementFrameworkBundle\Model\CustomerInterface'](https://github.com/pimcore/customer-data-framework/blob/master/src/Model/CustomerInterface.php)
     or Use a [Trait](https://gist.github.com/dvesh3/ee88f6a7b75ea65f9f1db981b682e7cd), that implements these getters/setters, in Pimcore class.
  
-* When using the provided [SSO functionality (deprecated) ](./Single_Sign_On.md): In this case the customer class additionally needs
+* When using the provided [SSO functionality (deprecated)](../18_Single_Sign_On.md): In this case the customer class additionally needs
   to implement the [`CustomerManagementFrameworkBundle\Model\SsoAwareCustomerInterface`](https://github.com/pimcore/customer-data-framework/blob/master/src/Model/SsoAwareCustomerInterface.php)
   interface and also need to have one additional data attribute:   
   * `ssoIdentities`: objects relation to `SsoIdentity`
@@ -101,16 +101,16 @@ Note that the class doesn't need to contain the attributes as field definitions.
 
 > It is recommended to use `Customer` as name for the customer class. But it is also possible to use any other name. 
 > In this case, the configuration `general.customerPimcoreClass` for the customer class name has to be adapted. For details
-> see [Configuration chapter](./03_Configuration.md). 
+> see [Configuration chapter](../03_Configuration.md). 
       
 Of course your customer class can have additional attributes as needed.
    
 
 ## Configuration
 
-The CMF ships with an default configuration for basic functionality. To start up, no additional configuration should be 
+The CMF ships with a default configuration for basic functionality. To start up, no additional configuration should be 
 needed. To activate additional or customize existing functionality, please have a look at the 
-[configuration chapter](03_Configuration.md).  
+[configuration chapter](../03_Configuration.md).  
 
 #### Configure Symfony firewall
 To configure the symfony firewall for the webservices, add following line to your firewalls configuration
@@ -129,10 +129,10 @@ management framework (because the customer management framework does changes at 
 
 ## Setting Up necessary cron jobs
 There are several cron jobs needed by the CMF. These need to be configured and setup based on the solution requirements. 
-See [CronJob Docs](./04_Cronjobs.md) for details. 
+See [CronJob Docs](../04_Cronjobs.md) for details. 
 
 
 ## (Optional) Prerequisites for SSO (Deprecated)
 
-If SSO functionality of CMF should be integrated, please follow the steps for [Integration of Single Sign On](./18_Single_Sign_On.md). 
+If SSO functionality of CMF should be integrated, please follow the steps for [Integration of Single Sign On](../18_Single_Sign_On.md). 
 
