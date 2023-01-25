@@ -14,7 +14,7 @@ use Pimcore\Tests\Support\Util\Autoloader;
 class Model extends AbstractDefinitionHelper
 {
 
-    public function _beforeSuite($settings = [])
+    public function _beforeSuite($settings = []): void
     {
         /** @var Pimcore $pimcoreModule */
         $pimcoreModule = $this->getModule('\\' . Pimcore::class);
@@ -43,7 +43,7 @@ collate=utf8_unicode_ci;
         Autoloader::load(Customer::class);
     }
 
-    public function initializeDefinitions()
+    public function initializeDefinitions(): void
     {
         $cm = $this->getModule('\\' . ClassManager::class);
         $cm->setupClass('Customer', __DIR__ . '/../../../install/class_source/optional/class_Customer_export.json');
