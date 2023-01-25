@@ -40,8 +40,8 @@ pimcore.plugin.customermanagementframework = Class.create({
         let menu = e.detail.menu;
 
         menu.cmf = {
-            label: 'plugin_cmf_mainmenu',
-            iconCls: 'group',
+            label: t('plugin_cmf_mainmenu'),
+            iconCls: 'pimcore_main_nav_icon_group',
             priority: 45,
             items: this.items,
             shadow: false,
