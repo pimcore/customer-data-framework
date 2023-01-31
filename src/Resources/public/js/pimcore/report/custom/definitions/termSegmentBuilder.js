@@ -11,9 +11,8 @@
  *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
-
-pimcore.registerNS("pimcore.report.custom.definition.termSegmentBuilder");
-pimcore.report.custom.definition.termSegmentBuilder = Class.create({
+pimcore.registerNS("pimcore.bundle.customreports.custom.definition.termSegmentBuilder");
+pimcore.bundle.customreports.custom.definition.termSegmentBuilder = Class.create({
 
     element: null,
     sourceDefinitionData: null,
@@ -105,3 +104,9 @@ pimcore.report.custom.definition.termSegmentBuilder = Class.create({
 
 
 });
+
+//@TODO remove BC layer when dropping support for Pimcore 10
+if (typeof pimcore.report.custom != 'undefined') {
+    pimcore.registerNS("pimcore.report.custom.definition.termSegmentBuilder");
+    pimcore.report.custom.definition.termSegmentBuilder = Class.create(pimcore.bundle.customreports.custom.definition.termSegmentBuilder ,{});
+}

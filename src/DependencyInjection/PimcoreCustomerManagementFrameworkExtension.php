@@ -50,8 +50,8 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension 
         }
 
         if ($container->hasExtension('pimcore_custom_reports')) {
-            $loader->load('custom_reports.yml');
-        } elseif (Version::getMajorVersion() < 11) { //@TODO BC layer for Pimcore 10
+            $loader->load('custom_reports.yaml');
+        } elseif (Version::getMajorVersion() < 11) { //@TODO remove BC layer when dropping support for Pimcore 10
             $loader->load('custom_reports_legacy.yml');
         }
     }

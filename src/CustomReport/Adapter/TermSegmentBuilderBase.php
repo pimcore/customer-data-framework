@@ -18,7 +18,7 @@ namespace CustomerManagementFrameworkBundle\CustomReport\Adapter;
 use Pimcore\Bundle\CustomReportsBundle\Tool\Adapter\Sql;
 use Pimcore\Version;
 
-//@TODO BC layer for Pimcore 10
+//@TODO remove BC layer when dropping support for Pimcore 10
 if (Version::getMajorVersion() >= 11) {
     class_exists(Sql::class);
 
