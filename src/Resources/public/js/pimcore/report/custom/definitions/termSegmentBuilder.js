@@ -13,13 +13,13 @@
 
 if (typeof pimcore.report.custom != 'undefined') {
     pimcore.registerNS("pimcore.report.custom.definition.termSegmentBuilder");
-    pimcore.report.custom.definition.termSegmentBuilder = createClass();
+    pimcore.report.custom.definition.termSegmentBuilder = createTermSegmentBuilderClass();
 } else {
     pimcore.registerNS("pimcore.bundle.customreports.custom.definition.termSegmentBuilder");
-    pimcore.bundle.customreports.custom.definition.termSegmentBuilder = createClass();
+    pimcore.bundle.customreports.custom.definition.termSegmentBuilder = createTermSegmentBuilderClass();
 }
 
-function createClass() {
+function createTermSegmentBuilderClass() {
     return Class.create({
 
         element: null,
