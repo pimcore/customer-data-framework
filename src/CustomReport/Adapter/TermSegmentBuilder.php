@@ -20,7 +20,7 @@ use Doctrine\DBAL\Exception;
 use Pimcore\Db;
 use Pimcore\Model;
 
-class TermSegmentBuilder extends Model\Tool\CustomReport\Adapter\Sql
+class TermSegmentBuilder extends TermSegmentBuilderBase
 {
     /**
      * @param mixed $configuration

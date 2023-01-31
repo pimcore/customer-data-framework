@@ -7,7 +7,8 @@ parameters:
     stubFiles:
         - stubs/AccountNotLinkedException.stub
         - stubs/OAuthUtils.stub
-
+    excludePaths:
+            - src/CustomReport/Adapter/TermSegmentBuilderBase.php
 includes:
     - vendor/phpstan/phpstan-symfony/extension.neon
     - phpstan-baseline.neon
