@@ -10,16 +10,14 @@
  *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
  *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
-
-
 pimcore.registerNS("pimcore.plugin.customermanagementframework");
 
 pimcore.plugin.customermanagementframework = Class.create({
-    getClassName: function () {
+    getClassName: function() {
         return "pimcore.plugin.customermanagementframework";
     },
 
-    initialize: function () {
+    initialize: function() {
         // if the new event exists, we use this
         if (pimcore.events.preMenuBuild) {
             document.addEventListener(pimcore.events.preMenuBuild, this.preMenuBuild.bind(this));
@@ -32,7 +30,7 @@ pimcore.plugin.customermanagementframework = Class.create({
         document.addEventListener(pimcore.events.postOpenObject, this.postOpenObject.bind(this));
     },
 
-    preMenuBuild: function (e) {
+    preMenuBuild: function(e) {
 
         this.items = [];
         this.initMenu();
@@ -51,12 +49,12 @@ pimcore.plugin.customermanagementframework = Class.create({
         this.initNewsletterQueueInfo();
     },
 
-    initMenu: function () {
+    initMenu: function() {
         var user = pimcore.globalmanager.get('user');
 
         // add to menu
         let customerMenu = this.initCustomerMenu(user);
-        if(customerMenu) {
+        if (customerMenu) {
             this.items.push(customerMenu);
 
             let filters = this.initCustomerMenuFilters(user);
@@ -68,52 +66,54 @@ pimcore.plugin.customermanagementframework = Class.create({
 
         // customer duplicates view
         let duplicateViewMenu = this.initDuplicatesView(user);
-        if(duplicateViewMenu) {
+        if (duplicateViewMenu) {
             this.items.push(duplicateViewMenu);
         }
 
         let customerAutomationRulesMenu = this.initCustomerAutomationRules(user);
-        if(customerAutomationRulesMenu) {
+        if (customerAutomationRulesMenu) {
             this.items.push(customerAutomationRulesMenu);
         }
 
         let newsLetterQueueMenu = this.initNewsletterQueue(user);
-        if(newsLetterQueueMenu) {
+        if (newsLetterQueueMenu) {
             this.items.push(newsLetterQueueMenu);
         }
 
         let webserviceConfigurationMenu = this.initWebserviceConfiguration(user);
-        if(webserviceConfigurationMenu) {
+        if (webserviceConfigurationMenu) {
             this.items.push(webserviceConfigurationMenu);
         }
     },
 
-    pimcoreReady: function (e) {
-        this.navEl = Ext.get('pimcore_menu_search').insertSibling('<li id="pimcore_menu_cmf" data-menu-tooltip="'
-            + t('plugin_cmf_mainmenu') +
+    pimcoreReady: function(e) {
+        this.navEl = Ext.get('pimcore_menu_search').insertSibling('<li id="pimcore_menu_cmf" data-menu-tooltip="' +
+            t('plugin_cmf_mainmenu') +
             '" class="pimcore_menu_item pimcore_menu_needs_children"><img src="/bundles/pimcorecustomermanagementframework/icons/outline-group-24px.svg"></li>', 'before');
-        this.menu = new Ext.menu.Menu({cls: 'pimcore_navigation_flyout'});
+        this.menu = new Ext.menu.Menu({
+            cls: 'pimcore_navigation_flyout'
+        });
 
         pimcore.layout.toolbar.prototype.cmfMenu = this.menu;
         this.initToolbar();
         this.initNewsletterQueueInfo();
     },
 
-    initToolbar: function () {
+    initToolbar: function() {
         var toolbar = pimcore.globalmanager.get('layout_toolbar');
         var user = pimcore.globalmanager.get('user');
 
         // customer view
 
         let customerMenu = this.initCustomerMenu(user);
-        if(customerMenu) {
+        if (customerMenu) {
             customerMenu = Ext.create('Ext.menu.Item', customerMenu);
             this.menu.add(customerMenu);
 
             let filters = this.initCustomerMenuFilters(user);
 
             if (filters.length) {
-                for(let i = 0; i < filters.length; i++) {
+                for (let i = 0; i < filters.length; i++) {
                     customerMenu.getMenu().add(filters[i]);
                 }
             }
@@ -121,22 +121,22 @@ pimcore.plugin.customermanagementframework = Class.create({
 
         // customer duplicates view
         let duplicateViewMenu = this.initDuplicatesView(user);
-        if(duplicateViewMenu) {
+        if (duplicateViewMenu) {
             this.menu.add(duplicateViewMenu);
         }
 
         let customerAutomationRulesMenu = this.initCustomerAutomationRules(user);
-        if(customerAutomationRulesMenu) {
+        if (customerAutomationRulesMenu) {
             this.menu.add(customerAutomationRulesMenu);
         }
 
         let newsLetterQueueMenu = this.initNewsletterQueue(user);
-        if(newsLetterQueueMenu) {
+        if (newsLetterQueueMenu) {
             this.menu.add(newsLetterQueueMenu);
         }
 
         let webserviceConfigurationMenu = this.initWebserviceConfiguration(user);
-        if(webserviceConfigurationMenu) {
+        if (webserviceConfigurationMenu) {
             this.menu.add(webserviceConfigurationMenu);
         }
 
@@ -157,7 +157,7 @@ pimcore.plugin.customermanagementframework = Class.create({
         document.dispatchEvent(cmfMenuReady);
     },
 
-    postOpenObject: function (event) {
+    postOpenObject: function(event) {
         var object = event.detail.object;
         var type = event.detail.type;
 
@@ -174,25 +174,25 @@ pimcore.plugin.customermanagementframework = Class.create({
     startCustomerImport: function(customerSegmentId) {
         var importid = uniqid();
 
-        pimcore.helpers.uploadDialog('/admin/object-helper/import-upload?importId=' + importid, "Filedata", function (res) {
+        pimcore.helpers.uploadDialog('/admin/object-helper/import-upload?importId=' + importid, "Filedata", function(res) {
 
 
             var dialog = new pimcore.object.helpers.import.configDialog({
-                classId: pimcore.settings.cmf.customerClassId,                   // instructs the importer not to ask for the file
-                importConfigId: pimcore.settings.cmf.customerImporterId,         // the saved configuration id
-                parentId: pimcore.settings.cmf.customerImportParentId,           // the tree parent id (optional)
-                uniqueImportId: importid,             // the unique id of this import (IMPORTANT: CSV is expected to be available at ' PIMCORE_SYSTEM_TEMP_DIRECTORY + '/import_' + [uniqueImportId])
+                classId: pimcore.settings.cmf.customerClassId, // instructs the importer not to ask for the file
+                importConfigId: pimcore.settings.cmf.customerImporterId, // the saved configuration id
+                parentId: pimcore.settings.cmf.customerImportParentId, // the tree parent id (optional)
+                uniqueImportId: importid, // the unique id of this import (IMPORTANT: CSV is expected to be available at ' PIMCORE_SYSTEM_TEMP_DIRECTORY + '/import_' + [uniqueImportId])
                 mode: "direct",
-                additionalData: {                   // optional data passed to the event handler
+                additionalData: { // optional data passed to the event handler
                     customerSegmentId: customerSegmentId
                 }
             });
-        }.bind(this), function () {
+        }.bind(this), function() {
             Ext.MessageBox.alert(t("error"), t("error"));
         });
     },
 
-    pluginObjectMergerPostMerge: function (data) {
+    pluginObjectMergerPostMerge: function(data) {
         var frame = document.getElementById("pimcore_iframe_frame_plugin_cmf_customerduplicatesview");
         if (frame) {
             var $ = frame.contentWindow.$;
@@ -206,11 +206,11 @@ pimcore.plugin.customermanagementframework = Class.create({
         }
     },
 
-    checkNewsletterQueueStatus: function (statusIcon, initTimeout) {
+    checkNewsletterQueueStatus: function(statusIcon, initTimeout) {
         Ext.Ajax.request({
             url: "/__customermanagementframework/webservice/newsletter/get-queue-size",
             method: "get",
-            success: function (response) {
+            success: function(response) {
                 var rdata = Ext.decode(response.responseText);
 
                 document.getElementById('pimcore_bundle_customerManagementFramework_newsletter_queue_status_count').innerHTML = rdata.size;
@@ -231,7 +231,7 @@ pimcore.plugin.customermanagementframework = Class.create({
         });
     },
 
-    initNewsletterQueueInfo: function () {
+    initNewsletterQueueInfo: function() {
 
         if (!pimcore.settings.cmf.newsletterSyncEnabled) {
             return;
@@ -241,15 +241,15 @@ pimcore.plugin.customermanagementframework = Class.create({
         var statusBar = Ext.get("pimcore_status");
 
         var statusIcon = Ext.get(statusBar.insertHtml('afterBegin',
-            '<div id="pimcore_bundle_customerManagementFramework_newsletter_queue_status" style="display:none;" data-menu-tooltip="'
-            + t("plugin_cmf_newsletter_queue_running_tooltip") + '"><span id="pimcore_bundle_customerManagementFramework_newsletter_queue_status_count"></span></div>'));
+            '<div id="pimcore_bundle_customerManagementFramework_newsletter_queue_status" style="display:none;" data-menu-tooltip="' +
+            t("plugin_cmf_newsletter_queue_running_tooltip") + '"><span id="pimcore_bundle_customerManagementFramework_newsletter_queue_status_count"></span></div>'));
 
         pimcore.helpers.initMenuTooltips();
 
         this.checkNewsletterQueueStatus(statusIcon);
     },
 
-    postOpenDocument: function (event) {
+    postOpenDocument: function(event) {
         var document = event.detail.document;
         var type = event.detail.type;
 
@@ -258,13 +258,15 @@ pimcore.plugin.customermanagementframework = Class.create({
                 text: t('plugin_cmf_newsletter_export_template'),
                 iconCls: 'plugin_cmf_icon_export_action',
                 scale: 'small',
-                handler: function (obj) {
+                handler: function(obj) {
 
                     Ext.Ajax.request({
                         url: "/admin/customermanagementframework/templates/export",
                         method: "post",
-                        params: {document_id: document.id},
-                        success: function (response) {
+                        params: {
+                            document_id: document.id
+                        },
+                        success: function(response) {
 
                             var rdata = Ext.decode(response.responseText);
                             if (rdata && rdata.success) {
@@ -286,16 +288,16 @@ pimcore.plugin.customermanagementframework = Class.create({
         this.addSegmentAssignmentTab(document, 'document', type);
     },
 
-    postOpenAsset: function (event) {
+    postOpenAsset: function(event) {
         var asset = event.detail.asset;
         var type = event.detail.type;
         this.addSegmentAssignmentTab(asset, 'asset', type);
     },
 
-    addSegmentAssignmentTab: function (element, type, subType) {
+    addSegmentAssignmentTab: function(element, type, subType) {
         var addTab = Boolean(pimcore.settings.cmf.segmentAssignment[type][subType]);
 
-        if('object' === type && 'folder' !== subType) {
+        if ('object' === type && 'folder' !== subType) {
             addTab &= pimcore.settings.cmf.segmentAssignment[type][subType][element.data.general.className];
         }
 
@@ -324,7 +326,7 @@ pimcore.plugin.customermanagementframework = Class.create({
                 iconCls: 'pimcore_nav_icon_customers',
                 hideOnClick: false,
                 menu: menuOptions,
-                handler: function () {
+                handler: function() {
                     try {
                         pimcore.globalmanager.get(customerViewPanelId).activate();
                     } catch (e) {
@@ -346,18 +348,17 @@ pimcore.plugin.customermanagementframework = Class.create({
 
     initCustomerMenuFilters: function() {
         var filters = [];
-        pimcore.settings.cmf.shortcutFilterDefinitions.forEach(function (definition) {
+        pimcore.settings.cmf.shortcutFilterDefinitions.forEach(function(definition) {
             var filterId = definition.id;
             var filterKey = 'plugin_cmf_customerview_filter_' + definition.id;
             var filterName = definition.name;
             var filterItem = {
                 text: filterName,
                 iconCls: 'pimcore_nav_icon_customers',
-                handler: function () {
+                handler: function() {
                     try {
                         pimcore.globalmanager.get(filterKey).activate();
-                    }
-                    catch (e) {
+                    } catch (e) {
                         pimcore.globalmanager.add(
                             filterKey,
                             new pimcore.tool.genericiframewindow(
@@ -382,11 +383,10 @@ pimcore.plugin.customermanagementframework = Class.create({
             var item = {
                 text: t('plugin_cmf_customerduplicatesview'),
                 iconCls: 'pimcore_nav_icon_customerduplicates ',
-                handler: function () {
+                handler: function() {
                     try {
                         pimcore.globalmanager.get(customerDuplicateViewPanelId).activate();
-                    }
-                    catch (e) {
+                    } catch (e) {
                         pimcore.globalmanager.add(
                             customerDuplicateViewPanelId,
                             new pimcore.tool.genericiframewindow(
@@ -401,7 +401,7 @@ pimcore.plugin.customermanagementframework = Class.create({
             };
 
             // add to menu
-           return item;
+            return item;
         }
         return null;
     },
@@ -412,11 +412,10 @@ pimcore.plugin.customermanagementframework = Class.create({
             var item = {
                 text: t('plugin_cmf_customerautomationrules'),
                 iconCls: 'pimcore_nav_icon_customerautomationrules ',
-                handler: function () {
+                handler: function() {
                     try {
                         pimcore.globalmanager.get(customerAutomationRulesPanelId).activate();
-                    }
-                    catch (e) {
+                    } catch (e) {
                         pimcore.globalmanager.add(customerAutomationRulesPanelId, new pimcore.plugin.cmf.config.panel(customerAutomationRulesPanelId));
                     }
                 }
@@ -432,11 +431,11 @@ pimcore.plugin.customermanagementframework = Class.create({
             var item = {
                 text: t('plugin_cmf_newsletter_enqueue_all_customers'),
                 iconCls: 'pimcore_nav_icon_newsletter_enqueue_all_customers',
-                handler: function () {
+                handler: function() {
                     Ext.Ajax.request({
                         url: "/__customermanagementframework/webservice/newsletter/enqueue-all-customers",
-                        success: function () {
-                            setTimeout(function () {
+                        success: function() {
+                            setTimeout(function() {
                                 this.checkNewsletterQueueStatus(Ext.get('pimcore_bundle_customerManagementFramework_newsletter_queue_status'));
                             }.bind(this), 3000)
                         }.bind(this)
@@ -451,16 +450,15 @@ pimcore.plugin.customermanagementframework = Class.create({
     },
 
     initWebserviceConfiguration: function(user) {
-        if(user.admin) {
+        if (user.admin) {
             const webserviceConfigurationView = 'plugin_cmf_webserviceConfigurationView';
             var item = {
                 text: t('plugin_cmf_webserviceConfigurationView'),
                 iconCls: 'pimcore_nav_icon_webservice_settings ',
-                handler: function () {
+                handler: function() {
                     try {
                         pimcore.globalmanager.get(webserviceConfigurationView).activate();
-                    }
-                    catch (e) {
+                    } catch (e) {
                         pimcore.globalmanager.add(webserviceConfigurationView, new pimcore.plugin.customermanagementframework.webserviceConfigurationView(webserviceConfigurationView));
                     }
                 }
@@ -473,4 +471,3 @@ pimcore.plugin.customermanagementframework = Class.create({
 });
 
 var customermanagementframeworkPlugin = new pimcore.plugin.customermanagementframework();
-
