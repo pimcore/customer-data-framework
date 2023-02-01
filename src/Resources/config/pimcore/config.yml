@@ -7,6 +7,7 @@ pimcore:
         source_adapters:
             SegmentAddressSource: cmf.document.newsletter.factory.segmentAddressSource
 
+pimcore_personalization:
     targeting:
         data_providers:
             cmf_customer: CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer

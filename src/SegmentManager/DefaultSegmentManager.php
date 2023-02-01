@@ -31,7 +31,7 @@ use Pimcore\Model\DataObject\CustomerSegmentGroup;
 use Pimcore\Model\DataObject\Folder;
 use Pimcore\Model\DataObject\Service;
 use Pimcore\Model\Element\ElementInterface;
-use Pimcore\Model\Tool\Targeting\TargetGroup;
+use Pimcore\Bundle\PersonalizationBundle\Model\Tool\Targeting\TargetGroup;
 
 class DefaultSegmentManager implements SegmentManagerInterface
 {

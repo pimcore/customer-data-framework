@@ -18,7 +18,7 @@ namespace CustomerManagementFrameworkBundle\Model\Activity;
 use CustomerManagementFrameworkBundle\Model\AbstractActivity;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use Pimcore\Model\Tool\Targeting\TargetGroup;
+use Pimcore\Bundle\PersonalizationBundle\Model\Tool\Targeting\TargetGroup;
 
 class TargetGroupAssignActivity extends AbstractActivity
 {

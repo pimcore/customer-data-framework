@@ -23,15 +23,15 @@ use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer;
 use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
-use Pimcore\Model\Tool\Targeting\Rule;
-use Pimcore\Model\Tool\Targeting\TargetGroup;
-use Pimcore\Targeting\ActionHandler\ActionHandlerInterface;
+use Pimcore\Bundle\PersonalizationBundle\Model\Tool\Targeting\Rule;
+use Pimcore\Bundle\PersonalizationBundle\Model\Tool\Targeting\TargetGroup;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\ActionHandler\ActionHandlerInterface;
 use Pimcore\Targeting\ActionHandler\AssignTargetGroup;
-use Pimcore\Targeting\ConditionMatcherInterface;
-use Pimcore\Targeting\DataLoaderInterface;
-use Pimcore\Targeting\DataProviderDependentInterface;
-use Pimcore\Targeting\Model\VisitorInfo;
-use Pimcore\Targeting\Storage\TargetingStorageInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\ConditionMatcherInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\DataLoaderInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\DataProviderDependentInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\Model\VisitorInfo;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\Storage\TargetingStorageInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ApplyTargetGroupsFromSegments implements ActionHandlerInterface, DataProviderDependentInterface

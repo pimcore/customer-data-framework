@@ -15,7 +15,7 @@
 (function() {
     'use strict';
 
-    pimcore.settings.targeting.conditions.register(
+    pimcore.bundle.personalization.settings.conditions.register(
         'cmf_has_segment',
         Class.create(pimcore.settings.targeting.condition.abstract, {
             getName: function () {

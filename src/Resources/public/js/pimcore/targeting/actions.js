@@ -14,10 +14,10 @@
 
 (function() {
     'use strict';
+    pimcore.bundle.personalization.settings.actions.register(
 
-    pimcore.settings.targeting.actions.register(
         'cmf_track_segment',
-        Class.create(pimcore.settings.targeting.action.abstract, {
+        Class.create(pimcore.bundle.personalization.settings.action.abstract, {
             getName: function () {
                 return t("plugin_cmf_targeting_action_track_segment");
             },

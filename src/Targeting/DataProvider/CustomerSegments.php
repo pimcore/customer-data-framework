@@ -19,9 +19,9 @@ namespace CustomerManagementFrameworkBundle\Targeting\DataProvider;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentExtractor\SegmentExtractorInterface;
-use Pimcore\Targeting\DataProvider\DataProviderInterface;
-use Pimcore\Targeting\DataProviderDependentInterface;
-use Pimcore\Targeting\Model\VisitorInfo;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\DataProvider\DataProviderInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\DataProviderDependentInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\Model\VisitorInfo;
 
 class CustomerSegments implements DataProviderInterface, DataProviderDependentInterface
 {
