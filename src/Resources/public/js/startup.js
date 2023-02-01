@@ -55,7 +55,7 @@ pimcore.plugin.customermanagementframework = Class.create({
         var user = pimcore.globalmanager.get('user');
 
         // add to menu
-        let customerMenu = this.initCustomerMenu(user)
+        let customerMenu = this.initCustomerMenu(user);
         if(customerMenu) {
             this.items.push(customerMenu);
 
@@ -73,19 +73,16 @@ pimcore.plugin.customermanagementframework = Class.create({
         }
 
         let customerAutomationRulesMenu = this.initCustomerAutomationRules(user);
-
         if(customerAutomationRulesMenu) {
             this.items.push(customerAutomationRulesMenu);
         }
 
         let newsLetterQueueMenu = this.initNewsletterQueue(user);
-
         if(newsLetterQueueMenu) {
             this.items.push(newsLetterQueueMenu);
         }
 
         let webserviceConfigurationMenu = this.initWebserviceConfiguration(user);
-
         if(webserviceConfigurationMenu) {
             this.items.push(webserviceConfigurationMenu);
         }
@@ -129,19 +126,16 @@ pimcore.plugin.customermanagementframework = Class.create({
         }
 
         let customerAutomationRulesMenu = this.initCustomerAutomationRules(user);
-
         if(customerAutomationRulesMenu) {
             this.menu.add(customerAutomationRulesMenu);
         }
 
         let newsLetterQueueMenu = this.initNewsletterQueue(user);
-
         if(newsLetterQueueMenu) {
             this.menu.add(newsLetterQueueMenu);
         }
 
         let webserviceConfigurationMenu = this.initWebserviceConfiguration(user);
-
         if(webserviceConfigurationMenu) {
             this.menu.add(webserviceConfigurationMenu);
         }
