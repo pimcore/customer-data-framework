@@ -12,6 +12,10 @@
  */
 
 
+.pimcore_main_nav_icon_group {
+    background: url(/bundles/pimcorecustomermanagementframework/icons/outline-group-24px.svg) center center no-repeat !important;
+}
+
 .pimcore_icon_activities {
     background: url(/bundles/pimcoreadmin/img/flat-color-icons/sports_mode.svg) center center no-repeat !important;
 }
