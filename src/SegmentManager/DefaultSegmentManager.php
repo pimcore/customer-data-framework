@@ -25,13 +25,13 @@ use CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapperInt
 use CustomerManagementFrameworkBundle\SegmentBuilder\SegmentBuilderInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentExtractor\SegmentExtractorInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use Pimcore\Bundle\PersonalizationBundle\Model\Tool\Targeting\TargetGroup;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
 use Pimcore\Model\DataObject\Folder;
 use Pimcore\Model\DataObject\Service;
 use Pimcore\Model\Element\ElementInterface;
-use Pimcore\Bundle\PersonalizationBundle\Model\Tool\Targeting\TargetGroup;
 
 class DefaultSegmentManager implements SegmentManagerInterface
 {
