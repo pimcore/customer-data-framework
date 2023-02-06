@@ -36,7 +36,7 @@ class Installer extends SettingsStoreAwareInstaller
         $this->installPermissions();
         $this->installDatabaseTables();
         $this->installClasses();
-        $this->installBricks();
+
 
         parent::install();
     }
@@ -257,21 +257,12 @@ class Installer extends SettingsStoreAwareInstaller
 
         self::installClass('CustomerSegmentGroup', $sourcePath.'/class_CustomerSegmentGroup_export.json');
         self::installClass('CustomerSegment', $sourcePath.'/class_CustomerSegment_export.json');
-        self::installClass('SsoIdentity', $sourcePath.'/class_SsoIdentity_export.json');
         self::installClass(
             'TermSegmentBuilderDefinition',
             $sourcePath.'/class_TermSegmentBuilderDefinition_export.json'
         );
 
         self::installClass('LinkActivityDefinition', $sourcePath.'/class_LinkActivityDefinition_export.json');
-    }
-
-    public function installBricks()
-    {
-        $sourcePath = __DIR__.'/../install/objectbrick_source';
-
-        self::installBrick('OAuth1Token', $sourcePath.'/objectbrick_OAuth1Token_export.json');
-        self::installBrick('OAuth2Token', $sourcePath.'/objectbrick_OAuth2Token_export.json');
     }
 
     public static function installClass($classname, $filepath)

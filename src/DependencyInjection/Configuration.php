@@ -33,13 +33,6 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->getRootNode();
         $rootNode->addDefaultsIfNotSet();
 
-        $rootNode
-            ->children()
-                ->arrayNode('oauth_client')
-                    ->canBeEnabled()
-                ->end()
-            ->end();
-
         $rootNode->append($this->buildGeneralNode());
         $rootNode->append($this->buildEncryptionNode());
         $rootNode->append($this->buildCustomerSaveManagerNode());

@@ -71,10 +71,6 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension 
 
         $loader->load('services_security.yml');
 
-        if ($config['oauth_client']['enabled']) {
-            $loader->load('services_security_oauth_client.yml');
-        }
-
         if ($config['newsletter']['newsletterSyncEnabled']) {
             $loader->load('services_newsletter.yml');
         }
