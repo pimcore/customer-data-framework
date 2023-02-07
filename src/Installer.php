@@ -245,7 +245,7 @@ class Installer extends SettingsStoreAwareInstaller
             }
         }
 
-        foreach ($sstoredFunctions as $folder => $files) {
+        foreach ($storedFunctions as $folder => $files) {
             foreach ($files as $file) {
                 $statement = file_get_contents($folder.$file);
                 $db->executeStatement($statement);
