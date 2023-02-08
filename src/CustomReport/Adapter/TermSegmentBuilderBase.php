@@ -16,7 +16,6 @@
 namespace CustomerManagementFrameworkBundle\CustomReport\Adapter;
 
 use Pimcore\Bundle\CustomReportsBundle\Tool\Adapter\Sql;
-use Pimcore\Version;
 
 class_exists(Sql::class);
 

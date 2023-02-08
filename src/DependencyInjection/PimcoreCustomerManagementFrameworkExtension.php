@@ -26,7 +26,6 @@ use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidato
 use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
-use Pimcore\Version;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
