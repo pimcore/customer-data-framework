@@ -141,7 +141,6 @@ abstract class SqlActivityStore
 
                     $insertData = Helper::quoteDataIdentifiers($db, $insertData);
 
-
                     $db->insert(self::ACTIVITIES_METADATA_TABLE, $insertData);
                 }
             } catch (TableNotFoundException $ex) {

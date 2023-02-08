@@ -19,7 +19,6 @@ use CustomerManagementFrameworkBundle\Migrations\PimcoreX\Version20210305134111;
 use Pimcore\Db;
 use Pimcore\Extension\Bundle\Installer\SettingsStoreAwareInstaller;
 use Pimcore\Logger;
-use Pimcore\Version;
 
 class Installer extends SettingsStoreAwareInstaller
 {

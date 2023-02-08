@@ -122,7 +122,6 @@ class Dao extends Model\Dao\AbstractDao
             $data['creationDate'] = $creationDate;
             $this->db->beginTransaction();
             try {
-
                 $data = Helper::quoteDataIdentifiers($this->db, $data);
 
                 $this->db->insert(self::TABLE_NAME, $data);
