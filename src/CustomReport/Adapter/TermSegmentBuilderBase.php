@@ -18,15 +18,8 @@ namespace CustomerManagementFrameworkBundle\CustomReport\Adapter;
 use Pimcore\Bundle\CustomReportsBundle\Tool\Adapter\Sql;
 use Pimcore\Version;
 
-//@TODO remove BC layer when dropping support for Pimcore 10
-if (Version::getMajorVersion() >= 11) {
-    class_exists(Sql::class);
+class_exists(Sql::class);
 
-    class TermSegmentBuilderBase extends Sql
-    {
-    }
-} else {
-    class TermSegmentBuilderBase extends \Pimcore\Model\Tool\CustomReport\Adapter\Sql
-    {
-    }
+class TermSegmentBuilderBase extends Sql
+{
 }

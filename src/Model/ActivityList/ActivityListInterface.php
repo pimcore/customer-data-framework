@@ -18,17 +18,8 @@ namespace CustomerManagementFrameworkBundle\Model\ActivityList;
 use Pimcore\Model\Paginator\PaginateListingInterface;
 use Pimcore\Version;
 
-/**
- * @TODO remove when remove support for Pimcore 10
- */
-if (Version::getMajorVersion() >= 11) {
-    interface ActivityListInterface extends PaginateListingInterface
-    {
-        public function setCondition(string $condition, float | array | bool | int | string $conditionVariables = null): static;
-    }
-} else {
-    interface ActivityListInterface extends PaginateListingInterface
-    {
-        public function setCondition($condition, $conditionVariables = null);
-    }
+interface ActivityListInterface extends PaginateListingInterface
+{
+    public function setCondition(string $condition, float | array | bool | int | string $conditionVariables = null): static;
 }
+
