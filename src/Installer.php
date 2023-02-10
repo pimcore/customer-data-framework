@@ -37,7 +37,6 @@ class Installer extends SettingsStoreAwareInstaller
         $this->installDatabaseTables();
         $this->installClasses();
 
-
         parent::install();
     }
 
