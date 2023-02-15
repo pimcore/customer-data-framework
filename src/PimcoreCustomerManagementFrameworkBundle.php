@@ -76,6 +76,6 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
 
     public static function registerDependentBundles(BundleCollection $collection): void
     {
-        $collection->addBundle(\Pimcore\Bundle\ApplicationLoggerBundle\PimcoreApplicationLoggerBundle::class, 20);
+        $collection->addBundle(\Pimcore\Bundle\ApplicationLoggerBundle\PimcoreApplicationLoggerBundle::class);
     }
 }
