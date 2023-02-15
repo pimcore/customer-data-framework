@@ -16,9 +16,9 @@
 namespace CustomerManagementFrameworkBundle\Traits;
 
 use Doctrine\DBAL\Connection;
-use Pimcore\Db;
 use Pimcore\Bundle\ApplicationLoggerBundle\ApplicationLogger;
 use Pimcore\Bundle\ApplicationLoggerBundle\Handler\ApplicationLoggerDb;
+use Pimcore\Db;
 use Psr\Log\LoggerInterface;
 
 trait ApplicationLoggerAware
