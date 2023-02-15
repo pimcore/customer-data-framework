@@ -20,8 +20,8 @@ use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\NewsletterMan
 use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\SegmentManagerPass;
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Pimcore\HttpKernel\BundleCollection\BundleCollection;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
 {
