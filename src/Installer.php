@@ -249,6 +249,12 @@ class Installer extends SettingsStoreAwareInstaller
                 $db->executeQuery($statement);
             }
         }
+
+        $appLoggerInstaller = \Pimcore::getContainer()->get(\Pimcore\Bundle\ApplicationLoggerBundle\Installer::class);
+
+        if (!$appLoggerInstaller->isInstalled()) {
+            $appLoggerInstaller->install();
+        }
     }
 
     public function installClasses()
