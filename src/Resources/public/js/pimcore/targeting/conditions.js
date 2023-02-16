@@ -17,7 +17,7 @@
 
     pimcore.bundle.personalization.settings.conditions.register(
         'cmf_has_segment',
-        Class.create(pimcore.settings.targeting.condition.abstract, {
+        Class.create(pimcore.bundle.personalization.settings.condition.abstract, {
             getName: function () {
                 return t("plugin_cmf_targeting_condition_has_segment");
             },
@@ -152,9 +152,9 @@
     );
 
 
-    pimcore.settings.targeting.conditions.register(
+    pimcore.bundle.personalization.settings.conditions.register(
         'cmf_customer_is_loggedin',
-        Class.create(pimcore.settings.targeting.condition.abstract, {
+        Class.create(pimcore.bundle.personalization.settings.condition.abstract, {
             getName: function () {
                 return t("plugin_cmf_targeting_condition_customer_is_loggedin");
             },
@@ -181,9 +181,9 @@
         })
     );
 
-    pimcore.settings.targeting.conditions.register(
+    pimcore.bundle.personalization.settings.conditions.register(
         'cmf_customer_segments_have_changed',
-        Class.create(pimcore.settings.targeting.condition.abstract, {
+        Class.create(pimcore.bundle.personalization.settings.condition.abstract, {
             getName: function () {
                 return t("plugin_cmf_targeting_condition_customer_segments_have_changed");
             },

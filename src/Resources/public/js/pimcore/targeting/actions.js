@@ -92,9 +92,9 @@
         })
     );
 
-    pimcore.settings.targeting.actions.register(
+    pimcore.bundle.personalization.settings.actions.register(
         "assign_target_group",
-        Class.create(pimcore.settings.targeting.action.abstract, {
+        Class.create(pimcore.bundle.personalization.settings.action.abstract, {
             getName: function () {
                 return t('assign_target_group');
             },
@@ -181,9 +181,9 @@
     );
 
 
-    pimcore.settings.targeting.actions.register(
+    pimcore.bundle.personalization.settings.actions.register(
         "cmf_apply_target_groups_from_segments",
-        Class.create(pimcore.settings.targeting.action.abstract, {
+        Class.create(pimcore.bundle.personalization.settings.action.abstract, {
             getName: function () {
                 return t('plugin_cmf_targeting_action_apply_target_groups_from_segments');
             },
@@ -258,9 +258,9 @@
         })
     );
 
-    pimcore.settings.targeting.actions.register(
+    pimcore.bundle.personalization.settings.actions.register(
         "cmf_track_activity",
-        Class.create(pimcore.settings.targeting.action.abstract, {
+        Class.create(pimcore.bundle.personalization.settings.action.abstract, {
             getName: function () {
                 return t('plugin_cmf_targeting_action_track_activity');
             },
