@@ -11,97 +11,105 @@
  *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
+if (typeof pimcore.report.custom != 'undefined') {
+    pimcore.registerNS("pimcore.report.custom.definition.termSegmentBuilder");
+    pimcore.report.custom.definition.termSegmentBuilder = createTermSegmentBuilderClass();
+} else {
+    pimcore.registerNS("pimcore.bundle.customreports.custom.definition.termSegmentBuilder");
+    pimcore.bundle.customreports.custom.definition.termSegmentBuilder = createTermSegmentBuilderClass();
+}
 
-pimcore.registerNS("pimcore.report.custom.definition.termSegmentBuilder");
-pimcore.report.custom.definition.termSegmentBuilder = Class.create({
+function createTermSegmentBuilderClass() {
+    return Class.create({
 
-    element: null,
-    sourceDefinitionData: null,
+        element: null,
+        sourceDefinitionData: null,
 
-    initialize: function (sourceDefinitionData, key, deleteControl, columnSettingsCallback) {
-        sourceDefinitionData = sourceDefinitionData ? sourceDefinitionData : {sql: '', termDefinition: 0};
+        initialize: function (sourceDefinitionData, key, deleteControl, columnSettingsCallback) {
+            sourceDefinitionData = sourceDefinitionData ? sourceDefinitionData : {sql: '', termDefinition: 0};
 
-        this.sourceDefinitionData = sourceDefinitionData;
+            this.sourceDefinitionData = sourceDefinitionData;
 
-        var time = new Date().getTime();
+            var time = new Date().getTime();
 
-        this.element = new Ext.form.FormPanel({
-            key: key,
-            bodyStyle: "padding:10px;",
-            autoHeight: true,
-            border: false,
-            tbar: deleteControl, //this.getDeleteControl("SQL", key),
-            items: [
-                {
-                    xtype: "combo",
-                    name: "termDefinition",
-                    fieldLabel:t("plugin_cmf_custom_reports_termsegmentbuilder_term_definition"),
-                    id: "custom_reports_termSegmentBuilder_" + time + "_termDefinition",
-                    typeAhead: true,
-                    displayField: 'name',
-                    mode: 'local',
-                    labelWidth: 200,
+            this.element = new Ext.form.FormPanel({
+                key: key,
+                bodyStyle: "padding:10px;",
+                autoHeight: true,
+                border: false,
+                tbar: deleteControl, //this.getDeleteControl("SQL", key),
+                items: [
+                    {
+                        xtype: "combo",
+                        name: "termDefinition",
+                        fieldLabel: t("plugin_cmf_custom_reports_termsegmentbuilder_term_definition"),
+                        id: "custom_reports_termSegmentBuilder_" + time + "_termDefinition",
+                        typeAhead: true,
+                        displayField: 'name',
+                        mode: 'local',
+                        labelWidth: 200,
 
-                    store: new Ext.data.JsonStore({
-                        autoDestroy: true,
-                        autoLoad: true,
-                        proxy: {
-                            type: 'ajax',
-                            url: "/admin/customermanagementframework/report/term-segment-builder/get-segment-builder-definitions",
-                            reader: {
-                                type: 'json',
-                                rootProperty: "data",
-                                idProperty: "id"
+                        store: new Ext.data.JsonStore({
+                            autoDestroy: true,
+                            autoLoad: true,
+                            proxy: {
+                                type: 'ajax',
+                                url: "/admin/customermanagementframework/report/term-segment-builder/get-segment-builder-definitions",
+                                reader: {
+                                    type: 'json',
+                                    rootProperty: "data",
+                                    idProperty: "id"
+                                }
+                            },
+
+                            fields: ["name", "id"],
+                            listeners: {
+                                load: function () {
+                                    Ext.getCmp("custom_reports_termSegmentBuilder_" + time + "_termDefinition").setValue(sourceDefinitionData.termDefinition);
+                                }.bind(this, time, sourceDefinitionData)
                             }
-                        },
-
-                        fields: ["name", "id"],
+                        }),
+                        valueField: 'id',
+                        forceSelection: true,
+                        triggerAction: 'all',
+                        width: 600,
+                        value: sourceDefinitionData.termDefinition,
                         listeners: {
-                            load: function () {
-                                Ext.getCmp("custom_reports_termSegmentBuilder_" + time + "_termDefinition").setValue(sourceDefinitionData.termDefinition);
-                            }.bind(this, time, sourceDefinitionData)
+                            change: columnSettingsCallback
                         }
-                    }),
-                    valueField: 'id',
-                    forceSelection: true,
-                    triggerAction: 'all',
-                    width: 600,
-                    value: sourceDefinitionData.termDefinition,
-                    listeners: {
-                        change: columnSettingsCallback
+
+                    },
+                    {
+                        xtype: "textarea",
+                        name: "sql",
+                        fieldLabel: t("plugin_cmf_custom_reports_termsegmentbuilder_sql"),
+                        value: (sourceDefinitionData.sql),
+                        width: 700,
+                        height: 300,
+                        labelWidth: 200,
+                        enableKeyEvents: true,
+                        listeners: {
+                            change: columnSettingsCallback
+                        }
                     }
 
-                },
-                {
-                    xtype: "textarea",
-                    name: "sql",
-                    fieldLabel: t("plugin_cmf_custom_reports_termsegmentbuilder_sql"),
-                    value: (sourceDefinitionData.sql ),
-                    width: 700,
-                    height: 300,
-                    labelWidth: 200,
-                    enableKeyEvents: true,
-                    listeners: {
-                        change: columnSettingsCallback
-                    }
-                }
+                ]
+            });
+        },
 
-            ]
-        });
-    },
+        getElement: function () {
+            return this.element;
+        },
 
-    getElement: function () {
-        return this.element;
-    },
+        getValues: function () {
 
-    getValues: function () {
+            var values = this.element.getForm().getFieldValues();
 
-        var values = this.element.getForm().getFieldValues();
+            values.type = "termSegmentBuilder";
 
-        values.type = "termSegmentBuilder";
-
-        return values;
-    }
+            return values;
+        }
 
 
-});
+    });
+}

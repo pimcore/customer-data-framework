@@ -2,7 +2,7 @@
 
 This section describes the installation of the Customer Management Framework and the first steps of configuration.
 
-> Please note that Customer Management Framework requires MariaDB as database. It will not work with default MySQL. MariaDB is used to save [activities](./09_Activities/README.md) with the MariaDB Dynamic Columns feature: https://mariadb.com/kb/en/library/dynamic-columns/
+> Please note that Customer Management Framework requires MariaDB as database. It will not work with default MySQL. MariaDB is used to save [activities](../09_Activities/README.md) with the MariaDB Dynamic Columns feature: https://mariadb.com/kb/en/library/dynamic-columns/
 
 ## Installation
 
@@ -20,7 +20,7 @@ This section describes the installation of the Customer Management Framework and
 2) Open Pimcore Admin UI, navigate to `Tools` > `Bundles` and activate and install 
 `PimcoreCustomerManagementFrameworkBundle` and `ObjectMergerBundle`. 
 
-![Extension Manager](./img/install.jpg)
+![Extension Manager](../img/install.jpg)
 
 The installer does following tasks:
 * Install several data object classes.
@@ -95,16 +95,16 @@ Note that the class doesn't need to contain the attributes as field definitions.
 
 > It is recommended to use `Customer` as name for the customer class. But it is also possible to use any other name. 
 > In this case, the configuration `general.customerPimcoreClass` for the customer class name has to be adapted. For details
-> see [Configuration chapter](./03_Configuration.md). 
+> see [Configuration chapter](../03_Configuration.md). 
       
 Of course your customer class can have additional attributes as needed.
    
 
 ## Configuration
 
-The CMF ships with an default configuration for basic functionality. To start up, no additional configuration should be 
+The CMF ships with a default configuration for basic functionality. To start up, no additional configuration should be 
 needed. To activate additional or customize existing functionality, please have a look at the 
-[configuration chapter](03_Configuration.md).  
+[configuration chapter](../03_Configuration.md).  
 
 #### Configure Symfony firewall
 To configure the symfony firewall for the webservices, add following line to your firewalls configuration
@@ -123,5 +123,5 @@ management framework (because the customer management framework does changes at 
 
 ## Setting Up necessary cron jobs
 There are several cron jobs needed by the CMF. These need to be configured and setup based on the solution requirements. 
-See [CronJob Docs](./04_Cronjobs.md) for details. 
+See [CronJob Docs](../04_Cronjobs.md) for details. 
 

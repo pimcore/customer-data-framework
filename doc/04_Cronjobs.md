@@ -13,14 +13,14 @@ This is needed for segments which could not be calculated directly for performan
 ``` 
 
 ### Action trigger queue
-Handles the execution of delayed actions in [ActionTrigger rules](ActionTrigger.md).
+Handles the execution of delayed actions in [ActionTrigger rules](./22_ActionTrigger.md).
 
 ```
 * * * * * php /home/project/www/bin/console.php cmf:process-actiontrigger-queue -v > /home/customerdataframework/www/website/var/log/cmf-process-actiontrigger-queue-lastrun.log 
 ```
 
 ### Cron Trigger
-This cronjob is needed if cron triggers are used in [ActionTrigger rules](ActionTrigger.md). Important: this needs to run once 
+This cronjob is needed if cron triggers are used in [ActionTrigger rules](./22_ActionTrigger.md). Important: this needs to run once 
 per minute!
 
 ```
@@ -53,7 +53,7 @@ Processes the newsletter queue. This job should run once every x minutes (e.g. e
 
 ### Mailchimp status sync
 Should run as a night job. Synchronizes status updates from Mailchimp to Pimcore if webhook calls failed. This is important to ensure data integrity also when the system is down for several hours.
-Setup a Pimcore user name (e.g. mailchimp-cli) in the CMF config - this user will be visible in the versions history (see [Configuration](Configuration.md)). The CLI user needs no special rights - it's just needed to identify the updates in the versions history.
+Setup a Pimcore user name (e.g. mailchimp-cli) in the CMF config - this user will be visible in the versions history (see [Configuration](./03_Configuration.md)). The CLI user needs no special rights - it's just needed to identify the updates in the versions history.
 ```
 * * * * * php /home/project/www/bin/console.php cmf:newsletter-sync -m > /home/project/www/log/cmf-mailchimp-status-sync-lastrun.log 
 ```

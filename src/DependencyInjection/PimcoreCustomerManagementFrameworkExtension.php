@@ -26,6 +26,7 @@ use CustomerManagementFrameworkBundle\CustomerSaveValidator\CustomerSaveValidato
 use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
+use Pimcore\Version;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -39,13 +40,19 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension 
      */
     public function prepend(ContainerBuilder $container)
     {
-        if ($container->hasExtension('doctrine_migrations')) {
-            $loader = new YamlFileLoader(
-                $container,
-                new FileLocator(__DIR__ . '/../Resources/config')
-            );
+        $loader = new YamlFileLoader(
+            $container,
+            new FileLocator(__DIR__ . '/../Resources/config')
+        );
 
+        if ($container->hasExtension('doctrine_migrations')) {
             $loader->load('doctrine_migrations.yml');
+        }
+
+        if ($container->hasExtension('pimcore_custom_reports')) {
+            $loader->load('custom_reports.yaml');
+        } elseif (Version::getMajorVersion() < 11) { //@TODO remove BC layer when dropping support for Pimcore 10
+            $loader->load('custom_reports_legacy.yml');
         }
     }
 

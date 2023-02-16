@@ -1,0 +1,16 @@
+pimcore_custom_reports:
+    adapters:
+        termSegmentBuilder: cmf.custom_report.adapter.term_segment_builder
+
+
+services:
+    _defaults:
+        public: true
+        autowire: true
+        autoconfigure: true
+
+
+    cmf.custom_report.adapter.term_segment_builder:
+        class: Pimcore\Bundle\CustomReportsBundle\Tool\Adapter\DefaultCustomReportAdapterFactory
+        arguments:
+            - 'CustomerManagementFrameworkBundle\CustomReport\Adapter\TermSegmentBuilder'

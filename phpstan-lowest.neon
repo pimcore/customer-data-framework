@@ -24,4 +24,16 @@ parameters:
 			message: "#^Comparison operation \"\\>\\=\" between 10 and 11 is always false\\.$#"
 			count: 1
 			path: src/Model/ActivityList/ActivityListInterface.php
+		-
+			message: "#^Call to an undefined static method CustomerManagementFrameworkBundle\\\\CustomReport\\\\Adapter\\\\TermSegmentBuilderBase\\:\\:getColumns\\(\\)\\.$#"
+			count: 1
+			path: src/CustomReport/Adapter/TermSegmentBuilder.php
+		-
+			message: "#^Access to an undefined property CustomerManagementFrameworkBundle\\\\CustomReport\\\\Adapter\\\\TermSegmentBuilder\\:\\:\\$config\\.$#"
+			count: 2
+			path: src/CustomReport/Adapter/TermSegmentBuilder.php
+		-
+			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\CustomReport\\\\Adapter\\\\TermSegmentBuilder\\:\\:buildQueryString\\(\\)\\.$#"
+			count: 1
+			path: src/CustomReport/Adapter/TermSegmentBuilder.php
 
