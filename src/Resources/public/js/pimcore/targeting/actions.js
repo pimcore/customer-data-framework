@@ -31,7 +31,7 @@
                     border: true,
                     style: "margin: 10px 0 0 0",
                     bodyStyle: "padding: 10px 30px 10px 30px; min-height:40px;",
-                    tbar: pimcore.settings.targeting.actions.getTopBar(this, id, panel),
+                    tbar: pimcore.bundle.personalization.settings.actions.getTopBar(this, id, panel),
                     items: [
                         {
                             name: "segment",
@@ -109,7 +109,7 @@
                     style: "margin: 10px 0 0 0",
                     labelWidth: 200,
                     bodyStyle: "padding: 10px 30px 10px 30px; min-height:40px;",
-                    tbar: pimcore.settings.targeting.actions.getTopBar(this, id, panel),
+                    tbar: pimcore.bundle.personalization.settings.actions.getTopBar(this, id, panel),
                     items: [
                         {
                             xtype: "combo",
@@ -198,7 +198,7 @@
                     style: "margin: 10px 0 0 0",
                     labelWidth: 50,
                     bodyStyle: "padding: 10px 30px 10px 30px; min-height:40px;",
-                    tbar: pimcore.settings.targeting.actions.getTopBar(this, id, panel),
+                    tbar: pimcore.bundle.personalization.settings.actions.getTopBar(this, id, panel),
                     items: [
                         {
                             xtype: "fieldcontainer",
@@ -275,7 +275,7 @@
                     style: "margin: 10px 0 0 0",
                     labelWidth: 50,
                     bodyStyle: "padding: 10px 30px 10px 30px; min-height:40px;",
-                    tbar: pimcore.settings.targeting.actions.getTopBar(this, id, panel),
+                    tbar: pimcore.bundle.personalization.settings.actions.getTopBar(this, id, panel),
                     items: [
                         {
                             fieldLabel: t("plugin_cmf_targeting_activity_type"),

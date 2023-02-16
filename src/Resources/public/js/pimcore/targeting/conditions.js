@@ -38,7 +38,7 @@
                     forceLayout: true,
                     style: "margin: 10px 0 0 0",
                     bodyStyle: "padding: 10px 30px 10px 30px; min-height:40px;",
-                    tbar: pimcore.settings.targeting.conditions.getTopBar(this, id, panel, data),
+                    tbar: pimcore.bundle.personalization.settings.conditions.getTopBar(this, id, panel, data),
                     items: [
                         {
                             name: "segment",
@@ -168,7 +168,7 @@
                     height: 110,
                     style: "margin: 10px 0 0 0",
                     bodyStyle: "padding: 10px 30px 10px 30px; height:80px;",
-                    tbar: pimcore.settings.targeting.conditions.getTopBar(this, id, panel, data),
+                    tbar: pimcore.bundle.personalization.settings.conditions.getTopBar(this, id, panel, data),
                     items: [
                         {
                             xtype: "hidden",
@@ -197,7 +197,7 @@
                     height: 110,
                     style: "margin: 10px 0 0 0",
                     bodyStyle: "padding: 10px 30px 10px 30px; height:80px;",
-                    tbar: pimcore.settings.targeting.conditions.getTopBar(this, id, panel, data),
+                    tbar: pimcore.bundle.personalization.settings.conditions.getTopBar(this, id, panel, data),
                     items: [
                         {
                             xtype: "hidden",
