@@ -25,13 +25,13 @@ use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
 use Pimcore\Bundle\PersonalizationBundle\Model\Tool\Targeting\Rule;
 use Pimcore\Bundle\PersonalizationBundle\Model\Tool\Targeting\TargetGroup;
 use Pimcore\Bundle\PersonalizationBundle\Targeting\ActionHandler\ActionHandlerInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\ActionHandler\AssignTargetGroup;
 use Pimcore\Bundle\PersonalizationBundle\Targeting\ConditionMatcherInterface;
 use Pimcore\Bundle\PersonalizationBundle\Targeting\DataLoaderInterface;
 use Pimcore\Bundle\PersonalizationBundle\Targeting\DataProviderDependentInterface;
 use Pimcore\Bundle\PersonalizationBundle\Targeting\Model\VisitorInfo;
 use Pimcore\Bundle\PersonalizationBundle\Targeting\Storage\TargetingStorageInterface;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
-use Pimcore\Targeting\ActionHandler\AssignTargetGroup;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ApplyTargetGroupsFromSegments implements ActionHandlerInterface, DataProviderDependentInterface
