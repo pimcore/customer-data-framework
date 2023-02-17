@@ -25,16 +25,6 @@ trait DefaultUserawareCustomerTrait
     }
 
     /**
-     * used for Symfony 5
-     */
-    public function getSalt()
-    {
-        // user has no salt as we use password_hash
-        // which handles the salt by itself
-        return null;
-    }
-
-    /**
      * By default email is used as username
      *
      * @return string

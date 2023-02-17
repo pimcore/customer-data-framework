@@ -107,10 +107,7 @@ class Dao extends Model\Dao\AbstractDao
             try {
                 $this->saveActions();
 
-                //TODO: Remove this if expression when dropping Pimcore 10 support
-                if (!class_exists('\Pimcore\Db\Connection')) {
-                    $data = Helper::quoteDataIdentifiers($this->db, $data);
-                }
+                $data = Helper::quoteDataIdentifiers($this->db, $data);
 
                 $this->db->update(self::TABLE_NAME, $data, ['id' => $this->model->getId()]);
                 $this->db->commit();
@@ -125,10 +122,7 @@ class Dao extends Model\Dao\AbstractDao
             $data['creationDate'] = $creationDate;
             $this->db->beginTransaction();
             try {
-                //TODO: Remove this if expression when dropping Pimcore 10 support
-                if (!class_exists('\Pimcore\Db\Connection')) {
-                    $data = Helper::quoteDataIdentifiers($this->db, $data);
-                }
+                $data = Helper::quoteDataIdentifiers($this->db, $data);
 
                 $this->db->insert(self::TABLE_NAME, $data);
                 $this->model->setId($this->db->fetchOne('SELECT LAST_INSERT_ID();'));
