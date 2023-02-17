@@ -17,10 +17,13 @@ namespace CustomerManagementFrameworkBundle\CustomReport\Adapter;
 
 use CustomerManagementFrameworkBundle\Model\AbstractTermSegmentBuilderDefinition;
 use Doctrine\DBAL\Exception;
+use Pimcore\Bundle\CustomReportsBundle\Tool\Adapter\Sql;
 use Pimcore\Db;
 use Pimcore\Model;
 
-class TermSegmentBuilder extends TermSegmentBuilderBase
+class_exists(Sql::class);
+
+class TermSegmentBuilder extends Sql
 {
     /**
      * @param mixed $configuration
