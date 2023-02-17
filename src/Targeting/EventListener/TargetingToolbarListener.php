@@ -20,9 +20,9 @@ namespace CustomerManagementFrameworkBundle\Targeting\EventListener;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
-use Pimcore\Event\Targeting\RenderToolbarEvent;
-use Pimcore\Event\TargetingEvents;
-use Pimcore\Targeting\VisitorInfoStorageInterface;
+use Pimcore\Bundle\PersonalizationBundle\Event\Targeting\RenderToolbarEvent;
+use Pimcore\Bundle\PersonalizationBundle\Event\TargetingEvents;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\VisitorInfoStorageInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class TargetingToolbarListener implements EventSubscriberInterface

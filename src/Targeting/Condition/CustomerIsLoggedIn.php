@@ -18,9 +18,9 @@ declare(strict_types=1);
 namespace CustomerManagementFrameworkBundle\Targeting\Condition;
 
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer;
-use Pimcore\Targeting\Condition\AbstractVariableCondition;
-use Pimcore\Targeting\DataProviderDependentInterface;
-use Pimcore\Targeting\Model\VisitorInfo;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\Condition\AbstractVariableCondition;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\DataProviderDependentInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\Model\VisitorInfo;
 
 class CustomerIsLoggedIn extends AbstractVariableCondition implements DataProviderDependentInterface
 {

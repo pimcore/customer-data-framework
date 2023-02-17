@@ -20,9 +20,9 @@ namespace CustomerManagementFrameworkBundle\Targeting\Condition;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\CustomerSegments;
-use Pimcore\Targeting\Condition\AbstractVariableCondition;
-use Pimcore\Targeting\DataProviderDependentInterface;
-use Pimcore\Targeting\Model\VisitorInfo;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\Condition\AbstractVariableCondition;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\DataProviderDependentInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\Model\VisitorInfo;
 
 class CustomerSegmentsHaveChanged extends AbstractVariableCondition implements DataProviderDependentInterface
 {

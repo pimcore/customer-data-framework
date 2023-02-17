@@ -22,9 +22,9 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer;
-use Pimcore\Targeting\DataLoaderInterface;
-use Pimcore\Targeting\Model\VisitorInfo;
-use Pimcore\Targeting\Storage\TargetingStorageInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\DataLoaderInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\Model\VisitorInfo;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\Storage\TargetingStorageInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**

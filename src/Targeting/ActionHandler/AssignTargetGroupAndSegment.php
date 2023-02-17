@@ -22,11 +22,11 @@ use CustomerManagementFrameworkBundle\GDPR\Consent\ConsentCheckerInterface;
 use CustomerManagementFrameworkBundle\Model\Activity\TargetGroupAssignActivity;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer;
-use Pimcore\Model\Tool\Targeting\Rule;
-use Pimcore\Model\Tool\Targeting\TargetGroup;
-use Pimcore\Targeting\ActionHandler\AssignTargetGroup;
-use Pimcore\Targeting\DataLoaderInterface;
-use Pimcore\Targeting\Model\VisitorInfo;
+use Pimcore\Bundle\PersonalizationBundle\Model\Tool\Targeting\Rule;
+use Pimcore\Bundle\PersonalizationBundle\Model\Tool\Targeting\TargetGroup;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\ActionHandler\AssignTargetGroup;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\DataLoaderInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\Model\VisitorInfo;
 
 class AssignTargetGroupAndSegment extends AssignTargetGroup
 {

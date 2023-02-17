@@ -21,11 +21,11 @@ use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer;
 use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
+use Pimcore\Bundle\PersonalizationBundle\Model\Tool\Targeting\Rule;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\ActionHandler\ActionHandlerInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\DataProviderDependentInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\Model\VisitorInfo;
 use Pimcore\Model\DataObject\CustomerSegment;
-use Pimcore\Model\Tool\Targeting\Rule;
-use Pimcore\Targeting\ActionHandler\ActionHandlerInterface;
-use Pimcore\Targeting\DataProviderDependentInterface;
-use Pimcore\Targeting\Model\VisitorInfo;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class TrackSegment implements ActionHandlerInterface, DataProviderDependentInterface

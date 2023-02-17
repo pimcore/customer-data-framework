@@ -15,9 +15,9 @@
 (function() {
     'use strict';
 
-    pimcore.settings.targeting.conditions.register(
+    pimcore.bundle.personalization.settings.conditions.register(
         'cmf_has_segment',
-        Class.create(pimcore.settings.targeting.condition.abstract, {
+        Class.create(pimcore.bundle.personalization.settings.condition.abstract, {
             getName: function () {
                 return t("plugin_cmf_targeting_condition_has_segment");
             },
@@ -38,7 +38,7 @@
                     forceLayout: true,
                     style: "margin: 10px 0 0 0",
                     bodyStyle: "padding: 10px 30px 10px 30px; min-height:40px;",
-                    tbar: pimcore.settings.targeting.conditions.getTopBar(this, id, panel, data),
+                    tbar: pimcore.bundle.personalization.settings.conditions.getTopBar(this, id, panel, data),
                     items: [
                         {
                             name: "segment",
@@ -152,9 +152,9 @@
     );
 
 
-    pimcore.settings.targeting.conditions.register(
+    pimcore.bundle.personalization.settings.conditions.register(
         'cmf_customer_is_loggedin',
-        Class.create(pimcore.settings.targeting.condition.abstract, {
+        Class.create(pimcore.bundle.personalization.settings.condition.abstract, {
             getName: function () {
                 return t("plugin_cmf_targeting_condition_customer_is_loggedin");
             },
@@ -168,7 +168,7 @@
                     height: 110,
                     style: "margin: 10px 0 0 0",
                     bodyStyle: "padding: 10px 30px 10px 30px; height:80px;",
-                    tbar: pimcore.settings.targeting.conditions.getTopBar(this, id, panel, data),
+                    tbar: pimcore.bundle.personalization.settings.conditions.getTopBar(this, id, panel, data),
                     items: [
                         {
                             xtype: "hidden",
@@ -181,9 +181,9 @@
         })
     );
 
-    pimcore.settings.targeting.conditions.register(
+    pimcore.bundle.personalization.settings.conditions.register(
         'cmf_customer_segments_have_changed',
-        Class.create(pimcore.settings.targeting.condition.abstract, {
+        Class.create(pimcore.bundle.personalization.settings.condition.abstract, {
             getName: function () {
                 return t("plugin_cmf_targeting_condition_customer_segments_have_changed");
             },
@@ -197,7 +197,7 @@
                     height: 110,
                     style: "margin: 10px 0 0 0",
                     bodyStyle: "padding: 10px 30px 10px 30px; height:80px;",
-                    tbar: pimcore.settings.targeting.conditions.getTopBar(this, id, panel, data),
+                    tbar: pimcore.bundle.personalization.settings.conditions.getTopBar(this, id, panel, data),
                     items: [
                         {
                             xtype: "hidden",

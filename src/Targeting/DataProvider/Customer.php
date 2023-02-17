@@ -18,8 +18,8 @@ declare(strict_types=1);
 namespace CustomerManagementFrameworkBundle\Targeting\DataProvider;
 
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use Pimcore\Targeting\DataProvider\DataProviderInterface;
-use Pimcore\Targeting\Model\VisitorInfo;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\DataProvider\DataProviderInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\Model\VisitorInfo;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class Customer implements DataProviderInterface

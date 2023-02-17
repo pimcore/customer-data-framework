@@ -19,6 +19,7 @@ use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\CustomerSaveM
 use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\NewsletterManagerPass;
 use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\SegmentManagerPass;
 use Pimcore\Bundle\ApplicationLoggerBundle\PimcoreApplicationLoggerBundle;
+use Pimcore\Bundle\PersonalizationBundle\PimcorePersonalizationBundle;
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
 use Pimcore\HttpKernel\Bundle\DependentBundleInterface;
@@ -79,5 +80,6 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle imp
     public static function registerDependentBundles(BundleCollection $collection): void
     {
         $collection->addBundle(PimcoreApplicationLoggerBundle::class);
+        $collection->addBundle(PimcorePersonalizationBundle::class);
     }
 }
