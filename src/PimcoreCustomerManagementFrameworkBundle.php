@@ -22,10 +22,11 @@ use Pimcore\Bundle\ApplicationLoggerBundle\PimcoreApplicationLoggerBundle;
 use Pimcore\Bundle\PersonalizationBundle\PimcorePersonalizationBundle;
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
+use Pimcore\HttpKernel\Bundle\DependentBundleInterface;
 use Pimcore\HttpKernel\BundleCollection\BundleCollection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
+class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle implements DependentBundleInterface
 {
     use PackageVersionTrait;
 

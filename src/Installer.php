@@ -36,7 +36,7 @@ class Installer extends SettingsStoreAwareInstaller
         $this->installDatabaseTables();
         $this->installClasses();
         $this->installBricks();
-        $this->installDepedentBundles();
+        $this->installDependentBundles();
 
         parent::install();
     }
