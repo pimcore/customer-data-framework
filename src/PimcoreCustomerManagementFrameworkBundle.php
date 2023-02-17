@@ -18,12 +18,14 @@ namespace CustomerManagementFrameworkBundle;
 use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\CustomerSaveManagerPass;
 use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\NewsletterManagerPass;
 use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\SegmentManagerPass;
+use Pimcore\Bundle\ApplicationLoggerBundle\PimcoreApplicationLoggerBundle;
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
+use Pimcore\HttpKernel\Bundle\DependentBundleInterface;
 use Pimcore\HttpKernel\BundleCollection\BundleCollection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
+class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle implements DependentBundleInterface
 {
     use PackageVersionTrait;
 
@@ -76,6 +78,6 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
 
     public static function registerDependentBundles(BundleCollection $collection): void
     {
-        $collection->addBundle(\Pimcore\Bundle\ApplicationLoggerBundle\PimcoreApplicationLoggerBundle::class);
+        $collection->addBundle(PimcoreApplicationLoggerBundle::class);
     }
 }
