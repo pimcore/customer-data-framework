@@ -36,6 +36,7 @@ class Installer extends SettingsStoreAwareInstaller
         $this->installDatabaseTables();
         $this->installClasses();
         $this->installBricks();
+        $this->installDepedentBundles();
 
         parent::install();
     }
@@ -241,12 +242,6 @@ class Installer extends SettingsStoreAwareInstaller
                 $db->executeQuery($statement);
             }
         }
-
-        $appLoggerInstaller = \Pimcore::getContainer()->get(\Pimcore\Bundle\ApplicationLoggerBundle\Installer::class);
-
-        if (!$appLoggerInstaller->isInstalled()) {
-            $appLoggerInstaller->install();
-        }
     }
 
     public function installClasses()
@@ -307,6 +302,15 @@ class Installer extends SettingsStoreAwareInstaller
             if (!$success) {
                 Logger::err("Could not import $brickKey brick.");
             }
+        }
+    }
+
+    public function installDependentBundles(): void
+    {
+        $appLoggerInstaller = \Pimcore::getContainer()->get(\Pimcore\Bundle\ApplicationLoggerBundle\Installer::class);
+
+        if (!$appLoggerInstaller->isInstalled()) {
+            $appLoggerInstaller->install();
         }
     }
 
