@@ -231,7 +231,7 @@ class Installer extends SettingsStoreAwareInstaller
             ]
         ];
 
-        $sqlFiles[__DIR__ . '/Resources/sql/segmentAssignment/'][] = 'storedFunctionObject_Pimcore11.sql';
+        $sqlFiles[__DIR__ . '/Resources/sql/segmentAssignment/'][] = 'storedFunctionObject.sql';
 
         $db = Db::get();
 
