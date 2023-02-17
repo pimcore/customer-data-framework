@@ -20,6 +20,7 @@ use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\NewsletterMan
 use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\SegmentManagerPass;
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
+use Pimcore\HttpKernel\BundleCollection\BundleCollection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
@@ -71,5 +72,10 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle
     public function getInstaller(): Installer
     {
         return $this->container->get(Installer::class);
+    }
+
+    public static function registerDependentBundles(BundleCollection $collection): void
+    {
+        $collection->addBundle(\Pimcore\Bundle\ApplicationLoggerBundle\PimcoreApplicationLoggerBundle::class);
     }
 }
