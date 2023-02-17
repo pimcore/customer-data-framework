@@ -19,7 +19,6 @@ use CustomerManagementFrameworkBundle\Migrations\PimcoreX\Version20210305134111;
 use Pimcore\Db;
 use Pimcore\Extension\Bundle\Installer\SettingsStoreAwareInstaller;
 use Pimcore\Logger;
-use Pimcore\Version;
 
 class Installer extends SettingsStoreAwareInstaller
 {
@@ -232,14 +231,7 @@ class Installer extends SettingsStoreAwareInstaller
             ]
         ];
 
-        /**
-         * @TODO remove when remove support for Pimcore 10
-         */
-        if (Version::getMajorVersion() >= 11) {
-            $sqlFiles[__DIR__ . '/Resources/sql/segmentAssignment/'][] = 'storedFunctionObject_Pimcore11.sql';
-        } else {
-            $sqlFiles[__DIR__ . '/Resources/sql/segmentAssignment/'][] = 'storedFunctionObject.sql';
-        }
+        $sqlFiles[__DIR__ . '/Resources/sql/segmentAssignment/'][] = 'storedFunctionObject.sql';
 
         $db = Db::get();
 
