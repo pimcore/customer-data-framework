@@ -37,7 +37,8 @@ parameters:
 			count: 1
 			path: src/CustomReport/Adapter/TermSegmentBuilder.php
 
-		-   message: "#^Elseif condition is always true\\.$#"
+		-
+		    message: "#^Elseif condition is always true\\.$#"
           	count: 1
           	path: src/Newsletter/ProviderHandler/Mailchimp/CustomerExporter/BatchExporter.php
 
