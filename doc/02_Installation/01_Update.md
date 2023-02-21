@@ -4,6 +4,7 @@
 - Removed the package "hwi/oauth-bundle".
 - Removed the support of  Single Sign On (SSO) implementation.
 - Execute SQL script `src/Resources/sql/segmentAssignment/storedFunctionObject.sql`, only for Pimcore 11.
+- Removed the config `pimcore_customer_management_framework.oauth_client`
 
 ## Update to Version 3.4
 - The Single Sign On (SSO) functionality is deprecated and will be removed in version 4.
