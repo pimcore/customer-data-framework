@@ -14,10 +14,10 @@
 
 (function() {
     'use strict';
+    pimcore.bundle.personalization.settings.actions.register(
 
-    pimcore.settings.targeting.actions.register(
         'cmf_track_segment',
-        Class.create(pimcore.settings.targeting.action.abstract, {
+        Class.create(pimcore.bundle.personalization.settings.action.abstract, {
             getName: function () {
                 return t("plugin_cmf_targeting_action_track_segment");
             },
@@ -31,7 +31,7 @@
                     border: true,
                     style: "margin: 10px 0 0 0",
                     bodyStyle: "padding: 10px 30px 10px 30px; min-height:40px;",
-                    tbar: pimcore.settings.targeting.actions.getTopBar(this, id, panel),
+                    tbar: pimcore.bundle.personalization.settings.actions.getTopBar(this, id, panel),
                     items: [
                         {
                             name: "segment",
@@ -92,9 +92,9 @@
         })
     );
 
-    pimcore.settings.targeting.actions.register(
+    pimcore.bundle.personalization.settings.actions.register(
         "assign_target_group",
-        Class.create(pimcore.settings.targeting.action.abstract, {
+        Class.create(pimcore.bundle.personalization.settings.action.abstract, {
             getName: function () {
                 return t('assign_target_group');
             },
@@ -109,7 +109,7 @@
                     style: "margin: 10px 0 0 0",
                     labelWidth: 200,
                     bodyStyle: "padding: 10px 30px 10px 30px; min-height:40px;",
-                    tbar: pimcore.settings.targeting.actions.getTopBar(this, id, panel),
+                    tbar: pimcore.bundle.personalization.settings.actions.getTopBar(this, id, panel),
                     items: [
                         {
                             xtype: "combo",
@@ -181,9 +181,9 @@
     );
 
 
-    pimcore.settings.targeting.actions.register(
+    pimcore.bundle.personalization.settings.actions.register(
         "cmf_apply_target_groups_from_segments",
-        Class.create(pimcore.settings.targeting.action.abstract, {
+        Class.create(pimcore.bundle.personalization.settings.action.abstract, {
             getName: function () {
                 return t('plugin_cmf_targeting_action_apply_target_groups_from_segments');
             },
@@ -198,7 +198,7 @@
                     style: "margin: 10px 0 0 0",
                     labelWidth: 50,
                     bodyStyle: "padding: 10px 30px 10px 30px; min-height:40px;",
-                    tbar: pimcore.settings.targeting.actions.getTopBar(this, id, panel),
+                    tbar: pimcore.bundle.personalization.settings.actions.getTopBar(this, id, panel),
                     items: [
                         {
                             xtype: "fieldcontainer",
@@ -258,9 +258,9 @@
         })
     );
 
-    pimcore.settings.targeting.actions.register(
+    pimcore.bundle.personalization.settings.actions.register(
         "cmf_track_activity",
-        Class.create(pimcore.settings.targeting.action.abstract, {
+        Class.create(pimcore.bundle.personalization.settings.action.abstract, {
             getName: function () {
                 return t('plugin_cmf_targeting_action_track_activity');
             },
@@ -275,7 +275,7 @@
                     style: "margin: 10px 0 0 0",
                     labelWidth: 50,
                     bodyStyle: "padding: 10px 30px 10px 30px; min-height:40px;",
-                    tbar: pimcore.settings.targeting.actions.getTopBar(this, id, panel),
+                    tbar: pimcore.bundle.personalization.settings.actions.getTopBar(this, id, panel),
                     items: [
                         {
                             fieldLabel: t("plugin_cmf_targeting_activity_type"),

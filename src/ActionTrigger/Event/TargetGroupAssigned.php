@@ -20,8 +20,8 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger\Event;
 use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\ActionTrigger\Trigger\TriggerDefinitionInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
-use Pimcore\Model\Tool\Targeting\TargetGroup;
-use Pimcore\Targeting\Model\VisitorInfo;
+use Pimcore\Bundle\PersonalizationBundle\Model\Tool\Targeting\TargetGroup;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\Model\VisitorInfo;
 
 class TargetGroupAssigned extends AbstractSingleCustomerEvent implements RuleEnvironmentAwareEventInterface
 {

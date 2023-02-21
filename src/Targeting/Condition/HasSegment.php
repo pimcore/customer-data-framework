@@ -20,12 +20,12 @@ namespace CustomerManagementFrameworkBundle\Targeting\Condition;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\CustomerSegments;
 use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\Condition\AbstractVariableCondition;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\DataProvider\TargetingStorage;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\DataProviderDependentInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\Model\VisitorInfo;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\Storage\TargetingStorageInterface;
 use Pimcore\Model\DataObject\CustomerSegment;
-use Pimcore\Targeting\Condition\AbstractVariableCondition;
-use Pimcore\Targeting\DataProvider\TargetingStorage;
-use Pimcore\Targeting\DataProviderDependentInterface;
-use Pimcore\Targeting\Model\VisitorInfo;
-use Pimcore\Targeting\Storage\TargetingStorageInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class HasSegment extends AbstractVariableCondition implements DataProviderDependentInterface

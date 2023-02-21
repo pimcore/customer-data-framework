@@ -21,11 +21,11 @@ use CustomerManagementFrameworkBundle\ActivityManager\ActivityManagerInterface;
 use CustomerManagementFrameworkBundle\GDPR\Consent\ConsentCheckerInterface;
 use CustomerManagementFrameworkBundle\Model\Activity\GenericActivity;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer;
-use Pimcore\Model\Tool\Targeting\Rule;
-use Pimcore\Targeting\ActionHandler\ActionHandlerInterface;
-use Pimcore\Targeting\DataLoaderInterface;
-use Pimcore\Targeting\DataProviderDependentInterface;
-use Pimcore\Targeting\Model\VisitorInfo;
+use Pimcore\Bundle\PersonalizationBundle\Model\Tool\Targeting\Rule;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\ActionHandler\ActionHandlerInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\DataLoaderInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\DataProviderDependentInterface;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\Model\VisitorInfo;
 
 class TrackActivity implements ActionHandlerInterface, DataProviderDependentInterface
 {

@@ -17,10 +17,10 @@ namespace CustomerManagementFrameworkBundle\Event;
 
 use CustomerManagementFrameworkBundle\ActionTrigger\Event\TargetGroupAssigned;
 use CustomerManagementFrameworkBundle\Targeting\DataProvider\Customer;
-use Pimcore\Event\Targeting\AssignDocumentTargetGroupEvent;
-use Pimcore\Event\Targeting\TargetingRuleEvent;
-use Pimcore\Model\Tool\Targeting\TargetGroup;
-use Pimcore\Targeting\DataLoaderInterface;
+use Pimcore\Bundle\PersonalizationBundle\Event\Targeting\AssignDocumentTargetGroupEvent;
+use Pimcore\Bundle\PersonalizationBundle\Event\Targeting\TargetingRuleEvent;
+use Pimcore\Bundle\PersonalizationBundle\Model\Tool\Targeting\TargetGroup;
+use Pimcore\Bundle\PersonalizationBundle\Targeting\DataLoaderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 

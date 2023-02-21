@@ -302,6 +302,12 @@ class Installer extends SettingsStoreAwareInstaller
         if (!$appLoggerInstaller->isInstalled()) {
             $appLoggerInstaller->install();
         }
+
+        $personalizationInstaller = \Pimcore::getContainer()->get(\Pimcore\Bundle\PersonalizationBundle\Installer::class);
+
+        if (!$personalizationInstaller->isInstalled()) {
+            $personalizationInstaller->install();
+        }
     }
 
     public function getLastMigrationVersionClassName(): ?string

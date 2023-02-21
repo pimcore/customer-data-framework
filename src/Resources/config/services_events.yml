@@ -56,5 +56,5 @@ services:
 
     CustomerManagementFrameworkBundle\Event\TargetingEventListener:
         tags:
-            - { name: kernel.event_listener, event: pimcore.targeting.assign_document_target_group, method: onAssignDocumentTargetGroup }
-            - { name: kernel.event_listener, event: pimcore.targeting.post_rule_actions, method: onPostRuleActions }
+            - { name: kernel.event_listener, event: pimcore_personalization.targeting.assign_document_target_group, method: onAssignDocumentTargetGroup }
+            - { name: kernel.event_listener, event: pimcore_personalization.targeting.post_rule_actions, method: onPostRuleActions }

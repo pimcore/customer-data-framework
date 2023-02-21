@@ -20,8 +20,8 @@ namespace CustomerManagementFrameworkBundle\Targeting\EventListener;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use CustomerManagementFrameworkBundle\Targeting\SegmentTracker;
-use Pimcore\Event\Targeting\TargetingEvent;
-use Pimcore\Event\TargetingEvents;
+use Pimcore\Bundle\PersonalizationBundle\Event\Targeting\TargetingEvent;
+use Pimcore\Bundle\PersonalizationBundle\Event\TargetingEvents;
 use Pimcore\Http\Request\Resolver\DocumentResolver;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
