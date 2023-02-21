@@ -91,7 +91,7 @@ So the steps to enable the webhook are as following:
 - Create a Pimcore user for handling the webhook (e.g. "mailchimp-webhook"). 
 - Generate an api key for the Pimcore user.
 - Add a webhook in the MailChimp web interface with the following URL: 
-  `https://mydomain.com/webservice/cmf/mailchimp/webhook?apikey=53c5f6f3427545e712fe59ce043489f86ee0eb4b64a7c098d89d4288167eec1c`
+  `https://mydomain.com/__customermanagementframework/webservice/mailchimp/webhook?apikey=53c5f6f3427545e712fe59ce043489f86ee0eb4b64a7c098d89d4288167eec1c`
   The webhook needs to be configured like this:
   ![Webhook options](../img/mailchimp/mailchimp-webhook-options.png)
 
