@@ -39,6 +39,6 @@ parameters:
 
 		-
 		    message: "#^Elseif condition is always true\\.$#"
-          	count: 1
-          	path: src/Newsletter/ProviderHandler/Mailchimp/CustomerExporter/BatchExporter.php
+		    count: 1
+		    path: src/Newsletter/ProviderHandler/Mailchimp/CustomerExporter/BatchExporter.php
 
