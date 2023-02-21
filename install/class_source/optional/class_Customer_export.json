@@ -1647,37 +1647,6 @@
                                         "invisible": true,
                                         "visibleGridView": false,
                                         "visibleSearch": false
-                                    },
-                                    {
-                                        "fieldtype": "manyToManyObjectRelation",
-                                        "width": "",
-                                        "height": "",
-                                        "maxItems": null,
-                                        "phpdocType": "array",
-                                        "relationType": true,
-                                        "visibleFields": null,
-                                        "allowToCreateNewObject": true,
-                                        "optimizedAdminLoading": false,
-                                        "visibleFieldDefinitions": [],
-                                        "classes": [
-                                            {
-                                                "classes": "SsoIdentity"
-                                            }
-                                        ],
-                                        "pathFormatterClass": "",
-                                        "name": "ssoIdentities",
-                                        "title": "SSO Identities",
-                                        "tooltip": "",
-                                        "mandatory": false,
-                                        "noteditable": false,
-                                        "index": null,
-                                        "locked": false,
-                                        "style": "",
-                                        "permissions": null,
-                                        "datatype": "data",
-                                        "invisible": false,
-                                        "visibleGridView": false,
-                                        "visibleSearch": false
                                     }
                                 ],
                                 "locked": false,
