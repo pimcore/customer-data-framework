@@ -705,7 +705,7 @@ class FilterDefinition extends AbstractModel
     public function getOwner()
     {
         // check if owner id is set
-        if (is_null($this->ownerId) || !is_int($this->ownerId)) {
+        if (is_null($this->ownerId)) {
             return null;
         }
         // try to load user by id
