@@ -22,7 +22,7 @@ class Standard implements DataTransformerInterface
     public function transform($data, $options = [])
     {
         if ($data instanceof \DateTime) {
-            $data = $data->format(\DateTimeInterface::ISO8601);
+            $data = $data->format(\DateTimeInterface::ATOM);
         }
 
         return trim(strtolower(str_replace('  ', ' ', $data)));

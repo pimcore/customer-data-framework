@@ -69,7 +69,7 @@ class CliSyncProcessor
 
                 // get updates from the last 30 days
                 $date = Carbon::createFromTimestamp(time() - (60 * 60 * 24 * 30));
-                $date = $date->toIso8601String();
+                $date = $date->toAtomString();
 
                 $count = 20;
                 $page = 0;
