@@ -57,7 +57,7 @@
                                         {{ 'cmf_activities_details' | trans({}, 'admin') }}
                                     </a>
                                 </td>
-                                <td width="160">{{ activity.activityDate.formatLocalized('%x %X') }}</td>
+                                <td width="160">{{ activity.activityDate.isoFormat('L LTS') }}</td>
                                 <td>
 
                                     {% set data = activityView.overviewAdditionalData(activity) %}
