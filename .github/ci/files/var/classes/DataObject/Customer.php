@@ -26,7 +26,6 @@ Fields Summary:
 - manualSegments [advancedManyToManyObjectRelation]
 - calculatedSegments [advancedManyToManyObjectRelation]
 - password [password]
-- ssoIdentities [manyToManyObjectRelation]
 - passwordRecoveryToken [input]
 - passwordRecoveryTokenDate [datetime]
 */
@@ -55,7 +54,6 @@ use Pimcore\Model\DataObject\PreGetValueHookInterface;
 * @method static \Pimcore\Model\DataObject\Customer\Listing|\Pimcore\Model\DataObject\Customer|null getByNewsletterConfirmToken($value, $limit = 0, $offset = 0, $objectTypes = null)
 * @method static \Pimcore\Model\DataObject\Customer\Listing|\Pimcore\Model\DataObject\Customer|null getByManualSegments($value, $limit = 0, $offset = 0, $objectTypes = null)
 * @method static \Pimcore\Model\DataObject\Customer\Listing|\Pimcore\Model\DataObject\Customer|null getByCalculatedSegments($value, $limit = 0, $offset = 0, $objectTypes = null)
-* @method static \Pimcore\Model\DataObject\Customer\Listing|\Pimcore\Model\DataObject\Customer|null getBySsoIdentities($value, $limit = 0, $offset = 0, $objectTypes = null)
 * @method static \Pimcore\Model\DataObject\Customer\Listing|\Pimcore\Model\DataObject\Customer|null getByPasswordRecoveryToken($value, $limit = 0, $offset = 0, $objectTypes = null)
 * @method static \Pimcore\Model\DataObject\Customer\Listing|\Pimcore\Model\DataObject\Customer|null getByPasswordRecoveryTokenDate($value, $limit = 0, $offset = 0, $objectTypes = null)
 */
@@ -84,7 +82,6 @@ protected $profiling;
 protected $manualSegments;
 protected $calculatedSegments;
 protected $password;
-protected $ssoIdentities;
 protected $passwordRecoveryToken;
 protected $passwordRecoveryTokenDate;
 
