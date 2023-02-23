@@ -4,9 +4,6 @@ parameters:
         - src
     bootstrapFiles:
         - phpstan-bootstrap.php
-    stubFiles:
-        - stubs/AccountNotLinkedException.stub
-        - stubs/OAuthUtils.stub
     excludePaths:
             - src/CustomReport/Adapter/TermSegmentBuilderBase.php
 includes:
