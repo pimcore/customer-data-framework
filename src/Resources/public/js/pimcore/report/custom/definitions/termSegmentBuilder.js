@@ -11,7 +11,7 @@
  *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
-if (typeof pimcore.report.custom != 'undefined') {
+if (typeof pimcore.report != 'undefined') {
     pimcore.registerNS("pimcore.report.custom.definition.termSegmentBuilder");
     pimcore.report.custom.definition.termSegmentBuilder = createTermSegmentBuilderClass();
 } else {
