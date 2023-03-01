@@ -58,7 +58,7 @@ class TermSegmentBuilder extends Model\Tool\CustomReport\Adapter\Sql
         $selectField = null
     ) {
         $db = Db::get();
-        $condition = ['1 = 1'];
+        $conditions = ['1 = 1'];
 
         $sql = $this->buildQueryString($this->config, $ignoreSelectAndGroupBy, $drillDownFilters, $selectField);
 
@@ -78,18 +78,18 @@ class TermSegmentBuilder extends Model\Tool\CustomReport\Adapter\Sql
         $allTerms = false;
         if (sizeof($allMatchingTerms)) {
             foreach ($allMatchingTerms as $term) {
-                if (@preg_match($term, null) !== false) {
+                if (@preg_match($term, '') !== false) {
                     if ($allTerms === false) {
                         //MySQL regexp function doesn't work the same way like PHP regex matching => therfore we need to fetch all distinct terms and match them with PHP
-                        $allTerms = $db->fetchFirstColumn($sql);
+                        $allTerms = $sql->execute()->fetchFirstColumn();
                     }
                     foreach ($allTerms as $t) {
                         if (@preg_match($term, $t)) {
-                            $condition[] = 'term != '.$db->quote($t);
+                            $conditions[] = $sql->expr()->neq('term', $db->quote($t));
                         }
                     }
                 } else {
-                    $condition[] = 'term != '.$db->quote($term);
+                    $conditions[] = $sql->expr()->neq('term', $db->quote($term));
                 }
             }
         }
@@ -105,41 +105,55 @@ class TermSegmentBuilder extends Model\Tool\CustomReport\Adapter\Sql
                     $operator = $filter['operator'];
                     switch ($operator) {
                         case 'like':
-                            $condition[] = $db->quoteIdentifier($filter['property']).' LIKE '.$db->quote(
-                                    '%'.$value.'%'
-                                );
+                            $conditions[] = $sql->expr()->like(
+                                $db->quoteIdentifier($filter['property']),
+                                $db->quote($value)
+                            );
                             break;
                         case 'lt':
                         case 'gt':
                         case 'eq':
-
-                            $compMapping = [
-                                'lt' => '<',
-                                'gt' => '>',
-                                'eq' => '=',
-                            ];
-
-                            $condition[] = $db->quoteIdentifier(
-                                    $filter['property']
-                                ).' '.$compMapping[$operator].' '.$db->quote($value);
+                            $conditions[] = $sql->expr()->{$operator}(
+                                $db->quoteIdentifier($filter['property']),
+                                $db->quote($value)
+                            );
                             break;
                         case '=':
-                            $condition[] = $db->quoteIdentifier($filter['property']).' = '.$db->quote($value);
+                            $conditions[] = $sql->expr()->eq(
+                                $db->quoteIdentifier($filter['property']),
+                                $db->quote($value)
+                            );
                             break;
                     }
                 }
             }
         }
 
-        if (!preg_match('/(ALTER|CREATE|DROP|RENAME|TRUNCATE|UPDATE|DELETE) /i', $sql, $matches)) {
-            $condition = implode(' AND ', $condition);
+        if (!preg_match('/(ALTER|CREATE|DROP|RENAME|TRUNCATE|UPDATE|DELETE) /i', $sql->getSQL(), $matches)) {
+            $total = $db->createQueryBuilder()
+                ->select('count(*)')
+                ->from('(' .$sql .') AS somerandxyz');
 
-            $total = 'SELECT COUNT(*) FROM ('.$sql.') AS somerandxyz WHERE '.$condition;
+            foreach ($conditions as $condition){
+                $total->where($condition);
+            }
 
             if ($fields) {
-                $data = 'SELECT `'.implode('`, `', $fields).'` FROM ('.$sql.') AS somerandxyz WHERE '.$condition;
+                $data = $db->createQueryBuilder()
+                    ->select('`' .implode('`, `', $fields) . '`')
+                    ->from('(' .$sql .') AS somerandxyz');
+
+                foreach ($conditions as $condition){
+                    $total->where($condition);
+                }
             } else {
-                $data = 'SELECT * FROM ('.$sql.') AS somerandxyz WHERE '.$condition;
+                $data = $db->createQueryBuilder()
+                    ->select('*')
+                    ->from('(' .$sql .') AS somerandxyz');
+
+                foreach ($conditions as $condition){
+                    $total->where($condition);
+                }
             }
         } else {
             return null;
