@@ -134,7 +134,7 @@ class TermSegmentBuilder extends Model\Tool\CustomReport\Adapter\Sql
                 ->select('count(*)')
                 ->from('(' .$sql .') AS somerandxyz');
 
-            foreach ($conditions as $condition){
+            foreach ($conditions as $condition) {
                 $total->where($condition);
             }
 
@@ -143,7 +143,7 @@ class TermSegmentBuilder extends Model\Tool\CustomReport\Adapter\Sql
                     ->select('`' .implode('`, `', $fields) . '`')
                     ->from('(' .$sql .') AS somerandxyz');
 
-                foreach ($conditions as $condition){
+                foreach ($conditions as $condition) {
                     $total->where($condition);
                 }
             } else {
@@ -151,7 +151,7 @@ class TermSegmentBuilder extends Model\Tool\CustomReport\Adapter\Sql
                     ->select('*')
                     ->from('(' .$sql .') AS somerandxyz');
 
-                foreach ($conditions as $condition){
+                foreach ($conditions as $condition) {
                     $total->where($condition);
                 }
             }
