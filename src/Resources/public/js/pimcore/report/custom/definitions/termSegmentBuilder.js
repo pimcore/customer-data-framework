@@ -11,13 +11,8 @@
  *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
-if (typeof pimcore.report.custom != 'undefined') {
-    pimcore.registerNS("pimcore.report.custom.definition.termSegmentBuilder");
-    pimcore.report.custom.definition.termSegmentBuilder = createTermSegmentBuilderClass();
-} else {
-    pimcore.registerNS("pimcore.bundle.customreports.custom.definition.termSegmentBuilder");
-    pimcore.bundle.customreports.custom.definition.termSegmentBuilder = createTermSegmentBuilderClass();
-}
+pimcore.registerNS("pimcore.bundle.customreports.custom.definition.termSegmentBuilder");
+pimcore.bundle.customreports.custom.definition.termSegmentBuilder = createTermSegmentBuilderClass();
 
 function createTermSegmentBuilderClass() {
     return Class.create({
