@@ -457,7 +457,7 @@ class BatchExporter extends AbstractExporter
                     'relatedObject' => $customer
                 ]
             );
-        } elseif ($customer) {
+        } else {
             $this->getLogger()->error(
                 sprintf(
                     '[MailChimp][CUSTOMER %s][%s] Deletion failed. Remote ID is %s. [error: %s]',

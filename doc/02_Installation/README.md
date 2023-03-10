@@ -99,6 +99,14 @@ Note that the class doesn't need to contain the attributes as field definitions.
       
 Of course your customer class can have additional attributes as needed.
    
+## Segment Assignments Stored Functions
+The installer creates stored functions on database for auto assigning segments on Assets, Documents & DataObjects. In case this fails,
+Please import stored functions manually by defining a delimiter other than `;` with following files:
+```
+/Resources/sql/segmentAssignment/storedFunctionDocument.sql
+/Resources/sql/segmentAssignment/storedFunctionAsset.sql
+/Resources/sql/segmentAssignment/storedFunctionObject.sql
+```
 
 ## Configuration
 
