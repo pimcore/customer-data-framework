@@ -101,11 +101,6 @@ parameters:
 			path: src/Newsletter/ProviderHandler/Mailchimp/CliSyncProcessor.php
 
 		-
-			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\Model\\\\CustomerInterface\\:\\:needsExportByNewsletterProviderHandler\\(\\)\\.$#"
-			count: 1
-			path: src/Newsletter/ProviderHandler/Mailchimp/CustomerExporter/BatchExporter.php
-
-		-
 			message: "#^Call to an undefined method Knp\\\\Component\\\\Pager\\\\Pagination\\\\PaginationInterface\\:\\:getPaginationData\\(\\)\\.$#"
 			count: 2
 			path: src/Newsletter/Queue/DefaultNewsletterQueue.php
