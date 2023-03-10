@@ -222,15 +222,18 @@ class Installer extends SettingsStoreAwareInstaller
             __DIR__ . '/Resources/sql/filterDefinition/' => [
                 'datamodel.sql'
             ],
+            __DIR__ . '/Resources/sql/activityMetadata/' => [
+                'datamodel.sql'
+            ]
+        ];
+
+        $storedFunctions = [
             __DIR__ . '/Resources/sql/segmentAssignment/' => [
                 'datamodel.sql',
                 'storedFunctionDocument.sql',
                 'storedFunctionAsset.sql',
                 'storedFunctionObject.sql',
             ],
-            __DIR__ . '/Resources/sql/activityMetadata/' => [
-                'datamodel.sql'
-            ]
         ];
 
         $db = Db::get();
@@ -239,6 +242,13 @@ class Installer extends SettingsStoreAwareInstaller
             foreach ($files as $file) {
                 $statement = file_get_contents($folder.$file);
                 $db->executeQuery($statement);
+            }
+        }
+
+        foreach ($storedFunctions as $folder => $files) {
+            foreach ($files as $file) {
+                $statement = file_get_contents($folder.$file);
+                $db->executeStatement($statement);
             }
         }
     }
