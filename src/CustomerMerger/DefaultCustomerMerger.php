@@ -128,7 +128,9 @@ class DefaultCustomerMerger implements CustomerMergerInterface
         Objects::addObjectsToArray($manualSegments, (array)$targetCustomer->getManualSegments());
         $targetCustomer->setManualSegments($manualSegments);
 
-        $this->mergeActivities($sourceCustomer, $targetCustomer);
+        if ($sourceCustomer->getId()) {
+            $this->mergeActivities($sourceCustomer, $targetCustomer);
+        }
     }
 
     /**
