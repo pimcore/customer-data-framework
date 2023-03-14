@@ -45,6 +45,6 @@ trait PrimaryKeyTrait
             RuntimeCache::set($cacheKey, $primaryKeyColumns);
         }
 
-        return$primaryKeyColumns;
+        return $primaryKeyColumns;
     }
 }
