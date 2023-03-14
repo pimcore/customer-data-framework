@@ -33,7 +33,7 @@ class WebhookController extends AbstractRestController
      * @param Request $request
      * @Route("/mailchimp/webhook", methods={"GET","POST"})
      */
-    public function process(Request $request)
+    public function process(Request $request, NewsletterManagerInterface $newsletterManager)
     {
         $result = Webhook::receive();
 
@@ -41,11 +41,6 @@ class WebhookController extends AbstractRestController
         $logger->info('webhook received: ' . ($result ? json_encode($result) : 'false'));
 
         if ($result) {
-            /**
-             * @var NewsletterManagerInterface $newsletterManager
-             */
-            $newsletterManager = $this->container->get(NewsletterManagerInterface::class);
-
             foreach ($newsletterManager->getNewsletterProviderHandlers() as $newsletterProviderHandler) {
                 if ($newsletterProviderHandler instanceof Mailchimp) {
                     $newsletterProviderHandler->processWebhook($result, $logger);
