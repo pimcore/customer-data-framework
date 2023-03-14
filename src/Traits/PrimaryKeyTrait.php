@@ -11,10 +11,9 @@ declare(strict_types=1);
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PCL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
-
 
 namespace CustomerManagementFrameworkBundle\Traits;
 
@@ -26,7 +25,7 @@ trait PrimaryKeyTrait
 {
     private string $cacheKey = 'system_resource_primary_columns_';
 
-    public function getPrimaryKey(Connection $db, string $table, bool $cache = true) : array
+    public function getPrimaryKey(Connection $db, string $table, bool $cache = true): array
     {
         $cacheKey = $this->cacheKey . $table;
 
