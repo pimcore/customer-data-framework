@@ -31,6 +31,10 @@ class WebhookController extends AbstractRestController
 {
     /**
      * @param Request $request
+     * @param NewsletterManagerInterface $newsletterManager
+     * 
+     * @return JsonResponse
+     *
      * @Route("/mailchimp/webhook", methods={"GET","POST"})
      */
     public function process(Request $request, NewsletterManagerInterface $newsletterManager)
