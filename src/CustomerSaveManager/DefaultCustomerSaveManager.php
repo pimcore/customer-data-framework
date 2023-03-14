@@ -25,6 +25,7 @@ use CustomerManagementFrameworkBundle\Model\NewsletterAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentBuilderExecutor\SegmentBuilderExecutorInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use CustomerManagementFrameworkBundle\Traits\PrimaryKeyTrait;
 use Pimcore\Bundle\CoreBundle\EventListener\Traits\PimcoreContextAwareTrait;
 use Pimcore\Db;
 use Pimcore\Db\Helper;
@@ -38,6 +39,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     use LoggerAware;
     use LegacyTrait;
     use PimcoreContextAwareTrait;
+    use PrimaryKeyTrait;
 
     /**
      * @var SaveOptions
@@ -273,14 +275,15 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
     protected function addToDeletionsTable(CustomerInterface $customer)
     {
         $db = Db::get();
-        Helper::insertOrUpdate(
+        Helper::upsert(
             $db,
             'plugin_cmf_deletions',
             [
                 'id' => $customer->getId(),
                 'creationDate' => time(),
                 'entityType' => 'customers',
-            ]
+            ],
+            $this->getPrimaryKey($db, 'plugin_cmf_deletions')
         );
     }
 
