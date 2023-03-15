@@ -32,7 +32,7 @@ class WebhookController extends AbstractRestController
     public static function getSubscribedServices(): array
     {
         $services = parent::getSubscribedServices();
-        $services[NewsletterManagerInterface::class] = NewsletterManagerInterface::class;
+        $services[NewsletterManagerInterface::class] = '?'.NewsletterManagerInterface::class;
 
         return $services;
     }
