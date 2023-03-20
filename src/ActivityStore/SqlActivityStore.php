@@ -20,6 +20,7 @@ use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
+use CustomerManagementFrameworkBundle\Traits\PrimaryKeyTrait;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Knp\Component\Pager\PaginatorInterface;
@@ -30,6 +31,7 @@ use Pimcore\Model\DataObject\Concrete;
 abstract class SqlActivityStore
 {
     use LoggerAware;
+    use PrimaryKeyTrait;
 
     const ACTIVITIES_TABLE = 'plugin_cmf_activities';
     const ACTIVITIES_METADATA_TABLE = 'plugin_cmf_activities_metadata';
@@ -274,11 +276,10 @@ abstract class SqlActivityStore
     {
         $db = Db::get();
         $db->beginTransaction();
-
         try {
             $db->executeQuery('DELETE FROM '.self::ACTIVITIES_TABLE.' WHERE id = ?', [$entry->getId()]);
 
-            Helper::insertOrUpdate(
+            Helper::upsert(
                 $db,
                 self::DELETIONS_TABLE,
                 [
@@ -286,7 +287,8 @@ abstract class SqlActivityStore
                     'creationDate' => time(),
                     'entityType' => 'activities',
                     'type' => $entry->getType(),
-                ]
+                ],
+                $this->getPrimaryKey($db, self::DELETIONS_TABLE)
             );
 
             $db->commit();

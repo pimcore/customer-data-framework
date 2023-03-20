@@ -353,7 +353,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
         try {
             $db->executeQuery('DELETE FROM '.self::ACTIVITIES_TABLE.' WHERE id = ?', [$entry->getId()]);
 
-            Helper::insertOrUpdate(
+            Helper::upsert(
                 $db,
                 self::DELETIONS_TABLE,
                 [
@@ -361,7 +361,8 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
                     'creationDate' => time(),
                     'entityType' => 'activities',
                     'type' => $entry->getType(),
-                ]
+                ],
+                $this->getPrimaryKey($db, self::DELETIONS_TABLE)
             );
 
             $db->commit();
