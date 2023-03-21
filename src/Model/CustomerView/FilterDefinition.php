@@ -150,6 +150,9 @@ class FilterDefinition extends AbstractModel
      */
     public function setAllowedUserIds(array $allowedUserIds)
     {
+        // convert ids of string to ids of int
+        $allowedUserIds = array_map('intval', $allowedUserIds);
+
         // prevent duplicate ids
         $preparedAllowedUserIds = array_unique($allowedUserIds);
         // sort ascending
