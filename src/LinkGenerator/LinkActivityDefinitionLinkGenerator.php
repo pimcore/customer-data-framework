@@ -16,7 +16,6 @@
 namespace CustomerManagementFrameworkBundle\LinkGenerator;
 
 use Pimcore\Model\DataObject\ClassDefinition\LinkGeneratorInterface;
-use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\LinkActivityDefinition;
 use Pimcore\Model\Document;
 use Pimcore\Model\Site;
