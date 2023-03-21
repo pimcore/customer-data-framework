@@ -159,6 +159,8 @@ class MySqlDao implements DaoInterface
 
     public function setModel(AbstractModel $model): static
     {
+        $this->model = $model;
+        
         return $this;
     }
 }
