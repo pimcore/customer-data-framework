@@ -123,7 +123,7 @@ class Dao extends AbstractDao
             self::ATTRIBUTE_CREATION_DATE => $this->model->getCreationDate(),
             self::ATTRIBUTE_MODIFICATION_DATE => $this->model->getModificationDate(),
         ]);
-        Helper::insertOrUpdate($this->db, self::TABLE_NAME, $data);
+        Helper::upsert($this->db, self::TABLE_NAME, $data, $this->getPrimaryKey(self::TABLE_NAME));
 
         if (!$this->model->getId()) {
             // TODO insecure, could be another id
