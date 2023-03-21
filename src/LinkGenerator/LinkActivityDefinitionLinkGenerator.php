@@ -37,7 +37,7 @@ class LinkActivityDefinitionLinkGenerator implements LinkGeneratorInterface
      *
      * @return string
      */
-    public function generate(Concrete $object, array $params = []): string
+    public function generate(object $object, array $params = []): string
     {
 
         // workarround to let it work in cross site links
