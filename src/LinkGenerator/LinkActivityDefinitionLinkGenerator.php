@@ -16,7 +16,6 @@
 namespace CustomerManagementFrameworkBundle\LinkGenerator;
 
 use Pimcore\Model\DataObject\ClassDefinition\LinkGeneratorInterface;
-use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\LinkActivityDefinition;
 use Pimcore\Model\Document;
 use Pimcore\Model\Site;
@@ -37,7 +36,7 @@ class LinkActivityDefinitionLinkGenerator implements LinkGeneratorInterface
      *
      * @return string
      */
-    public function generate(Concrete $object, array $params = []): string
+    public function generate(object $object, array $params = []): string
     {
 
         // workarround to let it work in cross site links
