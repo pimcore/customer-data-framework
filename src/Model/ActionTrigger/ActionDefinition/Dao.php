@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\Model\ActionTrigger\ActionDefinition;
 
+use Pimcore\Db\Helper;
 use Pimcore\Model;
 
 /**
@@ -47,6 +48,7 @@ class Dao extends Model\Dao\AbstractDao
             'implementationClass' => $this->model->getImplementationClass(),
             'options' => json_encode($this->model->getOptions()),
         ];
+        $data = Helper::quoteDataIdentifiers($this->db, $data);
 
         if ($this->model->getId()) {
             $this->db->update(self::TABLE_NAME, $data, ['id' => $this->model->getId()]);
