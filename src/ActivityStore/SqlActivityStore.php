@@ -113,8 +113,6 @@ abstract class SqlActivityStore
         $data['md5'] = md5(serialize($md5Data));
         $data['modificationDate'] = $time;
 
-
-
         $db->beginTransaction();
 
         try {
