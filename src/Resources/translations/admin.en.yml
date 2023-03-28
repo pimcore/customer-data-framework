@@ -116,6 +116,7 @@ cmf_filter_definition_errors_access: "Not allowed to access filter."
 cmf_filter_definition_errors_change: "Not allowed to change filter."
 cmf_filter_definition_errors_deletion_failed: "Deletion of filter failed. (%s)"
 cmf_filter_definition_errors_name_missing: "Please provide a filter name."
+cmf_filter_definition_errors_filter_missing: "Please select a filter."
 cmf_filter_definition_errors_save_failed: "Save of filter failed. (%s)"
 cmf_filter_definition_errors_share_failed: "Sharing filter failed. (%s)"
 
