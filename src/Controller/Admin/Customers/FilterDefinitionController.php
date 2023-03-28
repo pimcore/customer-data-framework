@@ -115,6 +115,15 @@ class FilterDefinitionController extends Admin
     {
         // fetch object parameters from request
         $filterDefinition = $this->getFilterDefinitionFromRequest($request, true, true);
+
+        // check if a filter is selected
+        if (empty($filterDefinition)) {
+            // add error message for missing filter
+            $errors[] = $customerView->translate('cmf_filter_definition_errors_filter_missing');
+
+            return $this->getRedirectToFilter(0, $errors);
+        }
+
         // check mandatory FilterDefinition name
         if (empty($filterDefinition->getName())) {
             // add error message for missing filter name

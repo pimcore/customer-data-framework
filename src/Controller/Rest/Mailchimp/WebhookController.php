@@ -29,8 +29,19 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class WebhookController extends AbstractRestController
 {
+    public static function getSubscribedServices(): array
+    {
+        $services = parent::getSubscribedServices();
+        $services[NewsletterManagerInterface::class] = '?'.NewsletterManagerInterface::class;
+
+        return $services;
+    }
+
     /**
      * @param Request $request
+     *
+     * @return JsonResponse
+     *
      * @Route("/mailchimp/webhook", methods={"GET","POST"})
      */
     public function process(Request $request)
