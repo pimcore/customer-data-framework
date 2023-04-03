@@ -157,7 +157,7 @@ class MySqlDao implements DaoInterface
     {
     }
 
-    public function setModel(MySqlActivityList|AbstractModel $model): static
+    public function setModel(AbstractModel $model): static
     {
         $this->model = $model;
 
