@@ -11,7 +11,7 @@ The **Customer Management Framework (CMF)** for Pimcore adds new functionality f
 
 Like Pimcore itself and the E-Commerce-Framework, the CMF is also a Framework for developers to develop customer management solutions and is tightly integrated into the Pimcore Core functionality. 
 
-## Provided Functionality in a nutshell
+## Provided Functionality in a Nutshell
 - Customer Data Management based on Pimcore Data Objects.
 - Storage of Customer Activities from different data feeds.
 - Customer Segmentation based on data, activities and other criteria.
