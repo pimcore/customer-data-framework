@@ -12,8 +12,8 @@
  */
 
 
-pimcore.registerNS("pimcore.document.newsletters.addressSourceAdapters.SegmentAddressSource");
-pimcore.document.newsletters.addressSourceAdapters.SegmentAddressSource = Class.create({
+pimcore.registerNS("pimcore.bundle.newsletter.document.newsletters.addressSourceAdapters.SegmentAddressSource");
+pimcore.bundle.newsletter.document.newsletters.addressSourceAdapters.SegmentAddressSource = Class.create({
     initialize: function (document, data) {
         this.document = document;
         this.layout = this.commitCrimesAgainstNature();

@@ -275,7 +275,7 @@ services:
         public: false
 
     cmf.document.newsletter.factory.segmentAddressSource:
-        class: Pimcore\Document\Newsletter\DefaultAddressSourceAdapterFactory
+        class: Pimcore\Bundle\NewsletterBundle\Document\Newsletter\DefaultAddressSourceAdapterFactory
         arguments:
             - 'CustomerManagementFrameworkBundle\Newsletter\AddressSource\SegmentAddressSource'
 
