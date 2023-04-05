@@ -174,3 +174,13 @@ parameters:
 			message: "#^Call to an undefined method Pimcore\\\\Model\\\\DataObject\\\\Data\\\\ObjectMetadata\\:\\:getApplication_counter\\(\\)\\.$#"
 			count: 2
 			path: src/Targeting/ActionHandler/ApplyTargetGroupsFromSegments.php
+
+		-
+		    message: "#^Property CustomerManagementFrameworkBundle\\\\Model\\\\ActivityList\\\\DefaultMariaDbActivityList\\\\MySqlDao::$model (CustomerManagementFrameworkBundle\Model\ActivityList\MySqlActivityList) does not accept Pimcore\\\\Model\\\\AbstractModel.$#"
+		    count: 1
+		    path: src/Model/ActivityList/DefaultMariaDbActivityList/MySqlDao.php
+
+		-
+		    message: "#^Property CustomerManagementFrameworkBundle\\\\Model\\\\ActivityList\\\\DefaultMariaDbActivityList\\\\MariaDbDao::$model (CustomerManagementFrameworkBundle\\\\Model\\\\ActivityList\\\\DefaultMariaDbActivityList) does not accept Pimcore\\\\Model\\\\AbstractModel.$#"
+		    count: 1
+		    path: src/Model/ActivityList/DefaultMariaDbActivityList/MariaDbDao.php
