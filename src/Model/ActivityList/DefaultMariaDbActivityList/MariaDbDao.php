@@ -19,8 +19,8 @@ use CustomerManagementFrameworkBundle\ActivityStore\MariaDb;
 use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Pimcore\Db;
-use Pimcore\Model\Dao\DaoInterface;
 use Pimcore\Model\AbstractModel;
+use Pimcore\Model\Dao\DaoInterface;
 
 class MariaDbDao implements DaoInterface
 {
