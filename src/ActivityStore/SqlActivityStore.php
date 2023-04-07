@@ -117,6 +117,7 @@ abstract class SqlActivityStore
 
         try {
             if ($entry->getId()) {
+                $data = Helper::quoteDataIdentifiers($db, $data);
                 $db->update(
                     self::ACTIVITIES_TABLE,
                     $data,
@@ -124,6 +125,7 @@ abstract class SqlActivityStore
                 );
             } else {
                 $data['creationDate'] = $time;
+                $data = Helper::quoteDataIdentifiers($db, $data);
                 $db->insert(
                     self::ACTIVITIES_TABLE,
                     $data

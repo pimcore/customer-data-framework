@@ -17,6 +17,7 @@ namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp
 
 use CustomerManagementFrameworkBundle\Model\MailchimpAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
+use Pimcore\Bundle\AdminBundle\Security\User\TokenStorageUserResolver;
 use Pimcore\Model\User;
 
 class UpdateFromMailchimpProcessor
@@ -26,10 +27,10 @@ class UpdateFromMailchimpProcessor
      */
     private $user;
 
-    public function __construct()
-    {
-        $resolver = \Pimcore::getContainer()->get('pimcore_admin.security.token_storage_user_resolver');
-        $this->user = $resolver->getUser();
+    public function __construct(
+        private TokenStorageUserResolver $resolver
+    ) {
+        $this->user = $this->resolver->getUser();
     }
 
     /**
