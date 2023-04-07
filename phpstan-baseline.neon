@@ -22,6 +22,13 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$segments of class CustomerManagementFrameworkBundle\\\\CustomerList\\\\Filter\\\\CustomerSegment constructor expects array\\<Pimcore\\\\Model\\\\DataObject\\\\CustomerSegment\\>, array\\<int\\<0, max\\>, CustomerManagementFrameworkBundle\\\\Model\\\\CustomerSegmentInterface\\> given\\.$#"
+			reportUnmatched: false
+			count: 2
+			path: src/CustomerList/SearchHelper.php
+
+		-
+			message: "#^Parameter \\#1 \\$segments of class CustomerManagementFrameworkBundle\\\\CustomerList\\\\Filter\\\\CustomerSegment constructor expects array\\<Pimcore\\\\Model\\\\DataObject\\\\CustomerSegment\\>, array\\<int, CustomerManagementFrameworkBundle\\\\Model\\\\CustomerSegmentInterface\\> given\\.$#"
+			reportUnmatched: false
 			count: 2
 			path: src/CustomerList/SearchHelper.php
 
