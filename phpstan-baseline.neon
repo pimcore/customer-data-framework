@@ -181,6 +181,6 @@ parameters:
 		    path: src/Model/ActivityList/DefaultMariaDbActivityList/MySqlDao.php
 
 		-
-		    message: "#^Property CustomerManagementFrameworkBundle\\\\Model\\\\ActivityList\\\\DefaultMariaDbActivityList\\\\MariaDbDao::$model (CustomerManagementFrameworkBundle\\\\Model\\\\ActivityList\\\\DefaultMariaDbActivityList) does not accept Pimcore\\\\Model\\\\AbstractModel.$#"
+		    message: "#^Property CustomerManagementFrameworkBundle\\\\Model\\\\ActivityList\\\\DefaultMariaDbActivityList\\\\MariaDbDao\\:\\:$model (CustomerManagementFrameworkBundle\\\\Model\\\\ActivityList\\\\DefaultMariaDbActivityList) does not accept Pimcore\\\\Model\\\\AbstractModel.$#"
 		    count: 1
 		    path: src/Model/ActivityList/DefaultMariaDbActivityList/MariaDbDao.php
