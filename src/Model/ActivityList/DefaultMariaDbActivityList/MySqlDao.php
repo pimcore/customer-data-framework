@@ -19,8 +19,10 @@ use CustomerManagementFrameworkBundle\ActivityStore\MariaDb;
 use CustomerManagementFrameworkBundle\Model\ActivityList\MySqlActivityList;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Pimcore\Db;
+use Pimcore\Model\AbstractModel;
+use Pimcore\Model\Dao\DaoInterface;
 
-class MySqlDao
+class MySqlDao implements DaoInterface
 {
     /**
      * @var MySqlActivityList
@@ -147,6 +149,17 @@ class MySqlDao
             $orderString = str_replace('`', '', trim($key));
             $select->addOrderBy($orderString, $order[$i]);
         }
+
+        return $this;
+    }
+
+    public function configure(): void
+    {
+    }
+
+    public function setModel(AbstractModel $model): static
+    {
+        $this->model = $model;
 
         return $this;
     }
