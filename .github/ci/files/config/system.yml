@@ -51,14 +51,6 @@ pimcore:
             email: pimcore@example.com
         debug:
             email_addresses: ''
-    newsletter:
-        sender:
-            name: ''
-            email: ''
-        return:
-            name: ''
-            email: ''
-        debug: null
         use_specific: true
     applicationlog:
         mail_notification:
@@ -72,3 +64,11 @@ pimcore_admin:
         color_login_screen: ''
         color_admin_interface: ''
         login_screen_custom_image: ''
+pimcore_newsletter:
+    sender:
+        name: ''
+        email: ''
+    return:
+        name: ''
+        email: ''
+    debug: null
