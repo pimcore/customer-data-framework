@@ -21,6 +21,7 @@ use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\SegmentManage
 use Pimcore\Bundle\AdminBundle\Support\BundleAdminSupportTrait;
 use Pimcore\Bundle\AdminBundle\Support\PimcoreBundleAdminSupportInterface;
 use Pimcore\Bundle\ApplicationLoggerBundle\PimcoreApplicationLoggerBundle;
+use Pimcore\Bundle\NewsletterBundle\PimcoreNewsletterBundle;
 use Pimcore\Bundle\PersonalizationBundle\PimcorePersonalizationBundle;
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
@@ -84,5 +85,6 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle imp
     {
         $collection->addBundle(PimcoreApplicationLoggerBundle::class);
         $collection->addBundle(PimcorePersonalizationBundle::class);
+        $collection->addBundle(PimcoreNewsletterBundle::class);
     }
 }

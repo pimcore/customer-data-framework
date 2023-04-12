@@ -18,9 +18,9 @@ namespace CustomerManagementFrameworkBundle\Newsletter\AddressSource;
 use CustomerManagementFrameworkBundle\DataValidator\EmailValidator;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
+use Pimcore\Bundle\NewsletterBundle\Document\Newsletter\AddressSourceAdapterInterface;
+use Pimcore\Bundle\NewsletterBundle\Document\Newsletter\SendingParamContainer;
 use Pimcore\Db;
-use Pimcore\Document\Newsletter\AddressSourceAdapterInterface;
-use Pimcore\Document\Newsletter\SendingParamContainer;
 
 class SegmentAddressSource implements AddressSourceAdapterInterface
 {
