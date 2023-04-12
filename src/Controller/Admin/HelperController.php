@@ -19,6 +19,8 @@ use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse;
+use Pimcore\Bundle\NewsletterBundle\Model\DataObject\ClassDefinition\Data\NewsletterActive;
+use Pimcore\Bundle\NewsletterBundle\Model\DataObject\ClassDefinition\Data\NewsletterConfirmed;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -155,8 +157,8 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
         foreach ($fields as $field) {
             if (
                 $field instanceof ClassDefinition\Data\Consent ||
-                $field instanceof ClassDefinition\Data\NewsletterConfirmed ||
-                $field instanceof ClassDefinition\Data\NewsletterActive
+                $field instanceof NewsletterConfirmed ||
+                $field instanceof NewsletterActive
             ) {
                 $possibleFlags[] = [ 'name' => $field->getName(), 'label' => $field->getTitle() ];
             }
