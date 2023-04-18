@@ -89,9 +89,5 @@ jobs:
                   mysql -e "SELECT VERSION();"
                   php -i
 
-            - name: "Sync Metadata Storage"
-              run: |
-                bin/console doctrine:migrations:sync-metadata-storage -vvv
-
             - name: "Run Codeception"
               run: "vendor/bin/codecept run -c . -vvv --xml"
