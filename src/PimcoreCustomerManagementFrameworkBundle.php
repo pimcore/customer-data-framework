@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle;
 use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\CustomerSaveManagerPass;
 use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\NewsletterManagerPass;
 use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\SegmentManagerPass;
+use Pimcore\Bundle\AdminBundle\PimcoreAdminBundle;
 use Pimcore\Bundle\AdminBundle\Support\BundleAdminSupportTrait;
 use Pimcore\Bundle\AdminBundle\Support\PimcoreBundleAdminSupportInterface;
 use Pimcore\Bundle\ApplicationLoggerBundle\PimcoreApplicationLoggerBundle;
@@ -83,6 +84,7 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle imp
 
     public static function registerDependentBundles(BundleCollection $collection): void
     {
+        $collection->addBundle(PimcoreAdminBundle::class, 10);
         $collection->addBundle(PimcoreApplicationLoggerBundle::class);
         $collection->addBundle(PimcorePersonalizationBundle::class);
         $collection->addBundle(PimcoreNewsletterBundle::class);
