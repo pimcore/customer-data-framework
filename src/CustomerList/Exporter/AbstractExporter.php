@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\CustomerList\Exporter;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\DataObject\Listing\Concrete;
+use Pimcore\Model\Element\Service;
 
 abstract class AbstractExporter implements ExporterInterface
 {
@@ -149,6 +150,8 @@ abstract class AbstractExporter implements ExporterInterface
                 }
             }
 
+            $row[self::COLUMNS] = Service::escapeCsvRecord($row[self::COLUMNS]);
+            $row[self::SEGMENT_IDS] = Service::escapeCsvRecord($row[self::SEGMENT_IDS]);
             $rows[] = $row;
         }
 
