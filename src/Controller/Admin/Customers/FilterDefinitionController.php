@@ -144,7 +144,7 @@ class FilterDefinitionController extends Admin
      * @Route("/share", name="cmf_filter_definition_share")
      *
      */
-    public function shareAction(Request $request, CustomerViewInterface $customerView): RedirectResponse|bool
+    public function shareAction(Request $request, CustomerViewInterface $customerView): RedirectResponse | bool
     {
         // fetch object parameters from request
         $filterDefinition = $this->getFilterDefinitionFromRequest($request, false, true);

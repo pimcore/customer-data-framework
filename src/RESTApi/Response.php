@@ -15,7 +15,6 @@
 
 namespace CustomerManagementFrameworkBundle\RESTApi;
 
-
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class Response extends JsonResponse

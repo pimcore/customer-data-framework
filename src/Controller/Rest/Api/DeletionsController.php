@@ -31,7 +31,7 @@ class DeletionsController extends RestHandlerController
     /**
      * @Route("", methods={"GET"})
      */
-    public function listRecords(Request $request): JsonResponse|Response
+    public function listRecords(Request $request): JsonResponse | Response
     {
         $handler = $this->getHandler();
         $response = null;

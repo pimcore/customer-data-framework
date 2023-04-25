@@ -252,7 +252,7 @@ class CustomersController extends Admin
     /**
      * @route("/download-finished-export")
      */
-    public function downloadFinishedExportAction(Request $request): JsonResponse|Response
+    public function downloadFinishedExportAction(Request $request): JsonResponse | Response
     {
         try {
             $data = $this->exporterManager->getExportTmpData($request);
@@ -336,7 +336,7 @@ class CustomersController extends Admin
      *
      * @throws \Exception
      */
-    protected function getTemporaryCustomerFolder(): \Pimcore\Model\Asset\Folder|Folder|\Pimcore\Model\Document\Folder
+    protected function getTemporaryCustomerFolder(): \Pimcore\Model\Asset\Folder | Folder | \Pimcore\Model\Document\Folder
     {
         // fetch customer temp directory
         $tempDirectory = $this->getParameter('pimcore_customer_management_framework.customer_provider.newCustomersTempDir');

@@ -18,7 +18,6 @@ namespace CustomerManagementFrameworkBundle\Controller\Rest\Mailchimp;
 use CustomerManagementFrameworkBundle\Controller\Rest\AbstractRestController;
 use CustomerManagementFrameworkBundle\Newsletter\Manager\NewsletterManagerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
-use Doctrine\DBAL\Connection;
 use DrewM\MailChimp\Webhook;
 use Monolog\Handler\StreamHandler;
 use Pimcore\Bundle\ApplicationLoggerBundle\ApplicationLogger;

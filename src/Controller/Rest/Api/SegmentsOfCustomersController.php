@@ -31,7 +31,7 @@ class SegmentsOfCustomersController extends RestHandlerController
     /**
      * @Route("", methods={"PUT", "POST"})
      */
-    public function updateRecordsAction(Request $request): JsonResponse|Response
+    public function updateRecordsAction(Request $request): JsonResponse | Response
     {
         $handler = $this->getHandler();
         $response = null;
