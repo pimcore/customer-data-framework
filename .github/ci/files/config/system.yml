@@ -29,8 +29,6 @@ pimcore:
             steps: 10
         icc_rgb_profile: ''
         icc_cmyk_profile: ''
-        hide_edit_image: false
-        disable_tree_preview: false
     full_page_cache:
         enabled: false
         lifetime: null
