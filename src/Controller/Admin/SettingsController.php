@@ -16,23 +16,24 @@
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\Security\Authenticator\WebserviceAuthenticator;
-use Pimcore\Bundle\AdminBundle\Controller\AdminController;
+use Pimcore\Bundle\AdminBundle\Helper\QueryParams;
 use Pimcore\Bundle\AdminBundle\Security\CsrfProtectionHandler;
+use Pimcore\Controller\Traits\JsonHelperTrait;
+use Pimcore\Controller\UserAwareController;
 use Pimcore\Model\Tool\SettingsStore;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-class SettingsController extends AdminController
+class SettingsController extends UserAwareController
 {
+    use JsonHelperTrait;
+
     /**
-     * @param Request $request
-     * @param CsrfProtectionHandler $csrfProtectionHandler
-     *
-     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
-     *
      * @Route("/settings/webservice-users", name="_pimcore_customermanagementframework_backend_settings_webservice_users", methods={"GET","POST"})
      */
-    public function userManagementAction(Request $request, CsrfProtectionHandler $csrfProtectionHandler)
+    public function userManagementAction(Request $request, CsrfProtectionHandler $csrfProtectionHandler): JsonResponse
     {
         $this->isAllowed();
 
@@ -42,18 +43,18 @@ class SettingsController extends AdminController
         if ($request->get('data')) {
             if ($request->get('xaction') == 'update') {
                 $csrfProtectionHandler->checkCsrfToken($request);
-                $data = $this->decodeJson($request->get('data'));
+                $data = $this->jsonResponse($request->get('data'));
 
                 $apiKeys[$data['id']] = $data['apiKey'];
                 SettingsStore::set(WebserviceAuthenticator::SETTINGS_STORE_KEY, json_encode($apiKeys), 'string', WebserviceAuthenticator::SETTINGS_STORE_SCOPE);
 
-                return $this->adminJson(['data' => [], 'success' => true]);
+                return $this->jsonResponse(['data' => [], 'success' => true]);
             }
         } else {
             $userListing = new \Pimcore\Model\User\Listing();
             $userListing->setLimit($request->get('limit'));
             $userListing->setOffset($request->get('start'));
-            $sortingSettings = \Pimcore\Bundle\AdminBundle\Helper\QueryParams::extractSortingSettings(array_merge($request->request->all(), $request->query->all()));
+            $sortingSettings = QueryParams::extractSortingSettings(array_merge($request->request->all(), $request->query->all()));
             if ($sortingSettings['orderKey']) {
                 $userListing->setOrderKey($sortingSettings['orderKey']);
                 $userListing->setOrder($sortingSettings['order']);
@@ -83,15 +84,18 @@ class SettingsController extends AdminController
                 ];
             }
 
-            return $this->adminJson(['data' => $users, 'success' => true, 'total' => $userListing->getTotalCount()]);
+            return $this->jsonResponse(['data' => $users, 'success' => true, 'total' => $userListing->getTotalCount()]);
         }
 
-        return $this->adminJson(['success' => false]);
+        return $this->jsonResponse(['success' => false]);
     }
 
-    protected function isAllowed()
+    /**
+     * @throws AccessDeniedHttpException
+     */
+    protected function isAllowed(): void
     {
-        $user = $this->getAdminUser();
+        $user = $this->getPimcoreUser();
 
         if (!$user->isAdmin()) {
             throw $this->createAccessDeniedHttpException();

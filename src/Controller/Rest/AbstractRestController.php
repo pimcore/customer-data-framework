@@ -15,18 +15,21 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Rest;
 
-use Pimcore\Bundle\AdminBundle\Controller\AdminController;
-use Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse;
+use Pimcore\Controller\Traits\JsonHelperTrait;
+use Pimcore\Controller\UserAwareController;
 use Pimcore\Db;
 use Pimcore\Http\Exception\ResponseException;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Stopwatch\Stopwatch;
 
-abstract class AbstractRestController extends AdminController
+abstract class AbstractRestController extends UserAwareController
 {
+    use JsonHelperTrait;
+
 //    public function __construct(protected LoggerInterface $pimcoreApiLogger)
 //    {
 //    }
@@ -113,7 +116,7 @@ abstract class AbstractRestController extends AdminController
      */
     protected function createSuccessResponse($data = null, $wrapInDataProperty = true, $status = Response::HTTP_OK)
     {
-        return $this->adminJson(
+        return $this->jsonResponse(
             $this->createSuccessData($data, $wrapInDataProperty),
             $status
         );
@@ -141,7 +144,7 @@ abstract class AbstractRestController extends AdminController
      */
     protected function createErrorResponse($data = null, $status = Response::HTTP_BAD_REQUEST)
     {
-        return $this->adminJson(
+        return $this->jsonResponse(
             $this->createErrorData($data),
             $status
         );

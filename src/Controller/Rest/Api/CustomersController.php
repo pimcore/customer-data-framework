@@ -27,7 +27,7 @@ class CustomersController extends CrudHandlerController
     /**
      * @return CustomersHandler
      */
-    protected function getHandler()
+    protected function getHandler(): CustomersHandler
     {
         return \Pimcore::getContainer()->get('cmf.rest.customers_handler');
     }

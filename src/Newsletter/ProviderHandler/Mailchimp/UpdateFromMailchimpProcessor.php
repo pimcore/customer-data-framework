@@ -17,7 +17,7 @@ namespace CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp
 
 use CustomerManagementFrameworkBundle\Model\MailchimpAwareCustomerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
-use Pimcore\Bundle\AdminBundle\Security\User\TokenStorageUserResolver;
+use Pimcore\Security\User\TokenStorageUserResolver;
 use Pimcore\Model\User;
 
 class UpdateFromMailchimpProcessor

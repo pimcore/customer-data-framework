@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace CustomerManagementFrameworkBundle\Security\Authenticator;
 
-use Pimcore\Bundle\AdminBundle\Security\User\User as UserProxy;
+use Pimcore\Security\User\User as UserProxy;
 use Pimcore\Model\Tool\SettingsStore;
 use Pimcore\Model\User;
 use Pimcore\Tool\Authentication;

@@ -18,10 +18,12 @@ namespace CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
-use Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse;
 use Pimcore\Bundle\NewsletterBundle\Model\DataObject\ClassDefinition\Data\NewsletterActive;
 use Pimcore\Bundle\NewsletterBundle\Model\DataObject\ClassDefinition\Data\NewsletterConfirmed;
+use Pimcore\Controller\Traits\JsonHelperTrait;
+use Pimcore\Controller\UserAwareController;
 use Pimcore\Model\DataObject\ClassDefinition;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,15 +31,16 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/helper")
  */
-class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminController
+class HelperController extends UserAwareController
 {
+    use JsonHelperTrait;
+
     /**
      * get list of customer fields for action trigger rules
      *
-     * @param Request $request
      * @Route("/customer-field-list")
      */
-    public function customerFieldListAction(Request $request)
+    public function customerFieldListAction(Request $request): JsonResponse
     {
         $class = ClassDefinition::getById(\Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassId());
 
@@ -68,16 +71,15 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
             }
         );
 
-        return $this->adminJson($result);
+        return $this->jsonResponse($result);
     }
 
     /**
      * get list of available activity types
      *
-     * @param Request $request
      * @Route("/activity-types")
      */
-    public function activityTypesAction(Request $request)
+    public function activityTypesAction(Request $request): JsonResponse
     {
         $types = \Pimcore::getContainer()->get('cmf.activity_store')->getAvailableActivityTypes();
 
@@ -86,17 +88,13 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
             $result[] = [$type];
         }
 
-        return $this->adminJson($result);
+        return $this->jsonResponse($result);
     }
 
     /**
      * @Route("/grouped-segments")
-     *
-     * @param SegmentManagerInterface $segmentManager
-     *
-     * @return JsonResponse
      */
-    public function groupedSegmentsAction(SegmentManagerInterface $segmentManager)
+    public function groupedSegmentsAction(SegmentManagerInterface $segmentManager): JsonResponse
     {
         $segments = [];
 
@@ -113,21 +111,20 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
             }
         }
 
-        return $this->adminJson($segments);
+        return $this->jsonResponse($segments);
     }
 
     /**
-     * @return Response
      * @Route("/settings-json")
      */
-    public function settingJsonAction()
+    public function settingJsonAction(): Response
     {
         $settings = [
             'newsletterSyncEnabled' => $this->getParameter('pimcore_customer_management_framework.newsletter.newsletterSyncEnabled'),
             'duplicatesViewEnabled' => $this->getParameter('pimcore_customer_management_framework.customer_duplicates_services.duplicates_view.enabled'),
             'segmentAssignment' => $this->getParameter('pimcore_customer_management_framework.segment_assignment_classes.types'),
             'customerClassName' => $this->getParameter('pimcore_customer_management_framework.general.customerPimcoreClass'),
-            'shortcutFilterDefinitions' => FilterDefinition::prepareDataForMenu(FilterDefinition::getAllShortcutAvailableForUser($this->getAdminUser()))
+            'shortcutFilterDefinitions' => FilterDefinition::prepareDataForMenu(FilterDefinition::getAllShortcutAvailableForUser($this->getPimcoreUser()))
         ];
 
         $content = '
@@ -142,13 +139,9 @@ class HelperController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContr
     /**
      * @Route("/newsletter/possible-filter-flags")
      *
-     * @param CustomerProviderInterface $customerProvider
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     *
      * @throws \Exception
      */
-    public function possibleNewsletterFilterFlagsAction(CustomerProviderInterface $customerProvider)
+    public function possibleNewsletterFilterFlagsAction(CustomerProviderInterface $customerProvider): JsonResponse
     {
         $classDefinition = ClassDefinition::getById($customerProvider->getCustomerClassId());
 

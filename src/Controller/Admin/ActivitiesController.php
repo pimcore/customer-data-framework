@@ -19,14 +19,16 @@ use CustomerManagementFrameworkBundle\ActivityStore\MariaDb;
 use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Controller\KernelControllerEventInterface;
+use Pimcore\Controller\UserAwareController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/activities")
  */
-class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminController implements KernelControllerEventInterface
+class ActivitiesController extends UserAwareController implements KernelControllerEventInterface
 {
     /**
      * @var PaginatorInterface
@@ -44,10 +46,9 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
     }
 
     /**
-     * @param Request $request
      * @Route("/list")
      */
-    public function listAction(Request $request, CustomerProviderInterface $customerProvider)
+    public function listAction(Request $request, CustomerProviderInterface $customerProvider): Response
     {
         if ($customer = $customerProvider->getById($request->get('customerId'))) {
             $list = \Pimcore::getContainer()->get('cmf.activity_store')->getActivityList();
@@ -88,10 +89,9 @@ class ActivitiesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminC
     }
 
     /**
-     * @param Request $request
      * @Route("/detail")
      */
-    public function detailAction(Request $request)
+    public function detailAction(Request $request): Response
     {
         $activity = \Pimcore::getContainer()->get('cmf.activity_store')->getEntryById($request->get('activityId'));
 

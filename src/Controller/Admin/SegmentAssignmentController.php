@@ -17,10 +17,12 @@ namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\SegmentAssignment\SegmentAssigner\SegmentAssignerInterface;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
-use Pimcore\Bundle\AdminBundle\Controller\AdminController;
-use Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse;
+use Doctrine\DBAL\Exception;
+use Pimcore\Controller\Traits\JsonHelperTrait;
+use Pimcore\Controller\UserAwareController;
 use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Model\DataObject\Service;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -31,8 +33,10 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @package CustomerManagementFrameworkBundle\Controller\Admin
  */
-class SegmentAssignmentController extends AdminController
+class SegmentAssignmentController extends UserAwareController
 {
+    use JsonHelperTrait;
+
     public function __construct(protected SegmentAssignerInterface $segmentAssigner)
     {
     }
@@ -40,12 +44,9 @@ class SegmentAssignmentController extends AdminController
     /**
      * @Route("/inheritable-segments")
      *
-     * @param Request $request
-     * @param SegmentManagerInterface $segmentManager
-     *
-     * @return JsonResponse
+     * @throws Exception
      */
-    public function inheritableSegments(Request $request, SegmentManagerInterface $segmentManager)
+    public function inheritableSegments(Request $request, SegmentManagerInterface $segmentManager): JsonResponse
     {
         $id = $request->get('id') ?? '';
         $type = $request->get('type') ?? '';
@@ -62,7 +63,7 @@ class SegmentAssignmentController extends AdminController
         $segments = $segmentManager->getSegmentsForElementId($parentId, $type);
         $data = array_map([$this, 'dehydrateSegment'], array_filter($segments));
 
-        return $this->adminJson(['data' => array_values($data)]);
+        return $this->jsonResponse(['data' => array_values($data)]);
     }
 
     /**
@@ -70,11 +71,9 @@ class SegmentAssignmentController extends AdminController
      *
      * @Route("/assigned-segments")
      *
-     * @param Request $request
-     *
-     * @return JsonResponse
+     * @throws Exception
      */
-    public function assignedSegments(Request $request)
+    public function assignedSegments(Request $request): JsonResponse
     {
         $id = $request->get('id') ?? '';
         $type = $request->get('type') ?? '';
@@ -87,19 +86,15 @@ class SegmentAssignmentController extends AdminController
             return $this->dehydrateSegment($segment);
         }, array_filter(explode(',', $segmentIds)));
 
-        return $this->adminJson(['data' => array_values($data)]);
+        return $this->jsonResponse(['data' => array_values($data)]);
     }
 
     /**
      * saves assignments asynchronously
      *
      * @Route("/assign")
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
-    public function assign(Request $request)
+    public function assign(Request $request): JsonResponse
     {
         $id = $request->get('id') ?? '';
         $type = $request->get('type') ?? '';
@@ -108,17 +103,13 @@ class SegmentAssignmentController extends AdminController
 
         $success = $this->segmentAssigner->assignById($id, $type, $breaksInheritance, $segmentIds);
 
-        return $this->adminJson($success);
+        return $this->jsonResponse($success);
     }
 
     /**
      * @Route("/breaks-inheritance")
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
-    public function breaksInheritance(Request $request)
+    public function breaksInheritance(Request $request): JsonResponse
     {
         $id = $request->get('id') ?? '';
         $type = $request->get('type') ?? '';
@@ -126,22 +117,15 @@ class SegmentAssignmentController extends AdminController
 
         $breaksInheritance = \Pimcore\Db::get()->fetchOne("SELECT `breaksInheritance` FROM $assignmentTable WHERE `elementId` = ? AND `elementType` = ?", [$id, $type]);
 
-        return $this->adminJson(['breaksInheritance' => $breaksInheritance]);
+        return $this->jsonResponse(['breaksInheritance' => $breaksInheritance]);
     }
 
     /**
      * dehydrates a CustomerSegment for display in the pimcore backend
      *
-     * @param CustomerSegment $segment
-     *
-     * @return array
      */
-    private function dehydrateSegment($segment): array
+    private function dehydrateSegment(CustomerSegment $segment): array
     {
-        if (!($segment instanceof CustomerSegment)) {
-            return [];
-        }
-
         return [
             'id' => $segment->getId(),
             'type' => $segment->getType(),

@@ -15,22 +15,28 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Report;
 
-use Pimcore\Bundle\AdminBundle\Controller\AdminController;
+use Pimcore\Controller\Traits\JsonHelperTrait;
+use Pimcore\Controller\UserAwareController;
+use Pimcore\Model\DataObject\AbstractObject;
+use Pimcore\Model\DataObject\TermSegmentBuilderDefinition\Listing;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/term-segment-builder")
  */
-class TermSegmentBuilderController extends AdminController
+class TermSegmentBuilderController extends UserAwareController
 {
+    use JsonHelperTrait;
+
     /**
      * @Route("/get-segment-builder-definitions")
      */
-    public function getSegmentBuilderDefinitionsAction()
+    public function getSegmentBuilderDefinitionsAction(): JsonResponse
     {
-        \Pimcore\Model\DataObject\AbstractObject::setHideUnpublished(true);
+        AbstractObject::setHideUnpublished(true);
 
-        $list = new \Pimcore\Model\DataObject\TermSegmentBuilderDefinition\Listing;
+        $list = new Listing;
         $list = $list->load();
 
         $result = ['data' => []];
@@ -42,6 +48,6 @@ class TermSegmentBuilderController extends AdminController
             ];
         }
 
-        return $this->adminJson($result);
+        return $this->jsonResponse($result);
     }
 }

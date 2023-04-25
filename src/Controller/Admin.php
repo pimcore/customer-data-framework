@@ -18,13 +18,16 @@ namespace CustomerManagementFrameworkBundle\Controller;
 use CustomerManagementFrameworkBundle\Helper\JsConfigService;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Controller\KernelControllerEventInterface;
+use Pimcore\Controller\Traits\JsonHelperTrait;
+use Pimcore\Controller\UserAwareController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 
-class Admin extends AdminController implements KernelControllerEventInterface
+class Admin extends UserAwareController implements KernelControllerEventInterface
 {
+    use JsonHelperTrait;
+
     /**
      * @var JsConfigService
      */
@@ -70,7 +73,7 @@ class Admin extends AdminController implements KernelControllerEventInterface
     /**
      * @return JsConfigService
      */
-    protected function getJsConfigService()
+    protected function getJsConfigService(): JsConfigService
     {
         return $this->jsConfigService;
     }
@@ -80,7 +83,7 @@ class Admin extends AdminController implements KernelControllerEventInterface
      *
      * @return array
      */
-    protected function getJsConfigFeatures()
+    protected function getJsConfigFeatures(): array
     {
         return [
             '_init',
@@ -101,14 +104,8 @@ class Admin extends AdminController implements KernelControllerEventInterface
 
     /**
      * Build object paginator for filtered list
-     *
-     * @param Request $request
-     * @param mixed $data
-     * @param int $defaultPageSize
-     *
-     * @return PaginationInterface
      */
-    protected function buildPaginator(Request $request, $data, $defaultPageSize = null)
+    protected function buildPaginator(Request $request, mixed $data, int $defaultPageSize = null): PaginationInterface
     {
         if (is_null($defaultPageSize)) {
             $defaultPageSize = $this->defaultPageSize;
@@ -116,8 +113,7 @@ class Admin extends AdminController implements KernelControllerEventInterface
 
         $page = (int)$request->get('page', 1);
         $pageSize = (int)$request->get('perPage', $defaultPageSize);
-        $paginator = $this->paginator->paginate($data, $page, $pageSize);
 
-        return $paginator;
+        return $this->paginator->paginate($data, $page, $pageSize);
     }
 }

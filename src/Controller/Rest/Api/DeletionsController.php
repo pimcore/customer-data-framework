@@ -16,7 +16,10 @@
 namespace CustomerManagementFrameworkBundle\Controller\Rest\Api;
 
 use CustomerManagementFrameworkBundle\Controller\Rest\RestHandlerController;
+use CustomerManagementFrameworkBundle\RESTApi\DeletionsHandler;
 use CustomerManagementFrameworkBundle\RESTApi\Exception\ExceptionInterface;
+use CustomerManagementFrameworkBundle\RESTApi\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -26,10 +29,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class DeletionsController extends RestHandlerController
 {
     /**
-     * @param Request $request
      * @Route("", methods={"GET"})
      */
-    public function listRecords(Request $request)
+    public function listRecords(Request $request): JsonResponse|Response
     {
         $handler = $this->getHandler();
         $response = null;
@@ -47,9 +49,9 @@ class DeletionsController extends RestHandlerController
     }
 
     /**
-     * @return \CustomerManagementFrameworkBundle\RESTApi\DeletionsHandler
+     * @return DeletionsHandler
      */
-    protected function getHandler()
+    protected function getHandler(): DeletionsHandler
     {
         return \Pimcore::getContainer()->get('cmf.rest.deletions_handler');
     }
