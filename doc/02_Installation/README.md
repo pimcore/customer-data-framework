@@ -4,23 +4,28 @@ This section describes the installation of the Customer Management Framework and
 
 > Please note that Customer Management Framework requires MariaDB as database. It will not work with default MySQL. MariaDB is used to save [activities](../09_Activities/README.md) with the MariaDB Dynamic Columns feature: https://mariadb.com/kb/en/library/dynamic-columns/
 
-## Installation
-
-1) Add dependency for CMF to your `composer.json` and run `composer update`. Alternatively, in Pimcore directory, run `composer require pimcore/customer-management-framework-bundle`.
-```json
-    ...
-    "require": {
-        ...
-        "pimcore/customer-management-framework-bundle": "^3",
-        ...
-   }
-   ... 
+## Installation Process
+To install the Customer Management Framework, follow the three steps below:
+1. Install the required dependencies:
+```bash
+composer require pimcore/customer-management-framework-bundle
 ```
-
-2) Open Pimcore Admin UI, navigate to `Tools` > `Bundles` and activate and install 
-`PimcoreCustomerManagementFrameworkBundle` and `ObjectMergerBundle`. 
-
-![Extension Manager](../img/install.jpg)
+2. Make sure the bundle is enabled in the `config/bundles.php` file. The following lines should be added:
+```php
+use Pimcore\Bundle\CustomerManagementFrameworkBundle\PimcoreCustomerManagementFrameworkBundle;
+use Pimcore\Bundle\ObjectMergerBundle\ObjectMergerBundle;
+// ...
+return [
+    // ...
+    PimcoreCustomerManagementFrameworkBundle::class => ['all' => true],
+    ObjectMergerBundle::class => ['all' => true],
+    // ...
+];
+```
+3. Install the bundle:
+```bash
+bin/console pimcore:bundle:install PimcoreCustomerManagementFrameworkBundle
+```
 
 The installer does following tasks:
 * Install several data object classes.
