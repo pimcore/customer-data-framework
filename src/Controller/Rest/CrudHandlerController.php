@@ -17,6 +17,8 @@ namespace CustomerManagementFrameworkBundle\Controller\Rest;
 
 use CustomerManagementFrameworkBundle\RESTApi\CrudHandlerInterface;
 use CustomerManagementFrameworkBundle\RESTApi\Exception\ExceptionInterface;
+use CustomerManagementFrameworkBundle\RESTApi\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -28,10 +30,9 @@ abstract class CrudHandlerController extends RestHandlerController
     abstract protected function getHandler();
 
     /**
-     * @param Request $request
      * @Route("", methods={"GET"})
      */
-    public function listRecords(Request $request)
+    public function listRecords(Request $request): Response | JsonResponse
     {
         $handler = $this->getHandler();
         $response = null;
@@ -49,10 +50,9 @@ abstract class CrudHandlerController extends RestHandlerController
     }
 
     /**
-     * @param Request $request
      * @Route("/{id}", methods={"GET"})
      */
-    public function readRecord(Request $request)
+    public function readRecord(Request $request): JsonResponse | Response
     {
         $handler = $this->getHandler();
         $response = null;
@@ -70,10 +70,9 @@ abstract class CrudHandlerController extends RestHandlerController
     }
 
     /**
-     * @param Request $request
      * @Route("/{id}", methods={"DELETE"})
      */
-    public function deleteRecord(Request $request)
+    public function deleteRecord(Request $request): JsonResponse | Response
     {
         $handler = $this->getHandler();
         $response = null;
@@ -91,10 +90,9 @@ abstract class CrudHandlerController extends RestHandlerController
     }
 
     /**
-     * @param Request $request
      * @Route("/{id}", methods={"PUT", "POST"})
      */
-    public function updateRecord(Request $request)
+    public function updateRecord(Request $request): JsonResponse | Response
     {
         $handler = $this->getHandler();
         $response = null;
@@ -112,10 +110,9 @@ abstract class CrudHandlerController extends RestHandlerController
     }
 
     /**
-     * @param Request $request
      * @Route("", methods={"PUT", "POST"})
      */
-    public function createRecord(Request $request)
+    public function createRecord(Request $request): JsonResponse | Response
     {
         $handler = $this->getHandler();
         $response = null;

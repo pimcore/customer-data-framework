@@ -35,6 +35,7 @@ use Pimcore\Model\DataObject\Folder;
 use Pimcore\Model\DataObject\Listing;
 use Pimcore\Model\DataObject\Service;
 use Pimcore\Model\Element\ValidationException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -68,12 +69,9 @@ class CustomersController extends Admin
     }
 
     /**
-     * @param Request $request
      * @Route("/list")
-     *
-     * @return Response
      */
-    public function listAction(Request $request)
+    public function listAction(Request $request): Response
     {
         $filters = $this->fetchListFilters($request);
         $orders = $this->fetchListOrder($request);
@@ -124,15 +122,12 @@ class CustomersController extends Admin
     }
 
     /**
-     * @param Request $request
      * @Route("/detail")
-     *
-     * @return Response
      */
-    public function detailAction(Request $request)
+    public function detailAction(Request $request): Response
     {
         $customer = $this->getSearchHelper()->getCustomerProvider()->getById((int)$request->get('id'));
-        if ($customer && $customer instanceof CustomerInterface) {
+        if ($customer instanceof CustomerInterface) {
             $customerView = \Pimcore::getContainer()->get('cmf.customer_view');
             if (!$customerView->hasDetailView($customer)) {
                 throw new \RuntimeException(sprintf('Customer %d has no detail view to show', $customer->getId()));
@@ -153,18 +148,15 @@ class CustomersController extends Admin
                     'request' => $request,
                 ]
             );
-        } else {
-            throw new \InvalidArgumentException('Invalid customer');
         }
+
+        throw new \InvalidArgumentException('Invalid customer');
     }
 
     /**
-     * @param Request $request
      * @Route("/export")
-     *
-     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
      */
-    public function exportAction(Request $request)
+    public function exportAction(Request $request): JsonResponse
     {
         $filters = $this->fetchListFilters($request);
         $listing = $this->buildListing($filters);
@@ -182,7 +174,7 @@ class CustomersController extends Admin
         ]);
 
         /** @noinspection PhpRouteMissingInspection */
-        return $this->adminJson([
+        return $this->jsonResponse([
             'url' => $this->generateUrl('customermanagementframework_admin_customers_exportstep', ['jobId' => $jobId]),
             'jobId' => $jobId,
             'exporter' => $request->get('exporter'),
@@ -190,12 +182,9 @@ class CustomersController extends Admin
     }
 
     /**
-     * @param Request $request
      * @route("/export-step")
-     *
-     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
      */
-    public function exportStepAction(Request $request)
+    public function exportStepAction(Request $request): JsonResponse
     {
         $perRequest = $request->get(
             'perRequest',
@@ -205,7 +194,7 @@ class CustomersController extends Admin
         try {
             $data = $this->exporterManager->getExportTmpData($request);
         } catch (\Exception $e) {
-            return $this->adminJson([
+            return $this->jsonResponse([
                 'error' => true,
                 'message' => $e->getMessage(),
             ]);
@@ -214,7 +203,7 @@ class CustomersController extends Admin
         //export finished
         if (!sizeof($data['processIds'])) {
             /** @noinspection PhpRouteMissingInspection */
-            return $this->adminJson([
+            return $this->jsonResponse([
                 'finished' => true,
                 'url' => $this->generateUrl('customermanagementframework_admin_customers_downloadfinishedexport',
                     ['jobId' => $request->get('jobId')]),
@@ -232,7 +221,7 @@ class CustomersController extends Admin
         $exporter = $this->getExporter($listing, $data['exporter']);
         $exportData = $exporter->getExportData();
 
-        $totalExportData = isset($data['exportData']) ? $data['exportData'] : [];
+        $totalExportData = $data['exportData'] ?? [];
         $totalExportData = array_merge_recursive($totalExportData, $exportData);
 
         $data['exportData'] = $totalExportData;
@@ -246,9 +235,9 @@ class CustomersController extends Admin
         $notProcessedRecordsCount = sizeof($data['processIds']);
         $totalRecordsCount = $notProcessedRecordsCount + sizeof($data['exportData'][AbstractExporter::ROWS]);
 
-        $percent = round(($totalRecordsCount - $notProcessedRecordsCount) * 100 / $totalRecordsCount, 0);
+        $percent = round(($totalRecordsCount - $notProcessedRecordsCount) * 100 / $totalRecordsCount);
 
-        return $this->adminJson([
+        return $this->jsonResponse([
             'finished' => false,
             'jobId' => $request->get('jobId'),
             'notProcessedRecordsCount' => $notProcessedRecordsCount,
@@ -261,24 +250,21 @@ class CustomersController extends Admin
     }
 
     /**
-     * @param Request $request
      * @route("/download-finished-export")
-     *
-     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse|Response
      */
-    public function downloadFinishedExportAction(Request $request)
+    public function downloadFinishedExportAction(Request $request): JsonResponse | Response
     {
         try {
             $data = $this->exporterManager->getExportTmpData($request);
         } catch (\Exception $e) {
-            return $this->adminJson([
+            return $this->jsonResponse([
                 'error' => true,
                 'message' => $e->getMessage(),
             ]);
         }
 
         if (sizeof($data['processIds'])) {
-            return $this->adminJson([
+            return $this->jsonResponse([
                 'error' => true,
                 'message' => 'export not finished yet',
             ]);
@@ -320,13 +306,9 @@ class CustomersController extends Admin
      *
      * @Route("/new")
      *
-     * @param CustomerProviderInterface $customerProvider
-     *
-     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
-     *
      * @throws ValidationException
      */
-    public function createCustomerAction(CustomerProviderInterface $customerProvider)
+    public function createCustomerAction(CustomerProviderInterface $customerProvider): JsonResponse
     {
         // check permissions write to temp folder -> ValidationException
         if (!$this->hasUserAccessToTempCustomerFolder()) {
@@ -343,7 +325,7 @@ class CustomersController extends Admin
         $customer->save();
 
         // return id of new object
-        return $this->adminJson([
+        return $this->jsonResponse([
             'success' => true,
             'id' => $customer->getId(),
         ]);
@@ -352,9 +334,9 @@ class CustomersController extends Admin
     /**
      * Fetch customer folder object
      *
-     * @return \Pimcore\Model\Asset\Folder|Folder|\Pimcore\Model\Document\Folder
+     * @throws \Exception
      */
-    protected function getTemporaryCustomerFolder()
+    protected function getTemporaryCustomerFolder(): \Pimcore\Model\Asset\Folder | Folder | \Pimcore\Model\Document\Folder
     {
         // fetch customer temp directory
         $tempDirectory = $this->getParameter('pimcore_customer_management_framework.customer_provider.newCustomersTempDir');
@@ -365,9 +347,9 @@ class CustomersController extends Admin
     /**
      * Check if current user has access to temporary customer folder
      *
-     * @return bool
+     * @throws \Exception
      */
-    protected function hasUserAccessToTempCustomerFolder()
+    protected function hasUserAccessToTempCustomerFolder(): bool
     {
         $folder = $this->getTemporaryCustomerFolder();
 
@@ -375,14 +357,9 @@ class CustomersController extends Admin
     }
 
     /**
-     * @param Listing\Concrete $listing
-     * @param string $exporterName
-     *
-     * @return ExporterInterface
-     *
      * @internal
      */
-    protected function getExporter(Listing\Concrete $listing, $exporterName)
+    protected function getExporter(Listing\Concrete $listing, string $exporterName): ExporterInterface
     {
         if (!$this->exporterManager->hasExporter($exporterName)) {
             throw new \InvalidArgumentException('Exporter does not exist');
@@ -396,7 +373,7 @@ class CustomersController extends Admin
      *
      * @return CustomerSegmentGroup[]
      */
-    public function loadSegmentGroups()
+    public function loadSegmentGroups(): array
     {
         if (is_null($this->segmentGroups)) {
             $segmentGroups = $this->getSearchHelper()->getSegmentManager()->getSegmentGroups();
@@ -409,13 +386,7 @@ class CustomersController extends Admin
         return $this->segmentGroups;
     }
 
-    /**
-     * @param array $filters
-     * @param array $orders
-     *
-     * @return Listing\Concrete
-     */
-    protected function buildListing(array $filters = [], array $orders = [])
+    protected function buildListing(array $filters = [], array $orders = []): Listing\Concrete
     {
         $listing = $this->getSearchHelper()->getCustomerProvider()->getList();
         $idField = Service::getVersionDependentDatabaseColumnName('id');
@@ -436,19 +407,15 @@ class CustomersController extends Admin
                 ->setOrder('ASC');
         }
 
-        $this->getSearchHelper()->addListingFilters($listing, $filters, $this->getAdminUser());
+        $this->getSearchHelper()->addListingFilters($listing, $filters, $this->getPimcoreUser());
 
         return $listing;
     }
 
     /**
      * Fetch filters and set them on view
-     *
-     * @param Request $request
-     *
-     * @return array
      */
-    protected function fetchListFilters(Request $request)
+    protected function fetchListFilters(Request $request): array
     {
         $filters = $request->get('filter', []);
         $filters = $this->addPrefilteredSegmentToFilters($request, $filters);
@@ -459,12 +426,8 @@ class CustomersController extends Admin
 
     /**
      * Fetch orders and set them on view
-     *
-     * @param Request $request
-     *
-     * @return array
      */
-    protected function fetchListOrder(Request $request)
+    protected function fetchListOrder(Request $request): array
     {
         $orders = $request->get('order', []);
         $ordersNullsLast = [];
@@ -480,13 +443,7 @@ class CustomersController extends Admin
         return $ordersNullsLast;
     }
 
-    /**
-     * @param Request $request
-     * @param array $filters
-     *
-     * @return array
-     */
-    protected function addPrefilteredSegmentToFilters(Request $request, array $filters)
+    protected function addPrefilteredSegmentToFilters(Request $request, array $filters): array
     {
         $segment = $this->fetchPrefilteredSegment($request);
         if ($segment) {
@@ -507,17 +464,11 @@ class CustomersController extends Admin
 
             $filters['segments'][$groupId] = $groupSegmentIds;
         }
-        $filters = $this->addFilterDefinitionSegments($request, $filters);
 
-        return $filters;
+        return $this->addFilterDefinitionSegments($request, $filters);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return CustomerSegmentInterface|null
-     */
-    protected function fetchPrefilteredSegment(Request $request)
+    protected function fetchPrefilteredSegment(Request $request): ?CustomerSegmentInterface
     {
         $segmentId = $request->get('segmentId');
 
@@ -536,9 +487,9 @@ class CustomersController extends Admin
     /**
      * Fetch all filter definitions available for current user
      *
-     * @return \CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition[]
+     * @return FilterDefinition[]
      */
-    protected function getFilterDefinitions()
+    protected function getFilterDefinitions(): array
     {
         // load filter definitions
         $FilterDefinitionListing = new FilterDefinition\Listing();
@@ -551,12 +502,10 @@ class CustomersController extends Admin
     /**
      * Fetch the FilterDefinition object selected in request
      *
-     * @param Request $request
-     *
      * @return null|FilterDefinition Returns FilterDefinition object if definition key is defined in filters array,
      * FilterDefinition with id in DB and user is allowed to use FilterDefinition. Otherwise returns null.
      */
-    protected function getFilterDefinition(Request $request)
+    protected function getFilterDefinition(Request $request): ?FilterDefinition
     {
         // fetch filter definition information
         $filterDefinitionData = $request->get('filterDefinition', []);
@@ -575,7 +524,7 @@ class CustomersController extends Admin
             return $DefaultFilterDefinition;
         }
         // check if current user is allowed to use FilterDefinition
-        if (!$filterDefinition->isUserAllowed($this->getAdminUser())) {
+        if (!$filterDefinition->isUserAllowed($this->getPimcoreUser())) {
             // user is not allowed to use FilterDefinition
             return $DefaultFilterDefinition;
         }
@@ -584,30 +533,23 @@ class CustomersController extends Admin
     }
 
     /**
-     * Fetch all user ids of current user
-     *
-     * @return array
+     * Fetch all user ids of current user and their roles
      */
-    protected function getUserIds()
+    protected function getUserIds(): array
     {
         // fetch roles of user
-        $userIds = $this->getAdminUser()->getRoles();
+        $userIds = $this->getPimcoreUser()->getRoles();
         // fetch id of user
-        $userIds[] = $this->getAdminUser()->getId();
+        $userIds[] = $this->getPimcoreUser()->getId();
 
         // return user ids
         return $userIds;
     }
 
     /**
-     * Merge FilterDefinition for customer fields
-     *
-     * @param Request $request
-     * @param array $filters
-     *
-     * @return array
+     * Merge FilterDefinition for customer fields with filters array
      */
-    protected function addFilterDefinitionCustomer(Request $request, array $filters)
+    protected function addFilterDefinitionCustomer(Request $request, array $filters): array
     {
         // merge filters with filters of filter definition
         $filterDefinition = $this->getFilterDefinition($request);
@@ -630,14 +572,9 @@ class CustomersController extends Admin
     }
 
     /**
-     * Add segment filters from FilterDefinition
-     *
-     * @param Request $request
-     * @param array $filters
-     *
-     * @return array
+     * Add segment filters from FilterDefinition to filters array
      */
-    protected function addFilterDefinitionSegments(Request $request, array $filters)
+    protected function addFilterDefinitionSegments(Request $request, array $filters): array
     {
         $filters['showSegments'] ??= [];
 
@@ -669,10 +606,7 @@ class CustomersController extends Admin
         return $filters;
     }
 
-    /**
-     * @return SearchHelper
-     */
-    protected function getSearchHelper()
+    protected function getSearchHelper(): SearchHelper
     {
         return \Pimcore::getContainer()->get(SearchHelper::class);
     }

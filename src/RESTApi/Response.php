@@ -15,7 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\RESTApi;
 
-use Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class Response extends JsonResponse
 {

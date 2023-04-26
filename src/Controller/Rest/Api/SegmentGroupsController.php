@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\Controller\Rest\Api;
 
 use CustomerManagementFrameworkBundle\Controller\Rest\CrudHandlerController;
+use CustomerManagementFrameworkBundle\RESTApi\SegmentGroupsHandler;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -24,9 +25,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class SegmentGroupsController extends CrudHandlerController
 {
     /**
-     * @return \CustomerManagementFrameworkBundle\RESTApi\SegmentGroupsHandler
+     * @return SegmentGroupsHandler
      */
-    protected function getHandler()
+    protected function getHandler(): SegmentGroupsHandler
     {
         return \Pimcore::getContainer()->get('cmf.rest.segment_groups_handler');
     }

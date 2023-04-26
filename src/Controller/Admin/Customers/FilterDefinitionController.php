@@ -28,12 +28,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class FilterDefinitionController extends Admin
 {
     /**
-     * @param Request $request
      * @Route("/delete", name="cmf_filter_definition_delete")
-     *
-     * @return RedirectResponse
      */
-    public function deleteAction(Request $request)
+    public function deleteAction(Request $request): RedirectResponse
     {
         // fetch CustomerView object
         $customerView = \Pimcore::getContainer()->get('cmf.customer_view');
@@ -50,7 +47,7 @@ class FilterDefinitionController extends Admin
             return $this->getRedirectToFilter();
         }
         // check if user is allowed to change FilterDefinition object (must be owner or filter admin)
-        if (!$filterDefinition->isUserAllowedToUpdate($this->getAdminUser())) {
+        if (!$filterDefinition->isUserAllowedToUpdate($this->getPimcoreUser())) {
             // add error message for user not allowed to access FilterDefinition object
             $errors[] = $customerView->translate('cmf_filter_definition_errors_access');
 
@@ -72,13 +69,8 @@ class FilterDefinitionController extends Admin
      * Save new FilterDefinition object
      *
      * @Route("/save", name="cmf_filter_definition_save")
-     *
-     * @param Request $request
-     * @param CustomerViewInterface $customerView
-     *
-     * @return RedirectResponse
      */
-    public function saveAction(Request $request, CustomerViewInterface $customerView)
+    public function saveAction(Request $request, CustomerViewInterface $customerView): RedirectResponse
     {
         // fetch object parameters from request
         $filterDefinition = $this->getFilterDefinitionFromRequest($request, true);
@@ -105,13 +97,8 @@ class FilterDefinitionController extends Admin
      * Update existing FilterDefinition object
      *
      * @Route("/update", name="cmf_filter_definition_update")
-     *
-     * @param Request $request
-     * @param CustomerViewInterface $customerView
-     *
-     * @return RedirectResponse
      */
-    public function updateAction(Request $request, CustomerViewInterface $customerView)
+    public function updateAction(Request $request, CustomerViewInterface $customerView): RedirectResponse
     {
         // fetch object parameters from request
         $filterDefinition = $this->getFilterDefinitionFromRequest($request, true, true);
@@ -132,7 +119,7 @@ class FilterDefinitionController extends Admin
             return $this->getRedirectToFilter(0, $errors);
         }
         // check if user is allowed to update object
-        if (!$filterDefinition->isUserAllowedToUpdate($this->getAdminUser())) {
+        if (!$filterDefinition->isUserAllowedToUpdate($this->getPimcoreUser())) {
             // add error message for user not allowed to access FilterDefinition object
             $errors[] = $customerView->translate('cmf_filter_definition_errors_change');
 
@@ -156,12 +143,8 @@ class FilterDefinitionController extends Admin
      *
      * @Route("/share", name="cmf_filter_definition_share")
      *
-     * @param Request $request
-     * @param CustomerViewInterface $customerView
-     *
-     * @return bool|RedirectResponse
      */
-    public function shareAction(Request $request, CustomerViewInterface $customerView)
+    public function shareAction(Request $request, CustomerViewInterface $customerView): RedirectResponse | bool
     {
         // fetch object parameters from request
         $filterDefinition = $this->getFilterDefinitionFromRequest($request, false, true);
@@ -172,7 +155,7 @@ class FilterDefinitionController extends Admin
         // initialize error array
         $errors = [];
         // check if user is allowed to share FilterDefinition object
-        if (!$filterDefinition->isUserAllowedToShare($this->getAdminUser())) {
+        if (!$filterDefinition->isUserAllowedToShare($this->getPimcoreUser())) {
             // add error message for user not allowed to access FilterDefinition object
             $errors[] = $customerView->translate('cmf_filter_definition_errors_access.');
 
@@ -195,14 +178,9 @@ class FilterDefinitionController extends Admin
     }
 
     /**
-     * Create redirect to customer view with selected filter
-     *
-     * @param int $filterDefinitionId
-     * @param array $errors
-     *
-     * @return RedirectResponse
+     * Create redirect to customer view with selected filter definition
      */
-    protected function getRedirectToFilter(int $filterDefinitionId = 0, array $errors = [])
+    protected function getRedirectToFilter(int $filterDefinitionId = 0, array $errors = []): RedirectResponse
     {
         // redirect to filter view with new FilterDefinition selected
         return $this->redirect($this->generateUrl('customermanagementframework_admin_customers_list', [
@@ -211,74 +189,40 @@ class FilterDefinitionController extends Admin
         ]));
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return int
-     */
-    protected function getIdFromRequest(Request $request)
+    protected function getIdFromRequest(Request $request): int
     {
         return intval($request->get('filterDefinition', [])['id'] ?? 0);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return string
-     */
-    protected function getNameFromRequest(Request $request)
+    protected function getNameFromRequest(Request $request): string
     {
         return strval($request->get('filterDefinition', [])['name'] ?? '');
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return mixed
-     */
-    protected function getDefinitionFromRequest(Request $request)
+    protected function getDefinitionFromRequest(Request $request): mixed
     {
         return $request->get('filter', []);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return array
-     */
-    protected function getShowSegmentsFromRequest(Request $request)
+    protected function getShowSegmentsFromRequest(Request $request): array
     {
         return $this->getDefinitionFromRequest($request)['showSegments'] ?? [];
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return bool
-     */
-    protected function getReadOnlyFromRequest(Request $request)
+    protected function getReadOnlyFromRequest(Request $request): bool
     {
         return boolval($request->get('filterDefinition', [])['readOnly'] ?? false);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return bool
-     */
-    protected function getShortcutAvailableFromRequest(Request $request)
+    protected function getShortcutAvailableFromRequest(Request $request): bool
     {
         return boolval($request->get('filterDefinition', [])['shortcutAvailable'] ?? false);
     }
 
     /**
      * Prepare allowed user ids from request. This parameter consists of allowedUserIds and allowedRoleIds
-     *
-     * @param Request $request
-     *
-     * @return array
      */
-    protected function getAllowedUserIdsFromRequest(Request $request)
+    protected function getAllowedUserIdsFromRequest(Request $request): array
     {
         $allowedUserIds = $request->get('filterDefinition', [])['allowedUserIds'] ?? [];
         $allowedRoleIds = $request->get('filterDefinition', [])['allowedRoleIds'] ?? [];
@@ -291,13 +235,12 @@ class FilterDefinitionController extends Admin
     /**
      * Create FilterDefinition objects with parameters set from request
      *
-     * @param Request $request
      * @param bool $setParametersFromRequest Flag if all parameters should be set from request parameters
      * @param bool $loadById True means load FilterDefinition by id provided in request. False means creating a new FilterDefinition object
      *
      * @return FilterDefinition|null Null will be returned if loadById set and no id provided or object with id not found
      */
-    protected function getFilterDefinitionFromRequest(Request $request, bool $setParametersFromRequest = false, bool $loadById = false)
+    protected function getFilterDefinitionFromRequest(Request $request, bool $setParametersFromRequest = false, bool $loadById = false): ?FilterDefinition
     {
         // fetch object parameters from request
         $id = $this->getIdFromRequest($request);
@@ -327,7 +270,7 @@ class FilterDefinitionController extends Admin
             $filterDefinition->setShortcutAvailable($this->getShortcutAvailableFromRequest($request));
             // set owner only for new FilterDefinition object
             if (!$loadById) {
-                $filterDefinition->setOwnerId($this->getAdminUser()->getId());
+                $filterDefinition->setOwnerId($this->getPimcoreUser()->getId());
             }
         }
 

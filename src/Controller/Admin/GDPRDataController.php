@@ -16,7 +16,10 @@
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\GDPR\DataProvider\Customers;
+use Pimcore\Controller\Traits\JsonHelperTrait;
+use Pimcore\Controller\UserAwareController;
 use Pimcore\Model\DataObject\AbstractObject;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -25,17 +28,14 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/gdpr-data")
  */
-class GDPRDataController extends \Pimcore\Bundle\AdminBundle\Controller\AdminController
+class GDPRDataController extends UserAwareController
 {
+    use JsonHelperTrait;
+
     /**
-     * @param Request $request
-     * @param Customers $service
-     *
-     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
-     *
      * @Route("/search-data-objects", name="_pimcore_customermanagementframework_gdprdata_searchdataobjects", methods={"GET"})
      */
-    public function searchDataObjectsAction(Request $request, Customers $service)
+    public function searchDataObjectsAction(Request $request, Customers $service): JsonResponse
     {
         $allParams = array_merge($request->request->all(), $request->query->all());
 
@@ -49,19 +49,17 @@ class GDPRDataController extends \Pimcore\Bundle\AdminBundle\Controller\AdminCon
             $allParams['sort'] ?? null
         );
 
-        return $this->adminJson($result);
+        return $this->jsonResponse($result);
     }
 
     /**
-     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
-     *
      * @Route("/export", name="_pimcore_customermanagementframework_gdprdata_export", methods={"GET"})
      */
-    public function exportDataObjectAction(Request $request, Customers $service)
+    public function exportDataObjectAction(Request $request, Customers $service): JsonResponse
     {
         $object = AbstractObject::getById($request->query->getInt('id'));
         $exportResult = $service->doExportData($object);
-        $jsonResponse = $this->adminJson($exportResult);
+        $jsonResponse = $this->jsonResponse($exportResult);
         $jsonResponse->headers->set('Content-Disposition', 'attachment; filename="export-data-object-' . $object->getId() . '.json"');
 
         return $jsonResponse;

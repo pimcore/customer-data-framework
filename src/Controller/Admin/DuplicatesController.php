@@ -18,9 +18,11 @@ namespace CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\CustomerList\SearchHelper;
 use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
+use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\Service;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -30,19 +32,15 @@ class DuplicatesController extends Admin
 {
     public function init()
     {
-        \Pimcore\Model\DataObject\AbstractObject::setHideUnpublished(true);
+        AbstractObject::setHideUnpublished(true);
     }
 
     /**
-     * @param Request $request
-     * @param DuplicatesIndexInterface $duplicatesIndex
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/list")
      *
      * @throws \Exception
-     * @Route("/list")
      */
-    public function listAction(Request $request, DuplicatesIndexInterface $duplicatesIndex)
+    public function listAction(Request $request, DuplicatesIndexInterface $duplicatesIndex): Response
     {
         // fetch all filters
         $filters = $request->get('filter', []);
@@ -57,7 +55,7 @@ class DuplicatesController extends Admin
                 ->setOrder('ASC');
 
             /** @noinspection PhpUnhandledExceptionInspection */
-            $this->getSearchHelper()->addListingFilters($customerList, $filters, $this->getAdminUser());
+            $this->getSearchHelper()->addListingFilters($customerList, $filters, $this->getPimcoreUser());
         }
 
         $paginator = $duplicatesIndex->getPotentialDuplicates(
@@ -81,12 +79,9 @@ class DuplicatesController extends Admin
     }
 
     /**
-     * @param Request $request
      * @Route("/decline/{id}")
-     *
-     * @return JsonResponse
      */
-    public function declineAction(Request $request)
+    public function declineAction(Request $request): JsonResponse
     {
         try {
             \Pimcore::getContainer()->get('cmf.customer_duplicates_index')->declinePotentialDuplicate(
@@ -99,10 +94,7 @@ class DuplicatesController extends Admin
         }
     }
 
-    /**
-     * @return SearchHelper
-     */
-    protected function getSearchHelper()
+    protected function getSearchHelper(): SearchHelper
     {
         return \Pimcore::getContainer()->get(SearchHelper::class);
     }

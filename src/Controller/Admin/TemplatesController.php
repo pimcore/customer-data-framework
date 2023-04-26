@@ -16,33 +16,33 @@
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp\TemplateExporter;
-use Pimcore\Bundle\AdminBundle\Controller\AdminController;
+use Pimcore\Controller\Traits\JsonHelperTrait;
+use Pimcore\Controller\UserAwareController;
 use Pimcore\Model\Document\PageSnippet;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/templates")
  */
-class TemplatesController extends AdminController
+class TemplatesController extends UserAwareController
 {
+    use JsonHelperTrait;
+
     /**
-     * @param Request $request
-     * @param TemplateExporter $templateExporter
-     *
-     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
+     * @Route("/export")
      *
      * @throws \Exception
-     * @Route("/export")
      */
-    public function exportAction(Request $request, TemplateExporter $templateExporter)
+    public function exportAction(Request $request, TemplateExporter $templateExporter): JsonResponse
     {
         $document = PageSnippet::getById($request->get('document_id'));
 
         if ($document) {
             $templateExporter->exportTemplate($document);
 
-            return $this->adminJson(['success' => true]);
+            return $this->jsonResponse(['success' => true]);
         } else {
             throw new \Exception(sprintf('Document {%s} not found!', $request->get('document_id')));
         }

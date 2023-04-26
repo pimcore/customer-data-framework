@@ -18,7 +18,6 @@ namespace CustomerManagementFrameworkBundle\Controller\Rest\Mailchimp;
 use CustomerManagementFrameworkBundle\Controller\Rest\AbstractRestController;
 use CustomerManagementFrameworkBundle\Newsletter\Manager\NewsletterManagerInterface;
 use CustomerManagementFrameworkBundle\Newsletter\ProviderHandler\Mailchimp;
-use Doctrine\DBAL\Connection;
 use DrewM\MailChimp\Webhook;
 use Monolog\Handler\StreamHandler;
 use Pimcore\Bundle\ApplicationLoggerBundle\ApplicationLogger;
@@ -39,13 +38,9 @@ class WebhookController extends AbstractRestController
     }
 
     /**
-     * @param Request $request
-     *
-     * @return JsonResponse
-     *
      * @Route("/mailchimp/webhook", methods={"GET","POST"})
      */
-    public function process(Request $request)
+    public function process(Request $request): JsonResponse
     {
         $result = Webhook::receive();
 
@@ -68,11 +63,10 @@ class WebhookController extends AbstractRestController
         return new JsonResponse('ok');
     }
 
-    private function createLogger()
+    private function createLogger(): ApplicationLogger
     {
         $logger = new ApplicationLogger();
         $logger->setComponent('Mailchimp');
-        /** @var Connection $db */
         $db = Db::get();
         $dbWriter = new ApplicationLoggerDb($db, 'notice');
         $logger->addWriter($dbWriter);

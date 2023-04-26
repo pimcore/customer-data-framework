@@ -15,23 +15,31 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
+use CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
+use CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule\Listing;
+use CustomerManagementFrameworkBundle\Model\ActionTrigger\TriggerDefinition;
+use Pimcore\Controller\Traits\JsonHelperTrait;
+use Pimcore\Controller\UserAwareController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/rules")
  */
-class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminController
+class RulesController extends UserAwareController
 {
+    use JsonHelperTrait;
+
     /**
      * get saved action trigger rules
      *
      * @param Request $request
      * @Route("/list")
      */
-    public function listAction(Request $request)
+    public function listAction(Request $request): JsonResponse
     {
-        $rules = new \CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule\Listing();
+        $rules = new Listing();
         $rules->setOrderKey('name');
         $rules->setOrder('ASC');
 
@@ -57,18 +65,19 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
             ];
         }
 
-        return $this->adminJson($json);
+        return $this->jsonResponse($json);
     }
 
     /**
      * get rule config as json
      *
-     * @param Request $request
      * @Route("/get")
+     *
+     * @throws \Exception
      */
-    public function getAction(Request $request)
+    public function getAction(Request $request): JsonResponse
     {
-        $rule = \CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule::getById((int)$request->get('id'));
+        $rule = Rule::getById((int)$request->get('id'));
         if ($rule) {
             // create json config
             $json = [
@@ -108,19 +117,18 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
                 $json['condition'][] = $conditionData;
             }
 
-            return $this->adminJson($json);
+            return $this->jsonResponse($json);
         }
 
-        return $this->adminJson(['error' => true, 'msg' => 'rule not found']);
+        return $this->jsonResponse(['error' => true, 'msg' => 'rule not found']);
     }
 
     /**
      * save rule config
      *
-     * @param Request $request
      * @Route("/save", methods={"PUT"})
      */
-    public function saveAction(Request $request)
+    public function saveAction(Request $request): JsonResponse
     {
         // send json response
         $return = [
@@ -130,7 +138,7 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
 
         // save rule config
         try {
-            $rule = \CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule::getById((int)$request->get('id'));
+            $rule = Rule::getById((int)$request->get('id'));
             $data = json_decode($request->get('data'));
 
             // apply basic settings
@@ -142,7 +150,7 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
             $arrTrigger = [];
             foreach ($data->trigger as $setting) {
                 $setting = json_decode(json_encode($setting), true);
-                $trigger = new \CustomerManagementFrameworkBundle\Model\ActionTrigger\TriggerDefinition($setting);
+                $trigger = new TriggerDefinition($setting);
                 $arrTrigger[] = $trigger;
             }
             $rule->setTrigger($arrTrigger);
@@ -191,16 +199,15 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
         }
 
         // send response
-        return $this->adminJson($return);
+        return $this->jsonResponse($return);
     }
 
     /**
      * add new rule
      *
-     * @param Request $request
      * @Route("/add", methods={"POST"})
      */
-    public function addAction(Request $request)
+    public function addAction(Request $request): JsonResponse
     {
         // send json response
         $return = [
@@ -210,7 +217,7 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
 
         // save rule
         try {
-            $rule = new \CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule();
+            $rule = new Rule();
             $rule->setName($request->get('name'));
             if ($rule->save()) {
                 $return['success'] = true;
@@ -222,16 +229,15 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
         }
 
         // send response
-        return $this->adminJson($return);
+        return $this->jsonResponse($return);
     }
 
     /**
      * delete exiting rule
      *
-     * @param Request $request
      * @Route("/delete", methods={"DELETE"})
      */
-    public function deleteAction(Request $request)
+    public function deleteAction(Request $request): JsonResponse
     {
         // send json response
         $return = [
@@ -241,7 +247,7 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
 
         // delete rule
         try {
-            $rule = \CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule::getById((int)$request->get('id'));
+            $rule = Rule::getById((int)$request->get('id'));
             $rule->delete();
             $return['success'] = true;
         } catch (\Exception $e) {
@@ -249,6 +255,6 @@ class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
         }
 
         // send response
-        return $this->adminJson($return);
+        return $this->jsonResponse($return);
     }
 }
