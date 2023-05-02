@@ -86,7 +86,7 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle imp
     {
         $collection->addBundle(PimcoreAdminBundle::class, 10);
         $collection->addBundle(PimcoreApplicationLoggerBundle::class);
-        $collection->addBundle(PimcorePersonalizationBundle::class);
+        $collection->addBundle(PimcorePersonalizationBundle::class, 9);
         $collection->addBundle(PimcoreNewsletterBundle::class);
     }
 }
