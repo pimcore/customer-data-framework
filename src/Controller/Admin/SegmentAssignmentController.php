@@ -50,9 +50,9 @@ class SegmentAssignmentController extends AdminController
      */
     public function inheritableSegments(Request $request, SegmentManagerInterface $segmentManager)
     {
-        $id = $request->get('id') ?? '';
+        $id = $request->get('id');
         $type = $request->get('type');
-        if (!$type) {
+        if (!$type || !$id) {
             return $this->adminJson(['data' => []]);
         }
 
