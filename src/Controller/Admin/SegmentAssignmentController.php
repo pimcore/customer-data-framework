@@ -52,7 +52,7 @@ class SegmentAssignmentController extends AdminController
     {
         $id = $request->get('id') ?? '';
         $type = $request->get('type');
-        if (!$type){
+        if (!$type) {
             return $this->adminJson(['data' => []]);
         }
 
