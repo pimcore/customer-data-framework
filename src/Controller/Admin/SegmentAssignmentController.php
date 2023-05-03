@@ -60,8 +60,8 @@ class SegmentAssignmentController extends AdminController
         $parentIdStatement = sprintf('SELECT :parentIdField FROM %s WHERE :idField = :value', $db->quoteIdentifier($type . 's'));
         $parentId = $db->fetchOne($parentIdStatement, [
             'parentIdField' => $type === 'object' ? 'o_parentId' : 'parentId',
-            'idField' => $idField,
-            'value' => $type === 'object' ? 'o_id' : 'id'
+            'idField' => $type === 'object' ? 'o_id' : 'id',
+            'value' => $id
         ]);
 
         $segments = $segmentManager->getSegmentsForElementId($parentId, $type);
