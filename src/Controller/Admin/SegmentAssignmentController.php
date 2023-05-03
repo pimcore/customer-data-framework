@@ -59,9 +59,9 @@ class SegmentAssignmentController extends AdminController
         $db = \Pimcore\Db::get();
         $parentIdStatement = sprintf('SELECT :parentIdField FROM %s WHERE :idField = :value', $db->quoteIdentifier($type . 's'));
         $parentId = $db->fetchOne($parentIdStatement, [
-            'parentIdField' => $parentIdField,
+            'parentIdField' => $type === 'object' ? 'o_parentId' : 'parentId',
             'idField' => $idField,
-            'value' => $id
+            'value' => $type === 'object' ? 'o_id' : 'id'
         ]);
 
         $segments = $segmentManager->getSegmentsForElementId($parentId, $type);
