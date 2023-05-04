@@ -97,7 +97,8 @@ class CustomersController extends Admin
             return $this->render($customerView->getOverviewWrapperTemplate(), [
                 'paginator' => $paginator,
                 'paginationVariables' => $paginator->getPaginationData(),
-                'customerView' => $customerView
+                'customerView' => $customerView,
+                'idField' => Service::getVersionDependentDatabaseColumnName('id')
             ]);
         } else {
             return $this->render(
