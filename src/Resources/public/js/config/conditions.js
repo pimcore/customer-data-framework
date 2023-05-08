@@ -221,7 +221,8 @@ pimcore.plugin.cmf.rule.conditions.CountActivities = Class.create(pimcore.plugin
                         xtype: "numberfield",
                         name: "count",
                         width: 90,
-                        value: this.options.count
+                        value: this.options.count,
+                        minValue: 0
                     }
                 ]
             }
@@ -452,7 +453,8 @@ pimcore.plugin.cmf.rule.conditions.CountTrackedSegment = Class.create(pimcore.pl
             //xtype: "numberfield",
             name: "count",
             width: 90,
-            value: this.options.count
+            value: this.options.count,
+            minValue: 0
         });
 
         return [
@@ -531,7 +533,8 @@ pimcore.plugin.cmf.rule.conditions.CountTargetGroupWeight = Class.create(pimcore
                         xtype: "numberfield",
                         name: "count",
                         width: 90,
-                        value: this.options.count
+                        value: this.options.count,
+                        minValue: 0
                     }
                 ]
             },
