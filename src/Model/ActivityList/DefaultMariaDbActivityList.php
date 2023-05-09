@@ -15,7 +15,6 @@
 
 namespace CustomerManagementFrameworkBundle\Model\ActivityList;
 
-use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList\MariaDbDao;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use Pimcore\Model\Listing\AbstractListing;
