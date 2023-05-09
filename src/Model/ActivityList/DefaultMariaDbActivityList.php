@@ -116,7 +116,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         throw new \Exception('Not implemented anymore.');
     }
 
-    public function current(): ActivityInterface | false
+    public function current(): ActivityStoreEntryInterface | false
     {
         $this->getActivities();
 
