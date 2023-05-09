@@ -18,7 +18,6 @@ namespace CustomerManagementFrameworkBundle\Model\ActivityList;
 use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList\MariaDbDao;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
-use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\DefaultActivityStoreEntry;
 use Pimcore\Model\Listing\AbstractListing;
 
 class DefaultMariaDbActivityList extends AbstractListing implements ActivityListInterface
@@ -117,7 +116,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         throw new \Exception('Not implemented anymore.');
     }
 
-    public function current(): ActivityInterface | DefaultActivityStoreEntry | false
+    public function current(): ActivityStoreEntryInterface | false
     {
         $this->getActivities();
 
