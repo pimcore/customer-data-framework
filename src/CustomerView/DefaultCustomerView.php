@@ -110,7 +110,6 @@ class DefaultCustomerView implements CustomerViewInterface
         $vf = $this->viewFormatter;
 
         foreach ($definition->getFieldDefinitions() as $fd) {
-
             if ($fd->getInvisible() || $fd->getName() == 'password') {
                 continue;
             }
