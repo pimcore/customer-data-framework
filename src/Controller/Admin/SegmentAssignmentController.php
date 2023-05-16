@@ -50,12 +50,17 @@ class SegmentAssignmentController extends AdminController
      */
     public function inheritableSegments(Request $request, SegmentManagerInterface $segmentManager)
     {
-        $id = $request->get('id') ?? '';
-        $type = $request->get('type') ?? '';
+        $id = $request->get('id');
+        $type = $request->get('type');
+        if (!$type || !$id) {
+            return $this->adminJson(['data' => []]);
+        }
 
         $db = \Pimcore\Db::get();
-        $parentIdStatement = sprintf('SELECT `%s` FROM `%s` WHERE `%s` = :value', $type === 'object' ? 'o_parentId' : 'parentId', $type.'s', $type === 'object' ? 'o_id' : 'id');
+        $parentIdStatement = sprintf('SELECT :parentIdField FROM %s WHERE :idField = :value', $db->quoteIdentifier($type . 's'));
         $parentId = $db->fetchOne($parentIdStatement, [
+            'parentIdField' => $type === 'object' ? 'o_parentId' : 'parentId',
+            'idField' => $type === 'object' ? 'o_id' : 'id',
             'value' => $id
         ]);
 

@@ -15,7 +15,6 @@
 
 namespace CustomerManagementFrameworkBundle\Model\ActivityList;
 
-use CustomerManagementFrameworkBundle\Model\ActivityInterface;
 use CustomerManagementFrameworkBundle\Model\ActivityList\DefaultMariaDbActivityList\MariaDbDao;
 use CustomerManagementFrameworkBundle\Model\ActivityStoreEntry\ActivityStoreEntryInterface;
 use Pimcore\Model\Listing\AbstractListing;
@@ -38,7 +37,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     protected $totalCount = null;
 
     /**
-     * @var null|ActivityInterface[]
+     * @var null|ActivityStoreEntryInterface[]
      */
     protected $activities = null;
 
@@ -52,6 +51,9 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
         $this->dao = new MariaDbDao($this);
     }
 
+    /**
+     * @return ActivityStoreEntryInterface[]
+     */
     public function getActivities()
     {
         if ($this->activities === null) {
@@ -116,7 +118,7 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
      * @param  int $offset Page offset
      * @param  int $itemCountPerPage Number of items per page
      *
-     * @return array
+     * @return ActivityStoreEntryInterface[]
      */
     public function getItems($offset, $itemCountPerPage)
     {
@@ -148,10 +150,10 @@ class DefaultMariaDbActivityList extends AbstractListing implements ActivityList
     }
 
     /**
-     * @return ActivityInterface|false
+     * @return ActivityStoreEntryInterface|false
      */
     #[\ReturnTypeWillChange]
-    public function current()/* : ActivityInterface|false */
+    public function current()/* : ActivityStoreEntryInterface|false */
     {
         $this->getActivities();
 
