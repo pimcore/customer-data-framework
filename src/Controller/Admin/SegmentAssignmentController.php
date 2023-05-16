@@ -51,7 +51,7 @@ class SegmentAssignmentController extends UserAwareController
         $id = $request->get('id');
         $type = $request->get('type');
         if (!$type || !$id) {
-            return $this->adminJson(['data' => []]);
+            return $this->jsonResponse(['data' => []]);
         }
 
         $db = \Pimcore\Db::get();
