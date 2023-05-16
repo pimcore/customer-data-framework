@@ -48,15 +48,20 @@ class SegmentAssignmentController extends UserAwareController
      */
     public function inheritableSegments(Request $request, SegmentManagerInterface $segmentManager): JsonResponse
     {
-        $id = $request->get('id') ?? '';
-        $type = $request->get('type') ?? '';
+        $id = $request->get('id');
+        $type = $request->get('type');
+        if (!$type || !$id) {
+            return $this->adminJson(['data' => []]);
+        }
 
         $db = \Pimcore\Db::get();
         $idField = Service::getVersionDependentDatabaseColumnName('id');
         $parentIdField = Service::getVersionDependentDatabaseColumnName('parentId');
 
-        $parentIdStatement = sprintf('SELECT `%s` FROM `%s` WHERE `%s` = :value', $parentIdField, $type.'s', $idField);
+        $parentIdStatement = sprintf('SELECT :parentIdField FROM %s WHERE :idField = :value', $db->quoteIdentifier($type . 's'));
         $parentId = $db->fetchOne($parentIdStatement, [
+            'parentIdField' => $parentIdField,
+            'idField' => $idField,
             'value' => $id
         ]);
 

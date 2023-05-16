@@ -150,6 +150,8 @@ abstract class AbstractExporter implements ExporterInterface
                 }
             }
 
+            $row[self::COLUMNS] = Service::escapeCsvRecord($row[self::COLUMNS]);
+            $row[self::SEGMENT_IDS] = Service::escapeCsvRecord($row[self::SEGMENT_IDS]);
             $rows[] = $row;
         }
 
