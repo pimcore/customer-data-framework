@@ -36,7 +36,7 @@
                 <tbody id="customerduplicates_{{ duplicate.getDuplicateCustomers[0].getId() }}_{{ duplicate.getDuplicateCustomers[1].getId() }}" class="js-duplicates-item duplicates-item" >
                     <tr>
                         <td colspan="99">
-                            <a class="btn btn-primary btn-xs pull-right" onClick="new window.top.pimcore.plugin.objectmerger.panel({{ duplicate.getDuplicateCustomers[0].getId() }}, {{ duplicate.getDuplicateCustomers[1].getId() }}); ">
+                            <a class="btn btn-primary btn-xs pull-right" id="customerDuplicatesMerge" data-duplicate-ids='[{{ duplicate.getDuplicateCustomers[0].getId() }},{{ duplicate.getDuplicateCustomers[1].getId() }}]'>
                                 {{ 'cmf_duplicates_merge' | trans({}, 'admin')  }}
                             </a>
                             {% if(not app.request.get('declined')) %}
@@ -65,6 +65,7 @@
                             {% endfor %}
                         </tr>
                     {% endfor %}
+
             </tbody>
             {% endfor %}
 
@@ -74,6 +75,4 @@
             {{ include('@PimcoreCustomerManagementFramework/admin/partial/pagination/default.html.twig') }}
         </div>
     </div>
-
-
 {% endblock %}
