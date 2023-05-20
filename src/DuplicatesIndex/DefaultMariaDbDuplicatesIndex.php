@@ -239,28 +239,30 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         $select
             ->from(self::POTENTIAL_DUPLICATES_TABLE)
             ->select(
-                    'id',
-                    'duplicateCustomerIds',
-                    'declined',
-                    'fieldCombinations',
-                    'creationDate',
-                    'modificationDate'
+                self::POTENTIAL_DUPLICATES_TABLE . '.id',
+                'duplicateCustomerIds',
+                'declined',
+                'fieldCombinations',
+                self::POTENTIAL_DUPLICATES_TABLE . '.creationDate',
+                self::POTENTIAL_DUPLICATES_TABLE . '.modificationDate'
             )
             ->addOrderBy('id', 'asc');
 
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
-        if (!is_null($filterCustomerList)) {
+
+        if(!is_null($filterCustomerList)) {
             $query = $filterCustomerList->getQueryBuilder()
                 ->resetQueryPart('select')
-                ->select($idField);
+                ->select('id');
             $joinTable = 'object_' . $filterCustomerList->getClassId();
+            $joinIdField = $joinTable . '.id';
+
             $select
                 ->distinct()
-                ->innerJoin(self::POTENTIAL_DUPLICATES_TABLE, $joinTable, $joinTable, 'FIND_IN_SET('. $idField .', duplicateCustomerIds)')
-                ->andWhere($idField . ' in (' . $query . ')');
+                ->innerJoin(self::POTENTIAL_DUPLICATES_TABLE, $joinTable, $joinTable, 'FIND_IN_SET(' . $joinIdField . ', duplicateCustomerIds)')
+                ->andWhere($joinIdField . ' in (' . $query . ')');
         }
 
-        if ($declined) {
+        if($declined) {
             $select->andWhere('(declined = 1)');
         } else {
             $select->andWhere('(declined is null or declined = 0)');
