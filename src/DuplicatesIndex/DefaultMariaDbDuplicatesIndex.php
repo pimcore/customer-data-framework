@@ -248,8 +248,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
             )
             ->addOrderBy('id', 'asc');
 
-
-        if(!is_null($filterCustomerList)) {
+        if (!is_null($filterCustomerList)) {
             $query = $filterCustomerList->getQueryBuilder()
                 ->resetQueryPart('select')
                 ->select('id');
@@ -262,7 +261,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
                 ->andWhere($joinIdField . ' in (' . $query . ')');
         }
 
-        if($declined) {
+        if ($declined) {
             $select->andWhere('(declined = 1)');
         } else {
             $select->andWhere('(declined is null or declined = 0)');
