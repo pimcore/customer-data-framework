@@ -1,206 +1,207 @@
-plugin_cmf_mainmenu: "Customer Management Framework"
-plugin_cmf_customerview: "Kunden"
-plugin_cmf_customerduplicatesview: "Kunden-Duplikate"
-plugin_cmf_customerautomationrules: "Kunden-Automatisierungsregeln"
-plugin_cmf_actiontriggerrule_add_rule: "Regel hinzufügen"
-plugin_cmf_actiontriggerrule_add_rule_error: "Regel konnte nicht erstellt werden"
-plugin_cmf_actiontriggerrule_problem_creating_new_rule: "Ein Problem trat beim Erstellen der Regel auf"
-plugin_cmf_icon_rule_triggers: "Trigger"
-plugin_cmf_actiontrigger_rule_saved_successfully: "Regel erfolgreich gespeichert"
-plugin_cmf_actiontriggerrule_add_rule_enter_name: "Geben Sie den Namen der neuen Regel ein"
-plugin_cmf_actiontriggerrule_triggerNewActivity: "Neue Kundenaktivität"
-plugin_cmf_actiontriggerrule_triggerExecuteSegmentBuilders: "Segmentbildung"
-plugin_cmf_actiontriggerrule_triggerCron: "Cron"
-plugin_cmf_actiontriggerrule_actionAddSegment: "Segment hinzufügen"
-plugin_cmf_actiontriggerrule_actionAddTrackedSegment: "[Targeting] Gemessenes Segment hinzufügen"
-plugin_cmf_actiontriggerrule_actionSendMail: "Mail versenden"
-plugin_cmf_actiontriggerrule_actionDelay: "Zeitverzögerung"
-plugin_cmf_actiontriggerrule_conditionCountActivities: "Aktivitätenanzahl vom Typ x"
-plugin_cmf_actiontriggerrule_conditionCountTrackedSegment: "[Targeting] Gemessene Segmente zählen"
-plugin_cmf_actiontriggerrule_conditionCustomer: "Kunde"
-plugin_cmf_actiontriggerrule_conditionSegment: "Kundensegment"
-plugin_cmf_actiontriggerrule_conditionCustomerField: "Kundenfeld"
-plugin_cmf_actiontriggerrule_countactivities_type: "Aktivitätenanzahl vom Typ"
-plugin_cmf_actiontriggerrule_countactivities_must_be: "Bedingung"
-plugin_cmf_actiontriggerrule_not: "nicht"
-plugin_cmf_actiontriggerrule_changefieldvalue_field: "Feld"
-plugin_cmf_actiontriggerrule_changefieldvalue_value: "Wert"
-plugin_cmf_actiontriggerrule_actionChangeFieldValue: "Wert eines Feldes des Kunden ändern"
-plugin_cmf_actiontriggerrule_cron_definition: "Definition"
-plugin_cmf_actiontriggerrule_cron_croneditor: "Online cron Format Generator"
-plugin_cmf_actiontriggerrule_addsegment_remove-other-segments-from-group: "andere Segmente der gewählten Segmentgruppe entfernen"
-plugin_cmf_actiontriggerrule_addsegment_increase-segment-application-counter: "Zähler für Segment Zuweisung erhöhen"
-plugin_cmf_customer: "Kunde"
-plugin_cmf_segment: "Segment"
-plugin_cmf_select_a_segment: "Segment auswählen"
-custom_report_adapter_termSegmentBuilder: "TermSegmentBuilderDefinition"
-plugin_cmf_custom_reports_termsegmentbuilder_sql: "SQL (die erste Spalte muss 'term' heißen und sollte alle verfügbaren und eindeutigen Begriffe zurückliefern)"
-plugin_cmf_custom_reports_termsegmentbuilder_term_definition: "Term Definition"
-plugin_cmf_newsletter_enqueue_all_customers: "Newsletter: alle Kunden exportieren"
-plugin_cmf_newsletter_queue_running_tooltip: "Newsletter Sync läuft"
-plugin_cmf_newsletter_export_template: "MailChimp Template Export"
-plugin_cmf_newsletter_export_template_success: "Templateexport erfolgreich"
-plugin_cmf_newsletter_export_template_error: "Templateexport fehlgeschlagen"
-segmentAssignment: "Segment Tagging"
-plugin_cmf_perm_activityview: "CMF Aktivitäten"
-plugin_cmf_perm_customerview: "CMF Kunden"
-plugin_cmf_perm_customerview_admin: "CMF Kunden Filter-Administrator"
-plugin_cmf_perm_customer_automation_rules: "CMF Automatisierungsregeln für Kunden"
-plugin_cmf_perm_newsletter_enqueue_all_customers: "CMF Newletter Kunden Exportieren"
-cmf_segmentAssignment_inheritanceSettings: "Vererbungseinstellungen"
-cmf_segmentAssignment_assignment: "Segemente direkt zuweisen"
-cmf_segmentAssignment_inheritableAssignments: "Vererbbare Segmente"
-cmf_segmentAssignment_breakInheritance: "Vererbung ausschalten"
-cmf_segmentAssignment_segment_assignment_error: "Segment Tagging Fehler"
-
-cmf_segmentAssignment_assignedSegments: "Zugewiesene Segmente"
-
-cmf_open: "öffnen"
-
-cmf_filters_no_results: "Keine Ergebnisse."
-cmf_filters_customers: "Kunden"
-cmf_filters_customer: "Kunde"
-cmf_filters_customer_id: "Kunden ID"
-cmf_filters_customer_name: "Name"
-cmf_filters_customer_firstname: "Vorname"
-cmf_filters_customer_lastname: "Nachname"
-cmf_filters_customer_email: "E-Mail"
-cmf_filters_customer_gender: "Geschlecht"
-cmf_filters_customer_active: "Aktiv"
-cmf_filters_customer_inactive: "Inaktiv"
-cmf_filters_customer_back: "Zurück"
-cmf_filters_options: "Optionen"
-cmf_filters_options_only_active: "Zeige nur aktive Benutzer"
-cmf_filters_options_operator: "Filterlogik"
-cmf_filters_options_or: "Verknüpfung mit oder per Gruppe"
-cmf_filters_options_and: "Verknüpfung mit und"
-cmf_filters_options_any: "Verknüpfung mit oder"
-
-cmf_filters_export: "Export"
-cmf_filters_export_generating: "Generiere den Export..."
-cmf_filters_search: "Suche"
-cmf_filters_search_show_help: "Hilfe anzeigen"
-cmf_filters_search_info: "Suchanfragen-Syntax kann sowohl im Suchfeld als auch in den einzelnen Feldern genutzt werden."
-cmf_filters_fields_include: "Felder die in der Suche enthalten sind"
-cmf_filters_example_queries: "Beispiel für Suchen"
-cmf_filters_modifiers: "Modifizierer"
-
-cmf_filters_clear: "Filterkriterien löschen"
-cmf_filters_apply: "Filterkriterien anwenden"
-cmf_filters_filters: "Filter"
-cmf_filters_new_customer: "Neuer Kunde"
-cmf_filters_no_filter_selected: "Kein Filter"
-cmf_filters_cancel: "Abbrechen"
-cmf_filters_segments: "Segmente"
-cmf_filters_segments_edit: "Bearbeiten"
-cmf_filters_segments_headline: "Wählen Sie Ihre Segmente"
-cmf_filters_segments_confirm: "Anwenden"
-cmf_filters_delete: "Filter löschen"
-cmf_filters_save_share: "Filter speichern & teilen"
-cmf_filters_save: "Filter speichern"
-cmf_filters_share: "Filter teilen"
-cmf_filters_delete_headline: "Filter wirklich löschen?"
-cmf_filters_delete_confirm: "Löschen"
-cmf_filters_save_headline: "Speichern des Filters"
-cmf_filters_save_name: "Filter Name"
-cmf_filters_save_share_user: "Teilen mit Benutzer"
-cmf_filters_save_share_role: "Teilen mit Rolle"
-cmf_filters_save_read_only: "Schreibgeschützt"
-cmf_filters_save_shortcut_available: "Im Menü anzeigen"
-cmf_filters_save_update: "Filter ändern"
-cmf_filters_save_new: "Als neuer Filter speichern"
-cmf_filters_save_error_name: "Der Filtername ist notwendig."
-cmf_filters_share_headline: "Filter teilen"
-cmf_filters_share_confirm: "Teilen"
-
-cmf_filter_definition_errors_access: "Nicht berechtigt auf den Filter zuzugreifen."
-cmf_filter_definition_errors_change: "Nicht berechtigt den Filter zu ändern."
-cmf_filter_definition_errors_deletion_failed: "Löschen des Filters fehlgeschlagen. (%s)"
-cmf_filter_definition_errors_name_missing: "Bitte geben Sie einen Namen für den Filter ein."
-cmf_filter_definition_errors_save_failed: "Speichern des Filters fehlgeschlagen. (%s)"
-cmf_filter_definition_errors_share_failed: "Teilen des Filters fehlgeschlagen. (%s)"
-
-cmf_activities_activities: "Aktivitäten"
-cmf_activities_all_activity_types: "Alle Aktititätstypen"
-cmf_activities_activity: "Aktivität"
-cmf_activities_activity_date: "Aktivitätsdatum"
-cmf_activities_activity_details: "Aktivitätsdetails"
-cmf_activities_details: "Details"
-cmf_activities_no_activity_found: "Keine Aktivitäten gefunden"
-
-cmf_duplicates_potential_duplicates: "Mögliche Kunden-Duplikate"
-cmf_duplicates_current: "Aktuell"
-cmf_duplicates_declined: "Ablehnen"
-cmf_duplicates_merge: "Zusammenführen"
-cmf_duplicates_decline_duplicate: "Duplikat ablehnen"
-cmf_duplicates_number_total: "Anzahl"
-
-cmf_gdpr_export_customers: "Kunden"
-
-plugin_cmf_targeting_condition_segment_tracked: "[CMF] Segment gemessen"
-plugin_cmf_targeting_condition_has_segment: "[CMF] Segment zugeordnet"
-plugin_cmf_targeting_condition_customer_is_loggedin: "[CMF] Kunde ist eingeloggt"
-plugin_cmf_targeting_condition_customer_segments_have_changed: "[CMF] Kunden Segmente haben sich geändert"
-plugin_cmf_targeting_action_track_segment: "[CMF] Segment messen"
-plugin_cmf_consider_tracked_segments: "Durch Verhalten gemessene Segmente berücksichtigen"
-plugin_cmf_consider_customer_segments: "Beim Kunden gespeicherte Segmente berücksichtigen"
-plugin_cmf_actiontriggerrule_triggerSegmentTracked: "[Targeting] Segment Tracked"
-
-plugin_cmf_targetingaction_assign_segments: "Verknüpftes Kundensegment zu eingeloggtem Kunden zuweisen"
-plugin_cmf_targetingaction_assign_segments_no: "Nein"
-plugin_cmf_targetingaction_assign_segments_assign_only: "Nur zuweisen"
-plugin_cmf_targetingaction_assign_segments_assign_consider_weight: "Zuweisen und Gewichtung berücksichtigen"
-plugin_cmf_targetingaction_track_activity: "Kundenaktivität zu eingeloggtem Kunden speichern"
-
-plugin_cmf_actiontriggerrule_triggerTargetGroupAssigned: "[Targeting] Zielgruppe zugewiesen"
-
-plugin_cmf_automationtrigger_assign_target_group_type: "Zuweisungstyp"
-plugin_cmf_automationtrigger_assign_target_group_all: "Alle"
-plugin_cmf_automationtrigger_assign_target_group_documents: "via Dokument"
-plugin_cmf_automationtrigger_assign_target_group_targetingRules: "via Targeting Regel"
-plugin_cmf_actiontriggerrule_conditionCountTargetGroupWeight: "[Targeting] Prüfe Gewichtung der zugewiesenen Zielgruppe"
-plugin_cmf_actiontriggerrule_assigned_target_group_weight: "Bedingung"
-plugin_cmf_targetingaction_consider_profiling_consent: "Profiling Consent berücksichtigen"
-
-plugin_cmf_actiontriggerrule_actionAddTargetGroupSegment: "[Targeting] Zielgruppen Segment zuweisen"
-
-plugin_cmf_actiontriggerrule_number_condition: "Ausführen wenn"
-plugin_cmf_actiontriggerrule_number_condition_%: "alle x mal"
-plugin_cmf_actiontriggerrule_number_condition_=: "wenn Anzahl gleich"
-plugin_cmf_actiontriggerrule_number_condition_<: "wenn Anzahl kleiner"
-plugin_cmf_actiontriggerrule_number_condition_<=: "wenn Anzahl kleiner/gleich"
-plugin_cmf_actiontriggerrule_number_condition_>: "wenn Anzahl größer"
-plugin_cmf_actiontriggerrule_number_condition_>=: "wenn Anzahl größer/gleich"
-
-plugin_cmf_actiontriggerrule_for_condition: "Für"
-plugin_cmf_actiontriggerrule_for_condition_empty_all: "Leere Auswahl bedeutet alle."
-plugin_cmf_actiontriggerrule_for_condition_segments: "Segmente"
-plugin_cmf_actiontriggerrule_consider_profiling_consent: "Profiling Consent berücksichtigen"
-plugin_cmf_actiontriggerrule_send_to_customer: "An Kunden versenden"
-plugin_cmf_actiontriggerrule_send_mail_explanation: '
-    <p>Wenn das E-Mail Dokument nicht existiert oder nicht von Typ email ist, wird die E-Mail nicht versendet</p>
-    <p>Für das E-Mail Dokument ist es möglich Platzhalter zu verwenden(zB %customerLanguage%). Alle Felder des Customer Objektes sind hier möglich (vorausgesetzt sie können zu string gecastet werden). <br>
-    Wenn ein Platzhalter im Custoemr Objekt nicht verfügbar ist oder es einem leeren String gleicht, wird die E-Mail nicht versendet und ein Error wird geloggt</p>
-    <p>An Kunden versenden (default aktiviert) fügt die Customer E-Mail Adresse zu den Empfängern des E-Mail Dokuments hinzu</p>'
-plugin_cmf_actiontriggerrule_customerfield_explanation: '<p>Feldwert darf keine " (doppelte Anführungszeichen) enthalten. Diese werden herausgefiltert!</p>'
-
-plugin_cmf_targeting_action_apply_target_groups_from_segments: "[CMF] Zielgruppen von zugewiesenen Kundensegmenten übernehmen"
-plugin_cmf_targeting_action_apply_for: "Für"
-plugin_cmf_targeting_action_apply_do: ""
-plugin_cmf_targeting_action_apply_target_groups_from_segments_cleanup_and_overwrite: "Bereinigen und Überschreiben"
-plugin_cmf_targeting_action_apply_target_groups_from_segments_cleanup_and_merge: "Bereinigen und Zusammenführen"
-plugin_cmf_targeting_action_apply_target_groups_from_segments_only_merge: "nur Zusammenführen"
-plugin_cmf_targeting_action_track_activity: "Aktivität anlegen"
-plugin_cmf_targeting_activity_type: "Aktivitätstyp"
-
-newsletter_SegmentAddressSource: "CMF: Kundensegmente"
-cmf_newsletter_selectedSegments: "Gewählte Segmente"
-cmf_newsletter_operators: "Operator"
-cmf_newsletter_or: "Oder"
-cmf_newsletter_and: "Und"
-cmf_newsletter_filter_flags: "Zu filternde flags"
-
-plugin_cmf_webserviceConfigurationView: "Webservice Konfiguration"
-plugin_cmf_webserviceConfigurationView_generate: "Erzeuge Key"
-plugin_cmf_webserviceConfigurationView_copy: "Key kopieren"
-plugin_cmf_webserviceConfigurationView_key: "API Key"
+---
+plugin_cmf_mainmenu: Customer Management Framework
+plugin_cmf_customerview: Kunden
+plugin_cmf_customerduplicatesview: Kunden-Duplikate
+plugin_cmf_customerautomationrules: Kunden-Automatisierungsregeln
+plugin_cmf_actiontriggerrule_add_rule: "Regel hinzuf\xFCgen"
+plugin_cmf_actiontriggerrule_add_rule_error: Regel konnte nicht erstellt werden
+plugin_cmf_actiontriggerrule_problem_creating_new_rule: Ein Problem trat beim Erstellen
+  der Regel auf
+plugin_cmf_icon_rule_triggers: Trigger
+plugin_cmf_actiontrigger_rule_saved_successfully: Regel erfolgreich gespeichert
+plugin_cmf_actiontriggerrule_add_rule_enter_name: Geben Sie den Namen der neuen Regel
+  ein
+plugin_cmf_actiontriggerrule_triggerNewActivity: "Neue Kundenaktivit\xE4t"
+plugin_cmf_actiontriggerrule_triggerExecuteSegmentBuilders: Segmentbildung
+plugin_cmf_actiontriggerrule_triggerCron: Cron
+plugin_cmf_actiontriggerrule_actionAddSegment: "Segment hinzuf\xFCgen"
+plugin_cmf_actiontriggerrule_actionAddTrackedSegment: "[Targeting] Gemessenes Segment
+  hinzuf\xFCgen"
+plugin_cmf_actiontriggerrule_actionSendMail: Mail versenden
+plugin_cmf_actiontriggerrule_actionDelay: "Zeitverz\xF6gerung"
+plugin_cmf_actiontriggerrule_conditionCountActivities: "Aktivit\xE4tenanzahl vom Typ
+  x"
+plugin_cmf_actiontriggerrule_conditionCountTrackedSegment: "[Targeting] Gemessene
+  Segmente z\xE4hlen"
+plugin_cmf_actiontriggerrule_conditionCustomer: Kunde
+plugin_cmf_actiontriggerrule_conditionSegment: Kundensegment
+plugin_cmf_actiontriggerrule_conditionCustomerField: Kundenfeld
+plugin_cmf_actiontriggerrule_countactivities_type: "Aktivit\xE4tenanzahl vom Typ"
+plugin_cmf_actiontriggerrule_countactivities_must_be: Bedingung
+plugin_cmf_actiontriggerrule_not: nicht
+plugin_cmf_actiontriggerrule_changefieldvalue_field: Feld
+plugin_cmf_actiontriggerrule_changefieldvalue_value: Wert
+plugin_cmf_actiontriggerrule_actionChangeFieldValue: "Wert eines Feldes des Kunden
+  \xE4ndern"
+plugin_cmf_actiontriggerrule_cron_definition: Definition
+plugin_cmf_actiontriggerrule_cron_croneditor: Online cron Format Generator
+plugin_cmf_actiontriggerrule_addsegment_remove-other-segments-from-group: "andere
+  Segmente der gew\xE4hlten Segmentgruppe entfernen"
+plugin_cmf_actiontriggerrule_addsegment_increase-segment-application-counter: "Z\xE4hler
+  f\xFCr Segment Zuweisung erh\xF6hen"
+plugin_cmf_customer: Kunde
+plugin_cmf_segment: Segment
+plugin_cmf_select_a_segment: "Segment ausw\xE4hlen"
+custom_report_adapter_termSegmentBuilder: TermSegmentBuilderDefinition
+plugin_cmf_custom_reports_termsegmentbuilder_sql: "SQL (die erste Spalte muss 'term'
+  hei\xDFen und sollte alle verf\xFCgbaren und eindeutigen Begriffe zur\xFCckliefern)"
+plugin_cmf_custom_reports_termsegmentbuilder_term_definition: Term Definition
+plugin_cmf_newsletter_enqueue_all_customers: 'Newsletter: alle Kunden exportieren'
+plugin_cmf_newsletter_queue_running_tooltip: "Newsletter Sync l\xE4uft"
+plugin_cmf_newsletter_export_template: MailChimp Template Export
+plugin_cmf_newsletter_export_template_success: Templateexport erfolgreich
+plugin_cmf_newsletter_export_template_error: Templateexport fehlgeschlagen
+segmentAssignment: Segment Tagging
+plugin_cmf_perm_activityview: "CMF Aktivit\xE4ten"
+plugin_cmf_perm_customerview: CMF Kunden
+plugin_cmf_perm_customerview_admin: CMF Kunden Filter-Administrator
+plugin_cmf_perm_customer_automation_rules: "CMF Automatisierungsregeln f\xFCr Kunden"
+plugin_cmf_perm_newsletter_enqueue_all_customers: CMF Newletter Kunden Exportieren
+cmf_segmentAssignment_inheritanceSettings: Vererbungseinstellungen
+cmf_segmentAssignment_assignment: Segemente direkt zuweisen
+cmf_segmentAssignment_inheritableAssignments: Vererbbare Segmente
+cmf_segmentAssignment_breakInheritance: Vererbung ausschalten
+cmf_segmentAssignment_segment_assignment_error: Segment Tagging Fehler
+cmf_segmentAssignment_assignedSegments: Zugewiesene Segmente
+cmf_open: "\xF6ffnen"
+cmf_filters_no_results: Keine Ergebnisse.
+cmf_filters_customers: Kunden
+cmf_filters_customer: Kunde
+cmf_filters_customer_id: Kunden ID
+cmf_filters_customer_name: Name
+cmf_filters_customer_firstname: Vorname
+cmf_filters_customer_lastname: Nachname
+cmf_filters_customer_email: E-Mail
+cmf_filters_customer_gender: Geschlecht
+cmf_filters_customer_active: Aktiv
+cmf_filters_customer_inactive: Inaktiv
+cmf_filters_customer_back: "Zur\xFCck"
+cmf_filters_options: Optionen
+cmf_filters_options_only_active: Zeige nur aktive Benutzer
+cmf_filters_options_operator: Filterlogik
+cmf_filters_options_or: "Verkn\xFCpfung mit oder per Gruppe"
+cmf_filters_options_and: "Verkn\xFCpfung mit und"
+cmf_filters_options_any: "Verkn\xFCpfung mit oder"
+cmf_filters_export: Export
+cmf_filters_export_generating: Generiere den Export...
+cmf_filters_search: Suche
+cmf_filters_search_show_help: Hilfe anzeigen
+cmf_filters_search_info: Suchanfragen-Syntax kann sowohl im Suchfeld als auch in den
+  einzelnen Feldern genutzt werden.
+cmf_filters_fields_include: Felder die in der Suche enthalten sind
+cmf_filters_example_queries: "Beispiel f\xFCr Suchen"
+cmf_filters_modifiers: Modifizierer
+cmf_filters_clear: "Filterkriterien l\xF6schen"
+cmf_filters_apply: Filterkriterien anwenden
+cmf_filters_filters: Filter
+cmf_filters_new_customer: Neuer Kunde
+cmf_filters_no_filter_selected: Kein Filter
+cmf_filters_cancel: Abbrechen
+cmf_filters_segments: Segmente
+cmf_filters_segments_edit: Bearbeiten
+cmf_filters_segments_headline: "W\xE4hlen Sie Ihre Segmente"
+cmf_filters_segments_confirm: Anwenden
+cmf_filters_delete: "Filter l\xF6schen"
+cmf_filters_save_share: Filter speichern & teilen
+cmf_filters_save: Filter speichern
+cmf_filters_share: Filter teilen
+cmf_filters_delete_headline: "Filter wirklich l\xF6schen?"
+cmf_filters_delete_confirm: "L\xF6schen"
+cmf_filters_save_headline: Speichern des Filters
+cmf_filters_save_name: Filter Name
+cmf_filters_save_share_user: Teilen mit Benutzer
+cmf_filters_save_share_role: Teilen mit Rolle
+cmf_filters_save_read_only: "Schreibgesch\xFCtzt"
+cmf_filters_save_shortcut_available: "Im Men\xFC anzeigen"
+cmf_filters_save_update: "Filter \xE4ndern"
+cmf_filters_save_new: Als neuer Filter speichern
+cmf_filters_save_error_name: Der Filtername ist notwendig.
+cmf_filters_share_headline: Filter teilen
+cmf_filters_share_confirm: Teilen
+cmf_filter_definition_errors_access: Nicht berechtigt auf den Filter zuzugreifen.
+cmf_filter_definition_errors_change: "Nicht berechtigt den Filter zu \xE4ndern."
+cmf_filter_definition_errors_deletion_failed: "L\xF6schen des Filters fehlgeschlagen.
+  (%s)"
+cmf_filter_definition_errors_name_missing: "Bitte geben Sie einen Namen f\xFCr den
+  Filter ein."
+cmf_filter_definition_errors_filter_missing: "Bitte w\xE4hlen Sie einen Filter."
+cmf_filter_definition_errors_save_failed: Speichern des Filters fehlgeschlagen. (%s)
+cmf_filter_definition_errors_share_failed: Teilen des Filters fehlgeschlagen. (%s)
+cmf_activities_activities: "Aktivit\xE4ten"
+cmf_activities_all_activity_types: "Alle Aktitit\xE4tstypen"
+cmf_activities_activity: "Aktivit\xE4t"
+cmf_activities_activity_date: "Aktivit\xE4tsdatum"
+cmf_activities_activity_details: "Aktivit\xE4tsdetails"
+cmf_activities_details: Details
+cmf_activities_no_activity_found: "Keine Aktivit\xE4ten gefunden"
+cmf_duplicates_potential_duplicates: "M\xF6gliche Kunden-Duplikate"
+cmf_duplicates_current: Aktuell
+cmf_duplicates_declined: Ablehnen
+cmf_duplicates_merge: "Zusammenf\xFChren"
+cmf_duplicates_decline_duplicate: Duplikat ablehnen
+cmf_duplicates_number_total: Anzahl
+cmf_gdpr_export_customers: Kunden
+plugin_cmf_targeting_condition_segment_tracked: '[CMF] Segment gemessen'
+plugin_cmf_targeting_condition_has_segment: '[CMF] Segment zugeordnet'
+plugin_cmf_targeting_condition_customer_is_loggedin: '[CMF] Kunde ist eingeloggt'
+plugin_cmf_targeting_condition_customer_segments_have_changed: "[CMF] Kunden Segmente
+  haben sich ge\xE4ndert"
+plugin_cmf_targeting_action_track_segment: '[CMF] Segment messen'
+plugin_cmf_consider_tracked_segments: "Durch Verhalten gemessene Segmente ber\xFCcksichtigen"
+plugin_cmf_consider_customer_segments: "Beim Kunden gespeicherte Segmente ber\xFCcksichtigen"
+plugin_cmf_actiontriggerrule_triggerSegmentTracked: '[Targeting] Segment Tracked'
+plugin_cmf_targetingaction_assign_segments: "Verkn\xFCpftes Kundensegment zu eingeloggtem
+  Kunden zuweisen"
+plugin_cmf_targetingaction_assign_segments_no: Nein
+plugin_cmf_targetingaction_assign_segments_assign_only: Nur zuweisen
+plugin_cmf_targetingaction_assign_segments_assign_consider_weight: "Zuweisen und Gewichtung
+  ber\xFCcksichtigen"
+plugin_cmf_targetingaction_track_activity: "Kundenaktivit\xE4t zu eingeloggtem Kunden
+  speichern"
+plugin_cmf_targetingaction_consider_profiling_consent: "Profiling Consent ber\xFCcksichtigen"
+plugin_cmf_actiontriggerrule_triggerTargetGroupAssigned: '[Targeting] Zielgruppe zugewiesen'
+plugin_cmf_automationtrigger_assign_target_group_type: Zuweisungstyp
+plugin_cmf_automationtrigger_assign_target_group_all: Alle
+plugin_cmf_automationtrigger_assign_target_group_documents: via Dokument
+plugin_cmf_automationtrigger_assign_target_group_targetingRules: via Targeting Regel
+plugin_cmf_actiontriggerrule_conditionCountTargetGroupWeight: "[Targeting] Pr\xFCfe
+  Gewichtung der zugewiesenen Zielgruppe"
+plugin_cmf_actiontriggerrule_actionAddTargetGroupSegment: '[Targeting] Zielgruppen
+  Segment zuweisen'
+plugin_cmf_actiontriggerrule_number_condition: "Ausf\xFChren wenn"
+plugin_cmf_actiontriggerrule_number_condition_%: alle x mal
+plugin_cmf_actiontriggerrule_number_condition_=: wenn Anzahl gleich
+plugin_cmf_actiontriggerrule_number_condition_<: wenn Anzahl kleiner
+plugin_cmf_actiontriggerrule_number_condition_<=: wenn Anzahl kleiner/gleich
+plugin_cmf_actiontriggerrule_number_condition_>: "wenn Anzahl gr\xF6\xDFer"
+plugin_cmf_actiontriggerrule_number_condition_>=: "wenn Anzahl gr\xF6\xDFer/gleich"
+plugin_cmf_actiontriggerrule_for_condition: "F\xFCr"
+plugin_cmf_actiontriggerrule_for_condition_empty_all: Leere Auswahl bedeutet alle.
+plugin_cmf_actiontriggerrule_for_condition_segments: Segmente
+plugin_cmf_actiontriggerrule_consider_profiling_consent: "Profiling Consent ber\xFCcksichtigen"
+plugin_cmf_actiontriggerrule_send_to_customer: An Kunden versenden
+plugin_cmf_actiontriggerrule_send_mail_explanation: Array
+plugin_cmf_actiontriggerrule_customerfield_explanation: "<p>Feldwert darf keine \"
+  (doppelte Anf\xFChrungszeichen) enthalten. Diese werden herausgefiltert!</p>"
+plugin_cmf_targeting_action_apply_target_groups_from_segments: "[CMF] Zielgruppen
+  von zugewiesenen Kundensegmenten \xFCbernehmen"
+plugin_cmf_targeting_action_apply_for: "F\xFCr"
+plugin_cmf_targeting_action_apply_do: Do
+plugin_cmf_targeting_action_apply_target_groups_from_segments_cleanup_and_overwrite: "Bereinigen
+  und \xDCberschreiben"
+plugin_cmf_targeting_action_apply_target_groups_from_segments_cleanup_and_merge: "Bereinigen
+  und Zusammenf\xFChren"
+plugin_cmf_targeting_action_apply_target_groups_from_segments_only_merge: "nur Zusammenf\xFChren"
+plugin_cmf_targeting_action_track_activity: "Aktivit\xE4t anlegen"
+plugin_cmf_targeting_activity_type: "Aktivit\xE4tstyp"
+newsletter_SegmentAddressSource: 'CMF: Kundensegmente'
+cmf_newsletter_selectedSegments: "Gew\xE4hlte Segmente"
+cmf_newsletter_operators: Operator
+cmf_newsletter_or: Oder
+cmf_newsletter_and: Und
+cmf_newsletter_filter_flags: Zu filternde flags
+plugin_cmf_webserviceConfigurationView: Webservice Konfiguration
+plugin_cmf_webserviceConfigurationView_generate: Erzeuge Key
+plugin_cmf_webserviceConfigurationView_copy: Key kopieren
+plugin_cmf_webserviceConfigurationView_key: API Key
+...
