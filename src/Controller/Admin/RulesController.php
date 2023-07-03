@@ -28,7 +28,6 @@ class RulesController extends AdminController implements KernelControllerEventIn
 {
     public function onKernelControllerEvent(ControllerEvent $event)
     {
-        parent::onKernelControllerEvent($event);
         $this->checkPermission('plugin_cmf_perm_customer_automation_rules');
     }
 
