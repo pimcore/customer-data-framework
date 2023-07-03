@@ -30,6 +30,7 @@ class RulesController extends Admin implements KernelControllerEventInterface
         parent::onKernelControllerEvent($event);
         $this->checkPermission('plugin_cmf_perm_customer_automation_rules');
     }
+
     /**
      * get saved action trigger rules
      *
