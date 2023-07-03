@@ -4,6 +4,13 @@ This section describes the installation of the Customer Management Framework and
 
 > Please note that Customer Management Framework requires MariaDB as database. It will not work with default MySQL. MariaDB is used to save [activities](../09_Activities/README.md) with the MariaDB Dynamic Columns feature: https://mariadb.com/kb/en/library/dynamic-columns/
 
+## Server Requirements
+
+### Database permissions
+All permissions based on the [Core Requirements](https://pimcore.com/docs/pimcore/10.6/Development_Documentation/Installation_and_Upgrade/System_Requirements.html#page_Permissions) and including:
+- Create routine
+- Alter routine
+
 ## Installation
 
 1) Add dependency for CMF to your `composer.json` and run `composer update`. Alternatively, in Pimcore directory, run `composer require pimcore/customer-management-framework-bundle`.
@@ -106,14 +113,14 @@ Note that the class doesn't need to contain the attributes as field definitions.
 Of course your customer class can have additional attributes as needed.
    
 ## Segment Assignments Stored Functions
-The installer creates stored functions on database for auto assigning segments on Assets, Documents & DataObjects. In case this fails,
-Please import stored functions manually by defining a delimiter other than `;` with following files:
+The installer creates stored functions on database for auto assigning segments on Assets, Documents & DataObjects.
+In case the import fails, Please import stored functions manually by defining a delimiter other than `;` with following files:
+
 ```
 /Resources/sql/segmentAssignment/storedFunctionDocument.sql
 /Resources/sql/segmentAssignment/storedFunctionAsset.sql
 /Resources/sql/segmentAssignment/storedFunctionObject.sql
 ```
-
 ## Configuration
 
 The CMF ships with a default configuration for basic functionality. To start up, no additional configuration should be 
