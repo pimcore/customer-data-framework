@@ -15,6 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
+use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Controller\KernelControllerEventInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -23,7 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/rules")
  */
-class RulesController extends Admin implements KernelControllerEventInterface
+class RulesController extends AdminController implements KernelControllerEventInterface
 {
     public function onKernelControllerEvent(ControllerEvent $event)
     {
