@@ -15,14 +15,22 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
+use Pimcore\Bundle\AdminBundle\Controller\AdminController;
+use Pimcore\Controller\KernelControllerEventInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/rules")
  */
-class RulesController extends \Pimcore\Bundle\AdminBundle\Controller\AdminController
+class RulesController extends AdminController implements KernelControllerEventInterface
 {
+    public function onKernelControllerEvent(ControllerEvent $event)
+    {
+        $this->checkPermission('plugin_cmf_perm_customer_automation_rules');
+    }
+
     /**
      * get saved action trigger rules
      *
