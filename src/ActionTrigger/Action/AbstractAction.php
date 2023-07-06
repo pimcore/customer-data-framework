@@ -44,8 +44,12 @@ abstract class AbstractAction implements ActionInterface
         $actionDelayMultiplier = isset(self::$actionDelayMultiplier[$setting->options->actionDelayGuiType]) ? self::$actionDelayMultiplier[$setting->options->actionDelayGuiType] : 1;
 
         $action = new \CustomerManagementFrameworkBundle\Model\ActionTrigger\ActionDefinition();
-        $action->setId($setting->id);
-        $action->setCreationDate($setting->creationDate);
+        if (isset($setting->id)) {
+            $action->setId($setting->id);
+        }
+        if (isset($setting->creationDate)) {
+            $action->setCreationDate($setting->creationDate);
+        }
         $action->setOptions(json_decode(json_encode($setting->options), true));
         $action->setImplementationClass($setting->implementationClass);
         $action->setActionDelay($setting->options->actionDelayGuiValue * $actionDelayMultiplier);
