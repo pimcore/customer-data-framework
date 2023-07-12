@@ -20,6 +20,7 @@ use Pimcore\Model\DataObject\Listing as CoreListing;
 use Pimcore\Model\DataObject\Service;
 use Pimcore\Model\User;
 use Pimcore\Model\User\Workspace\DataObject;
+use Pimcore\Db;
 
 class Permission extends AbstractFilter implements OnCreateQueryFilterInterface
 {
@@ -82,8 +83,9 @@ class Permission extends AbstractFilter implements OnCreateQueryFilterInterface
         $allowConditions = [];
         // initialize deny conditions array
         $denyConditions = [];
-        $pathField = Service::getVersionDependentDatabaseColumnName('path');
-        $keyField = Service::getVersionDependentDatabaseColumnName('key');
+        $db = Db::get();
+        $pathField = $db->quoteIdentifier(Service::getVersionDependentDatabaseColumnName('path'));
+        $keyField = $db->quoteIdentifier(Service::getVersionDependentDatabaseColumnName('key'));
         foreach ($workspaces as $workspace) {
             // if user is allowed to list content -> add to allow conditions
             if ($workspace->getList()) {
