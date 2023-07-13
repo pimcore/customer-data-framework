@@ -1,4 +1,4 @@
-## Special Triggers, Conditions and Actions in CMF Action Trigger Service
+# Special Triggers, Conditions and Actions in CMF Action Trigger Service
 In addition to the Pimcore Global Targeting Rules there are also additional triggers, conditions and actions for integration
 of Targeting with the CMF Action Trigger Service. 
 
