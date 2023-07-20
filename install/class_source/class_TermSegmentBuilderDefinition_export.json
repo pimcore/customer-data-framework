@@ -1,7 +1,7 @@
 {
-    "description": null,
+    "description": "",
     "parentClass": "CustomerManagementFrameworkBundle\\Model\\AbstractTermSegmentBuilderDefinition",
-    "useTraits": null,
+    "useTraits": "",
     "allowInherit": false,
     "allowVariants": false,
     "showVariants": false,

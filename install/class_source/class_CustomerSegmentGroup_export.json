@@ -1,7 +1,7 @@
 {
-    "description": null,
-    "parentClass": null,
-    "useTraits": null,
+    "description": "",
+    "parentClass": "",
+    "useTraits": "",
     "allowInherit": false,
     "allowVariants": false,
     "showVariants": false,
