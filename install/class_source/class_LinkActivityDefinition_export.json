@@ -6,7 +6,7 @@
     "useTraits": "",
     "listingUseTraits": "",
     "allowInherit": true,
-    "allowVariants": null,
+    "allowVariants": false,
     "showVariants": false,
     "generateTypeDeclarations": true,
     "layoutDefinitions": {
