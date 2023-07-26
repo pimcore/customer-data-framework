@@ -19,6 +19,7 @@ use Carbon\Carbon;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\DataObject\ClassDefinition\Data;
+use Pimcore\Security\SecurityHelper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DefaultViewFormatter implements ViewFormatterInterface
@@ -176,7 +177,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
      */
     protected function formatSegmentValue(CustomerSegmentInterface $segment)
     {
-        return sprintf('<span class="label label-default">%s</span>', $segment->getName());
+        return sprintf('<span class="label label-default">%s</span>', SecurityHelper::convertHtmlSpecialChars($segment->getName()));
     }
 
     protected function getLanguageFromLocale($locale)
