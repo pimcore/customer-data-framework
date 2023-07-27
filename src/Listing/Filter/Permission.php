@@ -16,11 +16,11 @@
 namespace CustomerManagementFrameworkBundle\Listing\Filter;
 
 use Doctrine\DBAL\Query\QueryBuilder;
+use Pimcore\Db;
 use Pimcore\Model\DataObject\Listing as CoreListing;
 use Pimcore\Model\DataObject\Service;
 use Pimcore\Model\User;
 use Pimcore\Model\User\Workspace\DataObject;
-use Pimcore\Db;
 
 class Permission extends AbstractFilter implements OnCreateQueryFilterInterface
 {
