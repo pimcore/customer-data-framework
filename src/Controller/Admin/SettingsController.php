@@ -43,7 +43,7 @@ class SettingsController extends UserAwareController
         if ($request->get('data')) {
             if ($request->get('xaction') == 'update') {
                 $csrfProtectionHandler->checkCsrfToken($request);
-                $data = $this->jsonResponse($request->get('data'));
+                $data = $this->decodeJson($request->get('data'));
 
                 $apiKeys[$data['id']] = $data['apiKey'];
                 SettingsStore::set(WebserviceAuthenticator::SETTINGS_STORE_KEY, json_encode($apiKeys), 'string', WebserviceAuthenticator::SETTINGS_STORE_SCOPE);

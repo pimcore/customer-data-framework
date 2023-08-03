@@ -1,12 +1,12 @@
 {
-    "description": null,
+    "description": "",
     "parentClass": "\\CustomerManagementFrameworkBundle\\Model\\AbstractCustomer",
     "implementsInterfaces": null,
     "listingParentClass": "",
     "useTraits": "",
     "listingUseTraits": "",
     "allowInherit": false,
-    "allowVariants": null,
+    "allowVariants": false,
     "showVariants": false,
     "layoutDefinitions": {
         "fieldtype": "panel",
