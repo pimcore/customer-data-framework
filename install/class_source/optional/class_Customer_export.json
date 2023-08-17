@@ -1710,12 +1710,10 @@
         "icon": null
     },
     "icon": "\/bundles\/pimcorecustomermanagementframework\/icons\/customer.svg",
-    "previewUrl": null,
     "group": "CustomerManagement",
     "showAppLoggerTab": false,
     "linkGeneratorReference": null,
     "compositeIndices": [],
-    "generateTypeDeclarations": true,
     "showFieldLookup": false,
     "propertyVisibility": {
         "grid": {

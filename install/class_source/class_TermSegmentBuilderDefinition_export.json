@@ -5,7 +5,6 @@
     "allowInherit": false,
     "allowVariants": false,
     "showVariants": false,
-    "generateTypeDeclarations": true,
     "layoutDefinitions": {
         "fieldtype": "panel",
         "labelWidth": 100,
@@ -146,7 +145,6 @@
         "locked": false
     },
     "icon": "\/bundles\/pimcoreadmin\/img\/flat-color-icons\/data_configuration.svg",
-    "previewUrl": null,
     "group": "CustomerManagement",
     "propertyVisibility": {
         "grid": {

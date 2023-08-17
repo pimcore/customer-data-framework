@@ -213,12 +213,10 @@
         "locked": false
     },
     "icon": "\/bundles\/pimcorecustomermanagementframework\/icons\/segment.svg",
-    "previewUrl": "",
     "group": "CustomerManagement",
     "showAppLoggerTab": false,
     "linkGeneratorReference": "",
     "compositeIndices": [],
-    "generateTypeDeclarations": true,
     "showFieldLookup": false,
     "propertyVisibility": {
         "grid": {

@@ -5,7 +5,6 @@
     "allowInherit": false,
     "allowVariants": false,
     "showVariants": false,
-    "generateTypeDeclarations": true,
     "layoutDefinitions": {
         "fieldtype": "panel",
         "labelWidth": 100,
@@ -237,7 +236,6 @@
         "locked": false
     },
     "icon": "\/bundles\/pimcorecustomermanagementframework\/icons\/segment-group.svg",
-    "previewUrl": null,
     "group": "CustomerManagement",
     "propertyVisibility": {
         "grid": {
