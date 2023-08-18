@@ -511,10 +511,10 @@
         "icon": null
     },
     "icon": "\/bundles\/pimcoreadmin\/img\/flat-color-icons\/sports_mode.svg",
-    "previewUrl": "\/__customermanagementframework\/object-preview\/link-activity-definition-preview",
     "group": "CustomerManagement",
     "showAppLoggerTab": false,
     "linkGeneratorReference": "@CustomerManagementFrameworkBundle\\LinkGenerator\\LinkActivityDefinitionLinkGenerator",
+    "previewGeneratorReference": "@CustomerManagementFrameworkBundle\\LinkGenerator\\LinkActivityDefinitionPreviewGenerator",
     "compositeIndices": [],
     "showFieldLookup": false,
     "propertyVisibility": {
