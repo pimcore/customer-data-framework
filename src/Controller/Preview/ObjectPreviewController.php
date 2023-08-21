@@ -27,11 +27,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class ObjectPreviewController extends FrontendController
 {
     /**
-     * @Route("/link-activity-definition-preview")
+     * @Route("/link-activity-definition-preview", name="cmf_link_activity_definition_preview")
      */
     public function linkActivityDefinitionPreviewAction(Request $request): Response
     {
-        $activityDefinition = LinkActivityDefinition::getById($request->get('pimcore_object_preview'));
+        $activityDefinition = LinkActivityDefinition::getById($request->query->getInt('pimcore_object_preview'));
 
         return $this->render(
             '@PimcoreCustomerManagementFramework/preview/object_preview/link_activity_definition_preview.html.twig',
