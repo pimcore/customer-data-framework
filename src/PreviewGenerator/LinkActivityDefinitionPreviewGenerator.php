@@ -13,7 +13,7 @@
  *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
-namespace CustomerManagementFrameworkBundle\LinkGenerator;
+namespace CustomerManagementFrameworkBundle\PreviewGenerator;
 
 use Pimcore\Model\DataObject\ClassDefinition\PreviewGeneratorInterface;
 use Pimcore\Model\DataObject\Concrete;

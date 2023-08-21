@@ -514,7 +514,7 @@
     "group": "CustomerManagement",
     "showAppLoggerTab": false,
     "linkGeneratorReference": "@CustomerManagementFrameworkBundle\\LinkGenerator\\LinkActivityDefinitionLinkGenerator",
-    "previewGeneratorReference": "@CustomerManagementFrameworkBundle\\LinkGenerator\\LinkActivityDefinitionPreviewGenerator",
+    "previewGeneratorReference": "@CustomerManagementFrameworkBundle\\PreviewGenerator\\LinkActivityDefinitionPreviewGenerator",
     "compositeIndices": [],
     "showFieldLookup": false,
     "propertyVisibility": {
