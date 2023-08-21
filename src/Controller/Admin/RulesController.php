@@ -18,18 +18,25 @@ namespace CustomerManagementFrameworkBundle\Controller\Admin;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\Rule\Listing;
 use CustomerManagementFrameworkBundle\Model\ActionTrigger\TriggerDefinition;
+use Pimcore\Controller\KernelControllerEventInterface;
 use Pimcore\Controller\Traits\JsonHelperTrait;
 use Pimcore\Controller\UserAwareController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/rules")
  */
-class RulesController extends UserAwareController
+class RulesController extends UserAwareController implements KernelControllerEventInterface
 {
     use JsonHelperTrait;
+
+    public function onKernelControllerEvent(ControllerEvent $event): void
+    {
+        $this->checkPermission('plugin_cmf_perm_customer_automation_rules');
+    }
 
     /**
      * get saved action trigger rules

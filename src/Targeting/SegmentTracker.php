@@ -175,17 +175,15 @@ class SegmentTracker
 
         //order segments by count, pick $limitSegmentCountPerGroup top segments
         foreach ($segmentCollection as $group => $groupCollection) {
-            if (!empty($groupCollection)) {
-                usort($groupCollection, function ($left, $right) {
-                    if ($left['count'] === $right['count']) {
-                        return 0;
-                    }
+            usort($groupCollection, function ($left, $right) {
+                if ($left['count'] === $right['count']) {
+                    return 0;
+                }
 
-                    return ($left['count'] < $right['count']) ? 1 : -1;
-                });
+                return ($left['count'] < $right['count']) ? 1 : -1;
+            });
 
-                $segmentCollection[$group] = array_slice($groupCollection, 0, $limitSegmentCountPerGroup);
-            }
+            $segmentCollection[$group] = array_slice($groupCollection, 0, $limitSegmentCountPerGroup);
         }
 
         return $segmentCollection;
