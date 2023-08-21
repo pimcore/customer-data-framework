@@ -163,6 +163,8 @@ services:
         arguments:
             - '%pimcore_customer_management_framework.url_activity_tracker.linkCmfcPlaceholder%'
 
+    CustomerManagementFrameworkBundle\PreviewGenerator\LinkActivityDefinitionPreviewGenerator: ~
+
     cmf.link-activity-definition.linkgenerator:
         alias: CustomerManagementFrameworkBundle\LinkGenerator\LinkActivityDefinitionLinkGenerator
         deprecated:
