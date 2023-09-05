@@ -151,7 +151,8 @@ class MySQL extends SqlActivityStore implements ActivityStoreInterface
             ->addOrderBy('activityDate', 'asc');
 
         if ($ts = $params->getModifiedSinceTimestamp()) {
-            $select->where('modificationDate >= ?', $ts);
+            $select->where('modificationDate >= ?');
+            $select->setParameters([$ts]);
         }
 
         $paginator = $this->paginator->paginate($select, $page, $pageSize);
