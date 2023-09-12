@@ -23,7 +23,7 @@ composer require pimcore/customer-management-framework-bundle
 ```
 2. Make sure the bundle is enabled in the `config/bundles.php` file. The following lines should be added:
 ```php
-use Pimcore\Bundle\CustomerManagementFrameworkBundle\PimcoreCustomerManagementFrameworkBundle;
+use \CustomerManagementFrameworkBundle\PimcoreCustomerManagementFrameworkBundle;
 use Pimcore\Bundle\ObjectMergerBundle\ObjectMergerBundle;
 // ...
 return [
