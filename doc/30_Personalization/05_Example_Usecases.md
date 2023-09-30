@@ -13,7 +13,7 @@ doing so, a target group with the same name is automatically created and linked 
 When using targeting rules with the `Assign Target Group` action, besides assigning target group to the current visitor,
 there are also options to store the connected segment to the current customer and track activities. 
  
-Storing the segement to the customer is necessary to persist this information for later visits of the customer, especially
+Storing the segment to the customer is necessary to persist this information for later visits of the customer, especially
 when the customer visits from a different device. 
  
 ![VIP Customer Rule](../img/assign-target-group-vip-customer.jpg)
