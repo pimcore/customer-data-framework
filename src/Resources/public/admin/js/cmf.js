@@ -854,9 +854,12 @@ app.SearchFilter.DateRangePicker = (function () {
     $(document).ready(function() {
         window.app.init($('body'));
 
-        $('#customerDuplicatesMerge').on('click', function () {
-            const duplicateIds = $('#customerDuplicatesMerge').data('duplicate-ids');
-            new window.top.pimcore.plugin.objectmerger.panel(duplicateIds[0], duplicateIds[1]);
+        const duplicates = $('.customer-duplicates-merge');
+        $.each(duplicates , function(index,duplicate) {
+            duplicate.addEventListener('click', (event) => {
+                const duplicateIds = JSON.parse(duplicate.dataset.duplicateIds);
+                new window.top.pimcore.plugin.objectmerger.panel(duplicateIds[0], duplicateIds[1]);
+            });
         });
     });
 })(jQuery);
