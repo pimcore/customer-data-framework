@@ -89,7 +89,11 @@ class NewsletterSyncCommand extends AbstractCommand
         if ($input->getOption('customer-data-sync') || $input->getOption('all-customers')) {
             $lockKey = 'plugin_cmf_newsletter_sync_queue';
 
-            $this->lock($lockKey);
+            if (!$this->lock($lockKey)) {
+                $output->writeln('The command is already running in another process.');
+
+                return 0;
+            }
 
             if (!$input->getOption('force-segments')) {
                 $this->newsletterManager->syncSegments();
