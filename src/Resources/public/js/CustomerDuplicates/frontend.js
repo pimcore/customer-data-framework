@@ -22,5 +22,5 @@ $(function() {
             new window.top.pimcore.plugin.objectmerger.panel(duplicateIds[0], duplicateIds[1]);
         });
     }
-    customerExporter.init();
+   
 }());
