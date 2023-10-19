@@ -853,13 +853,5 @@ app.SearchFilter.DateRangePicker = (function () {
 
     $(document).ready(function() {
         window.app.init($('body'));
-
-        const duplicates = $('.customer-duplicates-merge');
-        $.each(duplicates , function(index,duplicate) {
-            duplicate.addEventListener('click', (event) => {
-                const duplicateIds = JSON.parse(duplicate.dataset.duplicateIds);
-                new window.top.pimcore.plugin.objectmerger.panel(duplicateIds[0], duplicateIds[1]);
-            });
-        });
     });
 })(jQuery);
