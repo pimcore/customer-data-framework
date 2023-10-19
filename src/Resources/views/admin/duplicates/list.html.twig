@@ -3,6 +3,7 @@
 {% block content %}
 
     {% do cmf_jsConfig().add('declineDuplicates', true) %}
+    {% do pimcore_head_script().appendFile(asset('/bundles/pimcorecustomermanagementframework/js/CustomerDuplicates/frontend.js')) %}
 
     <div class="container">
         <h2>{{ 'cmf_duplicates_potential_duplicates' | trans({}, 'admin') }}</h2>
