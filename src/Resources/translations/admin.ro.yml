@@ -1,0 +1,208 @@
+---
+plugin_cmf_mainmenu: Customer Management Framework
+plugin_cmf_customerview: Customers
+plugin_cmf_customerduplicatesview: Customer duplicates
+plugin_cmf_customerautomationrules: Customer automation rules
+plugin_cmf_actiontriggerrule_add_rule: Add rule
+plugin_cmf_actiontriggerrule_add_rule_error: Could not create Rule
+plugin_cmf_actiontriggerrule_problem_creating_new_rule: There was a problem while
+  creating a new rule
+plugin_cmf_icon_rule_triggers: Triggers
+plugin_cmf_actiontrigger_rule_saved_successfully: Rule saved successfully
+plugin_cmf_actiontriggerrule_add_rule_enter_name: Enter the name of the new rule
+plugin_cmf_actiontriggerrule_triggerNewActivity: New Customer activity
+plugin_cmf_actiontriggerrule_triggerExecuteSegmentBuilders: Segment building
+plugin_cmf_actiontriggerrule_triggerCron: Cron
+plugin_cmf_actiontriggerrule_actionAddSegment: Add segment
+plugin_cmf_actiontriggerrule_actionAddTrackedSegment: '[Targeting] Add tracked segment'
+plugin_cmf_actiontriggerrule_actionSendMail: Send Mail
+plugin_cmf_actiontriggerrule_actionDelay: Action delay
+plugin_cmf_actiontriggerrule_conditionCountActivities: Activities count of type x
+plugin_cmf_actiontriggerrule_conditionCountTrackedSegment: '[Targeting] Tracked Segments
+  Count'
+plugin_cmf_actiontriggerrule_conditionCustomer: Customer
+plugin_cmf_actiontriggerrule_conditionSegment: 'Customer segment:'
+plugin_cmf_actiontriggerrule_conditionCustomerField: Customer Field
+plugin_cmf_actiontriggerrule_countactivities_type: Activities count of type
+plugin_cmf_actiontriggerrule_countactivities_must_be: must be
+plugin_cmf_actiontriggerrule_not: not
+plugin_cmf_actiontriggerrule_changefieldvalue_field: Field
+plugin_cmf_actiontriggerrule_changefieldvalue_value: Value
+plugin_cmf_actiontriggerrule_actionChangeFieldValue: Change customer field value
+plugin_cmf_actiontriggerrule_cron_definition: Definition
+plugin_cmf_actiontriggerrule_cron_croneditor: online cron format generator
+plugin_cmf_actiontriggerrule_addsegment_remove-other-segments-from-group: remove other
+  segments from selected segment group
+plugin_cmf_actiontriggerrule_addsegment_increase-segment-application-counter: increase
+  segment application counter
+plugin_cmf_customer: Customer
+plugin_cmf_segment: Segment
+plugin_cmf_select_a_segment: Select a Segment
+custom_report_adapter_termSegmentBuilder: TermSegmentBuilderDefinition
+plugin_cmf_custom_reports_termsegmentbuilder_sql: SQL (first column needs to be named
+  'term' and should list all distinct terms available)
+plugin_cmf_custom_reports_termsegmentbuilder_term_definition: term definition
+plugin_cmf_newsletter_enqueue_all_customers: 'Newsletter: Export all customers'
+plugin_cmf_newsletter_queue_running_tooltip: Newsletter sync queue running
+plugin_cmf_newsletter_export_template: Export Template to MailChimp
+plugin_cmf_newsletter_export_template_success: Export Template successful
+plugin_cmf_newsletter_export_template_error: Export Template failed
+segmentAssignment: Segment Tagging
+plugin_cmf_perm_activityview: CMF Activity View
+plugin_cmf_perm_customerview: CMF Customer View
+plugin_cmf_perm_customerview_admin: CMF Customer Filter-Admin
+plugin_cmf_perm_customer_automation_rules: CMF Customer Automation Rules
+plugin_cmf_perm_newsletter_enqueue_all_customers: CMF Newletter Enqueue Customers
+cmf_segmentAssignment_inheritanceSettings: Inheritance Settings
+cmf_segmentAssignment_assignment: Assign Segments Directly
+cmf_segmentAssignment_inheritableAssignments: Inheritable Segments
+cmf_segmentAssignment_breakInheritance: Deactivate Inheritance
+cmf_segmentAssignment_segment_assignment_error: Segment Assignment Error
+cmf_segmentAssignment_assignedSegments: Assigned Segments
+cmf_open: open
+cmf_filters_no_results: No results.
+cmf_filters_customers: Customers
+cmf_filters_customer: Customer
+cmf_filters_customer_id: Customer ID
+cmf_filters_customer_name: Name
+cmf_filters_customer_firstname: Firstname
+cmf_filters_customer_lastname: Lastname
+cmf_filters_customer_email: E-Mail
+cmf_filters_customer_gender: Gender
+cmf_filters_customer_active: Active
+cmf_filters_customer_inactive: Inactive
+cmf_filters_customer_back: Back
+cmf_filters_options: Options
+cmf_filters_options_only_active: Show only active users
+cmf_filters_options_operator: Filter logic
+cmf_filters_options_or: match any per group
+cmf_filters_options_and: match all
+cmf_filters_options_any: match any
+cmf_filters_export: Export
+cmf_filters_export_generating: Generating export...
+cmf_filters_search: Search
+cmf_filters_search_show_help: Show help
+cmf_filters_search_info: Search query syntax can be used in the search bar and in
+  filter inputs below.
+cmf_filters_fields_include: Fields included in search
+cmf_filters_example_queries: Example queries
+cmf_filters_modifiers: Modifiers
+cmf_filters_clear: Clear Filters
+cmf_filters_apply: Apply Filters
+cmf_filters_filters: Filters
+cmf_filters_new_customer: New Customer
+cmf_filters_no_filter_selected: No filter
+cmf_filters_cancel: Cancel
+cmf_filters_segments: Segments
+cmf_filters_segments_edit: Edit
+cmf_filters_segments_headline: Select your segments
+cmf_filters_segments_confirm: Apply
+cmf_filters_delete: Delete Filter
+cmf_filters_save_share: Save & Share Filter
+cmf_filters_save: Save Filter
+cmf_filters_share: Share Filter
+cmf_filters_delete_headline: Delete filter?
+cmf_filters_delete_confirm: Delete
+cmf_filters_save_headline: Save your filter
+cmf_filters_save_name: Filter name
+cmf_filters_save_share_user: Share with users
+cmf_filters_save_share_role: Share with roles
+cmf_filters_save_read_only: Read Only
+cmf_filters_save_shortcut_available: Shortcut Available
+cmf_filters_save_update: Update existing Filter
+cmf_filters_save_new: Save as new filter
+cmf_filters_save_error_name: Name is required
+cmf_filters_share_headline: Share the filter
+cmf_filters_share_confirm: Share
+cmf_filter_definition_errors_access: Not allowed to access filter.
+cmf_filter_definition_errors_change: Not allowed to change filter.
+cmf_filter_definition_errors_deletion_failed: Deletion of filter failed. (%s)
+cmf_filter_definition_errors_name_missing: Please provide a filter name.
+cmf_filter_definition_errors_filter_missing: Please select a filter.
+cmf_filter_definition_errors_save_failed: Save of filter failed. (%s)
+cmf_filter_definition_errors_share_failed: Sharing filter failed. (%s)
+cmf_activities_activities: Activities
+cmf_activities_all_activity_types: all activity types
+cmf_activities_activity: Activity
+cmf_activities_activity_date: Activity date
+cmf_activities_activity_details: Activity details
+cmf_activities_details: Details
+cmf_activities_no_activity_found: no activities found
+cmf_duplicates_potential_duplicates: Potential customer duplicates
+cmf_duplicates_current: Current
+cmf_duplicates_declined: Declined
+cmf_duplicates_merge: Merge
+cmf_duplicates_decline_duplicate: Decline duplicate
+cmf_duplicates_number_total: Count
+cmf_gdpr_export_customers: Customers
+plugin_cmf_targeting_condition_segment_tracked: '[CMF] Segment Tracked'
+plugin_cmf_targeting_condition_has_segment: '[CMF] Has Segment'
+plugin_cmf_targeting_condition_customer_is_loggedin: '[CMF] Customer Logged-In'
+plugin_cmf_targeting_condition_customer_segments_have_changed: '[CMF] Customer Segments
+  have changed'
+plugin_cmf_targeting_action_track_segment: '[CMF] Track Segment'
+plugin_cmf_consider_tracked_segments: Consider Tracked Segments
+plugin_cmf_consider_customer_segments: Consider Customer Segments
+plugin_cmf_actiontriggerrule_triggerSegmentTracked: '[Targeting] Segment Tracked'
+plugin_cmf_targetingaction_assign_segments: Assign connected Customer Segment to logged-in
+  Customer
+plugin_cmf_targetingaction_assign_segments_no: "No"
+plugin_cmf_targetingaction_assign_segments_assign_only: Only assign
+plugin_cmf_targetingaction_assign_segments_assign_consider_weight: Assign and consider
+  weight
+plugin_cmf_targetingaction_track_activity: Track Customer Activity to logged-in Customer
+plugin_cmf_targetingaction_consider_profiling_consent: Consider profiling consent
+plugin_cmf_actiontriggerrule_triggerTargetGroupAssigned: '[Targeting] Assigned Target
+  Group'
+plugin_cmf_automationtrigger_assign_target_group_type: Assignment Type
+plugin_cmf_automationtrigger_assign_target_group_all: All
+plugin_cmf_automationtrigger_assign_target_group_documents: Documents
+plugin_cmf_automationtrigger_assign_target_group_targetingRules: Targeting Rules
+plugin_cmf_actiontriggerrule_conditionCountTargetGroupWeight: '[Targeting] Check Weight
+  of Assigned Target Group'
+plugin_cmf_actiontriggerrule_actionAddTargetGroupSegment: '[Targeting] Add Target
+  Group Segment'
+plugin_cmf_actiontriggerrule_number_condition: Do it
+plugin_cmf_actiontriggerrule_number_condition_%: for all x times
+plugin_cmf_actiontriggerrule_number_condition_=: when count equals
+plugin_cmf_actiontriggerrule_number_condition_<: when count smaller than
+plugin_cmf_actiontriggerrule_number_condition_<=: when count smaller or equal than
+plugin_cmf_actiontriggerrule_number_condition_>: when count bigger than
+plugin_cmf_actiontriggerrule_number_condition_>=: when count bigger or equal than
+plugin_cmf_actiontriggerrule_for_condition: For
+plugin_cmf_actiontriggerrule_for_condition_empty_all: If selection empty, all apply.
+plugin_cmf_actiontriggerrule_for_condition_segments: Segments
+plugin_cmf_actiontriggerrule_consider_profiling_consent: consider profiling consent
+plugin_cmf_actiontriggerrule_send_to_customer: Send to Customer
+plugin_cmf_actiontriggerrule_send_mail_explanation: ' <p>If the email document is
+  not extistant or not of type email the email will not be sent</p> <p>For the email
+  document it is possible to use placeholders (ex %customerLanguage%). All fields
+  of the customer object are possible (given that they are castable to string). <br>
+  If one of these placeholders are not available in the customer object or are equal
+  to empty string, the email will not be send for this customer and a error will be
+  logged</p> <p>Send to Customer (default enabled) will add the customer email address
+  to the receiver addresses of the email document</p>'
+plugin_cmf_actiontriggerrule_customerfield_explanation: <p>Fieldvalue cannot contain
+  " (double quotation marks). These will be filtered!</p>
+plugin_cmf_targeting_action_apply_target_groups_from_segments: '[CMF] Apply Target
+  Groups from Assigned Customer Segments'
+plugin_cmf_targeting_action_apply_for: For
+plugin_cmf_targeting_action_apply_do: Do
+plugin_cmf_targeting_action_apply_target_groups_from_segments_cleanup_and_overwrite: Cleanup
+  and Overwrite
+plugin_cmf_targeting_action_apply_target_groups_from_segments_cleanup_and_merge: Cleanup
+  and Merge
+plugin_cmf_targeting_action_apply_target_groups_from_segments_only_merge: Only Merge
+plugin_cmf_targeting_action_track_activity: Track Activity
+plugin_cmf_targeting_activity_type: Activity Type
+newsletter_SegmentAddressSource: 'CMF: Customer Segments'
+cmf_newsletter_selectedSegments: Selected Segments
+cmf_newsletter_operators: Operator
+cmf_newsletter_or: Or
+cmf_newsletter_and: And
+cmf_newsletter_filter_flags: Flags to filter for
+plugin_cmf_webserviceConfigurationView: Webservice Configuration View
+plugin_cmf_webserviceConfigurationView_generate: Generate Key
+plugin_cmf_webserviceConfigurationView_copy: Copy Key
+plugin_cmf_webserviceConfigurationView_key: API Key
+...
