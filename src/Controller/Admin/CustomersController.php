@@ -305,7 +305,7 @@ class CustomersController extends Admin
     /**
      * Create new customer action
      *
-     * @Route("/new")
+     * @Route("/new", methods={"POST"})
      *
      * @throws ValidationException
      */
