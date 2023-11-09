@@ -98,7 +98,11 @@
                     return false;
                 }
                 $.ajax({
+                    method : 'POST',
                     url: '/admin/customermanagementframework/customers/new',
+                    headers: {
+                        'X-Pimcore-Csrf-Token': $newCustomerButton.data('token')
+                    },
                     success: function (data) {
                         var objectId = data.id;
                         if ('undefined' !== typeof window.top.pimcore) {

@@ -18,7 +18,7 @@
         {% if not hideAdvancedFilterSettings %}
             <div class="col-sm-9 col-md-6 text-right">
                 {% if accessToTempCustomerFolder %}
-                    <button type="button" class="btn btn-primary" id="add-new-customer"
+                    <button data-token="{{ pimcore_csrf.getCsrfToken(app.request.session) }}" type="button" class="btn btn-primary" id="add-new-customer"
                             name="add-new-customer">{{ 'cmf_filters_new_customer'| trans({}, 'admin') }}</button>
                 {% endif %}
                 <!--suppress HtmlFormInputWithoutLabel -->

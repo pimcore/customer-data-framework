@@ -117,6 +117,8 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
                 $this->updateDuplicateIndexForCustomer($customer, true);
             }
+
+            \Pimcore::collectGarbage();
         }
     }
 

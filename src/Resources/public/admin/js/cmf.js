@@ -803,7 +803,11 @@ app.SearchFilter.DateRangePicker = (function () {
                     return false;
                 }
                 $.ajax({
+                    method : 'POST',
                     url: '/admin/customermanagementframework/customers/new',
+                    headers: {
+                        'X-Pimcore-Csrf-Token': $newCustomerButton.data('token')
+                    },
                     success: function (data) {
                         var objectId = data.id;
                         if ('undefined' !== typeof window.top.pimcore) {
@@ -853,13 +857,5 @@ app.SearchFilter.DateRangePicker = (function () {
 
     $(document).ready(function() {
         window.app.init($('body'));
-
-        const duplicates = $('.customer-duplicates-merge');
-        $.each(duplicates , function(index,duplicate) {
-            duplicate.addEventListener('click', (event) => {
-                const duplicateIds = JSON.parse(duplicate.dataset.duplicateIds);
-                new window.top.pimcore.plugin.objectmerger.panel(duplicateIds[0], duplicateIds[1]);
-            });
-        });
     });
 })(jQuery);
