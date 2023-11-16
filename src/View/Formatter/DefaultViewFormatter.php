@@ -148,7 +148,7 @@ class DefaultViewFormatter implements ViewFormatterInterface
         $date = Carbon::parse($value);
 
         if ($dateOnly) {
-            return $date->isoFormat('LL);
+            return $date->isoFormat('LL');
         }
 
         return $date->isoFormat('LLL');
