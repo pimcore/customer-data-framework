@@ -128,7 +128,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
             $originalCustomer = null;
         }
 
-        if ($originalCustomerNeeded) {
+        if ($originalCustomerNeeded && $customer->getId()) {
             $originalCustomer = $this->customerProvider->getById($customer->getId(), true);
         }
 
