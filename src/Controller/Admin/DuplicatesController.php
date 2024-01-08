@@ -20,6 +20,7 @@ use CustomerManagementFrameworkBundle\CustomerList\SearchHelper;
 use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -30,6 +31,12 @@ class DuplicatesController extends Admin
     public function init()
     {
         \Pimcore\Model\DataObject\AbstractObject::setHideUnpublished(true);
+    }
+
+    public function onKernelControllerEvent(ControllerEvent $event): void
+    {
+        parent::onKernelControllerEvent($event);
+        $this->checkPermission('plugin_cmf_perm_customerview');
     }
 
     /**
