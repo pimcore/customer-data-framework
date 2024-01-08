@@ -23,6 +23,7 @@ use Pimcore\Model\DataObject\Service;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -33,6 +34,12 @@ class DuplicatesController extends Admin
     public function init()
     {
         AbstractObject::setHideUnpublished(true);
+    }
+
+    public function onKernelControllerEvent(ControllerEvent $event): void
+    {
+        parent::onKernelControllerEvent($event);
+        $this->checkPermission('plugin_cmf_perm_customerview');
     }
 
     /**
