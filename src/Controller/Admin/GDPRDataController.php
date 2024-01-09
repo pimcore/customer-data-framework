@@ -16,11 +16,13 @@
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
 use CustomerManagementFrameworkBundle\GDPR\DataProvider\Customers;
+use Pimcore\Controller\KernelControllerEventInterface;
 use Pimcore\Controller\Traits\JsonHelperTrait;
 use Pimcore\Controller\UserAwareController;
 use Pimcore\Model\DataObject\AbstractObject;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -28,9 +30,14 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/gdpr-data")
  */
-class GDPRDataController extends UserAwareController
+class GDPRDataController extends UserAwareController implements KernelControllerEventInterface
 {
     use JsonHelperTrait;
+
+    public function onKernelControllerEvent(ControllerEvent $event): void
+    {
+        $this->checkPermission('gdpr_data_extractor');
+    }
 
     /**
      * @Route("/search-data-objects", name="_pimcore_customermanagementframework_gdprdata_searchdataobjects", methods={"GET"})
