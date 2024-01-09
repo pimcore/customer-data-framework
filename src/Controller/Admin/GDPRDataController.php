@@ -15,7 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
-use CustomerManagementFrameworkBundle\GDPR\DataProvider\Customers
+use CustomerManagementFrameworkBundle\GDPR\DataProvider\Customers;
 use Pimcore\Controller\KernelControllerEventInterface;
 use Pimcore\Model\DataObject\AbstractObject;
 use Symfony\Component\HttpFoundation\Request;
