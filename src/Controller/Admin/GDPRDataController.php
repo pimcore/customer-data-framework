@@ -33,7 +33,7 @@ class GDPRDataController extends \Pimcore\Bundle\AdminBundle\Controller\AdminCon
     {
         $this->checkPermission('gdpr_data_extractor');
     }
-    
+
     /**
      * @param Request $request
      * @param Customers $service
