@@ -15,9 +15,11 @@
 
 namespace CustomerManagementFrameworkBundle\Controller\Admin;
 
-use CustomerManagementFrameworkBundle\GDPR\DataProvider\Customers;
+use CustomerManagementFrameworkBundle\GDPR\DataProvider\Customers
+use Pimcore\Controller\KernelControllerEventInterface;
 use Pimcore\Model\DataObject\AbstractObject;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -25,8 +27,13 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/gdpr-data")
  */
-class GDPRDataController extends \Pimcore\Bundle\AdminBundle\Controller\AdminController
+class GDPRDataController extends \Pimcore\Bundle\AdminBundle\Controller\AdminController implements KernelControllerEventInterface
 {
+    public function onKernelControllerEvent(ControllerEvent $event): void
+    {
+        $this->checkPermission('gdpr_data_extractor');
+    }
+    
     /**
      * @param Request $request
      * @param Customers $service
