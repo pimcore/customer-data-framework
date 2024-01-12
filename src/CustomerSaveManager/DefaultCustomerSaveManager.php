@@ -118,7 +118,7 @@ class DefaultCustomerSaveManager implements CustomerSaveManagerInterface
             }
         }
 
-        if (!$originalCustomerNeeded && $this->getSaveOptions()->isNewsletterQueueEnabled()) {
+        if (!$originalCustomerNeeded && $this->getSaveOptions()->isNewsletterQueueEnabled() && $customer->getId() != null) {
             $originalCustomerNeeded = true;
         }
 

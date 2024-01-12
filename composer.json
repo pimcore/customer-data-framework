@@ -21,7 +21,7 @@
     "drewm/mailchimp-api": "^2.2",
     "guzzlehttp/guzzle": "^7.2",
     "knplabs/knp-components": "^4.0",
-    "pear/archive_tar": "^1.4.3",
+    "pear/archive_tar": "^1.4.14",
     "pimcore/newsletter-bundle": "^1.0",
     "pimcore/number-sequence-generator": "^2.0",
     "pimcore/admin-ui-classic-bundle": "^1.0",

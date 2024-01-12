@@ -24,10 +24,10 @@ The customers API implements standard REST calls for customer CRUD actions:
 | Path                                                     | Method | Description                 |
 |----------------------------------------------------------|--------|-----------------------------|
 | /__customermanagementframework/webservice/customers      | GET    | Fetch all customers         |
-| /__customermanagementframework/webservice/customers/{id} | GET    | Fetch a single customer     |
+| /__customermanagementframework/webservice/customers/\{id\} | GET    | Fetch a single customer     |
 | /__customermanagementframework/webservice/customers      | POST   | Create a new customer       |
-| /__customermanagementframework/webservice/customers/{id} | PATCH  | Partially update a customer |
-| /__customermanagementframework/webservice/customers/{id} | DELETE | Delete a customer           |
+| /__customermanagementframework/webservice/customers/\{id\} | PATCH  | Partially update a customer |
+| /__customermanagementframework/webservice/customers/\{id\} | DELETE | Delete a customer           |
 
 The `GET` requests can be filtered by passing the following params as query params:
 
@@ -47,10 +47,10 @@ The activities API implements standard REST calls for activity CRUD actions:
 | Path                                                      | Method | Description                   |
 |-----------------------------------------------------------|--------|-------------------------------|
 | /__customermanagementframework/webservice/activities      | GET    | Fetch all activities         |
-| /__customermanagementframework/webservice/activities/{id} | GET    | Fetch a single activity      |
+| /__customermanagementframework/webservice/activities/\{id\} | GET    | Fetch a single activity      |
 | /__customermanagementframework/webservice/activities      | POST   | Create a new activity        |
-| /__customermanagementframework/webservice/activities/{id} | PATCH  | Partially update a activity  |
-| /__customermanagementframework/webservice/activities/{id} | DELETE | Delete a activity            |
+| /__customermanagementframework/webservice/activities/\{id\} | PATCH  | Partially update a activity  |
+| /__customermanagementframework/webservice/activities/\{id\} | DELETE | Delete a activity            |
 
 The `GET` requests can be filtered by passing the following params as query params:
 
@@ -84,10 +84,10 @@ The segments API implements standard REST calls for customer segment CRUD action
 | Path                                                      | Method | Description                   |
 |-----------------------------------------------------------|--------|-------------------------------|
 | /__customermanagementframework/webservice/segments        | GET    | Fetch all segments            |
-| /__customermanagementframework/webservice/segments/{id}   | GET    | Fetch a single segment        |
+| /__customermanagementframework/webservice/segments/\{id\}   | GET    | Fetch a single segment        |
 | /__customermanagementframework/webservice/segments        | POST   | Create a new segment          |
-| /__customermanagementframework/webservice/segments/{id}   | PATCH  | Partially update a segment    |
-| /__customermanagementframework/webservice/segments/{id}   | DELETE | Delete a segment              |
+| /__customermanagementframework/webservice/segments/\{id\}   | PATCH  | Partially update a segment    |
+| /__customermanagementframework/webservice/segments/\{id\}   | DELETE | Delete a segment              |
 
 The `GET` requests can be filtered by passing the follwing params as query params:
 
@@ -103,10 +103,10 @@ The segment groups API implements standard REST calls for customer segment group
 | Path                                                            | Method | Description                           |
 |-----------------------------------------------------------------|--------|---------------------------------------|
 | /__customermanagementframework/webservice/segment-groups        | GET    | Fetch all segment groups              |
-| /__customermanagementframework/webservice/segment-groups/{id}   | GET    | Fetch a single segment group          |
+| /__customermanagementframework/webservice/segment-groups/\{id\}   | GET    | Fetch a single segment group          |
 | /__customermanagementframework/webservice/segment-groups        | POST   | Create a new segment group            |
-| /__customermanagementframework/webservice/segment-groups/{id}   | PATCH  | Partially update a segment group      |
-| /__customermanagementframework/webservice/segment-groups/{id}   | DELETE | Delete a segment group                |
+| /__customermanagementframework/webservice/segment-groups/\{id\}   | PATCH  | Partially update a segment group      |
+| /__customermanagementframework/webservice/segment-groups/\{id\}   | DELETE | Delete a segment group                |
 
 The `GET` requests can be filtered by passing the following params as query params:
 
