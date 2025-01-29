@@ -219,25 +219,25 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
         );
 
         $condition = $baseCondition;
-        $valuePlaceholder = $joinName . '_value';
-        $parameterType = ParameterType::INTEGER;
         if ($this->type === self::OPERATOR_OR) {
-            // must match any of the passed IDs
+            $valueKeys = array_keys($conditionValue);
+            $isNumericArray = $valueKeys == array_filter($valueKeys, 'is_numeric');
+            if (!$isNumericArray) {
+                throw new Exception('Invalid condition value');
+            }
+
             $condition .= sprintf(
                 ' AND %1$s.dest_id IN (%2$s)',
                 $joinName,
-                ':' . $valuePlaceholder
+                implode(',', $valueKeys)
             );
-            $value = array_keys($conditionValue);
-            $parameterType = ArrayParameterType::INTEGER;
         } else {
             // runs an extra join for every ID - all joins must match
             $condition .= sprintf(
-                ' AND %1$s.dest_id = %2$s',
+                ' AND %1$s.dest_id = %2$d',
                 $joinName,
-                ':' . $valuePlaceholder
+                is_numeric($conditionValue) ? $conditionValue : 0
             );
-            $value = $conditionValue;
         }
 
         $queryBuilder->join(
@@ -246,7 +246,5 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
             $joinName,
             $condition
         );
-
-        $queryBuilder->setParameter($valuePlaceholder, $value, $parameterType);
     }
 }
