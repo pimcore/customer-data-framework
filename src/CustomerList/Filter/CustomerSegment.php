@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\CustomerList\Filter;
 use CustomerManagementFrameworkBundle\Listing\Filter\AbstractFilter;
 use CustomerManagementFrameworkBundle\Listing\Filter\OnCreateQueryFilterInterface;
 use CustomerManagementFrameworkBundle\Service\MariaDb;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -228,7 +229,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
                 ':' . $valuePlaceholder
             );
             $value = array_keys($conditionValue);
-            $parameterType = Connection::PARAM_INT_ARRAY;
+            $parameterType = ArrayParameterType::INTEGER;
         } else {
             // runs an extra join for every ID - all joins must match
             $condition .= sprintf(
