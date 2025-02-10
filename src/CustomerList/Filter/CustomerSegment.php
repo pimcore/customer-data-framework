@@ -19,6 +19,7 @@ use CustomerManagementFrameworkBundle\Listing\Filter\AbstractFilter;
 use CustomerManagementFrameworkBundle\Listing\Filter\OnCreateQueryFilterInterface;
 use CustomerManagementFrameworkBundle\Service\MariaDb;
 use Doctrine\DBAL\Query\QueryBuilder;
+use InvalidArgumentException;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Listing as CoreListing;
 
@@ -70,7 +71,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
     {
         $this->identifier = $this->buildIdentifier($segmentGroup);
         $this->segmentGroup = $segmentGroup;
-        $this->type = $type;
+        $this->type = $type === self::OPERATOR_AND ? self::OPERATOR_AND : self::OPERATOR_OR;
 
         foreach ($segments as $segment) {
             $this->addCustomerSegment($segment);
@@ -123,7 +124,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
     {
         if ($segment->getGroup() && null !== $this->segmentGroup) {
             if ($segment->getGroup()->getId() !== $this->segmentGroup->getId()) {
-                throw new \InvalidArgumentException('Segment does not belong to the defined segment group');
+                throw new InvalidArgumentException('Segment does not belong to the defined segment group');
             }
         }
 
@@ -221,20 +222,26 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
         );
 
         $condition = $baseCondition;
-
         if ($this->type === self::OPERATOR_OR) {
             // must match any of the passed IDs
+
+            $valueKeys = array_keys($conditionValue);
+            $isNumericArray = $valueKeys == array_filter($valueKeys, 'is_numeric');
+            if (!$isNumericArray) {
+                $valueKeys = [0];
+            }
+
             $condition .= sprintf(
                 ' AND %1$s.dest_id IN (%2$s)',
                 $joinName,
-                implode(',', $conditionValue)
+                implode(',', $valueKeys)
             );
         } else {
             // runs an extra join for every ID - all joins must match
             $condition .= sprintf(
-                ' AND %1$s.dest_id = %2$s',
+                ' AND %1$s.dest_id = %2$d',
                 $joinName,
-                $conditionValue
+                is_numeric($conditionValue) ? $conditionValue : 0
             );
         }
 
