@@ -231,7 +231,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
             $valueKeys = array_keys($conditionValue);
             $isNumericArray = $valueKeys == array_filter($valueKeys, 'is_numeric');
             if (!$isNumericArray) {
-                throw new Exception('Invalid condition value');
+                $valueKeys = [0];
             }
 
             $condition .= sprintf(
