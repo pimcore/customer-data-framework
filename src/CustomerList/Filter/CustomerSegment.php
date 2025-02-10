@@ -199,8 +199,6 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      * @param QueryBuilder $queryBuilder
      * @param string $joinName
      * @param int|array $conditionValue
-     *
-     * @throws Exception
      */
     protected function addJoin(
         CoreListing\Concrete $listing,
