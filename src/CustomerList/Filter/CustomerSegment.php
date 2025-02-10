@@ -19,7 +19,6 @@ use CustomerManagementFrameworkBundle\Listing\Filter\AbstractFilter;
 use CustomerManagementFrameworkBundle\Listing\Filter\OnCreateQueryFilterInterface;
 use CustomerManagementFrameworkBundle\Service\MariaDb;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Exception;
 use InvalidArgumentException;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Listing as CoreListing;
