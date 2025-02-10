@@ -74,7 +74,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
     {
         $this->identifier = $this->buildIdentifier($segmentGroup);
         $this->segmentGroup = $segmentGroup;
-        $this->type = $type;
+        $this->type = $type === self::OPERATOR_AND ? self::OPERATOR_AND : self::OPERATOR_OR;
 
         foreach ($segments as $segment) {
             $this->addCustomerSegment($segment);
