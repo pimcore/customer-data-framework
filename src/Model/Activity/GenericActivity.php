@@ -55,7 +55,7 @@ class GenericActivity implements ActivityExternalIdInterface
         }
 
         if (is_int($this->data['activityDate'])) {
-            return Carbon::createFromTimestamp($this->data['activityDate']);
+            return Carbon::createFromTimestamp($this->data['activityDate'], date_default_timezone_get());
         }
 
         return new Carbon();

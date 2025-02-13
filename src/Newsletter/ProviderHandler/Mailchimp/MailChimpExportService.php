@@ -270,6 +270,6 @@ class MailChimpExportService
      */
     protected function getNoteDateTime(Note $note)
     {
-        return Carbon::createFromTimestamp($note->getDate());
+        return Carbon::createFromTimestamp($note->getDate(), date_default_timezone_get());
     }
 }

@@ -32,7 +32,7 @@ abstract class AbstractObjectActivity extends Concrete implements PersistentActi
 
     public function cmfGetActivityDate()
     {
-        return Carbon::createFromTimestamp($this->getCreationDate());
+        return Carbon::createFromTimestamp($this->getCreationDate(), date_default_timezone_get());
     }
 
     public function cmfUpdateOnSave()

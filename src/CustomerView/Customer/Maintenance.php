@@ -48,7 +48,7 @@ class Maintenance
         // check each customer if it should be deleted
         foreach ($tempCustomers as $customer) {
             // fetch modification date
-            $date = Carbon::createFromTimestamp($customer->getModificationDate());
+            $date = Carbon::createFromTimestamp($customer->getModificationDate(), date_default_timezone_get());
             // if contact is unpublished and last modification was more then 1 day ago
             if (!$customer->isPublished() && $date->diffInDays(Carbon::now()) > 1) {
                 // delete the customer

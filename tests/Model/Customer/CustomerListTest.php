@@ -146,7 +146,9 @@ class CustomerListTest extends ModelTestCase
             $customer->setLastname($customerData['lastname']);
             $customer->setEmail($customerData['email']);
             $customer->setZip($customerData['zip']);
-            $customer->setBirthdate(Carbon::createFromFormat('Y-m-d', $customerData['date']));
+            $customer->setBirthdate(
+                Carbon::createFromFormat('Y-m-d', $customerData['date'])
+            );
 
             $segments = [];
             foreach ($customerData['segments']['manual'] as $segmentReference) {
@@ -321,7 +323,11 @@ class CustomerListTest extends ModelTestCase
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $dateFilter = new DateBetween('birthdate', Carbon::createFromFormat('Y-m-d', '1970-01-01'), Carbon::now());
+        $dateFilter = new DateBetween(
+            'birthdate',
+            Carbon::createFromFormat('Y-m-d', '1970-01-01'),
+            Carbon::now()
+        );
         $handler->addFilter($dateFilter);
 
         $modifiedListing = $handler->getListing();
@@ -330,7 +336,11 @@ class CustomerListTest extends ModelTestCase
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $dateFilter = new DateBetween('birthdate', Carbon::createFromFormat('Y-m-d', '1980-05-01'), Carbon::createFromFormat('Y-m-d', '1980-05-31'));
+        $dateFilter = new DateBetween(
+            'birthdate',
+            Carbon::createFromFormat('Y-m-d', '1980-05-01'),
+            Carbon::createFromFormat('Y-m-d', '1980-05-31')
+        );
         $handler->addFilter($dateFilter);
 
         $modifiedListing = $handler->getListing();
@@ -340,10 +350,18 @@ class CustomerListTest extends ModelTestCase
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $dateFilter = new DateBetween('birthdate', Carbon::createFromFormat('Y-m-d', '1980-05-01'), Carbon::createFromFormat('Y-m-d', '1980-05-31'));
+        $dateFilter = new DateBetween(
+            'birthdate',
+            Carbon::createFromFormat('Y-m-d', '1980-05-01'),
+            Carbon::createFromFormat('Y-m-d', '1980-05-31')
+        );
         $handler->addFilter($dateFilter);
 
-        $dateFilter = new DateBetween('birthdate', Carbon::createFromFormat('Y-m-d', '1980-01-01'), Carbon::createFromFormat('Y-m-d', '1980-08-31'));
+        $dateFilter = new DateBetween(
+            'birthdate',
+            Carbon::createFromFormat('Y-m-d', '1980-01-01'),
+            Carbon::createFromFormat('Y-m-d', '1980-08-31')
+        );
         $handler->addFilter($dateFilter);
 
         $modifiedListing = $handler->getListing();

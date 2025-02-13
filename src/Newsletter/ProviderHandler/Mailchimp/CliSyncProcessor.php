@@ -68,7 +68,7 @@ class CliSyncProcessor
                 $client = $exportService->getApiClient();
 
                 // get updates from the last 30 days
-                $date = Carbon::createFromTimestamp(time() - (60 * 60 * 24 * 30));
+                $date = Carbon::createFromTimestamp(time() - (60 * 60 * 24 * 30), date_default_timezone_get());
                 $date = $date->toAtomString();
 
                 $count = 20;
