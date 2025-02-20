@@ -93,7 +93,7 @@ class DuplicatesController extends Admin
     {
         try {
             \Pimcore::getContainer()->get('cmf.customer_duplicates_index')->declinePotentialDuplicate(
-                $request->request->getInt('id')
+                $request->attributes->getInt('id')
             );
 
             return new JsonResponse(['success' => true]);

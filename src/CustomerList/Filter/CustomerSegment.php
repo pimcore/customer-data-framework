@@ -18,7 +18,11 @@ namespace CustomerManagementFrameworkBundle\CustomerList\Filter;
 use CustomerManagementFrameworkBundle\Listing\Filter\AbstractFilter;
 use CustomerManagementFrameworkBundle\Listing\Filter\OnCreateQueryFilterInterface;
 use CustomerManagementFrameworkBundle\Service\MariaDb;
+use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Exception;
+use InvalidArgumentException;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Listing as CoreListing;
 
@@ -69,7 +73,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
     {
         $this->identifier = $this->buildIdentifier($segmentGroup);
         $this->segmentGroup = $segmentGroup;
-        $this->type = $type;
+        $this->type = $type === self::OPERATOR_AND ? self::OPERATOR_AND : self::OPERATOR_OR;
 
         foreach ($segments as $segment) {
             $this->addCustomerSegment($segment);
@@ -119,7 +123,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
     {
         if ($segment->getGroup() && null !== $this->segmentGroup) {
             if ($segment->getGroup()->getId() !== $this->segmentGroup->getId()) {
-                throw new \InvalidArgumentException('Segment does not belong to the defined segment group');
+                throw new InvalidArgumentException('Segment does not belong to the defined segment group');
             }
         }
 
@@ -187,6 +191,8 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
      *
      * @param string $joinName
      * @param int|array $conditionValue
+     *
+     * @throws Exception
      */
     protected function addJoin(
         CoreListing\Concrete $listing,
@@ -212,21 +218,25 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
         );
 
         $condition = $baseCondition;
-
+        $valuePlaceholder = $joinName . '_value';
+        $parameterType = ParameterType::INTEGER;
         if ($this->type === self::OPERATOR_OR) {
             // must match any of the passed IDs
             $condition .= sprintf(
                 ' AND %1$s.dest_id IN (%2$s)',
                 $joinName,
-                implode(',', $conditionValue)
+                ':' . $valuePlaceholder
             );
+            $value = array_keys($conditionValue);
+            $parameterType = ArrayParameterType::INTEGER;
         } else {
             // runs an extra join for every ID - all joins must match
             $condition .= sprintf(
                 ' AND %1$s.dest_id = %2$s',
                 $joinName,
-                $conditionValue
+                ':' . $valuePlaceholder
             );
+            $value = $conditionValue;
         }
 
         $queryBuilder->join(
@@ -235,5 +245,7 @@ class CustomerSegment extends AbstractFilter implements OnCreateQueryFilterInter
             $joinName,
             $condition
         );
+
+        $queryBuilder->setParameter($valuePlaceholder, $value, $parameterType);
     }
 }

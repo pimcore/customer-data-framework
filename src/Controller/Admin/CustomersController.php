@@ -164,9 +164,10 @@ class CustomersController extends Admin
         $listing = $this->buildListing($filters);
 
         $idField = Service::getVersionDependentDatabaseColumnName('id');
+        $fromTable = $listing->getQueryBuilder()->getQueryPart('from')[0]['table'];
         $query = $listing->getQueryBuilder()
             ->resetQueryPart('select')
-            ->select($idField);
+            ->select($fromTable . '.' . $idField);
         $ids = Db::get()->fetchFirstColumn((string)$query);
 
         $jobId = uniqid();
@@ -218,7 +219,9 @@ class CustomersController extends Admin
 
         $idField = Service::getVersionDependentDatabaseColumnName('id');
         $listing = $this->buildListing();
-        $listing->addConditionParam($idField . ' in ('.implode(', ', $ids).')');
+
+        $fromTable = $listing->getQueryBuilder()->getQueryPart('from')[0]['table'];
+        $listing->addConditionParam($fromTable . '.' . $idField . ' in ('.implode(', ', $ids).')');
 
         $exporter = $this->getExporter($listing, $data['exporter']);
         $exportData = $exporter->getExportData();
