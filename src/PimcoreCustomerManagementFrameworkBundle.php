@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle;
 use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\CustomerSaveManagerPass;
 use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\NewsletterManagerPass;
 use CustomerManagementFrameworkBundle\DependencyInjection\Compiler\SegmentManagerPass;
+use CustomerManagementFrameworkBundle\DependencyInjection\PimcoreCustomerManagementFrameworkExtension;
 use Pimcore\Bundle\AdminBundle\PimcoreAdminBundle;
 use Pimcore\Bundle\ApplicationLoggerBundle\PimcoreApplicationLoggerBundle;
 use Pimcore\Bundle\NewsletterBundle\PimcoreNewsletterBundle;
@@ -29,6 +30,7 @@ use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
 use Pimcore\HttpKernel\Bundle\DependentBundleInterface;
 use Pimcore\HttpKernel\BundleCollection\BundleCollection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 
 class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle implements DependentBundleInterface, PimcoreBundleAdminClassicInterface
 {
@@ -38,6 +40,11 @@ class PimcoreCustomerManagementFrameworkBundle extends AbstractPimcoreBundle imp
     protected function getComposerPackageName(): string
     {
         return 'pimcore/customer-management-framework-bundle';
+    }
+
+    public function getContainerExtension(): ExtensionInterface
+    {
+        return new PimcoreCustomerManagementFrameworkExtension();
     }
 
     public function getJsPaths(): array
