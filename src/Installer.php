@@ -15,7 +15,7 @@
 
 namespace CustomerManagementFrameworkBundle;
 
-use CustomerManagementFrameworkBundle\Migrations\PimcoreX\Version20210305134111;
+use CustomerManagementFrameworkBundle\Migrations\PimcoreX\Version20221229215900;
 use Pimcore\Db;
 use Pimcore\Extension\Bundle\Installer\SettingsStoreAwareInstaller;
 use Pimcore\Logger;
@@ -317,6 +317,6 @@ class Installer extends SettingsStoreAwareInstaller
 
     public function getLastMigrationVersionClassName(): ?string
     {
-        return Version20210305134111::class;
+        return Version20221229215900::class;
     }
 }
