@@ -30,7 +30,7 @@ class MaintenanceCommand extends AbstractCommand
         $this->maintenanceWorker = $maintenanceWorker;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('cmf:maintenance')
             ->setDescription("Performs various tasks configured in services.yml -> 'cmf.maintenance.serviceCalls'");

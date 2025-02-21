@@ -30,7 +30,7 @@ class SegmentAssignmentIndexCommand extends AbstractCommand
         $this->indexer = $indexer;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('cmf:segment-assignment-index')
             ->setDescription('Processes entries from segment assignment queue, use this for manually updating the index, which is usually done during cmf:maintenance');

@@ -31,7 +31,7 @@ class CronTriggerCommand extends AbstractCommand
         $this->actionTriggerListener = $actionTriggerListener;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('cmf:handle-cron-triggers')
             ->setDescription('Handle cron triggers cronjob - needs to run once per minute');

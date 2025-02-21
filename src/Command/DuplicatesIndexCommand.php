@@ -30,7 +30,7 @@ class DuplicatesIndexCommand extends AbstractCommand
         $this->duplicatesIndex = $duplicatesIndex;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('cmf:duplicates-index')
             ->setDescription('Handles the duplicate search index')
