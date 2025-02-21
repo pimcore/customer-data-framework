@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\Command;
 use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class DuplicatesIndexCommand extends AbstractCommand
 {
@@ -26,9 +27,7 @@ class DuplicatesIndexCommand extends AbstractCommand
      */
     protected $duplicatesIndex;
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setDuplicatesIndex(DuplicatesIndexInterface $duplicatesIndex): void
     {
         $this->duplicatesIndex = $duplicatesIndex;

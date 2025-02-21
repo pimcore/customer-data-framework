@@ -18,6 +18,7 @@ namespace CustomerManagementFrameworkBundle\Command;
 use CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\IndexerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class SegmentAssignmentIndexCommand extends AbstractCommand
 {
@@ -26,9 +27,7 @@ class SegmentAssignmentIndexCommand extends AbstractCommand
      */
     protected $indexer;
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setIndexer(IndexerInterface $indexer): void
     {
         $this->indexer = $indexer;

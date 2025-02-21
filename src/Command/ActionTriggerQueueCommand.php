@@ -19,6 +19,7 @@ use CustomerManagementFrameworkBundle\ActionTrigger\Queue\QueueInterface;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class ActionTriggerQueueCommand extends AbstractCommand
 {
@@ -31,9 +32,7 @@ class ActionTriggerQueueCommand extends AbstractCommand
      */
     protected $actionTriggerQueue;
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setActionTriggerQueue(QueueInterface $actionTriggerQueue): void
     {
         $this->actionTriggerQueue = $actionTriggerQueue;

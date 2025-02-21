@@ -19,6 +19,7 @@ use CustomerManagementFrameworkBundle\ActionTrigger\EventHandler\EventHandlerInt
 use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironment;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class CronTriggerCommand extends AbstractCommand
 {
@@ -27,9 +28,7 @@ class CronTriggerCommand extends AbstractCommand
      */
     protected $actionTriggerListener;
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setActionTriggerListener(EventHandlerInterface $actionTriggerListener): void
     {
         $this->actionTriggerListener = $actionTriggerListener;

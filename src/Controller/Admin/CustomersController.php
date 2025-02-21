@@ -41,6 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @Route("/customers")
@@ -61,9 +62,7 @@ class CustomersController extends Admin
         AbstractObject::setHideUnpublished(true);
     }
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setExporterManager(ExporterManagerInterface $exporterManager): void
     {
         $this->exporterManager = $exporterManager;
