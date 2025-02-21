@@ -22,10 +22,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 class DuplicatesIndexCommand extends AbstractCommand
 {
-    /**
-     * @var DuplicatesIndexInterface
-     */
-    protected $duplicatesIndex;
+    protected DuplicatesIndexInterface $duplicatesIndex;
 
     #[Required]
     public function setDuplicatesIndex(DuplicatesIndexInterface $duplicatesIndex): void

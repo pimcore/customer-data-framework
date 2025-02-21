@@ -25,7 +25,7 @@ class ActionTriggerQueueCommand extends AbstractCommand
 {
     use LockableTrait;
 
-    const LOCK_KEY = 'cmf_actiontrigger_queue';
+    private const string LOCK_KEY = 'cmf_actiontrigger_queue';
 
     /**
      * @var QueueInterface

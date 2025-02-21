@@ -21,10 +21,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractSegmentBuilder implements SegmentBuilderInterface
 {
-    /**
-     * @var PaginatorInterface
-     */
-    protected $paginator;
+    protected PaginatorInterface $paginator;
 
     #[Required]
     public function setPaginator(PaginatorInterface $paginator): void

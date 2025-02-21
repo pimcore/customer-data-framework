@@ -31,25 +31,13 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 class AssignTargetGroupAndSegment extends AssignTargetGroup
 {
-    /**
-     * @var SegmentManagerInterface
-     */
-    protected $segmentManager;
+    protected SegmentManagerInterface $segmentManager;
 
-    /**
-     * @var ActivityManagerInterface
-     */
-    protected $activityManager;
+    protected ActivityManagerInterface $activityManager;
 
-    /**
-     * @var DataLoaderInterface
-     */
-    protected $dataLoader;
+    protected DataLoaderInterface $dataLoader;
 
-    /**
-     * @var ConsentCheckerInterface
-     */
-    protected $consentChecker;
+    protected ConsentCheckerInterface $consentChecker;
 
     #[Required]
     public function setSegmentManager(SegmentManagerInterface $segmentManager): void

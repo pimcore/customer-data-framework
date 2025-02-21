@@ -23,10 +23,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 class CronTriggerCommand extends AbstractCommand
 {
-    /**
-     * @var EventHandlerInterface
-     */
-    protected $actionTriggerListener;
+    protected EventHandlerInterface $actionTriggerListener;
 
     #[Required]
     public function setActionTriggerListener(EventHandlerInterface $actionTriggerListener): void

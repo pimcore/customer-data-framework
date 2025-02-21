@@ -22,10 +22,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 class MaintenanceCommand extends AbstractCommand
 {
-    /**
-     * @var MaintenanceWorker
-     */
-    protected $maintenanceWorker;
+    protected MaintenanceWorker $maintenanceWorker;
 
     #[Required]
     public function setMaintenanceWorker(MaintenanceWorker $maintenanceWorker): void

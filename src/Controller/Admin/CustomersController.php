@@ -51,7 +51,7 @@ class CustomersController extends Admin
     /**
      * @var CustomerSegmentGroup[]|null
      */
-    private $segmentGroups = null;
+    private ?array $segmentGroups = null;
 
     private ExporterManagerInterface $exporterManager;
 

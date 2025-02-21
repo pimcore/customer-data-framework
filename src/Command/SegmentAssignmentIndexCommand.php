@@ -22,10 +22,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 class SegmentAssignmentIndexCommand extends AbstractCommand
 {
-    /**
-     * @var IndexerInterface
-     */
-    protected $indexer;
+    protected IndexerInterface $indexer;
 
     #[Required]
     public function setIndexer(IndexerInterface $indexer): void
