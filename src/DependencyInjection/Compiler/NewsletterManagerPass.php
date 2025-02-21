@@ -24,7 +24,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class NewsletterManagerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $taggedServices = $container->findTaggedServiceIds('cmf.newsletter_provider_handler');
 
