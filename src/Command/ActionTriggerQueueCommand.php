@@ -27,10 +27,7 @@ class ActionTriggerQueueCommand extends AbstractCommand
 
     private const string LOCK_KEY = 'cmf_actiontrigger_queue';
 
-    /**
-     * @var QueueInterface
-     */
-    protected $actionTriggerQueue;
+    protected QueueInterface $actionTriggerQueue;
 
     #[Required]
     public function setActionTriggerQueue(QueueInterface $actionTriggerQueue): void
