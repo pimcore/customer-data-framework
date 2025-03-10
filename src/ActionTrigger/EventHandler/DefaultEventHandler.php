@@ -105,8 +105,7 @@ class DefaultEventHandler implements EventHandlerInterface
 
                 $listing = Pimcore::getContainer()->get('cmf.customer_provider')->getList();
                 $listing->setCondition($where);
-                $idField = Service::getVersionDependentDatabaseColumnName('id');
-                $listing->setOrderKey($idField);
+                $listing->setOrderKey('id');
                 $listing->setOrder('asc');
 
                 $paginator = $this->paginator->paginate($listing, 1, 100);

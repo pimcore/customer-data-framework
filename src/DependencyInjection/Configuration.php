@@ -269,7 +269,7 @@ class Configuration implements ConfigurationInterface
         ];
 
         $defaultFilterPropertiesEquals = [
-            'id' => Service::getVersionDependentDatabaseColumnName('id'),
+            'id' => 'id',
             'active' => 'active',
         ];
 
@@ -284,7 +284,7 @@ class Configuration implements ConfigurationInterface
                 'lastname',
             ],
             'search' => [
-                Service::getVersionDependentDatabaseColumnName('id'),
+                'id',
                 'idEncoded',
                 'firstname',
                 'lastname',

@@ -164,8 +164,7 @@ class CustomerListTest extends ModelTestCase
 
             $customer->save();
 
-            $idField = Service::getVersionDependentDatabaseColumnName('id');
-            $customerData[$idField] = $customer->getId();
+            $customerData['id'] = $customer->getId();
         }
 
     }
@@ -248,7 +247,7 @@ class CustomerListTest extends ModelTestCase
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
+        $idField = 'id';
         $betweenFilter = new FloatBetween($idField, $this->customerDummyData[0][$idField], 10000);
         $handler->addFilter($betweenFilter);
 

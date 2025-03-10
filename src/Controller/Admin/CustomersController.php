@@ -99,7 +99,7 @@ class CustomersController extends Admin
                 'paginator' => $paginator,
                 'paginationVariables' => $paginator instanceof SlidingPaginationInterface ? $paginator->getPaginationData() : [],
                 'customerView' => $customerView,
-                'idField' => Service::getVersionDependentDatabaseColumnName('id'),
+                'idField' => 'id',
             ]);
         } else {
             return $this->render(
@@ -117,7 +117,7 @@ class CustomersController extends Admin
                     'filterDefinition' => $this->getFilterDefinition($request),
                     'accessToTempCustomerFolder' => boolval($this->hasUserAccessToTempCustomerFolder()),
                     'hideAdvancedFilterSettings' => $request->query->getBoolean('segmentId'),
-                    'idField' => Service::getVersionDependentDatabaseColumnName('id'),
+                    'idField' => 'id',
                 ]
             );
         }
@@ -163,11 +163,10 @@ class CustomersController extends Admin
         $filters = $this->fetchListFilters($request);
         $listing = $this->buildListing($filters);
 
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
         $fromTable = $listing->getQueryBuilder()->getQueryPart('from')[0]['table'];
         $query = $listing->getQueryBuilder()
             ->resetQueryPart('select')
-            ->select($fromTable . '.' . $idField);
+            ->select($fromTable . '.id');
         $ids = Db::get()->fetchFirstColumn((string)$query);
 
         $jobId = uniqid();
@@ -217,11 +216,10 @@ class CustomersController extends Admin
         $ids = array_slice($data['processIds'], 0, $perRequest);
         $processIds = array_slice($data['processIds'], $perRequest);
 
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
         $listing = $this->buildListing();
 
         $fromTable = $listing->getQueryBuilder()->getQueryPart('from')[0]['table'];
-        $listing->addConditionParam($fromTable . '.' . $idField . ' in ('.implode(', ', $ids).')');
+        $listing->addConditionParam($fromTable . '.id in ('.implode(', ', $ids).')');
 
         $exporter = $this->getExporter($listing, $data['exporter']);
         $exportData = $exporter->getExportData();
@@ -394,7 +392,7 @@ class CustomersController extends Admin
     protected function buildListing(array $filters = [], array $orders = []): Listing\Concrete
     {
         $listing = $this->getSearchHelper()->getCustomerProvider()->getList();
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
+        $idField = 'id';
 
         if (array_key_exists('operator-segments', $filters)) {
             if ($filters['operator-segments'] == 'ANY') {

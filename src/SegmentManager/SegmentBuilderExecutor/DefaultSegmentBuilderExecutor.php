@@ -115,7 +115,7 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
         $conditionParts = [];
         $conditionVariables = null;
 
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
+        $idField = 'id';
         if (!empty($customQueue)) {
             // restrict to given customer
             $customerIds = array_filter($customQueue, 'is_numeric');

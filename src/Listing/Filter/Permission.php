@@ -82,8 +82,8 @@ class Permission extends AbstractFilter implements OnCreateQueryFilterInterface
         // initialize deny conditions array
         $denyConditions = [];
         $db = Db::get();
-        $pathField = $db->quoteIdentifier(Service::getVersionDependentDatabaseColumnName('path'));
-        $keyField = $db->quoteIdentifier(Service::getVersionDependentDatabaseColumnName('key'));
+        $pathField = $db->quoteIdentifier('path');
+        $keyField = $db->quoteIdentifier('key');
         foreach ($workspaces as $workspace) {
             // if user is allowed to list content -> add to allow conditions
             if ($workspace->getList()) {

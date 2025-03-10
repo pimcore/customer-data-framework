@@ -80,15 +80,12 @@ class DefaultQueueBuilder implements QueueBuilderInterface
     public function enqueueChildren(string $elementId, string $type): bool
     {
         try {
-            $objectIdField = Service::getVersionDependentDatabaseColumnName('id');
-            $objectPathField = Service::getVersionDependentDatabaseColumnName('path');
-            $objectKeyField = Service::getVersionDependentDatabaseColumnName('key');
             $formatArguments = [
                 1 => $this->getSegmentAssignmentQueueTable(),
-                2 => $type === 'object' ? $objectIdField : 'id',
+                2 => 'id',
                 3 => $type . 's',
-                4 => $type === 'object' ? $objectPathField : 'path',
-                5 => $type === 'object' ? $objectKeyField : ($type === 'asset' ? 'filename' : 'key'),
+                4 => 'path',
+                5 => $type === 'asset' ? 'filename' : 'key'
             ];
 
             $enqueueStatement = vsprintf(

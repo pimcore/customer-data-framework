@@ -57,9 +57,8 @@ class DuplicatesController extends Admin
         if (!empty($filters)) {
             // build customer listing
             $customerList = $this->getSearchHelper()->getCustomerProvider()->getList();
-            $idField = Service::getVersionDependentDatabaseColumnName('id');
             $customerList
-                ->setOrderKey($idField)
+                ->setOrderKey('id')
                 ->setOrder('ASC');
 
             /** @noinspection PhpUnhandledExceptionInspection */

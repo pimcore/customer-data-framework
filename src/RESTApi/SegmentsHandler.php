@@ -43,7 +43,7 @@ class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface
     {
         $list = new CustomerSegment\Listing();
 
-        $list->setOrderKey(Service::getVersionDependentDatabaseColumnName('id'));
+        $list->setOrderKey('id');
         $list->setOrder('asc');
         $list->setUnpublished(false);
 

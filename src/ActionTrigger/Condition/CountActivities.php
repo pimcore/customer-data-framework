@@ -72,8 +72,7 @@ class CountActivities extends AbstractMatchCondition
         if (!sizeof($ids)) {
             return '-1';
         }
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
 
-        return $idField . ' in ('.implode(',', $ids).')';
+        return 'id in ('.implode(',', $ids).')';
     }
 }

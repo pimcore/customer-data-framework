@@ -92,9 +92,8 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
         $list = $customerProvider->getList();
         $customerProvider->addActiveCondition($list);
 
-        $publishedKey = Service::getVersionDependentDatabaseColumnName('published');
         $list
-            ->addConditionParam($publishedKey . ' = ?', 1);
+            ->addConditionParam('published = ?', 1);
 
         foreach ($data as $field => $value) {
             if (is_null($value) || $value === '') {
@@ -139,8 +138,7 @@ class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInter
         $duplicates = $this->getDuplicatesByData($data, $limit);
 
         if ($customer->getId()) {
-            $idField = Service::getVersionDependentDatabaseColumnName('id');
-            $duplicates->addConditionParam($idField . ' != ?', $customer->getId());
+            $duplicates->addConditionParam('id != ?', $customer->getId());
         }
 
         if (!is_null($duplicates) && $duplicates->getCount()) {

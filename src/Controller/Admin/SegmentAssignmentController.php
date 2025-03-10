@@ -55,13 +55,11 @@ class SegmentAssignmentController extends UserAwareController
         }
 
         $db = \Pimcore\Db::get();
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
-        $parentIdField = Service::getVersionDependentDatabaseColumnName('parentId');
 
         $parentIdStatement = sprintf('SELECT :parentIdField FROM %s WHERE :idField = :value', $db->quoteIdentifier($type . 's'));
         $parentId = $db->fetchOne($parentIdStatement, [
-            'parentIdField' => $parentIdField,
-            'idField' => $idField,
+            'parentIdField' => 'parentId',
+            'idField' => 'id',
             'value' => $id,
         ]);
 

@@ -64,14 +64,13 @@ class CustomersHandler extends AbstractHandler implements CrudHandlerInterface
             /** @var Customer\Listing $customers */
             $customers = \Pimcore::getContainer()->get('cmf.customer_provider')->getList();
         }
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
-        $modificationDateField = Service::getVersionDependentDatabaseColumnName('modificationDate');
-        $customers->setOrderKey($idField);
+
+        $customers->setOrderKey('id');
         $customers->setOrder('asc');
         $customers->setUnpublished(false);
 
         if ($params->getModificationTimestamp()) {
-            $customers->addConditionParam($modificationDateField . ' > ?', $params->getModificationTimestamp());
+            $customers->addConditionParam('modificationDate > ?', $params->getModificationTimestamp());
         }
 
         $paginator = $this->handlePaginatorParams($customers, $request);

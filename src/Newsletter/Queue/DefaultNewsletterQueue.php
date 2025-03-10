@@ -169,14 +169,10 @@ class DefaultNewsletterQueue implements NewsletterQueueInterface
 
         $customerClassId = $customerProvider->getCustomerClassId();
 
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
-        $publishedField = Service::getVersionDependentDatabaseColumnName('published');
         $sql = sprintf(
-            "insert into %s (SELECT %s AS `customerId`,`email`, 'update' AS `operation`, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000) AS `modificationDate` FROM `object_%s` WHERE %s = 1 and id not in (select customerId from %s))",
+            "insert into %s (SELECT id AS `customerId`,`email`, 'update' AS `operation`, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000) AS `modificationDate` FROM `object_%s` WHERE published = 1 and id not in (select customerId from %s))",
             self::QUEUE_TABLE,
-            $idField,
             $customerClassId,
-            $publishedField,
             self::QUEUE_TABLE
         );
 

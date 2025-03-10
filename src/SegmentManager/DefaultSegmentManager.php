@@ -145,9 +145,8 @@ class DefaultSegmentManager implements SegmentManagerInterface
         $list->setUnpublished(false);
 
         $conditions = [];
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
         foreach ($segmentIds as $segmentId) {
-            $conditions[] = '('. $idField .' in (select distinct src_id from object_relations_' . $this->customerProvider->getCustomerClassId() . ' where (fieldname = "manualSegments" or fieldname = "calculatedSegments") and dest_id = ' . intval($segmentId) . '))';
+            $conditions[] = '(id in (select distinct src_id from object_relations_' . $this->customerProvider->getCustomerClassId() . ' where (fieldname = "manualSegments" or fieldname = "calculatedSegments") and dest_id = ' . intval($segmentId) . '))';
         }
 
         if (sizeof($conditions)) {
@@ -413,9 +412,8 @@ class DefaultSegmentManager implements SegmentManagerInterface
 
         $ignoreIds = Objects::getIdsFromArray($ignoreSegments);
 
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
         if (sizeof($ignoreIds)) {
-            $list->addConditionParam($idField . ' not in(' . implode(',', $ignoreIds) . ')');
+            $list->addConditionParam('id not in(' . implode(',', $ignoreIds) . ')');
         }
 
         $result = $list->load();

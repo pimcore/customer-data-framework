@@ -103,7 +103,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         $customerList = $customerProvider->getList();
 
         $customerProvider->addActiveCondition($customerList);
-        $customerList->setOrderKey(Service::getVersionDependentDatabaseColumnName('id'));
+        $customerList->setOrderKey('id');
 
         $paginator = $this->paginator->paginate($customerList);
         $paginator->setItemNumberPerPage(200);

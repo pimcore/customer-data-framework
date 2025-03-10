@@ -60,8 +60,7 @@ class Customer extends AbstractCondition
 
         $customerId = intval($options[self::OPTION_CUSTOMER_ID]);
 
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
-        $condition = sprintf($idField . ' = %s', $customerId);
+        $condition = sprintf('id = %s', $customerId);
 
         $not = $options[self::OPTION_NOT];
 
