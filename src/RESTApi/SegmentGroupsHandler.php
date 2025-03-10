@@ -22,7 +22,6 @@ use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
-use Pimcore\Model\DataObject\Service;
 use Symfony\Component\HttpFoundation\Request;
 
 class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterface

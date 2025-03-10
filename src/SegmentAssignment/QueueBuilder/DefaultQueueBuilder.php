@@ -17,7 +17,6 @@ namespace CustomerManagementFrameworkBundle\SegmentAssignment\QueueBuilder;
 
 use Doctrine\DBAL\Connection;
 use Pimcore\Logger;
-use Pimcore\Model\DataObject\Service;
 use Throwable;
 
 class DefaultQueueBuilder implements QueueBuilderInterface
@@ -85,7 +84,7 @@ class DefaultQueueBuilder implements QueueBuilderInterface
                 2 => 'id',
                 3 => $type . 's',
                 4 => 'path',
-                5 => $type === 'asset' ? 'filename' : 'key'
+                5 => $type === 'asset' ? 'filename' : 'key',
             ];
 
             $enqueueStatement = vsprintf(

@@ -16,7 +16,6 @@
 namespace CustomerManagementFrameworkBundle\SegmentAssignment\QueryService;
 
 use CustomerManagementFrameworkBundle\SegmentAssignment\TypeMapper\TypeMapperInterface;
-use Pimcore\Model\DataObject\Service;
 use Pimcore\Model\Listing\AbstractListing;
 
 class DefaultQueryService implements QueryServiceInterface

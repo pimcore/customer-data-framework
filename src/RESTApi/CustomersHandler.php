@@ -25,7 +25,6 @@ use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Model\DataObject\Customer;
-use Pimcore\Model\DataObject\Service;
 use Symfony\Component\HttpFoundation\Request;
 
 class CustomersHandler extends AbstractHandler implements CrudHandlerInterface

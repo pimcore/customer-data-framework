@@ -19,7 +19,6 @@ use CustomerManagementFrameworkBundle\CustomerProvider\CustomerProviderInterface
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\DataObject\Listing\Concrete;
-use Pimcore\Model\DataObject\Service;
 use Pimcore\Model\Element\ElementInterface;
 
 class DefaultCustomerDuplicatesService implements CustomerDuplicatesServiceInterface

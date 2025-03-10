@@ -25,7 +25,6 @@ use CustomerManagementFrameworkBundle\Traits\ApplicationLoggerAware;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Db;
-use Pimcore\Model\DataObject\Service;
 use Pimcore\Tool\Console;
 
 class DefaultNewsletterQueue implements NewsletterQueueInterface

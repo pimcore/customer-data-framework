@@ -29,7 +29,6 @@ use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore;
-use Pimcore\Model\DataObject\Service;
 
 class DefaultEventHandler implements EventHandlerInterface
 {

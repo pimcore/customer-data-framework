@@ -25,7 +25,6 @@ use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\Concrete;
-use Pimcore\Model\DataObject\Service;
 
 class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
 {

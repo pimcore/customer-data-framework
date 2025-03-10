@@ -21,7 +21,6 @@ use Doctrine\DBAL\Exception;
 use Pimcore\Controller\Traits\JsonHelperTrait;
 use Pimcore\Controller\UserAwareController;
 use Pimcore\Model\DataObject\CustomerSegment;
-use Pimcore\Model\DataObject\Service;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;

@@ -21,7 +21,6 @@ use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 use Exception;
 use Pimcore;
 use Pimcore\Model\DataObject\Concrete;
-use Pimcore\Model\DataObject\Service;
 
 abstract class AbstractObjectActivity extends Concrete implements PersistentActivityInterface
 {

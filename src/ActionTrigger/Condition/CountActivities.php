@@ -18,7 +18,6 @@ namespace CustomerManagementFrameworkBundle\ActionTrigger\Condition;
 use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use Pimcore;
-use Pimcore\Model\DataObject\Service;
 
 class CountActivities extends AbstractMatchCondition
 {

@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace CustomerManagementFrameworkBundle\DependencyInjection;
 
 use Pimcore\Model\DataObject\AbstractObject;
-use Pimcore\Model\DataObject\Service;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 

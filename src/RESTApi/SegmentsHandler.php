@@ -24,7 +24,6 @@ use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\CustomerSegment;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
-use Pimcore\Model\DataObject\Service;
 use Symfony\Component\HttpFoundation\Request;
 
 class SegmentsHandler extends AbstractHandler implements CrudHandlerInterface

@@ -27,7 +27,6 @@ use CustomerManagementFrameworkBundle\Listing\FilterHandler;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Model\DataObject\Customer;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
-use Pimcore\Model\DataObject\Service;
 use Pimcore\Tests\Support\Test\ModelTestCase;
 use Pimcore\Tests\Support\Util\TestHelper;
 

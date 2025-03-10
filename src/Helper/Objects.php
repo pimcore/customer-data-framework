@@ -18,7 +18,6 @@ namespace CustomerManagementFrameworkBundle\Helper;
 use Pimcore\File;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
-use Pimcore\Model\DataObject\Service as DataObjectService;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Element\Service;
 
