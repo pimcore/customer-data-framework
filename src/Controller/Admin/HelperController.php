@@ -26,20 +26,17 @@ use Pimcore\Model\DataObject\ClassDefinition;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * @Route("/helper")
- */
+#[Route('/helper')]
 class HelperController extends UserAwareController
 {
     use JsonHelperTrait;
 
     /**
      * get list of customer fields for action trigger rules
-     *
-     * @Route("/customer-field-list")
      */
+    #[Route('/customer-field-list')]
     public function customerFieldListAction(Request $request): JsonResponse
     {
         $class = ClassDefinition::getById(\Pimcore::getContainer()->get('cmf.customer_provider')->getCustomerClassId());
@@ -76,9 +73,8 @@ class HelperController extends UserAwareController
 
     /**
      * get list of available activity types
-     *
-     * @Route("/activity-types")
      */
+    #[Route('/activity-types')]
     public function activityTypesAction(Request $request): JsonResponse
     {
         $types = \Pimcore::getContainer()->get('cmf.activity_store')->getAvailableActivityTypes();
@@ -91,9 +87,7 @@ class HelperController extends UserAwareController
         return $this->jsonResponse($result);
     }
 
-    /**
-     * @Route("/grouped-segments")
-     */
+    #[Route('/grouped-segments')]
     public function groupedSegmentsAction(SegmentManagerInterface $segmentManager): JsonResponse
     {
         $segments = [];
@@ -114,9 +108,7 @@ class HelperController extends UserAwareController
         return $this->jsonResponse($segments);
     }
 
-    /**
-     * @Route("/settings-json")
-     */
+    #[Route('/settings-json')]
     public function settingJsonAction(): Response
     {
         $settings = [
@@ -137,10 +129,9 @@ class HelperController extends UserAwareController
     }
 
     /**
-     * @Route("/newsletter/possible-filter-flags")
-     *
      * @throws \Exception
      */
+    #[Route('/newsletter/possible-filter-flags')]
     public function possibleNewsletterFilterFlagsAction(CustomerProviderInterface $customerProvider): JsonResponse
     {
         $classDefinition = ClassDefinition::getById($customerProvider->getCustomerClassId());

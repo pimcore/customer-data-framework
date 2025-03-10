@@ -20,18 +20,14 @@ use Pimcore\Controller\UserAwareController;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\TermSegmentBuilderDefinition\Listing;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * @Route("/term-segment-builder")
- */
+#[Route('/term-segment-builder')]
 class TermSegmentBuilderController extends UserAwareController
 {
     use JsonHelperTrait;
 
-    /**
-     * @Route("/get-segment-builder-definitions")
-     */
+    #[Route('/get-segment-builder-definitions')]
     public function getSegmentBuilderDefinitionsAction(): JsonResponse
     {
         AbstractObject::setHideUnpublished(true);

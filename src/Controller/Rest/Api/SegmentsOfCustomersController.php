@@ -21,16 +21,12 @@ use CustomerManagementFrameworkBundle\RESTApi\Response;
 use CustomerManagementFrameworkBundle\RESTApi\SegmentsOfCustomerHandler;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * @Route("/segments-of-customers")
- */
+#[Route('/segments-of-customers')]
 class SegmentsOfCustomersController extends RestHandlerController
 {
-    /**
-     * @Route("", methods={"PUT", "POST"})
-     */
+    #[Route('', methods: ['PUT', 'POST'])]
     public function updateRecordsAction(Request $request): JsonResponse | Response
     {
         $handler = $this->getHandler();

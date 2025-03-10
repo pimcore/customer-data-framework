@@ -25,7 +25,7 @@ use Pimcore\Bundle\ApplicationLoggerBundle\Handler\ApplicationLoggerDb;
 use Pimcore\Db;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class WebhookController extends AbstractRestController
 {
@@ -37,9 +37,7 @@ class WebhookController extends AbstractRestController
         return $services;
     }
 
-    /**
-     * @Route("/mailchimp/webhook", methods={"GET","POST"})
-     */
+    #[Route('/mailchimp/webhook', methods: ['GET', 'POST'])]
     public function process(Request $request): JsonResponse
     {
         $result = Webhook::receive();
