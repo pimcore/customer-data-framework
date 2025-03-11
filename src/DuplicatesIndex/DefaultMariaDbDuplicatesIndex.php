@@ -26,7 +26,6 @@ use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Db;
 use Pimcore\Logger;
 use Pimcore\Model\DataObject\Listing\Concrete;
-use Pimcore\Model\DataObject\Service;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -103,7 +102,7 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
         $customerList = $customerProvider->getList();
 
         $customerProvider->addActiveCondition($customerList);
-        $customerList->setOrderKey(Service::getVersionDependentDatabaseColumnName('id'));
+        $customerList->setOrderKey('id');
 
         $paginator = $this->paginator->paginate($customerList);
         $paginator->setItemNumberPerPage(200);

@@ -21,7 +21,6 @@ use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 use Exception;
 use Pimcore;
 use Pimcore\Model\DataObject\Concrete;
-use Pimcore\Model\DataObject\Service;
 
 abstract class AbstractObjectActivity extends Concrete implements PersistentActivityInterface
 {
@@ -53,12 +52,9 @@ abstract class AbstractObjectActivity extends Concrete implements PersistentActi
         $result = ObjectToArray::getInstance()->toArray($this);
         unset($result['customer']);
 
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
-        $pathField = Service::getVersionDependentDatabaseColumnName('path');
-        $keyField = Service::getVersionDependentDatabaseColumnName('key');
-        $result[$idField] = $this->getId();
-        $result[$pathField] = $this->getKey();
-        $result[$keyField] = $this->getRealFullPath();
+        $result['id'] = $this->getId();
+        $result['key'] = $this->getKey();
+        $result['path'] = $this->getRealFullPath();
 
         return $result;
     }
@@ -76,7 +72,7 @@ abstract class AbstractObjectActivity extends Concrete implements PersistentActi
     public static function cmfCreate(array $data, $fromWebservice = false)
     {
         $object = null;
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
+        $idField = 'id';
         if (!empty($data[$idField])) {
             $object = self::getById($data[$idField]);
         }

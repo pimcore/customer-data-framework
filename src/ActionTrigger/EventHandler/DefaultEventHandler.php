@@ -29,7 +29,6 @@ use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore;
-use Pimcore\Model\DataObject\Service;
 
 class DefaultEventHandler implements EventHandlerInterface
 {
@@ -105,8 +104,7 @@ class DefaultEventHandler implements EventHandlerInterface
 
                 $listing = Pimcore::getContainer()->get('cmf.customer_provider')->getList();
                 $listing->setCondition($where);
-                $idField = Service::getVersionDependentDatabaseColumnName('id');
-                $listing->setOrderKey($idField);
+                $listing->setOrderKey('id');
                 $listing->setOrder('asc');
 
                 $paginator = $this->paginator->paginate($listing, 1, 100);

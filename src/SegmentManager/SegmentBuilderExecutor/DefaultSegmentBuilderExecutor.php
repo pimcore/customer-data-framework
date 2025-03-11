@@ -25,7 +25,6 @@ use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\Concrete;
-use Pimcore\Model\DataObject\Service;
 
 class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
 {
@@ -115,7 +114,7 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
         $conditionParts = [];
         $conditionVariables = null;
 
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
+        $idField = 'id';
         if (!empty($customQueue)) {
             // restrict to given customer
             $customerIds = array_filter($customQueue, 'is_numeric');

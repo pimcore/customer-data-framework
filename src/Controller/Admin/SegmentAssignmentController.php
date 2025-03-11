@@ -21,7 +21,6 @@ use Doctrine\DBAL\Exception;
 use Pimcore\Controller\Traits\JsonHelperTrait;
 use Pimcore\Controller\UserAwareController;
 use Pimcore\Model\DataObject\CustomerSegment;
-use Pimcore\Model\DataObject\Service;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -55,13 +54,11 @@ class SegmentAssignmentController extends UserAwareController
         }
 
         $db = \Pimcore\Db::get();
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
-        $parentIdField = Service::getVersionDependentDatabaseColumnName('parentId');
 
         $parentIdStatement = sprintf('SELECT :parentIdField FROM %s WHERE :idField = :value', $db->quoteIdentifier($type . 's'));
         $parentId = $db->fetchOne($parentIdStatement, [
-            'parentIdField' => $parentIdField,
-            'idField' => $idField,
+            'parentIdField' => 'parentId',
+            'idField' => 'id',
             'value' => $id,
         ]);
 

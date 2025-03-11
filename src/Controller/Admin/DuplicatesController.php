@@ -20,7 +20,6 @@ use CustomerManagementFrameworkBundle\CustomerList\SearchHelper;
 use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Pimcore\Model\DataObject\AbstractObject;
-use Pimcore\Model\DataObject\Service;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,9 +56,8 @@ class DuplicatesController extends Admin
         if (!empty($filters)) {
             // build customer listing
             $customerList = $this->getSearchHelper()->getCustomerProvider()->getList();
-            $idField = Service::getVersionDependentDatabaseColumnName('id');
             $customerList
-                ->setOrderKey($idField)
+                ->setOrderKey('id')
                 ->setOrder('ASC');
 
             /** @noinspection PhpUnhandledExceptionInspection */

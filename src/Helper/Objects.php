@@ -18,7 +18,6 @@ namespace CustomerManagementFrameworkBundle\Helper;
 use Pimcore\File;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
-use Pimcore\Model\DataObject\Service as DataObjectService;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Element\Service;
 
@@ -43,15 +42,13 @@ class Objects
     private static function checkObjectKeyHelper(Concrete $object, $origKey = null, $keyCounter = 1)
     {
         $origKey = is_null($origKey) ? self::getValidKey($object->getKey()) : $origKey;
-        $pathField = DataObjectService::getVersionDependentDatabaseColumnName('path');
-        $keyField = DataObjectService::getVersionDependentDatabaseColumnName('key');
-        $idField = DataObjectService::getVersionDependentDatabaseColumnName('id');
+        $idField = 'id';
         $notUnique = true;
         while ($notUnique) {
             $list = new \Pimcore\Model\DataObject\Listing;
             $list->setUnpublished(true);
             $list->addConditionParam(
-                $pathField . ' = ? and `' . $keyField . '` = ?',
+                '`path` = ? and `key` = ?',
                 [(string)$object->getParent() . '/', $object->getKey()]
             );
             $objectId = $object->getId();
