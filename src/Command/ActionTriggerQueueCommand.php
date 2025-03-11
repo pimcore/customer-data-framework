@@ -35,7 +35,7 @@ class ActionTriggerQueueCommand extends AbstractCommand
         $this->actionTriggerQueue = $actionTriggerQueue;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('cmf:process-actiontrigger-queue')
             ->setDescription('Process entries from action trigger queue');
