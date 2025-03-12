@@ -39,7 +39,7 @@ interface ActivityStoreInterface
      *
      * @return ActivityStoreEntryInterface
      */
-    public function updateActivityInStore(ActivityInterface $activity, ActivityStoreEntryInterface $entry = null);
+    public function updateActivityInStore(ActivityInterface $activity, ?ActivityStoreEntryInterface $entry = null);
 
     /**
      *

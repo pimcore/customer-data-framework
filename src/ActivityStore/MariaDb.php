@@ -68,7 +68,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
      *
      * @throws \Exception
      */
-    public function updateActivityInStore(ActivityInterface $activity, ActivityStoreEntryInterface $entry = null)
+    public function updateActivityInStore(ActivityInterface $activity, ?ActivityStoreEntryInterface $entry = null)
     {
         if (is_null($entry)) {
             $entry = $this->getEntryForActivity($activity);
@@ -104,7 +104,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
         $this->saveActivityStoreEntry($entry);
     }
 
-    protected function saveActivityStoreEntry(ActivityStoreEntryInterface $entry, ActivityInterface $activity = null)
+    protected function saveActivityStoreEntry(ActivityStoreEntryInterface $entry, ?ActivityInterface $activity = null)
     {
         $db = Db::get();
         $time = time();

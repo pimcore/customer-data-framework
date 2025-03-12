@@ -1,5 +1,13 @@
 # Update Notices
 
+## Update to Version 5.0
+- CustomerManagementFrameworkBundle\Newsletter\Queue\Item\/DefaultNewsletterQueueItem constructor removed default null value from $customer parameter.
+- 
+
+
+## Update to Version 4.1.2
+- CSS includes using the `pimcore_head_link` view helper are not within a deferred block anymore. If you extend the CMF `layout.html.twig` template in your custom code and embed additional CSS within your templates via the `pimcore_head_link` twig extension, check if they still are embedded correctly.
+
 ## Update to Version 4
 - Execute SQL script `src/Resources/sql/segmentAssignment/storedFunctionObject.sql`, only for Pimcore 11.
 - Remove Single Sign On custom implementations & classes e.g. `SSOIdentity`, `OAuth1Token`, `OAuth2Token` and `ssoIdentities` field

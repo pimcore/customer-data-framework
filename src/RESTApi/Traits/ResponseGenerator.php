@@ -26,7 +26,7 @@ trait ResponseGenerator
      *
      * @return Response
      */
-    protected function createResponse(array $data = null, $code = Response::HTTP_OK)
+    protected function createResponse(?array $data = null, $code = Response::HTTP_OK)
     {
         $responseData = null;
         if (null !== $data) {

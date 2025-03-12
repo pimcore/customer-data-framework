@@ -45,8 +45,8 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
 
         $timestamp = time();
 
-        $pageSize = intval($request->get('pageSize', 100));
-        $page = intval($request->get('page', 1));
+        $pageSize = $request->query->getInt('pageSize', 100);
+        $page = $request->query->getInt('page', 1);
 
         $paginator = \Pimcore::getContainer()->get('cmf.activity_store')->getActivitiesDataForWebservice(
             $pageSize,
@@ -80,7 +80,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
      */
     public function readRecord(Request $request)
     {
-        $entry = $this->loadActivityStoreEntry($request->get('id'));
+        $entry = $this->loadActivityStoreEntry($request->attributes->getInt('id'));
 
         return $this->createActivityEntryResponse($entry);
     }
@@ -163,7 +163,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
      */
     public function updateRecord(Request $request)
     {
-        $entry = $this->loadActivityStoreEntry($request->get('id'));
+        $entry = $this->loadActivityStoreEntry($request->attributes->getInt('id'));
         $data = $this->getRequestData($request);
 
         if (isset($data['implementationClass']) && $data['implementationClass'] != $entry->getImplementationClass()) {
@@ -180,7 +180,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
                 }
 
                 \Pimcore::getContainer()->get('cmf.activity_store')->updateActivityInStore($activity, $entry);
-                $entry = $this->loadActivityStoreEntry($request->get('id'));
+                $entry = $this->loadActivityStoreEntry($request->attributes->getInt('id'));
             } else {
                 return $this->createErrorResponse(
                     sprintf(
@@ -204,7 +204,7 @@ class ActivitiesHandler extends AbstractHandler implements CrudHandlerInterface
      */
     public function deleteRecord(Request $request)
     {
-        $entry = $this->loadActivityStoreEntry($request->get('id'));
+        $entry = $this->loadActivityStoreEntry($request->attributes->getInt('id'));
 
         try {
             $activity = $entry->getRelatedItem();

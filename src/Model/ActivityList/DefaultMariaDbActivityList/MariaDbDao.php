@@ -86,7 +86,7 @@ class MariaDbDao implements DaoInterface
         return $this->query;
     }
 
-    public function setQuery(QueryBuilder $query = null)
+    public function setQuery(?QueryBuilder $query = null)
     {
         $this->query = $query;
     }

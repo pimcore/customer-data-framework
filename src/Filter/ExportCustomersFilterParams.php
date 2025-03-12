@@ -46,9 +46,10 @@ class ExportCustomersFilterParams
     public static function fromRequest(Request $request)
     {
         $params = new static();
-        $params->setIncludeActivities($request->get('includeActivities') == 'true' ? true : false);
-        $params->setSegments($request->get('segments'));
-        $params->setModificationTimestamp(intval($request->get('modificationTimestamp')));
+
+        $params->setIncludeActivities($request->query->getBoolean('includeActivities'));
+        $params->setSegments($request->query->all('segments') ?: $request->query->getInt('segments'));
+        $params->setModificationTimestamp($request->query->getInt('modificationTimestamp'));
         $params->setAllParams($request->request->all());
 
         return $params;

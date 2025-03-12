@@ -198,7 +198,7 @@ interface SegmentManagerInterface
      *
      * @return CustomerSegmentInterface|null
      */
-    public function getSegmentByReference($segmentReference, CustomerSegmentGroup $segmentGroup = null, $calculated = false);
+    public function getSegmentByReference($segmentReference, ?CustomerSegmentGroup $segmentGroup = null, $calculated = false);
 
     /**
      * Creates a segment group.

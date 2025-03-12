@@ -56,7 +56,7 @@ class WebserviceAuthenticator extends AbstractAuthenticator implements Interacti
      */
     public function authenticate(Request $request): Passport
     {
-        if ($apiKey = $request->headers->get('x_api-key') ?? $request->get('apikey')) {
+        if ($apiKey = $request->headers->get('x_api-key') ?? $request->query->getString('apikey')) {
             $credentials['apiKey'] = $apiKey;
         } elseif (null !== $pimcoreUser = Authentication::authenticateSession()) { // check for existing session user
             $credentials['user'] = $pimcoreUser;
@@ -84,7 +84,7 @@ class WebserviceAuthenticator extends AbstractAuthenticator implements Interacti
         );
     }
 
-    private function createAccessDeniedException(\Throwable $previous = null)
+    private function createAccessDeniedException(?\Throwable $previous = null)
     {
         return new AccessDeniedHttpException('API request needs either a valid API key or a valid session.', $previous);
     }

@@ -22,7 +22,6 @@ use CustomerManagementFrameworkBundle\Service\ObjectToArray;
 use CustomerManagementFrameworkBundle\Traits\LoggerAware;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Pimcore\Model\DataObject\CustomerSegmentGroup;
-use Pimcore\Model\DataObject\Service;
 use Symfony\Component\HttpFoundation\Request;
 
 class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterface
@@ -41,7 +40,7 @@ class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterfa
     {
         $list = new CustomerSegmentGroup\Listing();
 
-        $list->setOrderKey(Service::getVersionDependentDatabaseColumnName('id'));
+        $list->setOrderKey('id');
         $list->setOrder('asc');
         $list->setUnpublished(false);
 
@@ -72,7 +71,7 @@ class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterfa
      */
     public function readRecord(Request $request)
     {
-        $segmentGroup = $this->loadSegmentGroup($request->get('id'));
+        $segmentGroup = $this->loadSegmentGroup($request->attributes->getInt('id'));
 
         return $this->createSegmentGroupResponse($segmentGroup);
     }
@@ -139,7 +138,7 @@ class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterfa
     {
         $data = $this->getRequestData($request);
 
-        if (empty($request->get('id'))) {
+        if (!$request->attributes->has('id')) {
             return new Response(
                 [
                     'success' => false,
@@ -149,14 +148,16 @@ class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterfa
             );
         }
 
+        $id = $request->attributes->getInt('id');
+
         if (!$segmentGroup = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentGroupById(
-            $request->get('id')
+            $id
         )
         ) {
             return new Response(
                 [
                     'success' => false,
-                    'msg' => sprintf('segment with id %s not found', $request->get('id')),
+                    'msg' => sprintf('segment with id %s not found', $id),
                 ],
                 Response::RESPONSE_CODE_NOT_FOUND
             );
@@ -178,7 +179,7 @@ class SegmentGroupsHandler extends AbstractHandler implements CrudHandlerInterfa
      */
     public function deleteRecord(Request $request)
     {
-        $segmentGroup = $this->loadSegmentGroup($request->get('id'));
+        $segmentGroup = $this->loadSegmentGroup($request->attributes->getInt('id'));
 
         try {
             $segmentGroup->delete();

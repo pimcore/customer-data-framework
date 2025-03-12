@@ -101,17 +101,13 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
 
         $archiveDir = $this->archiveDir ?: $this->parentPath;
 
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
-        $pathField = Service::getVersionDependentDatabaseColumnName('path');
-        $keyField = Service::getVersionDependentDatabaseColumnName('key');
-        $typeField = Service::getVersionDependentDatabaseColumnName('type');
-        $parentIdField = Service::getVersionDependentDatabaseColumnName('parentId');
-        $creationDateField = Service::getVersionDependentDatabaseColumnName('creationDate');
+        $idField = 'id';
+        $pathField = 'path';
 
         $folders->setCondition(
             $idField . ' in (
                 select '. $idField .' from (
-                    select `'. $idField .'`, `'. $pathField .'`, `'. $keyField .'`, `'. $typeField .'`, (select count(*) from objects where `' . $parentIdField . '` = `o`. `'. $idField ."`) as counter from objects o) as temp where counter=0 and type = 'folder' and (". $pathField .' like ? or '. $pathField .' like ?) and '. $creationDateField .' < ?)',
+                    select `'. $idField .'`, `' . $pathField .'`, `key`, `type`, (select count(*) from objects where `parentId` = `o`. `'. $idField ."`) as counter from objects o) as temp where counter=0 and type = 'folder' and (". $pathField .' like ? or '. $pathField .' like ?) and creationDate < ?)',
             [
                 str_replace('//', '/', $this->parentPath.'/%'),
                 str_replace('//', '/', $archiveDir .'/%'),
@@ -152,7 +148,7 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
         foreach ($namingScheme as $i => $namingSchemeItem) {
             preg_match_all('/{([a-zA-Z0-9]*)}/', $namingSchemeItem, $matchedPlaceholder);
 
-            if (sizeof($matchedPlaceholder)) {
+            if (count($matchedPlaceholder[0]) > 0) {
                 foreach ($matchedPlaceholder[0] as $j => $placeholder) {
                     $field = $matchedPlaceholder[1][$j];
 

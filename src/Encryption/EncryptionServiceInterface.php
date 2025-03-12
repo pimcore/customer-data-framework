@@ -34,7 +34,7 @@ interface EncryptionServiceInterface
      *
      * @return string
      */
-    public function encrypt($plaintext, Key $key = null, $rawBinary = false);
+    public function encrypt($plaintext, ?Key $key = null, $rawBinary = false);
 
     /**
      * Decrypt ciphertext with key (will fall back to default key if none given)
@@ -44,5 +44,5 @@ interface EncryptionServiceInterface
      *
      * @return string
      */
-    public function decrypt($ciphertext, Key $key = null, $rawBinary = false);
+    public function decrypt($ciphertext, ?Key $key = null, $rawBinary = false);
 }

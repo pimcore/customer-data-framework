@@ -31,8 +31,8 @@ class ExportActivitiesFilterParams
     public static function fromRequest(Request $request)
     {
         $params = new static();
-        $params->setType($request->get('type', false));
-        $params->setModifiedSinceTimestamp($request->get('modifiedSinceTimestamp'));
+        $params->setType($request->query->has('type') ? $request->query->getString('type') : false);
+        $params->setModifiedSinceTimestamp($request->query->getInt('modifiedSinceTimestamp'));
         $params->setAllParams($request->request->all());
 
         return $params;

@@ -40,7 +40,7 @@ interface CustomerSaveHandlerInterface
      *
      * @return void
      */
-    public function setOriginalCustomer(CustomerInterface $originalCustomer = null);
+    public function setOriginalCustomer(?CustomerInterface $originalCustomer = null);
 
     /**
      * Called in preAdd and preUpdate hook of customer objects

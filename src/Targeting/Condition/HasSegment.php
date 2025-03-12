@@ -40,7 +40,7 @@ class HasSegment extends AbstractVariableCondition implements DataProviderDepend
      */
     private $options = [];
 
-    public function __construct(int $segmentId = null, array $options = [])
+    public function __construct(?int $segmentId = null, array $options = [])
     {
         $this->segmentId = $segmentId;
 

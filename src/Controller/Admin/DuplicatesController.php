@@ -20,7 +20,6 @@ use CustomerManagementFrameworkBundle\CustomerList\SearchHelper;
 use CustomerManagementFrameworkBundle\DuplicatesIndex\DuplicatesIndexInterface;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Pimcore\Model\DataObject\AbstractObject;
-use Pimcore\Model\DataObject\Service;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,15 +50,14 @@ class DuplicatesController extends Admin
     public function listAction(Request $request, DuplicatesIndexInterface $duplicatesIndex): Response
     {
         // fetch all filters
-        $filters = $request->get('filter', []);
+        $filters = $request->query->all('filter');
         // check if filters exist
         $customerList = null;
         if (!empty($filters)) {
             // build customer listing
             $customerList = $this->getSearchHelper()->getCustomerProvider()->getList();
-            $idField = Service::getVersionDependentDatabaseColumnName('id');
             $customerList
-                ->setOrderKey($idField)
+                ->setOrderKey('id')
                 ->setOrder('ASC');
 
             /** @noinspection PhpUnhandledExceptionInspection */
@@ -67,9 +65,9 @@ class DuplicatesController extends Admin
         }
 
         $paginator = $duplicatesIndex->getPotentialDuplicates(
-            $request->get('page', 1),
+            $request->query->getInt('page', 1),
             50,
-            $request->get('declined'),
+            $request->query->getBoolean('declined'),
             $customerList
         );
 
@@ -93,7 +91,7 @@ class DuplicatesController extends Admin
     {
         try {
             \Pimcore::getContainer()->get('cmf.customer_duplicates_index')->declinePotentialDuplicate(
-                $request->get('id')
+                $request->attributes->getInt('id')
             );
 
             return new JsonResponse(['success' => true]);

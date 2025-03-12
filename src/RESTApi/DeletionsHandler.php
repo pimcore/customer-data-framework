@@ -28,8 +28,8 @@ class DeletionsHandler extends AbstractHandler
      */
     public function listRecords(Request $request)
     {
-        $entityType = $request->get('entityType');
-        $deletionsSinceTimestamp = $request->get('deletionsSinceTimestamp');
+        $entityType = $request->query->getString('entityType');
+        $deletionsSinceTimestamp = $request->query->getInt('deletionsSinceTimestamp');
 
         $timestamp = time();
 

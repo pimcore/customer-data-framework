@@ -40,10 +40,10 @@ class SettingsController extends UserAwareController
         $settingsStore = SettingsStore::get(WebserviceAuthenticator::SETTINGS_STORE_KEY, WebserviceAuthenticator::SETTINGS_STORE_SCOPE);
         $apiKeys = $settingsStore ? json_decode($settingsStore->getData(), true) : [];
 
-        if ($request->get('data')) {
-            if ($request->get('xaction') == 'update') {
+        if ($request->request->getString('data')) {
+            if ($request->query->getString('xaction') == 'update') {
                 $csrfProtectionHandler->checkCsrfToken($request);
-                $data = $this->decodeJson($request->get('data'));
+                $data = $this->decodeJson($request->request->getString('data'));
 
                 $apiKeys[$data['id']] = $data['apiKey'];
                 SettingsStore::set(WebserviceAuthenticator::SETTINGS_STORE_KEY, json_encode($apiKeys), 'string', WebserviceAuthenticator::SETTINGS_STORE_SCOPE);
@@ -52,16 +52,16 @@ class SettingsController extends UserAwareController
             }
         } else {
             $userListing = new \Pimcore\Model\User\Listing();
-            $userListing->setLimit($request->get('limit'));
-            $userListing->setOffset($request->get('start'));
+            $userListing->setLimit($request->request->getInt('limit'));
+            $userListing->setOffset($request->request->getInt('start'));
             $sortingSettings = QueryParams::extractSortingSettings(array_merge($request->request->all(), $request->query->all()));
             if ($sortingSettings['orderKey']) {
                 $userListing->setOrderKey($sortingSettings['orderKey']);
                 $userListing->setOrder($sortingSettings['order']);
             }
 
-            if ($request->get('filter')) {
-                $filter = '%' . $request->get('filter') . '%';
+            if ($request->request->getString('filter')) {
+                $filter = '%' . $request->request->getString('filter') . '%';
                 $userListing->addConditionParam('(`name` LIKE ? OR firstname LIKE ? OR lastname LIKE ? OR email LIKE ?)',
                     [$filter, $filter, $filter, $filter]
                 );

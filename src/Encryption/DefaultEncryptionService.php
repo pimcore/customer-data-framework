@@ -77,7 +77,7 @@ class DefaultEncryptionService implements EncryptionServiceInterface
      *
      * @return string
      */
-    public function encrypt($plaintext, Key $key = null, $rawBinary = false)
+    public function encrypt($plaintext, ?Key $key = null, $rawBinary = false)
     {
         if (empty($plaintext)) {
             $this->getLogger()->warning('Returning empty encrypt() result as plaintext was empty');
@@ -100,7 +100,7 @@ class DefaultEncryptionService implements EncryptionServiceInterface
      *
      * @return string
      */
-    public function decrypt($ciphertext, Key $key = null, $rawBinary = false)
+    public function decrypt($ciphertext, ?Key $key = null, $rawBinary = false)
     {
         if (empty($ciphertext)) {
             $this->getLogger()->warning('Returning empty decrypt() result as ciphertext was empty');

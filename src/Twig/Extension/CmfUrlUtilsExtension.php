@@ -89,14 +89,14 @@ class CmfUrlUtilsExtension extends AbstractExtension
 
         $request = $this->requestStack->getMainRequest();
 
-        return $this->router->generate($request->get('_route'), $formActionParams);
+        return $this->router->generate($request->attributes->getString('_route'), $formActionParams);
     }
 
     public function getCurrentOrder($param): string
     {
         $request = $this->requestStack->getCurrentRequest();
-        if ($request->get('order')) {
-            return $request->get('order')[$param] ?? '';
+        if ($request->query->has('order')) {
+            return $request->query->all('order')[$param] ?? '';
         }
 
         return '';
@@ -107,7 +107,7 @@ class CmfUrlUtilsExtension extends AbstractExtension
         $request = $this->requestStack->getCurrentRequest();
         $params = $request->query->all();
 
-        $currentOrder = ($request->get('order') ? $request->get('order')[$param] ?? null : null);
+        $currentOrder = $params['order'][$param] ?? null;
         $nextOrder = '';
         if (empty($currentOrder)) {
             $nextOrder = 'ASC';
@@ -124,11 +124,7 @@ class CmfUrlUtilsExtension extends AbstractExtension
     protected function getCurrentFormOrderParams(Request $request): array
     {
         $result = [];
-        $order = $request->get('order');
-
-        if (!is_array($order)) {
-            return $result;
-        }
+        $order = $request->query->all('order');
 
         $validDirections = ['ASC', 'DESC'];
         foreach ($order as $field => $direction) {
@@ -143,11 +139,7 @@ class CmfUrlUtilsExtension extends AbstractExtension
     protected function getFormFilterParams(Request $request): array
     {
         $result = [];
-        $filters = $request->get('filter');
-
-        if (!is_array($filters)) {
-            return $result;
-        }
+        $filters = $request->query->all('filter');
 
         foreach ($filters as $key => $value) {
             if (!empty($value)) {
@@ -171,7 +163,7 @@ class CmfUrlUtilsExtension extends AbstractExtension
         if ($includeFilters) {
             $params['filter'] = $this->getFormFilterParams($request);
 
-            if ($fd = $request->get('filterDefinition')) {
+            if ($fd = $request->query->all('filterDefinition')) {
                 $params['filterDefinition'] = ['id' => $fd['id']];
             }
         }

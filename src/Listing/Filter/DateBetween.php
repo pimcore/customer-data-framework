@@ -30,7 +30,7 @@ class DateBetween extends AbstractFieldBetween
     /**
      * @param string $field
      */
-    public function __construct($field, \DateTime $from = null, \DateTime $to = null)
+    public function __construct($field, ?\DateTime $from = null, ?\DateTime $to = null)
     {
         parent::__construct($field);
 
@@ -42,7 +42,7 @@ class DateBetween extends AbstractFieldBetween
      *
      * @return $this
      */
-    public function setFrom(\DateTime $from = null)
+    public function setFrom(?\DateTime $from = null)
     {
         if (null !== $from) {
             $from = clone $from;
@@ -58,7 +58,7 @@ class DateBetween extends AbstractFieldBetween
      *
      * @return $this
      */
-    public function setTo(\DateTime $to = null)
+    public function setTo(?\DateTime $to = null)
     {
         if (null !== $to) {
             $to = clone $to;

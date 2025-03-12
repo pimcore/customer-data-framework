@@ -141,7 +141,7 @@ abstract class AbstractRestController extends UserAwareController
         );
     }
 
-    protected function createNotFoundResponseException($message = null, \Exception $previous = null)
+    protected function createNotFoundResponseException($message = null, ?\Exception $previous = null)
     {
         return new ResponseException($this->createErrorResponse(
             $message ?: Response::$statusTexts[Response::HTTP_NOT_FOUND],
@@ -202,7 +202,7 @@ abstract class AbstractRestController extends UserAwareController
             return $id;
         }
 
-        if ($id = $request->get('id')) {
+        if ($id = $request->attributes->getInt('id')) {
             return $id;
         }
 
@@ -286,7 +286,7 @@ abstract class AbstractRestController extends UserAwareController
      */
     protected function buildCondition(Request $request)
     {
-        $q = trim($request->get('q'));
+        $q = trim($request->query->getString('q'));
         if (!$q) {
             return null;
         }

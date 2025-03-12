@@ -61,7 +61,7 @@ abstract class AbstractCustomerSaveHandler implements CustomerSaveHandlerInterfa
      *
      * @return void
      */
-    public function setOriginalCustomer(CustomerInterface $originalCustomer = null)
+    public function setOriginalCustomer(?CustomerInterface $originalCustomer = null)
     {
         $this->orginalCustomer = $originalCustomer;
     }

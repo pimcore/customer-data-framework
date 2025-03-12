@@ -83,7 +83,7 @@ class RulesController extends UserAwareController implements KernelControllerEve
      */
     public function getAction(Request $request): JsonResponse
     {
-        $rule = Rule::getById((int)$request->get('id'));
+        $rule = Rule::getById($request->query->getInt('id'));
         if ($rule) {
             // create json config
             $json = [
@@ -144,8 +144,8 @@ class RulesController extends UserAwareController implements KernelControllerEve
 
         // save rule config
         try {
-            $rule = Rule::getById((int)$request->get('id'));
-            $data = json_decode($request->get('data'));
+            $rule = Rule::getById($request->request->getInt('id'));
+            $data = json_decode($request->request->getString('data'));
 
             // apply basic settings
             $rule->setName($data->settings->name);
@@ -224,7 +224,7 @@ class RulesController extends UserAwareController implements KernelControllerEve
         // save rule
         try {
             $rule = new Rule();
-            $rule->setName($request->get('name'));
+            $rule->setName($request->request->getString('name'));
             if ($rule->save()) {
                 $return['success'] = true;
                 $return['id'] = $rule->getId();
@@ -253,7 +253,7 @@ class RulesController extends UserAwareController implements KernelControllerEve
 
         // delete rule
         try {
-            $rule = Rule::getById((int)$request->get('id'));
+            $rule = Rule::getById($request->request->getInt('id'));
             $rule->delete();
             $return['success'] = true;
         } catch (\Exception $e) {

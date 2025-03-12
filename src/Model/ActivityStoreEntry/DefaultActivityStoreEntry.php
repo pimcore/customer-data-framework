@@ -177,7 +177,7 @@ class DefaultActivityStoreEntry implements ActivityStoreEntryInterface
      */
     public function setActivityDate($activityDate)
     {
-        $this->activityDate = Carbon::createFromTimestamp($activityDate);
+        $this->activityDate = Carbon::createFromTimestamp($activityDate, date_default_timezone_get());
     }
 
     /**

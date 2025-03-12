@@ -12,8 +12,8 @@
         {% do pimcore_head_link().appendStylesheet(cmf_minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/css/cmf.css')) %}
     {% endapply %}
 
-    {% block head_stylesheets deferred %}
-    {{ pimcore_head_link() }}
+    {% block head_stylesheets %}
+        {{ pimcore_head_link() }}
     {% endblock %}
 </head>
 <body class="sidebar-collapse">
@@ -25,17 +25,15 @@
 </div>
 
 {% do cmf_jsConfig().generateScriptTag(false) %}
-{% do pimcore_head_script().captureStart() %}
-{{ cmf_jsConfig()|raw }}
-{% do pimcore_head_script().captureEnd() %}
+{% do pimcore_head_script().appendScript(cmf_jsConfig()|raw ~ "") %}
 
 {% apply spaceless %}
     {% do pimcore_head_script().appendFile(cmf_minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/js/cmf.js')) %}
     {% do pimcore_head_script().prependFile(cmf_minifiedAssetUrl('/bundles/pimcorecustomermanagementframework/admin/js/lib.js')) %}
 {% endapply %}
 
-{% block headscripts deferred %}
-{{ pimcore_head_script() }}
+{% block headscripts %}
+    {{ pimcore_head_script() }}
 {% endblock %}
 
 </body>

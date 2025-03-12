@@ -82,7 +82,7 @@ class AssignTargetGroupAndSegment extends AssignTargetGroup
         $this->consentChecker = $consentChecker;
     }
 
-    public function apply(VisitorInfo $visitorInfo, array $action, Rule $rule = null): void
+    public function apply(VisitorInfo $visitorInfo, array $action, ?Rule $rule = null): void
     {
         parent::apply($visitorInfo, $action, $rule);
 

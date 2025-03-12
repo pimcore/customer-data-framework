@@ -80,7 +80,7 @@ abstract class SqlActivityStore
      */
     abstract protected function getActivityStoreConnection();
 
-    protected function saveActivityStoreEntry(ActivityStoreEntryInterface $entry, ActivityInterface $activity = null)
+    protected function saveActivityStoreEntry(ActivityStoreEntryInterface $entry, ?ActivityInterface $activity = null)
     {
         $db = Db::get();
         $time = time();
@@ -173,7 +173,7 @@ abstract class SqlActivityStore
      *
      * @throws \Exception
      */
-    public function updateActivityInStore(ActivityInterface $activity, ActivityStoreEntryInterface $entry = null)
+    public function updateActivityInStore(ActivityInterface $activity, ?ActivityStoreEntryInterface $entry = null)
     {
         if (null === $entry) {
             $entry = $this->getEntryForActivity($activity);

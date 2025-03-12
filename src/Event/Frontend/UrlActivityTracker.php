@@ -54,13 +54,13 @@ class UrlActivityTracker implements EventSubscriberInterface
 
         $request = $event->getRequest();
 
-        if (!$request->get('cmfa') || !$request->get('cmfc')) {
+        if (!$request->query->getString('cmfa') || !$request->query->getString('cmfc')) {
             return;
         }
 
         \Pimcore::getContainer()->get('cmf.activity_url_tracker')->trackActivity(
-            $request->get('cmfc'),
-            $request->get('cmfa'),
+            $request->query->getString('cmfc'),
+            $request->query->getString('cmfa'),
             $request->request->all()
         );
 

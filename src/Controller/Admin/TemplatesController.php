@@ -37,14 +37,14 @@ class TemplatesController extends UserAwareController
      */
     public function exportAction(Request $request, TemplateExporter $templateExporter): JsonResponse
     {
-        $document = PageSnippet::getById($request->get('document_id'));
+        $document = PageSnippet::getById($request->request->getInt('document_id'));
 
         if ($document) {
             $templateExporter->exportTemplate($document);
 
             return $this->jsonResponse(['success' => true]);
         } else {
-            throw new \Exception(sprintf('Document {%s} not found!', $request->get('document_id')));
+            throw new \Exception(sprintf('Document {%s} not found!', $request->request->getInt('document_id')));
         }
     }
 }

@@ -132,7 +132,7 @@ class Customers extends DataObjects
         return $exportResult;
     }
 
-    public function searchData(int $id, string $firstname, string $lastname, string $email, int $start, int $limit, string $sort = null): array
+    public function searchData(int $id, string $firstname, string $lastname, string $email, int $start, int $limit, ?string $sort = null): array
     {
         $listing = $this->customerProvider->getList();
 

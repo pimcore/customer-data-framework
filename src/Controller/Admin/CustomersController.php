@@ -76,7 +76,7 @@ class CustomersController extends Admin
     {
         $filters = $this->fetchListFilters($request);
         $orders = $this->fetchListOrder($request);
-        $errors = $request->get('errors', []);
+        $errors = $request->query->all('errors');
         $paginator = null;
         $customerView = \Pimcore::getContainer()->get('cmf.customer_view');
 
@@ -99,7 +99,7 @@ class CustomersController extends Admin
                 'paginator' => $paginator,
                 'paginationVariables' => $paginator instanceof SlidingPaginationInterface ? $paginator->getPaginationData() : [],
                 'customerView' => $customerView,
-                'idField' => Service::getVersionDependentDatabaseColumnName('id'),
+                'idField' => 'id',
             ]);
         } else {
             return $this->render(
@@ -116,8 +116,8 @@ class CustomersController extends Admin
                     'filterDefinitions' => $this->getFilterDefinitions(),
                     'filterDefinition' => $this->getFilterDefinition($request),
                     'accessToTempCustomerFolder' => boolval($this->hasUserAccessToTempCustomerFolder()),
-                    'hideAdvancedFilterSettings' => boolval($request->get('segmentId')),
-                    'idField' => Service::getVersionDependentDatabaseColumnName('id'),
+                    'hideAdvancedFilterSettings' => $request->query->getBoolean('segmentId'),
+                    'idField' => 'id',
                 ]
             );
         }
@@ -128,7 +128,7 @@ class CustomersController extends Admin
      */
     public function detailAction(Request $request): Response
     {
-        $customer = $this->getSearchHelper()->getCustomerProvider()->getById((int)$request->get('id'));
+        $customer = $this->getSearchHelper()->getCustomerProvider()->getById($request->query->getInt('id'));
         if ($customer instanceof CustomerInterface) {
             $customerView = \Pimcore::getContainer()->get('cmf.customer_view');
             if (!$customerView->hasDetailView($customer)) {
@@ -163,22 +163,21 @@ class CustomersController extends Admin
         $filters = $this->fetchListFilters($request);
         $listing = $this->buildListing($filters);
 
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
-        $query = $listing->getQueryBuilder()
-            ->select($idField);
+        $fromTable = $listing->getQueryBuilder()->getQueryPart('from')[0]['table'];
+        $query = $listing->getQueryBuilder()->select($fromTable . '.id');
         $ids = Db::get()->fetchFirstColumn((string)$query);
 
         $jobId = uniqid();
         $this->exporterManager->saveExportTmpData($jobId, [
             'processIds' => $ids,
-            'exporter' => $request->get('exporter'),
+            'exporter' => $request->query->getString('exporter'),
         ]);
 
         /** @noinspection PhpRouteMissingInspection */
         return $this->jsonResponse([
             'url' => $this->generateUrl('customermanagementframework_admin_customers_exportstep', ['jobId' => $jobId]),
             'jobId' => $jobId,
-            'exporter' => $request->get('exporter'),
+            'exporter' => $request->query->getString('exporter'),
         ]);
     }
 
@@ -187,7 +186,7 @@ class CustomersController extends Admin
      */
     public function exportStepAction(Request $request): JsonResponse
     {
-        $perRequest = $request->get(
+        $perRequest = $request->query->getInt(
             'perRequest',
             $this->getParameter('cmf.customer_export.items_per_request')
         );
@@ -207,17 +206,18 @@ class CustomersController extends Admin
             return $this->jsonResponse([
                 'finished' => true,
                 'url' => $this->generateUrl('customermanagementframework_admin_customers_downloadfinishedexport',
-                    ['jobId' => $request->get('jobId')]),
-                'jobId' => $request->get('jobId'),
+                    ['jobId' => $request->query->getString('jobId')]),
+                'jobId' => $request->query->getString('jobId'),
             ]);
         }
 
         $ids = array_slice($data['processIds'], 0, $perRequest);
         $processIds = array_slice($data['processIds'], $perRequest);
 
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
         $listing = $this->buildListing();
-        $listing->addConditionParam($idField . ' in ('.implode(', ', $ids).')');
+
+        $fromTable = $listing->getQueryBuilder()->getQueryPart('from')[0]['table'];
+        $listing->addConditionParam($fromTable . '.id in ('.implode(', ', $ids).')');
 
         $exporter = $this->getExporter($listing, $data['exporter']);
         $exportData = $exporter->getExportData();
@@ -229,7 +229,7 @@ class CustomersController extends Admin
         $data['processIds'] = $processIds;
 
         $this->exporterManager->saveExportTmpData(
-            $request->get('jobId'),
+            $request->query->getString('jobId'),
             $data
         );
 
@@ -240,7 +240,7 @@ class CustomersController extends Admin
 
         return $this->jsonResponse([
             'finished' => false,
-            'jobId' => $request->get('jobId'),
+            'jobId' => $request->query->getString('jobId'),
             'notProcessedRecordsCount' => $notProcessedRecordsCount,
             'totalRecordsCount' => $totalRecordsCount,
             'percent' => $percent,
@@ -297,7 +297,7 @@ class CustomersController extends Admin
                 ]
             );
 
-        $this->exporterManager->deleteExportTmpData($request->get('jobId'));
+        $this->exporterManager->deleteExportTmpData($request->query->getString('jobId'));
 
         return $response;
     }
@@ -390,7 +390,7 @@ class CustomersController extends Admin
     protected function buildListing(array $filters = [], array $orders = []): Listing\Concrete
     {
         $listing = $this->getSearchHelper()->getCustomerProvider()->getList();
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
+        $idField = 'id';
 
         if (array_key_exists('operator-segments', $filters)) {
             if ($filters['operator-segments'] == 'ANY') {
@@ -418,7 +418,7 @@ class CustomersController extends Admin
      */
     protected function fetchListFilters(Request $request): array
     {
-        $filters = $request->get('filter', []);
+        $filters = $request->query->all('filter');
         $filters = $this->addPrefilteredSegmentToFilters($request, $filters);
         $filters = $this->addFilterDefinitionCustomer($request, $filters);
 
@@ -430,7 +430,7 @@ class CustomersController extends Admin
      */
     protected function fetchListOrder(Request $request): array
     {
-        $orders = $request->get('order', []);
+        $orders = $request->query->all('order');
         $ordersNullsLast = [];
 
         foreach ($orders as $key => $val) {
@@ -471,7 +471,7 @@ class CustomersController extends Admin
 
     protected function fetchPrefilteredSegment(Request $request): ?CustomerSegmentInterface
     {
-        $segmentId = $request->get('segmentId');
+        $segmentId = $request->query->getInt('segmentId');
 
         if ($segmentId) {
             $segment = \Pimcore::getContainer()->get('cmf.segment_manager')->getSegmentById($segmentId);
@@ -510,7 +510,7 @@ class CustomersController extends Admin
     protected function getFilterDefinition(Request $request): ?FilterDefinition
     {
         // fetch filter definition information
-        $filterDefinitionData = $request->get('filterDefinition', []);
+        $filterDefinitionData = $request->query->all('filterDefinition');
         // build default FilterDefinition object if no selected
         $segmentGroups = $this->loadSegmentGroups();
         $DefaultFilterDefinition = (new FilterDefinition())->setShowSegments(Objects::getIdsFromArray($segmentGroups));
@@ -604,7 +604,8 @@ class CustomersController extends Admin
         }
 
         // set to filter which segments to show
-        $filters['showSegments'] = $request->get('apply-segment-selection') ? $filters['showSegments'] : $filterDefinition->getShowSegments();
+        $segmentSelection = $request->query->getString('apply-segment-selection');
+        $filters['showSegments'] = $segmentSelection ? $filters['showSegments'] : $filterDefinition->getShowSegments();
 
         // return merged filters array
         return $filters;

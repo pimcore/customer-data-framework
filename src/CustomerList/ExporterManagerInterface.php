@@ -38,7 +38,7 @@ interface ExporterManagerInterface
      *
      * @return ExporterInterface
      */
-    public function buildExporter($key, Listing\Concrete $listing = null);
+    public function buildExporter($key, ?Listing\Concrete $listing = null);
 
     /**
      *

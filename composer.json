@@ -12,19 +12,26 @@
       "ocramius/package-versions": true
     }
   },
+  "prefer-stable": true,
+  "minimum-stability": "dev",
   "require": {
     "php": "~8.1.0 || ~8.2.0",
     "openspout/openspout": "^4.0",
+    "doctrine/dbal": "^3.4.2 || ^4.0",
+    "php": "~8.3.0 || ~8.4.0",
     "doctrine/dbal": "^3.4.2 || ^4.0",
     "doctrine/migrations": "^3.0.2",
     "dragonmantank/cron-expression": "^3.0.2",
     "drewm/mailchimp-api": "^2.2",
     "guzzlehttp/guzzle": "^7.2",
-    "knplabs/knp-components": "^4.0",
+    "knplabs/knp-components": "^5.0",
+    "knplabs/knp-paginator-bundle": "^6.0.0",
+    "nesbot/carbon": "^3.8.4",
+    "openspout/openspout": "^4.0",
     "pear/archive_tar": "^1.4.14",
     "pimcore/newsletter-bundle": "^1.0",
     "pimcore/number-sequence-generator": "^2.0",
-    "pimcore/admin-ui-classic-bundle": "^1.0",
+    "pimcore/admin-ui-classic-bundle": "^1.0 || ^2.0",
     "pimcore/object-merger": "^4.0",
     "pimcore/pimcore": "dbal-v4-support as 12.99",
     "pimcore/search-query-parser": "^1.3",
@@ -34,7 +41,7 @@
     "symfony/console": "^6.2",
     "symfony/dependency-injection": "^6.2",
     "symfony/event-dispatcher": "^6.2",
-    "symfony/http-foundation": "^6.2",
+    "symfony/http-foundation": "^6.3",
     "symfony/http-kernel": "^6.2",
     "symfony/options-resolver": "^6.2",
     "symfony/routing": "^6.2",
@@ -44,17 +51,17 @@
     "symfony/stopwatch": "^6.2"
   },
   "require-dev": {
-    "phpunit/phpunit": "^9.5",
     "codeception/codeception": "^5.0.3",
     "codeception/module-symfony": "^3.1.0",
     "codeception/phpunit-wrapper": "^9",
     "php-http/guzzle7-adapter": "^0.1.1",
-    "phpstan/phpstan": "^1.9",
-    "phpstan/phpstan-symfony": "^1.2.14"
+    "phpstan/phpstan": "^1.12.15",
+    "phpstan/phpstan-symfony": "^1.2.14",
+    "phpunit/phpunit": "^9.5"
   },
   "suggest": {
-    "php-http/httplug-bundle": "^1.20.0",
-    "php-http/guzzle7-adapter": "^0.1.1"
+    "php-http/guzzle7-adapter": "^0.1.1",
+    "php-http/httplug-bundle": "^1.20.0"
   },
   "autoload": {
     "psr-4": {

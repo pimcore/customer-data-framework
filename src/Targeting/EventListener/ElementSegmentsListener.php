@@ -78,7 +78,7 @@ class ElementSegmentsListener implements EventSubscriberInterface
         }
     }
 
-    private function isTypeConfigured(string $type, string $subType = null): bool
+    private function isTypeConfigured(string $type, ?string $subType = null): bool
     {
         if (!isset($this->segmentAssignmentTypes[$type])) {
             return false;

@@ -51,7 +51,7 @@ class ActivitiesController extends UserAwareController implements KernelControll
      */
     public function listAction(Request $request, CustomerProviderInterface $customerProvider): Response
     {
-        if ($customer = $customerProvider->getById($request->get('customerId'))) {
+        if ($customer = $customerProvider->getById($request->query->getInt('customerId'))) {
             $list = \Pimcore::getContainer()->get('cmf.activity_store')->getActivityList();
             $list->setCondition('customerId = ' . $customer->getId());
             $list->setOrderKey('activityDate');
@@ -64,13 +64,13 @@ class ActivitiesController extends UserAwareController implements KernelControll
 
             $types = \Pimcore\Db::get()->fetchFirstColumn((string)$select);
 
-            if ($type = $request->get('type')) {
+            if ($type = $request->query->getString('type')) {
                 $select = $list->getQueryBuilder(false);
                 $select->andWhere('type = ' . $list->quote($type));
                 $list->setCondition((string) $select->getQueryPart('where'));
             }
 
-            $paginator = $this->paginator->paginate($list, $request->get('page', 1), 25);
+            $paginator = $this->paginator->paginate($list, $request->query->getInt('page', 1), 25);
 
             return $this->render(
                 '@PimcoreCustomerManagementFramework/admin/activities/list.html.twig',
@@ -93,7 +93,8 @@ class ActivitiesController extends UserAwareController implements KernelControll
      */
     public function detailAction(Request $request): Response
     {
-        $activity = \Pimcore::getContainer()->get('cmf.activity_store')->getEntryById($request->get('activityId'));
+        $activityId = $request->query->getInt('activityId');
+        $activity = \Pimcore::getContainer()->get('cmf.activity_store')->getEntryById($activityId);
 
         return $this->render(
             '@PimcoreCustomerManagementFramework/admin/activities/detail.html.twig',

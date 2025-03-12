@@ -98,14 +98,14 @@ class Admin extends UserAwareController implements KernelControllerEventInterfac
     /**
      * Build object paginator for filtered list
      */
-    protected function buildPaginator(Request $request, mixed $data, int $defaultPageSize = null): PaginationInterface
+    protected function buildPaginator(Request $request, mixed $data, ?int $defaultPageSize = null): PaginationInterface
     {
         if (is_null($defaultPageSize)) {
             $defaultPageSize = $this->defaultPageSize;
         }
 
-        $page = (int)$request->get('page', 1);
-        $pageSize = (int)$request->get('perPage', $defaultPageSize);
+        $page = $request->query->getInt('page', 1);
+        $pageSize = $request->query->getInt('perPage', $defaultPageSize);
 
         return $this->paginator->paginate($data, $page, $pageSize);
     }

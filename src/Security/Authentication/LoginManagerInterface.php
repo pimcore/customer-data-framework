@@ -27,5 +27,5 @@ interface LoginManagerInterface
      * Handles manual login of a user (e.g. after registration)
      *
      */
-    public function login(UserInterface $user, Request $request = null, Response $response = null);
+    public function login(UserInterface $user, ?Request $request = null, ?Response $response = null);
 }

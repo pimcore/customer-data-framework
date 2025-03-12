@@ -198,17 +198,17 @@ class FilterDefinitionController extends Admin
 
     protected function getIdFromRequest(Request $request): int
     {
-        return intval($request->get('filterDefinition', [])['id'] ?? 0);
+        return intval($request->query->all('filterDefinition')['id'] ?? 0);
     }
 
     protected function getNameFromRequest(Request $request): string
     {
-        return strval($request->get('filterDefinition', [])['name'] ?? '');
+        return strval($request->query->all('filterDefinition')['name'] ?? '');
     }
 
     protected function getDefinitionFromRequest(Request $request): mixed
     {
-        return $request->get('filter', []);
+        return $request->query->all('filter');
     }
 
     protected function getShowSegmentsFromRequest(Request $request): array
@@ -218,12 +218,12 @@ class FilterDefinitionController extends Admin
 
     protected function getReadOnlyFromRequest(Request $request): bool
     {
-        return boolval($request->get('filterDefinition', [])['readOnly'] ?? false);
+        return boolval($request->query->all('filterDefinition')['readOnly'] ?? false);
     }
 
     protected function getShortcutAvailableFromRequest(Request $request): bool
     {
-        return boolval($request->get('filterDefinition', [])['shortcutAvailable'] ?? false);
+        return boolval($request->query->all('filterDefinition')['shortcutAvailable'] ?? false);
     }
 
     /**
@@ -231,8 +231,8 @@ class FilterDefinitionController extends Admin
      */
     protected function getAllowedUserIdsFromRequest(Request $request): array
     {
-        $allowedUserIds = $request->get('filterDefinition', [])['allowedUserIds'] ?? [];
-        $allowedRoleIds = $request->get('filterDefinition', [])['allowedRoleIds'] ?? [];
+        $allowedUserIds = $request->query->all('filterDefinition')['allowedUserIds'] ?? [];
+        $allowedRoleIds = $request->query->all('filterDefinition')['allowedRoleIds'] ?? [];
         $preparedAllowedUserIds = array_unique(array_merge($allowedUserIds, $allowedRoleIds));
         sort($preparedAllowedUserIds);
 

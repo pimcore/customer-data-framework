@@ -22,7 +22,7 @@ class TimestampToAge implements DataTransformerInterface
 {
     public function transform($data, $options = [])
     {
-        $date = Carbon::createFromTimestamp(strtotime(date('Y-m-d', $data)));
+        $date = Carbon::createFromTimestamp(strtotime(date('Y-m-d', $data)), date_default_timezone_get());
         $today = new Carbon();
 
         return $today->diffInYears($date);

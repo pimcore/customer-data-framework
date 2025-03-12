@@ -182,9 +182,9 @@ class Rule extends AbstractModel
     }
 
     /**
-     * @param TriggerDefinitionInterface[] $trigger
+     * @param TriggerDefinitionInterface[]|null $trigger
      */
-    public function setTrigger(array $trigger = null)
+    public function setTrigger(?array $trigger = null)
     {
         $this->trigger = $trigger;
     }

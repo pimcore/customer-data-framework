@@ -58,7 +58,7 @@ class TrackSegment implements ActionHandlerInterface, DataProviderDependentInter
         return [Customer::PROVIDER_KEY];
     }
 
-    public function apply(VisitorInfo $visitorInfo, array $action, Rule $rule = null): void
+    public function apply(VisitorInfo $visitorInfo, array $action, ?Rule $rule = null): void
     {
         $segmentOption = $action['segment'];
         if (empty($segmentOption)) {

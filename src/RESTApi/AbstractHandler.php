@@ -49,8 +49,8 @@ abstract class AbstractHandler implements HandlerInterface
         $defaultPageSize = 100,
         $defaultPage = 1
     ): PaginationInterface {
-        $pageSize = intval($request->get('pageSize', $defaultPageSize));
-        $page = intval($request->get('page', $defaultPage));
+        $pageSize = $request->query->getInt('pageSize', $defaultPageSize);
+        $page = $request->query->getInt('page', $defaultPage);
 
         return $this->paginator->paginate($listing, $page, $pageSize);
     }

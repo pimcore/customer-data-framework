@@ -27,7 +27,6 @@ use CustomerManagementFrameworkBundle\Listing\FilterHandler;
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Pimcore\Model\DataObject\Customer;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
-use Pimcore\Model\DataObject\Service;
 use Pimcore\Tests\Support\Test\ModelTestCase;
 use Pimcore\Tests\Support\Util\TestHelper;
 
@@ -146,7 +145,9 @@ class CustomerListTest extends ModelTestCase
             $customer->setLastname($customerData['lastname']);
             $customer->setEmail($customerData['email']);
             $customer->setZip($customerData['zip']);
-            $customer->setBirthdate(Carbon::createFromFormat('Y-m-d', $customerData['date']));
+            $customer->setBirthdate(
+                Carbon::createFromFormat('Y-m-d', $customerData['date'])
+            );
 
             $segments = [];
             foreach ($customerData['segments']['manual'] as $segmentReference) {
@@ -162,8 +163,7 @@ class CustomerListTest extends ModelTestCase
 
             $customer->save();
 
-            $idField = Service::getVersionDependentDatabaseColumnName('id');
-            $customerData[$idField] = $customer->getId();
+            $customerData['id'] = $customer->getId();
         }
 
     }
@@ -246,7 +246,7 @@ class CustomerListTest extends ModelTestCase
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $idField = Service::getVersionDependentDatabaseColumnName('id');
+        $idField = 'id';
         $betweenFilter = new FloatBetween($idField, $this->customerDummyData[0][$idField], 10000);
         $handler->addFilter($betweenFilter);
 
@@ -321,7 +321,11 @@ class CustomerListTest extends ModelTestCase
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $dateFilter = new DateBetween('birthdate', Carbon::createFromFormat('Y-m-d', '1970-01-01'), Carbon::now());
+        $dateFilter = new DateBetween(
+            'birthdate',
+            Carbon::createFromFormat('Y-m-d', '1970-01-01'),
+            Carbon::now()
+        );
         $handler->addFilter($dateFilter);
 
         $modifiedListing = $handler->getListing();
@@ -330,7 +334,11 @@ class CustomerListTest extends ModelTestCase
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $dateFilter = new DateBetween('birthdate', Carbon::createFromFormat('Y-m-d', '1980-05-01'), Carbon::createFromFormat('Y-m-d', '1980-05-31'));
+        $dateFilter = new DateBetween(
+            'birthdate',
+            Carbon::createFromFormat('Y-m-d', '1980-05-01'),
+            Carbon::createFromFormat('Y-m-d', '1980-05-31')
+        );
         $handler->addFilter($dateFilter);
 
         $modifiedListing = $handler->getListing();
@@ -340,10 +348,18 @@ class CustomerListTest extends ModelTestCase
         $listing = new Customer\Listing();
         $handler = new FilterHandler($listing);
 
-        $dateFilter = new DateBetween('birthdate', Carbon::createFromFormat('Y-m-d', '1980-05-01'), Carbon::createFromFormat('Y-m-d', '1980-05-31'));
+        $dateFilter = new DateBetween(
+            'birthdate',
+            Carbon::createFromFormat('Y-m-d', '1980-05-01'),
+            Carbon::createFromFormat('Y-m-d', '1980-05-31')
+        );
         $handler->addFilter($dateFilter);
 
-        $dateFilter = new DateBetween('birthdate', Carbon::createFromFormat('Y-m-d', '1980-01-01'), Carbon::createFromFormat('Y-m-d', '1980-08-31'));
+        $dateFilter = new DateBetween(
+            'birthdate',
+            Carbon::createFromFormat('Y-m-d', '1980-01-01'),
+            Carbon::createFromFormat('Y-m-d', '1980-08-31')
+        );
         $handler->addFilter($dateFilter);
 
         $modifiedListing = $handler->getListing();

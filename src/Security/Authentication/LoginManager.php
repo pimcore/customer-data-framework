@@ -84,7 +84,7 @@ class LoginManager implements LoginManagerInterface
         $this->container = $container;
     }
 
-    public function login(UserInterface $user, Request $request = null, Response $response = null)
+    public function login(UserInterface $user, ?Request $request = null, ?Response $response = null)
     {
         if (null === $request) {
             $request = $this->requestHelper->getCurrentRequest();

@@ -59,7 +59,7 @@ class JsConfigService
      *
      *
      */
-    public function __invoke(string $varName = null): self
+    public function __invoke(?string $varName = null): self
     {
         if (null !== $varName) {
             return $this->jsConfig($varName);
@@ -91,7 +91,7 @@ class JsConfigService
      * @param mixed $key
      * @param mixed $value
      */
-    public function add($key, $value = '', string $varName = null)
+    public function add($key, $value = '', ?string $varName = null)
     {
         if (null === $varName) {
             $varName = $this->currentVariable;

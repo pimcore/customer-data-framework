@@ -58,7 +58,7 @@ class DefaultNewsletterQueueItem implements NewsletterQueueItemInterface
      */
     private $successfullyProcessed = false;
 
-    public function __construct($customerId, CustomerInterface $customer = null, $email, $operation, $modificationDate = null)
+    public function __construct($customerId, ?CustomerInterface $customer, $email, $operation, $modificationDate = null)
     {
         $modificationDate = !is_null($modificationDate) ? $modificationDate : round(microtime(true) * 1000);
 

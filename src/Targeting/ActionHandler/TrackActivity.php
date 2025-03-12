@@ -56,7 +56,7 @@ class TrackActivity implements ActionHandlerInterface, DataProviderDependentInte
         return [Customer::PROVIDER_KEY];
     }
 
-    public function apply(VisitorInfo $visitorInfo, array $action, Rule $rule = null): void
+    public function apply(VisitorInfo $visitorInfo, array $action, ?Rule $rule = null): void
     {
         //get customer
         $this->dataLoader->loadDataFromProviders($visitorInfo, [Customer::PROVIDER_KEY]);

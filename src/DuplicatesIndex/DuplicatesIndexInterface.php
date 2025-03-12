@@ -70,7 +70,7 @@ interface DuplicatesIndexInterface
      *
      * @return PaginationInterface
      */
-    public function getPotentialDuplicates($page, $pageSize = 100, $declined = false, Concrete $filterCustomerList = null);
+    public function getPotentialDuplicates($page, $pageSize = 100, $declined = false, ?Concrete $filterCustomerList = null);
 
     /**
      * @param int $page

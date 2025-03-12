@@ -19,5 +19,5 @@ use Pimcore\Model\Paginator\PaginateListingInterface;
 
 interface ActivityListInterface extends PaginateListingInterface
 {
-    public function setCondition(string $condition, float | array | bool | int | string $conditionVariables = null): static;
+    public function setCondition(string $condition, float | array | bool | int | string|null $conditionVariables = null): static;
 }

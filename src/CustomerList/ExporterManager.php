@@ -51,7 +51,7 @@ class ExporterManager implements ExporterManagerInterface
      *
      * @return ExporterInterface
      */
-    public function buildExporter($key, Listing\Concrete $listing = null)
+    public function buildExporter($key, ?Listing\Concrete $listing = null)
     {
         if (!$this->hasExporter($key)) {
             throw new \InvalidArgumentException(sprintf('Exporter %s is not defined', $key));
@@ -78,7 +78,7 @@ class ExporterManager implements ExporterManagerInterface
      */
     public function getExportTmpData(Request $request)
     {
-        if (!$jobId = $request->get('jobId')) {
+        if (!$jobId = $request->query->getString('jobId')) {
             throw new \Exception('no jobId given');
         }
 
