@@ -16,7 +16,6 @@
 namespace CustomerManagementFrameworkBundle\Listing\Filter;
 
 use Doctrine\DBAL\Query\QueryBuilder;
-use Pimcore\Db;
 use Pimcore\Model\DataObject\Listing as CoreListing;
 
 abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQueryFilterInterface
@@ -81,16 +80,13 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
         if (count($this->fields) === 1) {
             $this->applyFieldCondition($this->fields[0], $value, $listing, $queryBuilder);
         } else {
-            // build a sub-query to assemble where condition
-            $subQuery = Db::get()->createQueryBuilder();
-            $operator = $this->getBooleanFieldOperator();
-
+            $conditions = [];
             foreach ($this->fields as $field) {
-                $this->applyFieldCondition($field, $value, $listing, $subQuery, $operator);
+                $conditions[] = $this->getFieldCondition($field, $value, $listing);
             }
 
             // add assembled sub-query where condition to our main query
-            $queryBuilder->andWhere(implode(' ', $subQuery->getQueryPart('where')));
+            $queryBuilder->andWhere(implode(' '.$this->getBooleanFieldOperator().' ', $conditions));
         }
     }
 
@@ -123,6 +119,26 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
         } else {
             $queryBuilder->andWhere($condition); //->setParameter($parameterName);
         }
+    }
+
+    /**
+     * Get field condition
+     *
+     */
+    protected function getFieldCondition(
+        string $field,
+        mixed $value,
+        CoreListing\Concrete $listing
+    ): string {
+        $tableName = $this->getTableName($listing->getClassId());
+
+        return sprintf(
+            '`%s`.`%s` %s %s',
+            $tableName,
+            $field,
+            $this->getComparisonOperator(),
+            $listing->quote($value)
+        );
     }
 
     /**

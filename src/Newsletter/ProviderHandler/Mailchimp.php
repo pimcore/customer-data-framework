@@ -491,7 +491,6 @@ class Mailchimp implements NewsletterProviderHandlerInterface
         $groups = $this->getExportableSegmentGroups();
         $select = $groups->getQueryBuilder()->select('id');
 
-
         $segments = $this->segmentManager->getSegments();
         $segments->addConditionParam('group__id in (' . $select . ')');
 

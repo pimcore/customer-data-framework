@@ -120,7 +120,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
             $data['implementationClass'] = $db->quote($data['implementationClass']);
         }
 
-        $data['a_id'] = $db->quote($data['a_id']);
+        $data['a_id'] = $db->quote((string)$data['a_id']);
 
         if ($activity instanceof ActivityExternalIdInterface) {
             $data['a_id'] = $db->quote($activity->getId());
