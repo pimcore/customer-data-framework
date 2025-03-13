@@ -17,6 +17,7 @@ namespace CustomerManagementFrameworkBundle\Listing\Filter;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use Pimcore\Db;
+use Pimcore\Db\CompatibilityQueryBuilder;
 use Pimcore\Model\DataObject\Listing as CoreListing;
 
 abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQueryFilterInterface
@@ -90,7 +91,9 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
             }
 
             // add assembled sub-query where condition to our main query
-            $queryBuilder->andWhere(implode(' ', $subQuery->getQueryPart('where')));
+            if ($queryBuilder instanceof  CompatibilityQueryBuilder){
+                $queryBuilder->andWhere(implode(' ', $subQuery->getQueryPart('where')));
+            }
         }
     }
 

@@ -17,6 +17,7 @@ namespace CustomerManagementFrameworkBundle\Listing\Filter;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use Pimcore\Db;
+use Pimcore\Db\CompatibilityQueryBuilder;
 use Pimcore\Model\DataObject\Listing as CoreListing;
 
 class BoolCombinator extends AbstractFilter implements OnCreateQueryFilterInterface
@@ -61,7 +62,9 @@ class BoolCombinator extends AbstractFilter implements OnCreateQueryFilterInterf
             foreach ($this->filters as $filter) {
                 $subQuery = Db::get()->createQueryBuilder();
                 $filter->applyOnCreateQuery($listing, $subQuery);
-                $queryParts[] = $subQuery->getQueryPart('where');
+                if ($queryBuilder instanceof  CompatibilityQueryBuilder) {
+                    $queryParts[] = $subQuery->getQueryPart('where');
+                }
             }
             $queryBuilder->andWhere(implode(' ' . $this->operator . ' ', $queryParts));
         }
