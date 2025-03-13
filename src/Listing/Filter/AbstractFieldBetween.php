@@ -113,12 +113,12 @@ abstract class AbstractFieldBetween extends AbstractFilter implements OnCreateQu
 
         if (null !== $from) {
             $operator = $this->getOperator(static::TYPE_FROM);
-            $whereCondition[] = sprintf('`%s`.`%s` %s %s', $tableName, $this->field, $operator, $listing->quote($from));
+            $whereCondition[] = sprintf('`%s`.`%s` %s %s', $tableName, $this->field, $operator, $listing->quote((string)$from));
         }
 
         if (null !== $to) {
             $operator = $this->getOperator(static::TYPE_TO);
-            $whereCondition[] = sprintf('`%s`.`%s` %s %s', $tableName, $this->field, $operator, $listing->quote($to));
+            $whereCondition[] = sprintf('`%s`.`%s` %s %s', $tableName, $this->field, $operator, $listing->quote((string)$to));
         }
 
         $whereSql = implode(' AND ', $whereCondition);
