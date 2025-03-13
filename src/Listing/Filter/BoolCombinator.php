@@ -60,11 +60,9 @@ class BoolCombinator extends AbstractFilter implements OnCreateQueryFilterInterf
         } elseif (count($this->filters)) {
             $queryParts = [];
             foreach ($this->filters as $filter) {
-                $subQuery = Db::get()->createQueryBuilder();
+                $subQuery = new CompatibilityQueryBuilder(Db::get());
                 $filter->applyOnCreateQuery($listing, $subQuery);
-                if ($queryBuilder instanceof  CompatibilityQueryBuilder) {
-                    $queryParts[] = $subQuery->getQueryPart('where');
-                }
+                $queryParts[] = $subQuery->getQueryPart('where');
             }
             $queryBuilder->andWhere(implode(' ' . $this->operator . ' ', $queryParts));
         }

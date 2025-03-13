@@ -83,7 +83,7 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
             $this->applyFieldCondition($this->fields[0], $value, $listing, $queryBuilder);
         } else {
             // build a sub-query to assemble where condition
-            $subQuery = Db::get()->createQueryBuilder();
+            $subQuery = new CompatibilityQueryBuilder(Db::get());
             $operator = $this->getBooleanFieldOperator();
 
             foreach ($this->fields as $field) {
@@ -91,9 +91,7 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
             }
 
             // add assembled sub-query where condition to our main query
-            if ($queryBuilder instanceof  CompatibilityQueryBuilder){
-                $queryBuilder->andWhere(implode(' ', $subQuery->getQueryPart('where')));
-            }
+            $queryBuilder->andWhere(implode(' ', $subQuery->getQueryPart('where')));
         }
     }
 
