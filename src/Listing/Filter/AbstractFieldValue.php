@@ -91,7 +91,7 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
             }
 
             // add assembled sub-query where condition to our main query
-            if ($queryBuilder instanceof  CompatibilityQueryBuilder){
+            if ($queryBuilder instanceof  CompatibilityQueryBuilder) {
                 $queryBuilder->andWhere(implode(' ', $subQuery->getQueryPart('where')));
             }
         }
