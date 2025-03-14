@@ -91,7 +91,7 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
             }
 
             // add assembled sub-query where condition to our main query
-            $whereConditions = str_replace('SELECT 1 WHERE', '', $subQuery);
+            $whereConditions = str_replace('SELECT 1 WHERE', '', $subQuery->getSQL());
             $queryBuilder->andWhere($whereConditions);
         }
     }

@@ -156,7 +156,7 @@ class CustomersController extends Admin
         throw new \InvalidArgumentException('Invalid customer');
     }
 
-    private function getFrom(QueryBuilder $queryBuilder): string
+    private function getFromPartFromQueryBuilder(QueryBuilder $queryBuilder): string
     {
         $query = (string)$queryBuilder;
         $pattern = '/(?i)\bFROM\b\s+([^\s,;]+)/';
@@ -164,6 +164,8 @@ class CustomersController extends Admin
         if (preg_match($pattern, $query, $matches)) {
             return $matches[1];
         }
+
+        throw new \InvalidArgumentException('Invalid query string');
     }
 
     /**
@@ -174,7 +176,7 @@ class CustomersController extends Admin
         $filters = $this->fetchListFilters($request);
         $listing = $this->buildListing($filters);
 
-        $fromTable = $this->getFrom($listing->getQueryBuilder());
+        $fromTable = $this->getFromPartFromQueryBuilder($listing->getQueryBuilder());
         $query = $listing->getQueryBuilder()->select($fromTable . '.id');
         $ids = Db::get()->fetchFirstColumn((string)$query);
 
@@ -227,7 +229,7 @@ class CustomersController extends Admin
 
         $listing = $this->buildListing();
 
-        $fromTable = $this->getFrom($listing->getQueryBuilder());
+        $fromTable = $this->getFromPartFromQueryBuilder($listing->getQueryBuilder());
         $listing->addConditionParam($fromTable . '.id in ('.implode(', ', $ids).')');
 
         $exporter = $this->getExporter($listing, $data['exporter']);
