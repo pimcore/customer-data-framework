@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\Listing\Filter;
 
 use Doctrine\DBAL\Query\QueryBuilder;
+use Pimcore\Db;
 use Pimcore\Model\DataObject\Listing as CoreListing;
 
 abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQueryFilterInterface
@@ -80,13 +81,18 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
         if (count($this->fields) === 1) {
             $this->applyFieldCondition($this->fields[0], $value, $listing, $queryBuilder);
         } else {
-            $conditions = [];
+            // build a sub-query to assemble where condition
+            $subQuery = Db::get()->createQueryBuilder();
+            $subQuery->select('1');
+            $operator = $this->getBooleanFieldOperator();
+
             foreach ($this->fields as $field) {
-                $conditions[] = $this->getFieldCondition($field, $value, $listing);
+                $this->applyFieldCondition($field, $value, $listing, $subQuery, $operator);
             }
 
             // add assembled sub-query where condition to our main query
-            $queryBuilder->andWhere(implode(' '.$this->getBooleanFieldOperator().' ', $conditions));
+            $whereConditions = str_replace('SELECT 1 WHERE', '', $subQuery);
+            $queryBuilder->andWhere($whereConditions);
         }
     }
 
@@ -119,26 +125,6 @@ abstract class AbstractFieldValue extends AbstractFilter implements OnCreateQuer
         } else {
             $queryBuilder->andWhere($condition); //->setParameter($parameterName);
         }
-    }
-
-    /**
-     * Get field condition
-     *
-     */
-    protected function getFieldCondition(
-        string $field,
-        mixed $value,
-        CoreListing\Concrete $listing
-    ): string {
-        $tableName = $this->getTableName($listing->getClassId());
-
-        return sprintf(
-            '`%s`.`%s` %s %s',
-            $tableName,
-            $field,
-            $this->getComparisonOperator(),
-            $listing->quote($value)
-        );
     }
 
     /**

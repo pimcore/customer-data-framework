@@ -27,6 +27,7 @@ use CustomerManagementFrameworkBundle\Helper\Objects;
 use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\AbstractObject;
@@ -155,6 +156,16 @@ class CustomersController extends Admin
         throw new \InvalidArgumentException('Invalid customer');
     }
 
+    private function getFrom(QueryBuilder $queryBuilder): string
+    {
+        $query = (string)$queryBuilder;
+        $pattern = '/(?i)\bFROM\b\s+([^\s,;]+)/';
+
+        if (preg_match($pattern, $query, $matches)) {
+            return $matches[1];
+        }
+    }
+
     /**
      * @Route("/export")
      */
@@ -163,7 +174,7 @@ class CustomersController extends Admin
         $filters = $this->fetchListFilters($request);
         $listing = $this->buildListing($filters);
 
-        $fromTable = $listing->getQueryBuilder()->getQueryPart('from')[0]['table'];
+        $fromTable = $this->getFrom($listing->getQueryBuilder());
         $query = $listing->getQueryBuilder()->select($fromTable . '.id');
         $ids = Db::get()->fetchFirstColumn((string)$query);
 
@@ -216,7 +227,7 @@ class CustomersController extends Admin
 
         $listing = $this->buildListing();
 
-        $fromTable = $listing->getQueryBuilder()->getQueryPart('from')[0]['table'];
+        $fromTable = $this->getFrom($listing->getQueryBuilder());
         $listing->addConditionParam($fromTable . '.id in ('.implode(', ', $ids).')');
 
         $exporter = $this->getExporter($listing, $data['exporter']);

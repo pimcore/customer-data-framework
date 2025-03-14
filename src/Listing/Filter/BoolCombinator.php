@@ -16,6 +16,7 @@
 namespace CustomerManagementFrameworkBundle\Listing\Filter;
 
 use Doctrine\DBAL\Query\QueryBuilder;
+use Pimcore\Db;
 use Pimcore\Model\DataObject\Listing as CoreListing;
 
 class BoolCombinator extends AbstractFilter implements OnCreateQueryFilterInterface
@@ -58,24 +59,12 @@ class BoolCombinator extends AbstractFilter implements OnCreateQueryFilterInterf
         } elseif (count($this->filters)) {
             $queryParts = [];
             foreach ($this->filters as $filter) {
-                $queryParts[] = $filter->getCreateQueryConditions($listing, $queryBuilder);
+                $subQuery = Db::get()->createQueryBuilder();
+                $subQuery->select(1);
+                $filter->applyOnCreateQuery($listing, $subQuery);
+                $queryParts[] = str_replace('SELECT 1 WHERE', '', $subQuery);
             }
             $queryBuilder->andWhere(implode(' ' . $this->operator . ' ', $queryParts));
-        }
-    }
-
-    public function getCreateQueryConditions(CoreListing\Concrete $listing, ?QueryBuilder $queryBuilder = null): string
-    {
-        if (count($this->filters) === 1) {
-            $filter = $this->filters[0];
-            $filter->applyOnCreateQuery($listing, $queryBuilder);
-        } elseif (count($this->filters)) {
-            $queryParts = [];
-            foreach ($this->filters as $filter) {
-                $queryParts[] = $filter->getCreateQueryConditions($listing, $queryBuilder);
-            }
-
-            return implode(' ' . $this->operator . ' ', $queryParts);
         }
     }
 }
