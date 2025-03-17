@@ -31,7 +31,7 @@
     "pimcore/admin-ui-classic-bundle": "^1.0 || ^2.0 || 2.x-dev",
     "pimcore/object-merger": "4.x-dev",
     "pimcore/pimcore": "dev-dbal-v4-support as 12.99",
-    "pimcore/search-query-parser": "dev-dbal-v4-support",
+    "pimcore/search-query-parser": "dev-dbal-4-support",
     "pimcore/personalization-bundle": "dev-dbal-v4-test",
     "symfony/asset": "^6.2",
     "symfony/config": "^6.2",
