@@ -21,16 +21,12 @@ use CustomerManagementFrameworkBundle\RESTApi\Exception\ExceptionInterface;
 use CustomerManagementFrameworkBundle\RESTApi\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * @Route("/deletions")
- */
+#[Route('/deletions')]
 class DeletionsController extends RestHandlerController
 {
-    /**
-     * @Route("", methods={"GET"})
-     */
+    #[Route('', methods: ['GET'])]
     public function listRecords(Request $request): JsonResponse | Response
     {
         $handler = $this->getHandler();

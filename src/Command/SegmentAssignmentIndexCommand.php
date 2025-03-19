@@ -18,23 +18,19 @@ namespace CustomerManagementFrameworkBundle\Command;
 use CustomerManagementFrameworkBundle\SegmentAssignment\Indexer\IndexerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class SegmentAssignmentIndexCommand extends AbstractCommand
 {
-    /**
-     * @var IndexerInterface
-     */
-    protected $indexer;
+    protected IndexerInterface $indexer;
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setIndexer(IndexerInterface $indexer): void
     {
         $this->indexer = $indexer;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('cmf:segment-assignment-index')
             ->setDescription('Processes entries from segment assignment queue, use this for manually updating the index, which is usually done during cmf:maintenance');

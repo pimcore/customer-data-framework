@@ -21,20 +21,17 @@ use Pimcore\Controller\UserAwareController;
 use Pimcore\Model\Document\PageSnippet;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * @Route("/templates")
- */
+#[Route('/templates')]
 class TemplatesController extends UserAwareController
 {
     use JsonHelperTrait;
 
     /**
-     * @Route("/export")
-     *
      * @throws \Exception
      */
+    #[Route('/export')]
     public function exportAction(Request $request, TemplateExporter $templateExporter): JsonResponse
     {
         $document = PageSnippet::getById($request->request->getInt('document_id'));

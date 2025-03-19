@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class BuildSegmentsCommand extends AbstractCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('cmf:build-segments')
             ->setDescription('Build automatically calculated segments')

@@ -27,56 +27,37 @@ use Pimcore\Bundle\PersonalizationBundle\Model\Tool\Targeting\TargetGroup;
 use Pimcore\Bundle\PersonalizationBundle\Targeting\ActionHandler\AssignTargetGroup;
 use Pimcore\Bundle\PersonalizationBundle\Targeting\DataLoaderInterface;
 use Pimcore\Bundle\PersonalizationBundle\Targeting\Model\VisitorInfo;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class AssignTargetGroupAndSegment extends AssignTargetGroup
 {
-    /**
-     * @var SegmentManagerInterface
-     */
-    protected $segmentManager;
+    protected SegmentManagerInterface $segmentManager;
 
-    /**
-     * @var ActivityManagerInterface
-     */
-    protected $activityManager;
+    protected ActivityManagerInterface $activityManager;
 
-    /**
-     * @var DataLoaderInterface
-     */
-    protected $dataLoader;
+    protected DataLoaderInterface $dataLoader;
 
-    /**
-     * @var ConsentCheckerInterface
-     */
-    protected $consentChecker;
+    protected ConsentCheckerInterface $consentChecker;
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setSegmentManager(SegmentManagerInterface $segmentManager): void
     {
         $this->segmentManager = $segmentManager;
     }
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setActivityManager(ActivityManagerInterface $activityManager): void
     {
         $this->activityManager = $activityManager;
     }
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setDataLoader(DataLoaderInterface $dataLoader): void
     {
         $this->dataLoader = $dataLoader;
     }
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setConsentChecker(ConsentCheckerInterface $consentChecker): void
     {
         $this->consentChecker = $consentChecker;

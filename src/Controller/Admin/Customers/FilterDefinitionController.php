@@ -20,16 +20,12 @@ use CustomerManagementFrameworkBundle\CustomerView\CustomerViewInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * @Route("/customers/filter-definition")
- */
+#[Route('/customers/filter-definition')]
 class FilterDefinitionController extends Admin
 {
-    /**
-     * @Route("/delete", name="cmf_filter_definition_delete")
-     */
+    #[Route('/delete', name: 'cmf_filter_definition_delete')]
     public function deleteAction(Request $request): RedirectResponse
     {
         // fetch CustomerView object
@@ -68,9 +64,8 @@ class FilterDefinitionController extends Admin
 
     /**
      * Save new FilterDefinition object
-     *
-     * @Route("/save", name="cmf_filter_definition_save")
      */
+    #[Route('/save', name: 'cmf_filter_definition_save')]
     public function saveAction(Request $request, CustomerViewInterface $customerView): RedirectResponse
     {
         // fetch object parameters from request
@@ -98,9 +93,8 @@ class FilterDefinitionController extends Admin
 
     /**
      * Update existing FilterDefinition object
-     *
-     * @Route("/update", name="cmf_filter_definition_update")
      */
+    #[Route('/update', name: 'cmf_filter_definition_update')]
     public function updateAction(Request $request, CustomerViewInterface $customerView): RedirectResponse
     {
         // fetch object parameters from request
@@ -146,9 +140,8 @@ class FilterDefinitionController extends Admin
      * Share the filter definition with new users or roles. Customer view admins will use updateFilterDefinition.
      * This action is only used by users which are in allowed users for FilterDefinition object.
      *
-     * @Route("/share", name="cmf_filter_definition_share")
-     *
      */
+    #[Route('/share', name: 'cmf_filter_definition_share')]
     public function shareAction(Request $request, CustomerViewInterface $customerView): RedirectResponse | bool
     {
         // fetch object parameters from request

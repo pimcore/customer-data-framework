@@ -19,13 +19,11 @@ use CustomerManagementFrameworkBundle\Controller\Rest\AbstractRestController;
 use CustomerManagementFrameworkBundle\Newsletter\Queue\NewsletterQueueInterface;
 use Pimcore\Tool\Console;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class AdminController extends AbstractRestController
 {
-    /**
-     * @Route("/newsletter/enqueue-all-customers", methods={"GET"})
-     */
+    #[Route('/newsletter/enqueue-all-customers', methods: ['GET'])]
     public function enqueueAllCustomers()
     {
         $php = Console::getExecutable('php');
@@ -34,9 +32,7 @@ class AdminController extends AbstractRestController
         return new JsonResponse('ok');
     }
 
-    /**
-     * @Route("/newsletter/get-queue-size", methods={"GET"})
-     */
+    #[Route('/newsletter/get-queue-size', methods: ['GET'])]
     public function getQueueSize(NewsletterQueueInterface $queue)
     {
         return new JsonResponse(['size' => $queue->getQueueSize()]);

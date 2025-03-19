@@ -18,23 +18,19 @@ namespace CustomerManagementFrameworkBundle\Command;
 use CustomerManagementFrameworkBundle\Maintenance\MaintenanceWorker;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class MaintenanceCommand extends AbstractCommand
 {
-    /**
-     * @var MaintenanceWorker
-     */
-    protected $maintenanceWorker;
+    protected MaintenanceWorker $maintenanceWorker;
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setMaintenanceWorker(MaintenanceWorker $maintenanceWorker): void
     {
         $this->maintenanceWorker = $maintenanceWorker;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('cmf:maintenance')
             ->setDescription("Performs various tasks configured in services.yml -> 'cmf.maintenance.serviceCalls'");

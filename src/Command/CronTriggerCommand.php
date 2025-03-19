@@ -19,23 +19,19 @@ use CustomerManagementFrameworkBundle\ActionTrigger\EventHandler\EventHandlerInt
 use CustomerManagementFrameworkBundle\ActionTrigger\RuleEnvironment;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class CronTriggerCommand extends AbstractCommand
 {
-    /**
-     * @var EventHandlerInterface
-     */
-    protected $actionTriggerListener;
+    protected EventHandlerInterface $actionTriggerListener;
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setActionTriggerListener(EventHandlerInterface $actionTriggerListener): void
     {
         $this->actionTriggerListener = $actionTriggerListener;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('cmf:handle-cron-triggers')
             ->setDescription('Handle cron triggers cronjob - needs to run once per minute');
