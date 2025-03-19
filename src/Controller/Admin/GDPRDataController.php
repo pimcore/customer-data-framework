@@ -38,7 +38,11 @@ class GDPRDataController extends UserAwareController implements KernelController
         $this->checkPermission('gdpr_data_extractor');
     }
 
-    #[Route('/search-data-objects', name: '_pimcore_customermanagementframework_gdprdata_searchdataobjects', methods: ['GET'])]
+    #[Route(
+        '/search-data-objects',
+        name: '_pimcore_customermanagementframework_gdprdata_searchdataobjects',
+        methods: ['GET']
+    )]
     public function searchDataObjectsAction(Request $request, Customers $service): JsonResponse
     {
         $allParams = array_merge($request->request->all(), $request->query->all());

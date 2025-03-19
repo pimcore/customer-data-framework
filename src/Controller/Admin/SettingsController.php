@@ -30,7 +30,11 @@ class SettingsController extends UserAwareController
 {
     use JsonHelperTrait;
 
-    #[Route('/settings/webservice-users', name: '_pimcore_customermanagementframework_backend_settings_webservice_users', methods: ['GET', 'POST'])]
+    #[Route(
+        '/settings/webservice-users',
+        name: '_pimcore_customermanagementframework_backend_settings_webservice_users',
+        methods: ['GET', 'POST']
+    )]
     public function userManagementAction(Request $request, CsrfProtectionHandler $csrfProtectionHandler): JsonResponse
     {
         $this->isAllowed();
