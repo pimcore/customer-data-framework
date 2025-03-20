@@ -17,11 +17,9 @@ namespace CustomerManagementFrameworkBundle\Controller\Rest\Api;
 
 use CustomerManagementFrameworkBundle\Controller\Rest\CrudHandlerController;
 use CustomerManagementFrameworkBundle\RESTApi\CustomersHandler;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * @Route("/customers")
- */
+#[Route('/customers')]
 class CustomersController extends CrudHandlerController
 {
     protected function getHandler(): CustomersHandler

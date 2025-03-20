@@ -17,11 +17,9 @@ namespace CustomerManagementFrameworkBundle\Controller\Rest\Api;
 
 use CustomerManagementFrameworkBundle\Controller\Rest\CrudHandlerController;
 use CustomerManagementFrameworkBundle\RESTApi\SegmentGroupsHandler;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * @Route("/segment-groups")
- */
+#[Route('/segment-groups')]
 class SegmentGroupsController extends CrudHandlerController
 {
     protected function getHandler(): SegmentGroupsHandler

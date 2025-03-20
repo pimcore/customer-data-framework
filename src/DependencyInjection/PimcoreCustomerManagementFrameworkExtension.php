@@ -34,7 +34,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
 class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension implements PrependExtensionInterface
 {
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
         $loader = new YamlFileLoader(
             $container,
@@ -50,7 +50,7 @@ class PimcoreCustomerManagementFrameworkExtension extends ConfigurableExtension 
         }
     }
 
-    protected function loadInternal(array $config, ContainerBuilder $container)
+    protected function loadInternal(array $config, ContainerBuilder $container): void
     {
         $loader = new YamlFileLoader(
             $container,

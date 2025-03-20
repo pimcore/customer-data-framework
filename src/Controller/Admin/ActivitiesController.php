@@ -24,11 +24,9 @@ use Pimcore\Controller\UserAwareController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * @Route("/activities")
- */
+#[Route('/activities')]
 class ActivitiesController extends UserAwareController implements KernelControllerEventInterface
 {
     /**
@@ -46,9 +44,7 @@ class ActivitiesController extends UserAwareController implements KernelControll
         $this->checkPermission('plugin_cmf_perm_activityview');
     }
 
-    /**
-     * @Route("/list")
-     */
+    #[Route('/list')]
     public function listAction(Request $request, CustomerProviderInterface $customerProvider): Response
     {
         if ($customer = $customerProvider->getById($request->query->getInt('customerId'))) {
@@ -88,9 +84,7 @@ class ActivitiesController extends UserAwareController implements KernelControll
         throw $this->createNotFoundException();
     }
 
-    /**
-     * @Route("/detail")
-     */
+    #[Route('/detail')]
     public function detailAction(Request $request): Response
     {
         $activityId = $request->query->getInt('activityId');

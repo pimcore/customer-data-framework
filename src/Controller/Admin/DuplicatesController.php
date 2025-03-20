@@ -24,11 +24,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * @Route("/duplicates")
- */
+#[Route('/duplicates')]
 class DuplicatesController extends Admin
 {
     public function init()
@@ -43,10 +41,9 @@ class DuplicatesController extends Admin
     }
 
     /**
-     * @Route("/list")
-     *
      * @throws \Exception
      */
+    #[Route('/list')]
     public function listAction(Request $request, DuplicatesIndexInterface $duplicatesIndex): Response
     {
         // fetch all filters
@@ -84,9 +81,7 @@ class DuplicatesController extends Admin
         );
     }
 
-    /**
-     * @Route("/decline/{id}")
-     */
+    #[Route('/decline/{id}')]
     public function declineAction(Request $request): JsonResponse
     {
         try {

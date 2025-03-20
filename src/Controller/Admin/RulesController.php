@@ -24,11 +24,9 @@ use Pimcore\Controller\UserAwareController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * @Route("/rules")
- */
+#[Route('/rules')]
 class RulesController extends UserAwareController implements KernelControllerEventInterface
 {
     use JsonHelperTrait;
@@ -40,9 +38,8 @@ class RulesController extends UserAwareController implements KernelControllerEve
 
     /**
      * get saved action trigger rules
-     *
-     * @Route("/list")
      */
+    #[Route('/list')]
     public function listAction(Request $request): JsonResponse
     {
         $rules = new Listing();
@@ -77,10 +74,9 @@ class RulesController extends UserAwareController implements KernelControllerEve
     /**
      * get rule config as json
      *
-     * @Route("/get")
-     *
      * @throws \Exception
      */
+    #[Route('/get')]
     public function getAction(Request $request): JsonResponse
     {
         $rule = Rule::getById($request->query->getInt('id'));
@@ -132,8 +128,8 @@ class RulesController extends UserAwareController implements KernelControllerEve
     /**
      * save rule config
      *
-     * @Route("/save", methods={"PUT"})
      */
+    #[Route('/save', methods: ['PUT'])]
     public function saveAction(Request $request): JsonResponse
     {
         // send json response
@@ -210,9 +206,8 @@ class RulesController extends UserAwareController implements KernelControllerEve
 
     /**
      * add new rule
-     *
-     * @Route("/add", methods={"POST"})
      */
+    #[Route('/add', methods: ['POST'])]
     public function addAction(Request $request): JsonResponse
     {
         // send json response
@@ -240,9 +235,8 @@ class RulesController extends UserAwareController implements KernelControllerEve
 
     /**
      * delete exiting rule
-     *
-     * @Route("/delete", methods={"DELETE"})
      */
+    #[Route('/delete', methods: ['DELETE'])]
     public function deleteAction(Request $request): JsonResponse
     {
         // send json response

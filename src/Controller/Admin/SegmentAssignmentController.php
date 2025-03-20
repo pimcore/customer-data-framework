@@ -23,15 +23,14 @@ use Pimcore\Controller\UserAwareController;
 use Pimcore\Model\DataObject\CustomerSegment;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
  * Class SegmentAssignmentController
  *
- * @Route("/segment-assignment")
- *
  * @package CustomerManagementFrameworkBundle\Controller\Admin
  */
+#[Route('/segment-assignment')]
 class SegmentAssignmentController extends UserAwareController
 {
     use JsonHelperTrait;
@@ -41,10 +40,9 @@ class SegmentAssignmentController extends UserAwareController
     }
 
     /**
-     * @Route("/inheritable-segments")
-     *
      * @throws Exception
      */
+    #[Route('/inheritable-segments')]
     public function inheritableSegments(Request $request, SegmentManagerInterface $segmentManager): JsonResponse
     {
         $id = $request->query->getInt('id');
@@ -71,10 +69,9 @@ class SegmentAssignmentController extends UserAwareController
     /**
      * returns directly assigned segmentIds for the pimcore backend
      *
-     * @Route("/assigned-segments")
-     *
      * @throws Exception
      */
+    #[Route('/assigned-segments')]
     public function assignedSegments(Request $request): JsonResponse
     {
         $id = $request->query->getInt('id');
@@ -93,9 +90,8 @@ class SegmentAssignmentController extends UserAwareController
 
     /**
      * saves assignments asynchronously
-     *
-     * @Route("/assign")
      */
+    #[Route('/assign')]
     public function assign(Request $request): JsonResponse
     {
         $id = $request->request->getString('id');
@@ -108,9 +104,7 @@ class SegmentAssignmentController extends UserAwareController
         return $this->jsonResponse($success);
     }
 
-    /**
-     * @Route("/breaks-inheritance")
-     */
+    #[Route('/breaks-inheritance')]
     public function breaksInheritance(Request $request): JsonResponse
     {
         $id = $request->request->getString('id');

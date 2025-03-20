@@ -24,15 +24,17 @@ use Pimcore\Model\Tool\SettingsStore;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class SettingsController extends UserAwareController
 {
     use JsonHelperTrait;
 
-    /**
-     * @Route("/settings/webservice-users", name="_pimcore_customermanagementframework_backend_settings_webservice_users", methods={"GET","POST"})
-     */
+    #[Route(
+        '/settings/webservice-users',
+        name: '_pimcore_customermanagementframework_backend_settings_webservice_users',
+        methods: ['GET', 'POST']
+    )]
     public function userManagementAction(Request $request, CsrfProtectionHandler $csrfProtectionHandler): JsonResponse
     {
         $this->isAllowed();

@@ -41,17 +41,16 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Service\Attribute\Required;
 
-/**
- * @Route("/customers")
- */
+#[Route('/customers')]
 class CustomersController extends Admin
 {
     /**
      * @var CustomerSegmentGroup[]|null
      */
-    private $segmentGroups = null;
+    private ?array $segmentGroups = null;
 
     private ExporterManagerInterface $exporterManager;
 
@@ -62,17 +61,13 @@ class CustomersController extends Admin
         AbstractObject::setHideUnpublished(true);
     }
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setExporterManager(ExporterManagerInterface $exporterManager): void
     {
         $this->exporterManager = $exporterManager;
     }
 
-    /**
-     * @Route("/list")
-     */
+    #[Route('/list')]
     public function listAction(Request $request): Response
     {
         $filters = $this->fetchListFilters($request);
@@ -124,9 +119,7 @@ class CustomersController extends Admin
         }
     }
 
-    /**
-     * @Route("/detail")
-     */
+    #[Route('/detail')]
     public function detailAction(Request $request): Response
     {
         $customer = $this->getSearchHelper()->getCustomerProvider()->getById($request->query->getInt('id'));
@@ -168,9 +161,7 @@ class CustomersController extends Admin
         throw new \InvalidArgumentException('Invalid query string');
     }
 
-    /**
-     * @Route("/export")
-     */
+    #[Route('/export')]
     public function exportAction(Request $request): JsonResponse
     {
         $filters = $this->fetchListFilters($request);
@@ -194,9 +185,7 @@ class CustomersController extends Admin
         ]);
     }
 
-    /**
-     * @route("/export-step")
-     */
+    #[Route('/export-step')]
     public function exportStepAction(Request $request): JsonResponse
     {
         $perRequest = $request->query->getInt(
@@ -263,9 +252,7 @@ class CustomersController extends Admin
         ]);
     }
 
-    /**
-     * @route("/download-finished-export")
-     */
+    #[Route('/download-finished-export')]
     public function downloadFinishedExportAction(Request $request): JsonResponse | Response
     {
         try {
@@ -318,10 +305,9 @@ class CustomersController extends Admin
     /**
      * Create new customer action
      *
-     * @Route("/new", methods={"POST"})
-     *
      * @throws ValidationException
      */
+    #[Route('/new', methods: ['POST'])]
     public function createCustomerAction(CustomerProviderInterface $customerProvider): JsonResponse
     {
         // check permissions write to temp folder -> ValidationException

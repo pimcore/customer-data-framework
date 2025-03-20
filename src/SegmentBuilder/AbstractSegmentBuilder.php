@@ -17,17 +17,13 @@ namespace CustomerManagementFrameworkBundle\SegmentBuilder;
 
 use CustomerManagementFrameworkBundle\SegmentManager\SegmentManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractSegmentBuilder implements SegmentBuilderInterface
 {
-    /**
-     * @var PaginatorInterface
-     */
-    protected $paginator;
+    protected PaginatorInterface $paginator;
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setPaginator(PaginatorInterface $paginator): void
     {
         $this->paginator = $paginator;

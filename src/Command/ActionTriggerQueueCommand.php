@@ -19,27 +19,23 @@ use CustomerManagementFrameworkBundle\ActionTrigger\Queue\QueueInterface;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class ActionTriggerQueueCommand extends AbstractCommand
 {
     use LockableTrait;
 
-    const LOCK_KEY = 'cmf_actiontrigger_queue';
+    private const string LOCK_KEY = 'cmf_actiontrigger_queue';
 
-    /**
-     * @var QueueInterface
-     */
-    protected $actionTriggerQueue;
+    protected QueueInterface $actionTriggerQueue;
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setActionTriggerQueue(QueueInterface $actionTriggerQueue): void
     {
         $this->actionTriggerQueue = $actionTriggerQueue;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('cmf:process-actiontrigger-queue')
             ->setDescription('Process entries from action trigger queue');

@@ -23,13 +23,12 @@ use Pimcore\Model\DataObject\AbstractObject;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
  * Class DataObjectController
- *
- * @Route("/gdpr-data")
  */
+#[Route('/gdpr-data')]
 class GDPRDataController extends UserAwareController implements KernelControllerEventInterface
 {
     use JsonHelperTrait;
@@ -39,9 +38,11 @@ class GDPRDataController extends UserAwareController implements KernelController
         $this->checkPermission('gdpr_data_extractor');
     }
 
-    /**
-     * @Route("/search-data-objects", name="_pimcore_customermanagementframework_gdprdata_searchdataobjects", methods={"GET"})
-     */
+    #[Route(
+        '/search-data-objects',
+        name: '_pimcore_customermanagementframework_gdprdata_searchdataobjects',
+        methods: ['GET']
+    )]
     public function searchDataObjectsAction(Request $request, Customers $service): JsonResponse
     {
         $allParams = array_merge($request->request->all(), $request->query->all());
@@ -59,9 +60,7 @@ class GDPRDataController extends UserAwareController implements KernelController
         return $this->jsonResponse($result);
     }
 
-    /**
-     * @Route("/export", name="_pimcore_customermanagementframework_gdprdata_export", methods={"GET"})
-     */
+    #[Route('/export', name: '_pimcore_customermanagementframework_gdprdata_export', methods: ['GET'])]
     public function exportDataObjectAction(Request $request, Customers $service): JsonResponse
     {
         $object = AbstractObject::getById($request->query->getInt('id'));
