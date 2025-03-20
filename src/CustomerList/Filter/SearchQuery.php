@@ -20,6 +20,7 @@ use CustomerManagementFrameworkBundle\Listing\Filter\AbstractFilter;
 use CustomerManagementFrameworkBundle\Listing\Filter\OnCreateQueryFilterInterface;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Phlexy\LexingException;
+use Pimcore\Db;
 use Pimcore\Model\DataObject\Listing as CoreListing;
 use SearchQueryParser\ParserException;
 use SearchQueryParser\QueryBuilder\Doctrine;
@@ -70,8 +71,8 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
                 'stripWildcards' => false, // allow LIKE wildcards
             ]
         );
-
-        $parserQueryBuilder->processQuery($queryBuilder, $this->parsedQuery);
+        $connection = Db::get();
+        $parserQueryBuilder->processQuery($queryBuilder, $this->parsedQuery, $connection);
     }
 
     /**

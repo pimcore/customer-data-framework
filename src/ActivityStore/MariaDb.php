@@ -120,10 +120,10 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
             $data['implementationClass'] = $db->quote($data['implementationClass']);
         }
 
-        $data['a_id'] = $db->quote($data['a_id']);
+        $data['a_id'] = $db->quote((string)$data['a_id']);
 
         if ($activity instanceof ActivityExternalIdInterface) {
-            $data['a_id'] = $db->quote($activity->getId());
+            $data['a_id'] = $db->quote((string)$activity->getId());
         }
 
         $data['customerId'] = !is_null($activity) ? $activity->getCustomer()->getId() : $entry->getCustomerId();
@@ -305,7 +305,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
 
         $sql = 'select * from '.self::DELETIONS_TABLE.' where entityType = '.$db->quote(
             $entityType
-        ).' and creationDate >= '.$db->quote($deletionsSinceTimestamp);
+        ).' and creationDate >= '.$db->quote((string)$deletionsSinceTimestamp);
 
         $data = $db->fetchAllAssociative($sql);
 
@@ -369,7 +369,7 @@ class MariaDb extends SqlActivityStore implements ActivityStoreInterface
     public function deleteCustomer(CustomerInterface $customer)
     {
         $db = Db::get();
-        $db->exec(
+        $db->executeQuery(
             sprintf('delete from %s where customerId = %d', self::ACTIVITIES_TABLE, $customer->getId())
         );
     }

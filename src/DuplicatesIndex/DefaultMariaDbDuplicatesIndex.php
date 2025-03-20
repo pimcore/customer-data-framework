@@ -254,7 +254,6 @@ class DefaultMariaDbDuplicatesIndex implements DuplicatesIndexInterface
 
         if (!is_null($filterCustomerList)) {
             $query = $filterCustomerList->getQueryBuilder()
-                ->resetQueryPart('select')
                 ->select('id');
             $joinTable = 'object_' . $filterCustomerList->getClassId();
             $joinIdField = $joinTable . '.id';

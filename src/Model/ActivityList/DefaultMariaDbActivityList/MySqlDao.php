@@ -105,9 +105,7 @@ class MySqlDao implements DaoInterface
     {
         $query = $this->getQueryBuilder()
             ->setMaxResults(null)
-            ->setFirstResult(0)
-            ->resetQueryPart('from');
-
+            ->setFirstResult(0);
         $query
             ->from(MariaDb::ACTIVITIES_TABLE)
             ->select('count(*) totalCount');
