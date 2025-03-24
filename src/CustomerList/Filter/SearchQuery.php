@@ -72,7 +72,7 @@ class SearchQuery extends AbstractFilter implements OnCreateQueryFilterInterface
             ]
         );
         $connection = Db::get();
-        $parserQueryBuilder->processQuery($queryBuilder, $this->parsedQuery, $connection);
+        $parserQueryBuilder->processQuery($queryBuilder, $this->parsedQuery);
     }
 
     /**
