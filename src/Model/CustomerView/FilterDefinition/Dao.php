@@ -130,11 +130,11 @@ class Dao extends AbstractDao
             self::ATTRIBUTE_CREATION_DATE => $this->model->getCreationDate(),
             self::ATTRIBUTE_MODIFICATION_DATE => $this->model->getModificationDate(),
         ]);
-        Helper::upsert($this->db, self::TABLE_NAME, $data, $this->getPrimaryKey(self::TABLE_NAME));
+        $lastInsertId = Helper::upsert($this->db, self::TABLE_NAME, $data, $this->getPrimaryKey(self::TABLE_NAME));
 
-        if (!$this->model->getId()) {
+        if ($lastInsertId !== null && !$this->model->getId()) {
             // TODO insecure, could be another id
-            $this->model->setId((int) $this->db->lastInsertId());
+            $this->model->setId((int) $lastInsertId);
         }
     }
 
