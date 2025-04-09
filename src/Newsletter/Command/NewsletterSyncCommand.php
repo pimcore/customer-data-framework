@@ -53,7 +53,7 @@ class NewsletterSyncCommand extends AbstractCommand
         $this->customerProvider = $customerProvider;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('cmf:newsletter-sync')
             ->setDescription('Handles the synchronization of customers and segments with the newsletter provider')
@@ -67,7 +67,7 @@ class NewsletterSyncCommand extends AbstractCommand
             ->addOption('process-queue-item', null, InputOption::VALUE_REQUIRED, 'process single queue item (provide json data of queue item)');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($input->getOption('enqueue-all-customers')) {
             $this->newsletterQueue->enqueueAllCustomers();
