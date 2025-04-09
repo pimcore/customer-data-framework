@@ -37,10 +37,6 @@ class CronTriggerCommand extends AbstractCommand
             ->setDescription('Handle cron triggers cronjob - needs to run once per minute');
     }
 
-    /**
-     *
-     * @return int
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $logger = $this->getLogger();

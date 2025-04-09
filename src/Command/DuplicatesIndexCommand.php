@@ -39,10 +39,6 @@ class DuplicatesIndexCommand extends AbstractCommand
             ->addOption('analyze', 'a', null, 'analyze false postives (used for calculating potential duplicates)');
     }
 
-    /**
-     *
-     * @return int
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $logger = $this->getLogger();
