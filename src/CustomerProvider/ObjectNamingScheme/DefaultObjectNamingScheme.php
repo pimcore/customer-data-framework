@@ -76,7 +76,11 @@ class DefaultObjectNamingScheme implements ObjectNamingSchemeInterface
 
         $parentPath = $this->correctPath($parentPath);
 
-        $customer->setParent(Service::createFolderByPath($parentPath));
+        if ($parent = Service::getElementByPath('object', $parentPath)) {
+            $customer->setParent($parent);
+        } else {
+            $customer->setParent(Service::createFolderByPath($parentPath));
+        }
 
         if (!$customer->getKey()) {
             $customer->setKey(uniqid());
