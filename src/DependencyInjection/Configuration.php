@@ -23,10 +23,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * @return TreeBuilder
-     */
-    public function getConfigTreeBuilder()//: TreeBuilder
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('pimcore_customer_management_framework');
         $rootNode = $treeBuilder->getRootNode();

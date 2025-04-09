@@ -36,11 +36,7 @@ class SegmentAssignmentIndexCommand extends AbstractCommand
             ->setDescription('Processes entries from segment assignment queue, use this for manually updating the index, which is usually done during cmf:maintenance');
     }
 
-    /**
-     *
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)//: int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->indexer->processQueue();
 

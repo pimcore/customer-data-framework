@@ -41,11 +41,7 @@ class ActionTriggerQueueCommand extends AbstractCommand
             ->setDescription('Process entries from action trigger queue');
     }
 
-    /**
-     *
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)//: int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->lock(self::LOCK_KEY);
 
