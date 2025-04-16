@@ -136,9 +136,3 @@ parameters:
 			message: "#^Property CustomerManagementFrameworkBundle\\\\Model\\\\ActivityList\\\\DefaultMariaDbActivityList\\\\MariaDbDao\\:\\:\\$model \\(CustomerManagementFrameworkBundle\\\\Model\\\\ActivityList\\\\DefaultMariaDbActivityList\\) does not accept Pimcore\\\\Model\\\\AbstractModel\\.$#"
 			count: 1
 			path: src/Model/ActivityList/DefaultMariaDbActivityList/MariaDbDao.php
-
-		-
-			message: '#^Dead catch [^"]* is never thrown in the try block\\.$#'
-			identifier: catch.neverThrown
-			count: 1			
-			path: src/Controller/Admin/CustomersController.php		

@@ -153,6 +153,7 @@ class CustomersController extends Admin
     private function getFromPartFromQueryBuilder(QueryBuilder $queryBuilder): string
     {
         try {
+            /** @throws QueryException */
             $query = (string)$queryBuilder;
         } catch (QueryException $exception) {
             $queryBuilder->select('*');
