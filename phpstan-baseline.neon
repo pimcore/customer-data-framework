@@ -139,5 +139,6 @@ parameters:
 
 		-
 			message: '#^Dead catch \\- Doctrine\\\\DBAL\\\\Query\\\\QueryException is never thrown in the try block\\.$#'
+			identifier: catch.neverThrown
 			count: 1			
 			path: src/Controller/Admin/CustomersController.php		
