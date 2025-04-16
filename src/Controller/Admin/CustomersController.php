@@ -28,7 +28,9 @@ use CustomerManagementFrameworkBundle\Model\CustomerInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerSegmentInterface;
 use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Query\QueryException;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
+use League\Csv\Exception;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\Concrete;
@@ -151,7 +153,12 @@ class CustomersController extends Admin
 
     private function getFromPartFromQueryBuilder(QueryBuilder $queryBuilder): string
     {
-        $query = (string)$queryBuilder;
+        try {
+            $query = (string)$queryBuilder;
+        } catch (QueryException $exception){
+            $queryBuilder->select('*');
+            $query = (string)$queryBuilder;
+        }
         $pattern = '/(?i)\bFROM\b\s+([^\s,;]+)/';
 
         if (preg_match($pattern, $query, $matches)) {
