@@ -36,4 +36,3 @@ parameters:
 			message: "#^Call to an undefined method CustomerManagementFrameworkBundle\\\\CustomReport\\\\Adapter\\\\TermSegmentBuilder\\:\\:buildQueryString\\(\\)\\.$#"
 			count: 1
 			path: src/CustomReport/Adapter/TermSegmentBuilder.php
-
