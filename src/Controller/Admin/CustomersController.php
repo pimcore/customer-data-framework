@@ -30,7 +30,6 @@ use CustomerManagementFrameworkBundle\Model\CustomerView\FilterDefinition;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Query\QueryException;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
-use League\Csv\Exception;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\Concrete;
@@ -155,7 +154,7 @@ class CustomersController extends Admin
     {
         try {
             $query = (string)$queryBuilder;
-        } catch (QueryException $exception){
+        } catch (QueryException $exception) {
             $queryBuilder->select('*');
             $query = (string)$queryBuilder;
         }
