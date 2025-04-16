@@ -21,6 +21,7 @@ use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Pimcore\Controller\KernelControllerEventInterface;
 use Pimcore\Controller\UserAwareController;
+use Pimcore\Db;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -47,6 +48,7 @@ class ActivitiesController extends UserAwareController implements KernelControll
     #[Route('/list')]
     public function listAction(Request $request, CustomerProviderInterface $customerProvider): Response
     {
+
         if ($customer = $customerProvider->getById($request->query->getInt('customerId'))) {
             $list = \Pimcore::getContainer()->get('cmf.activity_store')->getActivityList();
             $list->setCondition('customerId = ' . $customer->getId());
@@ -58,12 +60,11 @@ class ActivitiesController extends UserAwareController implements KernelControll
                 ->select('type')
                 ->distinct();
 
-            $types = \Pimcore\Db::get()->fetchFirstColumn((string)$select);
+            $db = Db::get();
+            $types =$db->fetchFirstColumn((string)$select);
 
             if ($type = $request->query->getString('type')) {
-                $select = $list->getQueryBuilder(false);
-                $select->andWhere('type = ' . $list->quote($type));
-                $list->setCondition((string) $select->getQueryPart('where'));
+                $list->setCondition('type = ' . $db->quote($type));
             }
 
             $paginator = $this->paginator->paginate($list, $request->query->getInt('page', 1), 25);
