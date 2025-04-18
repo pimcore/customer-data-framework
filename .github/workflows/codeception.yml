@@ -57,7 +57,7 @@ jobs:
               run: |
                   php_versions="${{ steps.parse-php-versions.outputs.php_versions }}"
                   
-                  MATRIX_JSON=$(cat reusable-workflows/codeception-tests-configuration/matrix-config.json)
+                  MATRIX_JSON=$(cat reusable-workflows/codeception-tests-configuration/matrix-contig-mariadb-only.json)
                   
                   IFS=',' read -ra VERSIONS_ARRAY <<< "$php_versions"
                   
