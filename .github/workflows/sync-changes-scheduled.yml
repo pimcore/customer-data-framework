@@ -1,8 +1,6 @@
 name: Sync changes scheduled from CE to EE
 on:
   workflow_dispatch:
-  schedule:
-    - cron:  '30 21 * * *'
 
 jobs:
   sync-branches:
