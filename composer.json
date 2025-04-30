@@ -1,6 +1,6 @@
 {
   "name": "pimcore/customer-management-framework-bundle",
-  "license": "Pimcore Open Core License (POCL)",
+  "license": "proprietary",
   "type": "pimcore-bundle",
   "config": {
     "sort-packages": true,
