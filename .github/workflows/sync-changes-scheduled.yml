@@ -1,0 +1,21 @@
+name: Sync changes scheduled from CE to EE
+on:
+  workflow_dispatch:
+
+jobs:
+  sync-branches:
+    uses: pimcore/workflows-collection-public/.github/workflows/reusable-sync-changes.yaml@main
+    if: github.repository == 'pimcore/customer-data-framework'
+    strategy:
+      fail-fast: false
+      matrix:
+        ref: [{'base': '3.4', 'destination': '3.4'}, {'base': '4.0', 'destination': '4.0'}, {'base': '4.2', 'destination': '4.2'}]
+    with:
+      base_ref: ${{ matrix.ref.base }}
+      ref_name: ${{ matrix.ref.destination }}
+      target_repo: 'ee-customer-data-framework'
+      auto_merge: true
+    secrets:
+      SYNC_TOKEN: ${{ secrets.SYNC_TOKEN }}
+      GIT_NAME: ${{ secrets.GIT_NAME }}
+      GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
