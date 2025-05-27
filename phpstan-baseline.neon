@@ -19,6 +19,7 @@ parameters:
 
 		-
 			message: "#^Result of && is always false\\.$#"
+			reportUnmatched: false
 			count: 1
 			path: src/Factory.php
 
