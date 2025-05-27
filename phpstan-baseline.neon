@@ -131,3 +131,8 @@ parameters:
 			message: "#^Property CustomerManagementFrameworkBundle\\\\Model\\\\ActivityList\\\\DefaultMariaDbActivityList\\\\MariaDbDao\\:\\:\\$model \\(CustomerManagementFrameworkBundle\\\\Model\\\\ActivityList\\\\DefaultMariaDbActivityList\\) does not accept Pimcore\\\\Model\\\\AbstractModel\\.$#"
 			count: 1
 			path: src/Model/ActivityList/DefaultMariaDbActivityList/MariaDbDao.php
+
+		-
+			message: "#^Result of && is always false\\.$#"
+			count: 1
+			path: src/Factory.php
