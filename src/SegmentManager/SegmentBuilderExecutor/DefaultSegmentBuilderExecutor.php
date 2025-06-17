@@ -223,7 +223,7 @@ class DefaultSegmentBuilderExecutor implements SegmentBuilderExecutorInterface
                     )
                 );
             };
-            $logger->warning('Enabling signal listeing (Ctrl+C, Kill) during processing...');
+            $logger->warning('Enabling signal listening (Ctrl+C, Kill) during processing...');
             // kill
             @pcntl_signal(SIGTERM, $stopProcessingHook);
             // capture ctrl+c
