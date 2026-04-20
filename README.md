@@ -2,6 +2,17 @@
 title: Customer Management Framework
 ---
 
+> [!IMPORTANT]
+> ## This Repository Has Been Archived
+>
+> This bundle has moved to the Pimcore Enterprise Edition. The GPL version is **EOL** and will no longer receive updates.
+>
+> - **Enterprise repository:** The updated and supported version is available at [ee-customer-data-framework](https://github.com/pimcore/ee-customer-data-framework) (access is granted by your Pimcore contact person when you have a valid enterprise subscription).
+> - **LTS support:** For long-term support, please use our support portal at [get.support.pimcore.com](https://get.support.pimcore.com/) (access is granted by your Pimcore contact person when you have a valid enterprise subscription).
+> - **Community support:** For community help and general questions, head over to [Pimcore Discussions](https://github.com/orgs/pimcore/discussions).
+
+
+
 # Pimcore Customer Management Framework
 
 Pimcore allows to manage any kind of data - unstructured, digital assets and structured content. The most obvious structured content is product data and all data related to products like categories, technologies, brands, etc. 
